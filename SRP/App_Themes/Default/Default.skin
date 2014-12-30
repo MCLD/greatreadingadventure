@@ -1,0 +1,55 @@
+﻿<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+<asp:GridView 
+    runat="server" 
+    Font-Names="Tahoma" 
+    Font-Size="9pt" 
+    CellPadding="4"
+    BorderStyle="Solid" 
+    BorderWidth="1" 
+    BorderColor="#A3C0E8"
+    GridLines="Horizontal" 
+    RowStyle-BorderStyle="Solid" 
+    RowStyle-BorderColor="#A3C0E8" 
+    RowStyle-BorderWidth="1"
+    
+>
+  <HeaderStyle BackColor="#C1DBFA" HorizontalAlign="Left"/>
+  <AlternatingRowStyle BackColor="#ECF4FE" />
+  <RowStyle />
+  <PagerStyle CssClass="PagerStyleClass" BackColor="#C1DBFA" />
+</asp:GridView>
+
+
+<asp:DetailsView 
+    runat="server" 
+    AutoGenerateRows="False"
+    Font-Names="Tahoma" 
+    Font-Size="9pt" 
+    CellPadding="4"
+    BorderStyle="Solid" 
+    BorderWidth="1" 
+    BorderColor="#A3C0E8"
+    GridLines="None" 
+    RowStyle-BorderStyle="Solid" 
+    RowStyle-BorderColor="#A3C0E8" 
+    RowStyle-BorderWidth="0"    
+>
+    <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Middle" Wrap="False" />    
+      
+</asp:DetailsView>
+
+

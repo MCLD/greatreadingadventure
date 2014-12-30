@@ -1,0 +1,8 @@
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SQLHelper\bin\Release\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SQLHelper\bin\Release\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SQLHelper\obj\Release\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SQLHelper\obj\Release\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SQLHelper\bin\Release\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SQLHelper\bin\Release\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SQLHelper\obj\Release\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SQLHelper\obj\Release\SQLHelper.pdb

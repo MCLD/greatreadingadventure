@@ -1,0 +1,68 @@
+﻿<%@ Master 
+    Language="C#" 
+    AutoEventWireup="true" 
+    CodeBehind="Control.master.cs" 
+    Inherits="STG.SRP.ControlRoom.Control" 
+%>
+<%@ Register src="~/ControlRoom/Controls/CRRibbon.ascx" tagname="CRRibbon" tagprefix="uc2" %>
+<%@ Register src="~/ControlRoom/Controls/CRTopMenu.ascx" tagname="CRTopMenu" tagprefix="uc3" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+<link href='/ico_cms.png' rel='icon' type='image/vnd.microsoft.icon'/> 
+    <title><%= STG.SRP.ControlRoom.SRPResources.CRTitle%></title>
+
+
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+
+<form id="form1" runat="server">
+<center>
+    <div id="cdBodyDiv">
+        <div class="cdTop">
+            <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
+            <div style="text-align: left; ">				
+                <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
+            
+                <div class="TitleContainer">
+                    <asp:Label  CssClass="PageTitle" ID="lblPageTitle" runat="server" Text="" Visible="false"></asp:Label> 
+                </div>
+            </div>
+        </div>
+        <div id="cdSeparator"></div>
+        <div class="cdMessage">
+            <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC" 
+                BorderStyle="Solid" BorderWidth="0px" style="padding: 10px;" Visible="false">
+                <table width="100%" cellpadding ="10" cellspacing="0" style="border: solid 1px black;">
+                    <tr>
+                        <td align="left" valign="top"><asp:Image ID="imgMessage" runat="server" /></td>
+                        <td align="left" width="100%"><asp:Label ID="lblMessage" runat="server" Text="" Font-Bold="true" Font-Size="11px" Font-Names="Verdana"></asp:Label></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+        </div>
+        <div class="cdBody">
+            <div style="text-align: left; padding: 10px; min-height: 600px">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>     
+        </div>     
+    </div>
+
+    <div id="cdfooter">
+	    <div id="cdline"></div>
+	    <div style="padding: 6px 0 3px 0;" align="center">
+    	
+            <%= STG.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= STG.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= STG.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= STG.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
+
+	    </div> 
+    </div> 
+
+    </center>
+</form>
+</body>
+</html>
