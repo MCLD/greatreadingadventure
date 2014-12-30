@@ -1,0 +1,186 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Global text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RegisterMasterBtn=Register
+LoginMasterBtn=Login
+LogoutMasterBtn=Logout
+btnRegister=Register Now
+btnLogin=Log into the app
+Program:=Program Test 1---------------------:
+Button=Press Me!
+About_Us_hidden_header=About Us
+About_Us_Short_Text=Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero. Sed id pulvinar ante.
+Contact_Us_hidden_header=Contact Us
+Contact_Us_hidden_header_Phone= (602) 234-3138
+Contact_Us_hidden_header_Email= info@stglink.com
+Contact_Us_hidden_header_Address= 2828 N. Central Ave, Phoenix, AZ 85004
+Info_hidden_header=More Information
+Info_hidden_header_Short_Text=Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero. Sed id pulvinar ante.
+System_Name=Summer</span> Reading <span> Program
+Slogan=Reading - Games - Prizes - Learning
+Upsell=44 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. 
+Back To Top=Back To Top
+Copyright_Statement=Copyright (c) 2014 Systems technology Group
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Login form text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LoginForm Title=Login
+LoginForm no account=Don't have an account?  
+LoginForm register=Register now
+LoginForm forgot pass=Did you forget your password?
+LoginForm recover=Get it by email
+LoginForm username=Username:
+LoginForm password=Password:
+LoginForm terms=I accept the terms and conditions
+LoginForm button=Login
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Recover form text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RecoverForm Title=Forgot Password
+RecoverForm no account=Don't have an account?  
+RecoverForm register=Register now
+RecoverForm go login=Did you just remember your password?
+RecoverForm login=Login now
+RecoverForm email=Username:
+RecoverForm button=Email Password
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Change password form text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+PwdResetForm Title=Change Password
+PwdResetForm current=Current password:  
+PwdResetForm newpassword=New password: 
+PwdResetForm newpassword repeat=Re-enter the new password:
+PwdResetForm button=Submit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Change family password form text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+FamPwdResetForm Title=Change Password for Family Member
+FamPwdResetForm current=<font color=red>Your</font> Current password:  
+FamPwdResetForm newpassword=<font color=red>Their</font> New password: 
+FamPwdResetForm newpassword repeat=Re-enter the new password:
+FamPwdResetForm button=Submit
+FamPwdResetForm button2=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family List
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+FamAccts Title=Family Accounts List
+FamAccts List=Family Members
+FamAccts Manage Account=Manage Account
+FamAccts Change Password=Change Password
+FamAccts Log=Enter Activity
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Account Screen
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+MyAccount Title=My Account Setup
+FamilyAccount Title=Family Account Setup
+MyAccount SaveBtn=Submit
+MyAccount CancelBtn=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Registration Screen
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Registration Title=Register and Create Account
+Registration Message=You can create an account for yourself and add additional accounts for your family members. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Registration Family Member Message=You have completed your account registration and are now creating accounts for your family members.
+Registration Account Success=Your Account has been succesfully created.
+Registration FamilyAccount Success=Your Account has been succesfully created. <br />You also indicated you want to create accounts for family members. <br /><br />Click "Next" to add a family member account, or click "Done" if you are done adding family member accounts.
+Registration TermsOfUseflag=You acknowledge and accept the terms of use.<br>
+Registration ShareFlag=This site may share information ... blah, blah, blah, and you are ok with it.<br>
+Registration btnPrev=< Go Back
+Registration btnNext=Continue >
+Registration btnDone=All Done
+Registration label School Grade=School Grade:
+Registration label DOB=Date of Birth:
+Registration label Age=Age:
+Registration label Family Account=Are you a parent and want to create a Family Account and register multiple family members?
+Registration label Program=Program:
+Registration label FirstName=First Name:
+Registration label LastName=Last Name:
+Registration label MiddleName=Middle Name:
+Registration label Gender=Gender:
+Registration label Email=Email Address:
+Registration label Phone=Phone Number:
+Registration label Addr1=Street Address 1:
+Registration label Addr2=Street Address 2:
+Registration label City=City:
+Registration label State=State:
+Registration label Zip=Zip Code:
+Registration label Country=Country:
+Registration label County=County:
+Registration label PGFN=Parent or Guardian First Name:
+Registration label PGMN=Parent or Guardian Middle Name:
+Registration label PGLN=Parent or Guardian Last Name:
+Registration label Library=Primary Library:
+Registration label LibraryCard=Library Card #:
+Registration label School=School Name:
+Registration label District=District:
+Registration label Teacher=Teacher:
+Registration label Group=Group/Team Name:
+Registration label SchoolType=School Type:
+Registration label Terms=Terms of Use:
+Registration label InfoShare=Information Sharing:
+Registration label Consent=Parental Consent:
+Registration label Avatar=Avatar:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Minigames text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Minigame Instructions OB=Online Book Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions MM=Mix-and-Match Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions CB=Code Breaker Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions WM=word match Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions MG=Matching Game Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions HP=Hidden Picture Instructions: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions CA=Choose Your Adventure Instructions: : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac viverra quam. Pellentesque vulputate orci eget auctor rutrum. Aenean tempor, nunc nec pharetra dictum, justo purus faucibus lorem, sed dignissim nisl lectus vel libero.<br><br>
+Minigame Instructions Difficulty=Choose the difficulty level you would like to play
+Minigame Instructions BtnEasy=Easy
+Minigame Instructions BtnMedium=Medium
+Minigame Instructions BtnHard=Hard
+Minigame Instructions BtnPrev=Previous Page
+Minigame Instructions BtnNext=Next Page
+Minigame Instructions BtnContinue=Continue
+Minigame BtnContinue=Continue
+Minigame label Enter Decoded=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive ...
+Minigame btnScore=Verify Decoding
+Minigame Key=Message Key
+Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Offers text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Offers Title=Promotional Offers
+Offers btn Print=Print
+Offers btn Back=Go Back
+Offers Serial=Serial #
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Events text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Events Title=Upcoming Events
+Events btn Filter=Filter
+Events btn Clear=Clear
+Events Label When=When: 
+Events Label What=What: 
+Events Label Where=Where: 
+Events Btn Details=More Details ... 
+Events btn Print=Print
+Events btn Back=Go Back
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Notifications text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Notifications Title=Notifications
+Ask A Question=Ask A Question
+Notifications btn Print=Print
+Notifications Ask Question Title=Ask Question
+Submit Question=Submit Question
+Notifications Ask Question Submitted Done=We have received yor question and will get back to you soon.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Reading Lists text
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Reading Lists Title=Book Lists Reccomended By Our Librarians
+Reading Lists Instructions=Our librarieans have put together these reading lists.  Select the list name to see the books on the list, and then let us know which of the books you have read.  Complete the reading list and you might just earn a prize!
+Reading Lists No Lists=No reading lists are available at this time.
+Reading Lists btn Print=Print
+Reading Lists btn Save=Save
+
+
+
+LoggingForm Title=Family Account Activity Logging
+Activity History Title=Activity History
+Activity History btn Filter=Filter

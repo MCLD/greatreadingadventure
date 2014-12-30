@@ -1,0 +1,68 @@
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRP.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRP.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\AjaxControlToolkit.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\AjaxMin.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\HtmlAgilityPack.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRPUtilities.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRP_DAL.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRPUtilities.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\SRP_DAL.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\HtmlAgilityPack.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\HtmlAgilityPack.xml
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\ar\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\cs\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\de\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\es\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\fr\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\he\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\hi\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\it\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\ja\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\ko\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\nl\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\pl\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\pt\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\ru\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\tr-TR\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\zh-CHS\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\bin\zh-CHT\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\obj\Release\SRP.csprojResolveAssemblyReference.cache
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\obj\Release\STG.SRP.ControlRoom.SRPResources.resources
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\obj\Release\SRP.csproj.GenerateResource.Cache
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\obj\Release\SRP.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\Version 2\SRP\obj\Release\SRP.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SRP.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SRP.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\AjaxControlToolkit.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\AjaxMin.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\HtmlAgilityPack.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SRPUtilities.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\SRPUtilities.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\HtmlAgilityPack.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\HtmlAgilityPack.xml
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\ar\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\cs\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\de\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\es\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\fr\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\he\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\hi\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\it\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\ja\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\ko\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\nl\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\pl\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\pt\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\ru\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\tr-TR\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\zh-CHS\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\bin\zh-CHT\AjaxControlToolkit.resources.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\obj\Release\SRP.csprojResolveAssemblyReference.cache
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\obj\Release\STG.SRP.ControlRoom.SRPResources.resources
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\obj\Release\SRP.csproj.GenerateResource.Cache
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\obj\Release\SRP.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Version 1 - Complete\CodeReleases\V1R3\SRP\obj\Release\SRP.pdb

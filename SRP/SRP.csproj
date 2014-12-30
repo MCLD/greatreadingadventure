@@ -1,0 +1,2305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E0C4AC89-4F15-44A4-8B88-9D4A7FDC1BF9}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>STG.SRP</RootNamespace>
+    <AssemblyName>SRP</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=4.1.7.1005, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AjaxControlToolkit.7.1005\lib\40\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxMin">
+      <HintPath>..\packages\AjaxMin.4.97.4951.28483\lib\net40\AjaxMin.dll</HintPath>
+    </Reference>
+    <Reference Include="CKEditor.NET, Version=3.6.4.0, Culture=neutral, PublicKeyToken=e379cdf2f8354999, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\CKEditor.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="SRP_DAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\SRP_DAL.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ActivityHistory.aspx" />
+    <Content Include="AddChildAccount.aspx" />
+    <Content Include="App_Themes\Default\blue_bg.png" />
+    <Content Include="App_Themes\Default\blue_hd_bg.png" />
+    <Content Include="App_Themes\Default\Default.css" />
+    <Content Include="App_Themes\Default\font-awesome.css" />
+    <Content Include="App_Themes\STG\blue_bg.png" />
+    <Content Include="App_Themes\STG\blue_hd_bg.png" />
+    <Content Include="App_Themes\STG\Default.css" />
+    <Content Include="App_Themes\STG\font-awesome.css" />
+    <Content Include="App_Themes\STG\TextFile1.txt" />
+    <Content Include="BadgeAward.aspx" />
+    <Content Include="ChangeFamMemberAct.aspx" />
+    <Content Include="ChangeFamMemberPwd.aspx" />
+    <Content Include="ChangePassword.aspx" />
+    <Content Include="ckeditor\adapters\jquery.js" />
+    <Content Include="ckeditor\CHANGES.html" />
+    <Content Include="ckeditor\ckeditor.js" />
+    <Content Include="ckeditor\ckeditor_basic.js" />
+    <Content Include="ckeditor\config.js" />
+    <Content Include="ckeditor\contents.css" />
+    <Content Include="ckeditor\images\spacer.gif" />
+    <Content Include="ckeditor\INSTALL.html" />
+    <Content Include="ckeditor\lang\af.js" />
+    <Content Include="ckeditor\lang\ar.js" />
+    <Content Include="ckeditor\lang\bg.js" />
+    <Content Include="ckeditor\lang\bn.js" />
+    <Content Include="ckeditor\lang\bs.js" />
+    <Content Include="ckeditor\lang\ca.js" />
+    <Content Include="ckeditor\lang\cs.js" />
+    <Content Include="ckeditor\lang\cy.js" />
+    <Content Include="ckeditor\lang\da.js" />
+    <Content Include="ckeditor\lang\de.js" />
+    <Content Include="ckeditor\lang\el.js" />
+    <Content Include="ckeditor\lang\en-au.js" />
+    <Content Include="ckeditor\lang\en-ca.js" />
+    <Content Include="ckeditor\lang\en-gb.js" />
+    <Content Include="ckeditor\lang\en.js" />
+    <Content Include="ckeditor\lang\eo.js" />
+    <Content Include="ckeditor\lang\es.js" />
+    <Content Include="ckeditor\lang\et.js" />
+    <Content Include="ckeditor\lang\eu.js" />
+    <Content Include="ckeditor\lang\fa.js" />
+    <Content Include="ckeditor\lang\fi.js" />
+    <Content Include="ckeditor\lang\fo.js" />
+    <Content Include="ckeditor\lang\fr-ca.js" />
+    <Content Include="ckeditor\lang\fr.js" />
+    <Content Include="ckeditor\lang\gl.js" />
+    <Content Include="ckeditor\lang\gu.js" />
+    <Content Include="ckeditor\lang\he.js" />
+    <Content Include="ckeditor\lang\hi.js" />
+    <Content Include="ckeditor\lang\hr.js" />
+    <Content Include="ckeditor\lang\hu.js" />
+    <Content Include="ckeditor\lang\id.js" />
+    <Content Include="ckeditor\lang\is.js" />
+    <Content Include="ckeditor\lang\it.js" />
+    <Content Include="ckeditor\lang\ja.js" />
+    <Content Include="ckeditor\lang\ka.js" />
+    <Content Include="ckeditor\lang\km.js" />
+    <Content Include="ckeditor\lang\ko.js" />
+    <Content Include="ckeditor\lang\lt.js" />
+    <Content Include="ckeditor\lang\lv.js" />
+    <Content Include="ckeditor\lang\mk.js" />
+    <Content Include="ckeditor\lang\mn.js" />
+    <Content Include="ckeditor\lang\ms.js" />
+    <Content Include="ckeditor\lang\nb.js" />
+    <Content Include="ckeditor\lang\nl.js" />
+    <Content Include="ckeditor\lang\no.js" />
+    <Content Include="ckeditor\lang\pl.js" />
+    <Content Include="ckeditor\lang\pt-br.js" />
+    <Content Include="ckeditor\lang\pt.js" />
+    <Content Include="ckeditor\lang\ro.js" />
+    <Content Include="ckeditor\lang\ru.js" />
+    <Content Include="ckeditor\lang\sk.js" />
+    <Content Include="ckeditor\lang\sl.js" />
+    <Content Include="ckeditor\lang\sr-latn.js" />
+    <Content Include="ckeditor\lang\sr.js" />
+    <Content Include="ckeditor\lang\sv.js" />
+    <Content Include="ckeditor\lang\th.js" />
+    <Content Include="ckeditor\lang\tr.js" />
+    <Content Include="ckeditor\lang\ug.js" />
+    <Content Include="ckeditor\lang\uk.js" />
+    <Content Include="ckeditor\lang\vi.js" />
+    <Content Include="ckeditor\lang\zh-cn.js" />
+    <Content Include="ckeditor\lang\zh.js" />
+    <Content Include="ckeditor\lang\_languages.js" />
+    <Content Include="ckeditor\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\LICENSE.html" />
+    <Content Include="ckeditor\plugins\a11yhelp\dialogs\a11yhelp.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\cs.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\cy.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\da.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\de.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\el.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\en.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\eo.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\fa.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\fi.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\fr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\gu.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\he.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\it.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\mk.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\nb.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\nl.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\no.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\ro.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\tr.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\ug.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\vi.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\a11yhelp\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\about\dialogs\about.js" />
+    <Content Include="ckeditor\plugins\about\dialogs\logo_ckeditor.png" />
+    <Content Include="ckeditor\plugins\adobeair\plugin.js" />
+    <Content Include="ckeditor\plugins\ajax\plugin.js" />
+    <Content Include="ckeditor\plugins\autogrow\plugin.js" />
+    <Content Include="ckeditor\plugins\bbcode\plugin.js" />
+    <Content Include="ckeditor\plugins\clipboard\dialogs\paste.js" />
+    <Content Include="ckeditor\plugins\colordialog\dialogs\colordialog.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\bg.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\cs.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\cy.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\da.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\de.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\el.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\en.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\eo.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\et.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\fa.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\fi.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\fr.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\gu.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\he.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\hr.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\it.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\nb.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\nl.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\no.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\pl.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\tr.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\ug.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\uk.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\vi.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\devtools\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\devtools\plugin.js" />
+    <Content Include="ckeditor\plugins\dialog\dialogDefinition.js" />
+    <Content Include="ckeditor\plugins\div\dialogs\div.js" />
+    <Content Include="ckeditor\plugins\docprops\dialogs\docprops.js" />
+    <Content Include="ckeditor\plugins\docprops\plugin.js" />
+    <Content Include="ckeditor\plugins\find\dialogs\find.js" />
+    <Content Include="ckeditor\plugins\flash\dialogs\flash.js" />
+    <Content Include="ckeditor\plugins\flash\images\placeholder.png" />
+    <Content Include="ckeditor\plugins\forms\dialogs\button.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\checkbox.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\form.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\hiddenfield.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\radio.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\select.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\textarea.js" />
+    <Content Include="ckeditor\plugins\forms\dialogs\textfield.js" />
+    <Content Include="ckeditor\plugins\forms\images\hiddenfield.gif" />
+    <Content Include="ckeditor\plugins\iframedialog\plugin.js" />
+    <Content Include="ckeditor\plugins\iframe\dialogs\iframe.js" />
+    <Content Include="ckeditor\plugins\iframe\images\placeholder.png" />
+    <Content Include="ckeditor\plugins\image\dialogs\image.js" />
+    <Content Include="ckeditor\plugins\link\dialogs\anchor.js" />
+    <Content Include="ckeditor\plugins\link\dialogs\link.js" />
+    <Content Include="ckeditor\plugins\link\images\anchor.gif" />
+    <Content Include="ckeditor\plugins\liststyle\dialogs\liststyle.js" />
+    <Content Include="ckeditor\plugins\pagebreak\images\pagebreak.gif" />
+    <Content Include="ckeditor\plugins\pastefromword\filter\default.js" />
+    <Content Include="ckeditor\plugins\pastetext\dialogs\pastetext.js" />
+    <Content Include="ckeditor\plugins\placeholder\dialogs\placeholder.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\bg.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\cs.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\cy.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\da.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\de.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\el.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\en.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\eo.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\et.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\fa.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\fi.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\fr.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\he.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\hr.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\it.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\nb.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\nl.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\no.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\pl.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\tr.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\ug.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\uk.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\vi.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\placeholder\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\placeholder\placeholder.gif" />
+    <Content Include="ckeditor\plugins\placeholder\plugin.js" />
+    <Content Include="ckeditor\plugins\preview\preview.html" />
+    <Content Include="ckeditor\plugins\scayt\dialogs\options.js" />
+    <Content Include="ckeditor\plugins\scayt\dialogs\toolbar.css" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_address.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_blockquote.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_div.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h1.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h2.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h3.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h4.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h5.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_h6.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_p.png" />
+    <Content Include="ckeditor\plugins\showblocks\images\block_pre.png" />
+    <Content Include="ckeditor\plugins\smiley\dialogs\smiley.js" />
+    <Content Include="ckeditor\plugins\smiley\images\angel_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\angry_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\broken_heart.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\confused_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\cry_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\devil_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\embaressed_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\envelope.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\heart.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\kiss.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\lightbulb.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\omg_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\regular_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\sad_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\shades_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\teeth_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\thumbs_down.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\thumbs_up.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\tounge_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\whatchutalkingabout_smile.gif" />
+    <Content Include="ckeditor\plugins\smiley\images\wink_smile.gif" />
+    <Content Include="ckeditor\plugins\specialchar\dialogs\specialchar.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\cs.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\cy.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\de.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\el.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\en.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\eo.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\et.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\fa.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\fi.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\fr.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\he.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\hr.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\it.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\nb.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\nl.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\no.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\tr.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\ug.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\specialchar\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\stylesheetparser\plugin.js" />
+    <Content Include="ckeditor\plugins\styles\styles\default.js" />
+    <Content Include="ckeditor\plugins\tableresize\plugin.js" />
+    <Content Include="ckeditor\plugins\tabletools\dialogs\tableCell.js" />
+    <Content Include="ckeditor\plugins\table\dialogs\table.js" />
+    <Content Include="ckeditor\plugins\templates\dialogs\templates.js" />
+    <Content Include="ckeditor\plugins\templates\templates\default.js" />
+    <Content Include="ckeditor\plugins\templates\templates\images\template1.gif" />
+    <Content Include="ckeditor\plugins\templates\templates\images\template2.gif" />
+    <Content Include="ckeditor\plugins\templates\templates\images\template3.gif" />
+    <Content Include="ckeditor\plugins\uicolor\dialogs\uicolor.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\bg.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\cs.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\cy.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\da.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\de.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\el.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\en.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\eo.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\et.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\fa.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\fi.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\fr.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\he.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\hr.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\it.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\mk.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\nb.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\nl.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\no.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\pl.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\pt-br.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\tr.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\ug.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\uk.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\vi.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\zh-cn.js" />
+    <Content Include="ckeditor\plugins\uicolor\lang\_translationstatus.txt" />
+    <Content Include="ckeditor\plugins\uicolor\plugin.js" />
+    <Content Include="ckeditor\plugins\uicolor\uicolor.gif" />
+    <Content Include="ckeditor\plugins\uicolor\yui\assets\hue_bg.png" />
+    <Content Include="ckeditor\plugins\uicolor\yui\assets\hue_thumb.png" />
+    <Content Include="ckeditor\plugins\uicolor\yui\assets\picker_mask.png" />
+    <Content Include="ckeditor\plugins\uicolor\yui\assets\picker_thumb.png" />
+    <Content Include="ckeditor\plugins\uicolor\yui\assets\yui.css" />
+    <Content Include="ckeditor\plugins\uicolor\yui\yui.js" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\ciframe.html" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\tmpFrameset.html" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\wsc.css" />
+    <Content Include="ckeditor\plugins\wsc\dialogs\wsc.js" />
+    <Content Include="ckeditor\plugins\xml\plugin.js" />
+    <Content Include="ckeditor\skins\kama\dialog.css" />
+    <Content Include="ckeditor\skins\kama\editor.css" />
+    <Content Include="ckeditor\skins\kama\icons.png" />
+    <Content Include="ckeditor\skins\kama\icons_rtl.png" />
+    <Content Include="ckeditor\skins\kama\images\dialog_sides.gif" />
+    <Content Include="ckeditor\skins\kama\images\dialog_sides.png" />
+    <Content Include="ckeditor\skins\kama\images\dialog_sides_rtl.png" />
+    <Content Include="ckeditor\skins\kama\images\mini.gif" />
+    <Content Include="ckeditor\skins\kama\images\noimage.png" />
+    <Content Include="ckeditor\skins\kama\images\sprites.png" />
+    <Content Include="ckeditor\skins\kama\images\sprites_ie6.png" />
+    <Content Include="ckeditor\skins\kama\images\toolbar_start.gif" />
+    <Content Include="ckeditor\skins\kama\skin.js" />
+    <Content Include="ckeditor\skins\kama\templates.css" />
+    <Content Include="ckeditor\skins\office2003\dialog.css" />
+    <Content Include="ckeditor\skins\office2003\editor.css" />
+    <Content Include="ckeditor\skins\office2003\icons.png" />
+    <Content Include="ckeditor\skins\office2003\icons_rtl.png" />
+    <Content Include="ckeditor\skins\office2003\images\dialog_sides.gif" />
+    <Content Include="ckeditor\skins\office2003\images\dialog_sides.png" />
+    <Content Include="ckeditor\skins\office2003\images\dialog_sides_rtl.png" />
+    <Content Include="ckeditor\skins\office2003\images\mini.gif" />
+    <Content Include="ckeditor\skins\office2003\images\noimage.png" />
+    <Content Include="ckeditor\skins\office2003\images\sprites.png" />
+    <Content Include="ckeditor\skins\office2003\images\sprites_ie6.png" />
+    <Content Include="ckeditor\skins\office2003\skin.js" />
+    <Content Include="ckeditor\skins\office2003\templates.css" />
+    <Content Include="ckeditor\skins\v2\dialog.css" />
+    <Content Include="ckeditor\skins\v2\editor.css" />
+    <Content Include="ckeditor\skins\v2\icons.png" />
+    <Content Include="ckeditor\skins\v2\icons_rtl.png" />
+    <Content Include="ckeditor\skins\v2\images\dialog_sides.gif" />
+    <Content Include="ckeditor\skins\v2\images\dialog_sides.png" />
+    <Content Include="ckeditor\skins\v2\images\dialog_sides_rtl.png" />
+    <Content Include="ckeditor\skins\v2\images\mini.gif" />
+    <Content Include="ckeditor\skins\v2\images\noimage.png" />
+    <Content Include="ckeditor\skins\v2\images\sprites.png" />
+    <Content Include="ckeditor\skins\v2\images\sprites_ie6.png" />
+    <Content Include="ckeditor\skins\v2\images\toolbar_start.gif" />
+    <Content Include="ckeditor\skins\v2\skin.js" />
+    <Content Include="ckeditor\skins\v2\templates.css" />
+    <Content Include="ckeditor\themes\default\theme.js" />
+    <Content Include="ControlRoom\AJAX.master" />
+    <Content Include="ControlRoom\Control.Master" />
+    <Content Include="ControlRoom\Controls\CRMenu.ascx" />
+    <Content Include="ControlRoom\Controls\CRTopMenu.ascx" />
+    <Content Include="ControlRoom\Controls\EvtCustFldCtl.ascx" />
+    <Content Include="ControlRoom\Controls\MinigamePreview.ascx" />
+    <Content Include="ControlRoom\Controls\PatronContext.ascx" />
+    <Content Include="ControlRoom\Controls\PatronCtl.ascx" />
+    <Content Include="ControlRoom\Controls\PatronLogEntryCtl.ascx" />
+    <Content Include="ControlRoom\Controls\PatronSearchCtl.ascx" />
+    <Content Include="ControlRoom\Controls\SettingEditor.ascx" />
+    <Content Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx" />
+    <Content Include="ControlRoom\Setup.aspx" />
+    <Content Include="ControlRoom\default.aspx" />
+    <Content Include="ControlRoom\FileNotFound.aspx" />
+    <Content Include="ControlRoom\GenericErrorPage.aspx" />
+    <Content Include="ControlRoom\Images\Account.png" />
+    <Content Include="ControlRoom\Images\add.png" />
+    <Content Include="ControlRoom\Images\AddSub.gif" />
+    <Content Include="ControlRoom\Images\AddTop.gif" />
+    <Content Include="ControlRoom\Images\Audit.png" />
+    <Content Include="ControlRoom\Images\back.png" />
+    <Content Include="ControlRoom\Images\Badge2.png" />
+    <Content Include="ControlRoom\Images\badges.png" />
+    <Content Include="ControlRoom\Images\bg_bottom.jpg" />
+    <Content Include="ControlRoom\Images\bg_navcon.gif" />
+    <Content Include="ControlRoom\Images\bg_ribbon.jpg" />
+    <Content Include="ControlRoom\Images\bg_tophead.jpg" />
+    <Content Include="ControlRoom\Images\bg_topheadhome.jpg" />
+    <Content Include="ControlRoom\Images\Calendar.png" />
+    <Content Include="ControlRoom\Images\Checkin.png" />
+    <Content Include="ControlRoom\Images\chu_c_c.gif" />
+    <Content Include="ControlRoom\Images\chu_c_c_on.gif" />
+    <Content Include="ControlRoom\Images\chu_l_b.gif" />
+    <Content Include="ControlRoom\Images\chu_l_t.gif" />
+    <Content Include="ControlRoom\Images\chu_r_b.gif" />
+    <Content Include="ControlRoom\Images\chu_R_t.gif" />
+    <Content Include="ControlRoom\Images\CMS.png" />
+    <Content Include="ControlRoom\Images\Dashboard.png" />
+    <Content Include="ControlRoom\Images\Del.gif" />
+    <Content Include="ControlRoom\Images\delete.png" />
+    <Content Include="ControlRoom\Images\Details.png" />
+    <Content Include="ControlRoom\Images\dn.gif" />
+    <Content Include="ControlRoom\Images\DrawWinners.png" />
+    <Content Include="ControlRoom\Images\dwn.gif" />
+    <Content Include="ControlRoom\Images\dwnSort.gif" />
+    <Content Include="ControlRoom\Images\e-mail.png" />
+    <Content Include="ControlRoom\Images\edit.png" />
+    <Content Include="ControlRoom\Images\Error.png" />
+    <Content Include="ControlRoom\Images\four.png" />
+    <Content Include="ControlRoom\Images\Game_Center.png" />
+    <Content Include="ControlRoom\Images\game_level.png" />
+    <Content Include="ControlRoom\Images\help.gif" />
+    <Content Include="ControlRoom\Images\History.png" />
+    <Content Include="ControlRoom\Images\htmlarea.gif" />
+    <Content Include="ControlRoom\Images\IC161616.png" />
+    <Content Include="ControlRoom\Images\icon_minus.gif" />
+    <Content Include="ControlRoom\Images\icon_minus_on.gif" />
+    <Content Include="ControlRoom\Images\icon_plus.gif" />
+    <Content Include="ControlRoom\Images\icon_plus_on.gif" />
+    <Content Include="ControlRoom\Images\icon_search.gif" />
+    <Content Include="ControlRoom\Images\Images.png" />
+    <Content Include="ControlRoom\Images\info.png" />
+    <Content Include="ControlRoom\Images\install1.png" />
+    <Content Include="ControlRoom\Images\install2.png" />
+    <Content Include="ControlRoom\Images\Install3.png" />
+    <Content Include="ControlRoom\Images\key.png" />
+    <Content Include="ControlRoom\Images\left_both.gif" />
+    <Content Include="ControlRoom\Images\left_both_on.gif" />
+    <Content Include="ControlRoom\Images\Library.png" />
+    <Content Include="ControlRoom\Images\Login_Manager.png" />
+    <Content Include="ControlRoom\Images\Logoff.png" />
+    <Content Include="ControlRoom\Images\Manage.png" />
+    <Content Include="ControlRoom\Images\move_dn.gif" />
+    <Content Include="ControlRoom\Images\move_up.gif" />
+    <Content Include="ControlRoom\Images\nine.png" />
+    <Content Include="ControlRoom\Images\No.png" />
+    <Content Include="ControlRoom\Images\notifications.png" />
+    <Content Include="ControlRoom\Images\offers.png" />
+    <Content Include="ControlRoom\Images\on-off.png" />
+    <Content Include="ControlRoom\Images\one.png" />
+    <Content Include="ControlRoom\Images\Patron1.png" />
+    <Content Include="ControlRoom\Images\Patron2.png" />
+    <Content Include="ControlRoom\Images\PatronInfo.png" />
+    <Content Include="ControlRoom\Images\Patrons.png" />
+    <Content Include="ControlRoom\Images\patrons_alt.png" />
+    <Content Include="ControlRoom\Images\prize_drawing.png" />
+    <Content Include="ControlRoom\Images\program.png" />
+    <Content Include="ControlRoom\Images\programStyle.png" />
+    <Content Include="ControlRoom\Images\Publish.png" />
+    <Content Include="ControlRoom\Images\PublishRequest.png" />
+    <Content Include="ControlRoom\Images\puzzle.png" />
+    <Content Include="ControlRoom\Images\refresh.png" />
+    <Content Include="ControlRoom\Images\reports.png" />
+    <Content Include="ControlRoom\Images\rib_c_b.gif" />
+    <Content Include="ControlRoom\Images\rib_c_c.gif" />
+    <Content Include="ControlRoom\Images\rib_l_b.gif" />
+    <Content Include="ControlRoom\Images\rib_l_t.gif" />
+    <Content Include="ControlRoom\Images\rib_r_b.gif" />
+    <Content Include="ControlRoom\Images\rib_r_t.gif" />
+    <Content Include="ControlRoom\Images\right_both.gif" />
+    <Content Include="ControlRoom\Images\right_both_on.gif" />
+    <Content Include="ControlRoom\Images\save.png" />
+    <Content Include="ControlRoom\Images\saveback.png" />
+    <Content Include="ControlRoom\Images\services.png" />
+    <Content Include="ControlRoom\Images\slides.png" />
+    <Content Include="ControlRoom\Images\spacer.gif" />
+    <Content Include="ControlRoom\Images\t_container.gif" />
+    <Content Include="ControlRoom\Images\Up.gif" />
+    <Content Include="ControlRoom\Images\upSort.gif" />
+    <Content Include="ControlRoom\Images\user-password.png" />
+    <Content Include="ControlRoom\Images\user_group.png" />
+    <Content Include="ControlRoom\Images\user_list.png" />
+    <Content Include="ControlRoom\Images\viewOnly.png" />
+    <Content Include="ControlRoom\Images\wait.png" />
+    <Content Include="ControlRoom\Images\warning.png" />
+    <Content Include="ControlRoom\Images\widget.png" />
+    <Content Include="ControlRoom\Images\yes.png" />
+    <Content Include="ControlRoom\Images\ZA101776221033.gif" />
+    <Content Include="ControlRoom\Login.aspx" />
+    <Content Include="ControlRoom\LoginRecovery.aspx" />
+    <Content Include="ControlRoom\Logoff.aspx" />
+    <Content Include="ControlRoom\Modules\Drawings\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Drawings\TemplateList.aspx" />
+    <Content Include="App_Themes\STG\Default.skin" />
+    <None Include="ControlRoom\Modules\Install\SQL3.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ControlRoom\Modules\Install\SQL2.config" />
+    <None Include="ControlRoom\Modules\Install\SQL.config" />
+    <Content Include="ControlRoom\Modules\Notifications\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Notifications\NotificationList.aspx" />
+    <Content Include="ControlRoom\Modules\Notifications\QuestionView.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\EditPatron.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\NotificationsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronAdd.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronBadges.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronBadgesAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronDetails.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronLog.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronLogAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronNotifications.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronPrizes.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronPrizesAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronReviewEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronReviews.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronsAddSubAccount.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronsByProgram.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronsMasterAccount.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronsSubAccounts.aspx" />
+    <Content Include="ControlRoom\Modules\PortalUser\MyAccount.aspx" />
+    <Content Include="ControlRoom\Modules\PortalUser\PasswordReset.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramCSS.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramList.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramOrder.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramsDelete.aspx" />
+    <Content Include="ControlRoom\Modules\Programs\ProgramText.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\DashboardStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\FinishStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\HTMLReportResults.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\LevelStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\MiniGameStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\PrizesStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\ReadingActivityReport.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\RegStats.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\ReportAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\ReportList.aspx" />
+    <Content Include="ControlRoom\Modules\Security\CurrentSessions.aspx" />
+    <Content Include="ControlRoom\Modules\Security\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Security\GroupsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Security\GroupsList.aspx" />
+    <Content Include="ControlRoom\Modules\Security\LoginHistory.aspx" />
+    <Content Include="ControlRoom\Modules\Security\UserAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\Codes.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\EvtCustomFields.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\LibraryDistrict.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\RegCustomFields.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\RegistrationSettingsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\SchoolDistrict.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\SRPSettings.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AvatarAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AvatarList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AwardAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AwardList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AwardManual.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BadgeAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BadgeList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BoardGameAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BoardGameList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BookListAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BookListBooksList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BookListList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\EventAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\EventList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGChooseAdvAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGCodeBreakerAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGCodeBreakerKeySetup.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGHiddenPicAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGHiddenPicBkAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGHiddenPicBkList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMatchingGameAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMatchingGameTilesAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMatchingGameTilesList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMixAndMatchAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGOnlineBookAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGOnlineBookPagesAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGOnlineBookPagesList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGWordMatchAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGWordMatchItemsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MGWordMatchItemsList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MinigameAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MinigameList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\MinigamePreview.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\OfferAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\OfferList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\ProgramGameLevelAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\ProgramGameLevelList.aspx" />
+    <Content Include="ControlRoom\NoAccess.aspx" />
+    <Content Include="ControlRoom\PasswordReset.aspx" />
+    <Content Include="ControlRoom\Styles\AdminInterface.css" />
+    <Content Include="ControlRoom\Styles\AdminInterfaceNonIE.css" />
+    <Content Include="ControlRoom\UnsecuredControl.Master" />
+    <Content Include="Controls\ActivityHistCtl.ascx" />
+    <Content Include="Controls\AddChildCtl.ascx" />
+    <Content Include="Controls\AudioUploadCtl.ascx" />
+    <Content Include="Controls\BadgeAwardCtl.ascx" />
+    <Content Include="Controls\Badges.ascx" />
+    <Content Include="Controls\ChangeFamilyPassword.ascx" />
+    <Content Include="Controls\ChangePassword.ascx" />
+    <Content Include="Controls\Events.ascx" />
+    <Content Include="Controls\FamilyAccountCtl.ascx" />
+    <Content Include="Controls\FamilyList.ascx" />
+    <Content Include="Controls\FileUploadCtl.ascx" />
+    <Content Include="Controls\GameboardControl.ascx" />
+    <Content Include="Controls\GameLoggingControl.ascx" />
+    <Content Include="Controls\LeaderBoardControl.ascx" />
+    <Content Include="Controls\MGBook.ascx" />
+    <Content Include="Controls\MGChooseAdvPlay.ascx" />
+    <Content Include="Controls\MGCodeBreaker.ascx" />
+    <Content Include="Controls\MGHiddenPicPlay.ascx" />
+    <Content Include="Controls\MGMatchingGamePlay.ascx" />
+    <Content Include="Controls\MGMixMatchPlay.ascx" />
+    <Content Include="Controls\MGWordMatch.ascx" />
+    <Content Include="Controls\Minigame.ascx" />
+    <Content Include="Controls\MyAccountCtl.ascx" />
+    <Content Include="Controls\MyBadgesListControl.ascx" />
+    <Content Include="Controls\MyGamemapNavControl.ascx" />
+    <Content Include="Controls\MyNoGameProgramCenterColumn.ascx" />
+    <Content Include="Controls\MyPointsControl.ascx" />
+    <Content Include="Controls\MyProgramLeftColumn.ascx" />
+    <Content Include="Controls\MyProgramRightColumn.ascx" />
+    <Content Include="Controls\MyWithGameProgramCenterColumn.ascx" />
+    <Content Include="Controls\NotificationCounterControl.ascx" />
+    <Content Include="Controls\PatronNotificationsCtl.ascx" />
+    <Content Include="Controls\Offers.ascx" />
+    <Content Include="Controls\PatronLogin.ascx" />
+    <Content Include="Controls\PatronRegistration.ascx" />
+    <Content Include="Controls\ProgramBanner.ascx" />
+    <Content Include="Controls\ProgramCSS.ascx" />
+    <Content Include="Controls\ProgramTabs.ascx" />
+    <Content Include="Controls\PublicProgramView.ascx" />
+    <Content Include="Controls\ReadingListCtl.ascx" />
+    <Content Include="Controls\RecoverPassword.ascx" />
+    <Content Include="Controls\SimpleLoggingControl.ascx" />
+    <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
+    <Content Include="CSS\bootstrap.css" />
+    <Content Include="CSS\Program\Default.css" />
+    <Content Include="EnterFamMemberLog.aspx" />
+    <Content Include="Events.aspx" />
+    <Content Include="FamilyAccountList.aspx" />
+    <Content Include="favicon.ico" />
+    <Content Include="favicon.png" />
+    <Content Include="GameMap.aspx" />
+    <Content Include="images\arrow-left.png" />
+    <Content Include="images\arrow-right.png" />
+    <Content Include="images\arrows.png" />
+    <Content Include="images\bg-sequence.jpg" />
+    <Content Include="images\bg\brushed_alu.png" />
+    <Content Include="images\bg\crisp_paper_ruffles.png" />
+    <Content Include="images\bg\darkdenim3.png" />
+    <Content Include="images\bg\dark_wall.png" />
+    <Content Include="images\bg\diamond_upholstery.png" />
+    <Content Include="images\bg\egg_shell.png" />
+    <Content Include="images\bg\light_toast.png" />
+    <Content Include="images\bg\noise.png" />
+    <Content Include="images\bg\noise_pattern_with_crosslines.png" />
+    <Content Include="images\bg\purty_wood.png" />
+    <Content Include="images\bg\retina_dust.png" />
+    <Content Include="images\bg\scribble_light.png" />
+    <Content Include="images\bg\subtle_stripes.png" />
+    <Content Include="images\bg\textured_stripes.png" />
+    <Content Include="images\bg\tileable_wood_texture.png" />
+    <Content Include="images\bg\vertical_cloth.png" />
+    <Content Include="images\bg\vichy.png" />
+    <Content Include="images\bg\washi.png" />
+    <Content Include="images\box_flip.gif" />
+    <Content Include="images\draw.png" />
+    <Content Include="images\fancybox_buttons.png" />
+    <Content Include="images\fancybox_loading.gif" />
+    <Content Include="images\fancybox_sprite.png" />
+    <Content Include="images\Games\Board\1 - Copy.png" />
+    <Content Include="images\Games\Board\1.png" />
+    <Content Include="images\Games\Board\1_stamp.png" />
+    <Content Include="images\Games\Board\2.png" />
+    <Content Include="images\Games\Board\bonus_1.png" />
+    <Content Include="images\Games\Board\bonus_2.png" />
+    <Content Include="images\Games\Board\default_stamp.png" />
+    <Content Include="images\Games\Board\default_stamp2.png" />
+    <Content Include="images\Games\Board\default_stamp3.png" />
+    <Content Include="images\Games\Board\default_stamp4.png" />
+    <Content Include="images\Games\Board\md_bonus_1.png" />
+    <Content Include="images\Games\Board\md_stamp_1.png" />
+    <Content Include="images\Games\Board\md_stamp_2.png" />
+    <Content Include="images\Games\Board\sm_bonus_1.png" />
+    <Content Include="images\Games\Board\sm_stamp_1.png" />
+    <Content Include="images\Games\Board\sm_stamp_2.png" />
+    <Content Include="images\Games\Board\stamp_1.png" />
+    <Content Include="images\Games\Board\stamp_2.png" />
+    <Content Include="images\headline-bg.png" />
+    <Content Include="images\icons\list\list_arrow.png" />
+    <Content Include="images\icons\list\list_check.png" />
+    <Content Include="images\icons\list\list_circle.png" />
+    <Content Include="images\icons\list\list_cross.png" />
+    <Content Include="images\icons\list\list_minus.png" />
+    <Content Include="images\icons\list\list_plus.png" />
+    <Content Include="images\icons\list\list_square.png" />
+    <Content Include="images\icons\list\list_star.png" />
+    <Content Include="images\icons\social\amazon.png" />
+    <Content Include="images\icons\social\behance.png" />
+    <Content Include="images\icons\social\blogger.png" />
+    <Content Include="images\icons\social\deviantart.png" />
+    <Content Include="images\icons\social\dribbble.png" />
+    <Content Include="images\icons\social\dropbox.png" />
+    <Content Include="images\icons\social\evernote.png" />
+    <Content Include="images\icons\social\facebook.png" />
+    <Content Include="images\icons\social\forrst.png" />
+    <Content Include="images\icons\social\github.png" />
+    <Content Include="images\icons\social\googleplus.png" />
+    <Content Include="images\icons\social\jolicloud.png" />
+    <Content Include="images\icons\social\last-fm.png" />
+    <Content Include="images\icons\social\linkedin.png" />
+    <Content Include="images\icons\social\picasa.png" />
+    <Content Include="images\icons\social\pintrest.png" />
+    <Content Include="images\icons\social\rss.png" />
+    <Content Include="images\icons\social\skype.png" />
+    <Content Include="images\icons\social\spotify.png" />
+    <Content Include="images\icons\social\stumbleupon.png" />
+    <Content Include="images\icons\social\tumblr.png" />
+    <Content Include="images\icons\social\twitter.png" />
+    <Content Include="images\icons\social\vimeo.png" />
+    <Content Include="images\icons\social\wordpress.png" />
+    <Content Include="images\icons\social\xing.png" />
+    <Content Include="images\icons\social\yahoo.png" />
+    <Content Include="images\icons\social\youtube.png" />
+    <Content Include="images\light.png" />
+    <Content Include="images\overlay-icon-01.png" />
+    <Content Include="images\overlay-icon-02.png" />
+    <Content Include="images\scroll-top-top.png" />
+    <Content Include="images\tweet.png" />
+    <Content Include="Install.aspx" />
+    <Content Include="Login.aspx" />
+    <Content Include="Logout.aspx" />
+    <Content Include="MyAccount.aspx" />
+    <Content Include="MyBadges.aspx" />
+    <Content Include="MyGameboard.aspx" />
+    <Content Include="MyLogEntry.aspx" />
+    <Content Include="MyNotifications.aspx" />
+    <Content Include="MyOffers.aspx" />
+    <Content Include="MyProgram.aspx" />
+    <Content Include="PlayMinigame.aspx" />
+    <Content Include="ReadingLists.aspx" />
+    <Content Include="Recover.aspx" />
+    <Content Include="Register.aspx" />
+    <Content Include="Resources\program.default.en-US.txt" />
+    <Content Include="Scripts\jquery.bpopup.min.js" />
+    <Content Include="Scripts\jquery.ddslick.js" />
+    <Content Include="Scripts\MediaBox\an7effects-1.5.5.js" />
+    <Content Include="Scripts\MediaBox\mediaboxAdv-1.3.4b.js" />
+    <Content Include="Scripts\MediaBox\mediaboxAdvBlack21.css" />
+    <Content Include="Scripts\MediaBox\mootools-core-1.3-full-compat.js" />
+    <Content Include="Layout\EmailTemplate.htm" />
+    <Content Include="ShareBadge.aspx" />
+    <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.4.1.js" />
+    <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivityHistory.aspx.cs">
+      <DependentUpon>ActivityHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ActivityHistory.aspx.designer.cs">
+      <DependentUpon>ActivityHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AddChildAccount.aspx.cs">
+      <DependentUpon>AddChildAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddChildAccount.aspx.designer.cs">
+      <DependentUpon>AddChildAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BadgeAward.aspx.cs">
+      <DependentUpon>BadgeAward.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BadgeAward.aspx.designer.cs">
+      <DependentUpon>BadgeAward.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangeFamMemberAct.aspx.cs">
+      <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ChangeFamMemberAct.aspx.designer.cs">
+      <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangeFamMemberPwd.aspx.cs">
+      <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ChangeFamMemberPwd.aspx.designer.cs">
+      <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangePassword.aspx.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ChangePassword.aspx.designer.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\AJAX.master.cs">
+      <DependentUpon>AJAX.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\AJAX.master.designer.cs">
+      <DependentUpon>AJAX.master</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Control.Master.cs">
+      <DependentUpon>Control.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Control.Master.designer.cs">
+      <DependentUpon>Control.Master</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRMenu.ascx.cs">
+      <DependentUpon>CRMenu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRMenu.ascx.designer.cs">
+      <DependentUpon>CRMenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRTopMenu.ascx.cs">
+      <DependentUpon>CRTopMenu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRTopMenu.ascx.designer.cs">
+      <DependentUpon>CRTopMenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\EvtCustFldCtl.ascx.cs">
+      <DependentUpon>EvtCustFldCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\EvtCustFldCtl.ascx.designer.cs">
+      <DependentUpon>EvtCustFldCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\MinigamePreview.ascx.cs">
+      <DependentUpon>MinigamePreview.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\MinigamePreview.ascx.designer.cs">
+      <DependentUpon>MinigamePreview.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronContext.ascx.cs">
+      <DependentUpon>PatronContext.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronContext.ascx.designer.cs">
+      <DependentUpon>PatronContext.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronCtl.ascx.cs">
+      <DependentUpon>PatronCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronCtl.ascx.designer.cs">
+      <DependentUpon>PatronCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronLogEntryCtl.ascx.cs">
+      <DependentUpon>PatronLogEntryCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronLogEntryCtl.ascx.designer.cs">
+      <DependentUpon>PatronLogEntryCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronSearchCtl.ascx.cs">
+      <DependentUpon>PatronSearchCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronSearchCtl.ascx.designer.cs">
+      <DependentUpon>PatronSearchCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\SettingEditor.ascx.cs">
+      <DependentUpon>SettingEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\SettingEditor.ascx.designer.cs">
+      <DependentUpon>SettingEditor.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx.cs">
+      <DependentUpon>SchoolDistrictOriginal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx.designer.cs">
+      <DependentUpon>SchoolDistrictOriginal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx.cs">
+      <DependentUpon>SchoolDistrictPaged.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx.designer.cs">
+      <DependentUpon>SchoolDistrictPaged.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Setup.aspx.cs">
+      <DependentUpon>Setup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Setup.aspx.designer.cs">
+      <DependentUpon>Setup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\FileNotFound.aspx.cs">
+      <DependentUpon>FileNotFound.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\FileNotFound.aspx.designer.cs">
+      <DependentUpon>FileNotFound.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\GenericErrorPage.aspx.cs">
+      <DependentUpon>GenericErrorPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\GenericErrorPage.aspx.designer.cs">
+      <DependentUpon>GenericErrorPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\LoginRecovery.aspx.cs">
+      <DependentUpon>LoginRecovery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\LoginRecovery.aspx.designer.cs">
+      <DependentUpon>LoginRecovery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Logoff.aspx.cs">
+      <DependentUpon>Logoff.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Logoff.aspx.designer.cs">
+      <DependentUpon>Logoff.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx.cs">
+      <DependentUpon>PrizeDrawingAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx.designer.cs">
+      <DependentUpon>PrizeDrawingAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx.cs">
+      <DependentUpon>PrizeTemplateAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx.designer.cs">
+      <DependentUpon>PrizeTemplateAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\TemplateList.aspx.cs">
+      <DependentUpon>TemplateList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Drawings\TemplateList.aspx.designer.cs">
+      <DependentUpon>TemplateList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\NotificationList.aspx.cs">
+      <DependentUpon>NotificationList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\NotificationList.aspx.designer.cs">
+      <DependentUpon>NotificationList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\QuestionView.aspx.cs">
+      <DependentUpon>QuestionView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Notifications\QuestionView.aspx.designer.cs">
+      <DependentUpon>QuestionView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\EditPatron.aspx.cs">
+      <DependentUpon>EditPatron.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\EditPatron.aspx.designer.cs">
+      <DependentUpon>EditPatron.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\NotificationsAddEdit.aspx.cs">
+      <DependentUpon>NotificationsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\NotificationsAddEdit.aspx.designer.cs">
+      <DependentUpon>NotificationsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronAdd.aspx.cs">
+      <DependentUpon>PatronAdd.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronAdd.aspx.designer.cs">
+      <DependentUpon>PatronAdd.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronBadges.aspx.cs">
+      <DependentUpon>PatronBadges.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronBadges.aspx.designer.cs">
+      <DependentUpon>PatronBadges.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronBadgesAddEdit.aspx.cs">
+      <DependentUpon>PatronBadgesAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronBadgesAddEdit.aspx.designer.cs">
+      <DependentUpon>PatronBadgesAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronDetails.aspx.cs">
+      <DependentUpon>PatronDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronDetails.aspx.designer.cs">
+      <DependentUpon>PatronDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronLog.aspx.cs">
+      <DependentUpon>PatronLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronLog.aspx.designer.cs">
+      <DependentUpon>PatronLog.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronLogAddEdit.aspx.cs">
+      <DependentUpon>PatronLogAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronLogAddEdit.aspx.designer.cs">
+      <DependentUpon>PatronLogAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronNotifications.aspx.cs">
+      <DependentUpon>PatronNotifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronNotifications.aspx.designer.cs">
+      <DependentUpon>PatronNotifications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronPrizes.aspx.cs">
+      <DependentUpon>PatronPrizes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronPrizes.aspx.designer.cs">
+      <DependentUpon>PatronPrizes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronPrizesAddEdit.aspx.cs">
+      <DependentUpon>PatronPrizesAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronPrizesAddEdit.aspx.designer.cs">
+      <DependentUpon>PatronPrizesAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronReviewEdit.aspx.cs">
+      <DependentUpon>PatronReviewEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronReviewEdit.aspx.designer.cs">
+      <DependentUpon>PatronReviewEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronReviews.aspx.cs">
+      <DependentUpon>PatronReviews.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronReviews.aspx.designer.cs">
+      <DependentUpon>PatronReviews.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsAddSubAccount.aspx.cs">
+      <DependentUpon>PatronsAddSubAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsAddSubAccount.aspx.designer.cs">
+      <DependentUpon>PatronsAddSubAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsByProgram.aspx.cs">
+      <DependentUpon>PatronsByProgram.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsByProgram.aspx.designer.cs">
+      <DependentUpon>PatronsByProgram.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsMasterAccount.aspx.cs">
+      <DependentUpon>PatronsMasterAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsMasterAccount.aspx.designer.cs">
+      <DependentUpon>PatronsMasterAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsRibbon.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsSubAccounts.aspx.cs">
+      <DependentUpon>PatronsSubAccounts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronsSubAccounts.aspx.designer.cs">
+      <DependentUpon>PatronsSubAccounts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\PortalUser\MyAccount.aspx.cs">
+      <DependentUpon>MyAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\PortalUser\MyAccount.aspx.designer.cs">
+      <DependentUpon>MyAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\PortalUser\PasswordReset.aspx.cs">
+      <DependentUpon>PasswordReset.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\PortalUser\PasswordReset.aspx.designer.cs">
+      <DependentUpon>PasswordReset.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramCSS.aspx.cs">
+      <DependentUpon>ProgramCSS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramCSS.aspx.designer.cs">
+      <DependentUpon>ProgramCSS.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramList.aspx.cs">
+      <DependentUpon>ProgramList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramList.aspx.designer.cs">
+      <DependentUpon>ProgramList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramOrder.aspx.cs">
+      <DependentUpon>ProgramOrder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramOrder.aspx.designer.cs">
+      <DependentUpon>ProgramOrder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramsAddEdit.aspx.cs">
+      <DependentUpon>ProgramsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramsAddEdit.aspx.designer.cs">
+      <DependentUpon>ProgramsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramsDelete.aspx.cs">
+      <DependentUpon>ProgramsDelete.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramsDelete.aspx.designer.cs">
+      <DependentUpon>ProgramsDelete.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramText.aspx.cs">
+      <DependentUpon>ProgramText.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Programs\ProgramText.aspx.designer.cs">
+      <DependentUpon>ProgramText.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\DashboardStats.aspx.cs">
+      <DependentUpon>DashboardStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\DashboardStats.aspx.designer.cs">
+      <DependentUpon>DashboardStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\FinishStats.aspx.cs">
+      <DependentUpon>FinishStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\FinishStats.aspx.designer.cs">
+      <DependentUpon>FinishStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\HTMLReportResults.aspx.cs">
+      <DependentUpon>HTMLReportResults.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\HTMLReportResults.aspx.designer.cs">
+      <DependentUpon>HTMLReportResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\LevelStats.aspx.cs">
+      <DependentUpon>LevelStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\LevelStats.aspx.designer.cs">
+      <DependentUpon>LevelStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\MiniGameStats.aspx.cs">
+      <DependentUpon>MiniGameStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\MiniGameStats.aspx.designer.cs">
+      <DependentUpon>MiniGameStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\PrizesStats.aspx.cs">
+      <DependentUpon>PrizesStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\PrizesStats.aspx.designer.cs">
+      <DependentUpon>PrizesStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReadingActivityReport.aspx.cs">
+      <DependentUpon>ReadingActivityReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReadingActivityReport.aspx.designer.cs">
+      <DependentUpon>ReadingActivityReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\RegStats.aspx.cs">
+      <DependentUpon>RegStats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\RegStats.aspx.designer.cs">
+      <DependentUpon>RegStats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReportAddEdit.aspx.cs">
+      <DependentUpon>ReportAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReportAddEdit.aspx.designer.cs">
+      <DependentUpon>ReportAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReportList.aspx.cs">
+      <DependentUpon>ReportList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\ReportList.aspx.designer.cs">
+      <DependentUpon>ReportList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\CurrentSessions.aspx.cs">
+      <DependentUpon>CurrentSessions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\CurrentSessions.aspx.designer.cs">
+      <DependentUpon>CurrentSessions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\GroupsAddEdit.aspx.cs">
+      <DependentUpon>GroupsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\GroupsAddEdit.aspx.designer.cs">
+      <DependentUpon>GroupsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\GroupsList.aspx.cs">
+      <DependentUpon>GroupsList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\GroupsList.aspx.designer.cs">
+      <DependentUpon>GroupsList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\LoginHistory.aspx.cs">
+      <DependentUpon>LoginHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\LoginHistory.aspx.designer.cs">
+      <DependentUpon>LoginHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\UserAddEdit.aspx.cs">
+      <DependentUpon>UserAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\UserAddEdit.aspx.designer.cs">
+      <DependentUpon>UserAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\Codes.aspx.cs">
+      <DependentUpon>Codes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\Codes.aspx.designer.cs">
+      <DependentUpon>Codes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\EvtCustomFields.aspx.cs">
+      <DependentUpon>EvtCustomFields.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\EvtCustomFields.aspx.designer.cs">
+      <DependentUpon>EvtCustomFields.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\LibraryDistrict.aspx.cs">
+      <DependentUpon>LibraryDistrict.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\LibraryDistrict.aspx.designer.cs">
+      <DependentUpon>LibraryDistrict.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\RegCustomFields.aspx.cs">
+      <DependentUpon>RegCustomFields.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\RegCustomFields.aspx.designer.cs">
+      <DependentUpon>RegCustomFields.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\RegistrationSettingsAddEdit.aspx.cs">
+      <DependentUpon>RegistrationSettingsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\RegistrationSettingsAddEdit.aspx.designer.cs">
+      <DependentUpon>RegistrationSettingsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrict.aspx.cs">
+      <DependentUpon>SchoolDistrict.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrict.aspx.designer.cs">
+      <DependentUpon>SchoolDistrict.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SRPSettings.aspx.cs">
+      <DependentUpon>SRPSettings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\SRPSettings.aspx.designer.cs">
+      <DependentUpon>SRPSettings.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AvatarAddEdit.aspx.cs">
+      <DependentUpon>AvatarAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AvatarAddEdit.aspx.designer.cs">
+      <DependentUpon>AvatarAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AvatarList.aspx.cs">
+      <DependentUpon>AvatarList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AvatarList.aspx.designer.cs">
+      <DependentUpon>AvatarList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardAddEdit.aspx.cs">
+      <DependentUpon>AwardAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardAddEdit.aspx.designer.cs">
+      <DependentUpon>AwardAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardList.aspx.cs">
+      <DependentUpon>AwardList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardList.aspx.designer.cs">
+      <DependentUpon>AwardList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardManual.aspx.cs">
+      <DependentUpon>AwardManual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardManual.aspx.designer.cs">
+      <DependentUpon>AwardManual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BadgeAddEdit.aspx.cs">
+      <DependentUpon>BadgeAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BadgeAddEdit.aspx.designer.cs">
+      <DependentUpon>BadgeAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BadgeList.aspx.cs">
+      <DependentUpon>BadgeList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BadgeList.aspx.designer.cs">
+      <DependentUpon>BadgeList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BoardGameAddEdit.aspx.cs">
+      <DependentUpon>BoardGameAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BoardGameAddEdit.aspx.designer.cs">
+      <DependentUpon>BoardGameAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BoardGameList.aspx.cs">
+      <DependentUpon>BoardGameList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BoardGameList.aspx.designer.cs">
+      <DependentUpon>BoardGameList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListAddEdit.aspx.cs">
+      <DependentUpon>BookListAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListAddEdit.aspx.designer.cs">
+      <DependentUpon>BookListAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListBooksList.aspx.cs">
+      <DependentUpon>BookListBooksList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListBooksList.aspx.designer.cs">
+      <DependentUpon>BookListBooksList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListList.aspx.cs">
+      <DependentUpon>BookListList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListList.aspx.designer.cs">
+      <DependentUpon>BookListList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventAddEdit.aspx.cs">
+      <DependentUpon>EventAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventAddEdit.aspx.designer.cs">
+      <DependentUpon>EventAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventList.aspx.cs">
+      <DependentUpon>EventList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventList.aspx.designer.cs">
+      <DependentUpon>EventList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvAddEdit.aspx.cs">
+      <DependentUpon>MGChooseAdvAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvAddEdit.aspx.designer.cs">
+      <DependentUpon>MGChooseAdvAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesAddEdit.aspx.cs">
+      <DependentUpon>MGChooseAdvSlidesAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesAddEdit.aspx.designer.cs">
+      <DependentUpon>MGChooseAdvSlidesAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesList.aspx.cs">
+      <DependentUpon>MGChooseAdvSlidesList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGChooseAdvSlidesList.aspx.designer.cs">
+      <DependentUpon>MGChooseAdvSlidesList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGCodeBreakerAddEdit.aspx.cs">
+      <DependentUpon>MGCodeBreakerAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGCodeBreakerAddEdit.aspx.designer.cs">
+      <DependentUpon>MGCodeBreakerAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGCodeBreakerKeySetup.aspx.cs">
+      <DependentUpon>MGCodeBreakerKeySetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGCodeBreakerKeySetup.aspx.designer.cs">
+      <DependentUpon>MGCodeBreakerKeySetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicAddEdit.aspx.cs">
+      <DependentUpon>MGHiddenPicAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicAddEdit.aspx.designer.cs">
+      <DependentUpon>MGHiddenPicAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicBkAddEdit.aspx.cs">
+      <DependentUpon>MGHiddenPicBkAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicBkAddEdit.aspx.designer.cs">
+      <DependentUpon>MGHiddenPicBkAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicBkList.aspx.cs">
+      <DependentUpon>MGHiddenPicBkList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGHiddenPicBkList.aspx.designer.cs">
+      <DependentUpon>MGHiddenPicBkList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameAddEdit.aspx.cs">
+      <DependentUpon>MGMatchingGameAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameAddEdit.aspx.designer.cs">
+      <DependentUpon>MGMatchingGameAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameTilesAddEdit.aspx.cs">
+      <DependentUpon>MGMatchingGameTilesAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameTilesAddEdit.aspx.designer.cs">
+      <DependentUpon>MGMatchingGameTilesAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameTilesList.aspx.cs">
+      <DependentUpon>MGMatchingGameTilesList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMatchingGameTilesList.aspx.designer.cs">
+      <DependentUpon>MGMatchingGameTilesList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchAddEdit.aspx.cs">
+      <DependentUpon>MGMixAndMatchAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchAddEdit.aspx.designer.cs">
+      <DependentUpon>MGMixAndMatchAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsAddEdit.aspx.cs">
+      <DependentUpon>MGMixAndMatchItemsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsAddEdit.aspx.designer.cs">
+      <DependentUpon>MGMixAndMatchItemsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsList.aspx.cs">
+      <DependentUpon>MGMixAndMatchItemsList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGMixAndMatchItemsList.aspx.designer.cs">
+      <DependentUpon>MGMixAndMatchItemsList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookAddEdit.aspx.cs">
+      <DependentUpon>MGOnlineBookAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookAddEdit.aspx.designer.cs">
+      <DependentUpon>MGOnlineBookAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookPagesAddEdit.aspx.cs">
+      <DependentUpon>MGOnlineBookPagesAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookPagesAddEdit.aspx.designer.cs">
+      <DependentUpon>MGOnlineBookPagesAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookPagesList.aspx.cs">
+      <DependentUpon>MGOnlineBookPagesList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGOnlineBookPagesList.aspx.designer.cs">
+      <DependentUpon>MGOnlineBookPagesList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchAddEdit.aspx.cs">
+      <DependentUpon>MGWordMatchAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchAddEdit.aspx.designer.cs">
+      <DependentUpon>MGWordMatchAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchItemsAddEdit.aspx.cs">
+      <DependentUpon>MGWordMatchItemsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchItemsAddEdit.aspx.designer.cs">
+      <DependentUpon>MGWordMatchItemsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchItemsList.aspx.cs">
+      <DependentUpon>MGWordMatchItemsList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MGWordMatchItemsList.aspx.designer.cs">
+      <DependentUpon>MGWordMatchItemsList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigameAddEdit.aspx.cs">
+      <DependentUpon>MinigameAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigameAddEdit.aspx.designer.cs">
+      <DependentUpon>MinigameAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigameList.aspx.cs">
+      <DependentUpon>MinigameList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigameList.aspx.designer.cs">
+      <DependentUpon>MinigameList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigamePreview.aspx.cs">
+      <DependentUpon>MinigamePreview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\MinigamePreview.aspx.designer.cs">
+      <DependentUpon>MinigamePreview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\OfferAddEdit.aspx.cs">
+      <DependentUpon>OfferAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\OfferAddEdit.aspx.designer.cs">
+      <DependentUpon>OfferAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\OfferList.aspx.cs">
+      <DependentUpon>OfferList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\OfferList.aspx.designer.cs">
+      <DependentUpon>OfferList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\ProgramGameLevelAddEdit.aspx.cs">
+      <DependentUpon>ProgramGameLevelAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\ProgramGameLevelAddEdit.aspx.designer.cs">
+      <DependentUpon>ProgramGameLevelAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\ProgramGameLevelList.aspx.cs">
+      <DependentUpon>ProgramGameLevelList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\ProgramGameLevelList.aspx.designer.cs">
+      <DependentUpon>ProgramGameLevelList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\NoAccess.aspx.cs">
+      <DependentUpon>NoAccess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\NoAccess.aspx.designer.cs">
+      <DependentUpon>NoAccess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\PasswordReset.aspx.cs">
+      <DependentUpon>PasswordReset.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\PasswordReset.aspx.designer.cs">
+      <DependentUpon>PasswordReset.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Reports.Master.cs">
+      <DependentUpon>Reports.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Reports.Master.designer.cs">
+      <DependentUpon>Reports.Master</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\SRPResources.Designer.cs">
+      <DependentUpon>SRPResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ControlRoom\UnsecuredControl.Master.cs">
+      <DependentUpon>UnsecuredControl.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\UnsecuredControl.Master.designer.cs">
+      <DependentUpon>UnsecuredControl.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ActivityHistCtl.ascx.cs">
+      <DependentUpon>ActivityHistCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ActivityHistCtl.ascx.designer.cs">
+      <DependentUpon>ActivityHistCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AddChildCtl.ascx.cs">
+      <DependentUpon>AddChildCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AddChildCtl.ascx.designer.cs">
+      <DependentUpon>AddChildCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AudioUploadCtl.ascx.cs">
+      <DependentUpon>AudioUploadCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AudioUploadCtl.ascx.designer.cs">
+      <DependentUpon>AudioUploadCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AwardPoints.cs" />
+    <Compile Include="Controls\BadgeAwardCtl.ascx.cs">
+      <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BadgeAwardCtl.ascx.designer.cs">
+      <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Badges.ascx.cs">
+      <DependentUpon>Badges.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Badges.ascx.designer.cs">
+      <DependentUpon>Badges.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChangeFamilyPassword.ascx.cs">
+      <DependentUpon>ChangeFamilyPassword.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ChangeFamilyPassword.ascx.designer.cs">
+      <DependentUpon>ChangeFamilyPassword.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChangePassword.ascx.cs">
+      <DependentUpon>ChangePassword.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ChangePassword.ascx.designer.cs">
+      <DependentUpon>ChangePassword.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EmailService.cs" />
+    <Compile Include="Controls\Events.ascx.cs">
+      <DependentUpon>Events.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Events.ascx.designer.cs">
+      <DependentUpon>Events.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FamilyAccountCtl.ascx.cs">
+      <DependentUpon>FamilyAccountCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\FamilyAccountCtl.ascx.designer.cs">
+      <DependentUpon>FamilyAccountCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FamilyList.ascx.cs">
+      <DependentUpon>FamilyList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\FamilyList.ascx.designer.cs">
+      <DependentUpon>FamilyList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FileUploadCtl.ascx.cs">
+      <DependentUpon>FileUploadCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\FileUploadCtl.ascx.designer.cs">
+      <DependentUpon>FileUploadCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameboardControl.ascx.cs">
+      <DependentUpon>GameboardControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\GameboardControl.ascx.designer.cs">
+      <DependentUpon>GameboardControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GameLoggingControl.ascx.cs">
+      <DependentUpon>GameLoggingControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\GameLoggingControl.ascx.designer.cs">
+      <DependentUpon>GameLoggingControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LeaderBoardControl.ascx.cs">
+      <DependentUpon>LeaderBoardControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\LeaderBoardControl.ascx.designer.cs">
+      <DependentUpon>LeaderBoardControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGBook.ascx.cs">
+      <DependentUpon>MGBook.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGBook.ascx.designer.cs">
+      <DependentUpon>MGBook.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGChooseAdvPlay.ascx.cs">
+      <DependentUpon>MGChooseAdvPlay.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGChooseAdvPlay.ascx.designer.cs">
+      <DependentUpon>MGChooseAdvPlay.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGCodeBreaker.ascx.cs">
+      <DependentUpon>MGCodeBreaker.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGCodeBreaker.ascx.designer.cs">
+      <DependentUpon>MGCodeBreaker.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGHiddenPicPlay.ascx.cs">
+      <DependentUpon>MGHiddenPicPlay.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGHiddenPicPlay.ascx.designer.cs">
+      <DependentUpon>MGHiddenPicPlay.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGMatchingGamePlay.ascx.cs">
+      <DependentUpon>MGMatchingGamePlay.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGMatchingGamePlay.ascx.designer.cs">
+      <DependentUpon>MGMatchingGamePlay.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGMixMatchPlay.ascx.cs">
+      <DependentUpon>MGMixMatchPlay.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGMixMatchPlay.ascx.designer.cs">
+      <DependentUpon>MGMixMatchPlay.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MGWordMatch.ascx.cs">
+      <DependentUpon>MGWordMatch.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MGWordMatch.ascx.designer.cs">
+      <DependentUpon>MGWordMatch.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Minigame.ascx.cs">
+      <DependentUpon>Minigame.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Minigame.ascx.designer.cs">
+      <DependentUpon>Minigame.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyAccountCtl.ascx.cs">
+      <DependentUpon>MyAccountCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyAccountCtl.ascx.designer.cs">
+      <DependentUpon>MyAccountCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyBadgesListControl.ascx.cs">
+      <DependentUpon>MyBadgesListControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyBadgesListControl.ascx.designer.cs">
+      <DependentUpon>MyBadgesListControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyGamemapNavControl.ascx.cs">
+      <DependentUpon>MyGamemapNavControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyGamemapNavControl.ascx.designer.cs">
+      <DependentUpon>MyGamemapNavControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyNoGameProgramCenterColumn.ascx.cs">
+      <DependentUpon>MyNoGameProgramCenterColumn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyNoGameProgramCenterColumn.ascx.designer.cs">
+      <DependentUpon>MyNoGameProgramCenterColumn.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyPointsControl.ascx.cs">
+      <DependentUpon>MyPointsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyPointsControl.ascx.designer.cs">
+      <DependentUpon>MyPointsControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyProgramLeftColumn.ascx.cs">
+      <DependentUpon>MyProgramLeftColumn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyProgramLeftColumn.ascx.designer.cs">
+      <DependentUpon>MyProgramLeftColumn.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyProgramRightColumn.ascx.cs">
+      <DependentUpon>MyProgramRightColumn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyProgramRightColumn.ascx.designer.cs">
+      <DependentUpon>MyProgramRightColumn.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyWithGameProgramCenterColumn.ascx.cs">
+      <DependentUpon>MyWithGameProgramCenterColumn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyWithGameProgramCenterColumn.ascx.designer.cs">
+      <DependentUpon>MyWithGameProgramCenterColumn.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NotificationCounterControl.ascx.cs">
+      <DependentUpon>NotificationCounterControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\NotificationCounterControl.ascx.designer.cs">
+      <DependentUpon>NotificationCounterControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PatronNotificationsCtl.ascx.cs">
+      <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PatronNotificationsCtl.ascx.designer.cs">
+      <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Offers.ascx.cs">
+      <DependentUpon>Offers.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Offers.ascx.designer.cs">
+      <DependentUpon>Offers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PatronLogin.ascx.cs">
+      <DependentUpon>PatronLogin.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PatronLogin.ascx.designer.cs">
+      <DependentUpon>PatronLogin.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PatronRegistration.ascx.cs">
+      <DependentUpon>PatronRegistration.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PatronRegistration.ascx.designer.cs">
+      <DependentUpon>PatronRegistration.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgramBanner.ascx.cs">
+      <DependentUpon>ProgramBanner.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgramBanner.ascx.designer.cs">
+      <DependentUpon>ProgramBanner.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgramCSS.ascx.cs">
+      <DependentUpon>ProgramCSS.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgramCSS.ascx.designer.cs">
+      <DependentUpon>ProgramCSS.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgramTabs.ascx.cs">
+      <DependentUpon>ProgramTabs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgramTabs.ascx.designer.cs">
+      <DependentUpon>ProgramTabs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PublicProgramView.ascx.cs">
+      <DependentUpon>PublicProgramView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PublicProgramView.ascx.designer.cs">
+      <DependentUpon>PublicProgramView.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReadingListCtl.ascx.cs">
+      <DependentUpon>ReadingListCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ReadingListCtl.ascx.designer.cs">
+      <DependentUpon>ReadingListCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RecoverPassword.ascx.cs">
+      <DependentUpon>RecoverPassword.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\RecoverPassword.ascx.designer.cs">
+      <DependentUpon>RecoverPassword.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SimpleLoggingControl.ascx.cs">
+      <DependentUpon>SimpleLoggingControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\SimpleLoggingControl.ascx.designer.cs">
+      <DependentUpon>SimpleLoggingControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SimpleLoggingFamilyControl.ascx.cs">
+      <DependentUpon>SimpleLoggingFamilyControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\SimpleLoggingFamilyControl.ascx.designer.cs">
+      <DependentUpon>SimpleLoggingFamilyControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EnterFamMemberLog.aspx.cs">
+      <DependentUpon>EnterFamMemberLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EnterFamMemberLog.aspx.designer.cs">
+      <DependentUpon>EnterFamMemberLog.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Events.aspx.cs">
+      <DependentUpon>Events.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Events.aspx.designer.cs">
+      <DependentUpon>Events.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FamilyAccountList.aspx.cs">
+      <DependentUpon>FamilyAccountList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FamilyAccountList.aspx.designer.cs">
+      <DependentUpon>FamilyAccountList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GameMap.aspx.cs">
+      <DependentUpon>GameMap.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GameMap.aspx.designer.cs">
+      <DependentUpon>GameMap.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Install.aspx.cs">
+      <DependentUpon>Install.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Install.aspx.designer.cs">
+      <DependentUpon>Install.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Layout\SRP.Master.cs">
+      <DependentUpon>SRP.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layout\SRP.Master.designer.cs">
+      <DependentUpon>SRP.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyAccount.aspx.cs">
+      <DependentUpon>MyAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyAccount.aspx.designer.cs">
+      <DependentUpon>MyAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyBadges.aspx.cs">
+      <DependentUpon>MyBadges.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyBadges.aspx.designer.cs">
+      <DependentUpon>MyBadges.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyGameboard.aspx.cs">
+      <DependentUpon>MyGameboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyGameboard.aspx.designer.cs">
+      <DependentUpon>MyGameboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyLogEntry.aspx.cs">
+      <DependentUpon>MyLogEntry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyLogEntry.aspx.designer.cs">
+      <DependentUpon>MyLogEntry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyNotifications.aspx.cs">
+      <DependentUpon>MyNotifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyNotifications.aspx.designer.cs">
+      <DependentUpon>MyNotifications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyOffers.aspx.cs">
+      <DependentUpon>MyOffers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyOffers.aspx.designer.cs">
+      <DependentUpon>MyOffers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyProgram.aspx.cs">
+      <DependentUpon>MyProgram.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyProgram.aspx.designer.cs">
+      <DependentUpon>MyProgram.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayMinigame.aspx.cs">
+      <DependentUpon>PlayMinigame.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayMinigame.aspx.designer.cs">
+      <DependentUpon>PlayMinigame.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadingLists.aspx.cs">
+      <DependentUpon>ReadingLists.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReadingLists.aspx.designer.cs">
+      <DependentUpon>ReadingLists.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Recover.aspx.cs">
+      <DependentUpon>Recover.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Recover.aspx.designer.cs">
+      <DependentUpon>Recover.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Register.aspx.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Register.aspx.designer.cs">
+      <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShareBadge.aspx.cs">
+      <DependentUpon>ShareBadge.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShareBadge.aspx.designer.cs">
+      <DependentUpon>ShareBadge.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="App_Themes\STG\img\" />
+    <Folder Include="App_Themes\STG\js\" />
+    <Folder Include="images\Avatars\" />
+    <Folder Include="images\Badges\" />
+    <Folder Include="images\Banners\" />
+    <Folder Include="images\Games\Books\" />
+    <Folder Include="images\Games\ChooseAdv\" />
+    <Folder Include="images\Games\CodeBreaker\" />
+    <Folder Include="images\Games\HiddenPic\" />
+    <Folder Include="images\Games\MatchingGame\" />
+    <Folder Include="images\Games\MixMatch\" />
+    <Folder Include="images\Games\WordMatch\" />
+    <Folder Include="images\Offers\" />
+    <Folder Include="js\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SQLHelper\SQLHelper.csproj">
+      <Project>{E933400A-F1B2-4809-BE26-DB13F9BA758D}</Project>
+      <Name>SQLHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SRPUtilities\SRPUtilities.csproj">
+      <Project>{6572B6F8-043B-44D6-BA15-90A7FD78F5A6}</Project>
+      <Name>SRPUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Themes\Default\Default.skin" />
+    <Content Include="AjaxControlToolkit.config" />
+    <None Include="ckeditor\.htaccess" />
+    <None Include="ControlRoom\font\fontawesome-webfont.eot" />
+    <None Include="ControlRoom\font\fontawesome-webfont.eot%253Fv=3.0.1" />
+    <None Include="ControlRoom\font\fontawesome-webfont.ttf" />
+    <None Include="ControlRoom\font\fontawesome-webfont.woff" />
+    <Content Include="ControlRoom\Reports.Master" />
+    <None Include="font\fontawesome-webfont.eot" />
+    <None Include="font\fontawesome-webfont.eot-v=3.0.1" />
+    <None Include="font\fontawesome-webfont.ttf" />
+    <None Include="font\fontawesome-webfont.woff" />
+    <Content Include="Layout\SRP.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ControlRoom\SRPResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SRPResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>32293</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

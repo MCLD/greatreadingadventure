@@ -1,0 +1,7 @@
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\bin\SRPUtilities.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\bin\SRPUtilities.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\bin\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\bin\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\obj\Debug\SRPUtilities.csprojResolveAssemblyReference.cache
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\obj\Debug\SRPUtilities.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SRPUtilities\obj\Debug\SRPUtilities.pdb

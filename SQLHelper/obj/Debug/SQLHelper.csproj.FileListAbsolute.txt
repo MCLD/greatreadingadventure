@@ -1,0 +1,4 @@
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SQLHelper\bin\Debug\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SQLHelper\bin\Debug\SQLHelper.pdb
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SQLHelper\obj\Debug\SQLHelper.dll
+C:\Users\bjonson\Documents\Projects\0000 - Summer Reading\Code\SRP\SQLHelper\obj\Debug\SQLHelper.pdb
