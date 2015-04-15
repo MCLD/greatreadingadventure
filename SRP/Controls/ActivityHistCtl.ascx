@@ -1,10 +1,16 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ActivityHistCtl.ascx.cs" Inherits="STG.SRP.Controls.ActivityHistCtl" %>
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
-<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
-</asp:ScriptManager>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-<ContentTemplate>
 
+
+
+<script>    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<%=(ConfigurationManager.AppSettings["FBAPPID"] ?? "121002584737306") %>";
+        fjs.parentNode.insertBefore(js, fjs);
+    } (document, 'script', 'facebook-jssdk'));</script>
+    
 <div class="row" style="min-height: 400px;">
 <div class="span2"></div>
 	<div class="span8">
@@ -45,10 +51,10 @@
 <table width="100%">
             <tr>
             
-                <td width="200px;" valign="bottom" align="center" style="font-weight: bold; ">
-                    # Points Earned 
+                <td width="50px;" valign="top" align="center" style="font-weight: bold; ">
+                    Points 
                 </td>
-                <td width="" valign="bottom" align="left" style="font-weight: bold; ">
+                <td width="" valign="top" align="left" style="font-weight: bold; ">
                     Reason
                 </td>
                 <td width="" valign="bottom" align="left" style="font-weight: bold; ">
@@ -56,26 +62,27 @@
                 </td>
             
             </tr>  
-
+            <tr><td colspan="3"><hr /></td></tr>   
 <asp:Repeater runat="server" ID="rptr" >
     <ItemTemplate>
             
             <tr>
-            
-                <td width="" valign="bottom" align="right" style="padding-right:75px;">
-                    <%# FormatHelper.ToInt((int)Eval("NumPoints")) %>
-                    
+                <td width="" valign="top" align="right" style="padding-right:25px;">
+                    <%# ((int)Eval("NumPoints")).ToInt() %>
                 </td>
                 <td>
                     <%# Eval("AwardReason") %> 
-                    <%# ((bool)Eval("isEvent")  ? " (Code: " + Eval("EventCode") + ")" : "")%>
+                    <%# ((bool)Eval("isEvent")  ? string.Format(" <b>{0}</b>, secret code <i>{1}</i>",  Eval("EventTitle"),  Eval("EventCode")) : 
+                         ((bool)Eval("isBookList")  ? string.Format(" <b>{0}</b>",  Eval("ListName")) :
+                         ((bool)Eval("isReading") ? FormatReading(Eval("Author").ToString(), Eval("Title").ToString(), Eval("Review").ToString(), (int)Eval("PRID")) + string.Format("<br>(<b>{0} {1}</b>)", Eval("ReadingAmount"), Eval("ReadingType")) :
+                         ((bool)Eval("isGameLevelActivity") ? string.Format(" (<b>{0}</b>)", Eval("GameName")) : 
+                         " (Unknown)"))))%>
                 </td>
                 <td>
-                    <%# FormatHelper.ToNormalDate((DateTime)Eval("AwardDate")) %> 
+                    <%# ((DateTime)Eval("AwardDate")).ToNormalDate() %> 
                 </td>
-            
             </tr>              
-                
+            <tr><td colspan="3"><hr /></td></tr>                
                 
     </ItemTemplate>
 </asp:Repeater>
@@ -96,5 +103,3 @@
 </script>
 
  
-</ContentTemplate>
-</asp:UpdatePanel>

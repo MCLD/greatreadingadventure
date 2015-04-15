@@ -26,17 +26,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
             }
 
-            //MasterPage.RequiredPermission = 3000;
+            MasterPage.RequiredPermission = 4800;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Patrons Avatar List");
+            MasterPage.PageTitle = string.Format("{0}", "Avatar List");
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
             {
-                _mStrSortExp = String.Empty;
+               _mStrSortExp = String.Empty;
             }
             else
             {
@@ -93,12 +92,15 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/AvatarAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["AID"] = "";
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["AID"] = key;
+                Response.Redirect(editpage);
+                //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

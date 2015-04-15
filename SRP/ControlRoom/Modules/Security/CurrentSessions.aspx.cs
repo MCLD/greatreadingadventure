@@ -57,7 +57,16 @@ namespace STG.SRP.ControlRoom.Modules.Security
         private void LoadData()
         {
             var ds = new DataSet();
-            var dt = SRPUser.GetLogedInNow();
+            DataTable dt = null;
+            if ((bool)Session["IsMasterTenant"])
+            {
+                dt = SRPUser.GetLogedInNowAll();    
+            }
+            else
+            {
+                dt = SRPUser.GetLogedInNow((int)Session["TenantID"]);               
+            }
+            
             ds.Tables.Add(dt);
             if (_mStrSortExp != "")
             {

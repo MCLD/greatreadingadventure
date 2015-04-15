@@ -15,19 +15,16 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4200;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Reports");
+
+            _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
  
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Reports");
- 
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
                 _mStrSortExp = String.Empty;
             }
             else
@@ -86,12 +83,12 @@ namespace STG.SRP.ControlRoom.Modules.Reports
             string editpage = "~/ControlRoom/Modules/Reports/ReportAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["RID"] = ""; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["RID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

@@ -24,7 +24,7 @@
         ondatabound="dv_DataBound" Width="100%">
         <Fields>
 
-        <asp:BoundField DataField="AID" HeaderText="Avatar Id: " SortExpression="AID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="AID" HeaderText="Avatar Id: " SortExpression="AID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top"/>
         </asp:BoundField>
 
@@ -47,46 +47,24 @@
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Gender: " SortExpression="Gender">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="Gender" runat="server" SelectedValue='<%# Bind("Gender") %>'>
-                    <asp:ListItem Value="M" Text="Male"></asp:ListItem>
-                    <asp:ListItem Value="F" Text="Female"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:RequiredFieldValidator ID="rfvGender" runat="server" 
-                    ControlToValidate="Gender" Display="Dynamic" ErrorMessage="Gender is required" 
-                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="Gender" runat="server" SelectedValue='<%# Bind("Gender") %>'>
-                    <asp:ListItem Value="M" Text="Male"></asp:ListItem>
-                    <asp:ListItem Value="F" Text="Female"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:RequiredFieldValidator ID="rfvGender" runat="server" 
-                    ControlToValidate="Gender" Display="Dynamic" ErrorMessage="Gender is required" 
-                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
-            </asp:RegularExpressionValidator>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                    <asp:Label ID="Gender" runat="server" Text='<%# Bind("Gender") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-
+       
         <asp:TemplateField InsertVisible="False" ShowHeader="False"  HeaderText="Image: " >
 		    <EditItemTemplate>
+                <hr />
+                <div style="padding-left:105px;">
                 <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
                     FileName='<%# Bind("AID") %>'
-                    ImgWidth="512" 
+                    ImgWidth="200" 
                     CreateSmallThumbnail="True" 
-                    CreateMediumThumbnail="True"
+                    CreateMediumThumbnail="False"
                     SmallThumbnailWidth="64" 
                     MediumThumbnailWidth="128"
                     Folder="~/Images/Avatars/"
                     Extension="png"
                     Width="400px"
                 />
+                </div>
+                <hr />
             </EditItemTemplate>
             <InsertItemTemplate>
             </InsertItemTemplate>
@@ -98,22 +76,22 @@
 
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " 
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: "  Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " 
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " 
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " 
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

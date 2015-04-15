@@ -7,9 +7,6 @@ using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Drawings
 {
     public partial class PrizeTemplateAddEdit : BaseControlRoomPage
@@ -18,26 +15,19 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4000;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Prize Templates Add / Edit");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
             }
  
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Prize Templates Add / Edit");
- 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                lblPK.Text = Session["DTD"] == null ? "" : Session["DTD"].ToString(); //Session["DTD"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -54,6 +44,11 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
 
                 ctl = (DropDownList)dv.FindControl("ProgID");
                 lbl = (Label)dv.FindControl("ProgIDLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("SchoolName");
+                lbl = (Label)dv.FindControl("SchoolNameLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
                 if (i != null) ctl.SelectedValue = lbl.Text;
             }

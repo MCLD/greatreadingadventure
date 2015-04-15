@@ -16,19 +16,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Minigames List");
 
             _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
                 _mStrSortExp = String.Empty;
             }
             else
@@ -87,15 +84,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/MinigameAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["MGID"] = "";
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
                 var obj = Minigame.FetchObject(key);
-                Response.Redirect(Minigame.GetEditPage(obj.MiniGameType) + "?PK=" + obj.MGID.ToString());
-
-                //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                //Response.Redirect(Minigame.GetEditPage(obj.MiniGameType) + "?PK=" + obj.MGID.ToString());
+                Session["MGID"] = obj.MGID;
+                Response.Redirect(Minigame.GetEditPage(obj.MiniGameType));
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

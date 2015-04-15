@@ -16,6 +16,7 @@ namespace STG.SRP.ControlRoom.Modules.Notifications
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5000;
             MasterPage.IsSecure = true;
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 

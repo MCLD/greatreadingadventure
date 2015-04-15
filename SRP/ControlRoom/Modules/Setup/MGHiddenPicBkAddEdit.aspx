@@ -37,7 +37,7 @@
             <ItemTemplate>
                 <%# Eval("MGID")%>
             </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" width="100px"/>    
         </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Background Image:" HeaderStyle-Wrap="False" InsertVisible="True">
@@ -47,7 +47,7 @@
                                     FileName='<%# Eval("HPBID") %>'
                                     ImgWidth="768" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="256"
                                     Folder="~/Images/Games/HiddenPic/"
@@ -60,22 +60,22 @@
 
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

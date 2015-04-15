@@ -15,10 +15,12 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4200;
+            MasterPage.IsSecure = true; 
+            
             if (!IsPostBack)
             {
-                MasterPage.IsSecure = true;
-                MasterPage.PageTitle = string.Format("{0}", "Reading Ativity Report");
+                MasterPage.PageTitle = string.Format("{0}", "Reading Activity Report");
 
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
 
@@ -33,7 +35,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         private DataSet GetReportData()
         {
-            var arrParams = new SqlParameter[5];
+            var arrParams = new SqlParameter[6];
 
             if (ProgID.SelectedValue == "0")
             {
@@ -68,6 +70,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                 arrParams[3] = new SqlParameter("@School", School.SelectedValue);
             }
             arrParams[4] = new SqlParameter("@ActivityType", ReadingType.SelectedValue);
+            arrParams[5] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
 
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_ReadingActivityReport", arrParams);
 

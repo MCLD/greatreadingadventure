@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Controls\CRRibbon.ascx" />
+    <Content Include="License.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -96,6 +97,7 @@
     <Compile Include="CoreClasses\BusinessRulesValidationMode.cs" />
     <Compile Include="CoreClasses\CreateExcelFile.cs" />
     <Compile Include="CoreClasses\DAL\SRPUser.cs" />
+    <Compile Include="CoreClasses\DAL\Tenant.cs" />
     <Compile Include="CoreClasses\DataValidation.cs" />
     <Compile Include="CoreClasses\FormatHelper.cs" />
     <Compile Include="CoreClasses\GlobalUtilities.cs" />

@@ -1,6 +1,6 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
 	CodeBehind="GroupsList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Security.GroupsList" 
-	 %>
+%>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -16,7 +16,7 @@
         <Columns>
            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                
+                    &nbsp;
                     <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
@@ -34,7 +34,7 @@
                    &nbsp;
                 </ItemTemplate>
 
-<ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle VerticalAlign="Top" Wrap="False" Width="30px"></ItemStyle>
             </asp:TemplateField>
 
 					<asp:BoundField ReadOnly="True" HeaderText="Group Id" DataField="GID" 

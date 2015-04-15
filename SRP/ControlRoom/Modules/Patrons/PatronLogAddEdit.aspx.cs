@@ -13,6 +13,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5100;
             MasterPage.IsSecure = true;
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 
@@ -27,7 +28,8 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
             if (!IsPostBack)
             {
-                if (Request["PK"] == "" || Request["PK"] == null)
+                
+                if (Session["PLID"] == null || Session["PLID"].ToString() == "" )
                 {
                     PatronLogEntryCtl1.PatronID = Session["CURR_PATRON_ID"].ToString();
                     PatronLogEntryCtl1.PatronPointsID = "";
@@ -36,7 +38,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
                 else
                 {
                     PatronLogEntryCtl1.PatronID = Session["CURR_PATRON_ID"].ToString();
-                    PatronLogEntryCtl1.PatronPointsID = Request["PK"].ToString();
+                    PatronLogEntryCtl1.PatronPointsID = Session["PLID"].ToString();
                     PatronLogEntryCtl1.LoadControl();
                 }
             }

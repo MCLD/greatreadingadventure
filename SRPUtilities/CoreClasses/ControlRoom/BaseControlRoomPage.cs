@@ -12,6 +12,7 @@ namespace SRPApp.Classes
     public class BaseControlRoomPage : System.Web.UI.Page
     {
         #region Properties
+        protected static string DbConn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         public IControlRoomMaster MasterPage;
         protected SRPUser SRPUser;
@@ -45,19 +46,19 @@ namespace SRPApp.Classes
             set { if (MasterPage != null) MasterPage.PageWarning = value; }
         }
 
-        public static bool UserHasRight(string requiredPermission)
-        {
-            bool returnValue = false;
-            var rights = (List<SRPPermission>)HttpContext.Current.Session[SessionData.PermissionList.ToString()];
-            if (rights != null)
-            {
-                var r = from right in rights
-                        where right.Name == requiredPermission
-                        select right;
-                returnValue = (r.Count() > 0);
-            }
-            return returnValue;
-        }
+        //public static bool UserHasRight(string requiredPermission)
+        //{
+        //    bool returnValue = false;
+        //    var rights = (List<SRPPermission>)HttpContext.Current.Session[SessionData.PermissionList.ToString()];
+        //    if (rights != null)
+        //    {
+        //        var r = from right in rights
+        //                where right.Name == requiredPermission
+        //                select right;
+        //        returnValue = (r.Count() > 0);
+        //    }
+        //    return returnValue;
+        //}
 
         public void SetPageRibbon(List<RibbonPanel> moduleRibbonPanels)
         {
@@ -73,7 +74,7 @@ namespace SRPApp.Classes
             MasterPage = (IControlRoomMaster)Master;
             if (MasterPage != null) MasterPage.IsSecure = true;
             SRPUser = (SRPUser)Session[SessionData.UserProfile.ToString()];
-            UserPermissions = (List<SRPPermission>)Session[SessionData.PermissionList.ToString()];
+            //UserPermissions = (List<SRPPermission>)Session[SessionData.PermissionList.ToString()];
             UserPermissionList = (string)Session[SessionData.StringPermissionList.ToString()];
 
             base.OnPreLoad(e);

@@ -6,10 +6,7 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
-
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
+ 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class BookListAddEdit : BaseControlRoomPage
@@ -18,27 +15,23 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4400;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Book List Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Book List Add / Edit");
-
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                if (Request["M"] == "K")
+                {
+                    MasterPage.DisplayMessageOnLoad = true;
+                    MasterPage.PageMessage = "Book List was saved successfully! Now click the 'Books on this Book List' button and start adding book titles to the list!'";
+                }
             }
         }
 
@@ -104,15 +97,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.ListName = ((TextBox)((DetailsView)sender).FindControl("ListName")).Text;
-                    obj.AdminDescription = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("AdminDescription")).Text;
+                    obj.AdminDescription = ((TextBox)((DetailsView)sender).FindControl("AdminDescription")).Text;
                     obj.Description = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Description")).Text;
-                    obj.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel1")).Text);
-                    obj.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel2")).Text);
-                    obj.ProgID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ProgID")).SelectedValue);
-                    obj.LibraryID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("LibraryID")).SelectedValue);
-                    obj.AwardBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("AwardBadgeID")).SelectedValue);
-                    obj.AwardPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("AwardPoints")).Text);
+                    obj.LiteracyLevel1 = ((TextBox)((DetailsView)sender).FindControl("LiteracyLevel1")).Text.SafeToInt();
+                    obj.LiteracyLevel2 = ((TextBox)((DetailsView)sender).FindControl("LiteracyLevel2")).Text.SafeToInt();
+                    obj.ProgID = ((DropDownList) ((DetailsView) sender).FindControl("ProgID")).SelectedValue.SafeToInt();
+                    obj.LibraryID = ((DropDownList) ((DetailsView) sender).FindControl("LibraryID")).SelectedValue.SafeToInt();
+                    obj.AwardBadgeID = ((DropDownList) ((DetailsView) sender).FindControl("AwardBadgeID")).SelectedValue.SafeToInt();
+                    obj.AwardPoints = ((TextBox)((DetailsView)sender).FindControl("AwardPoints")).Text.SafeToInt();
 
+                    obj.NumBooksToComplete = ((TextBox)((DetailsView)sender).FindControl("NumBooksToComplete")).Text.SafeToInt();
+                   
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     obj.LastModDate = obj.AddedDate;
@@ -158,19 +153,21 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new BookList();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.ListName = ((TextBox)((DetailsView)sender).FindControl("ListName")).Text;
-                    obj.AdminDescription = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("AdminDescription")).Text;
+                    obj.AdminDescription = ((TextBox)((DetailsView)sender).FindControl("AdminDescription")).Text;
                     obj.Description = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Description")).Text;
-                    obj.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel1")).Text);
-                    obj.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel2")).Text);
-                    obj.ProgID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ProgID")).SelectedValue);
-                    obj.LibraryID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("LibraryID")).SelectedValue);
-                    obj.AwardBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("AwardBadgeID")).SelectedValue);
-                    obj.AwardPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("AwardPoints")).Text);
+                    obj.LiteracyLevel1 = ((TextBox)((DetailsView)sender).FindControl("LiteracyLevel1")).Text.SafeToInt();
+                    obj.LiteracyLevel2 = ((TextBox)((DetailsView)sender).FindControl("LiteracyLevel2")).Text.SafeToInt();
+                    obj.ProgID = ((DropDownList)((DetailsView)sender).FindControl("ProgID")).SelectedValue.SafeToInt();
+                    obj.LibraryID = ((DropDownList)((DetailsView)sender).FindControl("LibraryID")).SelectedValue.SafeToInt();
+                    obj.AwardBadgeID = ((DropDownList)((DetailsView)sender).FindControl("AwardBadgeID")).SelectedValue.SafeToInt();
+                    obj.AwardPoints = ((TextBox)((DetailsView)sender).FindControl("AwardPoints")).Text.SafeToInt();
+
+                    obj.NumBooksToComplete = ((TextBox)((DetailsView)sender).FindControl("NumBooksToComplete")).Text.SafeToInt();
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -185,7 +182,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
                         if (e.CommandName.ToLower() == "saveandbooks")
                         {
-                            Response.Redirect(String.Format("{0}?PK={1}", "~/ControlRoom/Modules/Setup/BookListBooksList.aspx", pk));
+                            Session["BLL"] = pk; Response.Redirect("~/ControlRoom/Modules/Setup/BookListBooksList.aspx");
+                            //Response.Redirect(String.Format("{0}?PK={1}", "~/ControlRoom/Modules/Setup/BookListBooksList.aspx", pk));
                         }
 
                         odsData.DataBind();

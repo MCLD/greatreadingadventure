@@ -20,25 +20,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4800;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Avatar Add/Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-            }
-
-            //MasterPage.RequiredPermission = 3000;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Patrons Avatar Add/Edit");
-
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                //lblPK.Text = Request["PK"]; 
+                lblPK.Text = Session["AID"] == null ? "" : Session["AID"].ToString(); //Session["AID"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -79,7 +71,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 {
                     var obj = new Avatar();
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
-                    obj.Gender = ((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
+                    obj.Gender = "O";//"((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     obj.LastModDate = obj.AddedDate;
@@ -127,10 +119,10 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Avatar();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj = obj.GetAvatar(pk);
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
-                    obj.Gender = ((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
+                    obj.Gender = "O";//"((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 

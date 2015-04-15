@@ -235,6 +235,10 @@ namespace STG.SRP.Controls
                 }
                 MGChooseAdvPlay1.Visible = true;
             }
+
+            
+
+
         }
 
         protected void BtnEasy_Click(object sender, EventArgs e)

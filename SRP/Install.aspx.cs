@@ -27,7 +27,7 @@ namespace STG.SRP
             var mailHost = txtEmailHost.Text;
 
             var error = "";
-            var sr = new StreamReader(Server.MapPath("~/ControlRoom/Modules/Install/SQL2.txt"));
+            var sr = new StreamReader(Server.MapPath("~/ControlRoom/Modules/Install/InstallScript.config"));
             while (!sr.EndOfStream)
             {
                 var sb = new StringBuilder();
@@ -53,14 +53,18 @@ namespace STG.SRP
             }
             sr.Close();
 
-
-            var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
-
-            config = config.Replace("connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
-                           "connectionString=\"" + rcon + "\"");
-            config = config.Replace("<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
-                string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
-
+            if (error.Length == 0)
+            {
+                var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
+                config =
+                    config.Replace(
+                        "connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
+                        "connectionString=\"" + rcon + "\"");
+                config =
+                    config.Replace(
+                        "<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
+                        string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
+            }
             //System.IO.File.WriteAllText(Server.MapPath("~/web.config"), config);
 
             if (error.Length == 0)

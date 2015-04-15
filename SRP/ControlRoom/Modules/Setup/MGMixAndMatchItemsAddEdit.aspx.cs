@@ -15,20 +15,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Mix-And-Match Item Add / Edit");
 
             if (!IsPostBack)
             {
-                if (Request["MGID"] != null)
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                if (Request["MMID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblMMID.Text = Request["MMID"];
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
@@ -82,7 +79,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
-            string returnURL = "~/ControlRoom/Modules/Setup/MGMixAndMatchItemsList.aspx?MGID=" + lblMGID.Text;
+            //string returnURL = "~/ControlRoom/Modules/Setup/MGMixAndMatchItemsList.aspx?MGID=" + lblMGID.Text;
+            string returnURL = "~/ControlRoom/Modules/Setup/MGMixAndMatchItemsList.aspx";
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect(returnURL);

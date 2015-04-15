@@ -139,13 +139,22 @@ namespace STG.SRP.Controls {
         protected global::System.Web.UI.WebControls.Button btnDelete;
         
         /// <summary>
-        /// Button2 control.
+        /// btnAsk control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button2;
+        protected global::System.Web.UI.WebControls.Button btnAsk;
+        
+        /// <summary>
+        /// btnUnread control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnUnread;
         
         /// <summary>
         /// pnlAsk control.
@@ -184,13 +193,13 @@ namespace STG.SRP.Controls {
         protected global::System.Web.UI.WebControls.TextBox txtBody;
         
         /// <summary>
-        /// Button7 control.
+        /// btnAskSubmit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button7;
+        protected global::System.Web.UI.WebControls.Button btnAskSubmit;
         
         /// <summary>
         /// Button5 control.

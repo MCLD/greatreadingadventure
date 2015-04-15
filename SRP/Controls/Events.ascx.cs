@@ -98,9 +98,22 @@ namespace STG.SRP.Controls
             o.Fetch(int.Parse(e.CommandArgument.ToString()));
 
             lblTitle.Text = o.EventTitle;
-            lblWhen.Text = FormatHelper.ToNormalDate(o.EventDate) + " " + o.EventTime;
+            lblWhen.Text = o.EventDate.ToNormalDate() + " " + o.EventTime;
+
+            if (o.EndDate.ToShortDateString().Replace("1/1/0001","") != "")
+            {
+                lblWhen.Text = lblWhen.Text + " thru " + o.EndDate.ToNormalDate() + " " + (o.EndTime == "" ? "" : o.EndTime);
+            } 
+            else
+            {
+                if (o.EndTime != "")
+                {
+                    lblWhen.Text = lblWhen.Text + " until " + o.EndTime;  
+                }
+            }
+
             var c = new Codes();
-            if (o.BranchID != 0) lblWhere.Text = (c.FetchObject(o.BranchID)).Code;
+            if (o.BranchID != 0) lblWhere.Text = (Codes.FetchObject(o.BranchID)).Code;
 
             lblHtml.Text = o.HTML;
 

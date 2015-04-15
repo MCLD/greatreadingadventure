@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -15,19 +16,30 @@ namespace STG.SRP.Controls
         {
             if (!IsPostBack)
             {
-                // now validate user can change password for SA Sub Account
 
                 var patron = (Patron)Session["Patron"];
-                if (!patron.IsMasterAccount)
+                if (Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"])
                 {
-                    // kick them out
                     Response.Redirect("~/Logout.aspx");
                 }
 
                 // populate screen
-                var ds = Patron.GetSubAccountList(patron.PID);
+                var ds = Patron.GetSubAccountList((int)Session["MasterAcctPID"]);
                 rptr.DataSource = ds;
                 rptr.DataBind();
+
+                var parent = Patron.FetchObject((int)Session["MasterAcctPID"]);
+                ddAccounts.Items.Add(new ListItem(string.Format("{0} {1} ({2})", parent.FirstName, parent.LastName, parent.Username),parent.PID.ToString()));
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    var value = Convert.ToString(row["PID"]);
+                    var text = string.Format("{0} {1} ({2})", Convert.ToString(row["FirstName"]), Convert.ToString(row["LastName"]), Convert.ToString(row["Username"]));
+
+                    ddAccounts.Items.Add(new ListItem(text, value));
+                }
+
+
                 ((BaseSRPPage)Page).TranslateStrings(rptr);
 
             }
@@ -65,6 +77,38 @@ namespace STG.SRP.Controls
         protected void btn_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/AddChildAccount.aspx");
+        }
+
+        protected void LinkButton1_Click(object sender, EventArgs e)
+        {
+            pnlList.Visible = false;
+            pnlChange.Visible = true;
+        }
+
+        protected void btncancel_Click(object sender, EventArgs e)
+        {
+            pnlList.Visible = true;
+            pnlChange.Visible = false;
+        }
+
+        protected void btnGo_Click(object sender, EventArgs e)
+        {
+            var newPID = int.Parse(ddAccounts.SelectedValue);
+
+            if ((int)Session["MasterAcctPID"] != newPID && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID))
+            {
+                // kick them out
+                Response.Redirect("~/Logout.aspx");
+            }
+
+            var bp = Patron.FetchObject(newPID);
+            Session["Patron"] = bp;
+            Session["ProgramID"] = bp.ProgID;
+            Session["PatronProgramID"] = bp.ProgID;
+            Session["CurrentProgramID"] = bp.ProgID;
+            Session["TenantID"] = bp.TenID;
+
+            Response.Redirect("~/MyProgram.aspx");
         }
     }
 }

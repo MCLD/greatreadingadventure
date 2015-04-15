@@ -12,8 +12,10 @@ using STG.SRP.Utilities;
 
 namespace STG.SRP.Core.Utilities
 {
+    [Serializable]
     public class SRPUser: EntityBase
     {
+        public override string Version { get { return "2.0"; } }
 
         private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
         //ConfigurationManager.ConnectionStrings["SRPConn"].ToString();
@@ -37,6 +39,17 @@ namespace STG.SRP.Core.Utilities
         private string _password;
         private string _title;
         private int? _uid;
+
+        private int myTenID = 0;
+        private int myFldInt1 = 0;
+        private int myFldInt2 = 0;
+        private int myFldInt3 = 0;
+        private bool myFldBit1 = false;
+        private bool myFldBit2 = false;
+        private bool myFldBit3 = false;
+        private string myFldText1 = "";
+        private string myFldText2 = "";
+        private string myFldText3 = "";
 
         #endregion Fields
 
@@ -68,6 +81,17 @@ namespace STG.SRP.Core.Utilities
                 AddedDate = reader.IsDBNull(reader.GetOrdinal("AddedDate")) ? null : (DateTime?)reader["AddedDate"];
                 LastModUser = reader["LastModUser"].ToString();
                 AddedUser = reader["AddedUser"].ToString();
+
+                TenID = (int)reader["TenID"];
+                FldInt1 = (int)reader["FldInt1"];
+                FldInt2 = (int)reader["FldInt2"];
+                FldInt3 = (int)reader["FldInt3"];
+                FldBit1 = (bool)reader["FldBit1"];
+                FldBit2 = (bool)reader["FldBit2"];
+                FldBit3 = (bool)reader["FldBit3"];
+                FldText1 = reader["FldText1"].ToString();
+                FldText2 = reader["FldText2"].ToString();
+                FldText3 = reader["FldText3"].ToString();
             }
 
         }
@@ -185,6 +209,65 @@ namespace STG.SRP.Core.Utilities
 
         public string Username { get; set; }
 
+        public int TenID
+        {
+            get { return myTenID; }
+            set { myTenID = value; }
+        }
+
+        public int FldInt1
+        {
+            get { return myFldInt1; }
+            set { myFldInt1 = value; }
+        }
+
+        public int FldInt2
+        {
+            get { return myFldInt2; }
+            set { myFldInt2 = value; }
+        }
+
+        public int FldInt3
+        {
+            get { return myFldInt3; }
+            set { myFldInt3 = value; }
+        }
+
+        public bool FldBit1
+        {
+            get { return myFldBit1; }
+            set { myFldBit1 = value; }
+        }
+
+        public bool FldBit2
+        {
+            get { return myFldBit2; }
+            set { myFldBit2 = value; }
+        }
+
+        public bool FldBit3
+        {
+            get { return myFldBit3; }
+            set { myFldBit3 = value; }
+        }
+
+        public string FldText1
+        {
+            get { return myFldText1; }
+            set { myFldText1 = value; }
+        }
+
+        public string FldText2
+        {
+            get { return myFldText2; }
+            set { myFldText2 = value; }
+        }
+
+        public string FldText3
+        {
+            get { return myFldText3; }
+            set { myFldText3 = value; }
+        }
         #endregion Properties
 
         #region Methods (27)
@@ -329,13 +412,40 @@ namespace STG.SRP.Core.Utilities
                 returnVal.LastModUser = reader["LastModUser"].ToString();
                 returnVal.AddedUser = reader["AddedUser"].ToString();
 
+                returnVal.TenID = (int)reader["TenID"];
+                returnVal.FldInt1 = (int)reader["FldInt1"];
+                returnVal.FldInt2 = (int)reader["FldInt2"];
+                returnVal.FldInt3 = (int)reader["FldInt3"];
+                returnVal.FldBit1 = (bool)reader["FldBit1"];
+                returnVal.FldBit2 = (bool)reader["FldBit2"];
+                returnVal.FldBit3 = (bool)reader["FldBit3"];
+                returnVal.FldText1 = reader["FldText1"].ToString();
+                returnVal.FldText2 = reader["FldText2"].ToString();
+                returnVal.FldText3 = reader["FldText3"].ToString();
+
             }
             reader.Close();
             return returnVal;
         }
-        public static DataTable FetchAllAsDataTable()
+
+
+        public static DataTable FetchAllAsDataTable(bool forCurrentTenantOnly = true)
         {
-            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll");
+            var arrParams = new SqlParameter[1];
+            if (forCurrentTenantOnly)
+            {
+                arrParams[0] = new SqlParameter("@TenID",
+                    (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                            -1 :
+                            (int)HttpContext.Current.Session["TenantID"])
+                );
+            }
+            else
+            {
+                arrParams[0] = new SqlParameter("@TenID", DBNull.Value);
+            }
+
+            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll",arrParams);
 
             DataTable dt = new DataTable();
             dt.Load(reader);
@@ -343,9 +453,36 @@ namespace STG.SRP.Core.Utilities
 
         }
 
-        public static List<SRPUser> FetchAll()
+
+        public static DataTable FetchAllAsDataTable(int TenID)
         {
-            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll");
+            var arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@TenID", TenID);
+            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll", arrParams);
+
+            DataTable dt = new DataTable();
+            dt.Load(reader);
+            return dt;
+
+        }
+
+        public static List<SRPUser> FetchAll(bool forCurrentTenantOnly = true)
+        {
+            var arrParams = new SqlParameter[1];
+            if (forCurrentTenantOnly)
+            {
+                arrParams[0] = new SqlParameter("@TenID",
+                    (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                            -1 :
+                            (int)HttpContext.Current.Session["TenantID"])
+                );
+            }
+            else
+            {
+                arrParams[0] = new SqlParameter("@TenID", DBNull.Value);
+            }
+
+            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll", arrParams);
             List<SRPUser> retValue = new List<SRPUser>();
 
             while (reader.Read())
@@ -377,6 +514,18 @@ namespace STG.SRP.Core.Utilities
                                       : (DateTime?)reader["AddedDate"];
                 aUser.LastModUser = (string)reader["LastModUser"];
                 aUser.AddedUser = (string)reader["AddedUser"];
+
+                aUser.TenID = (int)reader["TenID"];
+                aUser.FldInt1 = (int)reader["FldInt1"];
+                aUser.FldInt2 = (int)reader["FldInt2"];
+                aUser.FldInt3 = (int)reader["FldInt3"];
+                aUser.FldBit1 = (bool)reader["FldBit1"];
+                aUser.FldBit2 = (bool)reader["FldBit2"];
+                aUser.FldBit3 = (bool)reader["FldBit3"];
+                aUser.FldText1 = reader["FldText1"].ToString();
+                aUser.FldText2 = reader["FldText2"].ToString();
+                aUser.FldText3 = reader["FldText3"].ToString();
+
                 retValue.Add(aUser);
             }
             return retValue;
@@ -401,7 +550,7 @@ namespace STG.SRP.Core.Utilities
         public static int Insert(SRPUser u)
         {
             if (u == null) return -1;
-            var arrParams = new SqlParameter[12];
+            var arrParams = new SqlParameter[22];
             arrParams[0] = new SqlParameter("@Username", u.Username);
             arrParams[1] = new SqlParameter("@Password", u.Password);
             arrParams[2] = new SqlParameter("@FirstName", u.FirstName);
@@ -413,8 +562,21 @@ namespace STG.SRP.Core.Utilities
             arrParams[8] = new SqlParameter("@IsActive", u.IsActive);
             arrParams[9] = new SqlParameter("@MustResetPassword", u.MustResetPassword);
             arrParams[10] = new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
-            arrParams[11] = new SqlParameter("@Return_Value", -1);
-            arrParams[11].Direction = ParameterDirection.ReturnValue;
+
+            arrParams[11] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.TenID, u.TenID.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt1, u.FldInt1.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt2, u.FldInt2.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt3, u.FldInt3.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit1, u.FldBit1.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit2, u.FldBit2.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit3, u.FldBit3.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText1, u.FldText1.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText2, u.FldText2.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText3, u.FldText3.GetTypeCode()));
+
+
+            arrParams[21] = new SqlParameter("@Return_Value", -1);
+            arrParams[21].Direction = ParameterDirection.ReturnValue;
             u.Uid = Convert.ToInt32(SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Insert", arrParams));
             return (int)u.Uid;
         }
@@ -444,7 +606,13 @@ namespace STG.SRP.Core.Utilities
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", uid);
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "cbspSRPUser_Logout", arrParams);
-            try {HttpContext.Current.Session.RemoveAll();}catch{}
+            try
+            {
+                HttpContext.Current.Session.Remove(SessionData.IsLoggedIn.ToString());
+                HttpContext.Current.Session.Remove(SessionData.UserProfile.ToString());
+                HttpContext.Current.Session.Remove(SessionData.StringPermissionList.ToString());
+                //HttpContext.Current.Session.RemoveAll();
+            }catch{}
             return true;
         }
 
@@ -465,7 +633,7 @@ namespace STG.SRP.Core.Utilities
                 u.AddErrorCode("User object", "N/A", "User object is null.", BusinessRulesValidationCode.UNSPECIFIED);
                 return false;
             }
-            var arrParams = new SqlParameter[13];
+            var arrParams = new SqlParameter[23];
             arrParams[0] = new SqlParameter("@UID", u.Uid);
             arrParams[1] = new SqlParameter("@Username", u.Username);
             arrParams[2] = new SqlParameter("@Password", u.Password);
@@ -480,7 +648,18 @@ namespace STG.SRP.Core.Utilities
             arrParams[11] = new SqlParameter("@LastPasswordReset", u.LastPasswordReset);
             arrParams[12] = new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
 
-            SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Update", arrParams);
+            arrParams[13] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.TenID, u.TenID.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt1, u.FldInt1.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt2, u.FldInt2.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt3, u.FldInt3.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit1, u.FldBit1.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit2, u.FldBit2.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit3, u.FldBit3.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText1, u.FldText1.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText2, u.FldText2.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText3, u.FldText3.GetTypeCode()));
+
+            SqlHelper.ExecuteNonQuery( conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Update", arrParams);
             return true;
         }
 
@@ -549,6 +728,28 @@ namespace STG.SRP.Core.Utilities
             dataColumn = dataTable.Columns.Add("AddedUser", typeof(string));
             dataColumn.Caption = "Added By";
             dataColumn.MaxLength = 50;
+
+            dataColumn = dataTable.Columns.Add("TenID", typeof(int));
+            dataColumn.Caption = "Tenant Id";
+            dataColumn = dataTable.Columns.Add("FldInt1", typeof(int));
+            dataColumn.Caption = "FldInt1";
+            dataColumn = dataTable.Columns.Add("FldInt2", typeof(int));
+            dataColumn.Caption = "FldInt2";
+            dataColumn = dataTable.Columns.Add("FldInt3", typeof(int));
+            dataColumn.Caption = "FldInt3";
+            dataColumn = dataTable.Columns.Add("FldBit1", typeof(bool));
+            dataColumn.Caption = "FldBit1";
+            dataColumn = dataTable.Columns.Add("FldBit2", typeof(bool));
+            dataColumn.Caption = "FldBit2";
+            dataColumn = dataTable.Columns.Add("FldBit3", typeof(bool));
+            dataColumn.Caption = "FldBit3";
+            dataColumn = dataTable.Columns.Add("FldText1", typeof(string));
+            dataColumn.Caption = "FldText1";
+            dataColumn = dataTable.Columns.Add("FldText2", typeof(string));
+            dataColumn.Caption = "FldText2";
+            dataColumn = dataTable.Columns.Add("FldText3", typeof(string));
+            dataColumn.Caption = "FldText3";
+
             return dataTable;
         }
 
@@ -634,6 +835,9 @@ namespace STG.SRP.Core.Utilities
             dataColumn = dataTable.Columns.Add("Name", typeof(string));
             dataColumn.Caption = "name";
             dataColumn.MaxLength = 100;
+            dataColumn = dataTable.Columns.Add("Tenant", typeof(string));
+            dataColumn.Caption = "Tenant";
+            dataColumn.MaxLength = 100;
             return dataTable;
         }
 
@@ -685,7 +889,7 @@ namespace STG.SRP.Core.Utilities
             return dt;
         }
 
-        public static DataTable GetLogedInNow()
+        public static DataTable GetLogedInNowAll()
         {
             SqlDataReader reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetLoginNow");
             DataTable dt = MapLoginHistoryRecordsToDataTable(reader);
@@ -693,6 +897,14 @@ namespace STG.SRP.Core.Utilities
 
         }
 
+        public static DataTable GetLogedInNow(int TenID)
+        {
+            var parm = new SqlParameter[1];
+            parm[0] = new SqlParameter("@TenID", TenID);
+            SqlDataReader reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetLoginNowTenID", parm);
+            DataTable dt = MapLoginHistoryRecordsToDataTable(reader);
+            return dt;
+        }
 
         public static DataTable GetGroupList(int uid)
         {

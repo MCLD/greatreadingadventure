@@ -254,41 +254,7 @@
 
 
 
-        <asp:TemplateField HeaderText="# Correct Rounds To Win: " SortExpression="CorrectRoundsToWinCount" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:TextBox ID="CorrectRoundsToWinCount" runat="server" Text='<%# ((int) Eval("CorrectRoundsToWinCount") ==0 ? "" : Eval("CorrectRoundsToWinCount")) %>' 
-                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvCorrectRoundsToWinCount" runat="server" 
-                    ControlToValidate="CorrectRoundsToWinCount" Display="Dynamic" ErrorMessage="# Correct Rounds To Win is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revCorrectRoundsToWinCount"
-                    ControlToValidate="CorrectRoundsToWinCount"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Correct Rounds To Win must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Correct Rounds To Win must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvCorrectRoundsToWinCount"
-                    ControlToValidate="CorrectRoundsToWinCount"
-                    MinimumValue="0"
-                    MaximumValue="99"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Correct Rounds To Win must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Correct Rounds To Win must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </EditItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
+       
 
         <asp:TemplateField HeaderText="Easy Game Grid Size: " SortExpression="EasyGameSize" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
@@ -296,6 +262,7 @@
                     >
                     <asp:ListItem Value="2" Text="2"></asp:ListItem>
                     <asp:ListItem Value="4" Text="4"></asp:ListItem>
+                    <asp:ListItem Value="6" Text="6"></asp:ListItem>
                 </asp:DropDownList>
                 <asp:Label ID="EasyGameSizeLbl" runat="server" Text='<%# Eval("EasyGameSize") %>' Visible="False"></asp:Label>
             </EditItemTemplate>
@@ -325,7 +292,6 @@
                     <asp:ListItem Value="2" Text="2"></asp:ListItem>
                     <asp:ListItem Value="4" Text="4"></asp:ListItem>
                     <asp:ListItem Value="6" Text="6"></asp:ListItem>
-                    <asp:ListItem Value="8" Text="8"></asp:ListItem>
                 </asp:DropDownList>
                 <asp:Label ID="HardGameSizeLbl" runat="server" Text='<%# Eval("HardGameSize") %>' Visible="False"></asp:Label>
                                
@@ -361,22 +327,22 @@
         </asp:TemplateField>
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

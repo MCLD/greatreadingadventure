@@ -1,4 +1,4 @@
-﻿<%@ Page Title="MyProgram" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="My Program" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="MyProgram.aspx.cs" Inherits="STG.SRP.MyProgram" %>
 <%@ Import Namespace="STG.SRP.DAL" %>
 <%@ Register src="~/Controls/ProgramTabs.ascx" tagname="ProgramTabs" tagprefix="uc1" %>

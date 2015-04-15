@@ -13,6 +13,10 @@ namespace STG.SRP.ControlRoom.Modules.Programs
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 2200;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Program Text Resources  Management");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
@@ -22,11 +26,6 @@ namespace STG.SRP.ControlRoom.Modules.Programs
                     LoadScreen();
                 }
             }
-
-            MasterPage.RequiredPermission = 2200;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Program Text Resources  Management");
-
 
         }
 

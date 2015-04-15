@@ -8,7 +8,6 @@
 <%@ Register src="MGHiddenPicPlay.ascx" tagname="MGHiddenPicPlay" tagprefix="uc6" %>
 <%@ Register src="MGChooseAdvPlay.ascx" tagname="MGChooseAdvPlay" tagprefix="uc5" %>
 
-
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
@@ -80,7 +79,7 @@
         <uc6:MGHiddenPicPlay ID="MGHiddenPicPlay1" runat="server" Visible="false" />
         <uc7:MGMatchingGamePlay ID="MGMatchingGamePlay1" runat="server" Visible="false" />
 
-                
+        
                 <asp:Button ID="Button1" runat="server" Text="Done" 
                 CssClass="" Width="200px" onclick="Button1_Click" Visible="false"/>
         

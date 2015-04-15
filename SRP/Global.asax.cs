@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using STG.SRP;
 using STG.SRP.Core.Utilities;
+using STG.SRP.DAL;
 
 namespace SRP
 {
@@ -42,11 +44,15 @@ namespace SRP
             {
                 SRPUser.Logoff(((SRPUser) Session[SessionData.UserProfile.ToString()]).Uid);
             }
+
+            if (Session["Patron"] != null)
+            {
+                STGOnlyUtilities.LogoffPatron(((Patron)Session["Patron"]).PID);
+            }
             // Code that runs when a session ends. 
             // Note: The Session_End event is raised only when the sessionstate mode
             // is set to InProc in the Web.config file. If session mode is set to StateServer 
             // or SQLServer, the event is not raised.
-
         }
 
     }

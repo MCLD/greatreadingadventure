@@ -6,9 +6,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Drawings
 {
     public partial class Default : BaseControlRoomPage
@@ -19,16 +16,16 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4000;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Prize Drawings");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
  
             }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Prize Drawings");
- 
+
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
             {
@@ -90,12 +87,12 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
             string editpage = "~/ControlRoom/Modules/Drawings/PrizeDrawingAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["DID"] = ""; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["DID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

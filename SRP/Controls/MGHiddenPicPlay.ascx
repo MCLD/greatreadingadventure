@@ -58,7 +58,7 @@
 <div class="row">
     <div class="span3"></div>
 	<div class="span6">
-        <center><h2 ID="CurrWord">asas</h2><br></center>
+        <center><h2 ID="CurrWord"></h2><br></center>
         <center><span id="Message" style="font-weight: bold; font-size: larger;"></span>
             <div id="PrintButtons" style="display: none;">
                     <asp:HyperLink ID="printLink"  Text="Print" Target="_blank"  CssClass="btn e" Width="150px" runat="server"></asp:HyperLink>
@@ -103,8 +103,11 @@
         var h2 = Math.round($("#GameBoard").height() / size);
         var w2 = Math.round($("#GameBoard").width() / size);
         for (i = 1 ; i <= 9 ; i++) {
-            $("#Td" + i).html(dict[i-1]);
-            $("#Td" + i).bind('click', { param1: dict[i-1],  param2: "#Td" + i, param3: (i-1)}, onSquareClicked);
+            //$("#Td" + i).html(dict[i-1]);
+            //$("#Td" + i).bind('click', { param1: dict[i-1],  param2: "#Td" + i, param3: (i-1)}, onSquareClicked);
+            var t = getAlternateTermValue(dict[i-1]);
+            $("#Td" + i).html(t);
+            $("#Td" + i).bind('click', { param1: t,  param2: "#Td" + i, param3: (i-1)}, onSquareClicked);
         }
 
         setClickTile();
@@ -115,25 +118,46 @@
         
     });
 
-    setClickTile = function (value) {
-        
-        //$("#CurrWord").html(dict[2]);
+    getMainTermValue = function (value) {
+        var s = value.toString();
+        if (s.indexOf("=(") > 0) {
+            return s.substring(0, s.indexOf("=("));
+        }
+        else
+        {
+            return value;
+        }
+    }
 
-        var rnd1 = Math.floor(Math.random()*9);                 // 0 - 8 --> whwere to start iterating
+    getAlternateTermValue = function (value) {
+        var s = value.toString();
+        if (s.indexOf("=(") > 0) {
+            s = s.substring(s.indexOf("=("));
+            s = s.replace("=(","").replace(")","");
+            var l = s.split(",");
+            return l[getRandomInt(0,l.length-1)];
+        }
+        else
+        {
+            return value;
+        }
+    }
+
+    setClickTile = function (value) {
+        //$("#CurrWord").html(dict[2]);
+        var rnd1 = Math.floor(Math.random()*9);                 // 0 - 8 --> where to start iterating
         var rnd2 = Math.floor(Math.random()*remaining) ;        // 0 to remaining - how many are still covered
         
-        do 
-        {
-            rnd1 = Math.floor(Math.random()*9); 
-        }
-        while (done[rnd1]);
-        $("#CurrWord").html(dict[rnd1]);
+        do{rnd1 = Math.floor(Math.random()*9);}while (done[rnd1]);
+        //$("#CurrWord").html(dict[rnd1]);
+        var t = getMainTermValue(dict[rnd1]);
+        $("#CurrWord").html(t);
 
     }
 
     onSquareClicked = function (value) {
-        if (value.data.param1 == $("#CurrWord").html()) {
-            //alert("match");
+        //if (value.data.param1 == $("#CurrWord").html()) {
+        if (getMainTermValue(dict[value.data.param3]) == $("#CurrWord").html()) {
             $("#Message").html("");
             $(value.data.param2).html("").removeClass("color");
             $(value.data.param2).off('click');
@@ -152,6 +176,10 @@
             $("#Message").html("Incorrect, try again!");
             setClickTile();
         }
+    }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
 

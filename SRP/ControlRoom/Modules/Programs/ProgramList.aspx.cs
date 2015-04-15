@@ -16,15 +16,15 @@ namespace STG.SRP.ControlRoom.Modules.Programs
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 2200;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Programs List");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
 
             }
-
-            MasterPage.RequiredPermission = 2200;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Programs List");
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
@@ -88,6 +88,7 @@ namespace STG.SRP.ControlRoom.Modules.Programs
             string deletepage = "~/ControlRoom/Modules/Programs/ProgramsDelete.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["PGM"] = ""; Response.Redirect(editpage);
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
@@ -96,14 +97,16 @@ namespace STG.SRP.ControlRoom.Modules.Programs
 
                 Session["Active_Program"] = key.ToString();
                 Session["Active_Program_Filtered"] = "1";
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["PGM"] = key; Response.Redirect(editpage);
+                //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {
                 var key = Convert.ToInt32(e.CommandArgument);
                 Session["Active_Program"] = key.ToString();
                 Session["Active_Program_Filtered"] = "1";
-                Response.Redirect(String.Format("{0}?PK={1}", deletepage, key));
+                Session["PGM"] = key; Response.Redirect(deletepage);
+                //Response.Redirect(String.Format("{0}?PK={1}", deletepage, key));
 
                 //try
                 //{

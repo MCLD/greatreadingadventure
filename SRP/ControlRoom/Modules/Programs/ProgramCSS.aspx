@@ -42,8 +42,8 @@ Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramCSS"
 
     <asp:Button ID="btnSave" runat="server" Text="Save CSS Changes" 
             onclick="btnSave_Click" CssClass="btn-lg btn-green"/>  &nbsp; 
-        <asp:Button ID="btnReload" runat="server" Text="Reload CSS Values" 
-            onclick="btnReload_Click" CssClass="btn-lg btn-green"/>   &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+        <!--<asp:Button ID="btnReload" runat="server" Text="Reload CSS Values" 
+            onclick="btnReload_Click" CssClass="btn-lg btn-green"/>   &nbsp;-->  &nbsp;  &nbsp;  &nbsp; 
         <asp:Button ID="btnDefaultCSS" runat="server" Text="Load Default CSS Values" onclick="btnDefaultCSS_Click" CssClass="btn-lg btn-purple"
            />
     <br /><br />

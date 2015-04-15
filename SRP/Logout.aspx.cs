@@ -20,8 +20,15 @@ namespace STG.SRP
                 var p = Programs.FetchObject((int)Session["PatronProgramID"]);
                 if (p.LogoutURL.Trim().Length > 0) navTo = p.LogoutURL;
             }
-            
-            Session.Abandon();
+
+            Session.Remove("PatronLoggedIn");
+            Session.Remove("Patron");
+            Session.Remove("ProgramID");
+            Session.Remove("PatronProgramID");
+            Session.Remove("CurrentProgramID");
+            Session.Remove("IsMasterAcct");
+            Session.Remove("MasterAcctPID");
+
             Response.Redirect(navTo);
 
         }

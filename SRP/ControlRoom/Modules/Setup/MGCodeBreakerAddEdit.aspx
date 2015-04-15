@@ -82,13 +82,24 @@
 		    <EditItemTemplate>
                  <asp:TextBox ID = "CBID" runat="server" Visible="False" Text='<%# Eval("CBID") %>' ></asp:TextBox>
 
-                <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' ReadOnly="False"></asp:TextBox>
+                <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' ReadOnly="False" Width="500px"></asp:TextBox>
 
                 <asp:Button ID="btnMore" runat="server" 
-                	Text="Key Setup" CssClass="btn-sm btn-purple"
+                	Text="Easy Key Setup" CssClass="btn-sm btn-purple"
                     CommandArgument='<%# Eval("MGID") %>'
                 	CommandName="more" 
                 />&nbsp;&nbsp;
+                <asp:Button ID="Button1" runat="server" 
+                	Text="Medium Key Setup" CssClass="btn-sm btn-purple"
+                    CommandArgument='<%# Eval("MGID") %>'
+                	CommandName="more2" 
+                />&nbsp;&nbsp;
+                                <asp:Button ID="Button2" runat="server" 
+                	Text="Hard Key Setup" CssClass="btn-sm btn-purple"
+                    CommandArgument='<%# Eval("MGID") %>'
+                	CommandName="more3" 
+                />&nbsp;&nbsp;
+
                 <asp:Button ID="btnPreview" runat="server" 
                 	Text="Preview Game" CssClass="btn-sm btn-purple"
                     CommandArgument='<%# Eval("MGID") %>'
@@ -101,7 +112,7 @@
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
             </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="AdminName" runat="server" Text=''></asp:TextBox>
+                <asp:TextBox ID="AdminName" runat="server" Text='' Width="500px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvAdminName" runat="server" 
                     ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="AdminName is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -114,13 +125,13 @@
 
         <asp:TemplateField HeaderText="Game Name: " SortExpression="GameName" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
-                <asp:TextBox ID="GameName" runat="server" Text='<%# Eval("GameName") %>' ReadOnly="False"></asp:TextBox>
+                <asp:TextBox ID="GameName" runat="server" Text='<%# Eval("GameName") %>' ReadOnly="False" Width="500px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvGameName" runat="server" 
                     ControlToValidate="GameName" Display="Dynamic" ErrorMessage="GameName is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
             </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="GameName" runat="server" Text=''></asp:TextBox>
+                <asp:TextBox ID="GameName" runat="server" Text='' Width="500px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvGameName" runat="server" 
                     ControlToValidate="GameName" Display="Dynamic" ErrorMessage="GameName is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -216,7 +227,7 @@
         <asp:TemplateField HeaderText="Badge Awarded: " SortExpression="AwardedBadgeID" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
                 <asp:DropDownList ID="AwardedBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
+                    AppendDataBoundItems="True" Width="500px"
                     >
                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                 </asp:DropDownList>
@@ -224,7 +235,7 @@
             </EditItemTemplate>
             <InsertItemTemplate>
                  <asp:DropDownList ID="AwardedBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
+                    AppendDataBoundItems="True" Width="500px"
                     >
                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                 </asp:DropDownList> 
@@ -250,7 +261,7 @@
                                 ForcePasteAsPlainText="True" 
                                 Height="70px" UIColor="#D3D3D3" 
                                 Visible="True" 
-                                Width="98%"
+                                Width="750px"
                                 Toolbar="Source|-|Preview|-|Cut|Copy|Paste|PasteText|PasteFromWord|-|Undo|Redo|-|Find|Replace|-|SelectAll|RemoveFormat| 
                                 / |Bold|Italic|Underline|Strike|-|Subscript|Superscript|-|NumberedList|BulletedList|-|Outdent|Indent|Blockquote|CreateDiv|-|JustifyLeft|JustifyCenter|JustifyRight|JustifyBlock| 
                                 / |Link|Unlink|Anchor|-|Image|Flash|Table|HorizontalRule|SpecialChar|PageBreak|Iframe|
@@ -317,7 +328,7 @@
                 <br />
                 <div id="flipEasy">Click to show coded string</div>
                 <div id="panelEasy">
-                    <%# GetCodedString(Eval("EasyString").ToString(), int.Parse(Eval("CBID").ToString()))%>
+                    <%# GetCodedStringNew(Eval("EasyString").ToString(), int.Parse(Eval("CBID").ToString()),1)%>
                 </div>
             </EditItemTemplate>
             <InsertItemTemplate>
@@ -351,7 +362,7 @@
                 <br />
                 <div id="flipMed">Click to show coded string</div>
                 <div id="panelMed">
-                    <%# GetCodedString(Eval("MediumString").ToString(), int.Parse(Eval("CBID").ToString()))%>
+                    <%# GetCodedStringNew(Eval("MediumString").ToString(), int.Parse(Eval("CBID").ToString()),2)%>
                 </div>
             </EditItemTemplate>
             <InsertItemTemplate>
@@ -384,7 +395,7 @@
                 <asp:TextBox ID="HardString" runat="server" Text='<%# Eval("HardString") %>' ReadOnly="False" Width="90%" MaxLength="250"></asp:TextBox>
                 <br />
                 <div id="flipHard">Click to slide the panel down or up</div>
-                <div id="panelHard"><div><%# GetCodedString(Eval("HardString").ToString(), int.Parse(Eval("CBID").ToString()))%></div></div>
+                <div id="panelHard"><div><%# GetCodedStringNew(Eval("HardString").ToString(), int.Parse(Eval("CBID").ToString()),3)%></div></div>
 
             </EditItemTemplate>
             <InsertItemTemplate>
@@ -397,22 +408,22 @@
         </asp:TemplateField>
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
@@ -485,12 +496,34 @@
                         CausesValidation="True" 
                         CommandArgument='<%# Eval("MGID") %>'
                         CommandName="more" 
-                        ImageUrl="~/ControlRoom/Images/key.png" 
-                        Height="35"
-                        Text="More Options"   Tooltip="More Options"
-                        AlternateText="More Options" /> 
+                        ImageUrl="~/ControlRoom/Images/key_E.png" 
+                        Height="30"
+                        Text="Easy Key Setup"   Tooltip="Easy Key Setup"
+                        AlternateText="Easy Key Setup" />
 
-&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <asp:ImageButton ID="ImageButton3" runat="server" 
+                        CausesValidation="True" 
+                        CommandArgument='<%# Eval("MGID") %>'
+                        CommandName="more2" 
+                        ImageUrl="~/ControlRoom/Images/key_M.png" 
+                        Height="30"
+                        Text="Medium Key Setup"   Tooltip="Medium Key Setup"
+                        AlternateText="Medium Key Setup" /> 
+                                                 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <asp:ImageButton ID="ImageButton4" runat="server" 
+                        CausesValidation="True" 
+                        CommandArgument='<%# Eval("MGID") %>'
+                        CommandName="more3" 
+                        ImageUrl="~/ControlRoom/Images/key_H.png" 
+                        Height="30"
+                        Text="Hard Key Setup"   Tooltip="Hard Key Setup"
+                        AlternateText="Hard Key Setup" /> 
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                     <asp:ImageButton ID="ImageButton2" runat="server" 
                         CausesValidation="True" 

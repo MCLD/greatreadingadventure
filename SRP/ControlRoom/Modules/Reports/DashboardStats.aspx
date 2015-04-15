@@ -5,7 +5,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/Scripts/jquery-1.4.1.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {
@@ -378,7 +378,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
                         function EdrawChartRegByGender() {
                         try{
                             var data = google.visualization.arrayToDataTable([
-                              ['', 'Male', 'Female', 'N/A' ],
+                              ['', 'Male', 'Female', 'Other', 'N/A' ],
                               <%=ViewState["Stacked1"] %>
                               /*
                               ['Adult Reading',     12,12,0],
@@ -440,7 +440,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
                         function EdrawChartFinisherByGender() {
                         try{
                             var data = google.visualization.arrayToDataTable([
-                              ['', 'Male', 'Female', 'N/A' ],
+                              ['', 'Male', 'Female','Other', 'N/A' ],
                               <%=ViewState["Stacked2"] %>
                               /*
                               ['Adult Reading',     12,12,0],

@@ -35,6 +35,9 @@ namespace STG.SRP.Controls
             NID.Text = o.NID.ToString();
             lblReceived.Text = o.AddedDate.ToString();
 
+            o.isUnread = false;
+            o.Update();
+
             pnlDetail.Visible = true;
         }
 
@@ -45,8 +48,7 @@ namespace STG.SRP.Controls
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            var o = new Notifications();
-            o.Fetch(int.Parse(NID.Text));
+            var o = Notifications.FetchObject(int.Parse(NID.Text));
 
             o.Delete();
             Response.Redirect("~/MyNotifications.aspx");
@@ -60,12 +62,16 @@ namespace STG.SRP.Controls
 
         }
 
-        protected void btnAskSubmit_Click(object sender, EventArgs e)
+        protected void btnUnread_Click(object sender, EventArgs e)
         {
+            var o = Notifications.FetchObject(int.Parse(NID.Text));
+            o.isUnread = true;
+            o.Update();
+            Response.Redirect("~/MyNotifications.aspx");
 
         }
 
-        protected void Button7_Click(object sender, EventArgs e)
+        protected void btnAskSubmit_Click(object sender, EventArgs e)
         {
             var o = new Notifications();
             o.PID_From = ((Patron)Session["Patron"]).PID;

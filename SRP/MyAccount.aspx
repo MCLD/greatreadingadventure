@@ -1,5 +1,5 @@
 ﻿
-<%@ Page Title="MyAccount" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+<%@ Page Title="My Account" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="MyAccount.aspx.cs" Inherits="STG.SRP.MyAccount" 
      MaintainScrollPositionOnPostback="true"
      %>

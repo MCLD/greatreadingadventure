@@ -54,6 +54,13 @@ namespace STG.SRP.Controls
             //i = ctl.Items.FindByValue(txt.Text);
             //if (i != null) ctl.SelectedValue = txt.Text;
 
+            var uxNewPasswordStrengthValidator = (RegularExpressionValidator)e.Item.FindControl("uxNewPasswordStrengthValidator");
+            uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
+            uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
+            uxNewPasswordStrengthValidator.Text = string.Format("<font color='red'>{0} </font>",
+                                                                uxNewPasswordStrengthValidator.ErrorMessage);
+
+
             var ctl = (DropDownList)e.Item.FindControl("Custom1DD");
             var txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
             var i = ctl.Items.FindByValue("");
@@ -224,7 +231,7 @@ namespace STG.SRP.Controls
                 }
                 else
                 {
-                    if (age > 17)
+                    if (age > 17 && SRPSettings.GetSettingValue("AllowFamilyAccounts").SafeToBoolYes())
                     {
                         // Ask about adult
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
@@ -801,6 +808,16 @@ namespace STG.SRP.Controls
                         Session["ProgramID"] = p.ProgID;
                         Session["PatronProgramID"] = p.ProgID;
                         Session["CurrentProgramID"] = p.ProgID;
+                        Session["TenantID"] = p.TenID;
+                        Session["IsMasterAcct"] = p.IsMasterAccount;
+                        if (p.IsMasterAccount)
+                        {
+                            Session["MasterAcctPID"] = p.PID;
+                        }
+                        else
+                        {
+                            Session["MasterAcctPID"] = 0;
+                        }
                     }
                 }
                 else
@@ -920,6 +937,9 @@ namespace STG.SRP.Controls
             }
             set { ViewState["gotourl"] = value; }
         }
+
+
+
 
     }
 }

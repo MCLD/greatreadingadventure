@@ -18,10 +18,11 @@ namespace STG.SRP.ControlRoom.Modules.Security
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = "User Login History";
 
-            if (Request["UID"] == "") Response.Redirect("~/ControlRoom/");
+            lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"] = "";
+            if (lblUID.Text == "") Response.Redirect("~/ControlRoom/");
             if (!IsPostBack)
             {
-                lblUID.Text = Request["UID"].ToString();
+                //lblUID.Text = Request["UID"].ToString();
                 var user = new SRPUser(int.Parse(lblUID.Text));
                 lblUsername.Text = user.Username;
                 lblName.Text = user.FirstName + " " + user.LastName;

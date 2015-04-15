@@ -62,11 +62,17 @@ namespace STG.SRP.ControlRoom
                     Session[SessionData.UserProfile.ToString()] = user;
 
                     List<SRPPermission> perms = user.EffectiveUserPermissions();
-                    Session[SessionData.PermissionList.ToString()] = perms;
+                    //Session[SessionData.PermissionList.ToString()] = perms;
                     string permList = "";
                     foreach (SRPPermission perm in perms)
                         permList += String.Format("#{0}", perm.Permission);
                     Session[SessionData.StringPermissionList.ToString()] = permList;
+
+                    Session["TenantID"] = user.TenID;
+                    var tenant = Tenant.FetchObject(user.TenID);
+                    Session["Tenant"] = tenant;
+                    Session["IsMasterTenant"] = tenant.isMasterFlag;
+                   
 
                     if (user.MustResetPassword)
                     {

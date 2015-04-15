@@ -9,9 +9,36 @@
          <h3 class="title-divider">
               <asp:Label ID="Label1" runat="server" Text="FamAccts Title"></asp:Label>
          </h3>
-        
+        <hr />
+<asp:Panel ID="pnlChange" runat="server" Visible="False">
+    <asp:Label ID="Label3" runat="server" Text="FamAccts Impersonate Instructions"></asp:Label>
+    <br /><br />
+    <table>
+        <tr>
+            <td>
+                    <asp:DropDownList ID="ddAccounts" runat="server" Width="500px">
+                        <asp:ListItem Value="0" Text="Select an account to swich to and click the 'Go' button ... "></asp:ListItem>
+                    </asp:DropDownList>            
+            </td>
+
+            <td valign="top">
+                    &nbsp;<asp:Button runat="server" id="btnGo" Text="FamAccts Impersonate Go" 
+                        CssClass="btn a" onclick="btnGo_Click" />
+            </td>
+        </tr>
+    </table>
+
+    <asp:Button runat="server" id="btncancel" Text="FamAccts Impersonate Cancel" CssClass="btn a" onclick="btncancel_Click"/>
+</asp:Panel>
+
+<asp:Panel ID="pnlList" runat="server" Visible="True">
+
+        <asp:LinkButton ID="LinkButton1" runat="server" onclick="LinkButton1_Click"><img src="../ControlRoom/Images/user_group.png" height="48px" width="48px" /> Log in as another family member ... </asp:LinkButton>
+
+        <hr />
         <table width="100%" cellpadding="3" cellspacing="0" border="0">
-                <th style="font-weight: bold; background-color: #f1f1f1;" nowrap="nowrap" align="left">
+            <tr style="border-bottom: 1px solid silver;" class="RowColorAlt">
+                <th style="font-weight: bold; " nowrap="nowrap" align="left">
                     <asp:Label ID="Label2" runat="server" Text="FamAccts List"></asp:Label>
                 </th>
                 <th align="right">
@@ -19,12 +46,12 @@
                         CausesValidation="false"  CssClass="btn a"
                         Visible='True' onclick="btn_Click" />
                 </th>
-
+            </tr>
             <asp:Repeater ID="rptr" runat="server" onitemcommand="rptr_ItemCommand"  
                 >
                 <ItemTemplate>
                         
-                     <tr class="RowColor">
+                     <tr class="RowColor" >
                         <td nowrap="nowrap" >  
                              <%# Eval("FirstName") + " " + Eval("LastName")%>  ( <%# Eval("username") %> )             
                         </td>
@@ -59,7 +86,7 @@
         
         </table>
 
-		
+</asp:Panel>		
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p> &nbsp;</p>

@@ -10,4 +10,15 @@ CodeBehind="NoAccess.aspx.cs" Inherits="STG.SRP.ControlRoom.NoAccess"
         <br />
         Please contact the system administrator for more information or to modify your 
         security and access profile.</p>
+
+        <p style="margin-left: 40px">
+
+        Shortcuts:
+
+    <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href = "/ControlRoom/">Go to the Home page</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href = "/ControlRoom/Login.aspx">Login Screen</a>
+
+    </p>
+
 </asp:Content>

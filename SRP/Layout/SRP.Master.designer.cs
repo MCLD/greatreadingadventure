@@ -166,6 +166,15 @@ namespace STG.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor o;
         
         /// <summary>
+        /// r control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
+        
+        /// <summary>
         /// f control.
         /// </summary>
         /// <remarks>

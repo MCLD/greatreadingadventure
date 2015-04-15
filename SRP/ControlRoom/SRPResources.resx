@@ -157,7 +157,7 @@
     <value>STG Summer Reading Program Control Room</value>
   </data>
   <data name="ProductVersion" xml:space="preserve">
-    <value>1.00</value>
+    <value>2.00</value>
   </data>
   <data name="RefreshAllOK" xml:space="preserve">
     <value>Records refreshed from database successfully.</value>

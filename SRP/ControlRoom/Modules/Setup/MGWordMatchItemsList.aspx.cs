@@ -16,12 +16,18 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Word Match Items");
+
+            _mStrSortExp = String.Empty;
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-                if (Request["MGID"] != null)
+                if (Session["MGID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
                     AdminName.Text = o.AdminName;
@@ -35,15 +41,6 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     Response.Redirect("MiniGameList.aspx");
                 }
 
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Word Match Items");
-
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
                 _mStrSortExp = String.Empty;
             }
             else
@@ -107,7 +104,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             }
             if (e.CommandName.ToLower() == "back")
             {
-                Response.Redirect(String.Format("~/ControlRoom/Modules/Setup/MGWordMatchAddEdit.aspx?PK={0}", lblMGID.Text));
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGWordMatchAddEdit.aspx");
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

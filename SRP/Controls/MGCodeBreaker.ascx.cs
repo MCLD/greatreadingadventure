@@ -43,8 +43,8 @@ namespace STG.SRP.Controls
                 Correct.Text = mg.HardString;
             }
 
-            lblEncoded.Text = mg.GetEncoded(Correct.Text);
-            lblKey.Text = mg.GetKey(Correct.Text);
+            lblEncoded.Text = mg.GetEncoded(Correct.Text, difficulty);
+            lblKey.Text = mg.GetKey(Correct.Text, difficulty);
         }
 
         protected void btnScore_Click(object sender, EventArgs e)

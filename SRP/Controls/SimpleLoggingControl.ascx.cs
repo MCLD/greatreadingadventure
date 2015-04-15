@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
+using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
@@ -177,6 +179,27 @@ namespace STG.SRP.Controls
         
             lblMessage.ForeColor = System.Drawing.Color.Green;
             lblMessage.Text = string.Format("Your reading activity has been logged.<br>You have earned {0} points.<br><br>", points);
+
+            if (Review.Text != "" && Session["LastPRID"] != null && SRPSettings.GetSettingValue("FBReviewOn").SafeToBool())
+            {
+                var FBID = ConfigurationManager.AppSettings["FBAPPID"] ?? "121002584737306";
+                var strBuilderJS =
+                    "<script>    (function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; " +
+                    "js.src = \"//connect.facebook.net/en_US/all.js#xfbml=1&appId=" + FBID + "\"; fjs.parentNode.insertBefore(js, fjs); } (document, 'script', 'facebook-jssdk'));</script>";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "fb", strBuilderJS.ToString(), false);
+
+                var fbButton =
+                    string.Format("<div class=\"fb-share-button\" data-href='{0}://{1}{2}/ShareReview.aspx?ID={3}' data-type=\"button\"></div>",
+                                  Request.Url.Scheme, Request.Url.Authority, Request.ApplicationPath.TrimEnd('/'), (int) Session["LastPRID"]);
+                lblMessage.Text = string.Format("{0}<br>You may also want to share your book review on facebook. <br>{1}<br><br>", lblMessage.Text, fbButton);
+                lblFB.Text = @"Y";
+            }
+            else
+            {
+                lblFB.Text = "";
+            }
+
+
             txtAuthor.Text = txtTitle.Text = txtCountSubmitted.Text = Review.Text = txtProgramCode.Text = "";
             btnSubmit.Visible = false;
             btnReSubmit.Visible = true;
@@ -204,10 +227,16 @@ namespace STG.SRP.Controls
 
         protected void btnReSubmit_Click(object sender, EventArgs e)
         {
+            // need to reload page  on AJAX refresh because Facebook posting wont work ...
+            if (lblFB.Text != "") Response.Redirect(HttpContext.Current.Request.Url.AbsolutePath);
+            
+            // but if no FB button, then reuse page thru AJAX 
             btnSubmit.Visible = true;
             btnReSubmit.Visible = false;
             EntryTable.Visible = true;
             lblMessage.Text = "";
+            
+            
         }
 
         protected void btnHistory_Click(object sender, EventArgs e)

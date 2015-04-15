@@ -23,7 +23,7 @@
     <h1>Mini Game: <asp:Label ID="AdminName" runat="server" Text=""></asp:Label>
     </h1>
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="True"  PageSize="6" Width="100%"
+    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="True"  PageSize="25" Width="100%"
         DataKeys="WMIID"
         DataSourceID="odsData"
         onrowcreated="GvRowCreated" 
@@ -97,7 +97,7 @@
                     
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/WordMatch/sm_{0}.png?{1}", Eval("WMIID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/WordMatch/sm_{0}.png?{1}", Eval("WMIID").ToString(), DateTime.Now.ToString()) %>'  width="24px"/>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>

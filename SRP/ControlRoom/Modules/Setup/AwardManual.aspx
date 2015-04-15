@@ -4,13 +4,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
 %>
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/Scripts/jquery-1.4.1.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {
-            packages: ["corechart"]
-        });
-    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 <table width="100%"  style="border:double 3px #A3C0E8;">

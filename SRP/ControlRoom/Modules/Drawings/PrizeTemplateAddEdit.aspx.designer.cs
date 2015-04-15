@@ -65,5 +65,14 @@ namespace STG.SRP.ControlRoom.Modules.Drawings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ObjectDataSource odsProg;
+        
+        /// <summary>
+        /// odsDDSchool control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource odsDDSchool;
     }
 }

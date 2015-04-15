@@ -28,7 +28,7 @@
         <Columns>
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
+                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
                 </HeaderTemplate>                
@@ -58,19 +58,14 @@
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Left"></ItemStyle>
             </asp:BoundField>
 
-			<asp:BoundField ReadOnly="True" HeaderText="Gender" 
-                DataField="Gender" SortExpression="Gender" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" HtmlEncode="False" ItemStyle-HorizontalAlign ="Left"  HeaderStyle-HorizontalAlign="Left">
-				<ControlStyle Width="150px" />
-                <ItemStyle VerticalAlign="Middle" Wrap="False" Width="150px" HorizontalAlign="Left"></ItemStyle>
-            </asp:BoundField>
+			
 
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
                     
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Avatars/sm_{0}.png?{1}", Eval("AID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Avatars/sm_{0}.png?{1}", Eval("AID").ToString(), DateTime.Now.ToString()) %>' Width="32" Height="32" />
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>

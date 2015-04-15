@@ -74,7 +74,7 @@ namespace STG.SRP.Controls
                             g = g +
                                 string.Format("<td valign='middle' align='center' id='IGTd" + idx.ToString() +
                                               "' class=''><img id='img" + idx.ToString() +
-                                              "' src='/Images/Games/MatchingGame/" + imageList[idx - 1] + "'></td>");
+                                              "' src='/Images/Games/MatchingGame/" + imageList[idx - 1] + "' style='max-width: 100%;max-height: 100%'></td>");
                         }
                         catch
                         {

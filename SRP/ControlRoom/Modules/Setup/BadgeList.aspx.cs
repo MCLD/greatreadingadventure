@@ -23,19 +23,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = 3000;
+            MasterPage.RequiredPermission = 4700;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Badges List");
 
             _mStrSortExp = String.Empty;
+
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
                 _mStrSortExp = String.Empty;
             }
             else
@@ -93,12 +90,14 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BadgeAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["BDD"] = "";
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["BDD"] = key;
+                Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {
@@ -109,7 +108,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     var obj = new Badge();
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
-                        obj.FetchObject(key).Delete();
+                        Badge.FetchObject(key).Delete();
 
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;

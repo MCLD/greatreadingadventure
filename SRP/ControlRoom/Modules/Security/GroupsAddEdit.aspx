@@ -1,6 +1,6 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
 	CodeBehind="GroupsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Security.GroupsAddEdit" 
-	 %>
+%>
 
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
@@ -15,7 +15,7 @@
         />
 
 
-    <asp:DetailsView ID="dv" runat="server" DataSourceID="odsSRPGroups" 
+    <asp:DetailsView ID="dv" runat="server" DataSourceID="odsSRPGroups"  Width="100%"
         onitemcommand="DvItemCommand" >
         <Fields>
 
@@ -39,7 +39,7 @@
                 <ItemTemplate>
                     <asp:Label ID="GroupName" runat="server" Text='<%# Bind("GroupName") %>'></asp:Label>
                 </ItemTemplate>
-            	<HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+            	<HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" width="100px"/>    
         </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Description: " SortExpression="GroupDescription">
@@ -87,7 +87,7 @@
             <asp:TemplateField InsertVisible="False" ShowHeader="False">
                 <EditItemTemplate>
             
-<table style="width: 900px" cellpadding=3px;>
+<table style="width: 100%" cellpadding=3px;>
     <tr>
         <td align="center" width="400px"> <b>Users</b> </td>    
         <td align="center" width="400px"> <b>Permissions</b> </td>    

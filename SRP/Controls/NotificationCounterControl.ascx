@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="NotificationCounterControl.ascx.cs" Inherits="STG.SRP.Controls.NotificationCounterControl" %>
 
 
-    <div class="secondary-nav" style="margin-top: -20px!important; ">
+    <div class="secondary-nav" style="margin-topXX: -20px!important; ">
         <ul class="nav">
             <li><a href="/MyNotifications.aspx" 
                     >

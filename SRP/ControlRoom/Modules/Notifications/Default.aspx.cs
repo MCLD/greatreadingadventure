@@ -14,6 +14,8 @@ namespace STG.SRP.ControlRoom.Modules.Notifications
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5000;
+            MasterPage.IsSecure = true;
 
             if (Session["Curr_Notification_ID"] != null && Session["Curr_Notification_ID"].ToString() != "")
             {

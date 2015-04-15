@@ -16,7 +16,7 @@ namespace STG.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             IsSecure = true;
-            if (!IsPostBack) TranslateStrings(this);
+            
 
             Control ctl = null;
             PlaceHolder plc = null;
@@ -64,7 +64,7 @@ namespace STG.SRP
                 plc.Controls.Add(ctl);
             }
 
-
+            if (!IsPostBack) TranslateStrings(this);
         }
     }
 }

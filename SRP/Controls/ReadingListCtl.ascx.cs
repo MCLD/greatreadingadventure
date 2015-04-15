@@ -49,14 +49,22 @@ namespace STG.SRP.Controls
             var now = DateTime.Now;
             var onlyCheckedBoxes = true;
             var selBLI = 0;
+            var readCount = 0;
+            var neeedCount = 0;
+            var BLID = -1;
             foreach (RepeaterItem item in rptr2.Items)
             {
                 if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                 {
+                    if (BLID < 0)
+                    {
+                        BLID = int.Parse(((Label)item.FindControl("BLID")).Text);
+                        neeedCount = BookList.FetchObject(BLID).NumBooksToComplete;
+                    }
                     var chkRead = (CheckBox)item.FindControl("chkRead");
                     var PBLBID = int.Parse(((Label)item.FindControl("PBLBID")).Text);
                     var BLBID = int.Parse(((Label)item.FindControl("BLBID")).Text);
-                    var BLID = int.Parse(((Label)item.FindControl("BLID")).Text);
+                    
                     selBLI = BLID;
                     var pbl = new PatronBookLists();
                     if (PBLBID != 0)
@@ -69,7 +77,14 @@ namespace STG.SRP.Controls
                     pbl.LastModDate = now;
 
                     pbl.HasReadFlag = chkRead.Checked;
-                    if (!pbl.HasReadFlag) onlyCheckedBoxes = false;
+                    if (!pbl.HasReadFlag)
+                    {
+                        onlyCheckedBoxes = false;
+                    }
+                    else
+                    {
+                        readCount++;
+                    }
 
                     if (PBLBID != 0)
                     {
@@ -85,7 +100,7 @@ namespace STG.SRP.Controls
             lblMessage.Visible = true;
 
             // read the entire book list!  Award points and badges 
-            if (onlyCheckedBoxes)
+            if ((neeedCount == 0 && onlyCheckedBoxes) || (neeedCount <= readCount))
             {
                 var bl = BookList.FetchObject(selBLI);
 

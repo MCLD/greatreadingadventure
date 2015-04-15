@@ -34,6 +34,12 @@
                         CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("AID") %>'  
                         ImageUrl="~/ControlRoom/Images/edit.png" Width="20px" />
                     &nbsp;
+                    <asp:ImageButton ID="btnRun" runat="server" AlternateText="Apply Award" Tooltip="Apply Award" 
+                        CausesValidation="False" CommandName="ApplyAward" CommandArgument='<%# Bind("AID") %>'  
+                        ImageUrl="~/ControlRoom/Images/run.png" Width="20px" 
+                        OnClientClick="return confirm('Are you sure you want to apply this award?\r\nThis may take quite a while...');"
+                        />
+                    &nbsp;
                     <asp:ImageButton ID="btnDelete" runat="server" AlternateText="Delete Record" Tooltip="Delete Record" 
                         CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("AID") %>' 
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');"/>

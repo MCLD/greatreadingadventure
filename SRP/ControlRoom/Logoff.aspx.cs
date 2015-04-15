@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using STG.SRP.Core.Utilities;
+using STG.SRP.DAL;
 
 namespace STG.SRP.ControlRoom
 {
@@ -12,6 +13,11 @@ namespace STG.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            try
+            {
+                STGOnlyUtilities.LogoffPatron(((Patron)Session["Patron"]).PID);
+            }
+            catch {}
             try
             {
                 SRPUser u = (SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()];

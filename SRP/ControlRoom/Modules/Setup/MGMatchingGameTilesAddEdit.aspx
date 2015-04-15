@@ -58,7 +58,7 @@
                                     FileName='<%# "t1_" + Eval("MAGTID") %>'
                                     ImgWidth="256" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="128"
                                     Folder="~/Images/Games/MatchingGame/"
@@ -70,7 +70,7 @@
                                     FileName='<%# "t2_" + Eval("MAGTID") %>'
                                     ImgWidth="256" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="128"
                                     Folder="~/Images/Games/MatchingGame/"
@@ -82,34 +82,44 @@
                                     FileName='<%# "t3_" + Eval("MAGTID") %>'
                                     ImgWidth="256" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="128"
                                     Folder="~/Images/Games/MatchingGame/"
                                     Extension="png"
                                 />                        
                         </td>
-                    </tr>                
+                    </tr>    
+                    <tr>
+                        <td colspan="3">
+                            <hr />
+                        </td>
+                    </tr>                                  
                     <tr>
                         <td width="33%" valign="top" align="left">
-                            <br />
+
                             <asp:CheckBox ID="Tile1UseMedium" runat="server" Checked='<%# (bool)Eval("Tile1UseMedium") %>' ReadOnly="False" Text="Use Tile 1 for Medium Level"></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile1UseHard" runat="server" Checked='<%# (bool)Eval("Tile1UseHard") %>' ReadOnly="False" Text="Use Tile 1 for Hard Level"></asp:CheckBox>
                         </td>
                         <td width="33%" valign="top" align="left">
-                            <br />
+
                             <asp:CheckBox ID="Tile2UseMedium" runat="server" Checked='<%# (bool)Eval("Tile2UseMedium") %>' ReadOnly="False" Text="Use Tile 2 for Medium Level" /></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile2UseHard" runat="server" Checked='<%# (bool)Eval("Tile2UseHard") %>' ReadOnly="False" Text="Use Tile 2 for Hard Level"></asp:CheckBox>
                         </td>                                       
                         <td width="33%" valign="top" align="left">
-                            <br />
+
                             <asp:CheckBox ID="Tile3UseMedium" runat="server" Checked='<%# (bool)Eval("Tile3UseMedium") %>' ReadOnly="False" Text="Use Tile 3 for Medium Level"></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile3UseHard" runat="server" Checked='<%# (bool)Eval("Tile3UseHard") %>' ReadOnly="False" Text="Use Tile 3 for Hard Level"></asp:CheckBox>
                         </td>
-                     </tr>                   
+                     </tr>   
+                    <tr>
+                        <td colspan="3">
+                            <hr />
+                        </td>
+                    </tr>                                     
                   </table>
 
                </EditItemTemplate>
@@ -120,27 +130,36 @@
                         <td width="33%" valign="top" align="left"><b>Tile 2:</b></td>
                         <td width="33%" valign="top" align="left"><b>Tile 3:</b></td>
                     </tr>
-              
+
+                    <tr>
+                        <td colspan="3">
+                            <hr />
+                        </td>
+                    </tr>                
                     <tr>
                         <td width="33%" valign="top" align="left">
-                            <br />
                             <asp:CheckBox ID="Tile1UseMedium" runat="server"  ReadOnly="False" Text="Use Tile 1 for Medium Level"></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile1UseHard" runat="server"  ReadOnly="False" Text="Use Tile 1 for Hard Level"></asp:CheckBox>
                         </td>
                         <td width="33%" valign="top" align="left">
-                            <br />
+
                             <asp:CheckBox ID="Tile2UseMedium" runat="server"  ReadOnly="False" Text="Use Tile 2 for Medium Level" /></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile2UseHard" runat="server"  ReadOnly="False" Text="Use Tile 2 for Hard Level"></asp:CheckBox>
                         </td>                                       
                         <td width="33%" valign="top" align="left">
-                            <br />
+
                             <asp:CheckBox ID="Tile3UseMedium" runat="server"  ReadOnly="False" Text="Use Tile 3 for Medium Level"></asp:CheckBox>
                             <br />
                             <asp:CheckBox ID="Tile3UseHard" runat="server"  ReadOnly="False" Text="Use Tile 3 for Hard Level"></asp:CheckBox>
                         </td>
                     </tr> 
+                    <tr>
+                        <td colspan="3">
+                            <hr />
+                        </td>
+                    </tr>
                   </table>               
                
                </InsertItemTemplate>
@@ -149,22 +168,22 @@
 
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"  Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

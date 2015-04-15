@@ -36,7 +36,9 @@
                             <asp:TextBox ID="Literacy2Label" runat="server" Text='<%# Eval("Literacy2Label") %>' ReadOnly="False"></asp:TextBox>
                         </td>                    
                     </tr>
-                   <tr><td colspan="5"> &nbsp; </td></tr>
+                   </table>
+                   <hr />
+                   <table style="font-weight: bold;">
                    <tr style="font-size: 13px; color: Blue; border-bottom:1px solid blue; border-top:1px solid blue;">
                         <td width="250px" align="right" valign="middle">Registration Field &nbsp;</td>
                         <td width="100px" align="center" valign="middle">Ask for Field?</td>
@@ -47,7 +49,7 @@
 
 
                  </table>
-                 <div  style="font-weight: bold; height:350px; overflow:scroll; width:700px;" >
+                 <div  style="font-weight: bold; height:350px; overflow:scroll; width:700px; border: 1px solid silver;" >
                  
                 <table style="font-weight: bold; ">
                     <tr>
@@ -355,7 +357,10 @@
                     </tr>
                 
                 </table>
+                
                 </div>
+                <hr />
+                <!--
                 <table style="font-weight: bold;">
                     <tr>
                         <td width="250px" align="right" valign="middle">Modified Date: &nbsp;</td>
@@ -383,7 +388,7 @@
                     </tr>                                                                           
                     </tr>
                  </table>
-               
+               -->
             </EditItemTemplate>        
         </asp:TemplateField>
 
@@ -457,12 +462,9 @@
 
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
-        SelectMethod="FetchObject" 
+        SelectMethod="GetAll" 
         TypeName="STG.SRP.DAL.RegistrationSettings">
-        <SelectParameters>
-            <asp:ControlParameter ControlID="lblPK" Name="RID" 
-                PropertyName="Text" Type="Int32" />
-        </SelectParameters>
+
 	</asp:ObjectDataSource>
 
 </asp:Content>

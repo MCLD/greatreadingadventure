@@ -24,7 +24,7 @@
         <Columns>
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
+                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
                 </HeaderTemplate>                
@@ -52,7 +52,7 @@
 
             <asp:TemplateField   SortExpression="Enabled" Visible="True"  
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
-                HeaderText="isEnabled">              
+                HeaderText="Is Enabled">              
                 <ItemTemplate> 
                     <%# FormatHelper.ToYesNo((bool)Eval("isEnabled"))%> 
                 </ItemTemplate> 

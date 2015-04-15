@@ -11,6 +11,9 @@
 
     <asp:Label ID="lblMGID" runat="server" Text="" Visible="False"></asp:Label>
     <asp:Label ID="lblCBID" runat="server" Text="" Visible="False"></asp:Label>
+    <asp:Label ID="lblDifficulty" runat="server" Text="" Visible="False"></asp:Label>
+    <asp:Label ID="lblSDifficulty" runat="server" Text="" Visible="False"></asp:Label>
+    <asp:Label ID="lblPrefix" runat="server" Text="" Visible="False"></asp:Label>
 
     <h1>Mini Game: <asp:Label ID="AdminName" runat="server" Text=""></asp:Label></h1>
     <hr />
@@ -44,15 +47,15 @@
                     </tr>
                     <tr>
                         <td>
-                            Key: <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/CodeBreaker/sm_{0}.png?{1}", Eval("CBID") + "_" + Eval("Character_Num"), DateTime.Now.ToString()) %>' />
+                            Key: <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/CodeBreaker/{0}.png?{1}", lblPrefix.Text + Eval("CBID") + "_" + Eval("Character_Num"), DateTime.Now.ToString()) %>' Width="24px" BorderColor="Black" BorderWidth="1px" BorderStyle="Solid"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <uc1:FileUploadCtl_1 ID="FileUploadCtl" runat="server" 
-                                FileName='<%# Eval("CBID") + "_" + Eval("Character_Num") %>'
-                                ImgWidth="128" 
-                                CreateSmallThumbnail="True"         
+                                FileName='<%# lblPrefix.Text + Eval("CBID") + "_" + Eval("Character_Num") %>'
+                                ImgWidth="36" 
+                                CreateSmallThumbnail="False"         
                                 CreateMediumThumbnail="False"
                                 SmallThumbnailWidth="64" 
                                 MediumThumbnailWidth="64"

@@ -5,7 +5,7 @@ Inherits="STG.SRP.ControlRoom.Modules.Security.Default"
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <asp:GridView ID="gv" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" Width ="100%"
+    <asp:GridView ID="gv" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" Width ="100%" PageSize="15"  
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
         onrowcommand="GvRowCommand"      

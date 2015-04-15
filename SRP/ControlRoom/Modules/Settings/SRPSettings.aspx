@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" CodeBehind="SRPSettings.aspx.cs" 
 Inherits="STG.SRP.ControlRoom.Modules.Settings.SRPSettings" 
-
+    validateRequest="false" 
 %>
 <%@ Register src="~/ControlRoom/Controls/SettingEditor.ascx" tagname="SettingEditor" tagprefix="uc1" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
@@ -22,6 +22,9 @@ Inherits="STG.SRP.ControlRoom.Modules.Settings.SRPSettings"
     <asp:ObjectDataSource ID="odsSRPSettings" runat="server" 
         SelectMethod="GetAll" 
         TypeName="STG.SRP.DAL.SRPSettings">
+        <SelectParameters>
+            <asp:Parameter DefaultValue="true" Name="forCurrentTenantOnly" Type="Boolean" />
+        </SelectParameters>
 
     </asp:ObjectDataSource>
 

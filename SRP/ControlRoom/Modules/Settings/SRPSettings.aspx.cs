@@ -20,15 +20,14 @@ namespace STG.SRP.ControlRoom.Modules.Settings
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 3000;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", lblModName.Text);
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
 
-            }
-
-            MasterPage.RequiredPermission = 3000;
-            if (!IsPostBack)
-            {
                 if (!string.IsNullOrEmpty(Request["MID"]))
                 {
                     lblMID.Text = (string)Request["MID"];
@@ -47,8 +46,6 @@ namespace STG.SRP.ControlRoom.Modules.Settings
                 }
 
             }
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", lblModName.Text);
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)

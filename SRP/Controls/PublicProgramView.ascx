@@ -3,15 +3,15 @@
             <div class="row"> 
                 <div class="span12"> 
                     <h1 class="title-divider" style="text-align: center;">
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;<%=((Programs)Session["Program"]).Title %></span></h1>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;<%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).Title) %></span></h1>
                 </div>
             </div>                        
             <div class="row">
                 <div class="span3"> 
-                    <%=((Programs)Session["Program"]).HTML3 %>
+                    <%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).HTML3) %>
                 </div >
                  <div class="span6"> 
-                    <%=((Programs)Session["Program"]).HTML1 %>
+                    <%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).HTML1) %>
                     <br />
                     <br />
                     <div style="text-align: center;">
@@ -23,14 +23,14 @@
                     </div>
                     <br />
                     <br />
-                    <%=((Programs)Session["Program"]).HTML2 %>
+                    <%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).HTML2 )%>
                 </div >
                 <div class="span3"> 
-                    <%=((Programs)Session["Program"]).HTML4 %>
+                    <%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).HTML4) %>
                 </div >
             </div>
             <div class="row"> 
                 <div class="span12"> 
-                    <%=((Programs)Session["Program"]).HTML5 %>
+                    <%=(Session["Program"] == null ? "" :((Programs)Session["Program"]).HTML5) %>
                 </div>
             </div>   

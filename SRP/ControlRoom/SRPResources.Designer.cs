@@ -178,7 +178,7 @@ namespace STG.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.00.
+        ///   Looks up a localized string similar to 2.00.
         /// </summary>
         public static string ProductVersion {
             get {

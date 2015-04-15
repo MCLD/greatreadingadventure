@@ -21,89 +21,52 @@
         >
         <Fields>
 
-        <asp:BoundField DataField="AID" HeaderText="AID: " SortExpression="AID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="AID" HeaderText="AID: " SortExpression="AID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             <ItemStyle Width="100%" />
         </asp:BoundField>
-
-
-        <asp:TemplateField HeaderText="Award Name: " SortExpression="AwardName" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:TextBox ID="AwardName" runat="server" Text='<%# Eval("AwardName") %>' ReadOnly="False" Width="500px"></asp:TextBox>
+        
+        
+        <asp:TemplateField>
+            <EditItemTemplate>
+    <table width="100%">
+        <tr>
+            <td nowrap height="20px"> <b> Award Name: </b> </td>
+            <td colspan="3" >
+                <asp:TextBox ID="AwardName" runat="server" Text='<%# Eval("AwardName") %>'  Width="500px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvAwardName" runat="server" 
-                    ControlToValidate="AwardName" Display="Dynamic" ErrorMessage="AwardName is required" 
+                    ControlToValidate="AwardName" Display="Dynamic" ErrorMessage="<font color='red'>AwardName is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="AwardName" runat="server" Text=''  Width="500px"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvAwardName" runat="server" 
-                    ControlToValidate="AwardName" Display="Dynamic" ErrorMessage="AwardName is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="AwardName" runat="server" Text='<%# Eval("AwardName") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Badge Awarded: " SortExpression="BadgeID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
+            <td nowrap> <b> </b> </td>
+            <td colspan="3" >
+                        
+            </td>
+        </tr>
+        <tr>
+            <td nowrap height="20px"> <b> Badge Awarded: </b> </td>
+            <td colspan="3" >
                 <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
+                    AppendDataBoundItems="True" Width="500px"
                     >
                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                 </asp:DropDownList>
                 <asp:Label ID="BadgeIDLbl" runat="server" Text='<%# Eval("BadgeID") %>' Visible="False"></asp:Label>    
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="BadgeID" runat="server" Text='<%# Eval("BadgeID") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="# Points: " SortExpression="NumPoints" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:TextBox ID="NumPoints" runat="server" Text='<%# ((int) Eval("NumPoints") == 0 ? "0" : Eval("NumPoints")) %>' 
-                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+            <td nowrap> <b> </b> </td>
+            <td colspan="3" >
+                        
+            </td>
+        </tr>
+        <tr>
+            <td colspan="8" height="200px">
+                    <asp:Panel ID="Panel1" runat="server" GroupingText=" Award Triggers " ScrollBars="Auto" Visible="True" CssClass="BluePanel">
+                        <table width="100%" height="200px">
+                        
+        <tr>
+            <td nowrap valign="top" > <b> # Points: </b> </td>
+            <td colspan="3"  valign="top">
+                <asp:TextBox ID="NumPoints" runat="server" Text='<%# ((int) Eval("NumPoints") == 0 ? "0" : Eval("NumPoints")) %>' Width="50px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvNumPoints" runat="server" 
-                    ControlToValidate="NumPoints" Display="Dynamic" ErrorMessage="NumPoints is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revNumPoints"
-                    ControlToValidate="NumPoints"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Num Points must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Num Points must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvNumPoints"
-                    ControlToValidate="NumPoints"
-                    MinimumValue="0"
-                    MaximumValue="99999"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Num Points must be from 0 to 99,999!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Num Points must be from 0 to 99,999! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="NumPoints" runat="server" Text=''></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvNumPoints" runat="server" 
-                    ControlToValidate="NumPoints" Display="Dynamic" ErrorMessage="Num Points is required" 
+                    ControlToValidate="NumPoints" Display="Dynamic" ErrorMessage="<font color='red'>Num Points is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 <asp:RegularExpressionValidator id="revNumPoints"
                     ControlToValidate="NumPoints"
@@ -129,154 +92,15 @@
                     Text="<font color='red'> * NumPoints must be from 0 to 99,999! </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" /> 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="NumPoints" runat="server" Text='<%# Eval("NumPoints") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
+            </td>
 
-        <asp:TemplateField HeaderText="Branch: " SortExpression="BranchID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
-                    AppendDataBoundItems="True" Width="97%"
-                 >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:Label ID="BranchIDLbl" runat="server" Text='<%# Eval("BranchID") %>' Visible="false" ></asp:Label>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
-                    AppendDataBoundItems="True" Width="97%"
-                 >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-                 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="BranchID" runat="server" Text='<%# Eval("BranchID") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
+            <td colspan="4" rowspan="6">
+                <b>Earned Badges :</b> <br />
 
 
-        <asp:TemplateField HeaderText="Program: " SortExpression="ProgramID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="ProgramID" runat="server" DataSourceID="odsDDPrograms" 
-                DataTextField="AdminName" DataValueField="PID" 
-                AppendDataBoundItems="True"  Width="97%"
-                >
-                <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList> 
-                <asp:Label ID="ProgramIDLbl" runat="server" Text='<%# Eval("ProgramID") %>' Visible="false" ></asp:Label>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="ProgramID" runat="server" DataSourceID="odsDDPrograms" 
-                DataTextField="AdminName" DataValueField="PID" 
-                AppendDataBoundItems="True"  Width="97%"
-                >
-                <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem> 
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="ProgramID" runat="server" Text='<%# Eval("ProgramID") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="District: " SortExpression="District" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDLibSys" 
-                    DataTextField="Code" DataValueField="CID"  
-                    AppendDataBoundItems="True"  Width="97%"
-                    >
-                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
-                </asp:DropDownList>
-                <asp:Label ID="DistrictLbl" runat="server" Text='<%# Eval("District") %>' Visible="false" ></asp:Label>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDLibSys" 
-                    DataTextField="Code" DataValueField="CID"  
-                    AppendDataBoundItems="True"  Width="97%"
-                    >
-                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="District" runat="server" Text='<%# Eval("District") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="School: " SortExpression="SchoolName" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" 
-                    DataTextField="Code" DataValueField="CID"  
-                    AppendDataBoundItems="True"  Width="97%"
-                    >
-                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
-                </asp:DropDownList>
-                <asp:Label ID="SchoolNameLbl" runat="server" Text='<%# Eval("SchoolName") %>' Visible="false" ></asp:Label>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" 
-                    DataTextField="Code" DataValueField="CID" 
-                    AppendDataBoundItems="True"  Width="97%"
-                    >
-                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="SchoolName" runat="server" Text='<%# Eval("SchoolName") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Earned Badges List: " SortExpression="BadgeList" HeaderStyle-Wrap="False" InsertVisible="true">
-		    <EditItemTemplate>
-            <table style="width: 400px" cellpadding=3px;>
-    <tr>
-        <td align="center" width="400px"> <b>All Defined Badges</b> </td>       
-    </tr>    
-    <tr>
-        <td valign="top">
-                <asp:TextBox ID="BadgeList" runat="server" Text='<%# Eval("BadgeList") %>' ReadOnly="False" Visible="false"></asp:TextBox>
-                <asp:ObjectDataSource ID="odsBadgeMembership" runat="server" 
-                SelectMethod="GetBadgeListMembership" TypeName="STG.SRP.DAL.Award">
-                <SelectParameters>
-                    <asp:ControlParameter ControlID="BadgeList" DefaultValue="" Name="list" 
-                        PropertyName="Text" Type="string" />
-                </SelectParameters>
-            </asp:ObjectDataSource>
         
-<div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;  ">       
-            <asp:GridView ID="gvBadgeMembership" ShowHeader="false"  runat="server" DataSourceID="odsBadgeMembership" AutoGenerateColumns="false" Width="100%">
-                <Columns>
-                    <asp:TemplateField ShowHeader="false">
-                    <ItemTemplate>
-                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" />   <%# Eval("AdminName") %>
-                        <asp:Label ID="BID" runat="server" Text='<%# Eval("BID") %>' Visible="False"></asp:Label>
-                    </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
-            </asp:GridView>
-</div>        
-        </td>    
-        </table>
-
-
-
-
-
-               
-            </EditItemTemplate>
-            <InsertItemTemplate>
-<table style="width: 400px" cellpadding=3px;>
-    <tr>
-        <td align="center" width="400px"> <b>All Defined Badges</b> </td>       
-    </tr>    
-    <tr>
-        <td valign="top">
+<div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;  ">     
+            <asp:TextBox ID="BadgeList" runat="server" Text='<%# Eval("BadgeList") %>' ReadOnly="False" Visible="false"></asp:TextBox>
             <asp:ObjectDataSource ID="odsBadgeMembership" runat="server" 
                 SelectMethod="GetBadgeListMembership" TypeName="STG.SRP.DAL.Award">
                 <SelectParameters>
@@ -284,8 +108,6 @@
                         PropertyName="Text" Type="string" />
                 </SelectParameters>
             </asp:ObjectDataSource>
-        
-<div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;  ">       
             <asp:GridView ID="gvBadgeMembership" ShowHeader="false"  runat="server" DataSourceID="odsBadgeMembership" AutoGenerateColumns="false" Width="100%">
                 <Columns>
                     <asp:TemplateField ShowHeader="false">
@@ -296,39 +118,104 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-</div>        
-        </td>    
-        </table>
+</div>           
 
 
+            </td>
+        </tr>
+        <tr>
+            <td nowrap valign="top" > <b> Branch/Library: </b> </td>
+            <td colspan="3"  valign="top" >
+                <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
+                    AppendDataBoundItems="True"  Width="97%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="BranchIDLbl" runat="server" Text='<%# Eval("BranchID") %>' Visible="false" ></asp:Label>
+            </td>        
+        
+        </tr>
 
+        <tr>
+            <td nowrap valign="top"> <b> Program: </b> </td>
+            <td colspan="3"  valign="top" >
+                <asp:DropDownList ID="ProgramID" runat="server" DataSourceID="odsDDPrograms" 
+                DataTextField="AdminName" DataValueField="PID" 
+                AppendDataBoundItems="True"  Width="97%"
+                >
+                <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem> 
+                </asp:DropDownList>
+                <asp:Label ID="ProgramIDLbl" runat="server" Text='<%# Eval("ProgramID") %>' Visible="false" ></asp:Label>
+            </td>
+        </tr>
 
-                <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false"></asp:TextBox>            
-            
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="BadgeList" runat="server" Text='<%# Eval("BadgeList") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+        <tr>
+            <td nowrap valign="top"> <b> District: </b> </td>
+            <td colspan="3"  valign="top" >
+                <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDLibSys" 
+                    DataTextField="Code" DataValueField="CID"  
+                    AppendDataBoundItems="True"  Width="97%"
+                    >
+                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
+                </asp:DropDownList>
+                <asp:Label ID="DistrictLbl" runat="server" Text='<%# Eval("District") %>' Visible="false" ></asp:Label>
+            </td>
+        </tr>                        
+        <tr>
+            <td nowrap valign="top"> <b> School: </b> </td>
+            <td colspan="3"  valign="top" >
+                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" 
+                    DataTextField="Code" DataValueField="CID" 
+                    AppendDataBoundItems="True"  Width="97%"
+                    >
+                    <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem> 
+                </asp:DropDownList>
+                <asp:Label ID="SchoolNameLbl" runat="server" Text='<%# Eval("SchoolName") %>' Visible="false" ></asp:Label>
+            </td>
+
+            <td nowrap valign="top"> <b>  </b> </td>
+            <td colspan="1"  valign="top" >
+
+            </td>
+        </tr>    
+        <tr>
+            <td colspan="4" height="100%"></td>
+        
+        </tr>                                           
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        </table>
+
+                    </asp:Panel>
+            </td>
+        
+        </tr> 
+        </table>            
+            </EditItemTemplate>
         </asp:TemplateField>
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="False"  
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

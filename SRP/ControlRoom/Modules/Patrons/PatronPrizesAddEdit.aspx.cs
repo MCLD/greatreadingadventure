@@ -17,7 +17,8 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            MasterPage.IsSecure = true;
+            MasterPage.RequiredPermission = 5100;
+            MasterPage.IsSecure = true; 
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 
             if (!IsPostBack)

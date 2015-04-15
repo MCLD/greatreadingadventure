@@ -19,6 +19,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4100;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "School and District Crosswalk");
 

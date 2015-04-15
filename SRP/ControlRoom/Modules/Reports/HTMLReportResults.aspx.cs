@@ -19,12 +19,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (!IsPostBack)
-            //{
-            //    SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
-            //}
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4200;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Ad-Hoc Report Results");
 

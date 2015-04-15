@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using STG.SRP.DAL;
+using STG.SRP.Utilities.CoreClasses;
 
 namespace STG.SRP.Controls
 {
@@ -68,6 +69,38 @@ namespace STG.SRP.Controls
 
         }
 
+        public string FormatReading(string author, string title, string review, int PRID)
+        {
+            var ret = "";
 
+            if (author != "" && title != "")
+            {
+                ret = string.Format("<b>{0}</b> by <i>{1}</i>", title, author);
+            }
+            if (author != "" && title == "")
+            {
+                ret = string.Format("a book by <i>{0}</i>", author);
+            }
+            if (author == "" && title != "")
+            {
+                ret = string.Format("<b>{0}</b>", title);
+            }
+            if (review.Trim() != "")
+            {
+                ret = string.Format("{0}<br/>{1}", ret, review);
+
+
+                if ( SRPSettings.GetSettingValue("FBReviewOn").SafeToBool())
+                {
+                    var fbButton = string.Format("<div class=\"fb-share-button\" data-href='{0}://{1}{2}/ShareReview.aspx?ID={3}' data-type=\"button\"></div>",
+                                Request.Url.Scheme, Request.Url.Authority, Request.ApplicationPath.TrimEnd('/'), PRID);
+
+                    ret = string.Format("{0}<br/>{1}", ret, fbButton);
+                }
+
+
+            }
+            return ret;
+        }
     }
 }

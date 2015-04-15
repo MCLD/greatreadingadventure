@@ -18,26 +18,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Online Book Edit");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["MGID"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -67,7 +57,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string returnURL = "~/ControlRoom/Modules/Setup/MiniGameList.aspx";
             if (e.CommandName.ToLower() == "more")
             {
-                Response.Redirect("~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx?MGID=" + e.CommandArgument);
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx");
+                //Response.Redirect("~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx?MGID=" + e.CommandArgument);
             }
 
             if (e.CommandName.ToLower() == "preview")

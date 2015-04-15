@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" 
 Title="Summer Reading Program Badge" MasterPageFile="~/Layout/SRP.Master"
-CodeBehind="Default.aspx.cs" Inherits="SRP._Default"
+CodeBehind="ShareBadge.aspx.cs" Inherits="STG.SRP.ShareBadge"
  %>
 <%@ Import Namespace="STG.SRP.DAL" %>
 

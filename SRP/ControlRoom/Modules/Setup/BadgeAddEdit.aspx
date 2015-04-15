@@ -27,7 +27,7 @@
         Width="100%">
         <Fields>
 
-        <asp:BoundField DataField="BID" HeaderText="Badge Id: " SortExpression="BID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="BID" HeaderText="Badge Id: " SortExpression="BID" ReadOnly="True" InsertVisible="False" Visible="false">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             <ItemStyle Width="100%" />
         </asp:BoundField>
@@ -115,22 +115,36 @@
                             <table width="100%">
                                 <tr>
                                     <td nowrap>
-                                        <b>Badge Control Room Name: </b>
+                                        <b>Control Room Name: </b>
                                     </td>
-                                    <td width=100%>
-                                        <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' Width="70%" ></asp:TextBox>
+                                    <td width=50%>
+                                        <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' Width="300px" ></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvAdminName" runat="server" 
                                             ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="Badge Control Room Name is required" 
                                             SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+                                    </td>  
+                                    <td rowspan="4" align="center">
+
+                                        <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
+                                                FileName='<%# Eval("BID") %>'
+                                                ImgWidth="200" 
+                                                CreateSmallThumbnail="True" 
+                                                CreateMediumThumbnail="False"
+                                                SmallThumbnailWidth="64" 
+                                                MediumThumbnailWidth="128"
+                                                Folder="~/Images/Badges/"
+                                                Extension="png"
+                                            />
                                     </td>
+                                    </td>                                 
                                 </tr>
                 
                                 <tr>
                                     <td >
-                                        <b>Badge Patron Name: </b>
+                                        <b>Patron Web Name: </b>
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="UserName" runat="server" Text='<%# Eval("UserName") %>' Width="70%"></asp:TextBox>
+                                        <asp:TextBox ID="UserName" runat="server" Text='<%# Eval("UserName") %>' Width="300px"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvUserName" runat="server" 
                                             ControlToValidate="UserName" Display="Dynamic" ErrorMessage="Badge Patron Name is required" 
                                             SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
@@ -139,35 +153,25 @@
                             
                                 <tr>
                                     <td nowrap valign="top">
-                                        <b>Also Awards Physical Prize: </b>
+                                        <b>Awards Physical Prize? </b>
                                     </td>
-                                    <td width=100%>
+                                    <td width=50%>
                                         <asp:Checkbox ID="IncludesPhysicalPrizeFlag" runat="server" checked='<%# (bool)Eval("IncludesPhysicalPrizeFlag") %>'></asp:Checkbox>
-                                        <br /><br />
-                                        <b>Physical Prize Name:</b><br />
-                                        <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="70%"></asp:TextBox>
+                                        <br />
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<b>Physical Prize Name:</b><br />
+                                        &nbsp;&nbsp;&nbsp;<asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px"></asp:TextBox>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td  colspan="2">
                                    
-
-                                        <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
-                                            FileName='<%# Eval("BID") %>'
-                                            ImgWidth="200" 
-                                            CreateSmallThumbnail="True" 
-                                            CreateMediumThumbnail="True"
-                                            SmallThumbnailWidth="64" 
-                                            MediumThumbnailWidth="128"
-                                            Folder="~/Images/Badges/"
-                                            Extension="png"
-                                        />
-                                    </td>
+                                   <br /><br /><br /><br />
+                                        
                                 </tr>    
                                 
                                 <tr>
-                                    <td colspan="2" >
+                                    <td colspan="3" >
                                         <b>Message to Patron when badge is earned:</b>
                                         <br />
                                         <CKEditor:CKEditorControl ID="CustomEarnedMessage" 
@@ -181,7 +185,7 @@
                                                 DisableNativeTableHandles="False" 
                                                 DocType="&lt;!DOCTYPE html&gt;" 
                                                 ForcePasteAsPlainText="True" 
-                                                Height="150px" UIColor="#D3D3D3" 
+                                                Height="250px" UIColor="#D3D3D3" 
                                                 Visible="True" 
                                                 Width="100%"
                                                 Toolbar="Source|-|Preview|-|Cut|Copy|Paste|PasteText|PasteFromWord|-|Undo|Redo|-|Find|Replace|-|SelectAll|RemoveFormat| 
@@ -209,7 +213,7 @@
                                 <table width="100%">
                                 <tr>
                                     <td nowrap>
-                                        <b>GenNotificationFlag: </b>
+                                        <b>Send Notification: </b>
                                     </td>
                                     <td width=100%>
                                         <asp:Checkbox ID="GenNotificationFlag" runat="server" checked='<%# (bool)Eval("GenNotificationFlag") %>'></asp:Checkbox>
@@ -229,7 +233,7 @@
                                 
                                 <tr>
                                     <td colspan="2" >
-                                        <b>Notification Message Content:</b>
+                                        <b>Notification Message :</b>
                                         <br />
                                         <CKEditor:CKEditorControl ID="NotificationBody" 
                                                 BasePath="/ckeditor/" 
@@ -263,7 +267,7 @@
                         </ajaxToolkit:TabPanel>       
 
 
- <ajaxToolkit:TabPanel runat="server" 
+                        <ajaxToolkit:TabPanel runat="server" 
                             HeaderText="Program Reward Code Assignment" 
                             ID="TabPanel3"
                             Enabled="true"
@@ -327,22 +331,113 @@
                         </ajaxToolkit:TabPanel>      
 
 
-                </ajaxToolkit:TabContainer>
+                        <ajaxToolkit:TabPanel runat="server" 
+                            HeaderText="Extended Attributes" 
+                            ID="TabPanel4"
+                            Enabled="true"
+                            ScrollBars="Auto" 
+                        >
+                            <ContentTemplate>
 
+                            <table width="100%">
+                                <tr>
+                                    <td nowrap width="50%" align="center">
+                                        <b>Badge Category</b>
+                                    </td>
+                                    <td nowrap width="50%" align="center">
+                                        <b>Age Group</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td nowrap width="50%" valign="top" height="250px">      
+                                        <div style="height: 250px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd; ">
+                                                <asp:GridView ID="gvCat" ShowHeader=false  runat="server" DataSourceID="odsDDBadgeCat" AutoGenerateColumns="false" Width="100%">
+                                                <Columns>
+                                                    <asp:TemplateField ShowHeader="false">
+                                                    <ItemTemplate>
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("Checked")).ToString()=="1"?true:false) %>' runat="server" />   
+                                                        <%# Eval("Name")%>
+                                                        <asp:Label ID="CID" runat="server" Text='<%# Eval("CID") %>' Visible="False"></asp:Label>
+                                                    </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>       
+                                        </div>             
+                                               
+                                    </td>
+                                    <td nowrap width="50%" valign="top" height="250px">
+                                        <div style="height: 250px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd; ">
+                                                <asp:GridView ID="gvAge" ShowHeader=false  runat="server" DataSourceID="odsDDBadgeAge" AutoGenerateColumns="false" Width="100%">
+                                                <Columns>
+                                                    <asp:TemplateField ShowHeader="false">
+                                                    <ItemTemplate>
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("Checked")).ToString()=="1"?true:false) %>' runat="server" />   
+                                                        <%# Eval("Name")%>
+                                                        <asp:Label ID="CID" runat="server" Text='<%# Eval("CID") %>' Visible="False"></asp:Label>
+                                                    </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>       
+                                        </div>             
 
-
-
-
+                                    </td>
+                                </tr>
 
                 
+                                <tr>
+                                    <td nowrap width="50%" align="center">
+                                        <b>Branch Library</b>
+                                    </td>
+                                    <td nowrap width="50%" align="center">
+                                        <b>Location</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td nowrap width="50%" valign="top" height="250px">      
+                                        <div style="height: 250px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd; ">
+                                                <asp:GridView ID="gvBranch" ShowHeader=false  runat="server" DataSourceID="odsDDBranch" AutoGenerateColumns="false" Width="100%">
+                                                <Columns>
+                                                    <asp:TemplateField ShowHeader="false">
+                                                    <ItemTemplate>
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("Checked")).ToString()=="1"?true:false) %>' runat="server" />   
+                                                        <%# Eval("Name")%>
+                                                        <asp:Label ID="CID" runat="server" Text='<%# Eval("CID") %>' Visible="False"></asp:Label>
+                                                    </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>       
+                                        </div>             
+                                               
+                                    </td>
+                                    <td nowrap width="50%" valign="top" height="250px">
+                                        <div style="height: 250px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd; ">
+                                                <asp:GridView ID="gvLoc" ShowHeader=false  runat="server" DataSourceID="odsDDBadgeLoc" AutoGenerateColumns="false" Width="100%">
+                                                <Columns>
+                                                    <asp:TemplateField ShowHeader="false">
+                                                    <ItemTemplate>
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("Checked")).ToString()=="1"?true:false) %>' runat="server" />   
+                                                        <%# Eval("Name")%>
+                                                        <asp:Label ID="CID" runat="server" Text='<%# Eval("CID") %>' Visible="False"></asp:Label>
+                                                    </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>       
+                                        </div>  
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            </ContentTemplate>
+                        </ajaxToolkit:TabPanel>
+                </ajaxToolkit:TabContainer>
+
             </EditItemTemplate>
             <ItemTemplate>
                 <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" />
             </ItemTemplate>
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>
-
-
 
             <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: "  Visible="false"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
@@ -363,11 +458,6 @@
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
-
-
-           
-
-
 
             <asp:TemplateField ShowHeader="False">
                 <ItemTemplate>
@@ -446,11 +536,40 @@
     <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" TypeName="STG.SRP.DAL.Badge">
         <SelectParameters>
-            <asp:ControlParameter ControlID="lblPK" Name="BID" 
-                PropertyName="Text" Type="Int32" />
+            <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
     </asp:ObjectDataSource>
 
     
+    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
+        SelectMethod="GetBadgeBranches" 
+        TypeName="STG.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource> 
 
+    <asp:ObjectDataSource ID="odsDDBadgeCat" runat="server" 
+        SelectMethod="GetBadgeCategories" 
+        TypeName="STG.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource> 
+
+    <asp:ObjectDataSource ID="odsDDBadgeAge" runat="server" 
+        SelectMethod="GetBadgeAgeGroups" 
+        TypeName="STG.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource> 
+
+    <asp:ObjectDataSource ID="odsDDBadgeLoc" runat="server" 
+        SelectMethod="GetBadgeLocations" 
+        TypeName="STG.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource> 
 </asp:Content>

@@ -5,7 +5,7 @@
     <h4>My Badges</h4><hr />
     <!--<small>These are the badges you have earned! <a href="/MyBadges.aspx">Click here for more details! </a></small>-->
     <small>See <a href="/MyBadges.aspx">my badges </a></small><br />
-    <small>Discover <a href="http://mcldconnect.org/mcreads/" target="_blank">more badges </a></small>
+    <small>Discover <a href="/BadgeGallery.aspx">more badges </a></small>
 
     <hr />
     <div style="font-size: smaller; max-height: 350px; overflow:auto; overflow-x: hidden; -ms-overflow-x: hidden; white-space: nowrap; border: 1px solid silver;">

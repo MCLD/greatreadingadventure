@@ -13,9 +13,12 @@
     <asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label>
     <asp:Image ID="imgSlide" runat="server" Width="500px" /> <!--Height="500px"-->
     <br /><br />
+    <div style="text-align: left; width: 500px;">
     <asp:Label ID="lblEasy" runat="server" Text="" Visible="True"></asp:Label>
     <asp:Label ID="lblMedium" runat="server" Text="" Visible="False"></asp:Label>
     <asp:Label ID="lblHard" runat="server" Text="" Visible="False"></asp:Label>
+    </div>
+    <br />
     <asp:Panel ID="pnlAudioEasy" runat="server" Visible="False">
         <audio controls>
             <source src="<%=AudioEasy%>" type="audio/mpeg">

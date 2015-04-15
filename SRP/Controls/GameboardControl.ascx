@@ -2,6 +2,7 @@
 
 <%@ Register src="MyPointsControl.ascx" tagname="MyPointsControl" tagprefix="uc1" %>
 <%@ Register src="LeaderBoardControl.ascx" tagname="LeaderBoardControl" tagprefix="uc2" %>
+<%@ Register src="MyGameLoggingNavControl.ascx" tagname="MyGameLoggingNavControl" tagprefix="uc3" %>
 
 <div class="row">
 	<div class="span9">
@@ -23,16 +24,8 @@
         
         <uc2:LeaderBoardControl ID="LeaderBoardControl1" runat="server" />
 
-    <div class="secondary-nav" style="height: 230px;">
-        <ul class="nav">
-            <li><a href="/MyLogEntry.aspx" 
-                    > 
-                     <img src="/images/Games/Board/add.png" id="Enter" style="width:100px; float:left; padding-right: 5px;padding-top: 5px;padding-bottom: 5px;" alt="Reading Log"/>
-                     <!--Log your activity -->Play Now:
-                     <br /><small><!--Enter your reading or event attendance to earn points, badges and prizes or play bonus games.-->
-                                    Log my reading, enter a secret code, and play mini-games</small></a></li>
-        </ul>
-    </div>
+        <uc3:MyGameLoggingNavControl ID="MyGameLoggingNavControl1" runat="server" />
+
 
         
         </div>

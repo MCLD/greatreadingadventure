@@ -1,0 +1,229 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="TSelection.master.cs" Inherits="STG.SRP.Layout.TSelection" %>
+<!DOCTYPE html>
+
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"><!--<![endif]-->
+    <head id="Head1" runat="server" />
+        <meta charset="utf-8">
+        <title>Summer Reading Program</title>
+        
+        <asp:ContentPlaceHolder ID="TopOfHeader" runat="server">
+        
+
+        </asp:ContentPlaceHolder>
+        
+        
+        <!-- For Mobile -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="http://fonts.googleapis.com/css?family=Open Sans:300,400,600,700" rel="stylesheet" type="text/css">
+
+        <!-- CSS Start -->
+	    <link href="css/bootstrap.css" rel="stylesheet"/>
+	    <link href="css/font-awesome.min.css" rel="stylesheet"/>
+	    <link href="css/responsive.css" rel="stylesheet"/>
+	    <!-- Theme style -->
+	    <link href="css/theme-style.css" rel="stylesheet">
+
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+	      <script src="js/html5.js"></script>
+	    <![endif]-->
+	
+	    <link rel="shortcut icon" href="favicon.png">
+
+
+        <asp:PlaceHolder ID="ProgramCSS" runat="server"/>
+
+        <!-- CSS End -->
+
+
+
+    </head>
+    <body class="page">
+    <form id="mainForm" runat="server">
+    
+
+<div id="navigation" class="wrapper">
+  <div class="navbar navbar-static-top"  > 
+    
+    <!--Hidden Header Region-->
+    <div class="header-hidden">
+      <div class="header-hidden-inner container">
+        <div class="row-fluid">
+          <div class="span4">
+            <h3><asp:Label ID="Label1" runat="server">About_Us_hidden_header</asp:Label></h3>
+            <p><asp:Label ID="Label2" runat="server">About_Us_Short_Text</asp:Label></p>
+          </div>
+          <div class="span4"> 
+            <h3><asp:Label ID="Label3" runat="server">Contact_Us_hidden_header</asp:Label></h3>
+            <address>
+            <p><abbr title="Phone"><i class="icon-phone"></i></abbr> <asp:Label ID="Phone" runat="server" Text="Label">Contact_Us_hidden_header_Phone</asp:Label></p>
+            <p><abbr title="Email"><i class="icon-envelope"></i></abbr> <asp:Label ID="Label4" runat="server">Contact_Us_hidden_header_Email</asp:Label></p>
+            <p><abbr title="Address"><i class="icon-home"></i></abbr> <asp:Label ID="Label5" runat="server">Contact_Us_hidden_header_Address</asp:Label></p>
+            </address>
+          </div>
+          <div class="span4"> 
+            <h3><asp:Label ID="Label6"  runat="server">Info_hidden_header</asp:Label></h3>
+            <p><asp:Label ID="Label7"  runat="server">Info_hidden_header_Short_Text</asp:Label></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Hidden Header Region END-->
+    
+
+
+    <!--Header & Branding region-->
+    <div class="header" style="padding-bottom:0px!important; margin-bottom:0px!important;">
+      <div class="header-inner container">
+        <div class="row-fluid">
+          <div class="span6"> 
+            <!--branding/logo--> 
+            <a class="sitename" href="/" title="Home">
+            	<h1><asp:Label ID="Label8" runat="server">System_Name</asp:Label></h1>
+            </a>
+          </div>
+          <div class="span4">
+				<div class="slogan"><asp:Label ID="Label9" runat="server">Slogan</asp:Label></div>
+          </div>
+          <!--header rightside-->
+          <div class="span2">
+            <div id="header-hidden-link"> <a href="#" class="show-hide" title="Click for more information" data-target=".header-hidden"><i></i>Open</a> </div>
+
+          </div>
+        </div>
+
+
+
+
+      <ul class="navbar-inner block" style="position:relative; top:24px; left:-20px; width:102.2%; "> 
+        
+        <!--mobile collapse menu button--> 
+        <a class="btn btn-navbar pull-left" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a> 
+        
+
+        
+                <div class="nav user-menu pull-right">
+                 <a href="/Register.aspx" runat="server" id="lnkRegister" class="btn a"><asp:Label ID="Label10"  runat="server">RegisterMasterBtn</asp:Label></a>
+                 <a href="/Login.aspx" runat="server" id="lnkLogin" class="btn a"><asp:Label ID="Label11" runat="server">LoginMasterBtn</asp:Label></a>
+                 <a href="/Logout.aspx" runat="server" id="lnkLogout" class="btn a"><asp:Label ID="Label12" runat="server">LogoutMasterBtn</asp:Label></a>
+                </div>
+
+        
+        <!--everything within this div is collapsed on mobile-->
+        <div class="nav-collapse collapse"> 
+          <!--main navigation-->
+          <ul class="nav" id="main-menu">
+            <li class="home-link"><a href="/" id="A1" runat="server" visible="false"><i class="icon-home"></i><span class="visible-phone">Home</span></a></li>
+            <li class="home-link"><a href="/" class="menu-item" id="home1" runat="server" visible="true"><i class="icon-home home-link"></i></a></li>
+            <li class="home-link"><a href="/MyProgram.aspx" class="menu-item" id="home2" runat="server" visible="false"><i class="icon-home"></i></a></li>
+            
+            <li><a href="/MyNotifications.aspx" class="menu-item" id="n" runat="server" visible="false">Notifications</a></li>
+            <li><a href="/MyBadges.aspx" class="menu-item" id="b" runat="server" visible="false">My Badges</a></li>
+            <li><a href="/Events.aspx" class="menu-item" id="v" runat="server" visible="false">Events</a></li>
+            <li><a href="/MyOffers.aspx" class="menu-item" id="o" runat="server" visible="false">Offers</a></li>
+
+            <li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server" visible="false">Family Members</a></li>
+            <li><a href="/MyAccount.aspx" class="menu-item" id="a" runat="server" visible="false">My Account</a></li>
+            <li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server" visible="false">Change Password</a></li>
+
+          </ul>
+        </div>
+        <!--/.nav-collapse --> 
+      </div>
+
+    
+
+
+
+
+
+      </div>
+
+
+
+    </div>
+    <!--Header & Branding region END-->
+
+  
+         
+
+    </div>
+</div>
+
+
+<div id="content2" >
+	<div class="container wrapper">
+        <asp:PlaceHolder ID="Content" runat="server"/>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </div>
+</div>
+
+
+
+<div id="content-below" class="wrapper">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="upsell"> 	
+      		<asp:Label ID="Upsell"  runat="server">Upsell</asp:Label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="container">
+    <div class="row-fluid">
+      <div id="toplink"><a href="#top" class="top-link" title="Back to top"><asp:Label ID="BackToTop"  runat="server">Back To Top </asp:Label><i class="icon-chevron-up"></i></a></div>
+      
+      <div class="subfooter">
+        <div class="span6">
+          <p><asp:Label ID="Copyright"  runat="server">Copyright_Statement</asp:Label></p>
+        </div>
+        <div class="span6">
+        <!--
+          <ul class="inline pull-right">
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        -->
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+
+   </form>
+
+<scriptXX src="js/bootstrap-transition.js"></scriptXX> 
+<scriptXX src="js/bootstrap-dropdown.js"></scriptXX> 
+<scriptXX src="js/bootstrap-collapse.js"></scriptXX> 
+<scriptXX src="js/bootstrap-tooltip.js"></scriptXX> 
+<scriptXX src="js/bootstrap-popover.js"></scriptXX> 
+<scriptXX src="js/script.js"></scriptXX>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/transition.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/dropdown.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/collapse.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/popover.min.js"></script> 
+<script src="js/script.js"></script> 
+</body>
+
+</html>
+
+
+ 
+    
+   

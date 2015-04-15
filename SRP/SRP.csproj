@@ -53,7 +53,9 @@
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="SRP_DAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="SRP_DAL, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\SRP_DAL.dll</HintPath>
     </Reference>
@@ -77,6 +79,7 @@
   <ItemGroup>
     <Content Include="ActivityHistory.aspx" />
     <Content Include="AddChildAccount.aspx" />
+    <Content Include="AddlSurvey.aspx" />
     <Content Include="App_Themes\Default\blue_bg.png" />
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
@@ -87,6 +90,9 @@
     <Content Include="App_Themes\STG\font-awesome.css" />
     <Content Include="App_Themes\STG\TextFile1.txt" />
     <Content Include="BadgeAward.aspx" />
+    <Content Include="BadgeDetail.aspx" />
+    <Content Include="BadgeGallery.aspx" />
+    <Content Include="Blank.aspx" />
     <Content Include="ChangeFamMemberAct.aspx" />
     <Content Include="ChangeFamMemberPwd.aspx" />
     <Content Include="ChangePassword.aspx" />
@@ -439,11 +445,56 @@
     <Content Include="ControlRoom\Controls\MinigamePreview.ascx" />
     <Content Include="ControlRoom\Controls\PatronContext.ascx" />
     <Content Include="ControlRoom\Controls\PatronCtl.ascx" />
+    <Content Include="ControlRoom\Controls\PatronLitTestsCtl.ascx" />
     <Content Include="ControlRoom\Controls\PatronLogEntryCtl.ascx" />
     <Content Include="ControlRoom\Controls\PatronSearchCtl.ascx" />
+    <Content Include="ControlRoom\Controls\QuestionPreview.ascx" />
     <Content Include="ControlRoom\Controls\SettingEditor.ascx" />
-    <Content Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx" />
-    <Content Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx" />
+    <Content Include="ControlRoom\Controls\SurveyAnswerStatsCtl.ascx" />
+    <Content Include="ControlRoom\Images\Clone.png" />
+    <Content Include="ControlRoom\Images\exam.png" />
+    <Content Include="ControlRoom\Images\Key_E.png" />
+    <Content Include="ControlRoom\Images\Key_H.png" />
+    <Content Include="ControlRoom\Images\Key_M.png" />
+    <Content Include="ControlRoom\Images\Next_LG.png" />
+    <Content Include="ControlRoom\Images\Next_SM.png" />
+    <Content Include="ControlRoom\Images\preview.png" />
+    <Content Include="ControlRoom\Images\Previous_LG.png" />
+    <Content Include="ControlRoom\Images\Previous_sm.png" />
+    <Content Include="ControlRoom\Images\push.png" />
+    <Content Include="ControlRoom\Images\Questions.png" />
+    <Content Include="ControlRoom\Images\Result.png" />
+    <Content Include="ControlRoom\Images\Run.png" />
+    <Content Include="ControlRoom\Images\SubTenants.png" />
+    <Content Include="ControlRoom\Images\Synchronize.png" />
+    <Content Include="ControlRoom\Images\Synchronize_LG.png" />
+    <Content Include="ControlRoom\Images\Tenants.png" />
+    <Content Include="ControlRoom\Modules\Notifications\BulkNotification.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronSurveyDetails.aspx" />
+    <Content Include="ControlRoom\Modules\Patrons\PatronSurveys.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx" />
+    <Content Include="ControlRoom\Modules\Settings\ClosingPush.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\AwardAddWizard.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\BookListAddWizard.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\EventAddWizard.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyClone.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyEmbedCode.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyPreview.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyQuestionAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyQuestionAddWizard.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyQuestionList.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\SurveyResults.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\Default.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantGroupsAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\MyTenantAccount.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantGroupList.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantList.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantSummaryReport.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantUserAddEdit.aspx" />
+    <Content Include="ControlRoom\Modules\Tenant\TenantUserList.aspx" />
     <Content Include="ControlRoom\Setup.aspx" />
     <Content Include="ControlRoom\default.aspx" />
     <Content Include="ControlRoom\FileNotFound.aspx" />
@@ -521,8 +572,6 @@
     <Content Include="ControlRoom\Images\prize_drawing.png" />
     <Content Include="ControlRoom\Images\program.png" />
     <Content Include="ControlRoom\Images\programStyle.png" />
-    <Content Include="ControlRoom\Images\Publish.png" />
-    <Content Include="ControlRoom\Images\PublishRequest.png" />
     <Content Include="ControlRoom\Images\puzzle.png" />
     <Content Include="ControlRoom\Images\refresh.png" />
     <Content Include="ControlRoom\Images\reports.png" />
@@ -548,9 +597,7 @@
     <Content Include="ControlRoom\Images\viewOnly.png" />
     <Content Include="ControlRoom\Images\wait.png" />
     <Content Include="ControlRoom\Images\warning.png" />
-    <Content Include="ControlRoom\Images\widget.png" />
     <Content Include="ControlRoom\Images\yes.png" />
-    <Content Include="ControlRoom\Images\ZA101776221033.gif" />
     <Content Include="ControlRoom\Login.aspx" />
     <Content Include="ControlRoom\LoginRecovery.aspx" />
     <Content Include="ControlRoom\Logoff.aspx" />
@@ -559,10 +606,9 @@
     <Content Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\TemplateList.aspx" />
     <Content Include="App_Themes\STG\Default.skin" />
-    <None Include="ControlRoom\Modules\Install\SQL3.config">
+    <Content Include="ControlRoom\Modules\Install\InstallScript.config">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="ControlRoom\Modules\Install\SQL2.config" />
+    </Content>
     <None Include="ControlRoom\Modules\Install\SQL.config" />
     <Content Include="ControlRoom\Modules\Notifications\Default.aspx" />
     <Content Include="ControlRoom\Modules\Notifications\NotificationList.aspx" />
@@ -690,6 +736,7 @@
     <Content Include="Controls\Minigame.ascx" />
     <Content Include="Controls\MyAccountCtl.ascx" />
     <Content Include="Controls\MyBadgesListControl.ascx" />
+    <Content Include="Controls\MyGameLoggingNavControl.ascx" />
     <Content Include="Controls\MyGamemapNavControl.ascx" />
     <Content Include="Controls\MyNoGameProgramCenterColumn.ascx" />
     <Content Include="Controls\MyPointsControl.ascx" />
@@ -701,6 +748,7 @@
     <Content Include="Controls\Offers.ascx" />
     <Content Include="Controls\PatronLogin.ascx" />
     <Content Include="Controls\PatronRegistration.ascx" />
+    <Content Include="Controls\PatronSurvey.ascx" />
     <Content Include="Controls\ProgramBanner.ascx" />
     <Content Include="Controls\ProgramCSS.ascx" />
     <Content Include="Controls\ProgramTabs.ascx" />
@@ -710,16 +758,21 @@
     <Content Include="Controls\SimpleLoggingControl.ascx" />
     <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
     <Content Include="CSS\bootstrap.css" />
+    <Content Include="CSS\font-awesome.min.css" />
     <Content Include="CSS\Program\Default.css" />
+    <Content Include="CSS\responsive.css" />
+    <Content Include="CSS\theme-style.css" />
     <Content Include="EnterFamMemberLog.aspx" />
     <Content Include="Events.aspx" />
     <Content Include="FamilyAccountList.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
+    <Content Include="FramedSurvey.aspx" />
     <Content Include="GameMap.aspx" />
     <Content Include="images\arrow-left.png" />
     <Content Include="images\arrow-right.png" />
     <Content Include="images\arrows.png" />
+    <Content Include="images\Audit.png" />
     <Content Include="images\bg-sequence.jpg" />
     <Content Include="images\bg\brushed_alu.png" />
     <Content Include="images\bg\crisp_paper_ruffles.png" />
@@ -739,7 +792,13 @@
     <Content Include="images\bg\vertical_cloth.png" />
     <Content Include="images\bg\vichy.png" />
     <Content Include="images\bg\washi.png" />
+    <Content Include="images\bg_diamond.png" />
+    <Content Include="images\bg_divider.png" />
+    <Content Include="images\bg_noise-2.png" />
+    <Content Include="images\books.png" />
     <Content Include="images\box_flip.gif" />
+    <Content Include="images\checkmark.png" />
+    <Content Include="images\DefaultBanner.png" />
     <Content Include="images\draw.png" />
     <Content Include="images\fancybox_buttons.png" />
     <Content Include="images\fancybox_loading.gif" />
@@ -762,48 +821,28 @@
     <Content Include="images\Games\Board\sm_stamp_2.png" />
     <Content Include="images\Games\Board\stamp_1.png" />
     <Content Include="images\Games\Board\stamp_2.png" />
+    <Content Include="images\game_map_icon.png" />
     <Content Include="images\headline-bg.png" />
-    <Content Include="images\icons\list\list_arrow.png" />
-    <Content Include="images\icons\list\list_check.png" />
-    <Content Include="images\icons\list\list_circle.png" />
-    <Content Include="images\icons\list\list_cross.png" />
-    <Content Include="images\icons\list\list_minus.png" />
-    <Content Include="images\icons\list\list_plus.png" />
-    <Content Include="images\icons\list\list_square.png" />
-    <Content Include="images\icons\list\list_star.png" />
-    <Content Include="images\icons\social\amazon.png" />
-    <Content Include="images\icons\social\behance.png" />
-    <Content Include="images\icons\social\blogger.png" />
-    <Content Include="images\icons\social\deviantart.png" />
-    <Content Include="images\icons\social\dribbble.png" />
-    <Content Include="images\icons\social\dropbox.png" />
-    <Content Include="images\icons\social\evernote.png" />
-    <Content Include="images\icons\social\facebook.png" />
-    <Content Include="images\icons\social\forrst.png" />
-    <Content Include="images\icons\social\github.png" />
-    <Content Include="images\icons\social\googleplus.png" />
-    <Content Include="images\icons\social\jolicloud.png" />
-    <Content Include="images\icons\social\last-fm.png" />
-    <Content Include="images\icons\social\linkedin.png" />
-    <Content Include="images\icons\social\picasa.png" />
-    <Content Include="images\icons\social\pintrest.png" />
-    <Content Include="images\icons\social\rss.png" />
-    <Content Include="images\icons\social\skype.png" />
-    <Content Include="images\icons\social\spotify.png" />
-    <Content Include="images\icons\social\stumbleupon.png" />
-    <Content Include="images\icons\social\tumblr.png" />
-    <Content Include="images\icons\social\twitter.png" />
-    <Content Include="images\icons\social\vimeo.png" />
-    <Content Include="images\icons\social\wordpress.png" />
-    <Content Include="images\icons\social\xing.png" />
-    <Content Include="images\icons\social\yahoo.png" />
-    <Content Include="images\icons\social\youtube.png" />
+    <Content Include="images\incorrect.png" />
     <Content Include="images\light.png" />
+    <Content Include="images\LogReading.png" />
+    <Content Include="images\Mail.png" />
+    <Content Include="images\md_preview-file.png" />
+    <Content Include="images\MiniGames.png" />
     <Content Include="images\overlay-icon-01.png" />
     <Content Include="images\overlay-icon-02.png" />
+    <Content Include="images\preview-file-md.png" />
+    <Content Include="images\preview-file-sm.png" />
+    <Content Include="images\preview-file.png" />
     <Content Include="images\scroll-top-top.png" />
+    <Content Include="images\Shield_blue.png" />
+    <Content Include="images\Shield_green.png" />
+    <Content Include="images\shield_red.png" />
+    <Content Include="images\shield_yellow.png" />
+    <Content Include="images\sm_preview-file.png" />
     <Content Include="images\tweet.png" />
-    <Content Include="Install.aspx" />
+    <Content Include="js\script.js" />
+    <Content Include="License.txt" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="MyAccount.aspx" />
@@ -818,6 +857,7 @@
     <Content Include="Recover.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Resources\program.default.en-US.txt" />
+    <Content Include="Scripts\jquery.bpopup.0.9.4.min.js" />
     <Content Include="Scripts\jquery.bpopup.min.js" />
     <Content Include="Scripts\jquery.ddslick.js" />
     <Content Include="Scripts\MediaBox\an7effects-1.5.5.js" />
@@ -825,12 +865,15 @@
     <Content Include="Scripts\MediaBox\mediaboxAdvBlack21.css" />
     <Content Include="Scripts\MediaBox\mootools-core-1.3-full-compat.js" />
     <Content Include="Layout\EmailTemplate.htm" />
+    <Content Include="Select.aspx" />
     <Content Include="ShareBadge.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="ShareReview.aspx" />
+    <Content Include="Thanks.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -840,6 +883,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Layout\TSelection.Master" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityHistory.aspx.cs">
@@ -856,12 +900,40 @@
     <Compile Include="AddChildAccount.aspx.designer.cs">
       <DependentUpon>AddChildAccount.aspx</DependentUpon>
     </Compile>
+    <Compile Include="AddlSurvey.aspx.cs">
+      <DependentUpon>AddlSurvey.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddlSurvey.aspx.designer.cs">
+      <DependentUpon>AddlSurvey.aspx</DependentUpon>
+    </Compile>
     <Compile Include="BadgeAward.aspx.cs">
       <DependentUpon>BadgeAward.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="BadgeAward.aspx.designer.cs">
       <DependentUpon>BadgeAward.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BadgeDetail.aspx.cs">
+      <DependentUpon>BadgeDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BadgeDetail.aspx.designer.cs">
+      <DependentUpon>BadgeDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BadgeGallery.aspx.cs">
+      <DependentUpon>BadgeGallery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BadgeGallery.aspx.designer.cs">
+      <DependentUpon>BadgeGallery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Blank.aspx.cs">
+      <DependentUpon>Blank.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Blank.aspx.designer.cs">
+      <DependentUpon>Blank.aspx</DependentUpon>
     </Compile>
     <Compile Include="ChangeFamMemberAct.aspx.cs">
       <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
@@ -940,6 +1012,13 @@
     <Compile Include="ControlRoom\Controls\PatronCtl.ascx.designer.cs">
       <DependentUpon>PatronCtl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ControlRoom\Controls\PatronLitTestsCtl.ascx.cs">
+      <DependentUpon>PatronLitTestsCtl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\PatronLitTestsCtl.ascx.designer.cs">
+      <DependentUpon>PatronLitTestsCtl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ControlRoom\Controls\PatronLogEntryCtl.ascx.cs">
       <DependentUpon>PatronLogEntryCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -954,6 +1033,13 @@
     <Compile Include="ControlRoom\Controls\PatronSearchCtl.ascx.designer.cs">
       <DependentUpon>PatronSearchCtl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ControlRoom\Controls\QuestionPreview.ascx.cs">
+      <DependentUpon>QuestionPreview.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\QuestionPreview.ascx.designer.cs">
+      <DependentUpon>QuestionPreview.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ControlRoom\Controls\SettingEditor.ascx.cs">
       <DependentUpon>SettingEditor.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -961,19 +1047,194 @@
     <Compile Include="ControlRoom\Controls\SettingEditor.ascx.designer.cs">
       <DependentUpon>SettingEditor.ascx</DependentUpon>
     </Compile>
-    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx.cs">
-      <DependentUpon>SchoolDistrictOriginal.aspx</DependentUpon>
+    <Compile Include="ControlRoom\Controls\SurveyAnswerStatsCtl.ascx.cs">
+      <DependentUpon>SurveyAnswerStatsCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictOriginal.aspx.designer.cs">
-      <DependentUpon>SchoolDistrictOriginal.aspx</DependentUpon>
+    <Compile Include="ControlRoom\Controls\SurveyAnswerStatsCtl.ascx.designer.cs">
+      <DependentUpon>SurveyAnswerStatsCtl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx.cs">
-      <DependentUpon>SchoolDistrictPaged.aspx</DependentUpon>
+    <Compile Include="ControlRoom\Modules\Notifications\BulkNotification.aspx.cs">
+      <DependentUpon>BulkNotification.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ControlRoom\Modules\Settings\SchoolDistrictPaged.aspx.designer.cs">
-      <DependentUpon>SchoolDistrictPaged.aspx</DependentUpon>
+    <Compile Include="ControlRoom\Modules\Notifications\BulkNotification.aspx.designer.cs">
+      <DependentUpon>BulkNotification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronSurveyDetails.aspx.cs">
+      <DependentUpon>PatronSurveyDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronSurveyDetails.aspx.designer.cs">
+      <DependentUpon>PatronSurveyDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronSurveys.aspx.cs">
+      <DependentUpon>PatronSurveys.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Patrons\PatronSurveys.aspx.designer.cs">
+      <DependentUpon>PatronSurveys.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx.cs">
+      <DependentUpon>PatronActivityReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx.designer.cs">
+      <DependentUpon>PatronActivityReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\ClosingPush.aspx.cs">
+      <DependentUpon>ClosingPush.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\ClosingPush.aspx.designer.cs">
+      <DependentUpon>ClosingPush.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardAddWizard.aspx.cs">
+      <DependentUpon>AwardAddWizard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\AwardAddWizard.aspx.designer.cs">
+      <DependentUpon>AwardAddWizard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListAddWizard.aspx.cs">
+      <DependentUpon>BookListAddWizard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\BookListAddWizard.aspx.designer.cs">
+      <DependentUpon>BookListAddWizard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventAddWizard.aspx.cs">
+      <DependentUpon>EventAddWizard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\EventAddWizard.aspx.designer.cs">
+      <DependentUpon>EventAddWizard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyAddEdit.aspx.cs">
+      <DependentUpon>SurveyAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyAddEdit.aspx.designer.cs">
+      <DependentUpon>SurveyAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyClone.aspx.cs">
+      <DependentUpon>SurveyClone.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyClone.aspx.designer.cs">
+      <DependentUpon>SurveyClone.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyEmbedCode.aspx.cs">
+      <DependentUpon>SurveyEmbedCode.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyEmbedCode.aspx.designer.cs">
+      <DependentUpon>SurveyEmbedCode.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyList.aspx.cs">
+      <DependentUpon>SurveyList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyList.aspx.designer.cs">
+      <DependentUpon>SurveyList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyPreview.aspx.cs">
+      <DependentUpon>SurveyPreview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyPreview.aspx.designer.cs">
+      <DependentUpon>SurveyPreview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionAddEdit.aspx.cs">
+      <DependentUpon>SurveyQuestionAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionAddEdit.aspx.designer.cs">
+      <DependentUpon>SurveyQuestionAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionAddWizard.aspx.cs">
+      <DependentUpon>SurveyQuestionAddWizard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionAddWizard.aspx.designer.cs">
+      <DependentUpon>SurveyQuestionAddWizard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionList.aspx.cs">
+      <DependentUpon>SurveyQuestionList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyQuestionList.aspx.designer.cs">
+      <DependentUpon>SurveyQuestionList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyResults.aspx.cs">
+      <DependentUpon>SurveyResults.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\SurveyResults.aspx.designer.cs">
+      <DependentUpon>SurveyResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantGroupsAddEdit.aspx.cs">
+      <DependentUpon>TenantGroupsAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantGroupsAddEdit.aspx.designer.cs">
+      <DependentUpon>TenantGroupsAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\MyTenantAccount.aspx.cs">
+      <DependentUpon>MyTenantAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\MyTenantAccount.aspx.designer.cs">
+      <DependentUpon>MyTenantAccount.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantAddEdit.aspx.cs">
+      <DependentUpon>TenantAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantAddEdit.aspx.designer.cs">
+      <DependentUpon>TenantAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantGroupList.aspx.cs">
+      <DependentUpon>TenantGroupList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantGroupList.aspx.designer.cs">
+      <DependentUpon>TenantGroupList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantList.aspx.cs">
+      <DependentUpon>TenantList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantList.aspx.designer.cs">
+      <DependentUpon>TenantList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantSummaryReport.aspx.cs">
+      <DependentUpon>TenantSummaryReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantSummaryReport.aspx.designer.cs">
+      <DependentUpon>TenantSummaryReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantUserAddEdit.aspx.cs">
+      <DependentUpon>TenantUserAddEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantUserAddEdit.aspx.designer.cs">
+      <DependentUpon>TenantUserAddEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantUserList.aspx.cs">
+      <DependentUpon>TenantUserList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Tenant\TenantUserList.aspx.designer.cs">
+      <DependentUpon>TenantUserList.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Setup.aspx.cs">
       <DependentUpon>Setup.aspx</DependentUpon>
@@ -1760,6 +2021,7 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Code\TenantInitialize.cs" />
     <Compile Include="ControlRoom\UnsecuredControl.Master.cs">
       <DependentUpon>UnsecuredControl.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1788,7 +2050,7 @@
     <Compile Include="Controls\AudioUploadCtl.ascx.designer.cs">
       <DependentUpon>AudioUploadCtl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AwardPoints.cs" />
+    <Compile Include="Code\AwardPoints.cs" />
     <Compile Include="Controls\BadgeAwardCtl.ascx.cs">
       <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1817,7 +2079,7 @@
     <Compile Include="Controls\ChangePassword.ascx.designer.cs">
       <DependentUpon>ChangePassword.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\EmailService.cs" />
+    <Compile Include="Code\EmailService.cs" />
     <Compile Include="Controls\Events.ascx.cs">
       <DependentUpon>Events.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1937,6 +2199,13 @@
     <Compile Include="Controls\MyBadgesListControl.ascx.designer.cs">
       <DependentUpon>MyBadgesListControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MyGameLoggingNavControl.ascx.cs">
+      <DependentUpon>MyGameLoggingNavControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyGameLoggingNavControl.ascx.designer.cs">
+      <DependentUpon>MyGameLoggingNavControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MyGamemapNavControl.ascx.cs">
       <DependentUpon>MyGamemapNavControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2014,6 +2283,13 @@
     <Compile Include="Controls\PatronRegistration.ascx.designer.cs">
       <DependentUpon>PatronRegistration.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PatronSurvey.ascx.cs">
+      <DependentUpon>PatronSurvey.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PatronSurvey.ascx.designer.cs">
+      <DependentUpon>PatronSurvey.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ProgramBanner.ascx.cs">
       <DependentUpon>ProgramBanner.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2056,6 +2332,7 @@
     <Compile Include="Controls\RecoverPassword.ascx.designer.cs">
       <DependentUpon>RecoverPassword.ascx</DependentUpon>
     </Compile>
+    <Compile Include="CodeSnipets.cs" />
     <Compile Include="Controls\SimpleLoggingControl.ascx.cs">
       <DependentUpon>SimpleLoggingControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2070,6 +2347,8 @@
     <Compile Include="Controls\SimpleLoggingFamilyControl.ascx.designer.cs">
       <DependentUpon>SimpleLoggingFamilyControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Code\STGUtilities.cs" />
+    <Compile Include="Code\TestingBL.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2098,6 +2377,13 @@
     <Compile Include="FamilyAccountList.aspx.designer.cs">
       <DependentUpon>FamilyAccountList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FramedSurvey.aspx.cs">
+      <DependentUpon>FramedSurvey.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FramedSurvey.aspx.designer.cs">
+      <DependentUpon>FramedSurvey.aspx</DependentUpon>
+    </Compile>
     <Compile Include="GameMap.aspx.cs">
       <DependentUpon>GameMap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2108,19 +2394,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Install.aspx.cs">
-      <DependentUpon>Install.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Install.aspx.designer.cs">
-      <DependentUpon>Install.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Layout\SRP.Master.cs">
       <DependentUpon>SRP.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Layout\SRP.Master.designer.cs">
       <DependentUpon>SRP.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Layout\TSelection.Master.cs">
+      <DependentUpon>TSelection.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layout\TSelection.Master.designer.cs">
+      <DependentUpon>TSelection.Master</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
@@ -2214,12 +2500,33 @@
     <Compile Include="Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Select.aspx.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Select.aspx.designer.cs">
+      <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ShareBadge.aspx.cs">
       <DependentUpon>ShareBadge.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ShareBadge.aspx.designer.cs">
       <DependentUpon>ShareBadge.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShareReview.aspx.cs">
+      <DependentUpon>ShareReview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShareReview.aspx.designer.cs">
+      <DependentUpon>ShareReview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Thanks.aspx.cs">
+      <DependentUpon>Thanks.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Thanks.aspx.designer.cs">
+      <DependentUpon>Thanks.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2237,7 +2544,6 @@
     <Folder Include="images\Games\MixMatch\" />
     <Folder Include="images\Games\WordMatch\" />
     <Folder Include="images\Offers\" />
-    <Folder Include="js\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

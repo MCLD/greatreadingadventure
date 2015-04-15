@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
     AutoEventWireup="true" CodeBehind="EventList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.EventList" 
-    Theme="STG"
 %>
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
@@ -14,7 +13,7 @@
     </th>
 </thead>
 <tr>
-<td><b>Start Date:</b> </td>
+<td><b>Event Start Date Between :</b> </td>
 <td>
                 <asp:TextBox ID="StartDate" runat="server" Width="75px"                         
                     Text=''></asp:TextBox>
@@ -24,7 +23,7 @@
                     UserDateFormat="MonthDayYear" TargetControlID="StartDate" MaskType="Date" Mask="99/99/9999">
                 </ajaxToolkit:MaskedEditExtender>  
 </td>
-<td><b>End Date:</b> </td>
+<td style="font-weight: 700">&nbsp; and&nbsp; </td>
 <td>
                 <asp:TextBox ID="EndDate" runat="server" Width="75px"                         
                     Text=''></asp:TextBox>
@@ -34,8 +33,8 @@
                     UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999">
                 </ajaxToolkit:MaskedEditExtender>  
 </td>
-
-<td><b>Branch:</b> </td>
+<td width="200px">&nbsp; </td>
+<td><b> Branch/Library:</b> </td>
 <td>
                 <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
                     AppendDataBoundItems="True" Width="200px"
@@ -52,10 +51,11 @@
 
 </td>
 </tr>
+<tr>    <td colspan="7"> &nbsp; </td></tr>
 </table>
 
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False"
+    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="true" PageSize="250" Width="100%"
         DataKeys="EID"
         DataSourceID="odsData"
         onrowcreated="GvRowCreated" 
@@ -65,7 +65,7 @@
         <Columns>
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
+                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
                 </HeaderTemplate>                
@@ -94,40 +94,44 @@
 			<asp:BoundField ReadOnly="True" HeaderText="Event Title" 
                 DataField="EventTitle" SortExpression="EventTitle" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+				<ItemStyle VerticalAlign="Top" Wrap="True"></ItemStyle>
             </asp:BoundField> 
 
             <asp:TemplateField   SortExpression="EventDate" Visible="True"  
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
-                HeaderText="EventDate">              
+                HeaderText="Start Date">              
                 <ItemTemplate> 
                     <%# Eval("EventDate") == DBNull.Value ? "N/A" : ((DateTime)Eval("EventDate")).ToNormalDate()%>
                 </ItemTemplate> 
-				 <ControlStyle Width="250px" /> 
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
+				<ItemStyle    VerticalAlign="Top" Wrap="False"></ItemStyle> 
             </asp:TemplateField>	 			 
 
 
-			<asp:BoundField ReadOnly="True" HeaderText="Event Time" 
+			<asp:BoundField ReadOnly="True" HeaderText="Time" 
                 DataField="EventTime" SortExpression="EventTime" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+				 <ItemStyle   VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField> 
+
+            <asp:TemplateField   SortExpression="EventDate" Visible="True"  
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
+                HeaderText="End Dt/Tm">              
+                <ItemTemplate> 
+                    <%# Eval("EndDate") == DBNull.Value ? "N/A" : ((DateTime)Eval("EndDate")).ToNormalDate().Replace("01/01/1900","")%> <%#Eval("EndTime") %>
+                </ItemTemplate> 
+				 <ItemStyle  VerticalAlign="Top" Wrap="False"></ItemStyle> 
+            </asp:TemplateField>	
 
 			<asp:BoundField ReadOnly="True" HeaderText="Secret Code" 
                 DataField="SecretCode" SortExpression="SecretCode" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+				 <ItemStyle    Width="150px" VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
-			<asp:BoundField ReadOnly="True" HeaderText="Branch" 
+			<asp:BoundField ReadOnly="True" HeaderText="Branch/Library" 
                 DataField="Branch" SortExpression="Branch" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+				<ItemStyle   VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
 

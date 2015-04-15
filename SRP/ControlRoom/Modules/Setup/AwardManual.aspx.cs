@@ -21,13 +21,13 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4900;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Manual Bulk Badge Awards");
+
             if (!IsPostBack)
             {
-                MasterPage.IsSecure = true;
-                MasterPage.PageTitle = string.Format("{0}", "Manual Bulk Badge Awards");
-
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
             }
         }
 
@@ -40,7 +40,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         private DataSet GetMatchingData()
         {
-            var arrParams = new SqlParameter[4];
+            var arrParams = new SqlParameter[5];
 
             if (ProgID.SelectedValue == "0")
             {
@@ -74,7 +74,11 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             {
                 arrParams[3] = new SqlParameter("@School", School.SelectedValue);
             }
-
+            arrParams[4] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
 
             return ds;
@@ -99,6 +103,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             }
             var bid = Convert.ToInt32(BadgeID.SelectedValue);
             var awardCount = 0;
+            Response.Write("<!-- ");
             foreach (DataRow row in GetMatchingData().Tables[0].Rows)
             {
                 var pid = Convert.ToInt32(row["PID"]);
@@ -109,8 +114,10 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     awardCount++;
                     // if the y got a badge, then maybe they match the criteria to get another as well ...
                     AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                    Response.Write(" :-> "); Response.Flush();
                 } 
             }
+            Response.Write("-->");
             lblAwards.Text = string.Format("A total of {0:#,##0} badges was awarded.  (May be less than patrons matching criteria because the badge was not awarded to patrons already owning that badge", awardCount);
         }
 

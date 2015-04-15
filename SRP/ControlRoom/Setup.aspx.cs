@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,27 @@ namespace STG.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+            if (!IsPostBack)
+            {
+                try
+                {
+                    var p = DAL.Programs.GetAll();
+                    Response.Redirect("~/ControlRoom/");
+                    /*
+                     * MasterPage.RequiredPermission = 3000;
+                    MasterPage.IsSecure = true;
+
+                    FailureText.Visible = true;
+                    FailureText.Text =
+                        "WARNING - IT APPEARS THAT THE APPLIACTION HAS ALREADY BEEN INSTALLED. CONTINUING WILL DELETE THE CURRENT INSTALL AND ALL ITS DATA AND REINSTALL.  ALL CURRENT DATA WILL BE LOST.";
+                     */
+                }
+                catch
+                {
+                    // got an error, so there is no database ... continue with initialize ...
+                }
+                
+            }
 
         }
 
@@ -28,7 +49,7 @@ namespace STG.SRP.ControlRoom
             ////////////////////////////////////////
             ////////////////////////////////////////
             ////////////////////////////////////////
-            var InstallFile = "~/ControlRoom/Modules/Install/SQL3.config";
+            var InstallFile = "~/ControlRoom/Modules/Install/InstallScript.config";
             ////////////////////////////////////////
             ////////////////////////////////////////
             ////////////////////////////////////////
@@ -62,46 +83,91 @@ namespace STG.SRP.ControlRoom
             
             var error = "";
             var sr = new StreamReader(Server.MapPath(InstallFile));
-            while (!sr.EndOfStream)
+            var sb = new StringBuilder();
+
+            using (SqlConnection connection = new SqlConnection(conn))
             {
-                var sb = new StringBuilder();
+                connection.Open();
+                SqlCommand command = connection.CreateCommand();
+                SqlTransaction transaction = connection.BeginTransaction("InstallTransaction");
+                command.Connection = connection;
+                command.Transaction = transaction;
+               
                 while (!sr.EndOfStream)
                 {
-                    var s = sr.ReadLine();
-                    if (s != null && (s.ToUpper().Trim().Equals("GO") || s.ToUpper().Trim().StartsWith("GO ") || s.ToUpper().Trim().StartsWith("GO--")))
+                    sb = new StringBuilder();
+                    while (!sr.EndOfStream)
                     {
-                        break;
+                        var s = sr.ReadLine();
+                        if (s != null && (s.ToUpper().Trim().Equals("GO") || s.ToUpper().Trim().StartsWith("GO ") || s.ToUpper().Trim().StartsWith("GO--")))
+                        {
+                            break;
+                        }
+                        sb.AppendLine(s);
                     }
-                    sb.AppendLine(s);
+                    try
+                    {
+                        command.CommandText = sb.ToString();
+                        command.ExecuteNonQuery();
+                        //SqlHelper.ExecuteNonQuery(connection, CommandType.Text, sb.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
+                                              ex.Message, ex.Data, sb);
+                    }
+
                 }
-                try
+                sr.Close();
+                if (error.Length == 0)
                 {
-                    SqlHelper.ExecuteNonQuery(conn, CommandType.Text, sb.ToString());
+                    try
+                    {
+                        transaction.Commit();                        
+                    }
+                    catch (Exception ex)
+                    {
+                        error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
+                                              ex.Message, ex.Data, sb);
+                    }
                 }
-                catch (Exception ex)
+                if (error.Length != 0)
                 {
-                    error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
-                                          ex.Message, ex.Data, sb);
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception ex)
+                    {
+                        error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
+                                              ex.Message, ex.Data, sb);
+                    }
                 }
 
             }
-            sr.Close();
 
 
-            var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
+            if (error.Length == 0)
+            {
+                var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
 
-            config = config.Replace("connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
-                           "connectionString=\"" + rcon + "\"");
-            config = config.Replace("<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
-                string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
+                config =
+                    config.Replace(
+                        "connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
+                        "connectionString=\"" + rcon + "\"");
+                config =
+                    config.Replace(
+                        "<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
+                        string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
 
-            //Modify the web.config
-            System.IO.File.WriteAllText(Server.MapPath("~/web.config"), config);
+                //Modify the web.config
+                System.IO.File.WriteAllText(Server.MapPath("~/web.config"), config);
+            }
 
             if (error.Length == 0)
             {
                 // Delete the Install File
-                System.IO.File.Delete(Server.MapPath(InstallFile));
+                //System.IO.File.Delete(Server.MapPath(InstallFile));
                 Response.Redirect("~/Default.aspx");
             }
             else

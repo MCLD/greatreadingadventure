@@ -1,9 +1,13 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="BadgeList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.BadgeList" 
 
 %>
+<%@ Import Namespace="STG.SRP.DAL" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<hr />
+<b>Badge Gallery Direct URL: </b> <a href='/BadgeGallery.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target=_blank><%= Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/BadgeGallery.aspx?PID=" + Programs.GetDefaultProgramID() %></a>
+<hr />
 <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
         TypeName="STG.SRP.DAL.Badge">
@@ -21,7 +25,7 @@
         <Columns>
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
+                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
                 </HeaderTemplate>                
@@ -30,6 +34,7 @@
                     <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" Tooltip="Edit Record" 
                         CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("BID") %>'  
                         ImageUrl="~/ControlRoom/Images/edit.png" Width="20px" />
+
                     &nbsp;
                     <asp:ImageButton ID="btnDelete" runat="server" AlternateText="Delete Record" Tooltip="Delete Record" 
                         CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("BID") %>' 
@@ -62,7 +67,10 @@
                     
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Badges/sm_{0}.png?{1}", Eval("BID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server" 
+                        ImageUrl='<%# String.Format("~/Images/Badges/sm_{0}.png?{1}", Eval("BID").ToString(), DateTime.Now.ToString()) %>' 
+                        Width="32" Height="32"
+                    />
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>

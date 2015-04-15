@@ -1,4 +1,4 @@
-﻿<%@ Page Title="MyOffers" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Events" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="Events.aspx.cs" Inherits="STG.SRP.Events" 
     EnableEventValidation="false" 
     %>

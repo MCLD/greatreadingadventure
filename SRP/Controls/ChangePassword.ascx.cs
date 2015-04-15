@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using STG.SRP.Controls;
 using STG.SRP.DAL;
+using STG.SRP.Utilities.CoreClasses;
 
 
 namespace STG.SRP.Classes
@@ -13,7 +15,8 @@ namespace STG.SRP.Classes
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
+            uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -61,6 +64,5 @@ namespace STG.SRP.Classes
 
 
         }
-
     }
 }

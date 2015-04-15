@@ -24,7 +24,7 @@
         >
         <Fields>
 
-        <asp:BoundField DataField="OID" HeaderText="OID: " SortExpression="OID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="OID" HeaderText="OID: " SortExpression="OID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             <ItemStyle Width="100%" />
         </asp:BoundField>
@@ -355,22 +355,22 @@
         </asp:TemplateField>
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " 
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: "  Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " 
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: "  Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " 
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: "  Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " 
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: "  Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

@@ -45,8 +45,8 @@
 
     <asp:Button ID="btnSave" runat="server" Text="Save Program Text Resources" 
             onclick="btnSave_Click" CssClass="btn-lg btn-green"/>  &nbsp; 
-        <asp:Button ID="btnReload" runat="server" Text="Reload Program Text Resources" 
-            onclick="btnReload_Click" CssClass="btn-lg btn-green"/>   &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+        <!--<asp:Button ID="btnReload" runat="server" Text="Reload Program Text Resources" 
+            onclick="btnReload_Click" CssClass="btn-lg btn-green"/>   &nbsp;-->  &nbsp;  &nbsp;  &nbsp; 
         <asp:Button ID="btnDefaultCSS" runat="server" Text="Load Default Text Resources" onclick="btnDefaultCSS_Click" CssClass="btn-lg btn-purple"
            />
     <br /><br />

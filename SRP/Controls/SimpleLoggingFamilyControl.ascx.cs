@@ -33,7 +33,9 @@ namespace STG.SRP.Controls
                     lblPID.Text = Session["SA"].ToString();
                 }
 
-                var parent = (Patron)Session["Patron"];
+                //var parent = (Patron)Session["Patron"];           
+                var parent = Patron.FetchObject((int)Session["MasterAcctPID"]);
+
                 lblParentPID.Text = parent.PID.ToString();
 
                 // now validate user can change manage log for SA Sub Account

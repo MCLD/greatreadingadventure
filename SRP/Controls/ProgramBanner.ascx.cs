@@ -16,7 +16,7 @@ namespace STG.SRP.Classes
 
         protected string GetProgramBanner()
         {
-            var defaultBanner ="/images/Banners/default.png";
+            var defaultBanner = "/images/DefaultBanner.png";
             if (Session["ProgramID"] == null)
             {
                 pgmBanner.Visible = true;

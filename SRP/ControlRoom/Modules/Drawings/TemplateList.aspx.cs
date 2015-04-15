@@ -16,15 +16,15 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4000;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Drawing Templates List");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
  
             }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Drawing Templates List");
  
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
@@ -87,12 +87,12 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
             string editpage = "~/ControlRoom/Modules/Drawings/PrizeTemplateAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["DTD"] = ""; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["DTD"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

@@ -2,9 +2,19 @@
     AutoEventWireup="true" CodeBehind="ProgramGameLevelAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.ProgramGameLevelAddEdit" 
     
 %>
-
-
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        #element_to_pop_up1 { display:none; 
+                                background-color:#fff;border-radius:10px 10px 10px 10px;box-shadow:0 0 25px 5px #999;color:#111;display:none;min-width:50px;padding:25px;}
+                    
+        #element_to_pop_up2 { display:none; 
+                                background-color:#fff;border-radius:10px 10px 10px 10px;box-shadow:0 0 25px 5px #999;color:#111;display:none;min-width:50px;padding:25px}
+                     
+    </style>
+
+
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+   <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:ValidationSummary ID="ValidationSummaryMain" runat="server" 
@@ -22,155 +32,22 @@
         >
         <Fields>
 
-        <asp:BoundField DataField="PGLID" HeaderText="Level ID: " SortExpression="PGLID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="PGLID" HeaderText="Level ID: " SortExpression="PGLID" ReadOnly="True" InsertVisible="False" Visible="false">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             <ItemStyle Width="100%" />
         </asp:BoundField>
         
-        <asp:TemplateField HeaderText="Level #: " SortExpression="LevelNumber" HeaderStyle-Wrap="False"  InsertVisible="False">
+        <asp:TemplateField>
 		    <EditItemTemplate>
-                <%# Eval("LevelNumber") %>
+<table width="100%">
 
-            </EditItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" Width="200px"/>    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="X Location: " SortExpression="LocationX" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:TextBox ID="LocationX" runat="server" Text='<%# ((int) Eval("LocationX") ==0 ? "" : Eval("LocationX")) %>' 
-                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvLocationX" runat="server" 
-                    ControlToValidate="LocationX" Display="Dynamic" ErrorMessage="X Location is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revLocationX"
-                    ControlToValidate="LocationX"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>X Location must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * X Location must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvLocationX"
-                    ControlToValidate="LocationX"
-                    MinimumValue="0"
-                    MaximumValue="9999"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>X Location must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * X Location must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="LocationX" runat="server" Text='' Width="50px" CssClass="align-right"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvLocationX" runat="server" 
-                    ControlToValidate="LocationX" Display="Dynamic" ErrorMessage="X Location is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revLocationX"
-                    ControlToValidate="LocationX"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>X Location must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * X Location must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvLocationX"
-                    ControlToValidate="LocationX"
-                    MinimumValue="0"
-                    MaximumValue="9999"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>X Location must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * X Location must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="LocationX" runat="server" Text='<%# Eval("LocationX") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" Width="200px"/>    
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="Y Location: " SortExpression="LocationY" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:TextBox ID="LocationY" runat="server" Text='<%# ((int) Eval("LocationY") ==0 ? "" : Eval("LocationY")) %>' 
-                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvLocationY" runat="server" 
-                    ControlToValidate="LocationY" Display="Dynamic" ErrorMessage="Y Location is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revLocationY"
-                    ControlToValidate="LocationY"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Y Location must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Y Location must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvLocationY"
-                    ControlToValidate="LocationY"
-                    MinimumValue="0"
-                    MaximumValue="99"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Y Location must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Y Location must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="LocationY" runat="server" Text='' Width="50px" CssClass="align-right"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvLocationY" runat="server" 
-                    ControlToValidate="LocationY" Display="Dynamic" ErrorMessage="Y Location is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revLocationY"
-                    ControlToValidate="LocationY"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Y Location must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Y Location must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvLocationY"
-                    ControlToValidate="LocationY"
-                    MinimumValue="0"
-                    MaximumValue="99"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>Y Location must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * Y Location must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="LocationY" runat="server" Text='<%# Eval("LocationY") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-        <asp:TemplateField HeaderText="# Points: " SortExpression="PointNumber" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
+    <tr>
+        <td colspan="8"> <div style="font-size: x-large;"><b>Level #: <%# Eval("LevelNumber") %><hr /></hr></div></td>
+  
+    </tr>
+    <tr>
+        <td valign="top"> <b># Points To Complete: </b> </td>
+        <td valign="top" colspan="3">
                 <asp:TextBox ID="PointNumber" runat="server" Text='<%# ((int) Eval("PointNumber") ==0 ? "" : Eval("PointNumber")) %>' 
                      ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvPointNumber" runat="server" 
@@ -181,10 +58,10 @@
                     ValidationExpression="\d+"
                     Display="Dynamic"
                     EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Points must be numeric.</font>"
+                    ErrorMessage="<br><font color='red'># Points must be numeric.</font>"
                     runat="server"
                     Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Points must be numeric. </font>" 
+                    Text="<br><font color='red'> * # Points must be numeric. </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" />      
                 <asp:RangeValidator ID="rvPointNumber"
@@ -194,15 +71,289 @@
                     Display="Dynamic"
                     Type="Integer"
                     EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Points must be from 0 to 9999!</font>"
+                    ErrorMessage="<br><font color='red'># Points must be from 0 to 9999!</font>"
                     runat="server" 
                     Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Points must be from 0 to 9999! </font>" 
+                    Text="<br><font color='red'> * # Points must be from 0 to 9999! </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" /> 
+        
+        </td>
+
+        <td valign="top"> <b></b> </td>
+        <td valign="top" colspan="3"> <b></b> </td>
+
+    </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
+
+    <tr>
+        <td colspan="2"> <div style="font-size: large; color: Maroon;"><b> Normal Play Mode</b></div></td>
+        <td colspan="2">
+            <asp:HyperLink ID="PreviewImage1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop1"
+                ImageUrl="~/images/preview-file-md.png" 
+                NavigateUrl='<%# string.Format("~/Images/Games/Board/{0}.png",Eval("PGID")) %>'>HyperLink</asp:HyperLink>
+
+                <div id='element_to_pop_up1'>
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/{0}.png",Eval("PGID")) %>'  Width="500px"/>
+                </div>          
+        </td>
+        <td colspan="2"> <div style="font-size: large; color: Maroon;"><b> Bonus Play Mode</b></div></td>
+        <td colspan="2">
+            <asp:HyperLink ID="HyperLink1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop2"
+                ImageUrl="~/images/preview-file-md.png" 
+                NavigateUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",Eval("PGID")) %>'>HyperLink</asp:HyperLink>
+
+                <div id='element_to_pop_up2'>
+                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",Eval("PGID")) %>'  Width="500px"/>
+                </div>
+
+                <script >
+
+                    (function ($) {
+
+                        // DOM Ready
+                        $(function () {
+
+                            $('.pop1').bind('click', function (e) {
+                                e.preventDefault();
+                                $('#element_to_pop_up1').bPopup();
+                            });
+
+                            $('.pop2').bind('click', function (e) {
+                                e.preventDefault();
+                                $('#element_to_pop_up2').bPopup();
+                            });
+
+                        });
+
+                    })(jQuery);
+                </script>           
+        </td>
+   </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
+
+    <tr>
+        <td valign="top"> <b>X Location: </b> </td>
+        <td valign="top">                
+                <asp:TextBox ID="LocationX" runat="server" Text='<%# ((int) Eval("LocationX") ==0 ? "" : Eval("LocationX")) %>' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationX" runat="server" 
+                    ControlToValidate="LocationX" Display="Dynamic" ErrorMessage="X Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationX"
+                    ControlToValidate="LocationX"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationX"
+                    ControlToValidate="LocationX"
+                    MinimumValue="0"
+                    MaximumValue="9999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />
+        </td>
+        <td  valign="top"> <b>Y Location: </b> </td>
+        <td valign="top"> 
+                <asp:TextBox ID="LocationY" runat="server" Text='<%# ((int) Eval("LocationY") ==0 ? "" : Eval("LocationY")) %>' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationY" runat="server" 
+                    ControlToValidate="LocationY" Display="Dynamic" ErrorMessage="Y Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationY"
+                    ControlToValidate="LocationY"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationY"
+                    ControlToValidate="LocationY"
+                    MinimumValue="0"
+                    MaximumValue="99"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" /> 
+        </td>
+
+        <td valign="top" valign="top"> <b>X Location: </b> </td>
+        <td valign="top">
+                <asp:TextBox ID="LocationXBonus" runat="server" Text='<%# ((int) Eval("LocationXBonus") ==0 ? "" : Eval("LocationXBonus")) %>' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                    ControlToValidate="LocationXBonus" Display="Dynamic" ErrorMessage="X Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="RegularExpressionValidator1"
+                    ControlToValidate="LocationX"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="RangeValidator1"
+                    ControlToValidate="LocationXBonus"
+                    MinimumValue="0"
+                    MaximumValue="9999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />        
+        </td>
+        <td valign="top" valign="top"> <b>Y Location: </b> </td>
+        <td valign="top">
+                <asp:TextBox ID="LocationYBonus" runat="server" Text='<%# ((int) Eval("LocationYBonus") ==0 ? "" : Eval("LocationYBonus")) %>' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationYBonus" runat="server" 
+                    ControlToValidate="LocationYBonus" Display="Dynamic" ErrorMessage="Y Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationYBonus"
+                    ControlToValidate="LocationYBonus"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationYBonus"
+                    ControlToValidate="LocationYBonus"
+                    MinimumValue="0"
+                    MaximumValue="99"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" /> 
+        </td>
+
+    </tr>
+
+
+
+    <tr>
+        <td> <b>'Adventure' Mini-Game: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame1IDLbl" runat="server" Text='<%# Eval("Minigame1ID") %>' Visible="False"></asp:Label>             
+        </td>
+    
+        <td> <b>'Adventure' Mini-Game: </b> </td>
+        <td colspan="3">
+               <asp:DropDownList ID="Minigame1IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame1IDBonusLbl" runat="server" Text='<%# Eval("Minigame1IDBonus") %>' Visible="False"></asp:Label>             
+        </td>    
+    </tr>
+    <tr>
+        <td> <b>'Literacy' Mini-Game: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame2IDLbl" runat="server" Text='<%# Eval("Minigame2ID") %>' Visible="False"></asp:Label>      
+        </td>
+        <td> <b>'Literacy' Mini-Game: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="Minigame2IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame2IDBonusLbl" runat="server" Text='<%# Eval("Minigame2IDBonus") %>' Visible="False"></asp:Label>      
+        </td>    
+    
+    </tr>
+    <tr>
+        <td> <b>Level Completion Badge: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="AwardBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="AwardBadgeIDLbl" runat="server" Text='<%# Eval("AwardBadgeID") %>' Visible="False"></asp:Label>      
+        </td>
+        <td> <b>Level Completion Badge: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="AwardBadgeIDBonus" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="AwardBadgeIDBonusLbl" runat="server" Text='<%# Eval("AwardBadgeIDBonus") %>' Visible="False"></asp:Label>      
+        </td>    
+    
+    </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
+
+</table>                
+
+
             </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="PointNumber" runat="server" Text='' Width="50px" CssClass="align-right"></asp:TextBox>
+<table width="100%">
+
+    <tr>
+        <td colspan="8"> <div style="font-size: x-large;"><b>New Level!<hr /></hr></div></td>
+  
+    </tr>
+    <tr>
+        <td valign="top"> <b># Points To Complete: </b> </td>
+        <td valign="top" colspan="3">
+                <asp:TextBox ID="PointNumber" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvPointNumber" runat="server" 
                     ControlToValidate="PointNumber" Display="Dynamic" ErrorMessage="# Points is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -211,10 +362,10 @@
                     ValidationExpression="\d+"
                     Display="Dynamic"
                     EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Points must be numeric.</font>"
+                    ErrorMessage="<br><font color='red'># Points must be numeric.</font>"
                     runat="server"
                     Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Points must be numeric. </font>" 
+                    Text="<br><font color='red'> * # Points must be numeric. </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" />      
                 <asp:RangeValidator ID="rvPointNumber"
@@ -224,104 +375,291 @@
                     Display="Dynamic"
                     Type="Integer"
                     EnableClientScript="true"
-                    ErrorMessage="<font color='red'># Points must be from 0 to 99!</font>"
+                    ErrorMessage="<br><font color='red'># Points must be from 0 to 9999!</font>"
                     runat="server" 
                     Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * # Points must be from 0 to 99! </font>" 
+                    Text="<br><font color='red'> * # Points must be from 0 to 9999! </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" /> 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="PointNumber" runat="server" Text='<%# Eval("PointNumber") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
+        
+        </td>
+
+        <td valign="top"> <b></b> </td>
+        <td valign="top" colspan="3"> <b></b> </td>
+
+    </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
+
+    <tr>
+        <td colspan="2"> <div style="font-size: large; color: Maroon;"><b> Normal Play Mode</b></div></td>
+        <td colspan="2">
+            <asp:HyperLink ID="PreviewImage1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop1"
+                ImageUrl="~/images/preview-file-md.png" 
+                NavigateUrl='<%# PGID.Text%>'>HyperLink</asp:HyperLink>
+
+                <div id='element_to_pop_up1'>
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/{0}.png",PGID.Text) %>'  Width="500px"/>
+                </div>          
+        </td>
+        <td colspan="2"> <div style="font-size: large; color: Maroon;"><b> Bonus Play Mode</b></div></td>
+        <td colspan="2">
+            <asp:HyperLink ID="HyperLink1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop2"
+                ImageUrl="~/images/preview-file-md.png" 
+                NavigateUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",PGID.Text) %>'>HyperLink</asp:HyperLink>
+
+                <div id='element_to_pop_up2'>
+                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",PGID.Text) %>'  Width="500px"/>
+                </div>
+
+                <script >
+
+                    (function ($) {
+
+                        // DOM Ready
+                        $(function () {
+
+                            $('.pop1').bind('click', function (e) {
+                                e.preventDefault();
+                                $('#element_to_pop_up1').bPopup();
+                            });
+
+                            $('.pop2').bind('click', function (e) {
+                                e.preventDefault();
+                                $('#element_to_pop_up2').bPopup();
+                            });
+
+                        });
+
+                    })(jQuery);
+                </script>           
+        </td>
+   </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
+
+    <tr>
+        <td valign="top"> <b>X Location: </b> </td>
+        <td valign="top">                
+                <asp:TextBox ID="LocationX" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationX" runat="server" 
+                    ControlToValidate="LocationX" Display="Dynamic" ErrorMessage="X Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationX"
+                    ControlToValidate="LocationX"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationX"
+                    ControlToValidate="LocationX"
+                    MinimumValue="0"
+                    MaximumValue="9999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />
+        </td>
+        <td  valign="top"> <b>Y Location: </b> </td>
+        <td valign="top"> 
+                <asp:TextBox ID="LocationY" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationY" runat="server" 
+                    ControlToValidate="LocationY" Display="Dynamic" ErrorMessage="Y Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationY"
+                    ControlToValidate="LocationY"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationY"
+                    ControlToValidate="LocationY"
+                    MinimumValue="0"
+                    MaximumValue="99"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" /> 
+        </td>
+
+        <td valign="top" valign="top"> <b>X Location: </b> </td>
+        <td valign="top">
+                <asp:TextBox ID="LocationXBonus" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                    ControlToValidate="LocationXBonus" Display="Dynamic" ErrorMessage="X Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="RegularExpressionValidator1"
+                    ControlToValidate="LocationX"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="RangeValidator1"
+                    ControlToValidate="LocationXBonus"
+                    MinimumValue="0"
+                    MaximumValue="9999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>X Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * X Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />        
+        </td>
+        <td valign="top" valign="top"> <b>Y Location: </b> </td>
+        <td valign="top">
+                <asp:TextBox ID="LocationYBonus" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvLocationYBonus" runat="server" 
+                    ControlToValidate="LocationYBonus" Display="Dynamic" ErrorMessage="Y Location is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revLocationYBonus"
+                    ControlToValidate="LocationYBonus"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvLocationYBonus"
+                    ControlToValidate="LocationYBonus"
+                    MinimumValue="0"
+                    MaximumValue="99"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<br><font color='red'>Y Location must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<br><font color='red'> * Y Location must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" /> 
+        </td>
+
+    </tr>
 
 
-        <asp:TemplateField HeaderText="'Adventure' Mini-Game: " SortExpression="Minigame1ID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
+
+    <tr>
+        <td> <b>'Adventure' Mini-Game: </b> </td>
+        <td colspan="3">
                 <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
-                    AppendDataBoundItems="True" Width="600px"
+                    AppendDataBoundItems="True" Width="90%"
                     >
                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:Label ID="Minigame1IDLbl" runat="server" Text='<%# Eval("Minigame1ID") %>' Visible="False"></asp:Label>      
-
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="Minigame1ID" runat="server" Text='<%# Eval("Minigame1ID") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="'Literacy' Mini-Game: " SortExpression="Minigame2ID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:Label ID="Minigame2IDLbl" runat="server" Text='<%# Eval("Minigame2ID") %>' Visible="False"></asp:Label>      
-
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-            </InsertItemTemplate>            <ItemTemplate>
-                <asp:Label ID="Minigame2ID" runat="server" Text='<%# Eval("Minigame2ID") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Level Completion Badge: " SortExpression="AwardBadgeID" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
-                <asp:DropDownList ID="AwardBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:Label ID="AwardBadgeIDLbl" runat="server" Text='<%# Eval("AwardBadgeID") %>' Visible="False"></asp:Label>      
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:DropDownList ID="AwardBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
-                    AppendDataBoundItems="True" Width="600px"
-                    >
-                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                </asp:DropDownList>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="AwardBadgeID" runat="server" Text='<%# Eval("AwardBadgeID") %>'></asp:Label>
-            </ItemTemplate>
-             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
+                </asp:DropDownList>          
+        </td>
     
+        <td> <b>'Adventure' Mini-Game: </b> </td>
+        <td colspan="3">
+               <asp:DropDownList ID="Minigame1IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>         
+        </td>    
+    </tr>
+    <tr>
+        <td> <b>'Literacy' Mini-Game: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList> 
+        </td>
+        <td> <b>'Literacy' Mini-Game: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="Minigame2IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>     
+        </td>    
+    
+    </tr>
+    <tr>
+        <td> <b>Level Completion Badge: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="AwardBadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+        </td>
+        <td> <b>Level Completion Badge: </b> </td>
+        <td colspan="3">
+                <asp:DropDownList ID="AwardBadgeIDBonus" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID" 
+                    AppendDataBoundItems="True" Width="90%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+        </td>    
+    
+    </tr>
+    <tr>
+        <td colspan="8"><hr /></td>
+    </tr>
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+</table>     
+            </InsertItemTemplate>
+       </asp:TemplateField>
+
+
+
+
+
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="false"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="false"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="false"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="false"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

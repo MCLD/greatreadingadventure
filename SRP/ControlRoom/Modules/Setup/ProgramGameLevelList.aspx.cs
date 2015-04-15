@@ -16,6 +16,12 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Board Game Levels List");
+
+            _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
@@ -35,15 +41,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 pnlList.Visible = btnBoard.Visible = (PGID.SelectedValue != "0");
                 GameName.Text = PGID.SelectedItem.Text;
                 GetFilterSessionValues();               
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Board Game Levels List");
- 
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
+            
                 _mStrSortExp = String.Empty;
             }
             else

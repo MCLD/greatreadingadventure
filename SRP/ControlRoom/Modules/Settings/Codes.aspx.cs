@@ -16,7 +16,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4100;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Codes Management");
 
@@ -100,7 +100,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
                 var obj = new CodeType();
                 if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                 {
-                    obj.FetchObject(key).Delete();
+                    CodeType.FetchObject(key).Delete();
                     ddlCodeTypes.SelectedValue = "0";
                     LoadData();
                     ddlCodeTypes_SelectedIndexChanged(null, null);
@@ -305,7 +305,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
                     var obj = new DAL.Codes();
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
-                        obj.FetchObject(key).Delete();
+                        DAL.Codes.FetchObject(key).Delete();
                         ShowDD();
 
                         var masterPage = (IControlRoomMaster)Master;

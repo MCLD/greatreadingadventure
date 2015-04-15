@@ -14,7 +14,7 @@ namespace STG.SRP.ControlRoom.Modules.PortalUser
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            MasterPage.IsSecure = true;
             PageTitle = "My Account Information";
 
             if (!IsPostBack)

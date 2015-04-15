@@ -33,13 +33,9 @@ namespace STG.SRP.ControlRoom.Modules.Security
 
             if (!IsPostBack )
             {
-                lblGID.Text = Request["PK"];
-                if (lblGID.Text.Length == 0)
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                lblGID.Text = Session["GID"] == null ? "" : Session["GID"].ToString(); //Session["GID"] = "";
+                //lblGID.Text = Request["PK"];
+                dv.ChangeMode(lblGID.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
             }
         }
 
@@ -83,6 +79,8 @@ namespace STG.SRP.ControlRoom.Modules.Security
                         obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                         obj.LastModDate = obj.AddedDate;
                         obj.LastModUser = obj.AddedUser;
+
+                        obj.TenID = (int)Session["TenantID"];
 
                         if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                         {

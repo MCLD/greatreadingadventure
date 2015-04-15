@@ -75,6 +75,7 @@ namespace STG.SRP.ControlRoom.Modules.Security
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
+            Session["UID"] = "";
             Response.Redirect("UserAddEdit.aspx");
         }
 
@@ -114,24 +115,31 @@ namespace STG.SRP.ControlRoom.Modules.Security
             string editpage = "~/ControlRoom/Modules/Security/UserAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["UID"] = "";
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["UID"] = key;
+                Response.Redirect(editpage);
+                //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
             }
 
             if (e.CommandName.ToLower() == "audituser")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/UserAudit.aspx", key));
+                Session["UID"] = key;
+                Response.Redirect("~/ControlRoom/Modules/Security/UserAudit.aspx");
+                //Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/UserAudit.aspx", key));
             }
 
             if (e.CommandName.ToLower() == "loginhistory")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/LoginHistory.aspx", key));
+                Session["UID"] = key;
+                Response.Redirect("~/ControlRoom/Modules/Security/LoginHistory.aspx");
+                //Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/LoginHistory.aspx", key));
             }
 
 

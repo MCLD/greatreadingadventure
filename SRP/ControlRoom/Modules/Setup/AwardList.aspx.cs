@@ -1,37 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web;
 using System.Web.UI.WebControls;
+using Microsoft.ApplicationBlocks.Data;
 using SRPApp.Classes;
 using STG.SRP.ControlRooms;
+using STG.SRP.Controls;
 using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 
-
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class AwardList : BaseControlRoomPage
     {
         private String _mStrSortExp;
         private SortDirection _mSortDirection = SortDirection.Ascending;
-
+        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4900;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Badge Awards List");
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
                 _mStrSortExp = String.Empty;
             }
             else
@@ -88,14 +85,18 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         protected void GvRowCommand(object sender, GridViewCommandEventArgs e)
         {
             string editpage = "~/ControlRoom/Modules/Setup/AwardAddEdit.aspx";
+            string addtpage = "~/ControlRoom/Modules/Setup/AwardAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["AWD"] = "";
+                Response.Redirect(addtpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["AWD"] = key;
+                Response.Redirect(editpage);
+                //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {
@@ -130,6 +131,79 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
+
+            if (e.CommandName.ToLower() == "applyaward")
+            {
+                int key = Convert.ToInt32(e.CommandArgument);
+                var awd = Award.FetchObject(key);
+                var pl = GetMatchingData(awd);
+                var pMax = pl.Tables[0].Rows.Count;
+                var pCount = 0;
+                Response.Buffer = false;
+                Response.Write("<!-- ");
+                foreach (DataRow row in pl.Tables[0].Rows)
+                {
+                    var pid = Convert.ToInt32(row["PID"]);
+                    var list = new List<Badge>();
+                    var p = Patron.FetchObject(pid);
+                    if (AwardPoints.AwardBadgeToPatron(awd.BadgeID, p, ref list))
+                    {
+                        pCount++;
+                        // if they got a badge, then maybe they match the criteria to get another as well ...
+                        AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                        Response.Write(" :-> "); Response.Flush();
+                    }
+                }
+                Response.Write("-->");
+
+                var masterPage = (IControlRoomMaster)Master;
+                if (masterPage != null)
+                    masterPage.PageMessage = String.Format("{0} patrons matched the award criteria. Award has been applied to {1} patrons who had not previously received the award.", pMax, pCount);
+            }
+
+        }
+
+        private DataSet GetMatchingData(Award awd)
+        {
+            var arrParams = new SqlParameter[5];
+
+            if (awd.ProgramID == 0)
+            {
+                arrParams[0] = new SqlParameter("@ProgId", DBNull.Value);
+            }
+            else
+            {
+                arrParams[0] = new SqlParameter("@ProgId", awd.ProgramID);
+            }
+            if (awd.BranchID == 0)
+            {
+                arrParams[1] = new SqlParameter("@BranchID", DBNull.Value);
+            }
+            else
+            {
+                arrParams[1] = new SqlParameter("@BranchID", awd.BranchID);
+            }
+            if (awd.District == "" || awd.District == "0")
+            {
+                arrParams[2] = new SqlParameter("@LibSys", DBNull.Value);
+            }
+            else
+            {
+                arrParams[2] = new SqlParameter("@LibSys", awd.District);
+            }
+            if (awd.SchoolName == "" || awd.SchoolName == "0")
+            {
+                arrParams[3] = new SqlParameter("@School", DBNull.Value);
+            }
+            else
+            {
+                arrParams[3] = new SqlParameter("@School", awd.SchoolName);
+            }
+
+            arrParams[4] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]) );
+            var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
+
+            return ds;
         }
     }
 }
