@@ -22,11 +22,11 @@ namespace STG.SRP.Classes
                 if (Session["ProgramID"] == null ||  Session["ProgramID"].ToString() == "")
                 {
 
-                    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"CSS/Program/Default.css\">";
+                    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"/CSS/Program/Default.css\">";
                 }
                 else
                 {
-                    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"CSS/Program/" + Session["ProgramID"].ToString()  + ".css\">";
+                    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"/CSS/Program/" + Session["ProgramID"].ToString()  + ".css\">";
                 }
             }
         }

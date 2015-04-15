@@ -26,7 +26,7 @@
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=121002584737306";
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<%=(ConfigurationManager.AppSettings["FBAPPID"] ?? "121002584737306") %>";
         fjs.parentNode.insertBefore(js, fjs);
     } (document, 'script', 'facebook-jssdk'));</script>
 
@@ -59,7 +59,7 @@
 
                     <br /><br />
 
-                    <img src='/images/badges/md_<%# Eval("BadgeID") %>.png' />
+                    <img src='/images/badges/sm_<%# Eval("BadgeID") %>.png' />
                     <br /><br />
 
                     <asp:Button ID="btnView" runat="server" Text="View" CommandArgument='<%# Eval("PBID") %>' CssClass="btn e" />

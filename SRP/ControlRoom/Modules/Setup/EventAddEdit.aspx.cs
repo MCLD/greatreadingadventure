@@ -16,31 +16,38 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4500;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Event Add / Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Event Add / Edit");
-
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["EID"] == null ? "" : Session["EID"].ToString(); //Session["EID"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                if (Request["M"] == "K")
+                {
+                    MasterPage.DisplayMessageOnLoad = true;
+                    MasterPage.PageMessage = "Event was saved successfully!";
+                }
             }
         }
 
+        public string CheckDups(string Code, int EID)
+        {
+            string retVal = "";
 
+            if (Event.GetEventCountByEventCode(EID, Code) != 0)
+            {
+                return "<font color=red><b><br/>This secret code is not unique.</b></font>";
+            }
+
+
+            return retVal;
+        }
         protected void dv_DataBound(object sender, EventArgs e)
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
@@ -116,7 +123,10 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj.Custom2 = ((EvtCustFldCtl)((DetailsView)sender).FindControl("Custom2")).Value;
                     obj.Custom3 = ((EvtCustFldCtl)((DetailsView)sender).FindControl("Custom3")).Value;
 
-
+                    obj.ShortDescription = ((TextBox)((DetailsView)sender).FindControl("ShortDescription")).Text;
+                    obj.EndDate = ((TextBox)((DetailsView)sender).FindControl("EndDate")).Text.SafeToDateTime();
+                    obj.EndTime = ((TextBox)((DetailsView)sender).FindControl("EndTime")).Text;
+                    
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     obj.LastModDate = obj.AddedDate;
@@ -162,7 +172,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Event();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);//int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text));
                     obj.Fetch(pk);
 
                     obj.EventTitle = ((TextBox)((DetailsView)sender).FindControl("EventTitle")).Text;
@@ -179,6 +189,11 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj.Custom3 = ((EvtCustFldCtl)((DetailsView)sender).FindControl("Custom3")).Value;
                     //obj.Custom2 = ((TextBox)((DetailsView)sender).FindControl("Custom2")).Text;
                     //obj.Custom3 = ((TextBox)((DetailsView)sender).FindControl("Custom3")).Text;
+
+
+                    obj.ShortDescription = ((TextBox)((DetailsView)sender).FindControl("ShortDescription")).Text;
+                    obj.EndDate = ((TextBox)((DetailsView)sender).FindControl("EndDate")).Text.SafeToDateTime();
+                    obj.EndTime = ((TextBox)((DetailsView)sender).FindControl("EndTime")).Text;
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

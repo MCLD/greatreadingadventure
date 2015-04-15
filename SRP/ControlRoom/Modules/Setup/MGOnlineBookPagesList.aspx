@@ -74,7 +74,7 @@
                    &nbsp;
 
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle VerticalAlign="Top" Wrap="False" Width="75px"></ItemStyle>
             </asp:TemplateField>
 
 
@@ -86,20 +86,20 @@
  			 
 
             <asp:TemplateField   SortExpression="PageNumber" Visible="True"  
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
-                HeaderText="Page Number">              
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Center" HeaderStyle-HorizontalAlign="Center" 
+                HeaderText="Page #">              
                 <ItemTemplate> 
                     <%# FormatHelper.ToInt((int)Eval("PageNumber"))%> 
                 </ItemTemplate> 
-				 <ControlStyle Width="250px" /> 
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
+				 <ControlStyle Width="50px" /> 
+                <ItemStyle    Width="50px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
             </asp:TemplateField>	 			 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Text (Easy)" 
                 DataField="TextEasy" SortExpression="TextEasy" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+
+                <ItemStyle    VerticalAlign="Top" Wrap="True" Width="100%"></ItemStyle>
             </asp:BoundField> 
 
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
@@ -107,9 +107,9 @@
                     
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/Books/sm_{0}.png?{1}", Eval("OBPGID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/Books/sm_{0}.png?{1}", Eval("OBPGID").ToString(), DateTime.Now.ToString()) %>'  width="24px"/>
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
+                <ItemStyle VerticalAlign="Top" Wrap="False" Width="150px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>
 
 

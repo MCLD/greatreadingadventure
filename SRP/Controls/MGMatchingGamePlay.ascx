@@ -10,7 +10,7 @@
 <div class="row">
     <div class="span3"></div>
 	<div class="span6">
-        <center>
+        <center style="height: 70px;">
             <span id="Message" class="gameMessage" style="font-weight: bold; font-size: larger;"></span>
             <div id="CompletedGameButtons" style="display: none;">
                     <asp:Button ID="btnContinue" runat="server" Text="Continue"  CssClass="btn e"  
@@ -19,7 +19,7 @@
             </div>
         </center>
 
-        <div style="border: 5px solid silver;">
+        <div style="border: 5px solid silver;" >
         
             <table width="100%" cellspacing="0" cellpadding="0" border="0" id="GameBoard" style="position: relative; z-index: 0; ">
                 <%=Grid %>    
@@ -55,6 +55,7 @@
     var Click2TDID = "";
     var Cell1 = "";
     var Cell2 = "";
+    var ClickCompleteWithNoMatch = false;
 
     $(document).ready(function () {
         var h2 = Math.round($("#GameBoard").height() / size);
@@ -95,11 +96,15 @@
     onSquareClicked = function (value) {
 
         if (done[value.data.param3] == true) return; // clicked on a cell that was already uncovered and matched
-
-
+        
         ClickCount = ClickCount + 1;
 
         if (ClickCount == 1) {  // Just clicked the first tile/item
+            if (ClickCompleteWithNoMatch) {
+                $(Click1TDID).html("").addClass("color");
+                $(Click2TDID).html("").addClass("color");
+            }
+
             Click1ID    = value.data.param1;
             Click1TDID  = value.data.param2;
             Cell1       = value.data.param3; 
@@ -119,13 +124,16 @@
             if (Click1TDID == Click2TDID) { //clicked the same tile...
                 $(Click1TDID).html("").addClass("color");
                 ClickCount = 0;
+                ClickCompleteWithNoMatch = false;
                 return;
             }
 
             if (Click1ID == Click2ID) { //clicked a match ...
-                var checkmark = "<img src='/Images/Games/MatchingGame/checkmark.png' border='0' width='150px' height='150px' >"
-                $(Click1TDID).html(checkmark).addClass("color");
-                $(Click2TDID).html(checkmark).addClass("color");
+                var checkmark = "<img src='/Images/checkmark.png' border='0'  style='max-width:100%; max-height: 100%;'>"
+//                $(Click1TDID).html(checkmark).addClass("color");
+//                $(Click2TDID).html(checkmark).addClass("color");
+                $(Click1TDID).html(checkmark).removeClass("color");
+                $(Click2TDID).html(checkmark).removeClass("color");
                 done[Cell1] = true;
                 done[Cell2] = true;
                 ClickCount = 0;
@@ -135,14 +143,19 @@
                     $("#Message").html("You completed the puzzle!");
                     $("#CompletedGameButtons").toggle();
                 }
-
-
+                ClickCompleteWithNoMatch = false;
                 return;
             }
             
+
             if (Click1ID != Click2ID) { //clicked but no match ...
-                $(Click1TDID).addClass("color");
-                $(Click2TDID).addClass("color");
+                
+                var incorrect = "<img src='/Images/incorrect.png' border='0'   style='max-width:100%; max-height: 100%;'>"
+                $(Click1TDID).html(incorrect).removeClass("color");
+                $(Click2TDID).html(incorrect).removeClass("color");
+                //$(Click1TDID).addClass("color");
+                //$(Click2TDID).addClass("color");
+                ClickCompleteWithNoMatch = true;
                 ClickCount = 0;
                  $("#Message").html("Incorrect, try again!");
                 return;

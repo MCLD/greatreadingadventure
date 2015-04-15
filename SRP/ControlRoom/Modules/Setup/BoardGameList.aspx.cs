@@ -8,9 +8,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class BoardGameList : BaseControlRoomPage
@@ -21,19 +18,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Board Games List");
+
+            _mStrSortExp = String.Empty; 
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
  
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Board Games List");
- 
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
                 _mStrSortExp = String.Empty;
             }
             else
@@ -92,12 +86,12 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BoardGameAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["BGID"] = ""; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["BGID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

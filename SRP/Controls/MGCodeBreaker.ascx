@@ -38,7 +38,7 @@
             Text="Minigame BtnContinue" CssClass="btn c" onclick="btnContinue_Click" Visible="false" />
 
         </td>
-        <td style="padding-left: 15px;"  valign="top" align="center" nowrap="nowrap">
+        <td style="padding-left: 15px;"  valign="top" align="center" >
             <H3><asp:Label ID="lblMsgKey" runat="server" Text-="Minigame Key"></asp:Label></H3>
             <hr />
             <asp:Label ID="lblKey" runat="server" ></asp:Label>

@@ -27,7 +27,7 @@ namespace SRP
                     }
                     catch
                     {
-                        Response.Redirect("~/Install.aspx");
+                        Response.Redirect("~/ControlRoom/Setup.aspx");
                     }                    
                    // pgmID.Text = Session["ProgramID"].ToString();
                 }

@@ -176,6 +176,7 @@
                     <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                     <asp:ListItem Value="F" Text="Female"></asp:ListItem>
                     <asp:ListItem Value="M" Text="Male"></asp:ListItem>
+                    <asp:ListItem Value="O" Text="Other"></asp:ListItem>
                 </asp:DropDownList>
               
             </EditItemTemplate>
@@ -188,7 +189,14 @@
 
         <asp:TemplateField HeaderText="School Name: " SortExpression="SchoolName" HeaderStyle-Wrap="False"  InsertVisible="False" >
 		    <EditItemTemplate>
-                <asp:TextBox ID="SchoolName" runat="server" Text='<%# Eval("SchoolName") %>' ReadOnly="False" Width="400px"></asp:TextBox>
+                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" 
+                    DataTextField="Code" DataValueField="CID" 
+                    AppendDataBoundItems="True" 
+                    >
+                    <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
+                </asp:DropDownList>
+
+                <asp:Label ID="SchoolNameLbl" runat="server" Text='<%# Eval("SchoolName") %>' ReadOnly="False" Width="400px"></asp:Label>
             </EditItemTemplate><InsertItemTemplate></InsertItemTemplate>
             <ItemTemplate>
                 <asp:Label ID="SchoolName" runat="server" Text='<%# Eval("SchoolName") %>'></asp:Label>
@@ -527,5 +535,12 @@
         TypeName="STG.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
+    <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
+        SelectMethod="GetAlByTypeName" 
+        TypeName="STG.SRP.DAL.Codes">
+        <SelectParameters>
+            <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
+        </SelectParameters>
+    </asp:ObjectDataSource>
 </asp:Content>
 

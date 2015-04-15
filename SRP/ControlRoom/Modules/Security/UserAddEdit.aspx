@@ -11,7 +11,7 @@
         />
 
 
-    <asp:DetailsView ID="dv" runat="server" DataSourceID="odsSRPUser" 
+    <asp:DetailsView ID="dv" runat="server" DataSourceID="odsSRPUser" Width="100%" 
         onitemcommand="DvItemCommand" onprerender="dv_PreRender">
         <Fields>
 
@@ -38,7 +38,7 @@
                 <ItemTemplate>
                     <asp:Label ID="Username1" runat="server" Text='<%# Bind("Username") %>'></asp:Label>
                 </ItemTemplate>
-            	<HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+            	<HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" Width="150px"/>    
         </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Password: " SortExpression="Password">
@@ -219,6 +219,11 @@
             	<HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>
 
+            <asp:BoundField DataField="TenID" HeaderText="Tenant: " Visible="False"
+                SortExpression="TenID" InsertVisible="False" ReadOnly="True">
+            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+            </asp:BoundField>
+
             <asp:BoundField DataField="DeletedDate" HeaderText="Deleted Date: " 
                 SortExpression="DeletedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
@@ -248,7 +253,7 @@
             <asp:TemplateField InsertVisible="False" ShowHeader="False">
                 <EditItemTemplate>
             
-<table style="width: 900px" cellpadding=3px;>
+<table style="width: 100%" cellpadding=3px;>
     <tr>
         <td align="center" width="300px"> <b> User Groups </b> </td>    
     </tr>    

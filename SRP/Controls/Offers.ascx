@@ -35,12 +35,13 @@
             
             <%# (((long)Eval("Rank")) % 4 == 1 ? "<tr>" : "") %>
             
-                <td width="25%" valign="bottom" align="center" style="padding-left:20px; padding-right: 20px;">
+                <td width="25%" valign="bottom" align="center" style="padding-left:20px; padding-right: 20px;padding-bottom: 20px;">
                     <h5><%# Eval("Title") %></h5>
                     <img src='/images/offers/md_<%# Eval("OID") %>.png' />
                     <br /><br />
                     <asp:Button ID="btnView" runat="server" Text="View" CommandArgument='<%# Eval("OID") %>' Visible='<%# !(bool)Eval("ExternalRedirectFlag") %>' CssClass="btn e" />
                     <asp:HyperLink ID="HyperLink1" runat="server" Target="_blank" NavigateUrl='<%# Eval("RedirectURL") %>' Visible='<%# (bool)Eval("ExternalRedirectFlag") %>' CssClass="btn e" >View</asp:HyperLink>
+                    <hr />
                 </td>
             
             <%# (((long)Eval("Rank")) % 4 == 0 ? "</tr>" : "") %>                

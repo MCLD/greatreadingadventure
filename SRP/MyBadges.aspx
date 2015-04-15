@@ -1,4 +1,4 @@
-﻿<%@ Page Title="MyBadges" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="My Badges" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="MyBadges.aspx.cs" Inherits="STG.SRP.MyBadges" 
     EnableEventValidation="false" 
     %>

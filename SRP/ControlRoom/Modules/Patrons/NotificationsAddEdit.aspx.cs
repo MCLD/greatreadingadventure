@@ -15,6 +15,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5100;
             MasterPage.IsSecure = true;
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 
@@ -28,15 +29,8 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
  
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                lblPK.Text = Session["NID"] == null ? "" : Session["NID"].ToString();
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }

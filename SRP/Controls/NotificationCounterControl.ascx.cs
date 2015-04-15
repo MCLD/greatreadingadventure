@@ -14,7 +14,7 @@ namespace STG.SRP.Controls
         {
             if (Session["Patron"] == null) Response.Redirect("/");
             // Get the DAL for notifications and get the count for this use
-            Count1.Text = Count2.Text = Notifications.GetAllToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
+            Count1.Text = Count2.Text = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
         }
     }
 }

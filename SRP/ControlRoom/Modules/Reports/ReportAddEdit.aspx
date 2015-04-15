@@ -554,6 +554,296 @@ ScrollContents="false">
 
 <br /><br />
 
+<asp:Panel ID="pnlTestResults" runat="server" CssClass="pnlCSS">
+
+    <div style="height:30px; vertical-align:middle;  background-color: #0066FF;" class="linearBg2">
+        <div style="float:left; color:White;padding:5px 5px 5px 5px">Literacy Testing Results</div>
+        <div style="float:right; color:White; padding:5px 5px 0 0"><asp:Label ID="lblMessageTest" runat="server" Text="Label"/> &nbsp;<asp:Image ID="imgArrowsTest" runat="server" /></div>
+        <div style="clear:both"></div>
+    </div>
+
+</asp:Panel>
+<asp:Panel ID="pnlColTestResults" runat="server" Height="0" CssClass="pnlCSS">
+            <table>             
+                <tr  style="background-color: #dddddd; padding:20px" >
+                    <td width="175px" style="padding-top:10px; padding-bottom: 10px; padding-left: 5px;"><b> Report Field </b></td>
+                    <td width="75px" align="center"><b> Display </b></td>
+                    <td width="500px" style="padding-left: 5px;"><b> Literacy Testing Results Filter </b></td>
+                </tr>
+
+                <tr>
+                    <td><b> Score 1: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score1Inc"  runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score1From" runat="server" Text=''  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator2"
+                                ControlToValidate="Score1From"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator2"
+                                ControlToValidate="Score1From"
+                                MinimumValue="0"
+                                MaximumValue="9999"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 From must be from 0 to 9999!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 From must be from 0 to 9999! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score1To" runat="server" Text=''  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator3"
+                                    ControlToValidate="Score1To"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator3"
+                                    ControlToValidate="Score1To"
+                                    MinimumValue="0"
+                                    MaximumValue="9999"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 To must be from 0 to 9999!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 To must be from 0 to 9999! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>      
+                
+                <tr>
+                    <td><b> Score 2: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score2Inc"  runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score2From" runat="server" Text=''  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator4"
+                                ControlToValidate="Score2From"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator4"
+                                ControlToValidate="Score2From"
+                                MinimumValue="0"
+                                MaximumValue="9999"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 From must be from 0 to 9999!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 From must be from 0 to 9999! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score2To" runat="server" Text=''  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator5"
+                                    ControlToValidate="Score2To"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator5"
+                                    ControlToValidate="Score2To"
+                                    MinimumValue="0"
+                                    MaximumValue="9999"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 To must be from 0 to 9999!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 To must be from 0 to 9999! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+
+                <tr>
+                    <td><b> Score 1 %: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score1PctInc"  runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score1PctFrom" runat="server" Text=''  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator6"
+                                ControlToValidate="Score1PctFrom"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 % From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 % From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator6"
+                                ControlToValidate="Score1PctFrom"
+                                MinimumValue="0"
+                                MaximumValue="100"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 % From must be from 0 to 100!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 % From must be from 0 to 100! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score1PctTo" runat="server" Text=''  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator7"
+                                    ControlToValidate="Score1PctTo"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 % To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 % To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator7"
+                                    ControlToValidate="Score1PctTo"
+                                    MinimumValue="0"
+                                    MaximumValue="100"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 % To must be from 0 to 100!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 % To must be from 0 to 100! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+                <tr>
+                    <td><b> Score 2 %: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score2PctInc" runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score2PctFrom" runat="server" Text=''  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator8"
+                                ControlToValidate="Score2PctFrom"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 % From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 % From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator8"
+                                ControlToValidate="Score2PctFrom"
+                                MinimumValue="0"
+                                MaximumValue="100"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 % From must be from 0 to 100!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 % From must be from 0 to 100! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score2PctTo" runat="server" Text=''  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator9"
+                                    ControlToValidate="Score2PctTo"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 % To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 % To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator9"
+                                    ControlToValidate="Score2PctTo"
+                                    MinimumValue="0"
+                                    MaximumValue="100"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 % To must be from 0 to 100!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 % To must be from 0 to 100! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+
+                </table>
+</asp:Panel>
+<ajaxToolkit:CollapsiblePanelExtender
+ID="CollapsiblePanelExtender6"
+runat="server"
+CollapseControlID="pnlTestResults"
+Collapsed="true"
+ExpandControlID="pnlTestResults"
+TextLabelID="lblMessageTest"
+CollapsedText="Show"
+ExpandedText="Hide"
+ImageControlID="imgArrowsLog"
+CollapsedImage="~/ControlRoom/Images/dn.gif"
+ExpandedImage="~/ControlRoom/Images/up.gif"
+ExpandDirection="Vertical"
+TargetControlID="pnlColTestResults"
+ScrollContents="false">
+
+</ajaxToolkit:CollapsiblePanelExtender>
+
+<br /><br />
+
+
 <asp:Panel ID="pnlClickLog" runat="server" CssClass="pnlCSS">
 
     <div style="height:30px; vertical-align:middle; background-color: #0066FF;" class="linearBg2">
@@ -1541,6 +1831,296 @@ ScrollContents="false">
 
 <br /><br />
 
+<asp:Panel ID="pnlTestResults" runat="server" CssClass="pnlCSS">
+
+    <div style="height:30px; vertical-align:middle;  background-color: #0066FF;" class="linearBg2">
+        <div style="float:left; color:White;padding:5px 5px 5px 5px">Literacy Testing Results</div>
+        <div style="float:right; color:White; padding:5px 5px 0 0"><asp:Label ID="lblMessageTest" runat="server" Text="Label"/> &nbsp;<asp:Image ID="imgArrowsTest" runat="server" /></div>
+        <div style="clear:both"></div>
+    </div>
+
+</asp:Panel>
+<asp:Panel ID="pnlColTestResults" runat="server" Height="0" CssClass="pnlCSS">
+            <table>             
+                <tr  style="background-color: #dddddd; padding:20px" >
+                    <td width="175px" style="padding-top:10px; padding-bottom: 10px; padding-left: 5px;"><b> Report Field </b></td>
+                    <td width="75px" align="center"><b> Display </b></td>
+                    <td width="500px" style="padding-left: 5px;"><b> Literacy Testing Results Filter </b></td>
+                </tr>
+
+                <tr>
+                    <td><b> Score 1: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score1Inc" Checked='<%# (bool)Eval("Score1Inc") %>' runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score1From" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score1From")) %>'  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator2"
+                                ControlToValidate="Score1From"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator2"
+                                ControlToValidate="Score1From"
+                                MinimumValue="0"
+                                MaximumValue="9999"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 From must be from 0 to 9999!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 From must be from 0 to 9999! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score1To" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score1To")) %>'  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator3"
+                                    ControlToValidate="Score1To"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator3"
+                                    ControlToValidate="Score1To"
+                                    MinimumValue="0"
+                                    MaximumValue="9999"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 To must be from 0 to 9999!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 To must be from 0 to 9999! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>      
+                
+                <tr>
+                    <td><b> Score 2: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score2Inc" Checked='<%# (bool)Eval("Score2Inc") %>' runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score2From" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score2From")) %>'  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator4"
+                                ControlToValidate="Score2From"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator4"
+                                ControlToValidate="Score2From"
+                                MinimumValue="0"
+                                MaximumValue="9999"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 From must be from 0 to 9999!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 From must be from 0 to 9999! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score2To" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score2To")) %>'  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator5"
+                                    ControlToValidate="Score2To"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator5"
+                                    ControlToValidate="Score2To"
+                                    MinimumValue="0"
+                                    MaximumValue="9999"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 To must be from 0 to 9999!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 To must be from 0 to 9999! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+
+                <tr>
+                    <td><b> Score 1 %: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score1PctInc" Checked='<%# (bool)Eval("Score1PctInc") %>' runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score1PctFrom" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score1PctFrom")) %>'  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator6"
+                                ControlToValidate="Score1PctFrom"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 % From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 % From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator6"
+                                ControlToValidate="Score1PctFrom"
+                                MinimumValue="0"
+                                MaximumValue="100"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 1 % From must be from 0 to 100!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 1 % From must be from 0 to 100! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score1PctTo" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score1PctTo")) %>'  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator7"
+                                    ControlToValidate="Score1PctTo"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 % To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 % To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator7"
+                                    ControlToValidate="Score1PctTo"
+                                    MinimumValue="0"
+                                    MaximumValue="100"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 1 % To must be from 0 to 100!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 1 % To must be from 0 to 100! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+                <tr>
+                    <td><b> Score 2 %: </b></td>
+                    <td align="center"><asp:CheckBox ID="Score2PctInc" Checked='<%# (bool)Eval("Score2PctInc") %>' runat="server" ReadOnly="False"></asp:CheckBox></td>
+                    <td>
+                        <b>From: &nbsp;
+                            <asp:TextBox ID="Score2PctFrom" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score2PctFrom")) %>'  Width="75px"></asp:TextBox>
+                            <asp:RegularExpressionValidator id="RegularExpressionValidator8"
+                                ControlToValidate="Score2PctFrom"
+                                ValidationExpression="\d+"
+                                Display="Dynamic"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 % From must be numeric.</font>"
+                                runat="server"
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 % From must be numeric. </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />      
+                            <asp:RangeValidator ID="RangeValidator8"
+                                ControlToValidate="Score2PctFrom"
+                                MinimumValue="0"
+                                MaximumValue="100"
+                                Display="Dynamic"
+                                Type="Integer"
+                                EnableClientScript="true"
+                                ErrorMessage="<font color='red'>Score 2 % From must be from 0 to 100!</font>"
+                                runat="server" 
+                                Font-Bold="True" Font-Italic="True" 
+                                Text="<font color='red'> * Score 2 % From must be from 0 to 100! </font>" 
+                                EnableTheming="True" 
+                                SetFocusOnError="True" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        To: &nbsp;
+                                <asp:TextBox ID="Score2PctTo" runat="server" Text='<%# FormatHelper.ToWidgetDisplayInt((int)Eval("Score2PctTo")) %>'  Width="75px"></asp:TextBox>
+                                <asp:RegularExpressionValidator id="RegularExpressionValidator9"
+                                    ControlToValidate="Score2PctTo"
+                                    ValidationExpression="\d+"
+                                    Display="Dynamic"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 % To must be numeric.</font>"
+                                    runat="server"
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 % To must be numeric. </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />      
+                                <asp:RangeValidator ID="RangeValidator9"
+                                    ControlToValidate="Score2PctTo"
+                                    MinimumValue="0"
+                                    MaximumValue="100"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage="<font color='red'>Score 2 % To must be from 0 to 100!</font>"
+                                    runat="server" 
+                                    Font-Bold="True" Font-Italic="True" 
+                                    Text="<font color='red'> * Score 2 % To must be from 0 to 100! </font>" 
+                                    EnableTheming="True" 
+                                    SetFocusOnError="True" />
+                         </b>
+                    </td>
+                </tr>    
+
+
+                </table>
+</asp:Panel>
+<ajaxToolkit:CollapsiblePanelExtender
+ID="CollapsiblePanelExtender6"
+runat="server"
+CollapseControlID="pnlTestResults"
+Collapsed="true"
+ExpandControlID="pnlTestResults"
+TextLabelID="lblMessageTest"
+CollapsedText="Show"
+ExpandedText="Hide"
+ImageControlID="imgArrowsLog"
+CollapsedImage="~/ControlRoom/Images/dn.gif"
+ExpandedImage="~/ControlRoom/Images/up.gif"
+ExpandDirection="Vertical"
+TargetControlID="pnlColTestResults"
+ScrollContents="false">
+
+</ajaxToolkit:CollapsiblePanelExtender>
+
+<br /><br />
+
+
 <asp:Panel ID="pnlClickLog" runat="server" CssClass="pnlCSS">
 
     <div style="height:30px; vertical-align:middle;  background-color: #0066FF;" class="linearBg2">
@@ -1661,7 +2241,7 @@ ExpandControlID="pnlClickLog"
 TextLabelID="lblMessageLog"
 CollapsedText="Show"
 ExpandedText="Hide"
-ImageControlID="imgArrowsLog"
+ImageControlID="imgArrowsTest"
 CollapsedImage="~/ControlRoom/Images/dn.gif"
 ExpandedImage="~/ControlRoom/Images/up.gif"
 ExpandDirection="Vertical"

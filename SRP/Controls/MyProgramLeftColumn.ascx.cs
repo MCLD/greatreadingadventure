@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using STG.SRP.DAL;
 
 namespace STG.SRP.Controls
 {
@@ -11,12 +12,17 @@ namespace STG.SRP.Controls
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if(!IsPostBack)
+            {
+                
+            }
         }
 
-        public MyGamemapNavControl GamemapNavControl
+        public MyGameLoggingNavControl GamemapNavControl
         {
-            get { return MyGamemapNavControl1; }
+            get { return MyGameLoggingNavControl1; }
         }
+
+
     }
 }

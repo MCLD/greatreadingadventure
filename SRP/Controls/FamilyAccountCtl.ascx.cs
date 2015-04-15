@@ -29,14 +29,15 @@ namespace STG.SRP.Controls
 
                 // now validate user can change password for SA Sub Account
 
-                var patron = (Patron)Session["Patron"];
-                if (!patron.IsMasterAccount)
+                //var patron = (Patron)Session["Patron"];
+                //if (!patron.IsMasterAccount)
+                if (Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"])
                 {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");
                 }
 
-                if (!Patron.CanManageSubAccount(patron.PID, int.Parse(SA.Text)))
+                if (!Patron.CanManageSubAccount((int)Session["MasterAcctPID"], int.Parse(SA.Text)))
                 {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");

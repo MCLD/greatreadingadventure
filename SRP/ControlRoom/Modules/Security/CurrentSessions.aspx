@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="CurrentSessions.aspx.cs" 
 Inherits="STG.SRP.ControlRoom.Modules.Security.CurrentSessions" 
-
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -27,6 +26,7 @@ Inherits="STG.SRP.ControlRoom.Modules.Security.CurrentSessions"
 		    <asp:BoundField ReadOnly="True" HeaderText="IP" DataField="IP" SortExpression="IP" Visible="True"/>
 		    <asp:BoundField ReadOnly="True" HeaderText="Machine Name" DataField="MachineName" SortExpression="MachineName" Visible="True" HeaderStyle-HorizontalAlign="Left"/>
 		    <asp:BoundField ReadOnly="True" HeaderText="Browser" DataField="Browser" SortExpression="Browser" Visible="True" HeaderStyle-HorizontalAlign="Left"/>
+		    <asp:BoundField ReadOnly="True" HeaderText="Organization" DataField="Tenant" SortExpression="Tenant" Visible="True" HeaderStyle-HorizontalAlign="Left"/>
 
         </Columns>
     </asp:GridView>

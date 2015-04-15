@@ -12,15 +12,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Minigame Preview");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
             }
 
-            //MasterPage.RequiredPermission = 3000;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Minigame Preview");
 
             TranslateStrings(this);
         }
@@ -32,8 +33,9 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         public void TranslateStrings(System.Web.UI.Control ctl)
         {
-            var i = DAL.Programs.GetDefaultProgramID();
-            StringResources.LoadProgramResourceFile(i.ToString());
+            //var i = DAL.Programs.GetDefaultProgramID();
+            //StringResources.LoadProgramResourceFile(i.ToString());
+            StringResources.LoadProgramResourceFile("default");
             //MasterPage = (BaseSRPMaster)Master;
             //MasterPage.InitResFile();
 

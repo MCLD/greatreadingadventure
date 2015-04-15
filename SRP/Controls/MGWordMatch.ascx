@@ -1,41 +1,30 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGWordMatch.ascx.cs" Inherits="STG.SRP.Controls.MGWordMatch" %>
-<div class="row" style="min-height: 400px;">
+<div class="row" >
 	<div class="span2">
 	</div>
 	<div class="span8">
+        <center>
+            <asp:Label ID="WMID" runat="server" Text="" Visible="false"></asp:Label> 
+            <asp:Label ID="CurrWins" runat="server" Text="0" Visible="false"></asp:Label> 
+            <asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label> 
+            <asp:Label ID="Correct" runat="server" Text="0" Visible="false"></asp:Label> 
+            <asp:Label ID="WMIID" runat="server" Text="-1" Visible="false"></asp:Label> 
+        </center>
+	</div> 
+	<div class="span2">
+	</div>
+</div> 
 
+    <div class="row" style="min-height: 400px;">
 
+            <div class="span5"><asp:Image ID="imgItem" runat="server" Width="100%"  /></div>
+            <div class="span1">
+            </div>
+            <div class="span5">
+                <asp:Label ID="lblMessage" runat="server" Text="" Visible="True"></asp:Label>
+                <asp:Panel ID="pnlChoices" runat="server" Visible="True">
 
-<center>
-    <asp:Label ID="WMID" runat="server" Text="" Visible="false"></asp:Label> 
-    <asp:Label ID="CurrWins" runat="server" Text="0" Visible="false"></asp:Label> 
-    <asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label> 
-    <asp:Label ID="Correct" runat="server" Text="0" Visible="false"></asp:Label> 
-    <asp:Label ID="WMIID" runat="server" Text="-1" Visible="false"></asp:Label> 
-    <table width="100%">
-
-    <tr>
-         <td style="" width="100%" valign="bottom" align="center" colspan="3">
-            <asp:Label ID="lblMessage" runat="server" Text="" Visible="True"></asp:Label>
-         </td>
-    </tr>
-    
-    <tr>
-        <td style="padding-right: 15px;" width="10%" valign="bottom" align="center">
-        &nbsp;
-        </td>
-        <td style="padding-right: 15px;padding-left: 15px;" width="80%" valign="bottom" align="center">
-            <asp:Image ID="imgItem" runat="server" Width="100%"  /> <!-- Height="300px" -->
-        </td>
-        <td style="padding-left: 15px;" width="10%" valign="bottom" align="center">
-            &nbsp;
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-top: 25px;" width="100%" valign="bottom" align="left" colspan="3">
-    <asp:Panel ID="pnlChoices" runat="server" Visible="True">
-
-        <ol>
+        <ol style="position:relative; top: 40px;">
         <asp:Repeater ID="rptr" runat="server" onitemcommand="rptr_ItemCommand" 
                 onitemdatabound="rptr_ItemDataBound">
             <ItemTemplate>
@@ -46,7 +35,7 @@
                      CssClass="btn a" Width="100%"
                      ></asp:Button>
                      <br />
-                    <div style="padding-left: 75px; ">
+                    <div style="padding-left: 0px; text-align: center;">
                         <asp:Panel ID="pnlAudioEasy" runat="server" Visible='<%#SetAudioVisibility("/images/games/mixmatch/e_" + Eval("WMIID") + ".mp3")%>'>
                             <audio controls>
                                 <source src='<%# "/images/games/mixmatch/e_" + Eval("WMIID") + ".mp3"%>' type="audio/mpeg">
@@ -76,11 +65,6 @@
          </ol>       
             
 </asp:Panel>
-        </td>
-    </tr>
-    
-    </table>
-
 
     <asp:Panel ID="pnlContinue" runat="server" Visible="False">
         <br />
@@ -88,18 +72,12 @@
             Text="Minigame Instructions BtnContinue" CssClass="btn c" onclick="btnContinue_Click"
         />
     </asp:Panel>
+            </div>
 
-
-</center>
-
-
+    </div>
 
 
 
 
 
 
-	</div> 
-	<div class="span2">
-	</div>
-</div> 

@@ -76,9 +76,7 @@ namespace SRPApp.Classes
                 pid = HttpContext.Current.Session["ProgramID"].ToString();
 
 
-            ///  For now, run with only the default file
-            // remove the line before profuction
-            // TODO- comment the next line before production or un-comment for development
+            // Comment the next line to use default instead of real program strings
             // pid = "default";
 
 

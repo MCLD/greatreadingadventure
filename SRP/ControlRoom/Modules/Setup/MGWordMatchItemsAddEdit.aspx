@@ -46,7 +46,7 @@
                         FileName='<%# Eval("WMIID") %>'
                         ImgWidth="512" 
                         CreateSmallThumbnail="True"         
-                        CreateMediumThumbnail="True"
+                        CreateMediumThumbnail="False"
                         SmallThumbnailWidth="64" 
                         MediumThumbnailWidth="256"
                         Folder="~/Images/Games/WordMatch/"

@@ -7,9 +7,7 @@ using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
+//tod0 - remove <asp:ListItem Value="99" Text="Flash Game"></asp:ListItem>
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class MinigameAddEdit : BaseControlRoomPage
@@ -18,18 +16,15 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Mini Game Add");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                lblPK.Text = Session["PK"] == null ? "" : Session["PK"].ToString(); Session["PK"] = "";
                 dv.ChangeMode(DetailsViewMode.Insert);
                 Page.DataBind();
             }
@@ -101,7 +96,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                         }
 
                         //lblPK.Text = obj.MGID.ToString();
-                        Response.Redirect(Minigame.GetEditPage(obj.MiniGameType) + "?PK=" + obj.MGID.ToString());
+                        Session["MGID"] = obj.MGID;
+                        Response.Redirect(Minigame.GetEditPage(obj.MiniGameType));
 
                         //odsData.DataBind();
                         //dv.DataBind();

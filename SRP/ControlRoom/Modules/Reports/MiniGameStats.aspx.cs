@@ -15,9 +15,10 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4200;
+            MasterPage.IsSecure = true; 
             if (!IsPostBack)
             {
-                MasterPage.IsSecure = true;
                 MasterPage.PageTitle = string.Format("{0}", "MiniGame Play Statistics Report");
 
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
@@ -37,7 +38,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
         {
             // need to add the parameters ...
 
-            var arrParams = new SqlParameter[3];
+            var arrParams = new SqlParameter[4];
 
             if (ProgID.SelectedValue == "0")
             {
@@ -63,6 +64,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
             {
                 arrParams[2] = new SqlParameter("@end", GlobalUtilities.DBSafeDate(EndDate.Text));
             }
+            arrParams[3] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
 
 
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_MiniGameStats", arrParams);

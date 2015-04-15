@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
+using STG.SRP.Controls;
 using STG.SRP.DAL;
 
 namespace STG.SRP
@@ -45,10 +46,20 @@ namespace STG.SRP
                     lnkLogin.Visible = false;
                     lnkLogout.Visible = true;
 
-                    home2.Visible = n.Visible = b.Visible = v.Visible = o.Visible = a.Visible = p.Visible = true;
+                    home2.Visible = n.Visible = b.Visible = v.Visible = o.Visible = r.Visible = a.Visible = p.Visible = true;
                     home1.Visible = false;
-                    f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
+                    //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
+                    if (Session["IsMasterAcct"] != null)
+                        f.Visible = (bool)Session["IsMasterAcct"];
 
+
+                    if (!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover))
+                    {
+                        if (Session["PreTestMandatory"] != null && (bool)Session["PreTestMandatory"])
+                        {
+                            TestingBL.PatronNeedsPreTest();
+                        }
+                    }
                 }
 
             }

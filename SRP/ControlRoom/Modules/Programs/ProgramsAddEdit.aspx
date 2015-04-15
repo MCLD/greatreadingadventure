@@ -798,7 +798,7 @@
 
 
                        <ajaxToolkit:TabPanel runat="server" 
-                            HeaderText="Activity Point Conversions" 
+                            HeaderText="Activity Point Conversions & Literacy Testing" 
                             ID="TabPanel5"
                             Enabled="true"
                             ScrollBars="Auto" 
@@ -901,7 +901,66 @@
                                 </asp:Repeater>
 
 
-                                </table>                     
+                                </table>   
+                                
+                                <table>
+                                    <tr>
+                                        <td colspan="5"><hr /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Program Start Test: </b></td>
+                                        <td>
+                                            <asp:DropDownList ID="PreTestID" runat="server" DataSourceID="odsDDTests" DataTextField="Name" DataValueField="SID" 
+                                                AppendDataBoundItems="True" Width="300px"
+                                                >
+                                                <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:Label ID="PreTestIDLbl" runat="server" Text='<%# Eval("PreTestID") %>' Visible="False"></asp:Label>                            
+                                        </td>
+                                        <td width="250px" align="center"> 
+                                            <asp:CheckBox ID="PreTestMandatory" Checked='<%# (bool)Eval("PreTestMandatory") %>' runat="server"  Text="Test is Mandatory"/>
+                                        </td>
+                                        <td><b>Program Start Test End Date: </b></td>
+                                        <td>
+                                            <asp:TextBox ID="PreTestEndDate" runat="server" Text='<%# (Eval("PreTestEndDate").ToString()=="" ? "" : DateTime.Parse(Eval("PreTestEndDate").ToString()).ToWidgetDisplayDate() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
+                                            <ajaxToolkit:CalendarExtender ID="cePretestEndDate" runat="server" TargetControlID="PreTestEndDate">
+                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:MaskedEditExtender ID="meePretestEndDate" runat="server" 
+                                                UserDateFormat="MonthDayYear" TargetControlID="PreTestEndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
+                                            </ajaxToolkit:MaskedEditExtender>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Program End Test: </b></td>
+                                        <td>
+                                            <asp:DropDownList ID="PostTestID" runat="server" DataSourceID="odsDDTests" DataTextField="Name" DataValueField="SID" 
+                                                AppendDataBoundItems="True" Width="300px"
+                                                >
+                                                <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:Label ID="PostTestIDLbl" runat="server" Text='<%# Eval("PostTestID") %>' Visible="False"></asp:Label>                            
+                                        </td>
+                                        <td> 
+                                            
+                                        </td>
+                                        <td><b>Program End Test Start Date: </b></td>
+                                        <td>
+                                            <asp:TextBox ID="PostTestStartDate" runat="server" Text='<%# (Eval("PostTestStartDate").ToString()=="" ? "" : DateTime.Parse(Eval("PostTestStartDate").ToString()).ToWidgetDisplayDate() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
+                                            <ajaxToolkit:CalendarExtender ID="cePostTestStartDate" runat="server" TargetControlID="PostTestStartDate">
+                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:MaskedEditExtender ID="meePostTestStartDate" runat="server" 
+                                                UserDateFormat="MonthDayYear" TargetControlID="PostTestStartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
+                                            </ajaxToolkit:MaskedEditExtender>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"><hr /></td>
+                                    </tr>
+                                </table>
+                                
+                                                  
                             </ContentTemplate>
                         </ajaxToolkit:TabPanel>   
 
@@ -1120,6 +1179,14 @@
         SelectMethod="GetAll" 
         TypeName="STG.SRP.DAL.ProgramGame">
     </asp:ObjectDataSource>
+
+    <asp:ObjectDataSource ID="odsDDTests" runat="server" 
+        SelectMethod="GetAllFinalized" 
+        TypeName="STG.SRP.DAL.Survey">
+    </asp:ObjectDataSource>
+
+
+    
 
 </asp:Content>
 

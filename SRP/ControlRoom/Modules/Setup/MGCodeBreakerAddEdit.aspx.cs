@@ -14,26 +14,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Code Breaker Game Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Code Breaker Game Edit");
-
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["PK"] = "";
+                dv.ChangeMode(lblPK.Text.Length != 0 ? DetailsViewMode.Edit : DetailsViewMode.Insert);
                 Page.DataBind();
             }
         }
@@ -43,23 +33,54 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
             string codedString = "";
 
-
+            string prefix = "";
             foreach (char c in s.ToCharArray())
             {
                 if (c != ' ')
                 {
-                    codedString = codedString + "<img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
-                                  ((int) c).ToString() + ".png?" + DateTime.Now + "' border='1'/> " ;
+                    codedString =
+                        string.Format(
+                            "{4}<img src='/Images/Games/CodeBreaker/{0}{1}_{2}.png?{3}' border='1'  width='24px'/> ",
+                            prefix, CBID, ((int)c).ToString(), DateTime.Now, codedString);
+                    /*codedString = codedString + "<img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
+                                  ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1'  width='24px'/> ";*/
                 }
                 else
                 {
                     codedString = codedString + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 }
             }
-
-
             return codedString;
         }
+
+        public string GetCodedStringNew(string s, int CBID, int easyMediumHard)
+        {
+
+            string codedString = "";
+
+            string prefix = "";
+            if (easyMediumHard == 2) prefix = "m_";
+            if (easyMediumHard == 3) prefix = "h_";
+
+            foreach (char c in s.ToCharArray())
+            {
+                if (c != ' ')
+                {
+                    codedString =
+                        string.Format(
+                            "{4}<img src='/Images/Games/CodeBreaker/{0}{1}_{2}.png?{3}' border='1'  width='24px'/> ",
+                            prefix, CBID, ((int)c).ToString(), DateTime.Now, codedString);
+                    /*codedString = codedString + "<img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
+                                  ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1'  width='24px'/> ";*/
+                }
+                else
+                {
+                    codedString = codedString + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+            }
+            return codedString;
+        }
+
 
 
         protected void dv_DataBound(object sender, EventArgs e)
@@ -88,7 +109,18 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
             if (e.CommandName.ToLower() == "more")
             {
-                Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?MGID=" + e.CommandArgument + "&CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text);
+                ////Session["MGID"] = (int)e.CommandArgument;  // Already set ...
+                //Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text);
+                ////Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?MGID=" + e.CommandArgument + "&CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text);
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text + "&d=1");
+            }
+            if (e.CommandName.ToLower() == "more2")
+            {
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text + "&d=2");
+            }
+            if (e.CommandName.ToLower() == "more3")
+            {
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGCodeBreakerKeySetup.aspx?CBID=" + ((TextBox)((DetailsView)sender).FindControl("CBID")).Text + "&d=3");
             }
 
             if (e.CommandName.ToLower() == "preview")

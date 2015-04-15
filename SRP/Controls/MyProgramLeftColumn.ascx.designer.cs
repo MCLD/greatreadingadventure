@@ -13,13 +13,13 @@ namespace STG.SRP.Controls {
     public partial class MyProgramLeftColumn {
         
         /// <summary>
-        /// MyGamemapNavControl1 control.
+        /// MyGameLoggingNavControl1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MyGamemapNavControl MyGamemapNavControl1;
+        protected global::STG.SRP.Controls.MyGameLoggingNavControl MyGameLoggingNavControl1;
         
         /// <summary>
         /// NotificationCounterControl1 control.

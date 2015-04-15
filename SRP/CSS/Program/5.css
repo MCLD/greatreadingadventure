@@ -22,6 +22,12 @@ textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[ty
   margin-top: 0px!important;
 
 }
+
+
+.mmFont 
+{
+	font-size: 16pt;
+}
 /*******************************************************
  *
  * Custom theme code styles
@@ -1448,8 +1454,9 @@ blockquote small img {
 
 
 /*Button css */
-.btn.login
-		{background-color: hsl(193, 32%, 49%);
+.btn.a, .btn.b, .btn.c, .btn.d, .btn.e, .btn.f, .btn.g, .btn.h, .btn.i, .btn.j, .btn.k, .btn.l, .btn.m, .btn.n, .btn.o, .btn.login, .btn.register, .btn.btn-primary
+{
+background-color: hsl(193, 32%, 49%);
        background-repeat: repeat-x;
        background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(193, 32%, 79%)), to(hsl(193, 32%, 49%)));
        background-image: -moz-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
@@ -1461,258 +1468,5 @@ blockquote small img {
        border-color: hsl(193, 32%, 49%) hsl(193, 32%, 49%) hsl(193, 32%, 41.5%);
        color: navy;
        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.49);
-       -webkit-font-smoothing: antialiased;}
-.btn.register
-		{background-color: hsl(193, 32%, 49%);
-       background-repeat: repeat-x;
-       background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(193, 32%, 79%)), to(hsl(193, 32%, 49%)));
-       background-image: -moz-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -ms-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(193, 32%, 79%)), color-stop(100%, hsl(193, 32%, 49%)));
-       background-image: -webkit-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -o-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: linear-gradient(hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       border-color: hsl(193, 32%, 49%) hsl(193, 32%, 49%) hsl(193, 32%, 41.5%);
-       color: navy;
-       text-shadow: 0 1px 1px rgba(255, 255, 255, 0.49);
-       -webkit-font-smoothing: antialiased;}
-
-.btn.a{background-color: hsl(193, 32%, 49%);
-       background-repeat: repeat-x;
-       background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(193, 32%, 79%)), to(hsl(193, 32%, 49%)));
-       background-image: -moz-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -ms-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(193, 32%, 79%)), color-stop(100%, hsl(193, 32%, 49%)));
-       background-image: -webkit-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: -o-linear-gradient(top, hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       background-image: linear-gradient(hsl(193, 32%, 79%), hsl(193, 32%, 49%));
-       border-color: hsl(193, 32%, 49%) hsl(193, 32%, 49%) hsl(193, 32%, 41.5%);
-       color: #333;
-       text-shadow: 0 1px 1px rgba(255, 255, 255, 0.49);
-       -webkit-font-smoothing: antialiased;}
-
-
-.btn.b{
-    background-color: hsl(36, 100%, 40%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(36, 100%, 60%)), to(hsl(36, 100%, 40%)));
-    background-image: -moz-linear-gradient(top, hsl(36, 100%, 60%), hsl(36, 100%, 40%));
-    background-image: -ms-linear-gradient(top, hsl(36, 100%, 60%), hsl(36, 100%, 40%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(36, 100%, 60%)), color-stop(100%, hsl(36, 100%, 40%)));
-    background-image: -webkit-linear-gradient(top, hsl(36, 100%, 60%), hsl(36, 100%, 40%));
-    background-image: -o-linear-gradient(top, hsl(36, 100%, 60%), hsl(36, 100%, 40%));
-    background-image: linear-gradient(hsl(36, 100%, 60%), hsl(36, 100%, 40%));
-    border-color: hsl(36, 100%, 40%) hsl(36, 100%, 40%) hsl(36, 100%, 35%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-
-.btn.c{
-    background-color: hsl(86, 79%, 44%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(86, 79%, 84%)), to(hsl(86, 79%, 44%)));
-    background-image: -moz-linear-gradient(top, hsl(86, 79%, 84%), hsl(86, 79%, 44%));
-    background-image: -ms-linear-gradient(top, hsl(86, 79%, 84%), hsl(86, 79%, 44%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(86, 79%, 84%)), color-stop(100%, hsl(86, 79%, 44%)));
-    background-image: -webkit-linear-gradient(top, hsl(86, 79%, 84%), hsl(86, 79%, 44%));
-    background-image: -o-linear-gradient(top, hsl(86, 79%, 84%), hsl(86, 79%, 44%));
-    background-image: linear-gradient(hsl(86, 79%, 84%), hsl(86, 79%, 44%));
-    border-color: hsl(86, 79%, 44%) hsl(86, 79%, 44%) hsl(86, 79%, 34%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.66);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.d{
-    background-color: hsl(312, 80%, 43%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(312, 80%, 53%)), to(hsl(312, 80%, 43%)));
-    background-image: -moz-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
-    background-image: -ms-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(312, 80%, 53%)), color-stop(100%, hsl(312, 80%, 43%)));
-    background-image: -webkit-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
-    background-image: -o-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
-    background-image: linear-gradient(hsl(312, 80%, 53%), hsl(312, 80%, 43%));
-    border-color: hsl(312, 80%, 43%) hsl(312, 80%, 43%) hsl(312, 80%, 40.5%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.16);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.e{
-    background-color: hsl(110, 56%, 16%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(110, 56%, 36%)), to(hsl(110, 56%, 16%)));
-    background-image: -moz-linear-gradient(top, hsl(110, 56%, 36%), hsl(110, 56%, 16%));
-    background-image: -ms-linear-gradient(top, hsl(110, 56%, 36%), hsl(110, 56%, 16%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(110, 56%, 36%)), color-stop(100%, hsl(110, 56%, 16%)));
-    background-image: -webkit-linear-gradient(top, hsl(110, 56%, 36%), hsl(110, 56%, 16%));
-    background-image: -o-linear-gradient(top, hsl(110, 56%, 36%), hsl(110, 56%, 16%));
-    background-image: linear-gradient(hsl(110, 56%, 36%), hsl(110, 56%, 16%));
-    border-color: hsl(110, 56%, 16%) hsl(110, 56%, 16%) hsl(110, 56%, 11%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.f{
-    background-color: hsl(0, 69%, 22%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(0, 69%, 42%)), to(hsl(0, 69%, 22%)));
-    background-image: -moz-linear-gradient(top, hsl(0, 69%, 42%), hsl(0, 69%, 22%));
-    background-image: -ms-linear-gradient(top, hsl(0, 69%, 42%), hsl(0, 69%, 22%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(0, 69%, 42%)), color-stop(100%, hsl(0, 69%, 22%)));
-    background-image: -webkit-linear-gradient(top, hsl(0, 69%, 42%), hsl(0, 69%, 22%));
-    background-image: -o-linear-gradient(top, hsl(0, 69%, 42%), hsl(0, 69%, 22%));
-    background-image: linear-gradient(hsl(0, 69%, 42%), hsl(0, 69%, 22%));
-    border-color: hsl(0, 69%, 22%) hsl(0, 69%, 22%) hsl(0, 69%, 17%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.g{
-    background-color: hsl(195, 79%, 43%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(195, 79%, 63%)), to(hsl(195, 79%, 43%)));
-    background-image: -moz-linear-gradient(top, hsl(195, 79%, 63%), hsl(195, 79%, 43%));
-    background-image: -ms-linear-gradient(top, hsl(195, 79%, 63%), hsl(195, 79%, 43%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(195, 79%, 63%)), color-stop(100%, hsl(195, 79%, 43%)));
-    background-image: -webkit-linear-gradient(top, hsl(195, 79%, 63%), hsl(195, 79%, 43%));
-    background-image: -o-linear-gradient(top, hsl(195, 79%, 63%), hsl(195, 79%, 43%));
-    background-image: linear-gradient(hsl(195, 79%, 63%), hsl(195, 79%, 43%));
-    border-color: hsl(195, 79%, 43%) hsl(195, 79%, 43%) hsl(195, 79%, 38%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.h{
-    background-color: hsl(0, 0%, 16%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(0, 0%, 36%)), to(hsl(0, 0%, 16%)));
-    background-image: -moz-linear-gradient(top, hsl(0, 0%, 36%), hsl(0, 0%, 16%));
-    background-image: -ms-linear-gradient(top, hsl(0, 0%, 36%), hsl(0, 0%, 16%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(0, 0%, 36%)), color-stop(100%, hsl(0, 0%, 16%)));
-    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 36%), hsl(0, 0%, 16%));
-    background-image: -o-linear-gradient(top, hsl(0, 0%, 36%), hsl(0, 0%, 16%));
-    background-image: linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 16%));
-    border-color: hsl(0, 0%, 16%) hsl(0, 0%, 16%) hsl(0, 0%, 11%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.i{
-    background-color: hsl(214, 37%, 28%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(214, 37%, 62%)), to(hsl(214, 37%, 28%)));
-    background-image: -moz-linear-gradient(top, hsl(214, 37%, 62%), hsl(214, 37%, 28%));
-    background-image: -ms-linear-gradient(top, hsl(214, 37%, 62%), hsl(214, 37%, 28%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(214, 37%, 62%)), color-stop(100%, hsl(214, 37%, 28%)));
-    background-image: -webkit-linear-gradient(top, hsl(214, 37%, 62%), hsl(214, 37%, 28%));
-    background-image: -o-linear-gradient(top, hsl(214, 37%, 62%), hsl(214, 37%, 28%));
-    background-image: linear-gradient(hsl(214, 37%, 62%), hsl(214, 37%, 28%));
-    border-color: hsl(214, 37%, 28%) hsl(214, 37%, 28%) hsl(214, 37%, 19.5%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.56);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.j{
-    background-color: hsl(41, 85%, 35%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(41, 85%, 59%)), to(hsl(41, 85%, 35%)));
-    background-image: -moz-linear-gradient(top, hsl(41, 85%, 59%), hsl(41, 85%, 35%));
-    background-image: -ms-linear-gradient(top, hsl(41, 85%, 59%), hsl(41, 85%, 35%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(41, 85%, 59%)), color-stop(100%, hsl(41, 85%, 35%)));
-    background-image: -webkit-linear-gradient(top, hsl(41, 85%, 59%), hsl(41, 85%, 35%));
-    background-image: -o-linear-gradient(top, hsl(41, 85%, 59%), hsl(41, 85%, 35%));
-    background-image: linear-gradient(hsl(41, 85%, 59%), hsl(41, 85%, 35%));
-    border-color: hsl(41, 85%, 35%) hsl(41, 85%, 35%) hsl(41, 85%, 29%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.39);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.k{
-    background-color: hsl(0, 0%, 79%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(0, 0%, 121%)), to(hsl(0, 0%, 79%)));
-    background-image: -moz-linear-gradient(top, hsl(0, 0%, 121%), hsl(0, 0%, 79%));
-    background-image: -ms-linear-gradient(top, hsl(0, 0%, 121%), hsl(0, 0%, 79%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(0, 0%, 121%)), color-stop(100%, hsl(0, 0%, 79%)));
-    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 121%), hsl(0, 0%, 79%));
-    background-image: -o-linear-gradient(top, hsl(0, 0%, 121%), hsl(0, 0%, 79%));
-    background-image: linear-gradient(hsl(0, 0%, 121%), hsl(0, 0%, 79%));
-    border-color: hsl(0, 0%, 79%) hsl(0, 0%, 79%) hsl(0, 0%, 68.5%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.69);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.l{
-    background-color: hsl(145, 62%, 68%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(145, 62%, 88%)), to(hsl(145, 62%, 68%)));
-    background-image: -moz-linear-gradient(top, hsl(145, 62%, 88%), hsl(145, 62%, 68%));
-    background-image: -ms-linear-gradient(top, hsl(145, 62%, 88%), hsl(145, 62%, 68%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(145, 62%, 88%)), color-stop(100%, hsl(145, 62%, 68%)));
-    background-image: -webkit-linear-gradient(top, hsl(145, 62%, 88%), hsl(145, 62%, 68%));
-    background-image: -o-linear-gradient(top, hsl(145, 62%, 88%), hsl(145, 62%, 68%));
-    background-image: linear-gradient(hsl(145, 62%, 88%), hsl(145, 62%, 68%));
-    border-color: hsl(145, 62%, 68%) hsl(145, 62%, 68%) hsl(145, 62%, 63%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.m{
-    background-color: hsl(195, 60%, 35%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(195, 60%, 45%)), to(hsl(195, 60%, 35%)));
-    background-image: -moz-linear-gradient(top, hsl(195, 60%, 45%), hsl(195, 60%, 35%));
-    background-image: -ms-linear-gradient(top, hsl(195, 60%, 45%), hsl(195, 60%, 35%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(195, 60%, 45%)), color-stop(100%, hsl(195, 60%, 35%)));
-    background-image: -webkit-linear-gradient(top, hsl(195, 60%, 45%), hsl(195, 60%, 35%));
-    background-image: -o-linear-gradient(top, hsl(195, 60%, 45%), hsl(195, 60%, 35%));
-    background-image: linear-gradient(hsl(195, 60%, 45%), hsl(195, 60%, 35%));
-    border-color: hsl(195, 60%, 35%) hsl(195, 60%, 35%) hsl(195, 60%, 32.5%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.16);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.n{
-    background-color: hsl(0, 100%, 82%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(0, 100%, 90%)), to(hsl(0, 100%, 82%)));
-    background-image: -moz-linear-gradient(top, hsl(0, 100%, 90%), hsl(0, 100%, 82%));
-    background-image: -ms-linear-gradient(top, hsl(0, 100%, 90%), hsl(0, 100%, 82%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(0, 100%, 90%)), color-stop(100%, hsl(0, 100%, 82%)));
-    background-image: -webkit-linear-gradient(top, hsl(0, 100%, 90%), hsl(0, 100%, 82%));
-    background-image: -o-linear-gradient(top, hsl(0, 100%, 90%), hsl(0, 100%, 82%));
-    background-image: linear-gradient(hsl(0, 100%, 90%), hsl(0, 100%, 82%));
-    border-color: hsl(0, 100%, 82%) hsl(0, 100%, 82%) hsl(0, 100%, 80%);
-    color: #333;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.13);
-    -webkit-font-smoothing: antialiased;
-}
-
-.btn.o{
-    background-color: hsl(70, 11%, 23%);
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(70, 11%, 45%)), to(hsl(70, 11%, 23%)));
-    background-image: -moz-linear-gradient(top, hsl(70, 11%, 45%), hsl(70, 11%, 23%));
-    background-image: -ms-linear-gradient(top, hsl(70, 11%, 45%), hsl(70, 11%, 23%));
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(70, 11%, 45%)), color-stop(100%, hsl(70, 11%, 23%)));
-    background-image: -webkit-linear-gradient(top, hsl(70, 11%, 45%), hsl(70, 11%, 23%));
-    background-image: -o-linear-gradient(top, hsl(70, 11%, 45%), hsl(70, 11%, 23%));
-    background-image: linear-gradient(hsl(70, 11%, 45%), hsl(70, 11%, 23%));
-    border-color: hsl(70, 11%, 23%) hsl(70, 11%, 23%) hsl(70, 11%, 17.5%);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.36);
-    -webkit-font-smoothing: antialiased;
+       -webkit-font-smoothing: antialiased;
 }

@@ -18,27 +18,25 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4900;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Award Add / Edit");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
+                //lblPK.Text = Request["PK"];
+                lblPK.Text = Session["AWD"] == null ? "" : Session["AWD"].ToString(); //Session["AWD"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                if (Request["M"] == "K")
+                {
+                    MasterPage.DisplayMessageOnLoad = true;
+                    MasterPage.PageMessage = "Award definitian was saved successfully! As patrons meet the Award Triggers, they will receive the award badge.";
+                }
+
             }
         }
 
@@ -166,7 +164,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Award();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     obj.AwardName = ((TextBox)((DetailsView)sender).FindControl("AwardName")).Text;

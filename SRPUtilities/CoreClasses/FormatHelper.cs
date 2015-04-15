@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace STG.SRP.Utilities.CoreClasses
@@ -61,6 +62,26 @@ namespace STG.SRP.Utilities.CoreClasses
             return _int;
         }
 
+
+        public static bool SafeToBool(this string s)
+        {
+            if (s == "1") return true;
+            if (s.ToLower() == "yes") return true;
+            if (s.ToLower() == "on") return true;
+
+            return false;
+        }
+
+        public static bool SafeToBoolYes(this string s)
+        {
+            if (s == "1") return true;
+            if (s.ToLower() == "yes") return true;
+            if (s.ToLower() == "on") return true;
+            if (s == "") return true;
+
+            return false;
+        }
+
         public static decimal SafeToDecimal(this string s)
         {
             decimal _dec = (decimal) 0.00;
@@ -90,6 +111,13 @@ namespace STG.SRP.Utilities.CoreClasses
             s1 = s.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "").Replace("_", "");
             if (s1.Length == 5) return s1;
             return string.Format("{0}-{1}", s1.Substring(0, 5), s1.Substring(5));
+        }
+
+        public static string HtmlStrip(this string input)
+        {
+            input = Regex.Replace(input, "<style>(.|\n)*?</style>", string.Empty);
+            input = Regex.Replace(input, @"<xml>(.|\n)*?</xml>", string.Empty); // remove all <xml></xml> tags and anything inbetween.  
+            return Regex.Replace(input, @"<(.|\n)*?>", string.Empty); // remove any tags but not there content "<p>bob<span> johnson</span></p>" becomes "bob johnson"
         }
     }
 }

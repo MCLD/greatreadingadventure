@@ -18,18 +18,15 @@ namespace STG.SRP.ControlRoom.Modules.Programs
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
-            }
-
             MasterPage.RequiredPermission = 2200;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Program Add / Edit");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
+                SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
+
+                lblPK.Text = Session["PGM"] == null ? "" : Session["PGM"].ToString(); 
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -53,6 +50,17 @@ namespace STG.SRP.ControlRoom.Modules.Programs
                 lbl = (Label)dv.FindControl("TabContainer1").FindControl("TabPanel2").FindControl("ProgramGameIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
                 if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PreTestID");
+                lbl = (Label)dv.FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PreTestIDLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PostTestID");
+                lbl = (Label)dv.FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PostTestIDLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
 
 
                 int PK = int.Parse(lblPK.Text);
@@ -143,7 +151,7 @@ namespace STG.SRP.ControlRoom.Modules.Programs
                         obj.Insert();
 
                         File.Copy(Server.MapPath("~/css/program/default.css"), Server.MapPath("~/css/program/" + obj.PID.ToString() + ".css"),true);
-                        File.Copy(Server.MapPath("~/images/banners/default.png"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".png"), true);
+                        File.Copy(Server.MapPath("~/images/DefaultBanner.png"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".png"), true);
                         File.Copy(Server.MapPath("~/resources/program.default.en-US.txt"), Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"), true);
                         //CompileResourceFile(Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"));
 
@@ -235,6 +243,12 @@ namespace STG.SRP.ControlRoom.Modules.Programs
 
                     obj.BannerImage = "";//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
 
+                    obj.PreTestEndDate = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PreTestEndDate")).Text.SafeToDateTime();
+                    obj.PostTestStartDate = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PostTestStartDate")).Text.SafeToDateTime();
+                    obj.PreTestID = ((DropDownList)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PreTestID")).SelectedValue.SafeToInt();
+                    obj.PostTestID = ((DropDownList)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PostTestID")).SelectedValue.SafeToInt();
+                    obj.PreTestMandatory = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel5").FindControl("PreTestMandatory")).Checked;
+                    
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

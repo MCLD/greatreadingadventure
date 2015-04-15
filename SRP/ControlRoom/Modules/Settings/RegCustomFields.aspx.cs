@@ -15,17 +15,14 @@ namespace STG.SRP.ControlRoom.Modules.Settings
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4100;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Custom Registration Fields");
 
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
+
                 dv.ChangeMode(DetailsViewMode.Edit);
                 Page.DataBind();
             }

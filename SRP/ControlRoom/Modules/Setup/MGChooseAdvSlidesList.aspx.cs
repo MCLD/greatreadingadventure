@@ -6,9 +6,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGChooseAdvSlidesList : BaseControlRoomPage
@@ -19,13 +16,19 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Choose Your Adventure Slides List");
+
+            _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                if (Request["MGID"] != null)
+                if (Session["MGID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     if (Request["L"] != null) lblDiff.Text = Request["L"];
                     var s = (lblDiff.Text == "1"
                                  ? " - EASY Difficulty"
@@ -44,15 +47,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 {
                     Response.Redirect("MiniGameList.aspx");
                 }
-            }
 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Choose Your Adventure Slides List");
-
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
                 _mStrSortExp = String.Empty;
             }
             else
@@ -111,7 +106,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/MGChooseAdvSlidesAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(String.Format("{0}?MGID={1}&CAID={2}&L={3}", editpage, lblMGID.Text, lblCAID.Text, lblDiff.Text));
+                //Response.Redirect(String.Format("{0}?MGID={1}&CAID={2}&L={3}", editpage, lblMGID.Text, lblCAID.Text, lblDiff.Text));
+                Response.Redirect(String.Format("{0}?CAID={1}&L={2}", editpage, lblCAID.Text, lblDiff.Text));
             }
 
             if (e.CommandName.ToLower() == "editrecord")

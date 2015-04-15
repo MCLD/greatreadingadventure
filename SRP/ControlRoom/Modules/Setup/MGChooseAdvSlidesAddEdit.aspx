@@ -45,7 +45,7 @@
 
         <asp:TemplateField HeaderText="StepNumber: " SortExpression="StepNumber" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
-                <%# ((int) Eval("StepNumber") ==0 ? "" : Eval("StepNumber")) %>' 
+                <%# ((int) Eval("StepNumber") ==0 ? "" : Eval("StepNumber")) %> 
             </EditItemTemplate>
             <InsertItemTemplate>
                 <asp:TextBox ID="StepNumber" runat="server" Text=''></asp:TextBox>
@@ -110,7 +110,7 @@
                                     FileName='<%# "i1_" + Eval("CASID") %>'
                                     ImgWidth="400" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="128"
                                     Folder="~/Images/Games/ChooseAdv/"
@@ -122,7 +122,7 @@
                                     FileName='<%# "i2_" + Eval("CASID") %>'
                                     ImgWidth="400" 
                                     CreateSmallThumbnail="True"         
-                                    CreateMediumThumbnail="True"
+                                    CreateMediumThumbnail="False"
                                     SmallThumbnailWidth="64" 
                                     MediumThumbnailWidth="128"
                                     Folder="~/Images/Games/ChooseAdv/"
@@ -200,22 +200,22 @@
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>          
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>

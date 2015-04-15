@@ -18,7 +18,11 @@ btn-sm or btn-lg
 */
 
 
+.OrangePanel fieldset {border:1px solid orange} /*this is the border color*/
+.OrangePanel legend {color: Orange; font-size: 16px; font-weight: bold;} /* this is the GroupingText color */
 
+.BluePanel fieldset {border:1px solid #C1DBFA;} /*this is the border color*/
+.BluePanel legend {color: #5f85E8; font-size: 16px; font-weight: bold;} /* this is the GroupingText color */
 
 body 
 {

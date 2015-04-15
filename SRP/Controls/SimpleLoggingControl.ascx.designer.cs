@@ -112,6 +112,15 @@ namespace STG.SRP.Controls {
         protected global::System.Web.UI.WebControls.TextBox txtProgramCode;
         
         /// <summary>
+        /// lblFB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFB;
+        
+        /// <summary>
         /// btnSubmit control.
         /// </summary>
         /// <remarks>

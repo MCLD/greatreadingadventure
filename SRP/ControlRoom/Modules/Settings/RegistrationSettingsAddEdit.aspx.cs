@@ -17,26 +17,16 @@ namespace STG.SRP.ControlRoom.Modules.Settings
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4100;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Registration Settings");
 
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
+            
                 lblPK.Text = "0"; //"Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -288,7 +278,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
                 {
                     var obj = new RegistrationSettings();
                     int pk = 0;// int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
-                    obj.Fetch(pk);
+                    obj.Fetch();
 
                     obj.Literacy1Label = ((TextBox)((DetailsView)sender).FindControl("Literacy1Label")).Text;
                     obj.Literacy2Label = ((TextBox)((DetailsView)sender).FindControl("Literacy2Label")).Text;

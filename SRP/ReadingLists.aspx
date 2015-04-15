@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Badge Award" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Reading Lists" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="ReadingLists.aspx.cs" Inherits="STG.SRP.ReadingLists" %>
 
 

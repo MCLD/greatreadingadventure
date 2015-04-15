@@ -72,6 +72,7 @@
 <table width="100%">
 <tr>
     <td colspan="3">
+        <asp:Label ID="lblFB" runat="server" Text="" Visible="false"></asp:Label>
         <asp:Button ID="btnSubmit" runat="server" Text="Submit"  CssClass="btn a" onclick="btnSubmit_Click" /> 
         <asp:Button ID="btnReSubmit" runat="server" Text="Submit More"  CssClass="btn a" onclick="btnReSubmit_Click" Visible="false"/> 
         &nbsp; 

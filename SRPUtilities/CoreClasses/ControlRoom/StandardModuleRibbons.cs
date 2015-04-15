@@ -16,7 +16,7 @@ namespace STG.SRP.Core.Utilities
                 ImageAlt = "Reports",
                 ImagePath = "/ControlRoom/Images/edit.png"
             };
-            pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx" });
+            pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
             pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
             returnList.Add(pnl);
 
@@ -56,14 +56,12 @@ namespace STG.SRP.Core.Utilities
                 ImagePath = "/ControlRoom/Images/reports.png"
             };
             pnl.Add(new RibbonLink { Name = "Reading Activity", Url = "/ControlRoom/Modules/Reports/ReadingActivityReport.aspx" });
-            //pnl.Add(new RibbonLink { Name = "Prizes Stats", Url = "/ControlRoom/Modules/Reports/PrizesStats.aspx" });
-            //pnl.Add(new RibbonLink { Name = "MiniGame Play Stats", Url = "/ControlRoom/Modules/Reports/MiniGameStats.aspx" });
+            pnl.Add(new RibbonLink { Name = "Patron Activity", Url = "/ControlRoom/Modules/Reports/PatronActivityReport.aspx" });
             returnList.Add(pnl);
 
 
             return returnList;
         }
-
 
         public static List<RibbonPanel> DrawingsRibbon()
         {
@@ -142,12 +140,12 @@ namespace STG.SRP.Core.Utilities
             };
             pnl.Add(new RibbonLink { Name = "Patron Prizes", Url = "/ControlRoom/Modules/Patrons/PatronPrizes.aspx" });
             pnl.Add(new RibbonLink { Name = "Patron Reviews", Url = "/ControlRoom/Modules/Patrons/PatronReviews.aspx" });
+            pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
 
             returnList.Add(pnl);
 
             return returnList;
         }
-
 
         public static List<RibbonPanel> NotificationsRibbon()
         {
@@ -159,12 +157,11 @@ namespace STG.SRP.Core.Utilities
                 ImagePath = "/ControlRoom/Images/Notifications.png"
             };
             pnl.Add(new RibbonLink { Name = "Notification Queue", Url = "/ControlRoom/Modules/Notifications/NotificationList.aspx" });
-            //pnl.Add(new RibbonLink { Name = "Create Notification", Url = "/ControlRoom/Modules/Notifications/NotificationAddEdit.aspx" });
+            pnl.Add(new RibbonLink { Name = "Bulk Notification", Url = "/ControlRoom/Modules/Notifications/BulkNotification.aspx" });
             returnList.Add(pnl);
 
             return returnList;
         }
-
 
         public static List<RibbonPanel> ProgramRibbon()
         {
@@ -188,12 +185,16 @@ namespace STG.SRP.Core.Utilities
             };
             pnl.Add(new RibbonLink { Name = "Static Text", Url = "/ControlRoom/Modules/Programs/ProgramText.aspx" });
             pnl.Add(new RibbonLink { Name = "CSS Styles", Url = "/ControlRoom/Modules/Programs/ProgramCSS.aspx" });
+            
             returnList.Add(pnl);
 
             return returnList;
         }
 
-
+        public static List<RibbonPanel> ManagementRibbon()
+        {
+            return SetupRibbon();
+        }
         public static List<RibbonPanel> SetupRibbon()
         {
             var returnList = new List<RibbonPanel>();
@@ -203,7 +204,7 @@ namespace STG.SRP.Core.Utilities
                               ImageAlt = "Badges Setup",
                               ImagePath = "/ControlRoom/Images/Badges.png"
                           };
-            pnl.Add(new RibbonLink { Name = "Patron Avatars", Url = "/ControlRoom/Modules/Setup/AvatarList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Avatars", Url = "/ControlRoom/Modules/Setup/AvatarList.aspx" });
             pnl.Add(new RibbonLink { Name = "Badges", Url = "/ControlRoom/Modules/Setup/BadgeList.aspx" });
             returnList.Add(pnl);
 
@@ -244,11 +245,20 @@ namespace STG.SRP.Core.Utilities
                 ImagePath = "/ControlRoom/Images/Library.png"
             };
             pnl.Add(new RibbonLink { Name = "Book Lists", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
+            returnList.Add(pnl);
+
+            pnl = new RibbonPanel
+            {
+                Name = "Tests/Surveys",
+                ImageAlt = "Tests/Surveys",
+                ImagePath = "/ControlRoom/Images/Exam.png"
+            };
+            pnl.Add(new RibbonLink { Name = "Test/Survey List", Url = "/ControlRoom/Modules/Setup/SurveyList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Test/Survey Results", Url = "/ControlRoom/Modules/Setup/SurveyResults.aspx" });
             returnList.Add(pnl); 
-            
+
             return returnList;
         }
-
 
         public static List<RibbonPanel> SettingsRibbon()
         {
@@ -295,6 +305,45 @@ namespace STG.SRP.Core.Utilities
             return returnList;
         }
 
+        public static List<RibbonPanel> MasterTenantRibbon()
+        {
+            List<RibbonPanel> returnList = new List<RibbonPanel>();
+            var pnl = new RibbonPanel();
+            pnl.Name = "Organization Management";
+            pnl.ImageAlt = "Organization Management";
+            pnl.ImagePath = "/ControlRoom/Images/Tenants.png";
+            pnl.Add(new RibbonLink { Name = "Organizations", Url = "/ControlRoom/Modules/Tenant/TenantList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Users", Url = "/ControlRoom/Modules/Tenant/TenantUserList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Groups", Url = "/ControlRoom/Modules/Tenant/TenantGroupList.aspx" });
+            returnList.Add(pnl);
+
+            pnl = new RibbonPanel
+            {
+                Name = "Special Reports",
+                ImageAlt = "Special Reports",
+                ImagePath = "/ControlRoom/Images/reports.png"
+            };
+            pnl.Add(new RibbonLink { Name = "Tenant Summary", Url = "/ControlRoom/Modules/Tenant/TenantSummaryReport.aspx" });
+            
+            returnList.Add(pnl);
+
+
+            return returnList;
+        }
+
+        public static List<RibbonPanel> SubTenantRibbon()
+        {
+            List<RibbonPanel> returnList = new List<RibbonPanel>();
+            var pnl = new RibbonPanel();
+            pnl.Name = "Organization Account";
+            pnl.ImageAlt = "Organization Account Management";
+            pnl.ImagePath = "/ControlRoom/Images/SubTenants.png";
+            pnl.Add(new RibbonLink { Name = "Org Account", Url = "/ControlRoom/Modules/Tenant/MyTenantAccount.aspx" });
+
+            returnList.Add(pnl);
+
+            return returnList;
+        }
 
         public static List<RibbonPanel> SecurityRibbon()
         {

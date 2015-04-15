@@ -77,7 +77,7 @@
                         <center>Tile 1</center>
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t1_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t1_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>' width="24px"/>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>
@@ -87,7 +87,7 @@
                         <center>Tile 2</center>
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t2_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t2_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>'  width="24px"/>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>
@@ -98,7 +98,7 @@
                         <center>Tile 3</center>
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image3" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t3_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image3" runat="server" ImageUrl='<%# String.Format("~/Images/Games/MatchingGame/sm_t3_{0}.png?{1}", Eval("MAGTID").ToString(), DateTime.Now.ToString()) %>'  width="24px"/>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>           		

@@ -16,20 +16,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4400;
+            MasterPage.IsSecure = true;
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-
-             if (!IsPostBack)
-             {
-                 lblPK.Text = Request["PK"].ToString();
-                 var bl = BookList.FetchObject(int.Parse(lblPK.Text));
-                 MasterPage.PageTitle = string.Format("Books on \"{0}\" Book List", bl.AdminName);
+                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"] = "";
+                var bl = BookList.FetchObject(int.Parse(lblPK.Text));
+                MasterPage.PageTitle = string.Format("Books on \"{0}\" Book List", bl.AdminName);
              }
 
             
@@ -94,7 +90,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BookListBooksAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["BLL"] = ""; Response.Redirect(editpage);
             }
             
             if (e.CommandName.ToLower() == "deleterecord")

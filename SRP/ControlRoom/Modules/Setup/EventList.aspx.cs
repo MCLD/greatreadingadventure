@@ -16,6 +16,12 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4500;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Events List");
+
+            _mStrSortExp = String.Empty;
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
@@ -24,15 +30,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 {
                     GetFilterSessionValues();
                 }
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Events List");
-
-            _mStrSortExp = String.Empty;
-            if (!IsPostBack)
-            {
+            
                 _mStrSortExp = String.Empty;
             }
             else
@@ -126,14 +124,15 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         protected void GvRowCommand(object sender, GridViewCommandEventArgs e)
         {
             string editpage = "~/ControlRoom/Modules/Setup/EventAddEdit.aspx";
+            string addpage = "~/ControlRoom/Modules/Setup/EventAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["EID"] = ""; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["EID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

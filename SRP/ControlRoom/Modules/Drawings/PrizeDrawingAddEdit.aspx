@@ -270,6 +270,7 @@
 
             <asp:TemplateField ShowHeader="False">
                 <ItemTemplate>
+                <hr />
                     <asp:ImageButton ID="btnBack" runat="server" 
                         CausesValidation="false" 
                         CommandName="Back" 
@@ -279,6 +280,7 @@
                         AlternateText="Back/Cancel" />
                 </ItemTemplate>
                 <InsertItemTemplate>
+                <hr />
                     <asp:ImageButton ID="btnBack" runat="server" 
                         CausesValidation="false" 
                         CommandName="Back" 
@@ -297,6 +299,7 @@
 
                 </InsertItemTemplate>
                 <EditItemTemplate>
+                <hr />
                     <asp:ImageButton ID="btnBack" runat="server" 
                         CausesValidation="false" 
                         CommandName="Back" 

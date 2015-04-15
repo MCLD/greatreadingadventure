@@ -11,20 +11,39 @@ namespace STG.SRP.ControlRoom.Modules.Setup
     public partial class ProgramGameLevelAddEdit : BaseControlRoomPage
     {
 
+        //public string ShowBoardWGrid(int PGID, int Board = 0)
+        //{
+        //    var tbl = "";
+        //    var pg = ProgramGame.FetchObject(PGID);
+        //    var rows = "";
+        //    var size = 800;
+        //    var cellSize = (int)(800/pg.BoardWidth);
+        //    size = cellSize*pg.BoardWidth;
+        //    var img = string.Format("<img src='/images/Games/Board/{0}{1}.png' style=' width: {2}px; height: {2}px;' width='{2}px' height='{2}px' />",
+        //        (Board == 0 ? "" : "bonus_"), PGID, size);
+        //    for (int i = 0; i < pg.BoardWidth; i++)
+        //    {
+        //        for (int j = 0; j < pg.BoardWidth; j++)
+        //        {
+        //            rows = string.Format("{0}<td style='font-size: 8px; overflow: hidden;' align='center' valign='middle' width='{1}px' height='{2}px' nowrap>X = {3}<br>Y = {4}</td>", rows, cellSize, cellSize - 1, j + 1, i + 1);
+        //        }
+        //        rows = string.Format("<tr>{0}</tr>", rows);
+        //    }
+        //    tbl = string.Format("{1}<table border=1 style='border-collapse: collapse; position: relative; top:-{2}px; width: {2}px; height: {2}px;' width='{2}px' height='{2}px'>{0}</table>", rows, img, size);
+            
+        //    return tbl;
+        //}
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Game Level Add / Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Game Level Add / Edit");
-
-            if (!IsPostBack)
-            {
+            
                 lblPK.Text = Request["PK"];
                 PGID.Text = Request["PK2"];
                 if (lblPK.Text.Length == 0 && PGID.Text=="") Response.Redirect("ProgramGameLevelList.aspx");
@@ -67,6 +86,22 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 lbl = (Label)dv.FindControl("Minigame2IDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
                 if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList) dv.FindControl("AwardBadgeIDBonus");
+                lbl = (Label)dv.FindControl("AwardBadgeIDBonusLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("Minigame1IDBonus");
+                lbl = (Label)dv.FindControl("Minigame1IDBonusLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("Minigame2IDBonus");
+                lbl = (Label)dv.FindControl("Minigame2IDBonusLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
             }
         }
 
@@ -112,10 +147,14 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj.PointNumber = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PointNumber")).Text);
 
                     obj.Minigame1ID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("Minigame1ID")).SelectedValue);
-                    //obj.Minigame1ID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Minigame1ID")).Text);
                     obj.Minigame2ID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("Minigame2ID")).SelectedValue);
-                    //obj.Minigame2ID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Minigame2ID")).Text);
                     obj.AwardBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("AwardBadgeID")).SelectedValue);
+
+                    obj.LocationXBonus = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LocationXBonus")).Text);
+                    obj.LocationYBonus = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LocationYBonus")).Text);
+                    obj.Minigame1IDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("Minigame1IDBonus")).SelectedValue);
+                    obj.Minigame2IDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("Minigame2IDBonus")).SelectedValue);
+                    obj.AwardBadgeIDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardBadgeIDBonus")).SelectedValue);
                     
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -162,7 +201,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new ProgramGameLevel();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     //obj.PGID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PGID")).Text);
@@ -172,11 +211,15 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj.PointNumber = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PointNumber")).Text);
                     
                     obj.Minigame1ID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("Minigame1ID")).SelectedValue);
-                    //obj.Minigame1ID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Minigame1ID")).Text);
                     obj.Minigame2ID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("Minigame2ID")).SelectedValue);
-                    //obj.Minigame2ID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Minigame2ID")).Text);
                     obj.AwardBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("AwardBadgeID")).SelectedValue);
-                    
+
+                    obj.LocationXBonus = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LocationXBonus")).Text);
+                    obj.LocationYBonus = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LocationYBonus")).Text);
+                    obj.Minigame1IDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("Minigame1IDBonus")).SelectedValue);
+                    obj.Minigame2IDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("Minigame2IDBonus")).SelectedValue);
+                    obj.AwardBadgeIDBonus = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardBadgeIDBonus")).SelectedValue);
+
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 

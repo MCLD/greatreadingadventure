@@ -13,14 +13,19 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4200;
+            MasterPage.IsSecure = true; 
+            
             if (!IsPostBack)
             {
-                MasterPage.IsSecure = true;
                 MasterPage.PageTitle = string.Format("{0}", "Statistics Dashboard");
 
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
 
-                var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_DashboardStats");
+                var arrParams = new SqlParameter[1];
+                arrParams[0] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+
+                var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_DashboardStats", arrParams);
 
                 GetRegByProg(ds.Tables[0]);
                 GetFinisherByProg(ds.Tables[1]);
@@ -156,9 +161,10 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     retStr = Coalesce(retStr, 
-                            Build4DataPoint(dt.Rows[i]["AdminName"].ToString(), 
+                            Build5DataPoint(dt.Rows[i]["AdminName"].ToString(), 
                                             dt.Rows[i]["MaleRegistrant"].ToString(),
                                             dt.Rows[i]["FemaleRegistrant"].ToString(),
+                                            dt.Rows[i]["OtherRegistrant"].ToString(),
                                             dt.Rows[i]["NARegistrant"].ToString()
                             )
                             , ",");
@@ -176,9 +182,10 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     retStr = Coalesce(retStr,
-                            Build4DataPoint(dt.Rows[i]["AdminName"].ToString(),
+                            Build5DataPoint(dt.Rows[i]["AdminName"].ToString(),
                                             dt.Rows[i]["MaleFinisher"].ToString(),
                                             dt.Rows[i]["FemaleFinisher"].ToString(),
+                                            dt.Rows[i]["OtherFinisher"].ToString(),
                                             dt.Rows[i]["NAFinisher"].ToString()
                             )
                             , ",");
@@ -203,7 +210,10 @@ namespace STG.SRP.ControlRoom.Modules.Reports
             return string.Format("['{0}', {1}, {2}, {3}]", str1, str2, str3, str4);
         }
 
-
+        private string Build5DataPoint(string str1, string str2, string str3, string str4, string str5)
+        {
+            return string.Format("['{0}', {1}, {2}, {3}, {4}]", str1, str2, str3, str4, str5);
+        }
         protected void btnFilter_Click(object sender, EventArgs e)
         {
             var rs = GetReportData();
@@ -212,7 +222,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         private DataSet GetReportData()
         {
-            var arrParams = new SqlParameter[5];
+            var arrParams = new SqlParameter[6];
 
             if (ProgID.SelectedValue == "0")
             {
@@ -254,6 +264,8 @@ namespace STG.SRP.ControlRoom.Modules.Reports
             {
                 arrParams[4] = new SqlParameter("@Level", int.Parse( Level.Text));
             }
+            arrParams[5] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+
             //var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_FinisherStats", arrParams);
 
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_DashboardStats", arrParams);

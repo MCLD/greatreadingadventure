@@ -25,9 +25,9 @@
 	    <!-- Theme style -->
 	    <link href="css/theme-style.css" rel="stylesheet">
 
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
@@ -128,6 +128,8 @@
             <li><a href="/Events.aspx" class="menu-item" id="v" runat="server" visible="false">Events</a></li>
             <li><a href="/MyOffers.aspx" class="menu-item" id="o" runat="server" visible="false">Offers</a></li>
 
+            <li><a href="/ReadingLists.aspx" class="menu-item" id="r" runat="server" visible="false">Book Lists</a></li>
+
             <li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server" visible="false">Family Members</a></li>
             <li><a href="/MyAccount.aspx" class="menu-item" id="a" runat="server" visible="false">My Account</a></li>
             <li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server" visible="false">Change Password</a></li>
@@ -188,14 +190,6 @@
           <p><asp:Label ID="Copyright"  runat="server">Copyright_Statement</asp:Label></p>
         </div>
         <div class="span6">
-        <!--
-          <ul class="inline pull-right">
-            <li><a href="#">Terms</a></li>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Contact Us</a></li>
-          </ul>
-        </div>
-        -->
       </div>
     </div>
   </div>
@@ -206,37 +200,21 @@
 
    </form>
 
-                   <!-- Java Script Start -->
 
-        <xx src="js/jquery.js"></xx>
-        <xx src="js/modernizr.js"></xx>
-        <xx src="js/selectnav.js"></xx>
+<scriptXX src="js/bootstrap-transition.js"></scriptXX> 
+<scriptXX src="js/bootstrap-dropdown.js"></scriptXX> 
+<scriptXX src="js/bootstrap-collapse.js"></scriptXX> 
+<scriptXX src="js/bootstrap-tooltip.js"></scriptXX> 
+<scriptXX src="js/bootstrap-popover.js"></scriptXX> 
+<scriptXX src="js/script.js"></scriptXX>
 
-        <xx src="js/twitter.js"></xx>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/transition.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/dropdown.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/collapse.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.min.js"></script> 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/popover.min.js"></script> 
+<script src="js/script.js"></script> 
 
-        <xx src="js/fancybox.js"></xx>
-        <xx src="js/bootstrap.js"></xx>  
-
-        <xx src="js/custom.js"></xx>
-        
-<!--Scripts --> 
-<scripts src="js/jquery.js"></script> 
-
-
-
-
-
-<script src="js/bootstrap-transition.js"></script> 
-<script src="js/bootstrap-dropdown.js"></script> 
-<script src="js/bootstrap-collapse.js"></script> 
-
-<script src="js/bootstrap-tooltip.js"></script> 
-<script src="js/bootstrap-popover.js"></script> 
-<!--Custom scripts mainly used to trigger libraries --> 
-<script src="js/script.js"></script>
-
-
-        <!-- Java Script End -->
 
 </body>
 

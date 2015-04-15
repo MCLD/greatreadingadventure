@@ -23,7 +23,7 @@ namespace STG.SRP.ControlRoom
         {
             IControlRoomMaster masterPage = (IControlRoomMaster)Master;
             //masterPage.PageRibbon.DataBind();
-            masterPage.PageTitle = "STG Summer Reading Program - Error Page";
+            masterPage.PageTitle = "Application Error";
             masterPage.PageError = "There has been an application error.";
             masterPage.DisplayMessageOnLoad = true;
 

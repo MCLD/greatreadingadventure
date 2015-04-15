@@ -7,9 +7,6 @@ using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class BoardGameAddEdit : BaseControlRoomPage
@@ -18,26 +15,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Board Game Add / Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Board Game Add / Edit");
- 
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["BGID"] == null ? "" : Session["BGID"].ToString();
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -55,6 +42,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
                 control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlStamp");
                 if (control != null) control.ProcessRender();
+
+                var ctl = (DropDownList)dv.FindControl("Minigame1ID");
+                var lbl = (Label)dv.FindControl("Minigame1IDLbl");
+                var i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
+                ctl = (DropDownList)dv.FindControl("Minigame2ID");
+                lbl = (Label)dv.FindControl("Minigame2IDLbl");
+                i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null) ctl.SelectedValue = lbl.Text;
+
             }
         }
 
@@ -102,6 +100,9 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj.BonusLevelPointMultiplier = FormatHelper.SafeToDecimal(((TextBox)((DetailsView)sender).FindControl("BonusLevelPointMultiplier")).Text); 
                     //obj.LevelCompleteImage = ((TextBox)((DetailsView)sender).FindControl("LevelCompleteImage")).Text;
 
+                    obj.Minigame1ID = ((DropDownList)((DetailsView)sender).FindControl("Minigame1ID")).SelectedValue.SafeToInt();
+                    obj.Minigame2ID = ((DropDownList)((DetailsView)sender).FindControl("Minigame2ID")).SelectedValue.SafeToInt();
+
    				    obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     obj.LastModDate = obj.AddedDate;
@@ -144,14 +145,14 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             }
             if (e.CommandName.ToLower() == "levels")
             {
-                Response.Redirect(levelURL + "?PGID=" + ((DetailsView)sender).Rows[0].Cells[1].Text);
+                Response.Redirect(levelURL + "?PGID=" + lblPK.Text);
             }
             if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
             {
                 try
                 {
                     var obj = new ProgramGame();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     obj.GameName = ((TextBox)((DetailsView)sender).FindControl("GameName")).Text;
@@ -161,6 +162,9 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     //obj.BoardHeight = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("BoardHeight")).Text);
                     obj.BonusLevelPointMultiplier = FormatHelper.SafeToDecimal(((TextBox)((DetailsView)sender).FindControl("BonusLevelPointMultiplier")).Text);
                     //obj.LevelCompleteImage = ((TextBox)((DetailsView)sender).FindControl("LevelCompleteImage")).Text;
+
+                    obj.Minigame1ID = ((DropDownList)((DetailsView)sender).FindControl("Minigame1ID")).SelectedValue.SafeToInt();
+                    obj.Minigame2ID = ((DropDownList)((DetailsView)sender).FindControl("Minigame2ID")).SelectedValue.SafeToInt();
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

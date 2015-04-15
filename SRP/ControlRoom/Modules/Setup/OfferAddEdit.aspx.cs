@@ -14,26 +14,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4600;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Offer Add / Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Offer Add / Edit");
-
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -152,7 +142,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Offer();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     obj.isEnabled = ((CheckBox)((DetailsView)sender).FindControl("isEnabled")).Checked;

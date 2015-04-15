@@ -6,9 +6,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class BookListList : BaseControlRoomPage
@@ -19,19 +16,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4400;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Book Lists");
 
             _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
                 _mStrSortExp = String.Empty;
             }
             else
@@ -88,20 +82,22 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         protected void GvRowCommand(object sender, GridViewCommandEventArgs e)
         {
             string editpage = "~/ControlRoom/Modules/Setup/BookListAddEdit.aspx";
+            string addpage = "~/ControlRoom/Modules/Setup/BookListAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["BLL"] = ""; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["BLL"] = key; Response.Redirect(editpage);
             }
 
             if (e.CommandName.ToLower() == "saveandbooks")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", "~/ControlRoom/Modules/Setup/BookListBooksList.aspx", key));
+                Session["BLL"] = key; Response.Redirect("~/ControlRoom/Modules/Setup/BookListBooksList.aspx");
+                //Response.Redirect(String.Format("{0}?PK={1}", "~/ControlRoom/Modules/Setup/BookListBooksList.aspx", key));
             }
             
             if (e.CommandName.ToLower() == "deleterecord")

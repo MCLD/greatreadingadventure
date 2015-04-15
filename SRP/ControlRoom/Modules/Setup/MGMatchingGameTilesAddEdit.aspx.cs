@@ -15,20 +15,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Matching Game Tiles Add / Edit");
 
             if (!IsPostBack)
             {
-                if (Request["MGID"] != null)
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                if (Request["MAGID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblMAGID.Text = Request["MAGID"];
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));

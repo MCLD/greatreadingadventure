@@ -21,26 +21,17 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4200;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Ad-Hoc Report");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Ad-Hoc Report");
- 
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                if (Request["RID"] == "new") Session["RID"] = null;
+
+                lblPK.Text = Session["RID"] == null ? "" : Session["RID"].ToString();
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -177,7 +168,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                                 ((DropDownList)((DetailsView)sender).FindControl("PrimaryLibrary")).SelectedValue);
                         obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
                         obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
-                        obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
+                        obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("SDistrict")).SelectedValue;
 
                         obj.Teacher = ((TextBox)((DetailsView)sender).FindControl("Teacher")).Text;
                         obj.GroupTeamName = ((TextBox)((DetailsView)sender).FindControl("GroupTeamName")).Text;
@@ -304,6 +295,32 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                         obj.HasBeenDrawnInc = ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawnInc")).Checked;
                         obj.HasRedeemendInc = ((CheckBox)((DetailsView)sender).FindControl("HasRedeemendInc")).Checked;
 
+
+                        obj.Score1From =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1From")).Text);
+                        obj.Score1To =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1To")).Text);
+                        obj.Score2From =
+                            FormatHelper.SafeToInt(
+                                ((TextBox)((DetailsView)sender).FindControl("Score2From")).Text);
+                        obj.Score2To =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2To")).Text);
+
+                        obj.Score1PctFrom =
+                                FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctFrom")).Text);
+                        obj.Score1PctTo =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctTo")).Text);
+                        obj.Score2PctFrom =
+                            FormatHelper.SafeToInt(
+                                ((TextBox)((DetailsView)sender).FindControl("Score2PctFrom")).Text);
+                        obj.Score2PctTo =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2PctTo")).Text);
+
+                        obj.Score1Inc = ((CheckBox)((DetailsView)sender).FindControl("Score1Inc")).Checked;
+                        obj.Score2Inc = ((CheckBox)((DetailsView)sender).FindControl("Score2Inc")).Checked;
+                        obj.Score1PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score1PctInc")).Checked;
+                        obj.Score2PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked;
+
                         obj.AddedDate = DateTime.Now;
                         obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;
                         //"N/A";  // Get from session
@@ -372,9 +389,12 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                         obj.State = ((TextBox) ((DetailsView) sender).FindControl("State")).Text;
                         obj.ZipCode = ((TextBox) ((DetailsView) sender).FindControl("ZipCode")).Text;
                         obj.County = ((TextBox) ((DetailsView) sender).FindControl("County")).Text;
-                        obj.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("PrimaryLibrary")).SelectedValue);
-                        obj.SchoolName = ((TextBox) ((DetailsView) sender).FindControl("SchoolName")).Text;
-                        obj.District = ((TextBox) ((DetailsView) sender).FindControl("District")).Text;
+
+                        obj.PrimaryLibrary =    FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("PrimaryLibrary")).SelectedValue);
+                        obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
+                        obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
+                        obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("SDistrict")).SelectedValue; 
+
                         obj.Teacher = ((TextBox) ((DetailsView) sender).FindControl("Teacher")).Text;
                         obj.GroupTeamName = ((TextBox) ((DetailsView) sender).FindControl("GroupTeamName")).Text;
                         obj.SchoolType = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("SchoolType")).SelectedValue);
@@ -489,6 +509,31 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                             ((CheckBox) ((DetailsView) sender).FindControl("RandomDrawingDateInc")).Checked;
                         obj.HasBeenDrawnInc = ((CheckBox) ((DetailsView) sender).FindControl("HasBeenDrawnInc")).Checked;
                         obj.HasRedeemendInc = ((CheckBox) ((DetailsView) sender).FindControl("HasRedeemendInc")).Checked;
+
+                        obj.Score1From =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1From")).Text);
+                        obj.Score1To =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1To")).Text);
+                        obj.Score2From =
+                            FormatHelper.SafeToInt(
+                                ((TextBox)((DetailsView)sender).FindControl("Score2From")).Text);
+                        obj.Score2To =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2To")).Text);
+
+                        obj.Score1PctFrom =
+                                FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctFrom")).Text);
+                        obj.Score1PctTo =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctTo")).Text);
+                        obj.Score2PctFrom =
+                            FormatHelper.SafeToInt(
+                                ((TextBox)((DetailsView)sender).FindControl("Score2PctFrom")).Text);
+                        obj.Score2PctTo =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2PctTo")).Text);
+
+                        obj.Score1Inc = ((CheckBox)((DetailsView)sender).FindControl("Score1Inc")).Checked;
+                        obj.Score2Inc = ((CheckBox)((DetailsView)sender).FindControl("Score2Inc")).Checked;
+                        obj.Score1PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score1PctInc")).Checked;
+                        obj.Score2PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked;
 
                         obj.LastModDate = DateTime.Now;
                         obj.LastModUser = ((SRPUser) Session[SessionData.UserProfile.ToString()]).Username;
@@ -645,6 +690,34 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                             ((TextBox)((DetailsView)sender).FindControl("RandomDrawingEndDate")).Text);
                     obj.HasBeenDrawn = ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawn")).Checked;
                     obj.HasRedeemend = ((CheckBox)((DetailsView)sender).FindControl("HasRedeemend")).Checked;
+
+                    
+                    
+                    obj.Score1From =
+                        FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1From")).Text);
+                    obj.Score1To =
+                        FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1To")).Text);
+                    obj.Score2From =
+                        FormatHelper.SafeToInt(
+                            ((TextBox)((DetailsView)sender).FindControl("Score2From")).Text);
+                    obj.Score2To =
+                        FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2To")).Text);
+
+                    obj.Score1PctFrom =
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctFrom")).Text);
+                    obj.Score1PctTo =
+                        FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1PctTo")).Text);
+                    obj.Score2PctFrom =
+                        FormatHelper.SafeToInt(
+                            ((TextBox)((DetailsView)sender).FindControl("Score2PctFrom")).Text);
+                    obj.Score2PctTo =
+                        FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score2PctTo")).Text);
+
+                    obj.Score1Inc = ((CheckBox)((DetailsView)sender).FindControl("Score1Inc")).Checked;
+                    obj.Score2Inc = ((CheckBox)((DetailsView)sender).FindControl("Score2Inc")).Checked;
+                    obj.Score2PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked;
+                    obj.Score2PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked;
+
 
                     obj.PIDInc = ((CheckBox)((DetailsView)sender).FindControl("PIDInc")).Checked;
                     obj.UsernameInc = ((CheckBox)((DetailsView)sender).FindControl("UsernameInc")).Checked;
@@ -877,7 +950,21 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                     ((CheckBox)((DetailsView)sender).FindControl("RandomDrawingDateInc")).Checked = obj.RandomDrawingDateInc;
                     ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawnInc")).Checked = obj.HasBeenDrawnInc;
                     ((CheckBox)((DetailsView)sender).FindControl("HasRedeemendInc")).Checked = obj.HasRedeemendInc;
-                    
+
+                    ((TextBox)((DetailsView)sender).FindControl("Score1From")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score1From);
+                    ((TextBox)((DetailsView)sender).FindControl("Score2From")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score2From);
+                    ((TextBox)((DetailsView)sender).FindControl("Score1PctFrom")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score1PctFrom);
+                    ((TextBox)((DetailsView)sender).FindControl("Score2PctFrom")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score2PctFrom);
+
+                    ((TextBox)((DetailsView)sender).FindControl("Score1To")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score1To);
+                    ((TextBox)((DetailsView)sender).FindControl("Score2To")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score2To);
+                    ((TextBox)((DetailsView)sender).FindControl("Score1PctTo")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score1PctTo);
+                    ((TextBox)((DetailsView)sender).FindControl("Score2PctTo")).Text = FormatHelper.ToWidgetDisplayInt(obj.Score2PctTo);
+
+                    ((CheckBox)((DetailsView)sender).FindControl("Score1Inc")).Checked = obj.Score1Inc;
+                    ((CheckBox)((DetailsView)sender).FindControl("Score2Inc")).Checked = obj.Score2Inc;
+                    ((CheckBox)((DetailsView)sender).FindControl("Score1PctInc")).Checked = obj.Score1PctInc;
+                    ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked = obj.Score2PctInc;
 
                     var masterPage = (IControlRoomMaster)Master;
                     if (masterPage != null) masterPage.PageMessage = "Report template loaded.";
@@ -891,7 +978,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 #endregion
 
 
-            #region RUN REPORT
+#region RUN REPORT
             if (e.CommandName.ToLower() == "runreport")
             {
                 try
@@ -932,6 +1019,16 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                         retColumns = Coalesce(retColumns, "State", ",");
                     if (((CheckBox)((DetailsView)sender).FindControl("ZipCodeInc")).Checked)
                         retColumns = Coalesce(retColumns, "ZipCode", ",");
+
+                    if (((CheckBox)((DetailsView)sender).FindControl("Score1Inc")).Checked)
+                        retColumns = Coalesce(retColumns, "Score1", ",");
+                    if (((CheckBox)((DetailsView)sender).FindControl("Score2Inc")).Checked)
+                        retColumns = Coalesce(retColumns, "Score2", ",");
+                    if (((CheckBox)((DetailsView)sender).FindControl("Score1PctInc")).Checked)
+                        retColumns = Coalesce(retColumns, "Score1Pct", ",");
+                    if (((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked)
+                        retColumns = Coalesce(retColumns, "Score2Pct", ",");
+
 
                     if (((CheckBox)((DetailsView)sender).FindControl("DistrictInc")).Checked)
                     {
@@ -982,7 +1079,8 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                         retColumns = Coalesce(retColumns, "case when LiteracyLevel1 > 0 then LiteracyLevel1 else null end as LiteracyLevel1", ",");
                     if (((CheckBox)((DetailsView)sender).FindControl("LiteracyLevel2Inc")).Checked)
                         retColumns = Coalesce(retColumns, "case when LiteracyLevel2 > 0 then LiteracyLevel2 else null end as LiteracyLevel2", ",");
-                    if (((CheckBox)((DetailsView)sender).FindControl("Custom1Inc")).Checked)                //TODO Customs
+                    
+                    if (((CheckBox)((DetailsView)sender).FindControl("Custom1Inc")).Checked)                
                         retColumns = Coalesce(retColumns, "Custom1", ",");
                     if (((CheckBox)((DetailsView)sender).FindControl("Custom2Inc")).Checked)
                         retColumns = Coalesce(retColumns, "Custom2", ",");
@@ -1134,8 +1232,98 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                     ProcessSimpleStringFilter((DetailsView)sender, "Custom5", ref whereClause, ref retColumns, ref arrParams, ref filterStr, minorSep, majorSep);
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    
-                    
+
+                    filterField = "Score1From";
+                    parmField = "Score1";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} >= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} >= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score2From";
+                    parmField = "Score2";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} >= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} >= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score1To";
+                    parmField = "Score1";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} <= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} <= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score2To";
+                    parmField = "Score2";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} <= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} <= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+
+                    filterField = "Score1PctFrom";
+                    parmField = "Score1Pct";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} >= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} >= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score2PctFrom";
+                    parmField = "Score2Pct";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} >= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} >= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score1PctTo";
+                    parmField = "Score1Pct";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} <= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} <= {2}", parmField, minorSep, txt), majorSep);
+                    }
+
+                    filterField = "Score2PctTo";
+                    parmField = "Score2Pct";
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
+                    if (txt.Length > 0)
+                    {
+                        AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
+                        whereClause = Coalesce(whereClause, string.Format("({0} <= @{1})", parmField, filterField), " AND ");
+
+                        filterStr = Coalesce(filterStr, string.Format("{0}{1} <= {2}", parmField, minorSep, txt), majorSep);
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
                     filterField = "AgeFrom";
                     parmField = "Age";
                     txt = ((TextBox) (((DetailsView) sender).FindControl(filterField))).Text.Trim();
@@ -1590,6 +1778,8 @@ namespace STG.SRP.ControlRoom.Modules.Reports
                         return;
                     }
 
+                    AddSqlParameter(ref arrParams, new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"])));
+                    whereClause = Coalesce(whereClause, "(p.TenID = @TenID)", " AND ");
 
                     // Should this be DISTINCT ?????????
                     var SQL = "SELECT DISTINCT " + retColumns + " FROM " + fromClause;
@@ -1600,7 +1790,7 @@ namespace STG.SRP.ControlRoom.Modules.Reports
 
 
 
-
+                    
                     //lblSQl.Text = SQL;
                     var ds = SqlHelper.ExecuteDataset(conn, CommandType.Text, SQL, arrParams);
 

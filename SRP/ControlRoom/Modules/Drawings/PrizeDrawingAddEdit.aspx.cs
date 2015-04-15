@@ -6,10 +6,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
-
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Drawings
 {
     public partial class PrizeDrawingAddEdit : BaseControlRoomPage
@@ -18,26 +14,19 @@ namespace STG.SRP.ControlRoom.Modules.Drawings
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4000;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Manage Prize Drawing");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
+            }
+
+            if (!IsPostBack)
+            {
+                lblPK.Text = Session["DID"] == null ? "" : Session["DID"].ToString(); //Session["DID"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }

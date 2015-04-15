@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using STG.SRP.Controls;
 using STG.SRP.DAL;
 
 
@@ -32,13 +33,14 @@ namespace STG.SRP.Classes
                 // now validate user can change password for SA Sub Account
 
                 var patron = (Patron) Session["Patron"];
-                if (!patron.IsMasterAccount)
+                //if (!patron.IsMasterAccount)
+                if (Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"])
                 {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");
                 }
 
-                if (!Patron.CanManageSubAccount(patron.PID, int.Parse(SA.Text)))
+                if (!Patron.CanManageSubAccount((int)Session["MasterAcctPID"], int.Parse(SA.Text)))
                 {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");
@@ -46,6 +48,9 @@ namespace STG.SRP.Classes
                 var sa = Patron.FetchObject(int.Parse(SA.Text));
                 lblAccount.Text = (sa.FirstName + " " + sa.LastName).Trim();
                 if (lblAccount.Text.Length == 0) lblAccount.Text = sa.Username;
+
+                uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
+                uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
 
             }
         }
@@ -56,7 +61,7 @@ namespace STG.SRP.Classes
             {
                 if (!(string.IsNullOrEmpty(NPassword.Text.Trim())))
                 {
-                    var patron = (Patron)Session["Patron"];
+                    var patron = Patron.FetchObject((int)Session["MasterAcctPID"]);//(Patron)Session["Patron"];)
                     if (patron.Password != CPass.Text.Trim())
                     {
                         lblError.Text =
@@ -95,5 +100,6 @@ namespace STG.SRP.Classes
         {
             Response.Redirect("~/FamilyAccountList.aspx");
         }
+
     }
 }

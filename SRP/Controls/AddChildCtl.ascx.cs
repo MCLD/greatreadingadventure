@@ -31,7 +31,8 @@ namespace STG.SRP.Controls
                     SA.Text = Session["SA"].ToString();
                 }
 
-                var patron = (Patron)Session["Patron"];
+                //var patron = (Patron)Session["Patron"];
+                var patron = Patron.FetchObject((int)Session["MasterAcctPID"]);
                 var ds = Patron.GetPatronForEdit(patron.PID);
                 ds.Tables[0].Rows[0]["Username"] = "";
                 ds.Tables[0].Rows[0]["Password"] = "";
@@ -204,7 +205,8 @@ namespace STG.SRP.Controls
         {
             try
             {
-                var patron = (Patron)Session["Patron"];
+                //var patron = (Patron)Session["Patron"];
+                var patron = Patron.FetchObject((int)Session["MasterAcctPID"]); 
                 var p = new Patron();
                 DateTime _d;
                 var DOB = rptr.Items[0].FindControl("DOB") as TextBox;

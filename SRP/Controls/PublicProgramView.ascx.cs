@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using STG.SRP.DAL;
+using STG.SRP.Utilities.CoreClasses;
 
 namespace STG.SRP.Classes
 {
@@ -18,7 +19,7 @@ namespace STG.SRP.Classes
             if(!IsPostBack)
             {
                 Programs p = new Programs();
-                p = Programs.FetchObject(int.Parse(Session["ProgramID"].ToString()));
+                p = Programs.FetchObject(Session["ProgramID"].ToString().SafeToInt());
                 Session["Program"] = p;
             }
         }

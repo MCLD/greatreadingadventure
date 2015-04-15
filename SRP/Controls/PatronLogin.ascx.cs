@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using STG.SRP.Controls;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
@@ -39,6 +40,19 @@ namespace STG.SRP.Classes
                     Session["ProgramID"] = bp.ProgID;
                     Session["PatronProgramID"] = bp.ProgID;
                     Session["CurrentProgramID"] = bp.ProgID;
+                    Session["TenantID"] = bp.TenID;
+                    Session["IsMasterAcct"] = bp.IsMasterAccount;
+                    if (bp.IsMasterAccount)
+                    {
+                        Session["MasterAcctPID"] = bp.PID;
+                    }
+                    else
+                    {
+                        Session["MasterAcctPID"] = 0;
+                    }
+
+                    TestingBL.CheckPatronNeedsPreTest();
+                    TestingBL.CheckPatronNeedsPostTest();
 
                     Response.Redirect("~/MyProgram.aspx");
                 }

@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using STG.SRP.Core.Utilities;
+using STG.SRP.Utilities.CoreClasses;
 
 namespace SRPApp.Classes
 {
@@ -58,6 +59,51 @@ namespace SRPApp.Classes
         protected override void OnPreLoad(EventArgs e)
         {
             MasterPage = (BaseSRPMaster)Master;
+
+            // Tenant not selected ...  
+            if (Session["TenantID"] == null || Session["TenantID"].ToString() == "")
+            {
+                // Direct program ID hit
+                if (!String.IsNullOrEmpty(Request["PID"]))
+                {
+                    // we can get the get the Tenant ID from the Program 
+                    // Set the tenant
+                    var tenID = Tenant.GetTenantByProgram(Request["PID"].SafeToInt());
+
+                    if (tenID < 0)
+                    {
+                        Response.Redirect("~/Select.aspx", true); 
+                    }
+                    Session["TenantID"] = tenID;
+                }
+                else
+                {
+                    // Check domain name and see if we can get the tenant from there
+                    // Set then tenant
+                    var dom = Request.ServerVariables["HTTP_HOST"];
+                    var port = Request.ServerVariables["SERVER_PORT"];
+                    if (port == "80") port = ""; else port = ":" + port;
+                    if (dom.Contains(":"))
+                    {
+                        dom = dom.Substring(0, dom.IndexOf(":")) + port;
+                    }
+                    var tenID = -1;
+                    try
+                    {
+                        tenID = Tenant.GetTenantByDomainName(dom);                        
+                    }
+                    catch
+                    {
+                        Response.Redirect("~/ControlRoom/Setup.aspx");
+                    }
+                    // else go to tenant selection page ..
+                    if (tenID < 0)
+                    {
+                        Response.Redirect("~/Select.aspx", true);
+                    }
+                    Session["TenantID"] = tenID;
+                }
+            }
 
             IsLoggedIn = false;
             if (Session["PatronLoggedIn"] != null && (bool)Session["PatronLoggedIn"])

@@ -6,6 +6,8 @@
 <%@ Register src="MyPointsControl.ascx" tagname="MyPointsControl" tagprefix="uc1" %>
 <%@ Register src="LeaderBoardControl.ascx" tagname="LeaderBoardControl" tagprefix="uc2" %>
 
+
+
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
@@ -23,6 +25,7 @@
 
             <h3><!--Bonus Games-->Mini-Games</h3>
             <center>
+
             <div style="width: 90%; padding: 5px 5px 5px 5px; border: 1px solid gray;
                         overflow:auto; overflow-y: hidden; -ms-overflow-y: hidden; padding-right:20px;"> 
                <table cellpadding="0" cellspacing="0" border="0" style="table-layout: fixed; margin-left: 5px; margin-right: 15px;">
@@ -39,9 +42,9 @@
                             <div style="width: 85px; border: 0px solid red; word-wrap: break-word;height: 100%;">
                                 <table height="100%" border=0 style="height: 100%; ">
                                     <tr>
-                                        <td height="100%" align="center" valign="middle" >
+                                        <td height="100%" align="center" valign="top" >
                                             <asp:ImageButton ID="ImageButton1" runat="server" CommandArgument='<%# Eval("MGID") %>' CommandName="Play"
-                                                 ImageUrl='<%# (System.IO.File.Exists(Server.MapPath(string.Format("/images/Games/{0}.png",Eval("MGID"))))? string.Format("~/images/Games/{0}.png",Eval("MGID")) : "~/images/Games/MiniGames.png") %>' 
+                                                 ImageUrl='<%# (System.IO.File.Exists(Server.MapPath(string.Format("/images/Games/{0}.png",Eval("MGID"))))? string.Format("~/images/Games/{0}.png",Eval("MGID")) : "~/images/MiniGames.png") %>' 
                                                  width="80px"
                                                  BorderStyle="Ridge" BorderWidth="3px" />                                        
                                         </td>
@@ -69,6 +72,14 @@
                     </tr>
                 </table>        
             </div>
+
+
+
+
+
+
+
+
             </center>
             <br />
             <center>
@@ -90,9 +101,9 @@
                             <div style="width: 85px; border: 0px solid red; word-wrap: break-word;height: 100%;">
                                 <table height="100%" border=0 style="height: 100%; ">
                                     <tr>
-                                        <td height="100%" align="center" valign="middle">
+                                        <td height="100%" align="center" valign="top">
                                             <asp:ImageButton ID="ImageButton1" runat="server" CommandArgument='<%# Eval("MGID") %>' CommandName="Play"
-                                                 ImageUrl='<%# (System.IO.File.Exists(Server.MapPath(string.Format("/images/Games/{0}.png",Eval("MGID"))))? string.Format("~/images/Games/{0}.png",Eval("MGID")) : "~/images/Games/MiniGames.png") %>' 
+                                                 ImageUrl='<%# (System.IO.File.Exists(Server.MapPath(string.Format("/images/Games/{0}.png",Eval("MGID"))))? string.Format("~/images/Games/{0}.png",Eval("MGID")) : "~/images/MiniGames.png") %>' 
                                                  width="80px"                                                 
                                                  BorderStyle="Ridge" BorderWidth="3px" />                                        
                                         </td>
@@ -132,7 +143,7 @@
         
         <uc2:LeaderBoardControl ID="LeaderBoardControl1" runat="server" />
         <br />
-        <uc3:MyGamemapNavControl ID="MyGamemapNavControl1" runat="server" Message="Return<br><small>Go back to the game map</small>"/>
+        <uc3:MyGamemapNavControl ID="MyGamemapNavControl1" runat="server"/> <!-- Message="Return<br><small>Go back to the game map</small>"-->
 
 	</div>   
 </div> 

@@ -6,10 +6,6 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
-
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGChooseAdvSlidesAddEdit : BaseControlRoomPage
@@ -18,20 +14,19 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Choose Your Adventure Slides Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Choose Your Adventure Slides Edit");
+                if (Session["MGID"] == null) Response.Redirect("~/ControlRoom/Modules/Setup/MiniGameList.aspx");
 
-            if (!IsPostBack)
-            {
-                if (Request["MGID"] != null)
+                if (Request["PK"] == "")
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblCAID.Text = Request["CAID"];
                     if (Request["L"] != null) lblDiff.Text = Request["L"];
                     var s = (lblDiff.Text == "1"

@@ -5,7 +5,7 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/Scripts/jquery-1.4.1.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {
@@ -69,7 +69,7 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
         &nbsp;<asp:Button ID="btnClear" runat="server" Text="Clear" 
         onclick="btnClear_Click"  Width="150px" CSSClass="btn-lg btn-orange"/>
     &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-    <asp:Button ID="btnClear0" runat="server" Text="Export" 
+    <asp:Button ID="btnExport" runat="server" Text="Export" 
          Width="150px" CSSClass="btn-lg btn-gray" onclick="btnExport_Click"/>
 
 </td>
@@ -111,10 +111,11 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
     <table cellpadding="5" cellspacing="0" border="1" width="100%">
         <tr style="font-weight: bold; border: 0px solid silver; ">
             <th align="center" width="50%">Program</th>        
-            <td align="center" width="10%">Age</td>
-            <td align="center" width="10%">Male Count</td>  
-            <td align="center" width="10%">Female Count</td>       
-            <td align="center" width="10%">N/A</td>       
+            <td align="center" width="8%">Age</td>
+            <td align="center" width="8%">Male Count</td>  
+            <td align="center" width="8%">Female Count</td>       
+            <td align="center" width="8%">Other Count</td>       
+            <td align="center" width="8%">N/A</td>       
             <td align="center" width="10%">Total</td>
         </tr>    
 
@@ -125,13 +126,14 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
                 <td align="right"><%# Eval("Age")%></td>
                 <td align="right"><%# FormatHelper.ToInt((int)Eval("Male"))%></td>  
                 <td align="right"><%# FormatHelper.ToInt((int)Eval("Female")) %></td>       
+                <td align="right"><%# FormatHelper.ToInt((int)Eval("Other")) %></td>       
                 <td align="right"><%# FormatHelper.ToInt((int)Eval("NA")) %></td>       
-                <td align="right"><%# FormatHelper.ToInt((int)Eval("Male") + (int)Eval("Female") + (int)Eval("NA"))%></td>       
+                <td align="right"><%# FormatHelper.ToInt((int)Eval("Male") + (int)Eval("Female") + (int)Eval("Other") + (int)Eval("NA"))%></td>       
         
             </tr> 
             <tr style="font-weight: normal; display: none;" id='trGraph_<%# Eval("ProgID")%>_<%# Eval("Age")%>' >
                 <td colspan="2"></td>       
-                <td colspan="4" align="center">
+                <td colspan="5" align="center">
                     <div id='Epie_<%# Eval("ProgID")%>_<%# Eval("Age")%>'></div>
                     <script type="text/javascript">
 
@@ -147,6 +149,7 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
           ['', ''],
           ['Male', <%# Eval("Male")%> ],
           ['Female', <%# Eval("Female")%> ],
+          ['Other', <%# Eval("Other")%> ],
           ['N/A', <%# Eval("NA")%>]
         ]);
 
@@ -154,7 +157,6 @@ CodeBehind="FinishStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.F
                                 width: 'auto',
                                 height: '160',
                                 backgroundColor: 'transparent',
-                                colors: ['#ed6d49', '#74b749', '#dddddd'],
                                 tooltip: {
                                     textStyle: {
                                         color: '#666666',

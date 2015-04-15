@@ -21,17 +21,19 @@
     <table width="100%" class=datatable>
         <tr> <td colspan=4 style="background-color: #ddd;"><b>Add To Book List</b></td></tr>
         <tr>
-            <td><b>Author</b><br />
-                <asp:TextBox ID="Author" runat="server" width="90%"></asp:TextBox>
+            <td valign=top width="150px"><b>Author</b><br />
+                <asp:TextBox ID="Author" runat="server" width="150px"></asp:TextBox>
             </td>
-            <td><b>Title</b><br />
-                <asp:TextBox ID="Title" runat="server" width="90%"></asp:TextBox>
+            <td valign=top width="300px"><b>Title</b><br />
+                <asp:TextBox ID="Title" runat="server" width="300px"></asp:TextBox>
             </td>
-            <td><b>ISBN</b><br />
-                <asp:TextBox ID="ISBN" runat="server" width="90%"></asp:TextBox>
+            <td valign=top width="200px"><b>ISBN</b><br />
+                <asp:TextBox ID="ISBN" runat="server" width="200px"></asp:TextBox>
+                <br />(will attempt to get cover from OpenLibrary.Org using ISBN) 
             </td>
-            <td><b>URL</b><br />
+            <td valign=top width="100%"><b>URL</b><br />
                 <asp:TextBox ID="URL" runat="server" width="90%"></asp:TextBox>
+                <br />(The URL should be available to users NOT LOGGED INTO THE ILS)
             </td>                                   
         </tr>
         <tr> <td colspan=4>
@@ -98,13 +100,22 @@
                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
-			<asp:BoundField ReadOnly="True" HeaderText="URL" 
-                DataField="URL" SortExpression="URL" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
-				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
-            </asp:BoundField> 
+            <asp:TemplateField  SortExpression="URL" Visible="True" 
+                ItemStyle-Wrap="True" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                HeaderText="URL"
+                >                         
+                <ItemTemplate>
+                    <%# string.Format("<a href='{0}' target=_blank>{0}<a/>", Eval("URL")) %>
+                </ItemTemplate>
+                <ItemStyle VerticalAlign="Top" Wrap="True" Width="50px" HorizontalAlign="Left"></ItemStyle>
+            </asp:TemplateField>
 
+            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" HeaderText="Cover">                         
+                <ItemTemplate>
+                    <%# string.Format("<a href='http://openlibrary.org/isbn/{0}' target=_blank><img src='http://covers.openlibrary.org/b/isbn/{0}-S.jpg'/></a>", Eval("ISBN")) %>
+                </ItemTemplate>
+                <ItemStyle VerticalAlign="Top" Wrap="False" Width="50px" HorizontalAlign="Center"></ItemStyle>
+            </asp:TemplateField>
 
 			<asp:BoundField ReadOnly="True" HeaderText="Modified On" 
                 DataField="LastModDate" SortExpression="LastModDate" Visible="False" 

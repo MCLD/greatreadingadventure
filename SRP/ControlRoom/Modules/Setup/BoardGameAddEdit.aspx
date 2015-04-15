@@ -23,90 +23,32 @@
         >
         <Fields>
 
-        <asp:BoundField DataField="PGID" HeaderText="Board Game ID: " SortExpression="PGID" ReadOnly="True" InsertVisible="False">
+        <asp:BoundField DataField="PGID" HeaderText="Board Game ID: " SortExpression="PGID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             <ItemStyle Width="100%" />
         </asp:BoundField>
 
-
-        <asp:TemplateField HeaderText="Game Name: " SortExpression="GameName" HeaderStyle-Wrap="False">
+        <asp:TemplateField>
 		    <EditItemTemplate>
-                <asp:TextBox ID="GameName" runat="server" Text='<%# Eval("GameName") %>' ReadOnly="False" Width="90%"></asp:TextBox>
+<table width="100%">
+    <tr>
+        <td nowrap>
+            <strong>Game Name: </strong>
+        </td>
+        <td colspan="5"> 
+                <asp:TextBox ID="GameName" runat="server" Text='<%# Eval("GameName") %>' ReadOnly="False" Width="99%"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvGameName" runat="server" 
                     ControlToValidate="GameName" Display="Dynamic" ErrorMessage="GameName is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="GameName" runat="server" Text='' Width="90%"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvGameName" runat="server" 
-                    ControlToValidate="GameName" Display="Dynamic" ErrorMessage="GameName is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="GameName" runat="server" Text='<%# Eval("GameName") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" Width="200px"/>    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="" HeaderStyle-Wrap="False" InsertVisible="False">
-		    <EditItemTemplate>
-                <table width ="100%">
-                    <tr>
-                        <td ><b> Map Image: </b><br />
-                            <uc1:FileUploadCtl_1 ID="FileUploadCtlMap" runat="server" 
-                                    FileName='<%# Eval("PGID") %>'
-                                    ImgWidth="800" 
-                                    CreateSmallThumbnail="False" 
-                                    CreateMediumThumbnail="False"
-                                    SmallThumbnailWidth="64" 
-                                    MediumThumbnailWidth="128"
-                                    Folder="~/Images/Games/Board/"
-                                    Extension="png"
-                                />                        
-                        </td>
-                        <td ><b>Bonus Map Image: </b><br />
-                            <uc1:FileUploadCtl_1 ID="FileUploadCtlBonus" runat="server" 
-                                    FileName='<%# "bonus_"+Eval("PGID") %>'
-                                    ImgWidth="800" 
-                                    CreateSmallThumbnail="False" 
-                                    CreateMediumThumbnail="False"
-                                    SmallThumbnailWidth="64" 
-                                    MediumThumbnailWidth="128"
-                                    Folder="~/Images/Games/Board/"
-                                    Extension="png"
-                                />                        
-                        </td>
-                        
-                        <td ><b>Level Complete Image: </b><br />
-                               <uc1:FileUploadCtl_1 ID="FileUploadCtlStamp" runat="server" 
-                                        FileName='<%# "stamp_"+Eval("PGID") %>'
-                                        ImgWidth="256" 
-                                        CreateSmallThumbnail="True" 
-                                        CreateMediumThumbnail="True"
-                                        SmallThumbnailWidth="64" 
-                                        MediumThumbnailWidth="128"
-                                        Folder="~/Images/Games/Board/"
-                                        Extension="png"
-                                    />                   
-                        </td>                        
-                        </tr>
-                                        
-                </table>
-            </EditItemTemplate>
-            <HeaderTemplate>
-            <br /><br /><br /><br /><br /><br />
-                <asp:Button ID="btnReplace" runat="server" 
-                Text="Game Levels" CssClass="btn-sm btn-purple"
-                
-                CommandName="levels" 
-                />
-                <br /><br /><br /><br /><br /><br />
-            </HeaderTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Board Size: " SortExpression="BoardWidth" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>            
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <td nowrap>
+            <strong>Board Size: </strong>
+        </td>
+        <td>
                 <asp:TextBox ID="BoardWidth" runat="server" Text='<%# ((int) Eval("BoardWidth") ==0 ? "" : Eval("BoardWidth")) %>' 
                      ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvBoardWidth" runat="server" 
@@ -136,46 +78,14 @@
                     Text="<font color='red'> * BoardWidth must be from 0 to 99! </font>" 
                     EnableTheming="True" 
                     SetFocusOnError="True" /> 
-            </EditItemTemplate>
-            <InsertItemTemplate>
-                <asp:TextBox ID="BoardWidth" runat="server" Text=''></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvBoardWidth" runat="server" 
-                    ControlToValidate="BoardWidth" Display="Dynamic" ErrorMessage="BoardWidth is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                <asp:RegularExpressionValidator id="revBoardWidth"
-                    ControlToValidate="BoardWidth"
-                    ValidationExpression="\d+"
-                    Display="Dynamic"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>BoardWidth must be numeric.</font>"
-                    runat="server"
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * BoardWidth must be numeric. </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" />      
-                <asp:RangeValidator ID="rvBoardWidth"
-                    ControlToValidate="BoardWidth"
-                    MinimumValue="0"
-                    MaximumValue="9999"
-                    Display="Dynamic"
-                    Type="Integer"
-                    EnableClientScript="true"
-                    ErrorMessage="<font color='red'>BoardWidth must be from 0 to 99!</font>"
-                    runat="server" 
-                    Font-Bold="True" Font-Italic="True" 
-                    Text="<font color='red'> * BoardWidth must be from 0 to 99! </font>" 
-                    EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-            </InsertItemTemplate>
-            <ItemTemplate>
-                <asp:Label ID="BoardWidth" runat="server" Text='<%# Eval("BoardWidth") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
-        </asp:TemplateField>
-
-
-        <asp:TemplateField HeaderText="Bonus Level Point Multiplier: " SortExpression="BonusLevelPointMultiplier" HeaderStyle-Wrap="False">
-		    <EditItemTemplate>
+        </td>
+        <td colspan="2"  align="center">
+                <asp:Button ID="btnReplace" runat="server" Text="Game Levels" CssClass="btn-sm btn-purple" CommandName="levels" />
+        </td>
+        <td nowrap align="right">
+            <strong>Bonus Level Point Multiplier: </strong>
+        </td>
+        <td>
                 <asp:TextBox ID="BonusLevelPointMultiplier" runat="server" Text='<%# Eval("BonusLevelPointMultiplier") %>' ReadOnly="False"
                     Width="50px" CssClass="align-right"
                 ></asp:TextBox>
@@ -206,15 +116,160 @@
                     Font-Bold="True" Font-Italic="True" 
                     Text="<font color='red'> * Bonus Level Point Multiplier must be from 0 to 99! </font>" 
                     EnableTheming="True" 
-                    SetFocusOnError="True" /> 
-                    
-                                </EditItemTemplate>
+                    SetFocusOnError="True" />         
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Default 'Adventure' <br />Mini-Game:</strong>
+        </td>
+        <td colspan="2">
+                <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True"  width="100%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame1IDLbl" runat="server" Text='<%# Eval("Minigame1ID") %>' Visible="False"></asp:Label>                  
+        </td>
+
+        <td style="padding-left:40px;">
+            <strong>Default 'Literacy' <br />Mini-Game:</strong>
+        </td>
+        <td colspan="2">
+                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" width="100%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Label ID="Minigame2IDLbl" runat="server" Text='<%# Eval("Minigame2ID") %>' Visible="False"></asp:Label>      
+            
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="6">
+            <hr />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            <table width="100%">
+                <tr>
+                        <td  colspan="2" width="33%"><b> Map Image: </b><br />
+                            <uc1:FileUploadCtl_1 ID="FileUploadCtlMap" runat="server" 
+                                    FileName='<%# Eval("PGID") %>'
+                                    ImgWidth="800" 
+                                    CreateSmallThumbnail="False" 
+                                    CreateMediumThumbnail="False"
+                                    SmallThumbnailWidth="64" 
+                                    MediumThumbnailWidth="128"
+                                    Folder="~/Images/Games/Board/"
+                                    Extension="png"
+                                />                        
+                        </td>
+                        <td  colspan="2"  width="33%"><b>Bonus Map Image: </b><br />
+                            <uc1:FileUploadCtl_1 ID="FileUploadCtlBonus" runat="server" 
+                                    FileName='<%# "bonus_"+Eval("PGID") %>'
+                                    ImgWidth="800" 
+                                    CreateSmallThumbnail="False" 
+                                    CreateMediumThumbnail="False"
+                                    SmallThumbnailWidth="64" 
+                                    MediumThumbnailWidth="128"
+                                    Folder="~/Images/Games/Board/"
+                                    Extension="png"
+                                />                        
+                        </td>
+                        
+                        <td  colspan="2"  width="34%"><b>Level Complete Image: </b><br />
+                               <uc1:FileUploadCtl_1 ID="FileUploadCtlStamp" runat="server" 
+                                        FileName='<%# "stamp_"+Eval("PGID") %>'
+                                        ImgWidth="64" 
+                                        CreateSmallThumbnail="False" 
+                                        CreateMediumThumbnail="False"
+                                        SmallThumbnailWidth="64" 
+                                        MediumThumbnailWidth="128"
+                                        Folder="~/Images/Games/Board/"
+                                        Extension="png"
+                                    />                   
+                        </td> 
+                </tr>
+            </table>      
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            <hr />
+        </td>
+    </tr>
+
+</table>
+
+
+            </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="BonusLevelPointMultiplier" runat="server" Text=''></asp:TextBox>
+<table width="100%">
+    <tr>
+        <td nowrap>
+            <strong>Game Name: </strong>
+        </td>
+        <td colspan="5"> 
+                <asp:TextBox ID="GameName" runat="server" Text='' ReadOnly="False" Width="99%"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvGameName" runat="server" 
+                    ControlToValidate="GameName" Display="Dynamic" ErrorMessage="GameName is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>            
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <td nowrap>
+            <strong>Board Size: </strong>
+        </td>
+        <td>
+                <asp:TextBox ID="BoardWidth" runat="server" Text='' 
+                     ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvBoardWidth" runat="server" 
+                    ControlToValidate="BoardWidth" Display="Dynamic" ErrorMessage="BoardWidth is required" 
+                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                <asp:RegularExpressionValidator id="revBoardWidth"
+                    ControlToValidate="BoardWidth"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<font color='red'>BoardWidth must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<font color='red'> * BoardWidth must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvBoardWidth"
+                    ControlToValidate="BoardWidth"
+                    MinimumValue="0"
+                    MaximumValue="9999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<font color='red'>BoardWidth must be from 0 to 99!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<font color='red'> * BoardWidth must be from 0 to 99! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" /> 
+        </td>
+        <td colspan="2">
+        </td>
+        <td nowrap align="right">
+            <strong>Bonus Level Point Multiplier: </strong>
+        </td>
+        <td>
+                <asp:TextBox ID="BonusLevelPointMultiplier" runat="server" Text='2' ReadOnly="False"
+                    Width="50px" CssClass="align-right"
+                ></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvBonusLevelPointMultiplier" runat="server" 
                     ControlToValidate="BonusLevelPointMultiplier" Display="Dynamic" ErrorMessage="BonusLevelPointMultiplier is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-<asp:RegularExpressionValidator id="revBonusLevelPointMultiplier"
+
+                <asp:RegularExpressionValidator id="revBonusLevelPointMultiplier"
                     ControlToValidate="BonusLevelPointMultiplier"
                     ValidationExpression="^[1-9]\d*(\.\d+)?$"
                     Display="Dynamic"
@@ -237,34 +292,81 @@
                     Font-Bold="True" Font-Italic="True" 
                     Text="<font color='red'> * Bonus Level Point Multiplier must be from 0 to 99! </font>" 
                     EnableTheming="True" 
-                    SetFocusOnError="True" /> 
+                    SetFocusOnError="True" />         
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Default 'Adventure'<br />Mini-Game:</strong>
+        </td>
+        <td colspan="2">
+                <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True" Width="100%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+        </td>
+
+        <td style="padding-left:40px;">
+            <strong>Default 'Literacy' <br />Mini-Game:</strong>
+        </td>
+        <td colspan="2">
+                <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
+                    AppendDataBoundItems="True"  Width="100%"
+                    >
+                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                </asp:DropDownList>
+            
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            <hr />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            Once you add your <b>Board Game</b>'s basic setup information, you will need to upload your boad game images (normal and bonus play mode board images and the level complete stamp).  
+            <br />
+            All images need to be in <b>png</b> formatIt is reccomended that the normal and bonus play mode board images be at least 800 x 800 pixels, 
+            and that the level complete stamp be at least 256 x 256 pixels with a transparent background.
+            <br />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            <hr />
+        </td>
+    </tr>
+
+</table>
 
             </InsertItemTemplate>
             <ItemTemplate>
-                <asp:Label ID="BonusLevelPointMultiplier" runat="server" Text='<%# Eval("BonusLevelPointMultiplier") %>'></asp:Label>
-            </ItemTemplate>
-            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+            </ItemTemplate>  
         </asp:TemplateField>
 
 
+ 
 
 
-            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False"
+
+            <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False" 
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="LastModUser" HeaderText="Modified By: " HeaderStyle-Wrap="False" Visible="False" 
                 SortExpression="LastModUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedDate" HeaderText="Added Date: " HeaderStyle-Wrap="False" Visible="False" 
                 SortExpression="AddedDate" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
 
-            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False"
+            <asp:BoundField DataField="AddedUser" HeaderText="Added By: " HeaderStyle-Wrap="False" Visible="False" 
                 SortExpression="AddedUser" InsertVisible="False" ReadOnly="True">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
             </asp:BoundField>
@@ -356,5 +458,9 @@
         </SelectParameters>
 	</asp:ObjectDataSource>
 
+    <asp:ObjectDataSource ID="odsDDMiniGame" runat="server" 
+        SelectMethod="GetAll" 
+        TypeName="STG.SRP.DAL.Minigame">
+    </asp:ObjectDataSource>
 </asp:Content>
 

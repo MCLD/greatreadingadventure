@@ -11,15 +11,9 @@
         var originalContents = document.body.innerHTML;
 
         document.body.innerHTML = printContents;
-
-        //document.location.href = "Events.aspx";
-        
         window.print();
 
         document.location.href = "Events.aspx";
-
-        //document.body.innerHTML = originalContents;
-
     }
 </script>
 
@@ -29,7 +23,7 @@
 	<div class="span12">
         <h1><asp:Label ID="Label1" runat="server" Text="Events Title"></asp:Label></h1>
         
-        <table width="100%" cellpadding="5" cellspacing="0">
+        <table width="100%" cellpadding="5" cellspacing="0" border="0">
         <tr><td><hr /></td></tr>
 
             <tr>
@@ -37,20 +31,20 @@
                 
 <table  width="100%" cellpadding="0" cellspacing="0">
     <tr>
-        <td><b>Start Date:</b> &nbsp;</td>
+        <td width="90px" nowrap=nowrap ><b>Start Date:</b> &nbsp;</td>
         <td>
                         <asp:TextBox ID="StartDate" runat="server" Width="75px"                         
                             Text='' CssClass="datepicker"></asp:TextBox>
 
         </td>
-        <td><b>End Date:</b> &nbsp;</td>
+        <td  width="90px" nowrap=nowrap><b>End Date:</b> &nbsp;</td>
         <td>
                         <asp:TextBox ID="EndDate" runat="server" Width="75px"                         
                             Text='' CssClass="datepicker"></asp:TextBox>
 
         </td>
 
-        <td><b>Branch:</b> &nbsp;</td>
+        <td  width="150px" nowrap=nowrap><b>Branch/Library:</b> &nbsp;</td>
         <td>
                         <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
                             AppendDataBoundItems="True" Width="200px"
@@ -76,12 +70,20 @@
             <asp:Repeater runat="server" ID="rptr" onitemcommand="rptr_ItemCommand" >
                 <ItemTemplate>
             
-            <tr>
+            <tr  style = "border-left: 0px solid black;">
             
-                <td width="100%" valign="bottom" align="left" style="padding-left:300px; padding-right: 300px;">
-                    <h5><asp:Label ID="Label1" runat="server" Text="Events Label When"></asp:Label><%# FormatHelper.ToNormalDate((DateTime)Eval("EventDate")) %> <%# Eval("EventTime") %> </h5>
-                    <h5><asp:Label ID="Label2" runat="server" Text="Events Label What"></asp:Label><%# Eval("EventTitle") %></h5>
-                    <h6><asp:Label ID="Label3" runat="server" Text="Events Label Where"></asp:Label><%# Eval("Branch")%></h6>
+                <td width="100%" valign="bottom" align="left" style="padding-left:300px; padding-right: 300px;padding-bottom: 15px;">
+                    <h5><asp:Label ID="Label1" runat="server" Text="Events Label When"></asp:Label> 
+                        <%# ((DateTime)Eval("EventDate")).ToNormalDate() %> <%# Eval("EventTime") %> 
+
+                        <%# Eval("EndDate") == DBNull.Value ? "" : " thru " + ((DateTime)Eval("EndDate")).ToNormalDate().Replace("01/01/1900","")%> 
+
+                        <%# (Eval("EndTime").ToString() != "" ? (Eval("EndDate") == DBNull.Value ? " - " + Eval("EndTime") : Eval("EndTime")) : "")%>
+
+
+                    </h5>
+                    <h5><asp:Label ID="Label2" runat="server" Text="Events Label What"></asp:Label> <%# Eval("EventTitle") %></h5>
+                    <h6><asp:Label ID="Label3" runat="server" Text="Events Label Where"></asp:Label> <%# Eval("Branch")%></h6>
                     <%# (Eval("HTML").ToString().Length > 300 ?  Eval("HTML").ToString().Substring(0, 300) + " ..." : Eval("HTML"))%>
                     <br /><br />
                     <asp:Button ID="btnView" runat="server" Text="Events Btn Details" CommandArgument='<%# Eval("EID") %>' Visible="true" CssClass="" />

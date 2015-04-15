@@ -89,7 +89,7 @@ namespace STG.SRP.ControlRoom
         }
 
         private bool _isSecurePage = true;
-        public bool IsSecure
+        public virtual bool IsSecure
         {
             get
             {
@@ -129,11 +129,11 @@ namespace STG.SRP.ControlRoom
                     string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
                     if (!permList.Contains(_requiredPermission.ToString()))
                     {
-                        Response.Redirect("~/Controlroom/NoAccess.aspx");
+                        Response.Redirect("~/ControlRoom/NoAccess.aspx",false);
                     }
-                } catch (Exception )
+                } catch (Exception ex)
                 {
-                    Response.Redirect("~/Controlroom/Login.aspx");
+                    Response.Redirect("~/ControlRoom/Login.aspx");
                 }
             }
         }

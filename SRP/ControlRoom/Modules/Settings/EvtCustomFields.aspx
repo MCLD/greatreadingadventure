@@ -123,8 +123,9 @@
                                 AlternateText="Codes" ImageAlign="AbsBottom" />
                         </td>                    
                     </tr>
+                    <tr><td colspan="2"><hr /></td></tr>
                 </table>
-
+                <!--
                 <table style="font-weight: bold;">
                     <tr>
                         <td width="250px" align="right" valign="middle">Modified Date: &nbsp;</td>
@@ -152,7 +153,7 @@
                     </tr>                                                                           
                     </tr>
                  </table>
-               
+               -->
             </EditItemTemplate>
               
         </asp:TemplateField>

@@ -12,6 +12,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5100;
             MasterPage.IsSecure = true;
 
             if (!IsPostBack)

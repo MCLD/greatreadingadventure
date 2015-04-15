@@ -114,12 +114,13 @@ namespace STG.SRP.ControlRoom.Modules.Security
             string editpage = "~/ControlRoom/Modules/Security/GroupsAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
+                Session["GID"] = ""; 
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["GID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {

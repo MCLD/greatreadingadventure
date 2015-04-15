@@ -17,26 +17,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Hidden Picture Edit");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["PK"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -92,7 +82,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
             if (e.CommandName.ToLower() == "more")
             {
-                Response.Redirect("~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx?MGID=" + e.CommandArgument);
+                //Response.Redirect("~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx?MGID=" + e.CommandArgument);
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx");
             }
 
             if (e.CommandName.ToLower() == "preview")
@@ -146,9 +137,9 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj2.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardedBadgeID")).SelectedValue);
                     obj2.Acknowledgements = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Acknowledgements")).Text;
 
-                    obj.EasyDictionary = ((TextBox)((DetailsView)sender).FindControl("EasyDictionary")).Text;
-                    obj.MediumDictionary = ((TextBox)((DetailsView)sender).FindControl("MediumDictionary")).Text;
-                    obj.HardDictionary = ((TextBox)((DetailsView)sender).FindControl("HardDictionary")).Text;
+                    obj.EasyDictionary = CleanTextSpaces(((TextBox)((DetailsView)sender).FindControl("EasyDictionary")).Text);
+                    obj.MediumDictionary = CleanTextSpaces(((TextBox)((DetailsView)sender).FindControl("MediumDictionary")).Text);
+                    obj.HardDictionary = CleanTextSpaces(((TextBox)((DetailsView)sender).FindControl("HardDictionary")).Text);
 
                     obj.EnableMediumDifficulty = ((CheckBox)((DetailsView)sender).FindControl("EnableMediumDifficulty")).Checked;
                     obj.EnableHardDifficulty = ((CheckBox)((DetailsView)sender).FindControl("EnableHardDifficulty")).Checked;
@@ -190,6 +181,49 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
+        }
+
+        public string CleanTextSpaces(string terms)
+        {
+            string input = terms;
+            string pattern = @"\s+";
+            string replacement = " ";
+            Regex rgx = new Regex(pattern);
+            string result = rgx.Replace(input, replacement);
+
+            /*input = result;
+            pattern = @"\s+\)\s+";
+            replacement = ") ";
+            rgx = new Regex(pattern);
+            result = rgx.Replace(input, replacement);
+
+            input = result;
+            pattern = @"\s+\(\s+";
+            replacement = "(";
+            rgx = new Regex(pattern);
+            result = rgx.Replace(input, replacement);
+
+            input = result;
+            pattern = @"\s+=\s+";
+            replacement = "=";
+            rgx = new Regex(pattern);
+            result = rgx.Replace(input, replacement);
+
+            input = result;
+            pattern = @"\s+,\s+";
+            replacement = ",";
+            rgx = new Regex(pattern);
+            result = rgx.Replace(input, replacement);*/
+
+            result = result.Replace(" =", "=");
+            result = result.Replace("= ", "=");
+            result = result.Replace("( ", "(");
+            result = result.Replace(" (", "(");
+            result = result.Replace(" )", ")");
+            result = result.Replace(" ,", ",");
+            result = result.Replace(", ", ",");
+
+            return result;
         }
     }
 }

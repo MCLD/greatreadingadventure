@@ -6,10 +6,7 @@ using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
-
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
+ 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGMatchingGameAddEdit : BaseControlRoomPage
@@ -18,26 +15,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Matching Game Edit");
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
- 
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Matching Game Edit");
- 
-            if (!IsPostBack)
-            {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                {
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                }
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+            
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["MGID"] = "";
+                dv.ChangeMode(lblPK.Text.Length != 0 ? DetailsViewMode.Edit : DetailsViewMode.Insert);
                 Page.DataBind();
             }
         }
@@ -85,7 +72,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string returnURL = "~/ControlRoom/Modules/Setup/MiniGameList.aspx";
             if (e.CommandName.ToLower() == "more")
             {
-                Response.Redirect("~/ControlRoom/Modules/Setup/MGMatchingGameTilesList.aspx?MGID=" + e.CommandArgument);
+                //Response.Redirect("~/ControlRoom/Modules/Setup/MGMatchingGameTilesList.aspx?MGID=" + e.CommandArgument);
+                Response.Redirect("~/ControlRoom/Modules/Setup/MGMatchingGameTilesList.aspx");
             }
 
             if (e.CommandName.ToLower() == "preview")
@@ -137,7 +125,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     obj2.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardedBadgeID")).SelectedValue);
                     obj2.Acknowledgements = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Acknowledgements")).Text;
 
-                    obj.CorrectRoundsToWinCount = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("CorrectRoundsToWinCount")).Text);
+                    obj.CorrectRoundsToWinCount = 1;// FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("CorrectRoundsToWinCount")).Text);
                     obj.EnableMediumDifficulty = ((CheckBox)((DetailsView)sender).FindControl("EnableMediumDifficulty")).Checked;
                     obj.EnableHardDifficulty = ((CheckBox)((DetailsView)sender).FindControl("EnableHardDifficulty")).Checked;
 

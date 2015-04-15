@@ -16,11 +16,7 @@
     <asp:Label ID="MMIID" runat="server" Text="2" Visible="false"></asp:Label>
     <table width="100%">
 
-    <tr>
-         <td style="" width="100%" valign="bottom" align="center" colspan="4">
-            <asp:Label ID="lblMessage" runat="server" Text="" Visible="True"></asp:Label>
-         </td>
-    </tr>
+
     
     <tr>
         <td style="padding-right: 15px; padding-left: 15px;" width="33%" valign="bottom" align="center">
@@ -41,10 +37,11 @@
     </tr>
     <tr>
         <td style="padding-top: 25px;" width="100%" valign="bottom" align="center" colspan="4">
-            <asp:Label ID="lblEasy" runat="server" Text="" Visible="True"></asp:Label>
-            <asp:Label ID="lblMedium" runat="server" Text="" Visible="False"></asp:Label>
-            <asp:Label ID="lblHard" runat="server" Text="" Visible="False"></asp:Label>
-            <br /><br />
+            <asp:Label ID="lblEasy" runat="server" Text="" Visible="True" CssClass="mmFont"></asp:Label>
+            <asp:Label ID="lblMedium" runat="server" Text="" Visible="False" CssClass="mmFont"></asp:Label>
+            <asp:Label ID="lblHard" runat="server" Text="" Visible="False" CssClass="mmFont"></asp:Label>
+            <asp:Label ID="lblMessage" runat="server" Text="" Visible="True"></asp:Label>
+
                 <asp:Panel ID="pnlAudioEasy" runat="server" Visible="False">
                     <audio controls>
                         <source src="<%=AudioEasy%>" type="audio/mpeg">

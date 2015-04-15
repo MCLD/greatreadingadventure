@@ -20,7 +20,8 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            MasterPage.IsSecure = true;
+            MasterPage.RequiredPermission = 5100;
+            MasterPage.IsSecure = true; 
             MasterPage.PageTitle = string.Format("{0}", "Patron Search");
 
             _mStrSortExp = String.Empty;

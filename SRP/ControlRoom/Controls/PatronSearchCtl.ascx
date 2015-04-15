@@ -50,6 +50,7 @@
             <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
             <asp:ListItem Value="M" Text="Male"></asp:ListItem>
             <asp:ListItem Value="F" Text="Female"></asp:ListItem>
+            <asp:ListItem Value="O" Text="Other"></asp:ListItem>
         </asp:DropDownList>
     </td>
 </tr>

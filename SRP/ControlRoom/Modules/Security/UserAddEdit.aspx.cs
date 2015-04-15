@@ -33,13 +33,9 @@ namespace STG.SRP.ControlRoom.Modules.Security
 
             if (!IsPostBack)
             {
-                lblUID.Text = Request["PK"];
-                if (lblUID.Text.Length == 0)
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"] = "";
+                //lblUID.Text = Request["PK"];
+                dv.ChangeMode(lblUID.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
             }
         }
 
@@ -93,6 +89,8 @@ namespace STG.SRP.ControlRoom.Modules.Security
                         obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                         obj.LastModDate = obj.AddedDate;
                         obj.LastModUser = obj.AddedUser;
+
+                        obj.TenID = (int) Session["TenantID"];
 
                         if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                         {
@@ -199,7 +197,9 @@ namespace STG.SRP.ControlRoom.Modules.Security
             if (e.CommandName.ToLower() == "loginhistory")
             {
                 int key = Convert.ToInt32(lblUID.Text);
-                Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/LoginHistory.aspx", key));
+                Session["UID"] = key;
+                Response.Redirect("~/ControlRoom/Modules/Security/LoginHistory.aspx");
+                //Response.Redirect(String.Format("{0}?UID={1}", "~/ControlRoom/Modules/Security/LoginHistory.aspx", key));
             }
             //if (e.CommandName.ToLower() == "audituser")
             //{

@@ -84,6 +84,7 @@ namespace STG.SRP
 
             // in bonus levels if we have more points accumulated than the total normal level points
             var bonus = (pp > normalLevelTotalPoints);
+            var bonusPostfix = (bonus ? "Bonus" : "");
             var rp = pp;   //remaining points
             if (bonus)
             {
@@ -99,20 +100,17 @@ namespace STG.SRP
                 idx++;
                 var multiplier = (bonus ? GetGame().BonusLevelPointMultiplier : 1.00m);
                 var levelPoints = Convert.ToInt32(Convert.ToInt32(ds.Tables[0].Rows[i]["PointNumber"]) * multiplier);
-                //var levelTd = (Convert.ToInt32(ds.Tables[0].Rows[i]["LocationY"]) - 1) * GameBoardWidth +
-                //              Convert.ToInt32(ds.Tables[0].Rows[i]["LocationX"]);
-                var locX = Convert.ToInt32(ds.Tables[0].Rows[i]["LocationX"]) - 1;
-                var locY = Convert.ToInt32(ds.Tables[0].Rows[i]["LocationY"]) - 1;
+
+                var locX = Convert.ToInt32(ds.Tables[0].Rows[i]["LocationX" + bonusPostfix]) - 1;
+                var locY = Convert.ToInt32(ds.Tables[0].Rows[i]["LocationY" + bonusPostfix]) - 1;
                 rp = rp - levelPoints;
                 if (rp < 0)
                 {
-                    //ret = string.Format("{0}\r\n$(\"#Td{1}\").html(\"<img src='{2}' class='BoardSquareImg'/>\");", ret, levelTd, GameBoardAvatarStamp);
                     if (avatarImage!= null) newGraphic.DrawImage(avatarImage, locX * squareSize, locY * squareSize, squareSize, squareSize);
                     break;
                 }
                 else
                 {
-                    //ret = string.Format("{0}\r\n$(\"#Td{1}\").html(\"<img src='{2}' class='BoardSquareImg'/>\");", ret, levelTd, GameBoardStamp);
                     if (stampImage != null) newGraphic.DrawImage(stampImage, locX * squareSize, locY * squareSize, squareSize, squareSize);
                 }
 
@@ -121,7 +119,6 @@ namespace STG.SRP
           
 
             Response.ContentType = "image/png";
-            //Response.AppendHeader("Content-Disposition", "attachment; filename=GameLevelStatsReportResults.xlsx");
             EnableViewState = false;
             newBmp.Save(Response.OutputStream, System.Drawing.Imaging.ImageFormat.Png);
 
@@ -159,7 +156,7 @@ namespace STG.SRP
         {
             get
             {
-                return string.Format("/images/Games/Board/md_stamp_{0}.png", GetGame().PGID.ToString());
+                return string.Format("/images/Games/Board/stamp_{0}.png", GetGame().PGID.ToString());
             }
         }
 

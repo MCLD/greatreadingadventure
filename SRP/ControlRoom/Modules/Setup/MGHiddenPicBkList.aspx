@@ -75,7 +75,8 @@
                         Background/Coloring Page Thumbnail
                 </HeaderTemplate>                
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/HiddenPic/sm_{0}.png?{1}", Eval("HPBID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server"  width="24px"
+                    ImageUrl='<%# String.Format("~/Images/Games/HiddenPic/sm_{0}.png?{1}", Eval("HPBID").ToString(), DateTime.Now.ToString()) %>' />
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" HorizontalAlign="Left"></ItemStyle>
                 <HeaderStyle VerticalAlign="Top" Wrap="False" HorizontalAlign="Left" />

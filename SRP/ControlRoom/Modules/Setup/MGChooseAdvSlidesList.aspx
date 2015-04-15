@@ -113,7 +113,8 @@
 
             <asp:TemplateField HeaderText="Image 1"   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">             
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/ChooseAdv/sm_i1_{0}.png?{1}", Eval("CASID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image1" runat="server"  width="24px"
+                        ImageUrl='<%# String.Format("~/Images/Games/ChooseAdv/sm_i1_{0}.png?{1}", Eval("CASID").ToString(), DateTime.Now.ToString()) %>' />
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" HorizontalAlign="Left"></ItemStyle>
                 <HeaderStyle  Wrap="False" HorizontalAlign="Left" />
@@ -132,7 +133,8 @@
             
             <asp:TemplateField  HeaderText="Image 2"  ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">           
                 <ItemTemplate>
-                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# String.Format("~/Images/Games/ChooseAdv/sm_i2_{0}.png?{1}", Eval("CASID").ToString(), DateTime.Now.ToString()) %>' />
+                    <asp:Image ID="Image2" runat="server"   width="24px"
+                        ImageUrl='<%# String.Format("~/Images/Games/ChooseAdv/sm_i2_{0}.png?{1}", Eval("CASID").ToString(), DateTime.Now.ToString()) %>' />
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="False" HorizontalAlign="Left"></ItemStyle>
                 <HeaderStyle Wrap="False" HorizontalAlign="Left" />

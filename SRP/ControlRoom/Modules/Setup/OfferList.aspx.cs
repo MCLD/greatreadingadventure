@@ -18,19 +18,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4600;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Offers List");
 
             _mStrSortExp = String.Empty;
+            
             if (!IsPostBack)
             {
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
                 _mStrSortExp = String.Empty;
             }
             else
@@ -89,12 +86,12 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/OfferAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Response.Redirect(editpage);
+                Session["OFF"] = ""; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["OFF"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {
@@ -104,7 +101,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     var obj = new Offer();
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
-                        obj.FetchObject(key).Delete();
+                        Offer.FetchObject(key).Delete();
 
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;

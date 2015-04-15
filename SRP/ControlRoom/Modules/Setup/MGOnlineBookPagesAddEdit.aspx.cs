@@ -7,9 +7,6 @@ using STG.SRP.DAL;
 using STG.SRP.Utilities.CoreClasses;
 
 
-// --> MODULENAME 
-// --> XXXXXRibbon 
-// --> PERMISSIONID 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGOnlineBookPagesAddEdit : BaseControlRoomPage
@@ -18,20 +15,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Online Book Page Add / Edit");
 
             if (!IsPostBack)
             {
-                if (Request["MGID"] != null)
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+            
+                if (Request["OBID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblOBID.Text = Request["OBID"];
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
@@ -84,7 +78,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
-            string returnURL = "~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx?MGID=" + lblMGID.Text;
+            string returnURL = "~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx";
+            //string returnURL = "~/ControlRoom/Modules/Setup/MGOnlineBookPagesList.aspx?MGID=" + lblMGID.Text;
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect(returnURL);

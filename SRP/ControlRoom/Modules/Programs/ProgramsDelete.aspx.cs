@@ -16,19 +16,15 @@ namespace STG.SRP.ControlRoom.Modules.Programs
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
-            }
-
             MasterPage.RequiredPermission = 2000;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Delete Program");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
+                SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
+
+                lblPK.Text = Session["PGM"] == null ? "" : Session["PGM"].ToString(); 
 
                 var p = DAL.Programs.FetchObject(int.Parse(lblPK.Text));
                 lblProg.Text =

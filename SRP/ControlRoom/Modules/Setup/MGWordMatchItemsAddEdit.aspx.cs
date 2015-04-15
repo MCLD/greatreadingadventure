@@ -15,20 +15,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
+            MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Word Match Item Add / Edit");
 
             if (!IsPostBack)
             {
-                if (Request["MGID"] != null)
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
+                if (Request["WMID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblWMID.Text = Request["WMID"];
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
@@ -82,7 +79,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
-            string returnURL = "~/ControlRoom/Modules/Setup/MGWordMatchItemsList.aspx?MGID=" + lblMGID.Text;
+            string returnURL = "~/ControlRoom/Modules/Setup/MGWordMatchItemsList.aspx";
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect(returnURL);

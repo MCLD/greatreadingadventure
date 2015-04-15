@@ -14,20 +14,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 4300;
+            MasterPage.IsSecure = true;
+            MasterPage.PageTitle = string.Format("{0}", "Background/Coloring Page Edit");
+            
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            }
-
-            //MasterPage.RequiredPermission = PERMISSIONID;
-            MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Background/Coloring Page Edit");
-
-            if (!IsPostBack)
-            {
-                if (Request["MGID"] != null)
+            
+                if (Request["HPID"] != null)
                 {
-                    lblMGID.Text = Request["MGID"];
+                    lblMGID.Text = Session["MGID"].ToString();
                     lblHPID.Text = Request["HPID"];
 
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
@@ -81,8 +78,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
-            var returnURL = "~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx?MGID=" + lblMGID.Text;
-            
+            //var returnURL = "~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx?MGID=" + lblMGID.Text;
+            var returnURL = "~/ControlRoom/Modules/Setup/MGHiddenPicBkList.aspx";
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect(returnURL);

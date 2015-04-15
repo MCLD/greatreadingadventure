@@ -20,25 +20,16 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-
-            }
-
-            //MasterPage.RequiredPermission = 3000;
+            MasterPage.RequiredPermission = 4700;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Badges Add/Edit");
 
             if (!IsPostBack)
             {
-                lblPK.Text = Request["PK"];
-                if (lblPK.Text.Length == 0)
-                    dv.ChangeMode(DetailsViewMode.Insert);
-                else
-                {
-                    dv.ChangeMode(DetailsViewMode.Edit);
-                }
+                SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
+                lblPK.Text = Session["BDD"] == null ? "" : Session["BDD"].ToString(); //Session["BDD"] = "";
+                dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
         }
@@ -130,7 +121,8 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Badge();
-                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    //int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text;
@@ -155,6 +147,72 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
                         obj.Update();
+
+                        SaveBadgeExtendedAttributes(obj,
+                                                    (GridView)
+                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                        "TabPanel4").FindControl("gvCat"),
+                                                    (GridView)
+                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                        "TabPanel4").FindControl("gvAge"),
+                                                    (GridView)
+                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                        "TabPanel4").FindControl("gvBranch"),
+                                                    (GridView)
+                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                        "TabPanel4").FindControl("gvLoc"));
+
+                        /*
+                        GridView gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvCat");
+                        string checkedMembers = "";
+                        foreach (GridViewRow row in gv.Rows)
+                        {
+                            if (((CheckBox)row.FindControl("isMember")).Checked)
+                            {
+                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                            }
+                        }
+                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+                        obj.UpdateBadgeBranches(checkedMembers);
+
+                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvAge");
+                        checkedMembers = "";
+                        foreach (GridViewRow row in gv.Rows)
+                        {
+                            if (((CheckBox)row.FindControl("isMember")).Checked)
+                            {
+                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                            }
+                        }
+                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+                        obj.UpdateBadgeAgeGroups(checkedMembers);
+
+
+                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvBranch");
+                        checkedMembers = "";
+                        foreach (GridViewRow row in gv.Rows)
+                        {
+                            if (((CheckBox)row.FindControl("isMember")).Checked)
+                            {
+                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                            }
+                        }
+                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+                        obj.UpdateBadgeBranches(checkedMembers);
+
+                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvLoc");
+                        checkedMembers = "";
+                        foreach (GridViewRow row in gv.Rows)
+                        {
+                            if (((CheckBox)row.FindControl("isMember")).Checked)
+                            {
+                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                            }
+                        }
+                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+                        obj.UpdateBadgeLocations(checkedMembers);
+                        */
+
 
                         if (e.CommandName.ToLower() == "saveandback")
                         {
@@ -188,6 +246,58 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 }
 
             }
+        }
+
+        public void SaveBadgeExtendedAttributes(Badge obj, GridView gv1, GridView gv2, GridView gv3, GridView gv4)
+        {
+            var gv = gv1;
+            string checkedMembers = "";
+            foreach (GridViewRow row in gv.Rows)
+            {
+                if (((CheckBox)row.FindControl("isMember")).Checked)
+                {
+                    checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                }
+            }
+            if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+            obj.UpdateBadgeCategories(checkedMembers);
+
+            gv = gv2;
+            checkedMembers = "";
+            foreach (GridViewRow row in gv.Rows)
+            {
+                if (((CheckBox)row.FindControl("isMember")).Checked)
+                {
+                    checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                }
+            }
+            if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+            obj.UpdateBadgeAgeGroups(checkedMembers);
+
+
+            gv = gv3;
+            checkedMembers = "";
+            foreach (GridViewRow row in gv.Rows)
+            {
+                if (((CheckBox)row.FindControl("isMember")).Checked)
+                {
+                    checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                }
+            }
+            if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+            obj.UpdateBadgeBranches(checkedMembers);
+
+            gv = gv4;
+            checkedMembers = "";
+            foreach (GridViewRow row in gv.Rows)
+            {
+                if (((CheckBox)row.FindControl("isMember")).Checked)
+                {
+                    checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
+                }
+            }
+            if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
+            obj.UpdateBadgeLocations(checkedMembers);            
         }
 
         protected void dv_DataBinding(object sender, EventArgs e)

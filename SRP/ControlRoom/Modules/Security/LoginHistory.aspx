@@ -38,7 +38,7 @@
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
         onrowcommand="GvRowCommand"
-        PageSize="30" onpageindexchanging="gv_PageIndexChanging"      
+        PageSize="25" onpageindexchanging="gv_PageIndexChanging"      
         >
         <HeaderStyle HorizontalAlign="left" />
         <Columns>

@@ -16,6 +16,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MasterPage.RequiredPermission = 5100;
             MasterPage.IsSecure = true;
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 
@@ -93,7 +94,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
+                Session["PRID"] = key; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "deleterecord")
             {
