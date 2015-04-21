@@ -1,0 +1,54 @@
+﻿<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+<asp:GridView 
+    runat="server" 
+    Font-Names="Tahoma" 
+    Font-Size="9pt" 
+    CellPadding="4"
+    GridLines="Horizontal" 
+    CssClass="GridViewStyleClass"
+>
+  <HeaderStyle HorizontalAlign="Left"  CssClass="HeaderStyleClass"/>
+  <AlternatingRowStyle CssClass="AlternatingRowStyleClass"/>
+  <RowStyle CssClass="RowStyleClass"/>
+  <PagerStyle CssClass="PagerStyleClass"/>
+</asp:GridView>
+
+
+<asp:DetailsView 
+    runat="server" 
+    AutoGenerateRows="False"
+    Font-Names="Tahoma" 
+    Font-Size="9pt" 
+    CellPadding="4"
+    GridLines="None" 
+    RowStyle-BorderWidth="0"    
+    CssClass="DetailsViewStyleClass"
+>
+    <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Middle" Wrap="False" />
+</asp:DetailsView>
+
+<asp:ImageButton runat="server" CssClass="ImageButton"/>
+
+
+<ajaxToolkit:TabContainer runat="server"
+                    TabStripPlacement="Top"
+                    CssClass="STG_ajax__tab_xp"
+                    
+                    >
+</ajaxToolkit:TabContainer>
+
+<ajaxToolkit:CalendarExtender runat="server" CssClass="cal_Theme1" DefaultView="Days"></ajaxToolkit:CalendarExtender>

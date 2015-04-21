@@ -69,6 +69,7 @@ namespace STG.SRP.Controls
 
                 sr.Insert();
                 Session["SRID"] = sr.SRID;
+                SRID.Text = sr.SRID.ToString();
             }
             // Save answers, in a loop;
             foreach (RepeaterItem i in SurveyQLst.Items)

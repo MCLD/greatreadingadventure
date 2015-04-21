@@ -149,7 +149,7 @@
 
 <asp:Panel ID="Panel3" runat="server" Visible="False">
 
-        <tr style='display: <%# (SRPSettings.GetSettingValue("AllowProgramSelection").SafeToBoolYes() ? "normal" : "none") %>'>
+        <tr style='display: normal'>
             <td><asp:Label ID="Label10" runat="server" Text="Registration label Program"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" DataTextField="TabName" DataValueField="PID" 
@@ -157,10 +157,10 @@
                     >
                     <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                 </asp:DropDownList>
-                <asp:RequiredFieldValidator ID="rfvProgram" runat="server" Enabled='<%# SRPSettings.GetSettingValue("AllowProgramSelection").SafeToBoolYes() %>'
+                <asp:RequiredFieldValidator ID="rfvProgram" runat="server" Enabled='true'
                     ControlToValidate="ProgID" Display="Dynamic" ErrorMessage="Program is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator> 
-              <asp:CompareValidator ID="CompareValidator1" runat="server" Enabled='<%# SRPSettings.GetSettingValue("AllowProgramSelection").SafeToBoolYes() %>'
+              <asp:CompareValidator ID="CompareValidator1" runat="server" Enabled='true'
                         ControlToValidate="ProgID" Display="Dynamic" ErrorMessage="Program is required" 
                         SetFocusOnError="True" Font-Bold="True" Operator="GreaterThan" ValueToCompare="0"><font color='red'> * Required </font></asp:CompareValidator>
             </td>

@@ -207,6 +207,10 @@
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
                                 ControlToValidate="sysadmin" Display="Dynamic" ErrorMessage="Sysadmin login is required" 
                                 SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
+                            <asp:RegularExpressionValidator ID="revStrength1" runat="server" 
+                                ControlToValidate="sysadmin" Display="Dynamic" ErrorMessage="Sysadmin Login must be at least 7 characters long and have no spaces" 
+                                ValidationExpression="^(?=.*[A-Za-z0-9])(?!.*[^A-Za-z0-9])(?!.*\s).{8,50}" SetFocusOnError="False" Font-Bold="True"> * Strength
+                            </asp:RegularExpressionValidator>
                         </td>
                     </tr>
                     <td nowrap>

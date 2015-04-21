@@ -209,11 +209,12 @@ namespace STG.SRP.Controls
                 var points = evt.NumberPoints;
                 //var newPBID = 0;
 
-                if (evt.BadgeID != 0)
-                {
-                    sBadges = pa.AwardPointsToPatron(points, PointAwardReason.EventAttendance,
-                                                     eventCode: txtCode, eventID: EID);
-                }
+                sBadges = pa.AwardPointsToPatron(points, PointAwardReason.EventAttendance, eventCode: txtCode, eventID: EID);
+                //if (evt.BadgeID != 0)
+                //{
+                //    sBadges = pa.AwardPointsToPatron(points, PointAwardReason.EventAttendance,
+                //                                     eventCode: txtCode, eventID: EID);
+                //}
             }
             #endregion
 

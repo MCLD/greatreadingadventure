@@ -137,7 +137,8 @@ namespace STG.SRP.ControlRoom.Modules.Tenant
                         {
                             obj.Insert();
                             var TID = obj.TenID;
-                            TenantInitialize.InitializeSecurity(sysadmin, TID);
+
+                            TenantInitialize.InitializeSecurity(sysadmin, TID);                       
                             TenantInitialize.InitializeData(TID);
 
                             if (e.CommandName.ToLower() == "addandback")

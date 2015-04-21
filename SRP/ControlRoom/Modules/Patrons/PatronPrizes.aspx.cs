@@ -125,7 +125,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons
 
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;
-                        if (masterPage != null) masterPage.PageMessage = SRPResources.DeleteOK;
+                        if (masterPage != null) masterPage.PageMessage = "Prize has been marked a picked up!";
                     }
                     else
                     {

@@ -57,21 +57,21 @@
                         <asp:DropDownList ID="CategoryId" runat="server" DataSourceID="odsDDCat" DataTextField="Code" DataValueField="CID" 
                             AppendDataBoundItems="True" Width="200px"  ondatabound="dd_DataBound"
                          >
-                            <asp:ListItem Value="0" Text=""></asp:ListItem>
+                            <asp:ListItem Value="0" Text="Category"></asp:ListItem>
                         </asp:DropDownList>
                 </td>
                 <td>
                         <asp:DropDownList ID="AgeGroupId" runat="server" DataSourceID="odsDDAge" DataTextField="Code" DataValueField="CID" 
                             AppendDataBoundItems="True" Width="200px"  ondatabound="dd_DataBound"
                          >
-                            <asp:ListItem Value="0" Text=""></asp:ListItem>
+                            <asp:ListItem Value="0" Text="Age"></asp:ListItem>
                         </asp:DropDownList>
                 </td>
                 <td>
                         <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
                             AppendDataBoundItems="True" Width="200px"  ondatabound="dd_DataBound"
                          >
-                            <asp:ListItem Value="0" Text=""></asp:ListItem>
+                            <asp:ListItem Value="0" Text="Branch"></asp:ListItem>
                         </asp:DropDownList>
                 </td>
                 <td>
@@ -79,7 +79,7 @@
                             DataTextField="Code" DataValueField="CID" 
                             AppendDataBoundItems="True" Width="200px" ondatabound="dd_DataBound"
                          >
-                            <asp:ListItem Value="0" Text=""></asp:ListItem>
+                            <asp:ListItem Value="0" Text="Location"></asp:ListItem>
                         </asp:DropDownList>
                 </td>
                 <td valign="top" style="padding-left:5px;">

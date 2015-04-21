@@ -5,7 +5,7 @@ CodeBehind="TenantSummaryReport.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.T
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {
