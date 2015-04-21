@@ -34,7 +34,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                 if (Request["M"] == "K")
                 {
                     MasterPage.DisplayMessageOnLoad = true;
-                    MasterPage.PageMessage = "Award definitian was saved successfully! As patrons meet the Award Triggers, they will receive the award badge.";
+                    MasterPage.PageMessage = "Award definition was saved successfully! As patrons meet the Award Triggers, they will receive the award badge.";
                 }
 
             }

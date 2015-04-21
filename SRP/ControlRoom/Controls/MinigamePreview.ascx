@@ -7,9 +7,9 @@
 <%@ Register src="~/Controls/MGHiddenPicPlay.ascx" tagname="MGHiddenPicPlay" tagprefix="uc6" %>
 <%@ Register src="~/Controls/MGChooseAdvPlay.ascx" tagname="MGChooseAdvPlay" tagprefix="uc5" %>
 
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 <div style="max-width: 1190px; text-align:center; >
 

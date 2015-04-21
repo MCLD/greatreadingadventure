@@ -2,6 +2,7 @@
 CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.AwardManual" 
 
 %>
+<%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
@@ -52,7 +53,72 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
         </asp:DropDownList>
     </td>
 </tr>
+<tr>
+    <th colspan="2"><b>Earned points</b></th>
+    <th></th>
+</tr>
+<tr>
+    <td colspan="2" align="right">
+        <table>
+            <tr>
+                <td><strong># Points:</strong></td>
+                <td><strong>Earned by:</strong></td>            
+                <td colspan="3"><strong>Between These Dates:</strong></td>
+            </tr>
+            <tr>
+                <td>
+                <asp:TextBox ID="NumPoints" runat="server" Text='' Width="50px"></asp:TextBox>
+                <asp:RegularExpressionValidator id="revNumPoints"
+                    ControlToValidate="NumPoints"
+                    ValidationExpression="\d+"
+                    Display="Dynamic"
+                    EnableClientScript="true"
+                    ErrorMessage="<font color='red'>Must be numeric.</font>"
+                    runat="server"
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<font color='red'> *Must be numeric. </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />      
+                <asp:RangeValidator ID="rvNumPoints"
+                    ControlToValidate="NumPoints"
+                    MinimumValue="0"
+                    MaximumValue="99999"
+                    Display="Dynamic"
+                    Type="Integer"
+                    EnableClientScript="true"
+                    ErrorMessage="<font color='red'>Must be from 0 to 99,999!</font>"
+                    runat="server" 
+                    Font-Bold="True" Font-Italic="True" 
+                    Text="<font color='red'> * Must be from 0 to 99,999! </font>" 
+                    EnableTheming="True" 
+                    SetFocusOnError="True" />                 
+                </td>
+                <td>
+                    <asp:DropDownList ID="DDPointAwardReason" runat="server">
+                        <asp:ListItem Value="-1">[Earned any way possible]</asp:ListItem>
+                        <asp:ListItem Value="0">Earned by reading</asp:ListItem>
+                        <asp:ListItem Value="1">Earned by attending events</asp:ListItem>
+                        <asp:ListItem Value="2">Earned by completing book lists</asp:ListItem>
+                        <asp:ListItem Value="4">Earned by playing games</asp:ListItem>
+                    </asp:DropDownList>
+                </td>
+                <td>
+                <asp:TextBox ID="StartDate" runat="server" Width="75px" CssClass="datepicker" Text=''></asp:TextBox>
+                </td>
+                <td>&nbsp;&nbsp;and&nbsp;&nbsp;</td>
+                <td>
+                    <asp:TextBox ID="EndDate" runat="server" Width="75px" CssClass="datepicker" Text=''></asp:TextBox>                  
+                </td>
+            </tr>
+        
+        </table>
+    </td>
 
+    <td>
+    
+    
+    </td>
+</tr>
 <tr>
 <td colspan="2"> 
 
@@ -121,8 +187,15 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
         <asp:Label ID="lblAwards" runat="server" Font-Size="Medium" ForeColor="#009933"></asp:Label>
     </asp:Panel>
     <br />
-
-
-
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script language='javascript' type='text/javascript'>
+    $(function () {
+        $(".datepicker").datepicker();
+    });
+    
+</script>
 
 </asp:Content>

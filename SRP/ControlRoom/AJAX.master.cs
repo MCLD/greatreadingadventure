@@ -42,10 +42,11 @@ namespace STG.SRP.ControlRoom
             set;
         }
 
-        public UpdatePanel UpMessage
-        {
-            get { return upMessage; }
-        }
+        //public UpdatePanel UpMessage
+        //{
+        //    get { return upMessage; }
+        //}
+
         public  string PageTitle
         {
             get

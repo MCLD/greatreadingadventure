@@ -12,6 +12,7 @@ using STG.SRP.ControlRooms;
 using STG.SRP.Controls;
 using STG.SRP.Core.Utilities;
 using STG.SRP.DAL;
+using STG.SRP.Utilities.CoreClasses;
 
 namespace STG.SRP.ControlRoom.Modules.Setup
 {
@@ -28,19 +29,20 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
+
             }
         }
 
         protected void btnFilter_Click(object sender, EventArgs e)
         {
             var ds = GetMatchingData();
-            lblCount.Text = string.Format("There are {0:#,##0} patrons matching your criteria.  {1}", ds.Tables[0].Rows.Count, (ds.Tables[0].Rows.Count>1000 ? " <b>Be advised, this may take a while..." : ""));
+            lblCount.Text = string.Format("There are {0:#,##0} patrons matching your criteria.  {1}", ds.Tables[0].Rows.Count, (ds.Tables[0].Rows.Count > 1000 ? " <b>Be advised, this may take a while..." : ""));
             pnlResults.Visible = true;
         }
 
         private DataSet GetMatchingData()
         {
-            var arrParams = new SqlParameter[5];
+            var arrParams = new SqlParameter[9];
 
             if (ProgID.SelectedValue == "0")
             {
@@ -79,8 +81,37 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                                         -1 :
                                         (int)HttpContext.Current.Session["TenantID"])
                             );
-            var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
 
+            if (NumPoints.Text == "")
+            {
+                arrParams[5] = new SqlParameter("@Points", 0);
+            }
+            else
+            {
+                arrParams[5] = new SqlParameter("@Points", NumPoints.Text.SafeToInt());
+            }
+            arrParams[6] = new SqlParameter("@PointType", DDPointAwardReason.SelectedValue.SafeToInt());
+
+            if (StartDate.Text == "")
+            {
+                arrParams[7] = new SqlParameter("@StartDate", DBNull.Value);
+            }
+            else
+            {
+                arrParams[7] = new SqlParameter("@StartDate", StartDate.Text.SafeToDateTime());
+            }
+
+            if (EndDate.Text == "")
+            {
+                arrParams[8] = new SqlParameter("@EndDate", DBNull.Value);
+            }
+            else
+            {
+                arrParams[8] = new SqlParameter("@EndDate", EndDate.Text.SafeToDateTime());
+            }
+
+            //var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
+            var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter_Expanded", arrParams);
             return ds;
         }
 
@@ -89,6 +120,9 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             ProgID.SelectedValue = BranchID.SelectedValue = "0";
             School.SelectedValue = LibSys.SelectedValue = "";
             BadgeID.SelectedValue = "0";
+            NumPoints.Text = "";
+            StartDate.Text = EndDate.Text = "";
+            DDPointAwardReason.SelectedValue = "-1";
             pnlResults.Visible = false;
         }
 
@@ -115,7 +149,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
                     // if the y got a badge, then maybe they match the criteria to get another as well ...
                     AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
                     Response.Write(" :-> "); Response.Flush();
-                } 
+                }
             }
             Response.Write("-->");
             lblAwards.Text = string.Format("A total of {0:#,##0} badges was awarded.  (May be less than patrons matching criteria because the badge was not awarded to patrons already owning that badge", awardCount);
