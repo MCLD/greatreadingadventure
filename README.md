@@ -7,4 +7,4 @@ Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/)
 
 See the [Source Forge](http://sourceforge.net/projects/thegreatreadingadventure/) site for [releases and docs](http://sourceforge.net/projects/thegreatreadingadventure/files/), and the [wiki](http://sourceforge.net/p/thegreatreadingadventure/wiki/Home/).
 
-If you want to propose a new feature, please use [this form] (http://goo.gl/forms/p21DIXEbpn).
+If you want to propose a new feature (but can't/don't want to build it yourself), please use [this form] (http://goo.gl/forms/p21DIXEbpn).
