@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CA06C666-E75C-45C5-9A64-150AB2EFD3B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SRP_DAL</RootNamespace>
+    <AssemblyName>SRP_DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Avatar.cs" />
+    <Compile Include="Award.cs" />
+    <Compile Include="Badge.cs" />
+    <Compile Include="BookList.cs" />
+    <Compile Include="BookListBooks.cs" />
+    <Compile Include="Code.cs" />
+    <Compile Include="CodeType.cs" />
+    <Compile Include="CustomEventFields.cs" />
+    <Compile Include="CustomRegistrationFields.cs" />
+    <Compile Include="EmailLog.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="GamePlayStats.cs" />
+    <Compile Include="IMinigame.cs" />
+    <Compile Include="LibraryCrosswalk.cs" />
+    <Compile Include="MGChooseAdv.cs" />
+    <Compile Include="MGChooseAdvSlides.cs" />
+    <Compile Include="MGCodeBreaker.cs" />
+    <Compile Include="MGHiddenPic.cs" />
+    <Compile Include="MGHiddenPicBk.cs" />
+    <Compile Include="MGMatchingGame.cs" />
+    <Compile Include="MGMatchingGameTiles.cs" />
+    <Compile Include="MGMixAndMatch.cs" />
+    <Compile Include="MGMixAndMatchItems.cs" />
+    <Compile Include="MGOnlineBook.cs" />
+    <Compile Include="MGOnlineBookPages.cs" />
+    <Compile Include="MGWordMatch.cs" />
+    <Compile Include="MGWordMatchItems.cs" />
+    <Compile Include="Minigame.cs" />
+    <Compile Include="Notifications.cs" />
+    <Compile Include="Offer.cs" />
+    <Compile Include="Patron.cs" />
+    <Compile Include="PatronBadges.cs" />
+    <Compile Include="PatronBookLists.cs" />
+    <Compile Include="PatronPoints.cs" />
+    <Compile Include="PatronPrizes.cs" />
+    <Compile Include="PatronReadingLog.cs" />
+    <Compile Include="PatronReview.cs" />
+    <Compile Include="PatronRewardCodes.cs" />
+    <Compile Include="PrizeDrawing.cs" />
+    <Compile Include="PrizeDrawingWinners.cs" />
+    <Compile Include="PrizeTemplate.cs" />
+    <Compile Include="ProgramCodes.cs" />
+    <Compile Include="ProgramGame.cs" />
+    <Compile Include="ProgramGameLevel.cs" />
+    <Compile Include="ProgramGamePointConversion.cs" />
+    <Compile Include="Programs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationSettings.cs" />
+    <Compile Include="ReportTemplate.cs" />
+    <Compile Include="SchoolCrosswalk.cs" />
+    <Compile Include="SQChoices.cs" />
+    <Compile Include="SQMatrixLines.cs" />
+    <Compile Include="SRPGlobalSettingsHelper.cs" />
+    <Compile Include="SRPGroup.cs" />
+    <Compile Include="SRPReport.cs" />
+    <Compile Include="SRPSettings.cs" />
+    <Compile Include="Survey.cs" />
+    <Compile Include="SurveyAnswers.cs" />
+    <Compile Include="SurveyQuestion.cs" />
+    <Compile Include="SurveyResults.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SQLHelper\SQLHelper.csproj">
+      <Project>{E933400A-F1B2-4809-BE26-DB13F9BA758D}</Project>
+      <Name>SQLHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SRPUtilities\SRPUtilities.csproj">
+      <Project>{6572B6F8-043B-44D6-BA15-90A7FD78F5A6}</Project>
+      <Name>SRPUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
