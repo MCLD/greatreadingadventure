@@ -50,6 +50,28 @@ namespace STG.SRP.ControlRoom {
             string rcon = null;
             bool localDbMode = DBServer.Text.ToUpper() == "(LOCALDB)";
 
+            // test writing to Web.config before we go further
+            string config = null;
+            if (!localDbMode) {
+                if (!this.IsValid) {
+                    return;
+                }
+                try {
+                    config = System.IO.File.ReadAllText(Server.MapPath("~/Web.config"));
+                } catch (Exception ex) {
+                    FailureText.Text = "There was an error when trying to read the Web.config file, see below:";
+                    errorLabel.Text = ex.Message;
+                    return;
+                }
+                try {
+                    System.IO.File.WriteAllText(Server.MapPath("~/Web.config"), config);
+                } catch (Exception ex) {
+                    FailureText.Text = "There was an error when trying to write to the Web.config file, see below:";
+                    errorLabel.Text = ex.Message;
+                    return;
+                }
+            }
+
             if (localDbMode) {
                 conn = GlobalUtilities.SRPDB;
                 rcon = GlobalUtilities.SRPDB;
@@ -120,10 +142,18 @@ namespace STG.SRP.ControlRoom {
 
 
             try {
-                SqlHelper.ExecuteNonQuery(conn, CommandType.Text, "select 1 as abc");
-                SqlHelper.ExecuteNonQuery(rcon, CommandType.Text, "select 1 as abc");
+                SqlHelper.ExecuteNonQuery(conn, CommandType.Text, "SELECT 1");
             } catch (Exception ex) {
-                errorLabel.Text = FailureText.Text = string.Format("ERROR:{0}", ex.Message);
+                FailureText.Text = "There was an error when trying to connect with the SA account, see below:";
+                errorLabel.Text = ex.Message;
+                return;
+            }
+
+            try {
+                SqlHelper.ExecuteNonQuery(rcon, CommandType.Text, "SELECT 1");
+            } catch (Exception ex) {
+                FailureText.Text = "There was an error when trying to connect with the runtime account, see below:";
+                errorLabel.Text = ex.Message;
                 return;
             }
 
@@ -183,8 +213,9 @@ namespace STG.SRP.ControlRoom {
 
 
             if (error.Length == 0 && !localDbMode) {
-                var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
-
+                if (string.IsNullOrEmpty(config)) {
+                    config = System.IO.File.ReadAllText(Server.MapPath("~/Web.config"));
+                }
                 config =
                     config.Replace(
                         "connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
@@ -195,7 +226,7 @@ namespace STG.SRP.ControlRoom {
                         string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
 
                 //Modify the web.config
-                System.IO.File.WriteAllText(Server.MapPath("~/web.config"), config);
+                System.IO.File.WriteAllText(Server.MapPath("~/Web.config"), config);
             }
 
             if (error.Length == 0) {
