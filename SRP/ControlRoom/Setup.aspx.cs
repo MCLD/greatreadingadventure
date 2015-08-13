@@ -80,33 +80,17 @@ namespace STG.SRP.ControlRoom {
                 string dataSource = @"(localdb)\ProjectsV12";
                 string dbName = "SRP";
 
-                // Data Source=(LocalDB)\ProjectsV12;Initial Catalog=SRP;
-                string[] csElements = conn.Split(';');
-
-                // try to parse out data source
+                // try to parse out data source and database name
                 try {
-                    var possibleDataSource = (from ds in csElements
-                                              where ds.StartsWith("Data Source")
-                                              select ds.Substring(ds.IndexOf('=') + 1)
-                                             ).FirstOrDefault();
-                    if (!string.IsNullOrEmpty(possibleDataSource)) {
-                        dataSource = possibleDataSource;
+                    var builder = new SqlConnectionStringBuilder(conn);
+                    if (!string.IsNullOrEmpty(builder.DataSource)) {
+                        dataSource = builder.DataSource;
+                    }
+                    if (!string.IsNullOrEmpty(builder.InitialCatalog)) {
+                        dbName = builder.InitialCatalog;
                     }
                 } catch (Exception) {
-                    // use default data source
-                }
-
-                // try to parse out database name
-                try {
-                    var possibleDbName = (from ic in csElements
-                                          where ic.StartsWith("Initial Catalog")
-                                          select ic.Substring(ic.IndexOf('=') + 1)
-                                         ).FirstOrDefault();
-                    if (!string.IsNullOrEmpty(possibleDbName)) {
-                        dbName = possibleDbName;
-                    }
-                } catch (Exception) {
-                    // use default name
+                    // if we can't parse the connection string, use defaults
                 }
 
                 string localDbCs = string.Format("server={0}", dataSource);
