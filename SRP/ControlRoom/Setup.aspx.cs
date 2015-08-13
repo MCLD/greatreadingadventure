@@ -14,16 +14,11 @@ using SRPApp.Classes;
 using STG.SRP.Core.Utilities;
 using STG.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom
-{
-    public partial class DBCreate : BaseControlRoomPage
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
-                try
-                {
+namespace STG.SRP.ControlRoom {
+    public partial class DBCreate : BaseControlRoomPage {
+        protected void Page_Load(object sender, EventArgs e) {
+            if (!IsPostBack) {
+                try {
                     var p = DAL.Programs.GetAll();
                     Response.Redirect("~/ControlRoom/");
                     /*
@@ -34,18 +29,15 @@ namespace STG.SRP.ControlRoom
                     FailureText.Text =
                         "WARNING - IT APPEARS THAT THE APPLIACTION HAS ALREADY BEEN INSTALLED. CONTINUING WILL DELETE THE CURRENT INSTALL AND ALL ITS DATA AND REINSTALL.  ALL CURRENT DATA WILL BE LOST.";
                      */
-                }
-                catch
-                {
+                } catch {
                     // got an error, so there is no database ... continue with initialize ...
                 }
-                
+
             }
 
         }
 
-        protected void InstallBtn_Click(object sender, EventArgs e)
-        {
+        protected void InstallBtn_Click(object sender, EventArgs e) {
             ////////////////////////////////////////
             ////////////////////////////////////////
             ////////////////////////////////////////
@@ -53,26 +45,84 @@ namespace STG.SRP.ControlRoom
             ////////////////////////////////////////
             ////////////////////////////////////////
             ////////////////////////////////////////
-            
 
-            if (!this.IsValid)
-            {
-                return;
+            string conn = null;
+            string rcon = null;
+            bool localDbMode = DBServer.Text.ToUpper() == "(LOCALDB)";
+
+            if (localDbMode) {
+                conn = GlobalUtilities.SRPDB;
+                rcon = GlobalUtilities.SRPDB;
+
+                // set reasonable defaults
+                string dataSource = @"(localdb)\ProjectsV12";
+                string dbName = "SRP";
+
+                // Data Source=(LocalDB)\ProjectsV12;Initial Catalog=SRP;
+                string[] csElements = conn.Split(';');
+
+                // try to parse out data source
+                try {
+                    var possibleDataSource = (from ds in csElements
+                                              where ds.StartsWith("Data Source")
+                                              select ds.Substring(ds.IndexOf('=') + 1)
+                                             ).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(possibleDataSource)) {
+                        dataSource = possibleDataSource;
+                    }
+                } catch (Exception) {
+                    // use default data source
+                }
+
+                // try to parse out database name
+                try {
+                    var possibleDbName = (from ic in csElements
+                                          where ic.StartsWith("Initial Catalog")
+                                          select ic.Substring(ic.IndexOf('=') + 1)
+                                         ).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(possibleDbName)) {
+                        dbName = possibleDbName;
+                    }
+                } catch (Exception) {
+                    // use default name
+                }
+
+                string localDbCs = string.Format("server={0}", dataSource);
+
+                string existsQuery = string.Format("SELECT [database_id] FROM [sys].[databases] "
+                                                   + "WHERE [Name] = '{0}'",
+                                                   dbName);
+
+                var result = SqlHelper.ExecuteScalar(localDbCs, CommandType.Text, existsQuery);
+
+                if (result == null) {
+                    string createDb = string.Format("CREATE DATABASE [{0}]", dbName);
+
+                    SqlHelper.ExecuteNonQuery(localDbCs, CommandType.Text, createDb);
+                }
+            } else {
+                if (!this.IsValid) {
+                    return;
+                }
+
+                conn = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}",
+                                     DBServer.Text,
+                                     DBName.Text,
+                                     UserName.Text,
+                                      Password.Text);
+                rcon = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}",
+                                     DBServer.Text,
+                                     DBName.Text,
+                                     RunUser.Text,
+                                     RuntimePassword.Text);
             }
-            var conn = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}",
-                                        DBServer.Text, DBName.Text, UserName.Text, Password.Text);
-            var rcon = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}",
-                                        DBServer.Text, DBName.Text, RunUser.Text, RuntimePassword.Text);
             var mailHost = Mailserver.Text;
 
 
-            try
-            {
+            try {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.Text, "select 1 as abc");
                 SqlHelper.ExecuteNonQuery(rcon, CommandType.Text, "select 1 as abc");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 errorLabel.Text = FailureText.Text = string.Format("ERROR:{0}", ex.Message);
                 return;
             }
@@ -80,65 +130,50 @@ namespace STG.SRP.ControlRoom
             ////////////////////////////////////////
             ////////////////////////////////////////
             ////////////////////////////////////////
-            
+
             var error = "";
             var sr = new StreamReader(Server.MapPath(InstallFile));
             var sb = new StringBuilder();
 
-            using (SqlConnection connection = new SqlConnection(conn))
-            {
+            using (SqlConnection connection = new SqlConnection(conn)) {
                 connection.Open();
                 SqlCommand command = connection.CreateCommand();
                 SqlTransaction transaction = connection.BeginTransaction("InstallTransaction");
                 command.Connection = connection;
                 command.Transaction = transaction;
-               
-                while (!sr.EndOfStream)
-                {
+
+                while (!sr.EndOfStream) {
                     sb = new StringBuilder();
-                    while (!sr.EndOfStream)
-                    {
+                    while (!sr.EndOfStream) {
                         var s = sr.ReadLine();
-                        if (s != null && (s.ToUpper().Trim().Equals("GO") || s.ToUpper().Trim().StartsWith("GO ") || s.ToUpper().Trim().StartsWith("GO--")))
-                        {
+                        if (s != null && (s.ToUpper().Trim().Equals("GO") || s.ToUpper().Trim().StartsWith("GO ") || s.ToUpper().Trim().StartsWith("GO--"))) {
                             break;
                         }
                         sb.AppendLine(s);
                     }
-                    try
-                    {
+                    try {
                         command.CommandText = sb.ToString();
                         command.ExecuteNonQuery();
                         //SqlHelper.ExecuteNonQuery(connection, CommandType.Text, sb.ToString());
-                    }
-                    catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
                                               ex.Message, ex.Data, sb);
                     }
 
                 }
                 sr.Close();
-                if (error.Length == 0)
-                {
-                    try
-                    {
-                        transaction.Commit();                        
-                    }
-                    catch (Exception ex)
-                    {
+                if (error.Length == 0) {
+                    try {
+                        transaction.Commit();
+                    } catch (Exception ex) {
                         error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
                                               ex.Message, ex.Data, sb);
                     }
                 }
-                if (error.Length != 0)
-                {
-                    try
-                    {
+                if (error.Length != 0) {
+                    try {
                         transaction.Rollback();
-                    }
-                    catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         error = string.Format("{0}ERROR:{1}<br>DATA:{2}<br>SQL:<br>{3}<hr>", (error.Length == 0 ? "" : error),
                                               ex.Message, ex.Data, sb);
                     }
@@ -147,8 +182,7 @@ namespace STG.SRP.ControlRoom
             }
 
 
-            if (error.Length == 0)
-            {
+            if (error.Length == 0 && !localDbMode) {
                 var config = System.IO.File.ReadAllText(Server.MapPath("~/web.config"));
 
                 config =
@@ -164,20 +198,17 @@ namespace STG.SRP.ControlRoom
                 System.IO.File.WriteAllText(Server.MapPath("~/web.config"), config);
             }
 
-            if (error.Length == 0)
-            {
+            if (error.Length == 0) {
                 // Delete the Install File
                 //System.IO.File.Delete(Server.MapPath(InstallFile));
                 Response.Redirect("~/Default.aspx");
-            }
-            else
-            {
+            } else {
                 FailureText.Text = "There have been errors, see details below.";
                 errorLabel.Text = error;
             }
         }
 
-        
+
 
     }
 }

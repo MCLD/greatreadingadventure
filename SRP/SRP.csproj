@@ -766,16 +766,8 @@
     <Content Include="CSS\bootstrap.css" />
     <Content Include="CSS\font-awesome.min.css" />
     <Content Include="CSS\Program\1.css" />
-    <Content Include="CSS\Program\2 - Copy.css" />
     <Content Include="CSS\Program\2.css" />
-    <Content Include="CSS\Program\4 - Copy.css" />
-    <Content Include="CSS\Program\4.css" />
-    <Content Include="CSS\Program\5 - Copy.css" />
-    <Content Include="CSS\Program\5.css" />
-    <Content Include="CSS\Program\6 - Copy.css" />
-    <Content Include="CSS\Program\6.css" />
-    <Content Include="CSS\Program\7 - Copy.css" />
-    <Content Include="CSS\Program\7.css" />
+    <Content Include="CSS\Program\3.css" />
     <Content Include="CSS\Program\Default.css" />
     <Content Include="CSS\responsive.css" />
     <Content Include="CSS\theme-style.css" />
