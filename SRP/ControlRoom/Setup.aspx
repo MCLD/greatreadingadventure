@@ -52,7 +52,7 @@
                                            <tr>
                                                <td align="left">
                                                    Application Database Server/IP:<br />
-                                                   <asp:TextBox ID="DBServer" runat="server" Width="200px" Text="(local)"></asp:TextBox>
+                                                   <asp:TextBox ID="DBServer" runat="server" Width="200px" Text="(LocalDB)"></asp:TextBox>
                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
                                                        ControlToValidate="DBServer" ErrorMessage="Server Name/IP is required" 
                                                        ToolTip="Server Name/IP required" ValidationGroup="uxLogin" Display="None" EnableClientScript="false"> </asp:RequiredFieldValidator>
