@@ -190,3 +190,4 @@ ModelManifest.xml
 
 # Project specific files
 SRP/Scripts/ckeditor/*
+SRP/Images/Badges/*.png
