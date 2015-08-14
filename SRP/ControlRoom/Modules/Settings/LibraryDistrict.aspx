@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="LibraryDistrict.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.LibraryDistrict" 
+    AutoEventWireup="true" CodeBehind="LibraryDistrict.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.LibraryDistrict" 
     
 %>
 
@@ -87,12 +87,12 @@
 
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.LibraryCrosswalk">
+        TypeName="GRA.SRP.DAL.LibraryCrosswalk">
 	</asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDDistrict" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -100,7 +100,7 @@
 
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>

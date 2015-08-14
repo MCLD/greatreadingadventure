@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class PatronReadingLog : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPRLID;
         private int myPID;
@@ -228,17 +228,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@ReadingType", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingType, o.ReadingType.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ReadingTypeLabel", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingTypeLabel, o.ReadingTypeLabel.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@ReadingAmount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingAmount, o.ReadingAmount.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@ReadingPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingPoints, o.ReadingPoints.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@LoggingDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingDate, o.LoggingDate.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Author", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Title", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@HasReview", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HasReview, o.HasReview.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@ReviewID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewID, o.ReviewID.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@PRLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@ReadingType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingType, o.ReadingType.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ReadingTypeLabel", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingTypeLabel, o.ReadingTypeLabel.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@ReadingAmount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingAmount, o.ReadingAmount.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@ReadingPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingPoints, o.ReadingPoints.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@LoggingDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingDate, o.LoggingDate.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Author", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@HasReview", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HasReview, o.HasReview.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@ReviewID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewID, o.ReviewID.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@PRLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
             arrParams[10].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_PatronReadingLog_Insert", arrParams);
@@ -263,17 +263,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@PRLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ReadingType", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingType, o.ReadingType.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@ReadingTypeLabel", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingTypeLabel, o.ReadingTypeLabel.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@ReadingAmount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingAmount, o.ReadingAmount.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@ReadingPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingPoints, o.ReadingPoints.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@LoggingDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingDate, o.LoggingDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Author", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@Title", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@HasReview", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HasReview, o.HasReview.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@ReviewID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewID, o.ReviewID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PRLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ReadingType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingType, o.ReadingType.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@ReadingTypeLabel", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingTypeLabel, o.ReadingTypeLabel.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@ReadingAmount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingAmount, o.ReadingAmount.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@ReadingPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReadingPoints, o.ReadingPoints.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@LoggingDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingDate, o.LoggingDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Author", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@HasReview", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HasReview, o.HasReview.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@ReviewID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewID, o.ReviewID.GetTypeCode()));
 
             try
             {
@@ -307,7 +307,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PRLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PRLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
 
             try
             {

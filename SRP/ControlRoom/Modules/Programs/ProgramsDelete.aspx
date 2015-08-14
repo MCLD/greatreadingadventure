@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="ProgramsDelete.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramsDelete" 
+    AutoEventWireup="true" CodeBehind="ProgramsDelete.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Programs.ProgramsDelete" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style type="text/css">
         .btn-red
@@ -86,7 +86,7 @@
 <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
 </asp:Content>

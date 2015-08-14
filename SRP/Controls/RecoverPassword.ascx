@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RecoverPassword.ascx.cs" Inherits="STG.SRP.Classes.RecoverPassword" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="RecoverPassword.ascx.cs" Inherits="GRA.SRP.Classes.RecoverPassword" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
             
 
 <div class="container">

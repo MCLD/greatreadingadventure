@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MyTenantAccount.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Tenant.MyTenantAccount" 
+    AutoEventWireup="true" CodeBehind="MyTenantAccount.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Tenant.MyTenantAccount" 
 
 %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
@@ -346,7 +346,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.Core.Utilities.Tenant">
+        TypeName="GRA.SRP.Core.Utilities.Tenant">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="TenID" 
                 PropertyName="Text" Type="Int32" />

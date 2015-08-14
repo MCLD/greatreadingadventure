@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="My Offers" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyOffers.aspx.cs" Inherits="STG.SRP.MyOffers" 
+    CodeBehind="MyOffers.aspx.cs" Inherits="GRA.SRP.MyOffers" 
     EnableEventValidation="false" 
     %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 
 <%@ Register src="Controls/Offers.ascx" tagname="Offers" tagprefix="uc1" %>

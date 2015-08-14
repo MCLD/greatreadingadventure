@@ -9,10 +9,10 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class Patron : EntityBase
@@ -21,7 +21,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPID;
         private bool myIsMasterAccount =  false;
@@ -737,70 +737,70 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[61];
 
-            arrParams[0] = new SqlParameter("@IsMasterAccount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MasterAcctPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Username", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Password", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@DOB", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Age", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@SchoolGrade", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ProgID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FirstName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@MiddleName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@Gender", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@EmailAddress", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@PhoneNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@StreetAddress1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@StreetAddress2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@City", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@State", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@ZipCode", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@Country", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@County", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@ParentGuardianFirstName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@ParentGuardianLastName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@ParentGuardianMiddleName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@PrimaryLibrary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@LibraryCard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@SchoolName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@District", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@Teacher", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@GroupTeamName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@SchoolType", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@LiteracyLevel1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@LiteracyLevel2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@ParentPermFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@Over18Flag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@ShareFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@TermsOfUseflag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@Custom1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@Custom2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@Custom3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[40] = new SqlParameter("@Custom4", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
-            arrParams[41] = new SqlParameter("@Custom5", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@AvatarID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@SDistrict", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@IsMasterAccount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MasterAcctPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@Username", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Password", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@LastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@EmailAddress", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@PhoneNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@StreetAddress1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@StreetAddress2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@State", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@ZipCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@Country", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@County", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@ParentGuardianFirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@ParentGuardianLastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
+            arrParams[23] = new SqlParameter("@ParentGuardianMiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
+            arrParams[24] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
+            arrParams[25] = new SqlParameter("@LibraryCard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
+            arrParams[26] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
+            arrParams[27] = new SqlParameter("@District", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
+            arrParams[28] = new SqlParameter("@Teacher", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
+            arrParams[29] = new SqlParameter("@GroupTeamName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
+            arrParams[30] = new SqlParameter("@SchoolType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
+            arrParams[31] = new SqlParameter("@LiteracyLevel1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
+            arrParams[32] = new SqlParameter("@LiteracyLevel2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
+            arrParams[33] = new SqlParameter("@ParentPermFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
+            arrParams[34] = new SqlParameter("@Over18Flag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
+            arrParams[35] = new SqlParameter("@ShareFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
+            arrParams[36] = new SqlParameter("@TermsOfUseflag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
+            arrParams[37] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
+            arrParams[38] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
+            arrParams[39] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
+            arrParams[40] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
+            arrParams[41] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
+            arrParams[42] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
+            arrParams[43] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
 
-            arrParams[44] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[45] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[46] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[47] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[48] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[49] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[50] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[51] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[44] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[45] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[46] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[47] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[48] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[49] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[50] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[51] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
-            arrParams[54] = new SqlParameter("@Score1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
-            arrParams[55] = new SqlParameter("@Score2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
-            arrParams[56] = new SqlParameter("@Score1Pct", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
-            arrParams[57] = new SqlParameter("@Score2Pct", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
-            arrParams[58] = new SqlParameter("@Score1Date", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
-            arrParams[59] = new SqlParameter("@Score2Date", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
+            arrParams[55] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
+            arrParams[56] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
+            arrParams[57] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
+            arrParams[58] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
+            arrParams[59] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
 
-            arrParams[60] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[60] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
             arrParams[60].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Patron_Insert", arrParams);
@@ -825,70 +825,70 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[61];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@IsMasterAccount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@MasterAcctPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Username", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Password", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@DOB", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Age", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@SchoolGrade", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@ProgID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FirstName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@MiddleName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LastName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@Gender", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@EmailAddress", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@PhoneNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@StreetAddress1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@StreetAddress2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@City", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@State", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@ZipCode", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@Country", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@County", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@ParentGuardianFirstName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@ParentGuardianLastName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@ParentGuardianMiddleName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@PrimaryLibrary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@LibraryCard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@SchoolName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@District", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@Teacher", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@GroupTeamName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@SchoolType", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@LiteracyLevel1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@LiteracyLevel2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@ParentPermFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@Over18Flag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@ShareFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@TermsOfUseflag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@Custom1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@Custom2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[40] = new SqlParameter("@Custom3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[41] = new SqlParameter("@Custom4", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@Custom5", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@AvatarID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
-            arrParams[44] = new SqlParameter("@SDistrict", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@IsMasterAccount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@MasterAcctPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Username", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Password", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@LastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@EmailAddress", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@PhoneNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@StreetAddress1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@StreetAddress2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@State", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@ZipCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@Country", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@County", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@ParentGuardianFirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
+            arrParams[23] = new SqlParameter("@ParentGuardianLastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
+            arrParams[24] = new SqlParameter("@ParentGuardianMiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
+            arrParams[25] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
+            arrParams[26] = new SqlParameter("@LibraryCard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
+            arrParams[27] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
+            arrParams[28] = new SqlParameter("@District", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
+            arrParams[29] = new SqlParameter("@Teacher", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
+            arrParams[30] = new SqlParameter("@GroupTeamName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
+            arrParams[31] = new SqlParameter("@SchoolType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
+            arrParams[32] = new SqlParameter("@LiteracyLevel1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
+            arrParams[33] = new SqlParameter("@LiteracyLevel2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
+            arrParams[34] = new SqlParameter("@ParentPermFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
+            arrParams[35] = new SqlParameter("@Over18Flag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
+            arrParams[36] = new SqlParameter("@ShareFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
+            arrParams[37] = new SqlParameter("@TermsOfUseflag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
+            arrParams[38] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
+            arrParams[39] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
+            arrParams[40] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
+            arrParams[41] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
+            arrParams[42] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
+            arrParams[43] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
+            arrParams[44] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
 
-            arrParams[45] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[46] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[47] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[48] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[49] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[50] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[51] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[54] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[45] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[46] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[47] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[48] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[49] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[50] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[51] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
 
-            arrParams[55] = new SqlParameter("@Score1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
-            arrParams[56] = new SqlParameter("@Score2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
-            arrParams[57] = new SqlParameter("@Score1Pct", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
-            arrParams[58] = new SqlParameter("@Score2Pct", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
-            arrParams[59] = new SqlParameter("@Score1Date", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
-            arrParams[60] = new SqlParameter("@Score2Date", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
+            arrParams[55] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
+            arrParams[56] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
+            arrParams[57] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
+            arrParams[58] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
+            arrParams[59] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
+            arrParams[60] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
             try
             {
 
@@ -921,7 +921,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
 
             try
             {

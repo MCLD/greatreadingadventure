@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.AvatarAddEdit"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AvatarAddEdit"
 	 %>
 
 <%@ Register src="~/Controls/FileUploadCtl.ascx" tagname="FileUploadCtl" tagprefix="uc1" %>
@@ -170,7 +170,7 @@
 
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsData" runat="server" 
-        SelectMethod="GetAvatar" TypeName="STG.SRP.DAL.Avatar">
+        SelectMethod="GetAvatar" TypeName="GRA.SRP.DAL.Avatar">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="AID" 
                 PropertyName="Text" Type="Int32" />

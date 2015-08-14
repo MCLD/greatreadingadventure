@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGOnlineBookAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGOnlineBookAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGOnlineBookAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGOnlineBookAddEdit" 
     
 %>
 <%@ Register src="~/Controls/FileUploadCtl.ascx" tagname="FileUploadCtl" tagprefix="uc1" %>
@@ -382,7 +382,7 @@
 
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchWithParent" 
-        TypeName="STG.SRP.DAL.MGOnlineBook">
+        TypeName="GRA.SRP.DAL.MGOnlineBook">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="MGID" 
                 PropertyName="Text" Type="Int32" />
@@ -391,7 +391,7 @@
 
        <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
 </asp:Content>

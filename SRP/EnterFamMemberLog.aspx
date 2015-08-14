@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Enter Family Member Log Entry" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="EnterFamMemberLog.aspx.cs" Inherits="STG.SRP.EnterFamMemberLog" %>
+    CodeBehind="EnterFamMemberLog.aspx.cs" Inherits="GRA.SRP.EnterFamMemberLog" %>
 
 
 <%@ Register src="~/Controls/SimpleLoggingFamilyControl.ascx" tagname="SimpleLoggingFamilyControl" tagprefix="uc1" %>

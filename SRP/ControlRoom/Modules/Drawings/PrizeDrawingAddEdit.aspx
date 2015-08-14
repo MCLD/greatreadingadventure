@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="PrizeDrawingAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Drawings.PrizeDrawingAddEdit" 
+    AutoEventWireup="true" CodeBehind="PrizeDrawingAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Drawings.PrizeDrawingAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -340,7 +340,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.PrizeDrawing">
+        TypeName="GRA.SRP.DAL.PrizeDrawing">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PDID" 
                 PropertyName="Text" Type="Int32" />
@@ -349,7 +349,7 @@
 
 	<asp:ObjectDataSource ID="odsWinners" runat="server" 
         SelectMethod="GetAllWinners" 
-        TypeName="STG.SRP.DAL.PrizeDrawing">
+        TypeName="GRA.SRP.DAL.PrizeDrawing">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PDID" 
                 PropertyName="Text" Type="Int32" />
@@ -358,7 +358,7 @@
 
     <asp:ObjectDataSource ID="odsT" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.PrizeTemplate">
+        TypeName="GRA.SRP.DAL.PrizeTemplate">
     </asp:ObjectDataSource>
 
 </asp:Content>

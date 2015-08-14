@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Controls {
+namespace GRA.SRP.ControlRoom.Controls {
     
     
     public partial class PatronLogEntryCtl {

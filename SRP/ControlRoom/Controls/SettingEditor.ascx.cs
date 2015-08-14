@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 
-namespace STG.SRP.ControlRoom.Controls
+namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class SettingEditor : System.Web.UI.UserControl
     {

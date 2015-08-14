@@ -4,13 +4,13 @@ using System.IO;
 using System.Web.UI.WebControls;
 using ExportToExcel;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace STG.SRP.ControlRoom.Modules.Programs
+namespace GRA.SRP.ControlRoom.Modules.Programs
 {
     public partial class ProgramsAddEdit : BaseControlRoomPage
     {
@@ -37,7 +37,7 @@ namespace STG.SRP.ControlRoom.Modules.Programs
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("TabContainer1").FindControl("TabPanel1").FindControl("FileUploadCtl");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("TabContainer1").FindControl("TabPanel1").FindControl("FileUploadCtl");
                 if (control!=null) control.ProcessRender();
 
 

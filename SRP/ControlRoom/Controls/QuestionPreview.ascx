@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="QuestionPreview.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.QuestionPreview" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="QuestionPreview.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.QuestionPreview" %>
 <div id="Description" runat="server" visible="true">
 <asp:Label ID="lblQText" runat="server" Text="" Visible="true"></asp:Label>
 </div>
@@ -88,7 +88,7 @@ $(document).ready(function () {
 <div id="Matrix" runat="server" visible="false">
         <asp:ObjectDataSource ID="odsChoiceNames" runat="server" 
             SelectMethod="GetAll" 
-            TypeName="STG.SRP.DAL.SQChoices">
+            TypeName="GRA.SRP.DAL.SQChoices">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblQID" Name="QID" PropertyName="Text" Type="Int32" />
             
@@ -108,7 +108,7 @@ $(document).ready(function () {
 </tr>
 <asp:ObjectDataSource ID="odsLines" runat="server" 
             SelectMethod="GetAll" 
-            TypeName="STG.SRP.DAL.SQMatrixLines">
+            TypeName="GRA.SRP.DAL.SQMatrixLines">
         <SelectParameters>
         <asp:ControlParameter ControlID="lblQID" Name="QID" 
                 PropertyName="Text" Type="Int32" />
@@ -143,7 +143,7 @@ $(document).ready(function () {
         
         <asp:ObjectDataSource ID="odsChoices" runat="server" 
             SelectMethod="GetAllWEcho" 
-            TypeName="STG.SRP.DAL.SQChoices">
+            TypeName="GRA.SRP.DAL.SQChoices">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblQID" Name="QID" PropertyName="Text" Type="Int32" />
             <asp:ControlParameter ControlId = "LineOrder" Name="Echo" PropertyName="Text" Type="Int32" />

@@ -11,7 +11,7 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>STG.SRP</RootNamespace>
+    <RootNamespace>GRA.SRP</RootNamespace>
     <AssemblyName>SRP</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
@@ -90,11 +90,6 @@
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
     <Content Include="App_Themes\Default\font-awesome.css" />
-    <Content Include="App_Themes\STG\blue_bg.png" />
-    <Content Include="App_Themes\STG\blue_hd_bg.png" />
-    <Content Include="App_Themes\STG\Default.css" />
-    <Content Include="App_Themes\STG\font-awesome.css" />
-    <Content Include="App_Themes\STG\TextFile1.txt" />
     <Content Include="BadgeAward.aspx" />
     <Content Include="BadgeDetail.aspx" />
     <Content Include="BadgeGallery.aspx" />
@@ -611,7 +606,6 @@
     <Content Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\TemplateList.aspx" />
-    <Content Include="App_Themes\STG\Default.skin" />
     <Content Include="ControlRoom\Modules\Install\InstallScript.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2870,8 +2864,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="App_Themes\STG\img\" />
-    <Folder Include="App_Themes\STG\js\" />
     <Folder Include="images\Avatars\" />
     <Folder Include="images\Badges\" />
     <Folder Include="images\Banners\" />

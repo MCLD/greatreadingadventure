@@ -1,7 +1,7 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProgramTabs.ascx.cs" Inherits="STG.SRP.Classes.ProgramTabs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProgramTabs.ascx.cs" Inherits="GRA.SRP.Classes.ProgramTabs" %>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAllTabs" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
 	</asp:ObjectDataSource>
 
 <div class="row">

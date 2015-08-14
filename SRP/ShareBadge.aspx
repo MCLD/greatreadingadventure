@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" 
 Title="Summer Reading Program Badge" MasterPageFile="~/Layout/SRP.Master"
-CodeBehind="ShareBadge.aspx.cs" Inherits="STG.SRP.ShareBadge"
+CodeBehind="ShareBadge.aspx.cs" Inherits="GRA.SRP.ShareBadge"
  %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 <meta property="og:title" content="I have earned a new badge in the Summer Reading Program"/>

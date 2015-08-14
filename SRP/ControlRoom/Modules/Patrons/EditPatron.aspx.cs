@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
 
-namespace STG.SRP.ControlRoom.Modules.Patrons
+namespace GRA.SRP.ControlRoom.Modules.Patrons
 {
     public partial class EditPatron : BaseControlRoomPage
     {

@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-    CodeBehind="PatronsByProgram.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronsByProgram" 
+    CodeBehind="PatronsByProgram.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronsByProgram" 
 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -16,7 +16,7 @@
 
    <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
 
@@ -50,7 +50,7 @@
 
         &nbsp;<hr />
     <asp:ObjectDataSource ID="odsSearch" runat="server" 
-        TypeName="STG.SRP.DAL.Patron" EnablePaging="True" 
+        TypeName="GRA.SRP.DAL.Patron" EnablePaging="True" 
         SelectMethod="GetPaged" 
         OldValuesParameterFormatString="original_{0}" 
         SelectCountMethod="GetTotalPagedCount" 

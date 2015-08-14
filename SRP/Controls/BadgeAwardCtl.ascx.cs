@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class BadgeAwardCtl : System.Web.UI.UserControl
     {

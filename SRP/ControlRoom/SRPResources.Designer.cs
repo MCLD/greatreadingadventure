@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom {
+namespace GRA.SRP.ControlRoom {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace STG.SRP.ControlRoom {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("STG.SRP.ControlRoom.SRPResources", typeof(SRPResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GRA.SRP.ControlRoom.SRPResources", typeof(SRPResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom {
+namespace GRA.SRP.ControlRoom {
     
     
     public partial class PasswordReset {

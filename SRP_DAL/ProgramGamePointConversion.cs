@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    
@@ -20,7 +20,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPGCID;
         private int myPGID;
@@ -307,15 +307,15 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[9];
 
-            arrParams[0] = new SqlParameter("@PGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@ActivityTypeId", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityTypeId, o.ActivityTypeId.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ActivityCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityCount, o.ActivityCount.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@PointCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointCount, o.PointCount.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@PGCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@ActivityTypeId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityTypeId, o.ActivityTypeId.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ActivityCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityCount, o.ActivityCount.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@PointCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointCount, o.PointCount.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@PGCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
             arrParams[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_ProgramGamePointConversion_Insert", arrParams);
@@ -340,15 +340,15 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[9];
 
-            arrParams[0] = new SqlParameter("@PGCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ActivityTypeId", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityTypeId, o.ActivityTypeId.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@ActivityCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityCount, o.ActivityCount.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@PointCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointCount, o.PointCount.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ActivityTypeId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityTypeId, o.ActivityTypeId.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@ActivityCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ActivityCount, o.ActivityCount.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@PointCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointCount, o.PointCount.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -382,7 +382,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PGCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGCID, o.PGCID.GetTypeCode()));
 
             try
             {

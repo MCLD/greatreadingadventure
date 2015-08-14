@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.AvatarList" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AvatarList" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -13,7 +13,7 @@
 
     <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Avatar">
+        TypeName="GRA.SRP.DAL.Avatar">
 
     </asp:ObjectDataSource>
 

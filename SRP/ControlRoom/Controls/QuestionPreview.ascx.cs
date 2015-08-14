@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Controls
+namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class QuestionPreview : System.Web.UI.UserControl
     {

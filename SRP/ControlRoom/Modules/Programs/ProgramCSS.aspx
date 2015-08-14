@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="ProgramCSS.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramCSS" 
+Inherits="GRA.SRP.ControlRoom.Modules.Programs.ProgramCSS" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -35,7 +35,7 @@ Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramCSS"
 </table>  
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
     <hr />
     <asp:Panel ID="pnlEdit" runat="server" Visible="False">

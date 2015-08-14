@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="ProgramsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramsAddEdit" 
+    AutoEventWireup="true" CodeBehind="ProgramsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Programs.ProgramsAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl_1" Src="~/Controls/FileUploadCtl.ascx" %>
@@ -1153,7 +1153,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PID" 
                 PropertyName="Text" Type="Int32" />
@@ -1162,7 +1162,7 @@
 
 	<asp:ObjectDataSource ID="odsPtConv" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.ProgramGamePointConversion">
+        TypeName="GRA.SRP.DAL.ProgramGamePointConversion">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PGID" 
                 PropertyName="Text" Type="Int32" />
@@ -1172,17 +1172,17 @@
 
    <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDGames" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.ProgramGame">
+        TypeName="GRA.SRP.DAL.ProgramGame">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDTests" runat="server" 
         SelectMethod="GetAllFinalized" 
-        TypeName="STG.SRP.DAL.Survey">
+        TypeName="GRA.SRP.DAL.Survey">
     </asp:ObjectDataSource>
 
 

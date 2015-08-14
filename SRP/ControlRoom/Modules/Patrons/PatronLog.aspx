@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-    CodeBehind="PatronLog.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronLog" 
+    CodeBehind="PatronLog.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronLog" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 
 <%@ Register src="~/ControlRoom/Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>

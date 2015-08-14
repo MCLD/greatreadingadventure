@@ -1,6 +1,6 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FramedSurvey.aspx.cs" Inherits="STG.SRP.FramedSurvey" %>
-<%@ Import Namespace="STG.SRP.Controls" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FramedSurvey.aspx.cs" Inherits="GRA.SRP.FramedSurvey" %>
+<%@ Import Namespace="GRA.SRP.Controls" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="Controls/PatronSurvey.ascx" tagname="PatronSurvey" tagprefix="uc1" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 

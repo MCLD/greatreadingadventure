@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="RegCustomFields.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.RegCustomFields" 
+    AutoEventWireup="true" CodeBehind="RegCustomFields.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.RegCustomFields" 
     
 %>
 
@@ -298,12 +298,12 @@
     <asp:Label ID="lblPK" runat="server" Text="1" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.CustomRegistrationFields">
+        TypeName="GRA.SRP.DAL.CustomRegistrationFields">
 	</asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDCodeTypes" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.CodeType">
+        TypeName="GRA.SRP.DAL.CodeType">
     </asp:ObjectDataSource>
 
 </asp:Content>

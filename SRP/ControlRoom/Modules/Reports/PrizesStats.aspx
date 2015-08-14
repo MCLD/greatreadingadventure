@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-CodeBehind="PrizesStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.PrizesStats" 
+CodeBehind="PrizesStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.PrizesStats" 
 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
@@ -79,12 +79,12 @@ CodeBehind="PrizesStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.P
 </table>
    <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
    </asp:ObjectDataSource>
 
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -92,7 +92,7 @@ CodeBehind="PrizesStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.P
     
     <asp:ObjectDataSource ID="odsDDLibSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -100,7 +100,7 @@ CodeBehind="PrizesStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.P
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>

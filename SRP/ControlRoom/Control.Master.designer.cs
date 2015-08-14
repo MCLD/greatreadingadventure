@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom {
+namespace GRA.SRP.ControlRoom {
     
     
     public partial class Control {
@@ -46,7 +46,7 @@ namespace STG.SRP.ControlRoom {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.CRTopMenu CRTopMenu1;
+        protected global::GRA.SRP.ControlRoom.CRTopMenu CRTopMenu1;
         
         /// <summary>
         /// CRRibbonCtl control.
@@ -55,7 +55,7 @@ namespace STG.SRP.ControlRoom {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.CRRibbon CRRibbonCtl;
+        protected global::GRA.SRP.ControlRoom.CRRibbon CRRibbonCtl;
         
         /// <summary>
         /// lblPageTitle control.

@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MinigameList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MinigameList" 
+    AutoEventWireup="true" CodeBehind="MinigameList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MinigameList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -10,7 +10,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Minigame">
+        TypeName="GRA.SRP.DAL.Minigame">
 	</asp:ObjectDataSource>
 
 

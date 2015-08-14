@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Drawings {
+namespace GRA.SRP.ControlRoom.Modules.Drawings {
     
     
     public partial class TemplateList {

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLitTestsCtl.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.PatronLitTestsCtl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLitTestsCtl.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.PatronLitTestsCtl" %>
 
 <table cellpadding="5">
     <tr>

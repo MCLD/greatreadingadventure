@@ -1,5 +1,5 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
-	CodeBehind="GroupsList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Security.GroupsList" 
+	CodeBehind="GroupsList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Security.GroupsList" 
 %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">

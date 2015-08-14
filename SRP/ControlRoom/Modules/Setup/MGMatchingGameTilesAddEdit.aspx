@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGMatchingGameTilesAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGMatchingGameTilesAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGMatchingGameTilesAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGMatchingGameTilesAddEdit" 
     
 %>
 
@@ -257,7 +257,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGMatchingGameTiles">
+        TypeName="GRA.SRP.DAL.MGMatchingGameTiles">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="MAGTID" 
                 PropertyName="Text" Type="Int32" />

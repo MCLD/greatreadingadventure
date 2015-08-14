@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="ProgramGameLevelList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.ProgramGameLevelList" 
+    AutoEventWireup="true" CodeBehind="ProgramGameLevelList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.ProgramGameLevelList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -11,7 +11,7 @@
     <asp:Label ID="lblPGID" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.ProgramGameLevel">
+        TypeName="GRA.SRP.DAL.ProgramGameLevel">
         <SelectParameters>
             <asp:ControlParameter ControlID="PGID" Name="PGID" DefaultValue="0"
                 PropertyName="SelectedValue" Type="Int32" />
@@ -20,7 +20,7 @@
 
     <asp:ObjectDataSource ID="odsDDPG" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.ProgramGame">
+        TypeName="GRA.SRP.DAL.ProgramGame">
     </asp:ObjectDataSource>
 <table>
 <thead>

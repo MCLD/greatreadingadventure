@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Setup {
+namespace GRA.SRP.ControlRoom.Modules.Setup {
     
     
     public partial class MinigamePreview {
@@ -19,6 +19,6 @@ namespace STG.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.MinigamePreview MinigamePreview1;
+        protected global::GRA.SRP.ControlRoom.Controls.MinigamePreview MinigamePreview1;
     }
 }

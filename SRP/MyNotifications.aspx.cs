@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
     public partial class MyNotifications : BaseSRPPage
     {

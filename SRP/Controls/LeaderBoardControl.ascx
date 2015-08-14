@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="LeaderBoardControl.ascx.cs" Inherits="STG.SRP.Controls.LeaderBoardControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="LeaderBoardControl.ascx.cs" Inherits="GRA.SRP.Controls.LeaderBoardControl" %>
 
 
 <div class="pill">

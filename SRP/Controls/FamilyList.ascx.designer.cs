@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Controls {
+namespace GRA.SRP.Controls {
     
     
     public partial class FamilyList {

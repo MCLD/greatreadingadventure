@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="My Badges" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyBadges.aspx.cs" Inherits="STG.SRP.MyBadges" 
+    CodeBehind="MyBadges.aspx.cs" Inherits="GRA.SRP.MyBadges" 
     EnableEventValidation="false" 
     %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 
 <%@ Register src="Controls/Badges.ascx" tagname="Badges" tagprefix="uc1" %>

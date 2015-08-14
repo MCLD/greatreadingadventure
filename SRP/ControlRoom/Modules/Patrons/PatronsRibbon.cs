@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Modules.Patrons
+namespace GRA.SRP.ControlRoom.Modules.Patrons
 {
     public class PatronsRibbon
     {

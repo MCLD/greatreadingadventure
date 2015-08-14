@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
 namespace SRPApp.Classes
 {
     public class BaseControlRoomPage : System.Web.UI.Page
     {
         #region Properties
-        protected static string DbConn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        protected static string DbConn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         public IControlRoomMaster MasterPage;
         protected SRPUser SRPUser;

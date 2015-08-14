@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/UnsecuredControl.Master" AutoEventWireup="true" 
-CodeBehind="NoAccess.aspx.cs" Inherits="STG.SRP.ControlRoom.NoAccess" 
+CodeBehind="NoAccess.aspx.cs" Inherits="GRA.SRP.ControlRoom.NoAccess" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

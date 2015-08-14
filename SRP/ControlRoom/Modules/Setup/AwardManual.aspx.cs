@@ -8,17 +8,17 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.ApplicationBlocks.Data;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Controls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Controls;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class AwardManual : BaseControlRoomPage
     {
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         protected void Page_Load(object sender, EventArgs e)
         {

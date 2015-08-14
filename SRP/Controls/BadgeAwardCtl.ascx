@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BadgeAwardCtl.ascx.cs" Inherits="STG.SRP.Controls.BadgeAwardCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BadgeAwardCtl.ascx.cs" Inherits="GRA.SRP.Controls.BadgeAwardCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <div class="row" style="min-height: 400px;">
     <div class="span2"></div>
     <div class="span8">

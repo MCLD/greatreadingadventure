@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.Programs
+namespace GRA.SRP.ControlRoom.Modules.Programs
 {
     public partial class Default : BaseControlRoomPage
     {

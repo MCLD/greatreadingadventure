@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="TSelection.master.cs" Inherits="STG.SRP.Layout.TSelection" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="TSelection.master.cs" Inherits="GRA.SRP.Layout.TSelection" %>
 <!DOCTYPE html>
 
 <!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->

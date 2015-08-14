@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyPreview.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyPreview" 
+    AutoEventWireup="true" CodeBehind="SurveyPreview.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyPreview" 
 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../../Controls/QuestionPreview.ascx" tagname="QuestionPreview" tagprefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>

@@ -11,10 +11,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.ApplicationBlocks.Data;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom {
+namespace GRA.SRP.ControlRoom {
     public partial class DBCreate : BaseControlRoomPage {
         protected void Page_Load(object sender, EventArgs e) {
             if (!IsPostBack) {

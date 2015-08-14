@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
 
 //tod0 - remove <asp:ListItem Value="99" Text="Flash Game"></asp:ListItem>
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class MinigameAddEdit : BaseControlRoomPage
     {
@@ -35,7 +35,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                //var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+                //var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 //if (control!=null) control.ProcessRender();
             }
         }

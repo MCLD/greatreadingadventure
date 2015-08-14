@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class PatronBadges : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPBID;
         private int myPID;
@@ -170,10 +170,10 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[4];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@BadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@DateEarned", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateEarned, o.DateEarned.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@PBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@DateEarned", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateEarned, o.DateEarned.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@PBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
             arrParams[3].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_PatronBadges_Insert", arrParams);
@@ -198,10 +198,10 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[4];
 
-            arrParams[0] = new SqlParameter("@PBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@BadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@DateEarned", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateEarned, o.DateEarned.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@DateEarned", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateEarned, o.DateEarned.GetTypeCode()));
 
             try
             {
@@ -235,7 +235,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PBID, o.PBID.GetTypeCode()));
 
             try
             {

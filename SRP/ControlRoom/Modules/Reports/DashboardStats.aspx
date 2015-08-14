@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.DashboardStats" 
+CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.DashboardStats" 
 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
@@ -106,12 +106,12 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
 </table>
    <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
    </asp:ObjectDataSource>
 
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -119,7 +119,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
     
     <asp:ObjectDataSource ID="odsDDLibSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -127,7 +127,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Report
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>

@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class MGMatchingGameTiles : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myMAGTID;
         private int myMAGID;
@@ -242,19 +242,19 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[13];
 
-            arrParams[0] = new SqlParameter("@MAGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGID, o.MAGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Tile1UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseMedium, o.Tile1UseMedium.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Tile1UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseHard, o.Tile1UseHard.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Tile2UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseMedium, o.Tile2UseMedium.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Tile2UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseHard, o.Tile2UseHard.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Tile3UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseMedium, o.Tile3UseMedium.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Tile3UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseHard, o.Tile3UseHard.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@MAGTID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MAGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGID, o.MAGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@Tile1UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseMedium, o.Tile1UseMedium.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Tile1UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseHard, o.Tile1UseHard.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Tile2UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseMedium, o.Tile2UseMedium.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Tile2UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseHard, o.Tile2UseHard.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Tile3UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseMedium, o.Tile3UseMedium.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Tile3UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseHard, o.Tile3UseHard.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@MAGTID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
             arrParams[12].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGMatchingGameTiles_Insert", arrParams);
@@ -279,19 +279,19 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[13];
 
-            arrParams[0] = new SqlParameter("@MAGTID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MAGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGID, o.MAGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Tile1UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseMedium, o.Tile1UseMedium.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Tile1UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseHard, o.Tile1UseHard.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Tile2UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseMedium, o.Tile2UseMedium.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Tile2UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseHard, o.Tile2UseHard.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Tile3UseMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseMedium, o.Tile3UseMedium.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@Tile3UseHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseHard, o.Tile3UseHard.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MAGTID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MAGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGID, o.MAGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Tile1UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseMedium, o.Tile1UseMedium.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Tile1UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile1UseHard, o.Tile1UseHard.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Tile2UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseMedium, o.Tile2UseMedium.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Tile2UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile2UseHard, o.Tile2UseHard.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Tile3UseMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseMedium, o.Tile3UseMedium.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@Tile3UseHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Tile3UseHard, o.Tile3UseHard.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -325,7 +325,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@MAGTID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MAGTID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MAGTID, o.MAGTID.GetTypeCode()));
 
             try
             {

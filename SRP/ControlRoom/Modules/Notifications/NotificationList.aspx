@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="NotificationList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Notifications.NotificationList" 
+    AutoEventWireup="true" CodeBehind="NotificationList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Notifications.NotificationList" 
     
 %>
 
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -11,7 +11,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAllToPatron" 
-        TypeName="STG.SRP.DAL.Notifications">
+        TypeName="GRA.SRP.DAL.Notifications">
         <SelectParameters>
             <asp:Parameter DefaultValue="0" Name="PID" Type="Int32" />
         </SelectParameters>

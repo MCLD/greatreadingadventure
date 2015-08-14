@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class MGCodeBreaker : System.Web.UI.UserControl
     {
@@ -69,7 +69,7 @@ namespace STG.SRP.Controls
 
             try { ((Minigame)Parent.Parent.Parent.Parent).CompleteGamePlay(); return; }
             catch { }
-            try { ((STG.SRP.ControlRoom.Controls.MinigamePreview)((Panel)Parent).Parent.Parent.Parent).CompleteGamePlay(); return; }
+            try { ((GRA.SRP.ControlRoom.Controls.MinigamePreview)((Panel)Parent).Parent.Parent.Parent).CompleteGamePlay(); return; }
             catch { }
             //((Minigame)Parent.Parent.Parent.Parent).CompleteGamePlay(); return;
             //((Minigame)Parent.Parent.Parent.Parent).CompleteGamePlay();

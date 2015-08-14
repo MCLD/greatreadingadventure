@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.PortalUser
+namespace GRA.SRP.ControlRoom.Modules.PortalUser
 {
     public partial class MyAccount : BaseControlRoomPage
     {

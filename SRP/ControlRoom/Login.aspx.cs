@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class Login : Page
     {
@@ -18,7 +18,7 @@ namespace STG.SRP.ControlRoom
             if (Page.IsPostBack)
             {
                 
-                uxLogin.PasswordRequiredErrorMessage = STG.SRP.ControlRoom.SRPResources.PasswordRequired;
+                uxLogin.PasswordRequiredErrorMessage = GRA.SRP.ControlRoom.SRPResources.PasswordRequired;
                 Page.Validate("uxLogin");
                 if (!Page.IsValid)
                 {

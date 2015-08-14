@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="QuestionView.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Notifications.QuestionView" 
+    AutoEventWireup="true" CodeBehind="QuestionView.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Notifications.QuestionView" 
     
 %>
 
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="~/ControlRoom/Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
@@ -169,7 +169,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Notifications">
+        TypeName="GRA.SRP.DAL.Notifications">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="NID" 
                 PropertyName="Text" Type="Int32" />

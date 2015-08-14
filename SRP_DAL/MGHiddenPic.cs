@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class MGHiddenPic : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myHPID;
         private int myMGID;
@@ -283,17 +283,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@EnableMediumDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@EnableHardDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@EasyDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EasyDictionary, o.EasyDictionary.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@MediumDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MediumDictionary, o.MediumDictionary.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@HardDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HardDictionary, o.HardDictionary.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@HPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@EnableMediumDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@EnableHardDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@EasyDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EasyDictionary, o.EasyDictionary.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@MediumDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MediumDictionary, o.MediumDictionary.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@HardDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HardDictionary, o.HardDictionary.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@HPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
             arrParams[10].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGHiddenPic_Insert", arrParams);
@@ -318,17 +318,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@HPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@EnableMediumDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@EnableHardDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@EasyDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EasyDictionary, o.EasyDictionary.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@MediumDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MediumDictionary, o.MediumDictionary.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@HardDictionary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HardDictionary, o.HardDictionary.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@HPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@EnableMediumDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@EnableHardDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@EasyDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EasyDictionary, o.EasyDictionary.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@MediumDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MediumDictionary, o.MediumDictionary.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@HardDictionary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HardDictionary, o.HardDictionary.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -362,7 +362,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@HPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@HPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
 
             try
             {

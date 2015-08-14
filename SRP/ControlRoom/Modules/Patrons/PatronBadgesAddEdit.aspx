@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="PatronBadgesAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronBadgesAddEdit" 
+    AutoEventWireup="true" CodeBehind="PatronBadgesAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronBadgesAddEdit" 
     
 %>
 
@@ -147,7 +147,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.PatronBadges">
+        TypeName="GRA.SRP.DAL.PatronBadges">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PBID" 
                 PropertyName="Text" Type="Int32" />
@@ -156,7 +156,7 @@
 
    <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
 </asp:Content>

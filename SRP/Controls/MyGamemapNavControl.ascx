@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyGamemapNavControl.ascx.cs" Inherits="STG.SRP.Controls.MyGamemapNavControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyGamemapNavControl.ascx.cs" Inherits="GRA.SRP.Controls.MyGamemapNavControl" %>
 
 <style>
 .NotCnt

@@ -1,10 +1,10 @@
 ﻿
 <%@ Page Title="Change Family Member Account" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="ChangeFamMemberAct.aspx.cs" Inherits="STG.SRP.ChangeFamMemberAct" 
+    CodeBehind="ChangeFamMemberAct.aspx.cs" Inherits="GRA.SRP.ChangeFamMemberAct" 
      MaintainScrollPositionOnPostback="true"
 %>
-<%@ Import Namespace="STG.SRP.Controls" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Controls" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="~/Controls/FamilyAccountCtl.ascx" tagname="FamilyAccountCtl" tagprefix="uc1" %>
 <%@ Register src="~/Controls/ProgramBanner.ascx" tagname="ProgramBanner" tagprefix="uc2" %>
 

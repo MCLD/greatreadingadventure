@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGChooseAdvPlay.ascx.cs" Inherits="STG.SRP.Controls.MGChooseAdvPlay" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGChooseAdvPlay.ascx.cs" Inherits="GRA.SRP.Controls.MGChooseAdvPlay" %>
 
 <div class="row" style="min-height: 400px;">
 	<div class="span2">

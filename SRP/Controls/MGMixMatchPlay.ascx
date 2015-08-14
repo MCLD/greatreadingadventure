@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGMixMatchPlay.ascx.cs" Inherits="STG.SRP.Controls.MGMixMatchPlay" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGMixMatchPlay.ascx.cs" Inherits="GRA.SRP.Controls.MGMixMatchPlay" %>
 <div class="row" style="min-height: 400px;">
 	<div class="span2">
 	</div>

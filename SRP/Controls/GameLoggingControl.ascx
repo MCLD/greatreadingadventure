@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GameLoggingControl.ascx.cs" Inherits="STG.SRP.Controls.GameLoggingControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GameLoggingControl.ascx.cs" Inherits="GRA.SRP.Controls.GameLoggingControl" %>
 <%@ Register src="MyGamemapNavControl.ascx" tagname="MyGamemapNavControl" tagprefix="uc3" %>
 
 

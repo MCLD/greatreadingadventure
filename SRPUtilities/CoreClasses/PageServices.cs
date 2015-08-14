@@ -8,7 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     public class PageServices
     {

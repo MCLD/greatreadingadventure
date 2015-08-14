@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGCodeBreaker.ascx.cs" Inherits="STG.SRP.Controls.MGCodeBreaker" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGCodeBreaker.ascx.cs" Inherits="GRA.SRP.Controls.MGCodeBreaker" %>
 <div class="row" style="min-height: 400px;">
 	<div class="span2">
 	</div>

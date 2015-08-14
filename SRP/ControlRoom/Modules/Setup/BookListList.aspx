@@ -1,15 +1,15 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="BookListList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.BookListList" 
+    AutoEventWireup="true" CodeBehind="BookListList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.BookListList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.BookList">
+        TypeName="GRA.SRP.DAL.BookList">
 	</asp:ObjectDataSource>
 
 

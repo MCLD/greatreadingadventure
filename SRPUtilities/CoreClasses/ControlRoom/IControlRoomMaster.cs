@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using STG.SRP.ControlRoom;
+using GRA.SRP.ControlRoom;
 
-namespace STG.SRP.ControlRooms
+namespace GRA.SRP.ControlRooms
 {
     public interface IControlRoomMaster 
     {
-        STG.SRP.ControlRoom.CRRibbon PageRibbon { get; }
+        GRA.SRP.ControlRoom.CRRibbon PageRibbon { get; }
 
         string  PageError { set; }
         string PageWarning { set; }

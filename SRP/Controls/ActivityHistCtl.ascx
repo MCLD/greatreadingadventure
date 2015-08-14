@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ActivityHistCtl.ascx.cs" Inherits="STG.SRP.Controls.ActivityHistCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ActivityHistCtl.ascx.cs" Inherits="GRA.SRP.Controls.ActivityHistCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 

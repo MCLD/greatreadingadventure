@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FileUploadCtl.ascx.cs" Inherits="STG.SRP.Classes.FileDownloadCtl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FileUploadCtl.ascx.cs" Inherits="GRA.SRP.Classes.FileDownloadCtl" %>
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
    <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
 <asp:Panel ID="pnlExists" runat="server" Visible="False">

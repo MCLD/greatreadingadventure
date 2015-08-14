@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Badge Award" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="BadgeAward.aspx.cs" Inherits="STG.SRP.BadgeAward" %>
+    CodeBehind="BadgeAward.aspx.cs" Inherits="GRA.SRP.BadgeAward" %>
 
 
 <%@ Register src="~/Controls/BadgeAwardCtl.ascx" tagname="BadgeAwardCtl" tagprefix="uc1" %>

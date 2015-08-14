@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Setup {
+namespace GRA.SRP.ControlRoom.Modules.Setup {
     
     
     public partial class EventAddWizard {
@@ -172,7 +172,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.EvtCustFldCtl Custom1;
+        protected global::GRA.SRP.ControlRoom.Controls.EvtCustFldCtl Custom1;
         
         /// <summary>
         /// Custom2 control.
@@ -181,7 +181,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.EvtCustFldCtl Custom2;
+        protected global::GRA.SRP.ControlRoom.Controls.EvtCustFldCtl Custom2;
         
         /// <summary>
         /// Custom3 control.
@@ -190,7 +190,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.EvtCustFldCtl Custom3;
+        protected global::GRA.SRP.ControlRoom.Controls.EvtCustFldCtl Custom3;
         
         /// <summary>
         /// btnBack control.
@@ -523,7 +523,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.FileDownloadCtl FileUploadCtl;
+        protected global::GRA.SRP.Classes.FileDownloadCtl FileUploadCtl;
         
         /// <summary>
         /// btnCancel4 control.

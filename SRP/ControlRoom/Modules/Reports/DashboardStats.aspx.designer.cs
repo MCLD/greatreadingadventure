@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Reports {
+namespace GRA.SRP.ControlRoom.Modules.Reports {
     
     
     public partial class DashboardStats {

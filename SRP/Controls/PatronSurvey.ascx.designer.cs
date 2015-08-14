@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Controls {
+namespace GRA.SRP.Controls {
     
     
     public partial class PatronSurvey {
@@ -91,6 +91,6 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.QuestionPreview QuestionPreview1;
+        protected global::GRA.SRP.ControlRoom.Controls.QuestionPreview QuestionPreview1;
     }
 }

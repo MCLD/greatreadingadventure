@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Programs {
+namespace GRA.SRP.ControlRoom.Modules.Programs {
     
     
     public partial class ProgramsDelete {

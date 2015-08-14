@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="Events" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Events.aspx.cs" Inherits="STG.SRP.Events" 
+    CodeBehind="Events.aspx.cs" Inherits="GRA.SRP.Events" 
     EnableEventValidation="false" 
     %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 <%@ Register src="~/Controls/Events.ascx" tagname="Events" tagprefix="uc1" %>
 

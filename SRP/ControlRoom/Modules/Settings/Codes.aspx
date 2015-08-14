@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="Codes.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.Codes" 
+    AutoEventWireup="true" CodeBehind="Codes.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.Codes" 
     
 %>
 
@@ -10,7 +10,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsCT" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.CodeType">
+        TypeName="GRA.SRP.DAL.CodeType">
 	</asp:ObjectDataSource>
 
     <asp:Panel ID="pnlSelect" runat="server" Visible="True">

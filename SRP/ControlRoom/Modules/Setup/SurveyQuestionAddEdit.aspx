@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyQuestionAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyQuestionAddEdit" 
+    AutoEventWireup="true" CodeBehind="SurveyQuestionAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyQuestionAddEdit" 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">    
@@ -790,7 +790,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.SurveyQuestion">
+        TypeName="GRA.SRP.DAL.SurveyQuestion">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="QID" 
                 PropertyName="Text" Type="Int32" />
@@ -800,7 +800,7 @@
 
 	<asp:ObjectDataSource ID="odsData41" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.SQChoices">
+        TypeName="GRA.SRP.DAL.SQChoices">
         <SelectParameters>
 <asp:ControlParameter ControlID="lblPK" Name="QID" 
                 PropertyName="Text" Type="Int32" />
@@ -809,7 +809,7 @@
 
 	<asp:ObjectDataSource ID="odsData42" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.SQMatrixLines">
+        TypeName="GRA.SRP.DAL.SQMatrixLines">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="QID" 
                 PropertyName="Text" Type="Int32" />

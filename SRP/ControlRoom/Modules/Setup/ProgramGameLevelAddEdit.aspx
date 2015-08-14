@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="ProgramGameLevelAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.ProgramGameLevelAddEdit" 
+    AutoEventWireup="true" CodeBehind="ProgramGameLevelAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.ProgramGameLevelAddEdit" 
     
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -733,7 +733,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.ProgramGameLevel">
+        TypeName="GRA.SRP.DAL.ProgramGameLevel">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PGLID" 
                 PropertyName="Text" Type="Int32" />
@@ -743,12 +743,12 @@
 
    <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
    <asp:ObjectDataSource ID="odsDDMiniGame" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Minigame">
+        TypeName="GRA.SRP.DAL.Minigame">
     </asp:ObjectDataSource>
 
 </asp:Content>

@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGHiddenPicBkAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGHiddenPicBkAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGHiddenPicBkAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGHiddenPicBkAddEdit" 
     
 %>
 
@@ -149,7 +149,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGHiddenPicBk">
+        TypeName="GRA.SRP.DAL.MGHiddenPicBk">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="HPBID" 
                 PropertyName="Text" Type="Int32" />

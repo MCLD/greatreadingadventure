@@ -2,9 +2,9 @@
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.ApplicationBlocks.Data;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class MGMixAndMatch : EntityBase
@@ -12,7 +12,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myMMID;
         private int myMGID;
@@ -299,15 +299,15 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[9];
 
-            arrParams[0] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@CorrectRoundsToWinCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CorrectRoundsToWinCount, o.CorrectRoundsToWinCount.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@EnableMediumDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@EnableHardDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@MMID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@CorrectRoundsToWinCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CorrectRoundsToWinCount, o.CorrectRoundsToWinCount.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@EnableMediumDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@EnableHardDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@MMID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
             arrParams[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGMixAndMatch_Insert", arrParams);
@@ -332,15 +332,15 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[9];
 
-            arrParams[0] = new SqlParameter("@MMID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@CorrectRoundsToWinCount", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CorrectRoundsToWinCount, o.CorrectRoundsToWinCount.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@EnableMediumDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@EnableHardDifficulty", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MMID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@CorrectRoundsToWinCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CorrectRoundsToWinCount, o.CorrectRoundsToWinCount.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@EnableMediumDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableMediumDifficulty, o.EnableMediumDifficulty.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@EnableHardDifficulty", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EnableHardDifficulty, o.EnableHardDifficulty.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -374,7 +374,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@MMID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@MMID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MMID, o.MMID.GetTypeCode()));
 
             try
             {

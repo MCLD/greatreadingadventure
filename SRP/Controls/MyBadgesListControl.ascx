@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyBadgesListControl.ascx.cs" Inherits="STG.SRP.Controls.MyBadgesListControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyBadgesListControl.ascx.cs" Inherits="GRA.SRP.Controls.MyBadgesListControl" %>
 
 
 <div class="pill">

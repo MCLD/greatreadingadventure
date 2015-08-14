@@ -1,9 +1,9 @@
 ﻿
 <%@ Page Title="My Account" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyAccount.aspx.cs" Inherits="STG.SRP.MyAccount" 
+    CodeBehind="MyAccount.aspx.cs" Inherits="GRA.SRP.MyAccount" 
      MaintainScrollPositionOnPostback="true"
      %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="~/Controls/MyAccountCtl.ascx" tagname="MyAccountCtl" tagprefix="uc3" %>
 
 

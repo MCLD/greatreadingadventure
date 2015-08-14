@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="LoginHistory.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Security.LoginHistory"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="LoginHistory.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Security.LoginHistory"
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

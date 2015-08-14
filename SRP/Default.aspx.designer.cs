@@ -19,7 +19,7 @@ namespace SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.ProgramTabs ProgramTabs1;
+        protected global::GRA.SRP.Classes.ProgramTabs ProgramTabs1;
         
         /// <summary>
         /// ProgramBanner1 control.
@@ -28,7 +28,7 @@ namespace SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.ProgramBanner ProgramBanner1;
+        protected global::GRA.SRP.Classes.ProgramBanner ProgramBanner1;
         
         /// <summary>
         /// PublicProgramView1 control.
@@ -37,6 +37,6 @@ namespace SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.PublicProgramView PublicProgramView1;
+        protected global::GRA.SRP.Classes.PublicProgramView PublicProgramView1;
     }
 }

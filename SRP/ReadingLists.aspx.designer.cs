@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP {
+namespace GRA.SRP {
     
     
     public partial class ReadingLists {
@@ -19,6 +19,6 @@ namespace STG.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.ReadingListCtl ReadingListCtl1;
+        protected global::GRA.SRP.Controls.ReadingListCtl ReadingListCtl1;
     }
 }

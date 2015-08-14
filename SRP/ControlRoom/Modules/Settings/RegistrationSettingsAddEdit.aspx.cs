@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
 
 // --> MODULENAME 
 // --> XXXXXRibbon 
 // --> PERMISSIONID 
-namespace STG.SRP.ControlRoom.Modules.Settings
+namespace GRA.SRP.ControlRoom.Modules.Settings
 {
     public partial class RegistrationSettingsAddEdit : BaseControlRoomPage
     {
@@ -36,7 +36,7 @@ namespace STG.SRP.ControlRoom.Modules.Settings
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                //var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+                //var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 //if (control!=null) control.ProcessRender();
             }
         }

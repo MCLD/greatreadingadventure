@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Register" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Register.aspx.cs" Inherits="STG.SRP.Register"  MaintainScrollPositionOnPostback="true"
+    CodeBehind="Register.aspx.cs" Inherits="GRA.SRP.Register"  MaintainScrollPositionOnPostback="true"
     %>
 
 <%@ Register src="Controls/PatronRegistration.ascx" tagname="PatronRegistration" tagprefix="uc3" %>

@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronContext.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.PatronContext" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronContext.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.PatronContext" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <table width="100%"  style="border:double 3px #A3C0E8;">
 <tr>

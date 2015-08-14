@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="AwardAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.AwardAddEdit" 
+    AutoEventWireup="true" CodeBehind="AwardAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AwardAddEdit" 
     
 %>
 
@@ -102,7 +102,7 @@
 <div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;  ">     
             <asp:TextBox ID="BadgeList" runat="server" Text='<%# Eval("BadgeList") %>' ReadOnly="False" Visible="false"></asp:TextBox>
             <asp:ObjectDataSource ID="odsBadgeMembership" runat="server" 
-                SelectMethod="GetBadgeListMembership" TypeName="STG.SRP.DAL.Award">
+                SelectMethod="GetBadgeListMembership" TypeName="GRA.SRP.DAL.Award">
                 <SelectParameters>
                     <asp:ControlParameter ControlID="BadgeList" DefaultValue="" Name="list" 
                         PropertyName="Text" Type="string" />
@@ -289,7 +289,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Award">
+        TypeName="GRA.SRP.DAL.Award">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="AID" 
                 PropertyName="Text" Type="Int32" />
@@ -298,12 +298,12 @@
 
        <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -311,12 +311,12 @@
 
     <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDLibSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -324,7 +324,7 @@
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>

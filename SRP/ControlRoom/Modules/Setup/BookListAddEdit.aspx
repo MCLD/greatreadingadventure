@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="BookListAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.BookListAddEdit" 
+    AutoEventWireup="true" CodeBehind="BookListAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.BookListAddEdit" 
     validateRequest="false"
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -368,7 +368,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.BookList">
+        TypeName="GRA.SRP.DAL.BookList">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BLID" 
                 PropertyName="Text" Type="Int32" />
@@ -377,7 +377,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -385,12 +385,12 @@
 
     <asp:ObjectDataSource ID="odsBadge" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
 </asp:Content>

@@ -6,13 +6,13 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRP_DAL;
 using SRPApp.Classes;
-using STG.SRP.ControlRoom.Controls;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRoom.Controls;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class BadgeAddEdit : BaseControlRoomPage
     {
@@ -312,7 +312,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
 
                 //((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text;
 
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("TabContainer1").FindControl("TabPanel1").FindControl("FileUploadCtl");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("TabContainer1").FindControl("TabPanel1").FindControl("FileUploadCtl");
                 if (control != null) control.ProcessRender();
 
             }

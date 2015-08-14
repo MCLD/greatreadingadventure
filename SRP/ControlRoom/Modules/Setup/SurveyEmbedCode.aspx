@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyEmbedCode.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyEmbedCode" 
+    AutoEventWireup="true" CodeBehind="SurveyEmbedCode.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyEmbedCode" 
     ValidateRequest="false"
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -152,7 +152,7 @@
 
 	<asp:ObjectDataSource ID="odsDDSurveys" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Survey">
+        TypeName="GRA.SRP.DAL.Survey">
 	</asp:ObjectDataSource>
 
 

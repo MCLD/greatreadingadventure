@@ -1,9 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.AwardManual" 
+CodeBehind="AwardManual.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AwardManual" 
 
 %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
 </asp:Content>
@@ -136,11 +136,11 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
 </table>
     <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -148,7 +148,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
     
     <asp:ObjectDataSource ID="odsDDLibSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -156,7 +156,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>
@@ -164,7 +164,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.Awa
 
     <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:Panel ID="pnlResults" runat="server" Visible="False">

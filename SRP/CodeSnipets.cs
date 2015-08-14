@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
 public class CodeSnipets
 {
     /*
-    <%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+    <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
     -----------------------------------------------------------------------------------------------------------------------
     -- Addressing tabs
@@ -120,7 +120,7 @@ public class CodeSnipets
     {
         if (dv.CurrentMode == DetailsViewMode.Edit)
         {
-            var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+            var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
             if (control!=null) control.ProcessRender();
         }
     }
@@ -178,7 +178,7 @@ public class CodeSnipets
 
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -186,7 +186,7 @@ public class CodeSnipets
 
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
     -----------------------------------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ public class CodeSnipets
 
     <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAdminSearch" 
-        TypeName="STG.SRP.DAL.Event">
+        TypeName="GRA.SRP.DAL.Event">
         <SelectParameters>
             <asp:ControlParameter ControlID="StartDate" DefaultValue="" Name="startDate" 
                 PropertyName="Text" Type="String" />

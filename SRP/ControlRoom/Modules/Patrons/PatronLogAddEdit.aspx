@@ -1,9 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
     CodeBehind="PatronLogAddEdit.aspx.cs" 
-    Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronLogAddEdit" 
+    Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronLogAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="~/ControlRoom/Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 <%@ Register src="~/ControlRoom/Controls/PatronLogEntryCtl.ascx" tagname="PatronLogEntryCtl" tagprefix="uc2" %>
 

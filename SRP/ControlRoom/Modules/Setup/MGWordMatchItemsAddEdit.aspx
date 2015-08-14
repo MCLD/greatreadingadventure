@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGWordMatchItemsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGWordMatchItemsAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGWordMatchItemsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGWordMatchItemsAddEdit" 
     
 %>
 
@@ -248,7 +248,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGWordMatchItems">
+        TypeName="GRA.SRP.DAL.MGWordMatchItems">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="WMIID" 
                 PropertyName="Text" Type="Int32" />

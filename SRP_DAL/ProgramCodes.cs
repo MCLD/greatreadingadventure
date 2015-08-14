@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 	public class ProgramCodes : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
 			#region Private Variables
 
-			private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+			private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
 			private int myPCID;
 			private int myPID;
@@ -251,15 +251,15 @@ public int PatronId
 
 		SqlParameter[] arrParams = new SqlParameter[9];
 
-		arrParams[0]  = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-		arrParams[1]  = new SqlParameter("@CodeNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeNumber, o.CodeNumber.GetTypeCode()));
-		arrParams[2]  = new SqlParameter("@CodeValue", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeValue, o.CodeValue.GetTypeCode()));
-        arrParams[3]  = new SqlParameter("@ShortCode", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortCode, o.ShortCode.GetTypeCode()));
-        arrParams[4]  = new SqlParameter("@isUsed", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isUsed, o.isUsed.GetTypeCode()));
-		arrParams[5]  = new SqlParameter("@DateCreated", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateCreated, o.DateCreated.GetTypeCode()));
-		arrParams[6]  = new SqlParameter("@DateUsed", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateUsed, o.DateUsed.GetTypeCode()));
-		arrParams[7]  = new SqlParameter("@PatronId", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronId, o.PatronId.GetTypeCode()));
-		arrParams[8]  = new SqlParameter("@PCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
+		arrParams[0]  = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+		arrParams[1]  = new SqlParameter("@CodeNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeNumber, o.CodeNumber.GetTypeCode()));
+		arrParams[2]  = new SqlParameter("@CodeValue", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeValue, o.CodeValue.GetTypeCode()));
+        arrParams[3]  = new SqlParameter("@ShortCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortCode, o.ShortCode.GetTypeCode()));
+        arrParams[4]  = new SqlParameter("@isUsed", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isUsed, o.isUsed.GetTypeCode()));
+		arrParams[5]  = new SqlParameter("@DateCreated", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateCreated, o.DateCreated.GetTypeCode()));
+		arrParams[6]  = new SqlParameter("@DateUsed", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateUsed, o.DateUsed.GetTypeCode()));
+		arrParams[7]  = new SqlParameter("@PatronId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronId, o.PatronId.GetTypeCode()));
+		arrParams[8]  = new SqlParameter("@PCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
 		arrParams[8].Direction = ParameterDirection.Output;
 
 		SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_ProgramCodes_Insert", arrParams);
@@ -284,15 +284,15 @@ public int PatronId
 
 		SqlParameter[] arrParams = new SqlParameter[9];
 
-		arrParams[0]  = new SqlParameter("@PCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
-		arrParams[1]  = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-		arrParams[2]  = new SqlParameter("@CodeNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeNumber, o.CodeNumber.GetTypeCode()));
-		arrParams[3]  = new SqlParameter("@CodeValue", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeValue, o.CodeValue.GetTypeCode()));
-        arrParams[4] = new SqlParameter("@ShortCode", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortCode, o.ShortCode.GetTypeCode()));
-        arrParams[5] = new SqlParameter("@isUsed", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isUsed, o.isUsed.GetTypeCode()));
-		arrParams[6]  = new SqlParameter("@DateCreated", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateCreated, o.DateCreated.GetTypeCode()));
-		arrParams[7]  = new SqlParameter("@DateUsed", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateUsed, o.DateUsed.GetTypeCode()));
-		arrParams[8]  = new SqlParameter("@PatronId", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronId, o.PatronId.GetTypeCode()));
+		arrParams[0]  = new SqlParameter("@PCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
+		arrParams[1]  = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+		arrParams[2]  = new SqlParameter("@CodeNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeNumber, o.CodeNumber.GetTypeCode()));
+		arrParams[3]  = new SqlParameter("@CodeValue", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CodeValue, o.CodeValue.GetTypeCode()));
+        arrParams[4] = new SqlParameter("@ShortCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortCode, o.ShortCode.GetTypeCode()));
+        arrParams[5] = new SqlParameter("@isUsed", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isUsed, o.isUsed.GetTypeCode()));
+		arrParams[6]  = new SqlParameter("@DateCreated", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateCreated, o.DateCreated.GetTypeCode()));
+		arrParams[7]  = new SqlParameter("@DateUsed", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DateUsed, o.DateUsed.GetTypeCode()));
+		arrParams[8]  = new SqlParameter("@PatronId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronId, o.PatronId.GetTypeCode()));
 
 		try
 
@@ -328,7 +328,7 @@ public int PatronId
 
 		SqlParameter[] arrParams = new SqlParameter[1];
 
-		arrParams[0]  = new SqlParameter("@PCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
+		arrParams[0]  = new SqlParameter("@PCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCID, o.PCID.GetTypeCode()));
 
 		try
 

@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="PatronReviewEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronReviewEdit" 
+    AutoEventWireup="true" CodeBehind="PatronReviewEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronReviewEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="~/ControlRoom/Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 
 
@@ -198,7 +198,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.PatronReview">
+        TypeName="GRA.SRP.DAL.PatronReview">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="PRID" 
                 PropertyName="Text" Type="Int32" />

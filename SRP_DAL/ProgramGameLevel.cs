@@ -2,9 +2,9 @@
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.ApplicationBlocks.Data;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    
@@ -13,7 +13,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPGLID;
         private int myPGID;
@@ -284,26 +284,26 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[18];
 
-            arrParams[0] = new SqlParameter("@PGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@LevelNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LevelNumber, o.LevelNumber.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@LocationX", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationX, o.LocationX.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@LocationY", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationY, o.LocationY.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@PointNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointNumber, o.PointNumber.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Minigame1ID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1ID, o.Minigame1ID.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Minigame2ID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2ID, o.Minigame2ID.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AwardBadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeID, o.AwardBadgeID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@LevelNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LevelNumber, o.LevelNumber.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@LocationX", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationX, o.LocationX.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@LocationY", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationY, o.LocationY.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@PointNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointNumber, o.PointNumber.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Minigame1ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1ID, o.Minigame1ID.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Minigame2ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2ID, o.Minigame2ID.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AwardBadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeID, o.AwardBadgeID.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
-            arrParams[12] = new SqlParameter("@LocationXBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationXBonus, o.LocationXBonus.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@LocationYBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationYBonus, o.LocationYBonus.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@Minigame1IDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1IDBonus, o.Minigame1IDBonus.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@Minigame2IDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2IDBonus, o.Minigame2IDBonus.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@AwardBadgeIDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeIDBonus, o.AwardBadgeIDBonus.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@LocationXBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationXBonus, o.LocationXBonus.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@LocationYBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationYBonus, o.LocationYBonus.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@Minigame1IDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1IDBonus, o.Minigame1IDBonus.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@Minigame2IDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2IDBonus, o.Minigame2IDBonus.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@AwardBadgeIDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeIDBonus, o.AwardBadgeIDBonus.GetTypeCode()));
 
-            arrParams[17] = new SqlParameter("@PGLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@PGLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
             arrParams[17].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_ProgramGameLevel_Insert", arrParams);
@@ -328,25 +328,25 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[18];
 
-            arrParams[0] = new SqlParameter("@PGLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@LevelNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LevelNumber, o.LevelNumber.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@LocationX", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationX, o.LocationX.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@LocationY", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationY, o.LocationY.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@PointNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointNumber, o.PointNumber.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Minigame1ID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1ID, o.Minigame1ID.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Minigame2ID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2ID, o.Minigame2ID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AwardBadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeID, o.AwardBadgeID.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGID, o.PGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@LevelNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LevelNumber, o.LevelNumber.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@LocationX", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationX, o.LocationX.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@LocationY", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationY, o.LocationY.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@PointNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PointNumber, o.PointNumber.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Minigame1ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1ID, o.Minigame1ID.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Minigame2ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2ID, o.Minigame2ID.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AwardBadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeID, o.AwardBadgeID.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
-            arrParams[13] = new SqlParameter("@LocationXBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationXBonus, o.LocationXBonus.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@LocationYBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationYBonus, o.LocationYBonus.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@Minigame1IDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1IDBonus, o.Minigame1IDBonus.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@Minigame2IDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2IDBonus, o.Minigame2IDBonus.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@AwardBadgeIDBonus", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeIDBonus, o.AwardBadgeIDBonus.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@LocationXBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationXBonus, o.LocationXBonus.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@LocationYBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LocationYBonus, o.LocationYBonus.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@Minigame1IDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame1IDBonus, o.Minigame1IDBonus.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@Minigame2IDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Minigame2IDBonus, o.Minigame2IDBonus.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@AwardBadgeIDBonus", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AwardBadgeIDBonus, o.AwardBadgeIDBonus.GetTypeCode()));
 
             try
             {
@@ -380,7 +380,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PGLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PGLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PGLID, o.PGLID.GetTypeCode()));
 
             try
             {

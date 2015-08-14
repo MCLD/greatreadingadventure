@@ -1,6 +1,6 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronSurvey.ascx.cs" Inherits="STG.SRP.Controls.PatronSurvey" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronSurvey.ascx.cs" Inherits="GRA.SRP.Controls.PatronSurvey" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../ControlRoom/Controls/QuestionPreview.ascx" tagname="QuestionPreview" tagprefix="uc1" %>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>

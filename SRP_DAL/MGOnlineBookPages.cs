@@ -2,9 +2,9 @@
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.ApplicationBlocks.Data;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class MGOnlineBookPages : EntityBase
@@ -12,7 +12,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myOBPGID;
         private int myOBID;
@@ -296,20 +296,20 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[14];
 
-            arrParams[0] = new SqlParameter("@OBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBID, o.OBID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@PageNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PageNumber, o.PageNumber.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@TextEasy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextEasy, o.TextEasy.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@TextMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextMedium, o.TextMedium.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@TextHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextHard, o.TextHard.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@AudioEasy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioEasy, o.AudioEasy.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AudioMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioMedium, o.AudioMedium.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AudioHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioHard, o.AudioHard.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@OBPGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@OBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBID, o.OBID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@PageNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PageNumber, o.PageNumber.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@TextEasy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextEasy, o.TextEasy.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@TextMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextMedium, o.TextMedium.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@TextHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextHard, o.TextHard.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@AudioEasy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioEasy, o.AudioEasy.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AudioMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioMedium, o.AudioMedium.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AudioHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioHard, o.AudioHard.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@OBPGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
             arrParams[13].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGOnlineBookPages_Insert", arrParams);
@@ -334,20 +334,20 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[14];
 
-            arrParams[0] = new SqlParameter("@OBPGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@OBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBID, o.OBID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@PageNumber", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PageNumber, o.PageNumber.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@TextEasy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextEasy, o.TextEasy.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@TextMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextMedium, o.TextMedium.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@TextHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextHard, o.TextHard.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@AudioEasy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioEasy, o.AudioEasy.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AudioMedium", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioMedium, o.AudioMedium.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AudioHard", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioHard, o.AudioHard.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@OBPGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@OBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBID, o.OBID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@PageNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PageNumber, o.PageNumber.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@TextEasy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextEasy, o.TextEasy.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@TextMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextMedium, o.TextMedium.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@TextHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TextHard, o.TextHard.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@AudioEasy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioEasy, o.AudioEasy.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AudioMedium", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioMedium, o.AudioMedium.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@AudioHard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AudioHard, o.AudioHard.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -381,7 +381,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@OBPGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@OBPGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.OBPGID, o.OBPGID.GetTypeCode()));
 
             try
             {

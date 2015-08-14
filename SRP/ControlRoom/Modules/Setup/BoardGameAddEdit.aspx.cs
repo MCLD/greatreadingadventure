@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class BoardGameAddEdit : BaseControlRoomPage
     {
@@ -34,13 +34,13 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlMap");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlMap");
                 if (control != null) control.ProcessRender();
 
-                control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlBonus");
+                control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlBonus");
                 if (control != null) control.ProcessRender();
 
-                control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlStamp");
+                control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtlStamp");
                 if (control != null) control.ProcessRender();
 
                 var ctl = (DropDownList)dv.FindControl("Minigame1ID");

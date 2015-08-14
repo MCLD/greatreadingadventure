@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GameboardControl.ascx.cs" Inherits="STG.SRP.Controls.GameboardControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GameboardControl.ascx.cs" Inherits="GRA.SRP.Controls.GameboardControl" %>
 
 <%@ Register src="MyPointsControl.ascx" tagname="MyPointsControl" tagprefix="uc1" %>
 <%@ Register src="LeaderBoardControl.ascx" tagname="LeaderBoardControl" tagprefix="uc2" %>

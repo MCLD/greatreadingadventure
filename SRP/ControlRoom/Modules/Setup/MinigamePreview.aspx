@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="MinigamePreview.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MinigamePreview" 
+    AutoEventWireup="true" CodeBehind="MinigamePreview.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MinigamePreview" 
     
 %>
 <%@ Register src="../../Controls/MinigamePreview.ascx" tagname="MinigamePreview" tagprefix="uc1" %>

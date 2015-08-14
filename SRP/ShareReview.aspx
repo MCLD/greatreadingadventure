@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" 
 Title="Summer Reading Program review" MasterPageFile="~/Layout/SRP.Master"
-CodeBehind="ShareReview.aspx.cs" Inherits="STG.SRP.ShareReview"
+CodeBehind="ShareReview.aspx.cs" Inherits="GRA.SRP.ShareReview"
  %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 <meta property="og:title" content="I have reviewed a book for the Summer Reading Program"/>

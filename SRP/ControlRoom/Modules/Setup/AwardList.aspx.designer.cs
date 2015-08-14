@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Setup {
+namespace GRA.SRP.ControlRoom.Modules.Setup {
     
     
     public partial class AwardList {

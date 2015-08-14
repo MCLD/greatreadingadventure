@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyQuestionAddWizard.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyQuestionAddWizard" 
+    AutoEventWireup="true" CodeBehind="SurveyQuestionAddWizard.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyQuestionAddWizard" 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">    

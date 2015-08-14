@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Setup.aspx.cs" Inherits="STG.SRP.ControlRoom.DBCreate" 
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Setup.aspx.cs" Inherits="GRA.SRP.ControlRoom.DBCreate" 
  %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -155,7 +155,7 @@
                     </div>
                     <br />
                     <div style="text-align: center ">
-                                <%= STG.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= STG.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= STG.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= STG.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
+                                <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
                     </div>
                 </div>
             </div>

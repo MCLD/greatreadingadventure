@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="EventList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.EventList" 
+    AutoEventWireup="true" CodeBehind="EventList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.EventList" 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -170,7 +170,7 @@
 
    <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAdminSearch" 
-        TypeName="STG.SRP.DAL.Event">
+        TypeName="GRA.SRP.DAL.Event">
         <SelectParameters>
             <asp:ControlParameter ControlID="StartDate" DefaultValue="" Name="startDate" 
                 PropertyName="Text" Type="String" />
@@ -183,7 +183,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>

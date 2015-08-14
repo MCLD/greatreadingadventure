@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGWordMatch.ascx.cs" Inherits="STG.SRP.Controls.MGWordMatch" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGWordMatch.ascx.cs" Inherits="GRA.SRP.Controls.MGWordMatch" %>
 <div class="row" >
 	<div class="span2">
 	</div>

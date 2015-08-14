@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AudioUploadCtl.ascx.cs" Inherits="STG.SRP.Controls.AudioUploadCtl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AudioUploadCtl.ascx.cs" Inherits="GRA.SRP.Controls.AudioUploadCtl" %>
 <asp:Panel ID="pnlExists" runat="server" Visible="False">
 <table cellspacing="0" cellpadding="0">
     <tr runat="server" id="trPreview">

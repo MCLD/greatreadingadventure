@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 using SRPApp.Classes;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class _default : BaseControlRoomPage
     {

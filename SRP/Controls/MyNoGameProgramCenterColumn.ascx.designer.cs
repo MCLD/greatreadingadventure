@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Controls {
+namespace GRA.SRP.Controls {
     
     
     public partial class MyNoGameProgramCenterColumn {
@@ -28,7 +28,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.SimpleLoggingControl SimpleLoggingControl1;
+        protected global::GRA.SRP.Controls.SimpleLoggingControl SimpleLoggingControl1;
         
         /// <summary>
         /// lblSponsor control.

@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronNotificationsCtl.ascx.cs" Inherits="STG.SRP.Controls.PatronNotificationsCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronNotificationsCtl.ascx.cs" Inherits="GRA.SRP.Controls.PatronNotificationsCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>

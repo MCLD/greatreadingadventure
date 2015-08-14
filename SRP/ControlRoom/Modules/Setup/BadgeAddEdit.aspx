@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" CodeBehind="BadgeAddEdit.aspx.cs" 
-    Inherits="STG.SRP.ControlRoom.Modules.Setup.BadgeAddEdit" 
+    Inherits="GRA.SRP.ControlRoom.Modules.Setup.BadgeAddEdit" 
     
 %>
 <%@ Register src="~/Controls/FileUploadCtl.ascx" tagname="FileUploadCtl" tagprefix="uc1" %>
@@ -534,7 +534,7 @@
 
 
     <asp:ObjectDataSource ID="odsData" runat="server" 
-        SelectMethod="FetchObject" TypeName="STG.SRP.DAL.Badge">
+        SelectMethod="FetchObject" TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -543,7 +543,7 @@
     
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetBadgeBranches" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -551,7 +551,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeCat" runat="server" 
         SelectMethod="GetBadgeCategories" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -559,7 +559,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeAge" runat="server" 
         SelectMethod="GetBadgeAgeGroups" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -567,7 +567,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeLoc" runat="server" 
         SelectMethod="GetBadgeLocations" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>

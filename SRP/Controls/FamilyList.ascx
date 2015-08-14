@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FamilyList.ascx.cs" Inherits="STG.SRP.Controls.FamilyList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FamilyList.ascx.cs" Inherits="GRA.SRP.Controls.FamilyList" %>
 
 
 <div class="row">

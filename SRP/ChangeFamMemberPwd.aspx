@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Change Password" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="ChangeFamMemberPwd.aspx.cs" Inherits="STG.SRP.ChangeFamMemberPwd" %>
+    CodeBehind="ChangeFamMemberPwd.aspx.cs" Inherits="GRA.SRP.ChangeFamMemberPwd" %>
 
 
 <%@ Register src="~/Controls/ProgramTabs.ascx" tagname="ProgramTabs" tagprefix="uc1" %>

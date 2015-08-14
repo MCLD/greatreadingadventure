@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Settings {
+namespace GRA.SRP.ControlRoom.Modules.Settings {
     
     
     public partial class Default {
