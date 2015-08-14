@@ -13,6 +13,10 @@ using Microsoft.ApplicationBlocks.Data;
 using SRPApp.Classes;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
+using System.Web.Configuration;
+using System.Configuration;
+using System.Net.Configuration;
+using System.Net.Mail;
 
 namespace GRA.SRP.ControlRoom {
     public partial class DBCreate : BaseControlRoomPage {
@@ -49,22 +53,23 @@ namespace GRA.SRP.ControlRoom {
             string conn = null;
             string rcon = null;
             bool localDbMode = DBServer.Text.ToUpper() == "(LOCALDB)";
+            Configuration webConfig = null;
 
             // test writing to Web.config before we go further
-            string config = null;
             if (!localDbMode) {
                 if (!this.IsValid) {
                     return;
                 }
+
                 try {
-                    config = System.IO.File.ReadAllText(Server.MapPath("~/Web.config"));
+                    webConfig = WebConfigurationManager.OpenWebConfiguration("~");
                 } catch (Exception ex) {
                     FailureText.Text = "There was an error when trying to read the Web.config file, see below:";
                     errorLabel.Text = ex.Message;
                     return;
                 }
                 try {
-                    System.IO.File.WriteAllText(Server.MapPath("~/Web.config"), config);
+                    webConfig.Save();
                 } catch (Exception ex) {
                     FailureText.Text = "There was an error when trying to write to the Web.config file, see below:";
                     errorLabel.Text = ex.Message;
@@ -197,26 +202,35 @@ namespace GRA.SRP.ControlRoom {
 
 
             if (error.Length == 0 && !localDbMode) {
-                if (string.IsNullOrEmpty(config)) {
-                    config = System.IO.File.ReadAllText(Server.MapPath("~/Web.config"));
-                }
-                config =
-                    config.Replace(
-                        "connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
-                        "connectionString=\"" + rcon + "\"");
-                config =
-                    config.Replace(
-                        "<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
-                        string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
+                webConfig = WebConfigurationManager.OpenWebConfiguration("~");
 
-                //Modify the web.config
-                System.IO.File.WriteAllText(Server.MapPath("~/Web.config"), config);
+                var csSection = (ConnectionStringsSection)webConfig.GetSection("connectionStrings");
+                csSection.ConnectionStrings[GlobalUtilities.SRPDBConnectionStringName].ConnectionString = rcon;
+
+                var mailSection = (MailSettingsSectionGroup)webConfig.GetSectionGroup("system.net/mailSettings");
+                mailSection.Smtp.Network.Host = mailHost;
+                webConfig.Save();
+
+                //if (string.IsNullOrEmpty(config)) {
+                //    config = System.IO.File.ReadAllText(Server.MapPath("~/Web.config"));
+                //}
+                //config =
+                //    config.Replace(
+                //        "connectionString=\"Data Source=(local);Initial Catalog=SRP;User ID=SRP;Password=SRP\"",
+                //        "connectionString=\"" + rcon + "\"");
+                //config =
+                //    config.Replace(
+                //        "<network host=\"relayServerHostname\" port=\"25\" userName=\"username\" password=\"password\" />",
+                //        string.Format("<network host=\"{0}\" port=\"25\"/>", mailHost));
+
+                ////Modify the web.config
+                //System.IO.File.WriteAllText(Server.MapPath("~/Web.config"), config);
             }
 
             if (error.Length == 0) {
                 // Delete the Install File
                 //System.IO.File.Delete(Server.MapPath(InstallFile));
-                Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/ControlRoom/");
             } else {
                 FailureText.Text = "There have been errors, see details below.";
                 errorLabel.Text = error;

@@ -18,7 +18,8 @@ namespace GRA.SRP.Core.Utilities
 {
     public class GlobalUtilities
     {
-        public static string SRPDB = ConfigurationManager.ConnectionStrings["SRPDBConn"].ToString();
+        public static string SRPDBConnectionStringName = "SRPDBConn";
+        public static string SRPDB = ConfigurationManager.ConnectionStrings[SRPDBConnectionStringName].ToString();
 
         // This is a helper method used to determine the index of the
         // column being sorted. If no column is being sorted, -1 is returned.
