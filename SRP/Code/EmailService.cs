@@ -81,26 +81,29 @@ namespace GRA.SRP.Core.Utilities
         public static bool SendEmail
             (string fromAddress, string toAddress, string subject, string body)
         {
-            var mm = new MailMessage(fromAddress, toAddress);
-            mm.Subject = subject;
-            mm.Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body;
-            mm.IsBodyHtml = true;
+            try {
+                using (var mm = new MailMessage(fromAddress, toAddress)) {
+                    mm.Subject = subject;
+                    mm.Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body;
+                    mm.IsBodyHtml = true;
 
-            var smtp = new SmtpClient();
-            smtp.Send(mm);
+                    using (var smtp = new SmtpClient()) {
+                        smtp.Send(mm);
+                    }
+                }
+                if (_logEmails) {
 
-            if (_logEmails)
-            {
-
-                var l = new EmailLog
-                            {
-                                SentDateTime = DateTime.Now,
-                                SentFrom = fromAddress,
-                                SentTo = toAddress,
-                                Subject = subject,
-                                Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body
-                            };
-                l.Insert();
+                    var l = new EmailLog {
+                        SentDateTime = DateTime.Now,
+                        SentFrom = fromAddress,
+                        SentTo = toAddress,
+                        Subject = subject,
+                        Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body
+                    };
+                    l.Insert();
+                }
+            } catch (Exception) {
+                return false;
             }
             return true;
         }

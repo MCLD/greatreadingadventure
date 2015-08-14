@@ -776,6 +776,7 @@
     <Content Include="images\arrow-right.png" />
     <Content Include="images\arrows.png" />
     <Content Include="images\Audit.png" />
+    <Content Include="images\Badges\badges-placeholder.txt" />
     <Content Include="images\bg-sequence.jpg" />
     <Content Include="images\bg\brushed_alu.png" />
     <Content Include="images\bg\crisp_paper_ruffles.png" />
@@ -2865,7 +2866,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="images\Avatars\" />
-    <Folder Include="images\Badges\" />
     <Folder Include="images\Banners\" />
     <Folder Include="images\Games\Board\" />
     <Folder Include="images\Games\Books\" />
@@ -2903,10 +2903,10 @@
     <None Include="ControlRoom\font\fontawesome-webfont.ttf" />
     <None Include="ControlRoom\font\fontawesome-webfont.woff" />
     <Content Include="ControlRoom\Reports.Master" />
-    <None Include="font\fontawesome-webfont.eot" />
-    <None Include="font\fontawesome-webfont.eot-v=3.0.1" />
-    <None Include="font\fontawesome-webfont.ttf" />
-    <None Include="font\fontawesome-webfont.woff" />
+    <None Include="CSS\font\fontawesome-webfont.eot" />
+    <None Include="CSS\font\fontawesome-webfont.eot-v=3.0.1" />
+    <None Include="CSS\font\fontawesome-webfont.ttf" />
+    <None Include="CSS\font\fontawesome-webfont.woff" />
     <Content Include="Layout\SRP.Master" />
   </ItemGroup>
   <ItemGroup>
