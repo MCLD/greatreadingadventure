@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class PrizeTemplate : EntityBase
@@ -20,7 +20,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myTID;
         private string myTName = "";
@@ -420,41 +420,41 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[33];
 
-            arrParams[0] = new SqlParameter("@TName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TName, o.TName.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@NumPrizes", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumPrizes, o.NumPrizes.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@IncPrevWinnersFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncPrevWinnersFlag, o.IncPrevWinnersFlag.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@SendNotificationFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SendNotificationFlag, o.SendNotificationFlag.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@NotificationSubject", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@NotificationMessage", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationMessage, o.NotificationMessage.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@ProgID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@Gender", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@SchoolName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@PrimaryLibrary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@MinPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinPoints, o.MinPoints.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@MaxPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxPoints, o.MaxPoints.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LogDateStart", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateStart, o.LogDateStart.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@LogDateEnd", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateEnd, o.LogDateEnd.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@MinReviews", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinReviews, o.MinReviews.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@MaxReviews", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxReviews, o.MaxReviews.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@ReviewDateStart", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateStart, o.ReviewDateStart.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@ReviewDateEnd", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateEnd, o.ReviewDateEnd.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@TName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TName, o.TName.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@NumPrizes", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumPrizes, o.NumPrizes.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@IncPrevWinnersFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncPrevWinnersFlag, o.IncPrevWinnersFlag.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@SendNotificationFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SendNotificationFlag, o.SendNotificationFlag.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@NotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@NotificationMessage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationMessage, o.NotificationMessage.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@MinPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinPoints, o.MinPoints.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@MaxPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxPoints, o.MaxPoints.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@LogDateStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateStart, o.LogDateStart.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@LogDateEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateEnd, o.LogDateEnd.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@MinReviews", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinReviews, o.MinReviews.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@MaxReviews", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxReviews, o.MaxReviews.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@ReviewDateStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateStart, o.ReviewDateStart.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@ReviewDateEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateEnd, o.ReviewDateEnd.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
-            arrParams[22] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[23] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[24] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[25] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[26] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[27] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[28] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[29] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[30] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[31] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
-            arrParams[32] = new SqlParameter("@TID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
+            arrParams[32] = new SqlParameter("@TID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
             arrParams[32].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_PrizeTemplate_Insert", arrParams);
@@ -479,40 +479,40 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[33];
 
-            arrParams[0] = new SqlParameter("@TID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@TName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TName, o.TName.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@NumPrizes", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumPrizes, o.NumPrizes.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@IncPrevWinnersFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncPrevWinnersFlag, o.IncPrevWinnersFlag.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@SendNotificationFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SendNotificationFlag, o.SendNotificationFlag.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@NotificationSubject", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@NotificationMessage", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationMessage, o.NotificationMessage.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ProgID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@Gender", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@SchoolName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@PrimaryLibrary", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@MinPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinPoints, o.MinPoints.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@MaxPoints", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxPoints, o.MaxPoints.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@LogDateStart", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateStart, o.LogDateStart.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@LogDateEnd", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateEnd, o.LogDateEnd.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@MinReviews", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinReviews, o.MinReviews.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@MaxReviews", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxReviews, o.MaxReviews.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@ReviewDateStart", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateStart, o.ReviewDateStart.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@ReviewDateEnd", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateEnd, o.ReviewDateEnd.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@TID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@TName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TName, o.TName.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@NumPrizes", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumPrizes, o.NumPrizes.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@IncPrevWinnersFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncPrevWinnersFlag, o.IncPrevWinnersFlag.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@SendNotificationFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SendNotificationFlag, o.SendNotificationFlag.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@NotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@NotificationMessage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationMessage, o.NotificationMessage.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@MinPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinPoints, o.MinPoints.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@MaxPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxPoints, o.MaxPoints.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@LogDateStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateStart, o.LogDateStart.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@LogDateEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogDateEnd, o.LogDateEnd.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@MinReviews", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MinReviews, o.MinReviews.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@MaxReviews", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxReviews, o.MaxReviews.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@ReviewDateStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateStart, o.ReviewDateStart.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@ReviewDateEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDateEnd, o.ReviewDateEnd.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
             
-            arrParams[23] = new SqlParameter("@TenID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[23] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[24] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[25] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[26] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[27] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[28] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[29] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[30] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[31] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[32] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
             try
             {
@@ -546,7 +546,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@TID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@TID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TID, o.TID.GetTypeCode()));
 
             try
             {

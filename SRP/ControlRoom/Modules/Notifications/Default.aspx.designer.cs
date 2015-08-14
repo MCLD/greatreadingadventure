@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Notifications
+namespace GRA.SRP.ControlRoom.Modules.Notifications
 {
 
 

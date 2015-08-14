@@ -1,6 +1,6 @@
 ﻿
 <%@ Page Title="Login" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Recover.aspx.cs" Inherits="STG.SRP.Recover" %>
+    CodeBehind="Recover.aspx.cs" Inherits="GRA.SRP.Recover" %>
 
 <%@ Register src="~/Controls/ProgramTabs.ascx" tagname="ProgramTabs" tagprefix="uc1" %>
 <%@ Register src="~/Controls/ProgramBanner.ascx" tagname="ProgramBanner" tagprefix="uc2" %>

@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="RegistrationSettingsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.RegistrationSettingsAddEdit" 
+    AutoEventWireup="true" CodeBehind="RegistrationSettingsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.RegistrationSettingsAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -463,7 +463,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.RegistrationSettings">
+        TypeName="GRA.SRP.DAL.RegistrationSettings">
 
 	</asp:ObjectDataSource>
 

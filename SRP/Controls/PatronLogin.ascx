@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLogin.ascx.cs" Inherits="STG.SRP.Classes.PatronLogin" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLogin.ascx.cs" Inherits="GRA.SRP.Classes.PatronLogin" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
             
 
 <div class="container">

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGHiddenPicBkAddEdit : BaseControlRoomPage
     {
@@ -66,7 +66,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl_1");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl_1");
                 if (control != null) control.ProcessRender();
             }
         }

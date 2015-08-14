@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" CodeBehind="SRPSettings.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.Modules.Settings.SRPSettings" 
+Inherits="GRA.SRP.ControlRoom.Modules.Settings.SRPSettings" 
     validateRequest="false" 
 %>
 <%@ Register src="~/ControlRoom/Controls/SettingEditor.ascx" tagname="SettingEditor" tagprefix="uc1" %>
@@ -21,7 +21,7 @@ Inherits="STG.SRP.ControlRoom.Modules.Settings.SRPSettings"
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:ObjectDataSource ID="odsSRPSettings" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.SRPSettings">
+        TypeName="GRA.SRP.DAL.SRPSettings">
         <SelectParameters>
             <asp:Parameter DefaultValue="true" Name="forCurrentTenantOnly" Type="Boolean" />
         </SelectParameters>

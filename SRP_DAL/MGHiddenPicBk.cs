@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class MGHiddenPicBk : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myHPBID;
         private int myHPID;
@@ -194,13 +194,13 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[7];
 
-            arrParams[0] = new SqlParameter("@HPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@HPBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@HPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@HPBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
             arrParams[6].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGHiddenPicBk_Insert", arrParams);
@@ -225,13 +225,13 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[7];
 
-            arrParams[0] = new SqlParameter("@HPBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@HPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@MGID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@HPBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@HPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPID, o.HPID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@MGID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MGID, o.MGID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -265,7 +265,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@HPBID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@HPBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HPBID, o.HPBID.GetTypeCode()));
 
             try
             {

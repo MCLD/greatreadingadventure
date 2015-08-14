@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="ClosingPush.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.ClosingPush" 
+    AutoEventWireup="true" CodeBehind="ClosingPush.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.ClosingPush" 
     
 %>
 

@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class PatronReview : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPRID;
         private int myPID;
@@ -273,16 +273,16 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[10];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PRLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Author", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Title", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Review", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Review, o.Review.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@isApproved", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isApproved, o.isApproved.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@ReviewDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDate, o.ReviewDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ApprovalDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovalDate, o.ApprovalDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@ApprovedBy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovedBy, o.ApprovedBy.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@PRID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PRLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@Author", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Review", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Review, o.Review.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@isApproved", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isApproved, o.isApproved.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@ReviewDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDate, o.ReviewDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@ApprovalDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovalDate, o.ApprovalDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@ApprovedBy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovedBy, o.ApprovedBy.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@PRID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
             arrParams[9].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_PatronReview_Insert", arrParams);
@@ -307,16 +307,16 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[10];
 
-            arrParams[0] = new SqlParameter("@PRID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@PRLID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Author", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Title", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Review", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Review, o.Review.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@isApproved", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isApproved, o.isApproved.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ReviewDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDate, o.ReviewDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@ApprovalDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovalDate, o.ApprovalDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@ApprovedBy", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovedBy, o.ApprovedBy.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PRID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@PRLID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRLID, o.PRLID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Author", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Author, o.Author.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Review", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Review, o.Review.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@isApproved", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isApproved, o.isApproved.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@ReviewDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ReviewDate, o.ReviewDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@ApprovalDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovalDate, o.ApprovalDate.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@ApprovedBy", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ApprovedBy, o.ApprovedBy.GetTypeCode()));
 
             try
             {
@@ -350,7 +350,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PRID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PRID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PRID, o.PRID.GetTypeCode()));
 
             try
             {

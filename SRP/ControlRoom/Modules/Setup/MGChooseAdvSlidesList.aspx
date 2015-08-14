@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGChooseAdvSlidesList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGChooseAdvSlidesList" 
+    AutoEventWireup="true" CodeBehind="MGChooseAdvSlidesList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGChooseAdvSlidesList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -14,7 +14,7 @@
 
     	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAllByDifficulty" 
-        TypeName="STG.SRP.DAL.MGChooseAdvSlides">
+        TypeName="GRA.SRP.DAL.MGChooseAdvSlides">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblMGID" Name="MGID" DefaultValue="0"
                 PropertyName="Text" Type="Int32" />

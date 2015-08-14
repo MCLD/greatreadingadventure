@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Tenant {
+namespace GRA.SRP.ControlRoom.Modules.Tenant {
     
     
     public partial class TenantUserAddEdit {

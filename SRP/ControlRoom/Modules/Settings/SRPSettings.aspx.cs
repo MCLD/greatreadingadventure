@@ -5,13 +5,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRoom.Controls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRoom.Controls;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
+using GRA.SRP.DAL;
 
 
-namespace STG.SRP.ControlRoom.Modules.Settings
+namespace GRA.SRP.ControlRoom.Modules.Settings
 {
     public partial class SRPSettings : BaseControlRoomPage
     {

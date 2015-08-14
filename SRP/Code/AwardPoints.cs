@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public class AwardPoints
     {

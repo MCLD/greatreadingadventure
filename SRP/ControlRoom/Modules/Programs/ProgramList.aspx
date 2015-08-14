@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="ProgramList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramsList" 
+    AutoEventWireup="true" CodeBehind="ProgramList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Programs.ProgramsList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -10,7 +10,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
 	</asp:ObjectDataSource>
 
 

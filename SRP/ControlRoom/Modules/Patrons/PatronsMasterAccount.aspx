@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-    CodeBehind="PatronsMasterAccount.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronsMasterAccount" 
+    CodeBehind="PatronsMasterAccount.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronsMasterAccount" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

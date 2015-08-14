@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
 // --> PERMISSIONID 
-namespace STG.SRP.ControlRoom.Modules.Programs
+namespace GRA.SRP.ControlRoom.Modules.Programs
 {
     public partial class ProgramOrder : BaseControlRoomPage
     {

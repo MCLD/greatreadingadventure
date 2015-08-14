@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Controls {
+namespace GRA.SRP.Controls {
     
     
     public partial class Minigame {
@@ -190,7 +190,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGBook MGBook1;
+        protected global::GRA.SRP.Controls.MGBook MGBook1;
         
         /// <summary>
         /// MGMixMatchPlay1 control.
@@ -199,7 +199,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGMixMatchPlay MGMixMatchPlay1;
+        protected global::GRA.SRP.Controls.MGMixMatchPlay MGMixMatchPlay1;
         
         /// <summary>
         /// MGCodeBreaker1 control.
@@ -208,7 +208,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGCodeBreaker MGCodeBreaker1;
+        protected global::GRA.SRP.Controls.MGCodeBreaker MGCodeBreaker1;
         
         /// <summary>
         /// MGWordMatch1 control.
@@ -217,7 +217,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGWordMatch MGWordMatch1;
+        protected global::GRA.SRP.Controls.MGWordMatch MGWordMatch1;
         
         /// <summary>
         /// MGChooseAdvPlay1 control.
@@ -226,7 +226,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGChooseAdvPlay MGChooseAdvPlay1;
+        protected global::GRA.SRP.Controls.MGChooseAdvPlay MGChooseAdvPlay1;
         
         /// <summary>
         /// MGHiddenPicPlay1 control.
@@ -235,7 +235,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGHiddenPicPlay MGHiddenPicPlay1;
+        protected global::GRA.SRP.Controls.MGHiddenPicPlay MGHiddenPicPlay1;
         
         /// <summary>
         /// MGMatchingGamePlay1 control.
@@ -244,7 +244,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MGMatchingGamePlay MGMatchingGamePlay1;
+        protected global::GRA.SRP.Controls.MGMatchingGamePlay MGMatchingGamePlay1;
         
         /// <summary>
         /// Button1 control.

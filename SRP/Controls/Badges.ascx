@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Badges.ascx.cs" Inherits="STG.SRP.Controls.Badges" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Badges.ascx.cs" Inherits="GRA.SRP.Controls.Badges" %>
 
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>

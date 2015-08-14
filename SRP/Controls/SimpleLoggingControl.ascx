@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SimpleLoggingControl.ascx.cs" Inherits="STG.SRP.Controls.SimpleLoggingControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SimpleLoggingControl.ascx.cs" Inherits="GRA.SRP.Controls.SimpleLoggingControl" %>
 
 
 

@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="EventAddWizard.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.EventAddWizard" 
+    AutoEventWireup="true" CodeBehind="EventAddWizard.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.EventAddWizard" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
     <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
     <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
@@ -587,7 +587,7 @@
     <asp:Label ID="lblBID" runat="server" Text="0" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Event">
+        TypeName="GRA.SRP.DAL.Event">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="EID" 
                 PropertyName="Text" Type="Int32" />
@@ -598,7 +598,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -606,12 +606,12 @@
 
     <asp:ObjectDataSource ID="odsBadge" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDBranch2" runat="server" 
         SelectMethod="GetBadgeBranches" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblBID" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -619,7 +619,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeCat" runat="server" 
         SelectMethod="GetBadgeCategories" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblBID" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -627,7 +627,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeAge" runat="server" 
         SelectMethod="GetBadgeAgeGroups" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblBID" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>
@@ -635,7 +635,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadgeLoc" runat="server" 
         SelectMethod="GetBadgeLocations" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblBID" Name="BID" PropertyName="Text" Type="Int32" />
         </SelectParameters>

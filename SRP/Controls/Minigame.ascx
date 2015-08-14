@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Minigame.ascx.cs" Inherits="STG.SRP.Controls.Minigame" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Minigame.ascx.cs" Inherits="GRA.SRP.Controls.Minigame" %>
 <%@ Register src="MGBook.ascx" tagname="MGBook" tagprefix="uc1" %>
 <%@ Register src="MGMixMatchPlay.ascx" tagname="MGMixMatchPlay" tagprefix="uc2" %>
 <%@ Register src="MGCodeBreaker.ascx" tagname="MGCodeBreaker" tagprefix="uc3" %>

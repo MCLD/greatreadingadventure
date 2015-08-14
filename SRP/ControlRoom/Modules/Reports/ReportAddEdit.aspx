@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="ReportAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Reports.ReportAddEdit" 
+    AutoEventWireup="true" CodeBehind="ReportAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.ReportAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
     <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
     <%@ Register TagPrefix="ajax" Namespace="AjaxControlToolkit" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -2637,7 +2637,7 @@ ScrollContents="false">
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.SRPReport">
+        TypeName="GRA.SRP.DAL.SRPReport">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="RID" 
                 PropertyName="Text" Type="Int32" />
@@ -2646,22 +2646,22 @@ ScrollContents="false">
 
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsBadge" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsTemplate" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.ReportTemplate">
+        TypeName="GRA.SRP.DAL.ReportTemplate">
     </asp:ObjectDataSource>
 
    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -2669,7 +2669,7 @@ ScrollContents="false">
 
    <asp:ObjectDataSource ID="odsSchoolType" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School Type" Type="String" />
         </SelectParameters>
@@ -2677,7 +2677,7 @@ ScrollContents="false">
 
     <asp:ObjectDataSource ID="odsDDLibSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Library District" Type="String" />
         </SelectParameters>
@@ -2685,7 +2685,7 @@ ScrollContents="false">
 
     <asp:ObjectDataSource ID="odsDDSchSys" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School District" Type="String" />
         </SelectParameters>
@@ -2694,7 +2694,7 @@ ScrollContents="false">
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>

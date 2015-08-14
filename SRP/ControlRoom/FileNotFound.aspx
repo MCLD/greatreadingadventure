@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/UnsecuredControl.Master" AutoEventWireup="true" CodeBehind="FileNotFound.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.FileNotFound" 
+Inherits="GRA.SRP.ControlRoom.FileNotFound" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

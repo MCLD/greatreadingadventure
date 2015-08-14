@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="NotificationCounterControl.ascx.cs" Inherits="STG.SRP.Controls.NotificationCounterControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="NotificationCounterControl.ascx.cs" Inherits="GRA.SRP.Controls.NotificationCounterControl" %>
 
 
     <div class="secondary-nav" style="margin-topXX: -20px!important; ">

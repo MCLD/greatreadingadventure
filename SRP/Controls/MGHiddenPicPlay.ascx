@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGHiddenPicPlay.ascx.cs" Inherits="STG.SRP.Controls.MGHiddenPicPlay" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGHiddenPicPlay.ascx.cs" Inherits="GRA.SRP.Controls.MGHiddenPicPlay" %>
 
 
 <script language="javascript" type="text/javascript">

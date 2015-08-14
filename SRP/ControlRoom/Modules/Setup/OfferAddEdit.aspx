@@ -1,10 +1,10 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="OfferAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.OfferAddEdit" 
+    AutoEventWireup="true" CodeBehind="OfferAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.OfferAddEdit" 
     
 %>
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl_1" Src="~/Controls/FileUploadCtl.ascx" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -444,7 +444,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Offer">
+        TypeName="GRA.SRP.DAL.Offer">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="OID" 
                 PropertyName="Text" Type="Int32" />
@@ -453,7 +453,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -461,7 +461,7 @@
 
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
 </asp:Content>

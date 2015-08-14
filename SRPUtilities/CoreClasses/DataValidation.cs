@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     public class DataValidation
     {

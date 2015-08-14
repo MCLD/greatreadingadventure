@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="default.aspx.cs" 
-Inherits="STG.SRP.ControlRoom._default" 
+Inherits="GRA.SRP.ControlRoom._default" 
  
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

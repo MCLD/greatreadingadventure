@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
     public partial class Thanks : System.Web.UI.Page
     {

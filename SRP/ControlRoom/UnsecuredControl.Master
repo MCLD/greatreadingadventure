@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" 
     AutoEventWireup="true" 
     CodeBehind="UnsecuredControl.master.cs" 
-    Inherits="STG.SRP.ControlRoom.UnsecuredControl" 
+    Inherits="GRA.SRP.ControlRoom.UnsecuredControl" 
 %>
 
 <%@ Register TagPrefix="uc3" TagName="CRTopMenu" Src="~/ControlRoom/Controls/CRTopMenu.ascx" %>
@@ -53,7 +53,7 @@
 	    <div id="cdline"></div>
 	    <div style="padding: 6px 0 3px 0; border: 1px solid #C9DEFD;" align="center">
     	
-            <%= STG.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= STG.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= STG.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= STG.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
+            <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
 
 	    </div> 
     </div> 

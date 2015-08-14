@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.ControlRoom.Controls;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRoom.Controls;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class PatronSurvey : System.Web.UI.UserControl
     {

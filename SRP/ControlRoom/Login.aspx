@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="STG.SRP.ControlRoom.Login" 
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="GRA.SRP.ControlRoom.Login" 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head id="Head1" runat="server">
 
-    <title><%= STG.SRP.ControlRoom.SRPResources.CRTitle%></title>
+    <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -14,7 +14,7 @@
                 <div style="padding:50px;vertical-align:middle; text-align:center; min-width: 400px;" class="bkColor2">
                     <center>
                     <fieldset style=" border-style: solid; padding-left: 10px; padding-right: 10px; width:380px; " class="borderColor1">
-                        <legend class="Message" style="font-size: 10pt; font-weight: bold; padding-left:5px; padding-right:5px;"><%= STG.SRP.ControlRoom.SRPResources.LoginGroup%></legend>
+                        <legend class="Message" style="font-size: 10pt; font-weight: bold; padding-left:5px; padding-right:5px;"><%= GRA.SRP.ControlRoom.SRPResources.LoginGroup%></legend>
                     <div style="float: left;">
                     <br />
                             <div runat="server" id="uxMessageBox" class="MessageInstruction" visible="false" style="text-align: left; ">
@@ -59,7 +59,7 @@
                                            </tr>
                                            <tr>
                                                <td align=left>
-                                                   <asp:Label  ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Font-Bold=true><%= STG.SRP.ControlRoom.SRPResources.Username%>: </asp:Label><br />
+                                                   <asp:Label  ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Font-Bold=true><%= GRA.SRP.ControlRoom.SRPResources.Username%>: </asp:Label><br />
                                                    <asp:TextBox ID="UserName" runat="server" Width="200px"></asp:TextBox>
                                                    <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" 
                                                        ControlToValidate="UserName" ErrorMessage="User Name is required" 
@@ -69,7 +69,7 @@
                                            </tr>
                                            <tr>
                                                <td align=left>
-                                                   <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password" Font-Bold=true><%= STG.SRP.ControlRoom.SRPResources.Password %>: </asp:Label><br />
+                                                   <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password" Font-Bold=true><%= GRA.SRP.ControlRoom.SRPResources.Password %>: </asp:Label><br />
                                                    <asp:TextBox ID="Password" runat="server" TextMode="Password" Width="200px"></asp:TextBox>
                                                    <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" 
                                                        ControlToValidate="Password" ErrorMessage="Password is required"
@@ -98,7 +98,7 @@
  
                     
                     <br />
-                    <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/ControlRoom/LoginRecovery.aspx"><%= STG.SRP.ControlRoom.SRPResources.UserAccountRecovery%></asp:HyperLink>
+                    <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/ControlRoom/LoginRecovery.aspx"><%= GRA.SRP.ControlRoom.SRPResources.UserAccountRecovery%></asp:HyperLink>
                     </div>
                     <div style="text-align: center;">
                     <br />
@@ -107,7 +107,7 @@
                     <br />
                     
                     <div style="text-align: center ">
-                                <%= STG.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= STG.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= STG.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= STG.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
+                                <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
                     </div>
                 </div>
             </div>

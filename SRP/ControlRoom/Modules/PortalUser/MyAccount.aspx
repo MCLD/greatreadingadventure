@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="MyAccount.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.Modules.PortalUser.MyAccount" 
+Inherits="GRA.SRP.ControlRoom.Modules.PortalUser.MyAccount" 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -201,7 +201,7 @@ Inherits="STG.SRP.ControlRoom.Modules.PortalUser.MyAccount"
     </asp:DetailsView>
     <asp:Label ID="lblUID" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsCMSUser" runat="server" 
-        SelectMethod="Fetch" TypeName="STG.SRP.Core.Utilities.SRPUser">
+        SelectMethod="Fetch" TypeName="GRA.SRP.Core.Utilities.SRPUser">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblUID" Name="pUid" PropertyName="Text" 
                 Type="Int32" />

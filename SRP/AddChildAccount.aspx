@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="Add Child Account" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="AddChildAccount.aspx.cs" Inherits="STG.SRP.AddChildAccount" 
+    CodeBehind="AddChildAccount.aspx.cs" Inherits="GRA.SRP.AddChildAccount" 
      MaintainScrollPositionOnPostback="true"
     %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="~/Controls/AddChildCtl.ascx" tagname="AddChildCtl" tagprefix="uc3" %>
 
 

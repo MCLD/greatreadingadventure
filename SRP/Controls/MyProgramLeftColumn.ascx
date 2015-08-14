@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyProgramLeftColumn.ascx.cs" Inherits="STG.SRP.Controls.MyProgramLeftColumn" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyProgramLeftColumn.ascx.cs" Inherits="GRA.SRP.Controls.MyProgramLeftColumn" %>
 
 <%@ Register src="MyBadgesListControl.ascx" tagname="MyBadgesListControl" tagprefix="uc1" %>
 <%@ Register src="NotificationCounterControl.ascx" tagname="NotificationCounterControl" tagprefix="uc2" %>

@@ -4,12 +4,12 @@ using System.Data;
 using System.Linq;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRoom;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRoom;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class AddChildCtl : System.Web.UI.UserControl
     {

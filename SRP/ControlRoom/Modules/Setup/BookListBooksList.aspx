@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="BookListBooksList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.BookListBooksList" 
+    AutoEventWireup="true" CodeBehind="BookListBooksList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.BookListBooksList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -11,7 +11,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
   	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.BookListBooks">
+        TypeName="GRA.SRP.DAL.BookListBooks">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="BLID" 
                 PropertyName="Text" Type="Int32" />

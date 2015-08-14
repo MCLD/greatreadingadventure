@@ -1,10 +1,10 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PasswordReset.aspx.cs" Inherits="STG.SRP.ControlRoom.PasswordReset" 
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PasswordReset.aspx.cs" Inherits="GRA.SRP.ControlRoom.PasswordReset" 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head id="Head1" runat="server">
-    <title><%= STG.SRP.ControlRoom.SRPResources.CRTitle%> :: Password Reset</title>
+    <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%> :: Password Reset</title>
 <script language=javascript>
     function ClientValidate(source, arguments) {
         if (document.getElementById("uxConfirmNewPasswordField").value == document.getElementById("uxNewPasswordField").value) {
@@ -85,7 +85,7 @@
                     <br />
                     
                     <div style="text-align: center ">
-                                <%= STG.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= STG.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= STG.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= STG.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
+                                <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
                     </div>
                 </div>
             </div>

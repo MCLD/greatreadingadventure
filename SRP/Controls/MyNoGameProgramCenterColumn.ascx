@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyNoGameProgramCenterColumn.ascx.cs" Inherits="STG.SRP.Controls.MyNoGameProgramCenterColumn" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyNoGameProgramCenterColumn.ascx.cs" Inherits="GRA.SRP.Controls.MyNoGameProgramCenterColumn" %>
 
 <%@ Register src="SimpleLoggingControl.ascx" tagname="SimpleLoggingControl" tagprefix="uc1" %>
 

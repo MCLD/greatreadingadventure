@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SimpleLoggingFamilyControl.ascx.cs" Inherits="STG.SRP.Controls.SimpleLoggingFamilyControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SimpleLoggingFamilyControl.ascx.cs" Inherits="GRA.SRP.Controls.SimpleLoggingFamilyControl" %>
 
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>

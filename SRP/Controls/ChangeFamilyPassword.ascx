@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ChangeFamilyPassword.ascx.cs" Inherits="STG.SRP.Classes.ChangeFamilyPassword" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ChangeFamilyPassword.ascx.cs" Inherits="GRA.SRP.Classes.ChangeFamilyPassword" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
             
 <script language="javascript" type="text/javascript">
     function ClientValidate(source, arguments) {

@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="My Notifications" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyNotifications.aspx.cs" Inherits="STG.SRP.MyNotifications" 
+    CodeBehind="MyNotifications.aspx.cs" Inherits="GRA.SRP.MyNotifications" 
     EnableEventValidation="false" 
     %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 
 

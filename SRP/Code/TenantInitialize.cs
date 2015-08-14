@@ -7,16 +7,16 @@ using System.Linq;
 using System.Web;
 using Microsoft.ApplicationBlocks.Data;
 using SRP_DAL;
-using STG.SRP.ControlRoom.Modules.Setup;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRoom.Modules.Setup;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public class TenantInitialize
     {
         public string Version { get { return "2.0"; } }
-        private static readonly string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static readonly string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
 
         public static void InitializeSecurity(SRPUser u, int TID)

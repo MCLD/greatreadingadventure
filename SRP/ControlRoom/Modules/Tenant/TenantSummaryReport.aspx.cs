@@ -2,16 +2,16 @@
 using System.Data;
 using ExportToExcel;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 using System.Data.SqlClient;
 using System.IO;
 using Microsoft.ApplicationBlocks.Data;
 
-namespace STG.SRP.ControlRoom.Modules.Tenant
+namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
     public partial class TenantSummaryReport : BaseControlRoomPage
     {
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         protected void Page_Load(object sender, EventArgs e)
         {

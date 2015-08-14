@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Patrons {
+namespace GRA.SRP.ControlRoom.Modules.Patrons {
     
     
     public partial class EditPatron {

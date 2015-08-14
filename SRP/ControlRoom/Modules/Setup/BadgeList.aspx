@@ -1,7 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="BadgeList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.BadgeList" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="BadgeList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.BadgeList" 
 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -10,7 +10,7 @@
 <hr />
 <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
 
     </asp:ObjectDataSource>
 

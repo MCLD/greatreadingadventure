@@ -1,2 +1,2 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProgramCSS.ascx.cs" Inherits="STG.SRP.Classes.ProgramCSS" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProgramCSS.ascx.cs" Inherits="GRA.SRP.Classes.ProgramCSS" %>
 <%  = CSSFile %>

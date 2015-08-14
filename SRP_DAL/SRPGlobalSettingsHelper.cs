@@ -5,13 +5,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using Microsoft.ApplicationBlocks.Data;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
 namespace SRPApp.Classes
 {
 [Serializable]    public class SRPGlobalSettingsHelper : EntityBase
     {
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         //public static string GetSetting(string name)
         //{

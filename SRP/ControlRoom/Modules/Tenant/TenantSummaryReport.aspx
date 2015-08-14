@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" 
-CodeBehind="TenantSummaryReport.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Tenant.TenantSummaryReport" 
+CodeBehind="TenantSummaryReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Tenant.TenantSummaryReport" 
 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>

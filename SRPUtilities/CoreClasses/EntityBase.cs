@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     [Serializable]
     public abstract class EntityBase //: DataEntity 

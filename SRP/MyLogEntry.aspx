@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Game Log" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyLogEntry.aspx.cs" Inherits="STG.SRP.MyLogEntry" 
+    CodeBehind="MyLogEntry.aspx.cs" Inherits="GRA.SRP.MyLogEntry" 
     EnableEventValidation="false" 
     %>
 

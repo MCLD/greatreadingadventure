@@ -1,6 +1,6 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AddChildCtl.ascx.cs" Inherits="STG.SRP.Controls.AddChildCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AddChildCtl.ascx.cs" Inherits="GRA.SRP.Controls.AddChildCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 
 <script src="/Scripts/jquery.ddslick.js" type="text/javascript"></script>
 <div class="container">
@@ -731,7 +731,7 @@
 
    <asp:ObjectDataSource ID="odsDDSchoolType" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School Type" Type="String" />
         </SelectParameters>
@@ -739,12 +739,12 @@
 
    <asp:ObjectDataSource ID="odsDDPrograms" runat="server" 
         SelectMethod="GetAllActive" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDDistrict" runat="server" 
         SelectMethod="GetFilteredDistrictDDValues" 
-        TypeName="STG.SRP.DAL.LibraryCrosswalk">
+        TypeName="GRA.SRP.DAL.LibraryCrosswalk">
         <SelectParameters>
             <asp:ControlParameter ControlID="city" DefaultValue="" Name="city" 
                 PropertyName="Text" Type="String" />
@@ -754,7 +754,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetFilteredBranchDDValues" 
-        TypeName="STG.SRP.DAL.LibraryCrosswalk">
+        TypeName="GRA.SRP.DAL.LibraryCrosswalk">
         <SelectParameters>
             <asp:ControlParameter ControlID="district" DefaultValue="0" Name="districtID" 
                 PropertyName="Text" Type="Int32" />
@@ -766,7 +766,7 @@
     
    <asp:ObjectDataSource ID="odsDDSDistrict" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School District" Type="String" />
         </SelectParameters>
@@ -774,7 +774,7 @@
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetFilteredSchoolDDValues" 
-        TypeName="STG.SRP.DAL.SchoolCrosswalk">
+        TypeName="GRA.SRP.DAL.SchoolCrosswalk">
         <SelectParameters>
             <asp:ControlParameter ControlID="schType" DefaultValue="0" Name="schTypeID" 
                 PropertyName="Text" Type="Int32" />

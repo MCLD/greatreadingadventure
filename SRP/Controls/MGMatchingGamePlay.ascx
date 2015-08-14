@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGMatchingGamePlay.ascx.cs" Inherits="STG.SRP.Controls.MGMatchingGamePlay" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGMatchingGamePlay.ascx.cs" Inherits="GRA.SRP.Controls.MGMatchingGamePlay" %>
 <asp:Label ID="MAGID" runat="server" Text="" Visible="false"></asp:Label>
 <asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label>
 

@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="Play Minigame" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="PlayMinigame.aspx.cs" Inherits="STG.SRP.PlayMinigame" 
+    CodeBehind="PlayMinigame.aspx.cs" Inherits="GRA.SRP.PlayMinigame" 
     MaintainScrollPositionOnPostback="true"
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="~/Controls/Minigame.ascx" tagname="Minigame" tagprefix="uc1" %>
 
 

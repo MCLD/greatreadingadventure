@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Security {
+namespace GRA.SRP.ControlRoom.Modules.Security {
     
     
     public partial class GroupsAddEdit {

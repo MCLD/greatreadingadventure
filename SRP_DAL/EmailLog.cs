@@ -10,7 +10,7 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class EmailLog
@@ -18,7 +18,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myEID;
         private DateTime mySentDateTime;
@@ -144,12 +144,12 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[6];
 
-            arrParams[0] = new SqlParameter("@SentDateTime", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentDateTime, o.SentDateTime.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@SentFrom", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentFrom, o.SentFrom.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@SentTo", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentTo, o.SentTo.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Subject", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Subject, o.Subject.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Body", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Body, o.Body.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@EID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@SentDateTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentDateTime, o.SentDateTime.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@SentFrom", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentFrom, o.SentFrom.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@SentTo", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentTo, o.SentTo.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Subject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Subject, o.Subject.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Body", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Body, o.Body.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
             arrParams[5].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_SentEmailLog_Insert", arrParams);
@@ -172,12 +172,12 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[6];
 
-            arrParams[0] = new SqlParameter("@EID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@SentDateTime", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentDateTime, o.SentDateTime.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@SentFrom", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentFrom, o.SentFrom.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@SentTo", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentTo, o.SentTo.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Subject", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Subject, o.Subject.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Body", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Body, o.Body.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@SentDateTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentDateTime, o.SentDateTime.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@SentFrom", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentFrom, o.SentFrom.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@SentTo", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SentTo, o.SentTo.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Subject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Subject, o.Subject.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@Body", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Body, o.Body.GetTypeCode()));
 
             try
             {
@@ -211,7 +211,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@EID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
 
             try
             {

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyWithGameProgramCenterColumn.ascx.cs" Inherits="STG.SRP.Controls.MyWithGameProgramCenterColumn" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyWithGameProgramCenterColumn.ascx.cs" Inherits="GRA.SRP.Controls.MyWithGameProgramCenterColumn" %>
 <center><asp:Image ID="imgAvatar" runat="server"  width="160px"/></center>
 
 <br />

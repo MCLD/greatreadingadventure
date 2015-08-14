@@ -1,5 +1,5 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
-	CodeBehind="TenantGroupsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Tenant.TenantGroupsAddEdit" 
+	CodeBehind="TenantGroupsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Tenant.TenantGroupsAddEdit" 
 %>
 
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>

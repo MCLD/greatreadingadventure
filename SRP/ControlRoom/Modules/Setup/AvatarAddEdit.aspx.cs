@@ -6,12 +6,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRP_DAL;
 using SRPApp.Classes;
-using STG.SRP.ControlRoom.Controls;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
-using STG.SRP.DAL;
-namespace STG.SRP.ControlRoom.Modules.Setup
+using GRA.SRP.ControlRoom.Controls;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
+using GRA.SRP.DAL;
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class AvatarAddEdit : BaseControlRoomPage
     {
@@ -174,7 +174,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             //    if (rows.Count > 0) 
             //    {
             //        DetailsViewRow row = rows[3];
-            //        ((STG.SRP.Classes.FileDownloadCtl)row.Cells[1].Controls[0]).FileName = DateTime.Now.ToShortDateString();
+            //        ((GRA.SRP.Classes.FileDownloadCtl)row.Cells[1].Controls[0]).FileName = DateTime.Now.ToShortDateString();
             //    }
             //}
         }
@@ -184,7 +184,7 @@ namespace STG.SRP.ControlRoom.Modules.Setup
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
 
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 if (control!=null) control.ProcessRender();
 
             }

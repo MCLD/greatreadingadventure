@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.Patrons {
+namespace GRA.SRP.ControlRoom.Modules.Patrons {
     
     
     public partial class PatronPrizes {
@@ -19,7 +19,7 @@ namespace STG.SRP.ControlRoom.Modules.Patrons {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.ControlRoom.Controls.PatronContext pcCtl;
+        protected global::GRA.SRP.ControlRoom.Controls.PatronContext pcCtl;
         
         /// <summary>
         /// gv control.

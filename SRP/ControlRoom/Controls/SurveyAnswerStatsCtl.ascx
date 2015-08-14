@@ -1,3 +1,3 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyAnswerStatsCtl.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.SurveyAnswerStatsCtl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyAnswerStatsCtl.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.SurveyAnswerStatsCtl" %>
 
 <%= LoadQStats() %>

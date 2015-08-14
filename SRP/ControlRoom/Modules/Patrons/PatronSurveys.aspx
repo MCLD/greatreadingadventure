@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="PatronSurveys.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronSurveys" 
+    AutoEventWireup="true" CodeBehind="PatronSurveys.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronSurveys" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../../Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 
 <%@ Register src="../../Controls/PatronLitTestsCtl.ascx" tagname="PatronLitTestsCtl" tagprefix="uc2" %>

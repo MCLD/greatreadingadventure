@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public class TestingBL
     {

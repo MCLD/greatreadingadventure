@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Controls {
+namespace GRA.SRP.Controls {
     
     
     public partial class GameboardControl {
@@ -19,7 +19,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MyPointsControl MyPointsControl1;
+        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl1;
         
         /// <summary>
         /// LeaderBoardControl1 control.
@@ -28,7 +28,7 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.LeaderBoardControl LeaderBoardControl1;
+        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl1;
         
         /// <summary>
         /// MyGameLoggingNavControl1 control.
@@ -37,6 +37,6 @@ namespace STG.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Controls.MyGameLoggingNavControl MyGameLoggingNavControl1;
+        protected global::GRA.SRP.Controls.MyGameLoggingNavControl MyGameLoggingNavControl1;
     }
 }

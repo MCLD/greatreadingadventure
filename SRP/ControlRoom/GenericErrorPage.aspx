@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/UnsecuredControl.Master" AutoEventWireup="true" CodeBehind="GenericErrorPage.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.GenericErrorPage" 
+Inherits="GRA.SRP.ControlRoom.GenericErrorPage" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

@@ -5,9 +5,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using Microsoft.ApplicationBlocks.Data;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
     public class STGOnlyUtilities
     {

@@ -1,7 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.Default" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.Default" 
 
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../../Controls/PatronSearchCtl.ascx" tagname="PatronSearchCtl" tagprefix="uc1" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 
@@ -17,7 +17,7 @@
         onclick="btnClear_Click"  Width="150px" CSSClass="btn-lg btn-orange"/>
     <hr />
     <asp:ObjectDataSource ID="odsSearch" runat="server" 
-        TypeName="STG.SRP.DAL.Patron" EnablePaging="True" 
+        TypeName="GRA.SRP.DAL.Patron" EnablePaging="True" 
         SelectMethod="GetPaged" 
         OldValuesParameterFormatString="original_{0}" 
         SelectCountMethod="GetTotalPagedCount" 

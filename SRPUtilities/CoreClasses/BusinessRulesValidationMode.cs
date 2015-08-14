@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     [Serializable]
     public enum BusinessRulesValidationMode

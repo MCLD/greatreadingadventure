@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="PasswordReset.aspx.cs" 
-Inherits="STG.SRP.ControlRoom.Modules.PortalUser.PasswordReset" 
+Inherits="GRA.SRP.ControlRoom.Modules.PortalUser.PasswordReset" 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 <script language="javascript" type="text/javascript">

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CRRibbon.ascx.cs" Inherits="STG.SRP.ControlRoom.CRRibbon" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CRRibbon.ascx.cs" Inherits="GRA.SRP.ControlRoom.CRRibbon" %>
 <asp:Panel ID="pnlRibbon" runat="server">
 <div id="cdribbon" class="cdSubwebBgColor" style=" width: 100%">
 	<table id="tblMain" cellpadding="0" cellspacing="0" width="100%" border="0" runat="server">
@@ -31,7 +31,7 @@
 									    </td>
 									    <td width="100%" class="cntribboncolor" valign="middle" nowrap>
 									
-									    <%# GetLinks((System.Collections.Generic.List<STG.SRP.Core.Utilities.RibbonLink>)Eval("Links"))%>
+									    <%# GetLinks((System.Collections.Generic.List<GRA.SRP.Core.Utilities.RibbonLink>)Eval("Links"))%>
 									
 
 										

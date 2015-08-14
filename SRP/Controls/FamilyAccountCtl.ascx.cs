@@ -2,10 +2,10 @@
 using System.Data;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class FamilyAccountCtl : System.Web.UI.UserControl
     {

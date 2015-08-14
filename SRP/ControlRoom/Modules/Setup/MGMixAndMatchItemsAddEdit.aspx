@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGMixAndMatchItemsAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGMixAndMatchItemsAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGMixAndMatchItemsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGMixAndMatchItemsAddEdit" 
     
 %>
 
@@ -248,7 +248,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGMixAndMatchItems">
+        TypeName="GRA.SRP.DAL.MGMixAndMatchItems">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="MMIID" 
                 PropertyName="Text" Type="Int32" />

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyPointsControl.ascx.cs" Inherits="STG.SRP.Controls.MyPointsControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyPointsControl.ascx.cs" Inherits="GRA.SRP.Controls.MyPointsControl" %>
 
 
 <div class="pill" style="color: darkred;">

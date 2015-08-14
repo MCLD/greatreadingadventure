@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGMixAndMatchItemsAddEdit : BaseControlRoomPage
     {
@@ -57,17 +57,17 @@ namespace STG.SRP.ControlRoom.Modules.Setup
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+                var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 if (control != null) control.ProcessRender();
 
-                var auc = (STG.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlE");
+                var auc = (GRA.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlE");
                 if (auc != null) auc.ProcessRender();
 
 
-                auc = (STG.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlM");
+                auc = (GRA.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlM");
                 if (auc != null) auc.ProcessRender();
 
-                auc = (STG.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlH");
+                auc = (GRA.SRP.Controls.AudioUploadCtl)dv.FindControl("AudioUploadCtlH");
                 if (auc != null) auc.ProcessRender();
             }
         }

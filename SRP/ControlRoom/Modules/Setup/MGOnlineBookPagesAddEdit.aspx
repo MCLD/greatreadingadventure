@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGOnlineBookPagesAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGOnlineBookPagesAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGOnlineBookPagesAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGOnlineBookPagesAddEdit" 
     ValidateRequest="false"
 %>
 
@@ -267,7 +267,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGOnlineBookPages">
+        TypeName="GRA.SRP.DAL.MGOnlineBookPages">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="OBPGID" 
                 PropertyName="Text" Type="Int32" />

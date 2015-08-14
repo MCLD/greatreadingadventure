@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Web.UI;
 
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
     public partial class FileDownloadCtl : System.Web.UI.UserControl
     {

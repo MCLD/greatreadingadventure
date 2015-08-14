@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLogEntryCtl.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.PatronLogEntryCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLogEntryCtl.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.PatronLogEntryCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
  <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
  
 <asp:Label ID="PID" runat="server" Text="Label" Visible="false"></asp:Label>

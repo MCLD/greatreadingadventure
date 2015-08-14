@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.Controls;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.Controls;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.ControlRoom.Controls
+namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class PatronLitTestsCtl : System.Web.UI.UserControl
     {

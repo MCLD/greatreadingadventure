@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGChooseAdvAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGChooseAdvAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGChooseAdvAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGChooseAdvAddEdit" 
     
 %>
 
@@ -428,7 +428,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchWithParent" 
-        TypeName="STG.SRP.DAL.MGChooseAdv">
+        TypeName="GRA.SRP.DAL.MGChooseAdv">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="MGID" 
                 PropertyName="Text" Type="Int32" />
@@ -437,7 +437,7 @@
 
     <asp:ObjectDataSource ID="odsDDBadges" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
 
 </asp:Content>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Mail;
 using System.Web;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     public class EmailService
     {

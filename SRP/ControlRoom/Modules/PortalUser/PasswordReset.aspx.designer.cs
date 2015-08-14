@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.ControlRoom.Modules.PortalUser {
+namespace GRA.SRP.ControlRoom.Modules.PortalUser {
     
     
     public partial class PasswordReset {

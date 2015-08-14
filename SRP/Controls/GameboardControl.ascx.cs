@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Controls
+namespace GRA.SRP.Controls
 {
     public partial class GameboardControl : System.Web.UI.UserControl
     {

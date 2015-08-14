@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class PatronPrizes : EntityBase
@@ -19,7 +19,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int myPPID;
         private int myPID;
@@ -275,17 +275,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PrizeSource", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeSource, o.PrizeSource.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@BadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@DrawingID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DrawingID, o.DrawingID.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@PrizeName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeName, o.PrizeName.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@RedeemedFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RedeemedFlag, o.RedeemedFlag.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@PPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PrizeSource", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeSource, o.PrizeSource.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@DrawingID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DrawingID, o.DrawingID.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@PrizeName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeName, o.PrizeName.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@RedeemedFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RedeemedFlag, o.RedeemedFlag.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@PPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
             arrParams[10].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_PatronPrizes_Insert", arrParams);
@@ -310,17 +310,17 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
-            arrParams[0] = new SqlParameter("@PPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@PID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@PrizeSource", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeSource, o.PrizeSource.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@BadgeID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@DrawingID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DrawingID, o.DrawingID.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@PrizeName", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeName, o.PrizeName.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@RedeemedFlag", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RedeemedFlag, o.RedeemedFlag.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@LastModDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@LastModUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AddedDate", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@AddedUser", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@PrizeSource", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeSource, o.PrizeSource.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@DrawingID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DrawingID, o.DrawingID.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@PrizeName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrizeName, o.PrizeName.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@RedeemedFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RedeemedFlag, o.RedeemedFlag.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
             try
             {
@@ -354,7 +354,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PPID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PPID, o.PPID.GetTypeCode()));
 
             try
             {

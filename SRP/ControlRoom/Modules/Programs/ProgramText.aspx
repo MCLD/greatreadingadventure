@@ -1,10 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
     AutoEventWireup="true" CodeBehind="ProgramText.aspx.cs" 
-    Inherits="STG.SRP.ControlRoom.Modules.Programs.ProgramText" 
+    Inherits="GRA.SRP.ControlRoom.Modules.Programs.ProgramText" 
     
     ValidateRequest="False"
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -38,7 +38,7 @@
 </table>  
     <asp:ObjectDataSource ID="odsProg" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Programs">
+        TypeName="GRA.SRP.DAL.Programs">
     </asp:ObjectDataSource>
     <hr />
     <asp:Panel ID="pnlEdit" runat="server" Visible="False">

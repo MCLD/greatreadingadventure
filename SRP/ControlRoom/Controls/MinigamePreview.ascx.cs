@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Controls
+namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class MinigamePreview : System.Web.UI.UserControl
     {

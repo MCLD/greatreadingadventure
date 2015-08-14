@@ -6,10 +6,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class GenericErrorPage : BaseControlRoomPage
     {

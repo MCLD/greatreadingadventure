@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Badge Gallery" Language="C#" AutoEventWireup="true" 
     MasterPageFile="~/Layout/SRP.Master" 
-    CodeBehind="BadgeGallery.aspx.cs" Inherits="STG.SRP.BadgeGallery" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+    CodeBehind="BadgeGallery.aspx.cs" Inherits="GRA.SRP.BadgeGallery" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register src="~/Controls/ProgramTabs.ascx" tagname="ProgramTabs" tagprefix="uc1" %>
 <%@ Register src="~/Controls/ProgramBanner.ascx" tagname="ProgramBanner" tagprefix="uc2" %>
 
@@ -112,7 +112,7 @@
 
 <asp:ObjectDataSource ID="odsBadges" runat="server" 
     SelectMethod="GetForGallery" 
-    TypeName="STG.SRP.DAL.Badge">
+    TypeName="GRA.SRP.DAL.Badge">
     <SelectParameters>
         <asp:ControlParameter ControlID="AgeGroupId" DefaultValue="0" Name="Age" PropertyName="SelectedValue" Type="Int32" />
         <asp:ControlParameter ControlID="BranchId" DefaultValue="0" Name="Branch" PropertyName="SelectedValue" Type="Int32" />
@@ -124,7 +124,7 @@
 
 <asp:ObjectDataSource ID="odsDDCat" runat="server" 
     SelectMethod="GetAlByTypeName" 
-    TypeName="STG.SRP.DAL.Codes">
+    TypeName="GRA.SRP.DAL.Codes">
     <SelectParameters>
         <asp:Parameter Name="Name" DefaultValue = "Badge Category" Type="String" />
     </SelectParameters>
@@ -132,7 +132,7 @@
 
 <asp:ObjectDataSource ID="odsDDAge" runat="server" 
     SelectMethod="GetAlByTypeName" 
-    TypeName="STG.SRP.DAL.Codes">
+    TypeName="GRA.SRP.DAL.Codes">
     <SelectParameters>
         <asp:Parameter Name="Name" DefaultValue = "Badge Age Group" Type="String" />
     </SelectParameters>
@@ -140,7 +140,7 @@
 
 <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
     SelectMethod="GetAlByTypeName" 
-    TypeName="STG.SRP.DAL.Codes">
+    TypeName="GRA.SRP.DAL.Codes">
     <SelectParameters>
         <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
     </SelectParameters>
@@ -148,7 +148,7 @@
 
 <asp:ObjectDataSource ID="odsDDLoc" runat="server" 
     SelectMethod="GetAlByTypeName" 
-    TypeName="STG.SRP.DAL.Codes">
+    TypeName="GRA.SRP.DAL.Codes">
     <SelectParameters>
         <asp:Parameter Name="Name" DefaultValue = "Badge Location" Type="String" />
     </SelectParameters>

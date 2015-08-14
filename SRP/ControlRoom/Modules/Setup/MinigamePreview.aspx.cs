@@ -2,11 +2,11 @@
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class MinigamePreview : BaseControlRoomPage
     {

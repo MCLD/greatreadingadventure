@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP {
+namespace GRA.SRP {
     
     
     public partial class ChangePassword {
@@ -19,7 +19,7 @@ namespace STG.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.ProgramTabs ProgramTabs1;
+        protected global::GRA.SRP.Classes.ProgramTabs ProgramTabs1;
         
         /// <summary>
         /// ChangePassword1 control.
@@ -28,7 +28,7 @@ namespace STG.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.ChangePassword ChangePassword1;
+        protected global::GRA.SRP.Classes.ChangePassword ChangePassword1;
         
         /// <summary>
         /// ProgramBanner1 control.
@@ -37,6 +37,6 @@ namespace STG.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::STG.SRP.Classes.ProgramBanner ProgramBanner1;
+        protected global::GRA.SRP.Classes.ProgramBanner ProgramBanner1;
     }
 }

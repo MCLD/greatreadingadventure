@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.DAL
+namespace GRA.SRP.DAL
 {
 
 [Serializable]    public class SQChoices : EntityBase
@@ -21,7 +21,7 @@ namespace STG.SRP.DAL
 
         #region Private Variables
 
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private int mySQCID;
         private int myQID = 0;
@@ -284,23 +284,23 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[17];
 
-            arrParams[0] = new SqlParameter("@QID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.QID, o.QID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@ChoiceOrder", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceOrder, o.ChoiceOrder.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ChoiceText", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceText, o.ChoiceText.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Score", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score, o.Score.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@JumpToQuestion", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.JumpToQuestion, o.JumpToQuestion.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@AskClarification", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AskClarification, o.AskClarification.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@ClarificationRequired", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ClarificationRequired, o.ClarificationRequired.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@SQCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@QID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.QID, o.QID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@ChoiceOrder", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceOrder, o.ChoiceOrder.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ChoiceText", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceText, o.ChoiceText.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Score", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score, o.Score.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@JumpToQuestion", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.JumpToQuestion, o.JumpToQuestion.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@AskClarification", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AskClarification, o.AskClarification.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@ClarificationRequired", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ClarificationRequired, o.ClarificationRequired.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@SQCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
             arrParams[16].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_SQChoices_Insert", arrParams);
@@ -325,23 +325,23 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[17];
 
-            arrParams[0] = new SqlParameter("@SQCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@QID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.QID, o.QID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@ChoiceOrder", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceOrder, o.ChoiceOrder.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@ChoiceText", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceText, o.ChoiceText.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Score", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score, o.Score.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@JumpToQuestion", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.JumpToQuestion, o.JumpToQuestion.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@AskClarification", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AskClarification, o.AskClarification.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ClarificationRequired", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ClarificationRequired, o.ClarificationRequired.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FldInt1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FldInt2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldInt3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldBit1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldBit2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldBit3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldText1", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldText2", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldText3", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@SQCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@QID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.QID, o.QID.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@ChoiceOrder", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceOrder, o.ChoiceOrder.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@ChoiceText", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ChoiceText, o.ChoiceText.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Score", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score, o.Score.GetTypeCode()));
+            arrParams[5] = new SqlParameter("@JumpToQuestion", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.JumpToQuestion, o.JumpToQuestion.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@AskClarification", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AskClarification, o.AskClarification.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@ClarificationRequired", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ClarificationRequired, o.ClarificationRequired.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
             try
             {
@@ -375,7 +375,7 @@ namespace STG.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@SQCID", STG.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@SQCID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SQCID, o.SQCID.GetTypeCode()));
 
             try
             {

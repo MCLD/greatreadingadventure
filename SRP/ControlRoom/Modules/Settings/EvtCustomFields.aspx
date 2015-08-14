@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="EvtCustomFields.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.EvtCustomFields" 
+    AutoEventWireup="true" CodeBehind="EvtCustomFields.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.EvtCustomFields" 
     
 %>
 
@@ -229,12 +229,12 @@
     <asp:Label ID="lblPK" runat="server" Text="1" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.CustomEventFields">
+        TypeName="GRA.SRP.DAL.CustomEventFields">
 	</asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDCodeTypes" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.CodeType">
+        TypeName="GRA.SRP.DAL.CodeType">
     </asp:ObjectDataSource>
 
 </asp:Content>

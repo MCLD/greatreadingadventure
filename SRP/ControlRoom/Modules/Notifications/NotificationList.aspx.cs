@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRoom.Modules.Patrons;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRoom.Modules.Patrons;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
 
-namespace STG.SRP.ControlRoom.Modules.Notifications
+namespace GRA.SRP.ControlRoom.Modules.Notifications
 {
     public partial class NotificationList : BaseControlRoomPage
     {

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
     public partial class ProgramTabs : System.Web.UI.UserControl
     {

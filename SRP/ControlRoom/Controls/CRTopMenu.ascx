@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CRTopMenu.ascx.cs" Inherits="STG.SRP.ControlRoom.CRTopMenu" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CRTopMenu.ascx.cs" Inherits="GRA.SRP.ControlRoom.CRTopMenu" %>
 
 <script>
 <!--

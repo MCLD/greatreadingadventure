@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.Tenant
+namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
     public partial class TenantList : BaseControlRoomPage
     {
@@ -112,14 +112,14 @@ namespace STG.SRP.ControlRoom.Modules.Tenant
                 var key = Convert.ToInt32(e.CommandArgument);
                 try
                 {
-                    var obj = new STG.SRP.Core.Utilities.Tenant();
+                    var obj = new GRA.SRP.Core.Utilities.Tenant();
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
-                        var t = STG.SRP.Core.Utilities.Tenant.FetchObject(key);
+                        var t = GRA.SRP.Core.Utilities.Tenant.FetchObject(key);
                         t.isActiveFlag = false;
                         t.Update();
                             
-                        //STG.SRP.Core.Utilities.Tenant.FetchObject(key).Delete();
+                        //GRA.SRP.Core.Utilities.Tenant.FetchObject(key).Delete();
 
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;

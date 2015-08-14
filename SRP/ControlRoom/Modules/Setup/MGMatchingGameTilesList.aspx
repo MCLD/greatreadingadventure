@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGMatchingGameTilesList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGMatchingGameTilesList" 
+    AutoEventWireup="true" CodeBehind="MGMatchingGameTilesList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGMatchingGameTilesList" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -17,7 +17,7 @@
 
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.MGMatchingGameTiles">
+        TypeName="GRA.SRP.DAL.MGMatchingGameTiles">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblMGID" Name="MGID" DefaultValue="0"
                 PropertyName="Text" Type="Int32" />

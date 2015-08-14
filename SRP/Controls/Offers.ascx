@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Offers.ascx.cs" Inherits="STG.SRP.Controls.Offers" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Offers.ascx.cs" Inherits="GRA.SRP.Controls.Offers" %>
 
 <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
 </asp:ScriptManager>

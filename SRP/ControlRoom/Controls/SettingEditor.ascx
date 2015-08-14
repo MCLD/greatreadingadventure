@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SettingEditor.ascx.cs" Inherits="STG.SRP.ControlRoom.Controls.SettingEditor" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SettingEditor.ascx.cs" Inherits="GRA.SRP.ControlRoom.Controls.SettingEditor" %>
 <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit" %>
 

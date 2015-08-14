@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Programs.Default" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Programs.Default" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">

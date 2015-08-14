@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
     public partial class PublicProgramView : System.Web.UI.UserControl
     {

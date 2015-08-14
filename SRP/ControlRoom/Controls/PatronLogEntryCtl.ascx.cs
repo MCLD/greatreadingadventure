@@ -6,14 +6,14 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Controls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
-using Minigame = STG.SRP.DAL.Minigame;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Controls;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
+using Minigame = GRA.SRP.DAL.Minigame;
 
-namespace STG.SRP.ControlRoom.Controls
+namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class PatronLogEntryCtl : System.Web.UI.UserControl
     {

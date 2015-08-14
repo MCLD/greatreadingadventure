@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
-using STG.SRP.Utilities.CoreClasses;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace STG.SRP.ControlRoom.Modules.Tenant
+namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
     public partial class MyTenantAccount : BaseControlRoomPage
     {
@@ -34,7 +34,7 @@ namespace STG.SRP.ControlRoom.Modules.Tenant
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
-                //var control = (STG.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
+                //var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 //if (control!=null) control.ProcessRender();
             }
         }
@@ -73,7 +73,7 @@ namespace STG.SRP.ControlRoom.Modules.Tenant
             {
                 try
                 {
-                    var obj = new STG.SRP.Core.Utilities.Tenant();
+                    var obj = new GRA.SRP.Core.Utilities.Tenant();
                     int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 

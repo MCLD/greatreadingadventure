@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 
-namespace STG.SRP.Core.Utilities
+namespace GRA.SRP.Core.Utilities
 {
     public enum AppSettings
     {

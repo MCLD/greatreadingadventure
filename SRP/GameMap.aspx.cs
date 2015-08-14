@@ -6,10 +6,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 using Image = System.Drawing.Image;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
     public partial class GameMap : System.Web.UI.Page
     {

@@ -6,18 +6,18 @@ using System.Web;
 using System.Web.UI.WebControls;
 using Microsoft.ApplicationBlocks.Data;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Controls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Controls;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.ControlRoom.Modules.Setup
+namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class AwardList : BaseControlRoomPage
     {
         private String _mStrSortExp;
         private SortDirection _mSortDirection = SortDirection.Ascending;
-        private static string conn = STG.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         protected void Page_Load(object sender, EventArgs e)
         {

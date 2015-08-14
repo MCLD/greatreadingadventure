@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
-    CodeBehind="MGCodeBreakerKeySetup.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGCodeBreakerKeySetup" 
+    CodeBehind="MGCodeBreakerKeySetup.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGCodeBreakerKeySetup" 
     
 %>
 

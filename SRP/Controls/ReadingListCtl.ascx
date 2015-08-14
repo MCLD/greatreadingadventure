@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ReadingListCtl.ascx.cs" Inherits="STG.SRP.Controls.ReadingListCtl" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ReadingListCtl.ascx.cs" Inherits="GRA.SRP.Controls.ReadingListCtl" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
 

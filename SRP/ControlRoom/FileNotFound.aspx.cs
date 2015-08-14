@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class FileNotFound : BaseControlRoomPage
     {

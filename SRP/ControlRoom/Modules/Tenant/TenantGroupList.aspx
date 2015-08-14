@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" 
-	CodeBehind="TenantGroupList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Tenant.TenantGroupList" 
+	CodeBehind="TenantGroupList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Tenant.TenantGroupList" 
 %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
@@ -19,7 +19,7 @@
         <hr />
   <asp:ObjectDataSource ID="odsDDTen" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.Core.Utilities.Tenant">
+        TypeName="GRA.SRP.Core.Utilities.Tenant">
    </asp:ObjectDataSource>
 
     <asp:GridView ID="gv" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False"

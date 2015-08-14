@@ -4,11 +4,11 @@ using System.Data;
 using System.Web.UI.WebControls;
 using SRP_DAL;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.Security
+namespace GRA.SRP.ControlRoom.Modules.Security
 {
     public partial class GroupsAddEdit : BaseControlRoomPage
 	{

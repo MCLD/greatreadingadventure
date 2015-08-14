@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.Core.Utilities;
+using GRA.SRP.Core.Utilities;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class CRTopMenu : System.Web.UI.UserControl
     {

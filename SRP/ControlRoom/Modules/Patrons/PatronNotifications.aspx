@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="PatronNotifications.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronNotifications" 
+    AutoEventWireup="true" CodeBehind="PatronNotifications.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronNotifications" 
     
 %>
 
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <%@ Register src="~/ControlRoom/Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 
@@ -12,7 +12,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAllToPatron" 
-        TypeName="STG.SRP.DAL.Notifications">
+        TypeName="GRA.SRP.DAL.Notifications">
         <SelectParameters>
             <asp:SessionParameter DefaultValue="0" Name="PID" SessionField="CURR_PATRON_ID" 
                 Type="Int32" />

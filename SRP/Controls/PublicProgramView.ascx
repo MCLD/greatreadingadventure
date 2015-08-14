@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PublicProgramView.ascx.cs" Inherits="STG.SRP.Classes.PublicProgramView" %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PublicProgramView.ascx.cs" Inherits="GRA.SRP.Classes.PublicProgramView" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
             <div class="row"> 
                 <div class="span12"> 
                     <h1 class="title-divider" style="text-align: center;">

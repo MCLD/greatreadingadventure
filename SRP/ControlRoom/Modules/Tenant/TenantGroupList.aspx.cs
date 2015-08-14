@@ -5,12 +5,12 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using SRP_DAL;
 using SRPApp.Classes;
-using STG.SRP.ControlRooms;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.ControlRooms;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
 
-namespace STG.SRP.ControlRoom.Modules.Tenant
+namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
 
     public partial class TenantGroupList : BaseControlRoomPage

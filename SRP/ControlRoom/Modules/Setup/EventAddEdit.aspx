@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/AJAX.Master" 
-    AutoEventWireup="true" CodeBehind="EventAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.EventAddEdit" 
+    AutoEventWireup="true" CodeBehind="EventAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.EventAddEdit" 
     
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
     <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
     <%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 
@@ -449,7 +449,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.Event">
+        TypeName="GRA.SRP.DAL.Event">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="EID" 
                 PropertyName="Text" Type="Int32" />
@@ -460,7 +460,7 @@
 
     <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
         </SelectParameters>
@@ -468,7 +468,7 @@
 
     <asp:ObjectDataSource ID="odsBadge" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Badge">
+        TypeName="GRA.SRP.DAL.Badge">
     </asp:ObjectDataSource>
     
 </asp:Content>

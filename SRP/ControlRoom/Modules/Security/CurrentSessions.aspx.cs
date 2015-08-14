@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.Security
+namespace GRA.SRP.ControlRoom.Modules.Security
 {
     public partial class CurrentSessions : BaseControlRoomPage
     {
@@ -100,7 +100,7 @@ namespace STG.SRP.ControlRoom.Modules.Security
             {
                 if (String.Empty != _mStrSortExp)
                 {
-                    STG.SRP.Core.Utilities.GlobalUtilities.AddSortImage(e.Row, (GridView)sender, _mStrSortExp, _mSortDirection);
+                    GRA.SRP.Core.Utilities.GlobalUtilities.AddSortImage(e.Row, (GridView)sender, _mStrSortExp, _mSortDirection);
                 }
             }
         }

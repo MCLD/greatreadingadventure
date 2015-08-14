@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.IO;
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
     public partial class ProgramBanner : System.Web.UI.UserControl
     {

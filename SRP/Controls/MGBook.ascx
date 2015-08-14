@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGBook.ascx.cs" Inherits="STG.SRP.Controls.MGBook" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGBook.ascx.cs" Inherits="GRA.SRP.Controls.MGBook" %>
 
 <div class="row" style="min-height: 400px;">
 	<div class="span2">

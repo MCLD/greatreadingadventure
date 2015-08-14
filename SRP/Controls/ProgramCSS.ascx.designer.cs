@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
 
 

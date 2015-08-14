@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace STG.SRP.Layout {
+namespace GRA.SRP.Layout {
     
     
     public partial class TSelection {

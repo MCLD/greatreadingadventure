@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyResults.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyResults" 
+    AutoEventWireup="true" CodeBehind="SurveyResults.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyResults" 
 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <%@ Register src="../../Controls/SurveyAnswerStatsCtl.ascx" tagname="SurveyAnswerStatsCtl" tagprefix="uc1" %>
@@ -106,12 +106,12 @@
 
 	<asp:ObjectDataSource ID="odsDDSurveys" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.Survey">
+        TypeName="GRA.SRP.DAL.Survey">
 	</asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>

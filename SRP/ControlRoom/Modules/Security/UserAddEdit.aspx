@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="UserAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Security.UserAddEdit" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="UserAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Security.UserAddEdit" 
 
 %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -260,7 +260,7 @@
     <tr>
         <td valign="top">
             <asp:ObjectDataSource ID="odsUserGroups" runat="server" 
-                SelectMethod="GetGroupList" TypeName="STG.SRP.Core.Utilities.SRPUser">
+                SelectMethod="GetGroupList" TypeName="GRA.SRP.Core.Utilities.SRPUser">
                 <SelectParameters>
                     <asp:ControlParameter ControlID="lblUID" DefaultValue="0" Name="UID" 
                         PropertyName="Text" Type="Int32" />
@@ -384,7 +384,7 @@
 
     <asp:Label ID="lblUID" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsSRPUser" runat="server" 
-        SelectMethod="Fetch" TypeName="STG.SRP.Core.Utilities.SRPUser">
+        SelectMethod="Fetch" TypeName="GRA.SRP.Core.Utilities.SRPUser">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblUID" Name="pUid" 
                 PropertyName="Text" Type="Int32" />

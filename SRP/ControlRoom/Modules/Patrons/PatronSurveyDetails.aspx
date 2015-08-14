@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="PatronSurveyDetails.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Patrons.PatronSurveyDetails" 
+    AutoEventWireup="true" CodeBehind="PatronSurveyDetails.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Patrons.PatronSurveyDetails" 
     
 %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../../Controls/PatronContext.ascx" tagname="PatronContext" tagprefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>

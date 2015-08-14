@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using STG.SRP.Core.Utilities;
-using STG.SRP.DAL;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.DAL;
 
-namespace STG.SRP.Classes
+namespace GRA.SRP.Classes
 {
     public partial class RecoverPassword : System.Web.UI.UserControl
     {

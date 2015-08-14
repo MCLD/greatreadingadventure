@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace STG.SRP.ControlRoom
+namespace GRA.SRP.ControlRoom
 {
     public partial class ControlRoomMenu : System.Web.UI.UserControl
     {

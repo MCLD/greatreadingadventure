@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using STG.SRP.Core.Utilities;
-using STG.SRP.Utilities;
+using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities;
 
-namespace STG.SRP.ControlRoom.Modules.Tenant
+namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
     public partial class TenantUserAddEdit : BaseControlRoomPage
     {

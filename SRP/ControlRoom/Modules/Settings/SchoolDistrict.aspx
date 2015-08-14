@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="SchoolDistrict.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Settings.SchoolDistrict" 
+    AutoEventWireup="true" CodeBehind="SchoolDistrict.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Settings.SchoolDistrict" 
     
 %>
 
@@ -15,7 +15,7 @@
 
     <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.SchoolCrosswalk">
+        TypeName="GRA.SRP.DAL.SchoolCrosswalk">
 
     </asp:ObjectDataSource>
 
@@ -283,7 +283,7 @@
 
    <asp:ObjectDataSource ID="odsDDDistrict" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School District" Type="String" />
         </SelectParameters>
@@ -292,7 +292,7 @@
     
    <asp:ObjectDataSource ID="odsDDSchool" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School" Type="String" />
         </SelectParameters>
@@ -300,7 +300,7 @@
 
    <asp:ObjectDataSource ID="odsDDSchoolType" runat="server" 
         SelectMethod="GetAlByTypeName" 
-        TypeName="STG.SRP.DAL.Codes">
+        TypeName="GRA.SRP.DAL.Codes">
         <SelectParameters>
             <asp:Parameter Name="Name" DefaultValue = "School Type" Type="String" />
         </SelectParameters>

@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="MGChooseAdvSlidesAddEdit.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.MGChooseAdvSlidesAddEdit" 
+    AutoEventWireup="true" CodeBehind="MGChooseAdvSlidesAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGChooseAdvSlidesAddEdit" 
     
 %>
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl_1" Src="~/Controls/FileUploadCtl.ascx" %>
@@ -289,7 +289,7 @@
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="FetchObject" 
-        TypeName="STG.SRP.DAL.MGChooseAdvSlides">
+        TypeName="GRA.SRP.DAL.MGChooseAdvSlides">
         <SelectParameters>
             <asp:ControlParameter ControlID="lblPK" Name="CASID" 
                 PropertyName="Text" Type="Int32" />

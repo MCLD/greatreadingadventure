@@ -1,9 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
-    AutoEventWireup="true" CodeBehind="SurveyQuestionList.aspx.cs" Inherits="STG.SRP.ControlRoom.Modules.Setup.SurveyQuestionList" 
+    AutoEventWireup="true" CodeBehind="SurveyQuestionList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.SurveyQuestionList" 
 
 %>
-<%@ Import Namespace="STG.SRP.DAL" %>
-<%@ Import Namespace="STG.SRP.Utilities.CoreClasses" %>
+<%@ Import Namespace="GRA.SRP.DAL" %>
+<%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,7 +12,7 @@
     <asp:Label ID="SID" runat="server" Text="" Visible="False"></asp:Label>
 	<asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 
-        TypeName="STG.SRP.DAL.SurveyQuestion">
+        TypeName="GRA.SRP.DAL.SurveyQuestion">
         <SelectParameters>
             <asp:ControlParameter ControlID="SID" Name="SID" 
                 PropertyName="Text" Type="Int32" />

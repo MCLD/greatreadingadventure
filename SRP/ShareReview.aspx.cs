@@ -1,8 +1,8 @@
 ﻿using System;
 using SRPApp.Classes;
-using STG.SRP.DAL;
+using GRA.SRP.DAL;
 
-namespace STG.SRP
+namespace GRA.SRP
 {
     public partial class ShareReview : BaseSRPPage
     {
