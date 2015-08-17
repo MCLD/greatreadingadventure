@@ -103,8 +103,14 @@ namespace GRA.SRP.ControlRoom {
                 string existsQuery = string.Format("SELECT [database_id] FROM [sys].[databases] "
                                                    + "WHERE [Name] = '{0}'",
                                                    dbName);
-
-                var result = SqlHelper.ExecuteScalar(localDbCs, CommandType.Text, existsQuery);
+                object result = null;
+                try {
+                    result = SqlHelper.ExecuteScalar(localDbCs, CommandType.Text, existsQuery);
+                } catch (Exception ex) {
+                    FailureText.Text = "There was an error when trying to connect to LocalDb";
+                    errorLabel.Text = ex.Message;
+                    return;
+                }
 
                 if (result == null) {
                     string createDb = string.Format("CREATE DATABASE [{0}]", dbName);
