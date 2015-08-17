@@ -36,6 +36,15 @@ namespace GRA.SRP
                 ddTenants.DataTextField = "LandingName";
                 ddTenants.DataSource = ds;
                 ddTenants.DataBind();
+
+                // if there are no subtenants then we'll go directly to the master tenant
+                if (ddTenants.Items.Count == 1 && string.IsNullOrEmpty(ddTenants.Items[0].Value)) {
+                    Session["TenantID"] = TenID;
+                    var tenant = Tenant.FetchObject(TenID);
+                    Session["Tenant"] = tenant;
+                    Session["IsMasterTenant"] = tenant.isMasterFlag;
+                    Response.Redirect("~/Default.aspx");
+                }
             }
             TranslateStrings(this);
         }
