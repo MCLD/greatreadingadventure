@@ -1,7 +1,7 @@
-greatreadingadventure
-=====================
+The Great Reading Adventure
+===========================
 
-Open source tool for managing dynamic library reading programs.  
+The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share.
 
 Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview.
 
