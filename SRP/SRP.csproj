@@ -438,6 +438,8 @@
     <Content Include="ckeditor\skins\v2\skin.js" />
     <Content Include="ckeditor\skins\v2\templates.css" />
     <Content Include="ckeditor\themes\default\theme.js" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
     <Content Include="ControlRoom\AJAX.master" />
     <Content Include="ControlRoom\Control.Master" />
     <Content Include="ControlRoom\Controls\CRMenu.ascx" />
@@ -770,6 +772,7 @@
     <Content Include="FamilyAccountList.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="FramedSurvey.aspx" />
     <Content Include="GameMap.aspx" />
     <Content Include="images\arrow-left.png" />
@@ -869,6 +872,10 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Layout\TSelection.Master" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\*.pubxml" />
   </ItemGroup>
   <ItemGroup>
@@ -2555,10 +2562,6 @@
     <None Include="ControlRoom\font\fontawesome-webfont.ttf" />
     <None Include="ControlRoom\font\fontawesome-webfont.woff" />
     <Content Include="ControlRoom\Reports.Master" />
-    <None Include="CSS\font\fontawesome-webfont.eot" />
-    <None Include="CSS\font\fontawesome-webfont.eot-v=3.0.1" />
-    <None Include="CSS\font\fontawesome-webfont.ttf" />
-    <None Include="CSS\font\fontawesome-webfont.woff" />
     <Content Include="Layout\SRP.Master" />
   </ItemGroup>
   <ItemGroup>
