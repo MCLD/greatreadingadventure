@@ -608,10 +608,9 @@
     <Content Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\TemplateList.aspx" />
-    <Content Include="ControlRoom\Modules\Install\InstallScript.config">
+    <Content Include="ControlRoom\Modules\Install\InstallScript.sql">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="ControlRoom\Modules\Install\SQL.config" />
     <Content Include="ControlRoom\Modules\Notifications\Default.aspx" />
     <Content Include="ControlRoom\Modules\Notifications\NotificationList.aspx" />
     <Content Include="ControlRoom\Modules\Notifications\QuestionView.aspx" />
