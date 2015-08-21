@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP {
+namespace GRA.SRP.ControlRoom {
     
     
     public partial class ControlRoomMenu {

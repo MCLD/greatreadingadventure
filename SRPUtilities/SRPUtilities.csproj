@@ -66,7 +66,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Controls\CRRibbon.ascx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -76,28 +75,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\CRRibbon.ascx.cs">
-      <DependentUpon>CRRibbon.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\CRRibbon.ascx.designer.cs">
-      <DependentUpon>CRRibbon.ascx</DependentUpon>
-    </Compile>
     <Compile Include="CoreClasses\Application\StringResources.cs" />
     <Compile Include="CoreClasses\AppSettings.cs" />
     <Compile Include="CoreClasses\Application\BaseSRPMaster.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CoreClasses\Application\BaseSRPPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CoreClasses\ControlRoom\SRPTopMenuItem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreClasses\ControlRoom\BaseControlRoomMaster.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CoreClasses\ControlRoom\BaseControlRoomPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CoreClasses\BusinessRulesValidationCode.cs" />
@@ -109,13 +92,9 @@
     <Compile Include="CoreClasses\DataValidation.cs" />
     <Compile Include="CoreClasses\FormatHelper.cs" />
     <Compile Include="CoreClasses\GlobalUtilities.cs" />
-    <Compile Include="CoreClasses\ControlRoom\ControlRoomAccessPermission.cs" />
     <Compile Include="CoreClasses\EntityBase.cs" />
-    <Compile Include="CoreClasses\ControlRoom\IControlRoomMaster.cs" />
-    <Compile Include="CoreClasses\ControlRoom\RibbonLink.cs" />
     <Compile Include="CoreClasses\PageServices.cs" />
     <Compile Include="CoreClasses\SessionData.cs" />
-    <Compile Include="CoreClasses\ControlRoom\StandardModuleRibbons.cs" />
     <Compile Include="CoreClasses\SRPPermission.cs" />
     <Compile Include="CoreClasses\WebHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
