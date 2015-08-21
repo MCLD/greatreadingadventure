@@ -14,8 +14,6 @@ By default, GRA is configured to use LocalDB as a database for development and t
 
 If you have any trouble getting the package to build, please submit an [issue](https://github.com/MCLD/greatreadingadventure/issues/new) with details.
 
-**Note**: At the moment - when using the Visual Studio deployment (i.e. right-clicking on the SRP project to get the "Publish Web" dialog) - the project file `SRPUtilities/Controls/CRRibbon.ascx` must be manually copied to the `ControlRoom/Controls` directory on the deployed site.
-
 ## License
 
 The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT). For other included packages and those fetched by NuGet, please see the LICENSE file in the project.

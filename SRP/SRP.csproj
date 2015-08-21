@@ -443,6 +443,7 @@
     <Content Include="ControlRoom\AJAX.master" />
     <Content Include="ControlRoom\Control.Master" />
     <Content Include="ControlRoom\Controls\CRMenu.ascx" />
+    <Content Include="ControlRoom\Controls\CRRibbon.ascx" />
     <Content Include="ControlRoom\Controls\CRTopMenu.ascx" />
     <Content Include="ControlRoom\Controls\EvtCustFldCtl.ascx" />
     <Content Include="ControlRoom\Controls\MinigamePreview.ascx" />
@@ -948,6 +949,17 @@
     <Compile Include="ChangePassword.aspx.designer.cs">
       <DependentUpon>ChangePassword.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Code\ControlRoom\BaseControlRoomMaster.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Code\ControlRoom\BaseControlRoomPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Code\ControlRoom\ControlRoomAccessPermission.cs" />
+    <Compile Include="Code\ControlRoom\IControlRoomMaster.cs" />
+    <Compile Include="Code\ControlRoom\RibbonLink.cs" />
+    <Compile Include="Code\ControlRoom\SRPTopMenuItem.cs" />
+    <Compile Include="Code\ControlRoom\StandardModuleRibbons.cs" />
     <Compile Include="ControlRoom\AJAX.master.cs">
       <DependentUpon>AJAX.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -968,6 +980,13 @@
     </Compile>
     <Compile Include="ControlRoom\Controls\CRMenu.ascx.designer.cs">
       <DependentUpon>CRMenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRRibbon.ascx.cs">
+      <DependentUpon>CRRibbon.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Controls\CRRibbon.ascx.designer.cs">
+      <DependentUpon>CRRibbon.ascx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Controls\CRTopMenu.ascx.cs">
       <DependentUpon>CRTopMenu.ascx</DependentUpon>
