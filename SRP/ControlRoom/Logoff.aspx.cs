@@ -15,11 +15,6 @@ namespace GRA.SRP.ControlRoom
         {
             try
             {
-                STGOnlyUtilities.LogoffPatron(((Patron)Session["Patron"]).PID);
-            }
-            catch {}
-            try
-            {
                 SRPUser u = (SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()];
                 if (u != null) u.Logoff();
             }

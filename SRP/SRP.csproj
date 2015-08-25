@@ -782,7 +782,6 @@
     <Content Include="CSS\font-awesome.min.css" />
     <Content Include="CSS\Program\1.css" />
     <Content Include="CSS\Program\2.css" />
-    <Content Include="CSS\Program\3.css" />
     <Content Include="CSS\Program\Default.css" />
     <Content Include="CSS\responsive.css" />
     <Content Include="CSS\theme-style.css" />
@@ -895,6 +894,10 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="CSS\font\fontawesome-webfont.eot" />
+    <Content Include="CSS\font\fontawesome-webfont.eot-v=3.0.1" />
+    <Content Include="CSS\font\fontawesome-webfont.ttf" />
+    <Content Include="CSS\font\fontawesome-webfont.woff" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

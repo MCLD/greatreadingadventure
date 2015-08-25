@@ -11,17 +11,7 @@ namespace GRA.SRP
 {
     public class STGOnlyUtilities
     {
-         
         public static string PasswordStrengthRE() { return "(?=^.{7,}$)(?=.*\\d)(?=.*[a-zA-Z]+)(?![.\\n]).*$"; }
         public static string PasswordStrengthError() { return "New Password must be at least seven characters in length and contain one alpha and one numeric character.<br/>"; }
-         
-        public static void LogoffPatron(int PID)
-        {
-           //????  
-        }
-
-
-        
-
     }
 }
