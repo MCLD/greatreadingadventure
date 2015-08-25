@@ -28,7 +28,7 @@ namespace GRA.SRP.ControlRoom
             IControlRoomMaster masterPage = (IControlRoomMaster)Master;
             //masterPage.PageRibbon.DataBind();
 
-            masterPage.PageTitle = "STG Summer Reading Program - Control Room<BR> &nbsp;Access Permission Error";
+            masterPage.PageTitle = "Great Reading Adventure - Control Room<BR> &nbsp;Access Permission Error";
             masterPage.PageError = "You do not have permission for the screen, feature or function you were trying to access.";
             masterPage.DisplayMessageOnLoad = true;
         }

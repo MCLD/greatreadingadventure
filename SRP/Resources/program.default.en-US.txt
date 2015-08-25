@@ -2,18 +2,18 @@
 ;;  Header Text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 About_Us_hidden_header=About Us
-About_Us_Short_Text=<b>READsquared</b> is the turn-key cloud implementation of the highly successful Summer Reads program pioneered by a group of over 70 libraries in Arizona and is the affordable choice for libraries of any size and any budget.
+About_Us_Short_Text=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> is a robust, open-source software designed to manage library reading programs.
 Contact_Us_hidden_header=Contact Us
-Contact_Us_hidden_header_Phone= (602) 234-3138
-Contact_Us_hidden_header_Email= info@stglink.com
-Contact_Us_hidden_header_Address= 2828 N. Central Ave, Phoenix, AZ 85004
+Contact_Us_hidden_header_Phone= (602) 652-3000
+Contact_Us_hidden_header_Email= <a href="mailto:info@greatreadingadventure.com">info@greatreadingadventure.com</a>
+Contact_Us_hidden_header_Address= 2700 N. Central Ave, Ste 700, Phoenix, AZ 85004
 Info_hidden_header=More Information
-Info_hidden_header_Short_Text=READsquared is a summer literacy program designed to keep people of all ages engaged in reading, learning, and exploring all summer long! Create in minutes a complex summer reading program with educational games, challenges and more!
-System_Name=READ</span>squared<span> 
-Slogan=Reading - Games - Prizes - Learning
-Upsell=Some rights reserved by their respective holders.  Call us for more details.
+Info_hidden_header_Short_Text=Run a reading program for any-size library district with literacy testing, digital badges, and comprehensive reporting using this free software package. <a href="http://www.greatreadingadventure.com/" target="_blank">See the Web site</a> for more details.
+System_Name=Great Reading Adventure 
+Slogan=Reimagining Summer Reading
+Upsell=All of what you are seeing can be easily customized to match your library!
 Back To Top=Back To Top
-Copyright_Statement=Copyright (c) 2013-2015 <a href="http://http://208.109.88.88/" target=_blank>Systems Technology Group, Inc.</a>
+Copyright_Statement=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Global text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,9 +29,9 @@ Button=Press Me!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoginForm Title=Login
 LoginForm no account=Don't have an account?  
-LoginForm register=<b>Register now ...</b>
+LoginForm register=<b>Register now...</b>
 LoginForm forgot pass=Did you forget your password?
-LoginForm recover=<b>Get it by email ...</b>
+LoginForm recover=<b>Get it by email...</b>
 LoginForm username=Username:
 LoginForm password=Password:
 LoginForm terms=I accept the terms and conditions
@@ -41,9 +41,9 @@ LoginForm button=Login
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 RecoverForm Title=Forgot Password
 RecoverForm no account=Don't have an account?  
-RecoverForm register=<b>Register now ...</b>
+RecoverForm register=<b>Register now...</b>
 RecoverForm go login=Did you just remember your password?
-RecoverForm login=<b>Login now ...</b>
+RecoverForm login=<b>Login now...</b>
 RecoverForm email=Username:
 RecoverForm button=Email Password
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
