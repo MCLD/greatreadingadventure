@@ -8,45 +8,42 @@ using GRA.SRP;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 
-namespace SRP
-{
-    public class Global : System.Web.HttpApplication
-    {
+namespace SRP {
+    public class Global : System.Web.HttpApplication {
 
-        void Application_Start(object sender, EventArgs e)
-        {
+        void Application_Start(object sender, EventArgs e) {
             // Code that runs on application startup
-            try {SRPUser.LogoffAll();}catch{}
+            try {
+                SRPUser.LogoffAll();
+            } catch {
+            }
+            LoggingExtensions.Logging.Log.InitializeWith<LoggingExtensions.NLog.NLogLog>();
         }
 
-        void Application_End(object sender, EventArgs e)
-        {
+        void Application_End(object sender, EventArgs e) {
             //  Code that runs on application shutdown
-            try { SRPUser.LogoffAll(); }
-            catch { }
+            try {
+                SRPUser.LogoffAll();
+            } catch {
+            }
         }
 
-        void Application_Error(object sender, EventArgs e)
-        {
+        void Application_Error(object sender, EventArgs e) {
             // Code that runs when an unhandled error occurs
 
         }
 
-        void Session_Start(object sender, EventArgs e)
-        {
+        void Session_Start(object sender, EventArgs e) {
             // Code that runs when a new session is started
 
         }
 
-        void Session_End(object sender, EventArgs e)
-        {
-            if(Session[SessionData.UserProfile.ToString()] != null)
-            {
-                SRPUser.Logoff(((SRPUser) Session[SessionData.UserProfile.ToString()]).Uid);
+        void Session_End(object sender, EventArgs e) {
+            if(Session[SessionData.UserProfile.ToString()] != null) {
+                SRPUser.Logoff(((SRPUser)Session[SessionData.UserProfile.ToString()]).Uid);
             }
 
-            if (Session["Patron"] != null)
-            {
+            if(Session["Patron"] != null) {
                 STGOnlyUtilities.LogoffPatron(((Patron)Session["Patron"]).PID);
             }
             // Code that runs when a session ends. 
