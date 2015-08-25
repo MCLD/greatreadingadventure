@@ -24,6 +24,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -455,7 +456,9 @@
     <Content Include="ControlRoom\Controls\QuestionPreview.ascx" />
     <Content Include="ControlRoom\Controls\SettingEditor.ascx" />
     <Content Include="ControlRoom\Controls\SurveyAnswerStatsCtl.ascx" />
+    <Content Include="ControlRoom\Images\BookCoverNotFound.jpg" />
     <Content Include="ControlRoom\Images\Clone.png" />
+    <Content Include="ControlRoom\Images\EmbedTestRecipe.png" />
     <Content Include="ControlRoom\Images\exam.png" />
     <Content Include="ControlRoom\Images\Key_E.png" />
     <Content Include="ControlRoom\Images\Key_H.png" />
