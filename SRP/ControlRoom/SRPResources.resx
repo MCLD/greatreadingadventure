@@ -127,13 +127,13 @@
     <value>Invalid User Name or Password</value>
   </data>
   <data name="CopyrightEntity" xml:space="preserve">
-    <value> - Built by Systems Technology Group, Inc.</value>
+    <value> - Built by Systems Technology Group, Inc.&lt;br&gt;The Great Reading Adventure is licensed under &lt;a href="https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/LICENSE" target="_blank"&gt;The MIT License&lt;/a&gt;.</value>
   </data>
   <data name="CopyrightYear" xml:space="preserve">
     <value>2013-2014</value>
   </data>
   <data name="CRTitle" xml:space="preserve">
-    <value>Summer Reading Program - Control Room</value>
+    <value>Great Reading Adventure - Control Room</value>
   </data>
   <data name="DeleteOK" xml:space="preserve">
     <value>Record deleted successfully.</value>
@@ -157,7 +157,7 @@
     <value>Great Reading Adventure Control Room</value>
   </data>
   <data name="ProductVersion" xml:space="preserve">
-    <value>2.00</value>
+    <value>2.2.1</value>
   </data>
   <data name="RefreshAllOK" xml:space="preserve">
     <value>Records refreshed from database successfully.</value>

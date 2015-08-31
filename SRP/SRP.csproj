@@ -797,7 +797,9 @@
     <Content Include="images\arrow-right.png" />
     <Content Include="images\arrows.png" />
     <Content Include="images\Audit.png" />
+    <Content Include="images\Avatars\avatars-placeholder.txt" />
     <Content Include="images\Badges\badges-placeholder.txt" />
+    <Content Include="images\Banners\banners-placeholder.txt" />
     <Content Include="images\bg-sequence.jpg" />
     <Content Include="images\bg\brushed_alu.png" />
     <Content Include="images\bg\crisp_paper_ruffles.png" />
@@ -828,6 +830,14 @@
     <Content Include="images\fancybox_buttons.png" />
     <Content Include="images\fancybox_loading.gif" />
     <Content Include="images\fancybox_sprite.png" />
+    <Content Include="images\Games\Board\games-board-placeholder.txt" />
+    <Content Include="images\Games\Books\games-books-placeholder.txt" />
+    <Content Include="images\Games\ChooseAdv\games-chooseadv-placeholder.txt" />
+    <Content Include="images\Games\CodeBreaker\games-codebreaker-placeholder.txt" />
+    <Content Include="images\Games\HiddenPic\games-hiddenpic-placeholder.txt" />
+    <Content Include="images\Games\MatchingGame\games-matchinggame-placeholder.txt" />
+    <Content Include="images\Games\MixMatch\games-mixmatch-placeholder.txt" />
+    <Content Include="images\Games\WordMatch\games-wordmatch-placeholder.txt" />
     <Content Include="images\game_map_icon.png" />
     <Content Include="images\headline-bg.png" />
     <Content Include="images\incorrect.png" />
@@ -836,6 +846,7 @@
     <Content Include="images\Mail.png" />
     <Content Include="images\md_preview-file.png" />
     <Content Include="images\MiniGames.png" />
+    <Content Include="images\Offers\offers-placeholder.txt" />
     <Content Include="images\overlay-icon-01.png" />
     <Content Include="images\overlay-icon-02.png" />
     <Content Include="images\preview-file-md.png" />
@@ -898,11 +909,22 @@
     <Content Include="CSS\font\fontawesome-webfont.eot-v=3.0.1" />
     <Content Include="CSS\font\fontawesome-webfont.ttf" />
     <Content Include="CSS\font\fontawesome-webfont.woff" />
+    <Content Include="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\*.pubxml" />
-    <Content Include="web.nlog" />
+    <Content Include="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Web.Dev.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Test.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityHistory.aspx.cs">
@@ -2569,17 +2591,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="images\Avatars\" />
-    <Folder Include="images\Banners\" />
-    <Folder Include="images\Games\Board\" />
-    <Folder Include="images\Games\Books\" />
-    <Folder Include="images\Games\ChooseAdv\" />
-    <Folder Include="images\Games\CodeBreaker\" />
-    <Folder Include="images\Games\HiddenPic\" />
-    <Folder Include="images\Games\MatchingGame\" />
-    <Folder Include="images\Games\MixMatch\" />
-    <Folder Include="images\Games\WordMatch\" />
-    <Folder Include="images\Offers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -2616,9 +2627,30 @@
       <LastGenOutput>SRPResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
