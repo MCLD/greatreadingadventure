@@ -220,7 +220,35 @@ _Pvt_Extensions
 *.ide/
 
 # Project-specific files
+SRP/Images/Avatars/*.png
 SRP/Images/Badges/*.png
+SRP/Images/Banners/*.png
+SRP/Images/Games/Board/*.png
+SRP/Images/Games/Books/*.png
+SRP/Images/Games/ChooseAdv/*.png
+SRP/Images/Games/CodeBreaker/*.png
+SRP/Images/Games/HiddenPic/*.png
+SRP/Images/Games/MatchingGame/*.png
+SRP/Images/Games/MixMatch/*.png
+SRP/Images/Games/WordMatch/*.png
+SRP/Images/Offers/*.png
+
+SRP/Images/Avatars/*.jpg
+SRP/Images/Badges/*.jpg
+SRP/Images/Banners/*.jpg
+SRP/Images/Games/Board/*.jpg
+SRP/Images/Games/Books/*.jpg
+SRP/Images/Games/ChooseAdv/*.jpg
+SRP/Images/Games/CodeBreaker/*.jpg
+SRP/Images/Games/HiddenPic/*.jpg
+SRP/Images/Games/MatchingGame/*.jpg
+SRP/Images/Games/MixMatch/*.jpg
+SRP/Images/Games/WordMatch/*.jpg
+SRP/Images/Offers/*.jpg
+
+# configuration transforms
+SRP/Web.Dev.config
+SRP/Web.Test.config
 
 # Files brought in by NuGet packages
 
@@ -233,4 +261,3 @@ SRP/fonts/fontawesome*
 
 #this.Log
 SRP/LogExtensions.cs
-
