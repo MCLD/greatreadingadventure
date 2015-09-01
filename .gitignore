@@ -254,7 +254,3 @@ SRP/Web.Test.config
 
 #CKEditor and CkeditorForASP.NET
 SRP/Scripts/ckeditor/*
-
-#FontAwesome
-SRP/Content/font-awesome*.css
-SRP/fonts/fontawesome*
