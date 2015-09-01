@@ -5,9 +5,14 @@ You can view the latest [release notes](https://github.com/MCLD/greatreadingadve
 
 See the [SourceForge](http://sourceforge.net/projects/thegreatreadingadventure/) site for [some documentation](http://sourceforge.net/p/thegreatreadingadventure/wiki/Home/).
 
-If you want to propose a new feature (but can't/don't want to build it yourself), please use [this form] (http://goo.gl/forms/p21DIXEbpn).
+You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadventure.com/) for the following:
 
-[Click here to see the list of currently requested features](https://docs.google.com/spreadsheets/d/1n4vCkW0WWNyRh3dvPy5eBwGedzXQ4RnjuZQTuPKJ-Bg/edit?usp=sharing).
+* [Help with installation](http://forum.greatreadingadventure.com/c/install-issues)
+* [Assistance setting up and using the GRA](http://forum.greatreadingadventure.com/c/help)
+* [Reporting errors](http://forum.greatreadingadventure.com/c/errors)
+* [Suggesting new features](http://forum.greatreadingadventure.com/c/feature-requests)
+
+There are also some additional [requested features in this document](https://docs.google.com/spreadsheets/d/1n4vCkW0WWNyRh3dvPy5eBwGedzXQ4RnjuZQTuPKJ-Bg/edit?usp=sharing).
 
 ## Development
 GRA code should successfully compile using the free [Visual Studio Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) edition. External dependencies are managed with NuGet and should be automatically downloaded upon the first build.
