@@ -1,7 +1,9 @@
 # The Great Reading Adventure
 The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities.
 
-See the [SourceForge](http://sourceforge.net/projects/thegreatreadingadventure/) site for [releases and docs](http://sourceforge.net/projects/thegreatreadingadventure/files/), and the [wiki](http://sourceforge.net/p/thegreatreadingadventure/wiki/Home/).
+You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or [download the latest version (2.2.1)](https://github.com/MCLD/greatreadingadventure/releases/download/v2.2.1/GreatReadingAdventure-2.2.1.zip).
+
+See the [SourceForge](http://sourceforge.net/projects/thegreatreadingadventure/) site for [some documentation](http://sourceforge.net/p/thegreatreadingadventure/wiki/Home/).
 
 If you want to propose a new feature (but can't/don't want to build it yourself), please use [this form] (http://goo.gl/forms/p21DIXEbpn).
 
