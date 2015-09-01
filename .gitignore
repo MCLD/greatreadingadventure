@@ -249,8 +249,3 @@ SRP/Images/Offers/*.jpg
 # configuration transforms
 SRP/Web.Dev.config
 SRP/Web.Test.config
-
-# Files brought in by NuGet packages
-
-#CKEditor and CkeditorForASP.NET
-SRP/Scripts/ckeditor/*
