@@ -105,7 +105,6 @@
     <Content Include="ActivityHistory.aspx" />
     <Content Include="AddChildAccount.aspx" />
     <Content Include="AddlSurvey.aspx" />
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Themes\Default\blue_bg.png" />
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
