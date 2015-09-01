@@ -258,6 +258,3 @@ SRP/Scripts/ckeditor/*
 #FontAwesome
 SRP/Content/font-awesome*.css
 SRP/fonts/fontawesome*
-
-#this.Log
-SRP/LogExtensions.cs
