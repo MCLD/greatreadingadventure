@@ -100,7 +100,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                         obj.FldInt1 = ((TextBox)((DetailsView)sender).FindControl("FldInt1")).Text.SafeToInt();
                     }
                     catch (Exception exc) { }
-                    
+
                     /*
                     
                     obj.FldInt2 = ((TextBox)((DetailsView)sender).FindControl("FldInt2")).Text.SafeToInt();
@@ -113,6 +113,9 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                     obj.FldText3 = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("FldText3")).Text;
                     */
 
+                    // TODO security - don't give all new tenants the same password
+                    string newPassword = "#changeme05!";
+
 					obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     obj.LastModDate = obj.AddedDate;
@@ -120,7 +123,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
 
                     var sysadmin = new SRPUser();
                     sysadmin.Username = ((TextBox)((DetailsView)sender).FindControl("sysadmin")).Text;
-                    sysadmin.Password = "#changeme05!";
+                    sysadmin.NewPassword = newPassword;
                     sysadmin.FirstName = ((TextBox)((DetailsView)sender).FindControl("fname")).Text;
                     sysadmin.LastName = ((TextBox)((DetailsView)sender).FindControl("lname")).Text;
                     sysadmin.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("email")).Text;
@@ -138,7 +141,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                             obj.Insert();
                             var TID = obj.TenID;
 
-                            TenantInitialize.InitializeSecurity(sysadmin, TID);                       
+                            TenantInitialize.InitializeSecurity(sysadmin, TID, newPassword);                       
                             TenantInitialize.InitializeData(TID);
 
                             if (e.CommandName.ToLower() == "addandback")

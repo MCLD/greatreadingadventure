@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{0ec77b83-ac95-4325-ba45-40c7f2db457f}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql110DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -647,11 +647,13 @@
     <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_Update.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyAnswers_GetAllExpanded.sql" />
     <Build Include="dbo\Stored Procedures\app_PatronReadingLog_Insert.sql" />
+    <Build Include="dbo\Tables\SRPRecovery.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />
+    <None Include="GRA.Database.publish.xml" />
   </ItemGroup>
 </Project>

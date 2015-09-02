@@ -1,7 +1,7 @@
 ﻿
 ------------------------------------------------------------------------
 CREATE PROCEDURE [dbo].[cbspSRPUser_Insert] @Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@FirstName VARCHAR(50),
 	@LastName VARCHAR(50),
 	@EmailAddress VARCHAR(128),

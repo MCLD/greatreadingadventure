@@ -1,6 +1,6 @@
 ﻿
 CREATE PROCEDURE [dbo].[app_Patron_Login] @UserName VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@SessionID VARCHAR(128)
 AS
 SET NOCOUNT ON

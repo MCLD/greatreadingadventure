@@ -160,6 +160,24 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password reset request.
+        /// </summary>
+        public static string PasswordEmailSubject {
+            get {
+                return ResourceManager.GetString("PasswordEmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your password has been reset!.
+        /// </summary>
+        public static string PasswordEmailSuccessSubject {
+            get {
+                return ResourceManager.GetString("PasswordEmailSuccessSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password is required;.
         /// </summary>
         public static string PasswordRequired {

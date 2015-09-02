@@ -494,10 +494,12 @@
     <Content Include="ControlRoom\Images\Synchronize.png" />
     <Content Include="ControlRoom\Images\Synchronize_LG.png" />
     <Content Include="ControlRoom\Images\Tenants.png" />
+    <Content Include="ControlRoom\Modules\Install\InsertInitialData.sql" />
     <Content Include="ControlRoom\Modules\Notifications\BulkNotification.aspx" />
     <Content Include="ControlRoom\Modules\Patrons\PatronSurveyDetails.aspx" />
     <Content Include="ControlRoom\Modules\Patrons\PatronSurveys.aspx" />
     <Content Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx" />
+    <Content Include="ControlRoom\Modules\Security\ChangePassword.aspx" />
     <Content Include="ControlRoom\Modules\Settings\ClosingPush.aspx" />
     <Content Include="ControlRoom\Modules\Setup\AwardAddWizard.aspx" />
     <Content Include="ControlRoom\Modules\Setup\BookListAddWizard.aspx" />
@@ -520,6 +522,7 @@
     <Content Include="ControlRoom\Modules\Tenant\TenantSummaryReport.aspx" />
     <Content Include="ControlRoom\Modules\Tenant\TenantUserAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Tenant\TenantUserList.aspx" />
+    <Content Include="ControlRoom\PasswordRecovery.aspx" />
     <Content Include="ControlRoom\Setup.aspx" />
     <Content Include="ControlRoom\default.aspx" />
     <Content Include="ControlRoom\FileNotFound.aspx" />
@@ -630,7 +633,7 @@
     <Content Include="ControlRoom\Modules\Drawings\PrizeDrawingAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\PrizeTemplateAddEdit.aspx" />
     <Content Include="ControlRoom\Modules\Drawings\TemplateList.aspx" />
-    <Content Include="ControlRoom\Modules\Install\InstallScript.sql">
+    <Content Include="ControlRoom\Modules\Install\CreateSchema.sql">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="ControlRoom\Modules\Notifications\Default.aspx" />
@@ -1492,6 +1495,13 @@
     <Compile Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx.designer.cs">
       <DependentUpon>PatronActivityReport.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ControlRoom\Modules\Security\ChangePassword.aspx.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Security\ChangePassword.aspx.designer.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ControlRoom\Modules\Settings\ClosingPush.aspx.cs">
       <DependentUpon>ClosingPush.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1645,6 +1655,13 @@
     </Compile>
     <Compile Include="ControlRoom\Modules\Tenant\TenantUserList.aspx.designer.cs">
       <DependentUpon>TenantUserList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\PasswordRecovery.aspx.cs">
+      <DependentUpon>PasswordRecovery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\PasswordRecovery.aspx.designer.cs">
+      <DependentUpon>PasswordRecovery.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Setup.aspx.cs">
       <DependentUpon>Setup.aspx</DependentUpon>

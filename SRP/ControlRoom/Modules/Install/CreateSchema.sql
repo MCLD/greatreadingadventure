@@ -1,7 +1,6 @@
-﻿/****** Object:  StoredProcedure [dbo].[app_Avatar_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+﻿/****** Object:  StoredProcedure [dbo].[app_Avatar_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13,11 +12,9 @@ FROM [Avatar]
 WHERE AID = @AID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Avatar_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -30,11 +27,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Avatar_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -44,11 +39,9 @@ SELECT *
 FROM [Avatar]
 WHERE AID = @AID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Avatar_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -115,11 +108,9 @@ BEGIN
 	SELECT @AID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Avatar_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -163,11 +154,9 @@ SET NAME = @Name,
 WHERE AID = @AID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -177,11 +166,9 @@ DELETE
 FROM [Award]
 WHERE AID = @AID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -220,11 +207,9 @@ WHERE (
 		)
 ORDER BY AwardName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_GetBadgeListMembership]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetBadgeListMembership]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -243,11 +228,9 @@ WHERE TenID = @TenID
 ORDER BY AdminName,
 	BID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -257,11 +240,9 @@ SELECT *
 FROM [Award]
 WHERE AID = @AID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwards]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwards]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -312,11 +293,9 @@ INNER JOIN (
 		OR dbo.fx_PatronHasAllBadgesInList(p.PID, BadgeList) = 1
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwardsWTenant]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwardsWTenant]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -368,11 +347,9 @@ INNER JOIN (
 		OR dbo.fx_PatronHasAllBadgesInList(p.PID, BadgeList) = 1
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -455,11 +432,9 @@ BEGIN
 	SELECT @AID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Award_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -515,11 +490,9 @@ SET AwardName = @AwardName,
 WHERE AID = @AID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -545,11 +518,9 @@ DELETE
 FROM [Badge]
 WHERE BID = @BID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -563,11 +534,9 @@ WHERE (
 		)
 ORDER BY AdminName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeAgeGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeAgeGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -606,11 +575,9 @@ RIGHT JOIN (
 	) AS c ON bb.CID = c.CID
 ORDER BY c.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBookLists]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBookLists]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -634,11 +601,9 @@ WHERE p.TenID = @TenID
 	AND p.AwardBadgeID = @BID
 ORDER BY p.ListName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBranches]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBranches]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -673,11 +638,9 @@ WHERE bb.BID = @BID
 	AND c.CTID = @CTID
 ORDER BY c.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeCategories]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeCategories]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -716,11 +679,9 @@ RIGHT JOIN (
 	) AS c ON bb.CID = c.CID
 ORDER BY c.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeEventIDS]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeEventIDS]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -743,11 +704,9 @@ WHERE p.TenID = @TenID
 	AND p.BadgeID = @BID
 ORDER BY p.EventTitle
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeEvents]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeEvents]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -771,11 +730,9 @@ WHERE p.TenID = @TenID
 	AND p.BadgeID = @BID
 ORDER BY p.EventTitle
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGallery]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGallery]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -831,11 +788,9 @@ WHERE TenID = @TenID
 		)
 ORDER BY b.UserName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGames]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGames]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -859,11 +814,9 @@ WHERE p.TenID = @TenID
 	AND p.AwardedBadgeID = @BID
 ORDER BY p.GameName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeLocations]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeLocations]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -902,11 +855,9 @@ RIGHT JOIN (
 	) AS c ON bb.CID = c.CID
 ORDER BY c.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeReading]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeReading]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -942,11 +893,9 @@ WHERE p.TenID = @TenID
 	AND p.NumPoints > 0
 GROUP BY p.AwardName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -956,11 +905,9 @@ SELECT *
 FROM [Badge]
 WHERE BID = @BID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetEnrollmentPrograms]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetEnrollmentPrograms]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -995,11 +942,9 @@ WHERE p.TenID = @TenID
 	AND p.BadgeID = @BID
 ORDER BY r.POrder
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_GetList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1014,11 +959,9 @@ WHERE BID IN (
 			)
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1110,11 +1053,9 @@ BEGIN
 	SELECT @BID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1176,11 +1117,9 @@ SET AdminName = @AdminName,
 WHERE BID = @BID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeAgeGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeAgeGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1213,11 +1152,9 @@ WHERE CID IN (
 		WHERE BID = @BID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeBranches]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeBranches]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1250,11 +1187,9 @@ WHERE CID IN (
 		WHERE BID = @BID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeCategories]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeCategories]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1287,11 +1222,9 @@ WHERE CID IN (
 		WHERE BID = @BID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeLocations]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_UpdateBadgeLocations]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1324,11 +1257,9 @@ WHERE CID IN (
 		WHERE BID = @BID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1345,11 +1276,9 @@ FROM BookList
 WHERE BLID = @BLID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1364,11 +1293,9 @@ LEFT JOIN Programs p ON bl.ProgID = p.PID
 LEFT JOIN Code c ON bl.LibraryID = c.cid
 WHERE bl.TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1380,11 +1307,9 @@ SELECT *
 FROM [BookList]
 WHERE BLID = @BLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1481,11 +1406,9 @@ SELECT ROW_NUMBER() OVER (
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1579,11 +1502,9 @@ BEGIN
 	SELECT @BLID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookList_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1647,11 +1568,9 @@ SET AdminName = @AdminName,
 WHERE BLID = @BLID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1665,11 +1584,9 @@ FROM [BookListBooks]
 WHERE BLBID = @BLBID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1681,11 +1598,9 @@ SELECT *
 FROM [BookListBooks]
 WHERE BLID = @BLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1697,11 +1612,9 @@ SELECT *
 FROM [BookListBooks]
 WHERE BLBID = @BLBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetForDisplay]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetForDisplay]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1795,11 +1708,9 @@ SELECT ROW_NUMBER() OVER (
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetForPatronDisplay]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetForPatronDisplay]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1816,11 +1727,9 @@ LEFT JOIN PatronBookLists p ON b.BLBID = p.BLBID
 	AND p.PID = @PID
 WHERE b.BLID = @BLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1896,11 +1805,9 @@ BEGIN
 	SELECT @BLBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookListBooks_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1952,11 +1859,9 @@ SET BLID = @BLID,
 WHERE BLBID = @BLBID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1968,11 +1873,9 @@ DELETE
 FROM [Code]
 WHERE CID = @CID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -1985,11 +1888,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetAllLibrarySystems]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetAllLibrarySystems]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2006,11 +1907,9 @@ WHERE rtrim(ltrim(District)) <> ''
 		)
 ORDER BY rtrim(ltrim(District))
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetAllSchools]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetAllSchools]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2027,11 +1926,9 @@ WHERE rtrim(ltrim(SchoolName)) <> ''
 		)
 ORDER BY rtrim(ltrim(SchoolName))
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetAllTypeID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetAllTypeID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2043,11 +1940,9 @@ SELECT *
 FROM [Code]
 WHERE CTID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetAllTypeName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetAllTypeName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2067,11 +1962,9 @@ WHERE CTID = (
 		)
 ORDER BY Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2083,11 +1976,9 @@ SELECT *
 FROM [Code]
 WHERE CID = @CID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2145,11 +2036,9 @@ BEGIN
 	SELECT @CID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Code_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Code_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2189,11 +2078,9 @@ SET CTID = @CTID,
 WHERE CID = @CID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CodeType_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CodeType_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2205,11 +2092,9 @@ DELETE
 FROM [CodeType]
 WHERE CTID = @CTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CodeType_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CodeType_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2224,11 +2109,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CodeType_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CodeType_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2240,11 +2123,9 @@ SELECT *
 FROM [CodeType]
 WHERE CTID = @CTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CodeType_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CodeType_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2302,11 +2183,9 @@ BEGIN
 	SELECT @CTID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CodeType_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CodeType_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2346,11 +2225,9 @@ SET isSystem = @isSystem,
 WHERE CTID = @CTID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2362,11 +2239,9 @@ DELETE
 FROM [CustomEventFields]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2380,11 +2255,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2396,11 +2269,9 @@ SELECT *
 FROM [CustomEventFields]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2487,11 +2358,9 @@ BEGIN
 	SELECT @CID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomEventFields_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2550,11 +2419,9 @@ SET Use1 = @Use1,
 WHERE CID = @CID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2566,11 +2433,9 @@ DELETE
 FROM [CustomRegistrationFields]
 WHERE CID = @CID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2584,11 +2449,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2599,11 +2462,9 @@ SELECT *
 FROM [CustomRegistrationFields]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2708,11 +2569,9 @@ BEGIN
 	SELECT @CID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_CustomRegistrationFields_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2783,11 +2642,9 @@ SET Use1 = @Use1,
 WHERE CID = @CID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2799,11 +2656,9 @@ DELETE
 FROM [Event]
 WHERE EID = @EID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetAdminSearch]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetAdminSearch]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2837,11 +2692,9 @@ WHERE (
 		)
 ORDER BY EventDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2861,11 +2714,9 @@ WHERE (
 		)
 ORDER BY EventDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2882,11 +2733,9 @@ SELECT *,
 FROM [Event]
 WHERE EID = @EID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetEventCountByEventCode]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetEventCountByEventCode]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2911,11 +2760,9 @@ BEGIN
 			)
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetEventList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetEventList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2955,11 +2802,9 @@ WHERE Event.TenID = @TenID
 ORDER BY Expired,
 	EventDate
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetEventsByEventCode]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetEventsByEventCode]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -2982,11 +2827,9 @@ BEGIN
 			)
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3036,11 +2879,9 @@ WHERE (
 ORDER BY EventDate ASC,
 	EventTitle
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_InitTenant]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_InitTenant]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3126,11 +2967,9 @@ WHERE e.TenID = @src
 			AND DestTID = @dst
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3232,11 +3071,9 @@ BEGIN
 	SELECT @EID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Event_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3305,11 +3142,9 @@ SET EventTitle = @EventTitle,
 WHERE EID = @EID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3321,11 +3156,9 @@ DELETE
 FROM [GamePlayStats]
 WHERE GPSID = @GPSID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3336,11 +3169,9 @@ AS
 SELECT *
 FROM [GamePlayStats]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3352,11 +3183,9 @@ SELECT *
 FROM [GamePlayStats]
 WHERE GPSID = @GPSID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3396,11 +3225,9 @@ BEGIN
 	SELECT @GPSID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_GamePlayStats_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3427,11 +3254,9 @@ SET PID = @PID,
 	Completed = @Completed
 WHERE GPSID = @GPSID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3441,11 +3266,9 @@ DELETE
 FROM [LibraryCrosswalk]
 WHERE ID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3486,11 +3309,9 @@ FROM [LibraryCrosswalk] w
 RIGHT JOIN @Libraries l ON w.BranchID = l.CID
 ORDER BY l.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3500,11 +3321,9 @@ SELECT *
 FROM [LibraryCrosswalk]
 WHERE ID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetByLibraryID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetByLibraryID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3514,11 +3333,9 @@ SELECT *
 FROM LibraryCrosswalk
 WHERE BranchID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredBranchDDValues]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredBranchDDValues]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3545,11 +3362,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3570,11 +3385,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3630,11 +3443,9 @@ BEGIN
 	SELECT @ID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3672,11 +3483,9 @@ SET BranchID = @BranchID,
 WHERE ID = @ID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3688,11 +3497,9 @@ DELETE
 FROM [MGChooseAdv]
 WHERE CAID = @CAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3703,11 +3510,9 @@ AS
 SELECT *
 FROM [MGChooseAdv]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3719,11 +3524,9 @@ SELECT *
 FROM [MGChooseAdv]
 WHERE CAID = @CAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3741,11 +3544,9 @@ FROM MGChooseAdv mg
 INNER JOIN dbo.Minigame g ON mg.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3756,11 +3557,9 @@ SELECT *
 FROM MGChooseAdv
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3800,11 +3599,9 @@ BEGIN
 	SELECT @CAID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdv_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3831,11 +3628,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE CAID = @CAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3854,11 +3649,9 @@ WHERE CASID = @CASID
 
 EXEC app_MGChooseAdvSlides_Reorder @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3869,11 +3662,9 @@ SELECT *
 FROM MGChooseAdvSlides
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetAllByDifficulty]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetAllByDifficulty]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3893,11 +3684,9 @@ WHERE MGID = @MGID
 	AND Difficulty = @Diff
 ORDER BY StepNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3909,11 +3698,9 @@ SELECT *
 FROM [MGChooseAdvSlides]
 WHERE CASID = @CASID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetPlaySlide]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_GetPlaySlide]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3928,11 +3715,9 @@ WHERE CAID = @CAID
 	AND StepNumber = @Step
 	AND Difficulty = @Difficulty
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -3990,11 +3775,9 @@ BEGIN
 	SELECT @CASID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4038,11 +3821,9 @@ BEGIN
 	WHERE CASID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4081,11 +3862,9 @@ BEGIN
 	WHERE CASID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4146,11 +3925,9 @@ INNER JOIN (
 	AND drRowNumbers.MGID = @MGID
 	AND drRowNumbers.Difficulty = 3
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGChooseAdvSlides_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4184,11 +3961,9 @@ SET CAID = @CAID,
 	AddedUser = @AddedUser
 WHERE CASID = @CASID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4200,11 +3975,9 @@ DELETE
 FROM [MGCodeBreaker]
 WHERE CBID = @CBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4215,11 +3988,9 @@ AS
 SELECT *
 FROM [MGCodeBreaker]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4231,11 +4002,9 @@ SELECT *
 FROM [MGCodeBreaker]
 WHERE CBID = @CBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4253,11 +4022,9 @@ FROM MGCodeBreaker cb
 INNER JOIN dbo.Minigame g ON cb.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4269,11 +4036,9 @@ SELECT *
 FROM [MGCodeBreaker]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4322,11 +4087,9 @@ BEGIN
 	SELECT @CBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGCodeBreaker_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4359,11 +4122,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE CBID = @CBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4375,11 +4136,9 @@ DELETE
 FROM [MGHiddenPic]
 WHERE HPID = @HPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4390,11 +4149,9 @@ AS
 SELECT *
 FROM [MGHiddenPic]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4406,11 +4163,9 @@ SELECT *
 FROM [MGHiddenPic]
 WHERE HPID = @HPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4428,11 +4183,9 @@ FROM MGHiddenPic mg
 INNER JOIN dbo.Minigame g ON mg.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4443,11 +4196,9 @@ SELECT *
 FROM MGHiddenPic
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetRandomBK]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_GetRandomBK]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4469,11 +4220,9 @@ FROM #tmp
 
 RETURN @a
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4522,11 +4271,9 @@ BEGIN
 	SELECT @HPID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPic_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4559,11 +4306,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE HPID = @HPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4575,11 +4320,9 @@ DELETE
 FROM [MGHiddenPicBk]
 WHERE HPBID = @HPBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4590,11 +4333,9 @@ SELECT *
 FROM MGHiddenPicBk
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4606,11 +4347,9 @@ SELECT *
 FROM [MGHiddenPicBk]
 WHERE HPBID = @HPBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4628,11 +4367,9 @@ FROM MGHiddenPicBk mg
 INNER JOIN dbo.Minigame g ON mg.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4643,11 +4380,9 @@ SELECT *
 FROM MGHiddenPicBk
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4684,11 +4419,9 @@ BEGIN
 	SELECT @HPBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGHiddenPicBk_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4713,11 +4446,9 @@ SET HPID = @HPID,
 	AddedUser = @AddedUser
 WHERE HPBID = @HPBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4729,11 +4460,9 @@ DELETE
 FROM [MGMatchingGame]
 WHERE MAGID = @MAGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4744,11 +4473,9 @@ AS
 SELECT *
 FROM [MGMatchingGame]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4760,11 +4487,9 @@ SELECT *
 FROM [MGMatchingGame]
 WHERE MAGID = @MAGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4782,11 +4507,9 @@ FROM MGMatchingGame mg
 INNER JOIN dbo.Minigame g ON mg.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4797,11 +4520,9 @@ SELECT *
 FROM MGMatchingGame
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetRandomPlayItems]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_GetRandomPlayItems]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4879,11 +4600,9 @@ DROP TABLE #Temp1
 
 DROP TABLE #Temp2
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4935,11 +4654,9 @@ BEGIN
 	SELECT @MAGID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGame_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4974,11 +4691,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE MAGID = @MAGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -4990,11 +4705,9 @@ DELETE
 FROM [MGMatchingGameTiles]
 WHERE MAGTID = @MAGTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5005,11 +4718,9 @@ SELECT *
 FROM MGMatchingGameTiles
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5021,11 +4732,9 @@ SELECT *
 FROM [MGMatchingGameTiles]
 WHERE MAGTID = @MAGTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5080,11 +4789,9 @@ BEGIN
 	SELECT @MAGTID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMatchingGameTiles_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5121,11 +4828,9 @@ SET MAGID = @MAGID,
 	AddedUser = @AddedUser
 WHERE MAGTID = @MAGTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5137,11 +4842,9 @@ DELETE
 FROM [MGMixAndMatch]
 WHERE MMID = @MMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5152,11 +4855,9 @@ AS
 SELECT *
 FROM [MGMixAndMatch]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5168,11 +4869,9 @@ SELECT *
 FROM [MGMixAndMatch]
 WHERE MMID = @MMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5190,11 +4889,9 @@ FROM MGMixAndMatch mm
 INNER JOIN dbo.Minigame g ON mm.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5206,11 +4903,9 @@ SELECT *
 FROM [MGMixAndMatch]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5253,11 +4948,9 @@ BEGIN
 	SELECT @MMID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatch_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5286,11 +4979,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE MMID = @MMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5302,11 +4993,9 @@ DELETE
 FROM [MGMixAndMatchItems]
 WHERE MMIID = @MMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5318,11 +5007,9 @@ SELECT *
 FROM [MGMixAndMatchItems]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5334,11 +5021,9 @@ SELECT *
 FROM [MGMixAndMatchItems]
 WHERE MMIID = @MMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetRandom3]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_GetRandom3]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5351,11 +5036,9 @@ FROM dbo.MGMixAndMatchItems
 WHERE MMID = @MMID
 ORDER BY id
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5413,11 +5096,9 @@ BEGIN
 	SELECT @MMIID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGMixAndMatchItems_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5456,11 +5137,9 @@ SET MMID = @MMID,
 	AddedUser = @AddedUser
 WHERE MMIID = @MMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5471,11 +5150,9 @@ DELETE
 FROM [MGOnlineBook]
 WHERE OBID = @OBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5485,11 +5162,9 @@ AS
 SELECT *
 FROM [MGOnlineBook]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5500,11 +5175,9 @@ SELECT *
 FROM [MGOnlineBook]
 WHERE OBID = @OBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5522,11 +5195,9 @@ FROM [MGOnlineBook] ob
 INNER JOIN dbo.Minigame g ON ob.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5536,11 +5207,9 @@ SELECT *
 FROM [MGOnlineBook]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5579,11 +5248,9 @@ BEGIN
 	SELECT @OBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBook_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5609,11 +5276,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE OBID = @OBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5632,11 +5297,9 @@ WHERE OBPGID = @OBPGID
 
 EXEC app_MGOnlineBookPages_Reorder @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5653,11 +5316,9 @@ FROM [MGOnlineBookPages]
 WHERE MGID = @MGID
 ORDER BY PageNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5669,11 +5330,9 @@ FROM [MGOnlineBookPages]
 WHERE OBPGID = @OBPGID
 ORDER BY PageNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetByPage]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_GetByPage]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5686,11 +5345,9 @@ FROM [MGOnlineBookPages]
 WHERE PageNumber = @Page
 	AND OBID = @OBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5751,11 +5408,9 @@ BEGIN
 	SELECT @OBPGID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5792,11 +5447,9 @@ BEGIN
 	WHERE OBPGID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5829,11 +5482,9 @@ BEGIN
 	WHERE OBPGID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5854,11 +5505,9 @@ INNER JOIN (
 	AND MGID = @MGID
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGOnlineBookPages_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5896,11 +5545,9 @@ SET OBID = @OBID,
 	AddedUser = @AddedUser
 WHERE OBPGID = @OBPGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5912,11 +5559,9 @@ DELETE
 FROM [MGWordMatch]
 WHERE WMID = @WMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5927,11 +5572,9 @@ AS
 SELECT *
 FROM [MGWordMatch]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5943,11 +5586,9 @@ SELECT *
 FROM [MGWordMatch]
 WHERE WMID = @WMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByIDWithParent]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByIDWithParent]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5965,11 +5606,9 @@ FROM MGWordMatch mm
 INNER JOIN dbo.Minigame g ON mm.MGID = g.MGID
 WHERE g.MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5981,11 +5620,9 @@ SELECT *
 FROM [MGWordMatch]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetRandomX]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_GetRandomX]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -5999,11 +5636,9 @@ SELECT @SQL = 'select top ' + convert(VARCHAR, @Num) + ' NEWID() as id, * from  
 
 EXEC (@SQL)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6049,11 +5684,9 @@ BEGIN
 	SELECT @WMID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatch_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6084,11 +5717,9 @@ SET MGID = @MGID,
 	AddedUser = @AddedUser
 WHERE WMID = @WMID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6100,11 +5731,9 @@ DELETE
 FROM [MGWordMatchItems]
 WHERE WMIID = @WMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6116,11 +5745,9 @@ SELECT *
 FROM [MGWordMatchItems]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6132,11 +5759,9 @@ SELECT *
 FROM [MGWordMatchItems]
 WHERE WMIID = @WMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6194,11 +5819,9 @@ BEGIN
 	SELECT @WMIID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_MGWordMatchItems_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6237,11 +5860,9 @@ SET WMID = @WMID,
 	AddedUser = @AddedUser
 WHERE WMIID = @WMIID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6308,11 +5929,9 @@ DELETE
 FROM [Minigame]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6326,11 +5945,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6341,11 +5958,9 @@ SELECT *
 FROM [Minigame]
 WHERE MGID = @MGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_GetList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_GetList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6368,11 +5983,9 @@ BEGIN
 	ORDER BY Num DESC
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6455,11 +6068,9 @@ BEGIN
 	SELECT @MGID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Minigame_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Minigame_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6515,11 +6126,9 @@ SET MiniGameType = @MiniGameType,
 WHERE MGID = @MGID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6531,11 +6140,9 @@ DELETE
 FROM [Notifications]
 WHERE NID = @NID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6549,11 +6156,9 @@ WHERE (
 		)
 ORDER BY AddedDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllFromPatron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllFromPatron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6566,11 +6171,9 @@ FROM [Notifications]
 WHERE PID_From = @PID
 ORDER BY AddedDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllToPatron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllToPatron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6592,11 +6195,9 @@ WHERE PID_To = @PID
 	AND n.TenID = @TenID
 ORDER BY AddedDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllUnreadToPatron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllUnreadToPatron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6619,11 +6220,9 @@ WHERE PID_To = @PID
 	AND n.isUnread = 1
 ORDER BY AddedDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6635,11 +6234,9 @@ SELECT *
 FROM [Notifications]
 WHERE NID = @NID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6716,11 +6313,9 @@ BEGIN
 	SELECT @NID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6773,11 +6368,9 @@ SET PID_To = @PID_To,
 WHERE NID = @NID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offer_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offer_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6789,11 +6382,9 @@ DELETE
 FROM [Offer]
 WHERE OID = @OID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offer_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offer_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6817,11 +6408,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offer_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offer_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6833,11 +6422,9 @@ SELECT *
 FROM [Offer]
 WHERE OID = @OID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offer_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offer_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6936,11 +6523,9 @@ BEGIN
 	SELECT @OID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offer_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offer_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7007,11 +6592,9 @@ SET isEnabled = @isEnabled,
 WHERE OID = @OID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Offers_GetForDisplay]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Offers_GetForDisplay]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7096,11 +6679,9 @@ SELECT ROW_NUMBER() OVER (
 	*
 FROM #temp
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_CanManageSubAccount]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_CanManageSubAccount]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7132,11 +6713,9 @@ END
 
 RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_CheckIfFinisher]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_CheckIfFinisher]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7146,11 +6725,9 @@ SELECT isnull(dbo.fx_IsFinisher(p.PID, p.ProgID), 0) AS IsFinisher
 FROM Patron p
 WHERE p.PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7201,11 +6778,9 @@ DELETE
 FROM [Patron]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7221,11 +6796,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetByEmail]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetByEmail]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7239,11 +6812,9 @@ SELECT *
 FROM Patron
 WHERE EmailAddress = @Email
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7255,11 +6826,9 @@ SELECT *
 FROM [Patron]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetByUsername]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetByUsername]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7273,11 +6842,9 @@ SELECT *
 FROM Patron
 WHERE Username = @Username
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetPatronForEdit]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetPatronForEdit]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7338,11 +6905,9 @@ FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
 WHERE rs.TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetScoreRank]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetScoreRank]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7404,11 +6969,9 @@ BEGIN
 	WHERE p.PID = @PID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_GetSubAccountList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_GetSubAccountList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7427,11 +6990,9 @@ INNER JOIN dbo.Patron mast ON subs.MasterAcctPID = mast.PID
 LEFT JOIN Programs pg ON subs.ProgID = pg.PID
 	--order BY subs.PID desc
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7439,7 +7000,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@IsMasterAccount BIT,
 	@MasterAcctPID INT,
 	@Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@DOB DATETIME,
 	@Age INT,
 	@SchoolGrade VARCHAR(5),
@@ -7628,16 +7189,14 @@ BEGIN
 	SELECT @PID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_Login]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_Login]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[app_Patron_Login] @UserName VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@SessionID VARCHAR(128)
 AS
 SET NOCOUNT ON
@@ -7665,11 +7224,9 @@ END
 
 RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Patron_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Patron_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7678,7 +7235,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@IsMasterAccount BIT,
 	@MasterAcctPID INT,
 	@Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@DOB DATETIME,
 	@Age INT,
 	@SchoolGrade VARCHAR(5),
@@ -7801,11 +7358,9 @@ SET IsMasterAccount = @IsMasterAccount,
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7817,11 +7372,9 @@ DELETE
 FROM [PatronBadges]
 WHERE PBID = @PBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7839,11 +7392,9 @@ WHERE PID = @PID
 ORDER BY DateEarned,
 	PBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7855,11 +7406,9 @@ SELECT *
 FROM [PatronBadges]
 WHERE PBID = @PBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7887,11 +7436,9 @@ BEGIN
 	SELECT @PBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBadges_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7910,11 +7457,9 @@ SET PID = @PID,
 	DateEarned = @DateEarned
 WHERE PBID = @PBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7926,11 +7471,9 @@ DELETE
 FROM [PatronBookLists]
 WHERE PBLBID = @PBLBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7941,11 +7484,9 @@ AS
 SELECT *
 FROM [PatronBookLists]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7957,11 +7498,9 @@ SELECT *
 FROM [PatronBookLists]
 WHERE PBLBID = @PBLBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -7995,11 +7534,9 @@ BEGIN
 	SELECT @PBLBID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronBookLists_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8022,11 +7559,9 @@ SET PID = @PID,
 	LastModDate = @LastModDate
 WHERE PBLBID = @PBLBID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8038,11 +7573,9 @@ DELETE
 FROM [PatronPoints]
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8069,11 +7602,9 @@ LEFT JOIN [Minigame] mg ON pp.GameLevelActivityID = mg.MGID
 WHERE @PID = pp.PID
 ORDER BY AwardDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8085,11 +7616,9 @@ SELECT *
 FROM [PatronPoints]
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetLastPatronEntryID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetLastPatronEntryID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8099,11 +7628,9 @@ SELECT isnull(MAX(PPID), 0)
 FROM [PatronPoints]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsBookList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsBookList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8121,11 +7648,9 @@ BEGIN
 		AND AwardReasonCd = 2
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsByKeyword]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsByKeyword]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8143,11 +7668,9 @@ BEGIN
 		AND AwardReasonCd = 1
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsByMGID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronPointsByMGID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8165,11 +7688,9 @@ BEGIN
 		AND AwardReasonCd = 4
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetProgramLeaderboard]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetProgramLeaderboard]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8209,11 +7730,9 @@ SELECT PID,
 FROM #TempLB
 ORDER BY TotalPoints DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetTotalPatronPoints]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetTotalPatronPoints]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8236,11 +7755,9 @@ BEGIN
 		SELECT 0 AS TotalPoints
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetTotalPatronPointsOnDate]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetTotalPatronPointsOnDate]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8269,11 +7786,9 @@ BEGIN
 		SELECT 0 AS TotalPoints
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8355,11 +7870,9 @@ BEGIN
 	SELECT @PPID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPoints_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8414,11 +7927,9 @@ SET PID = @PID,
 	GameLevelActivityID = @GameLevelActivityID
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8430,11 +7941,9 @@ DELETE
 FROM [PatronPrizes]
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8448,11 +7957,9 @@ FROM [PatronPrizes] pp
 LEFT JOIN Badge b ON pp.BadgeID = b.BID
 WHERE pp.PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetByDrawingID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetByDrawingID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8463,11 +7970,9 @@ SELECT *
 FROM [PatronPrizes]
 WHERE DrawingID = @DrawingID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8479,11 +7984,9 @@ SELECT *
 FROM [PatronPrizes]
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8532,11 +8035,9 @@ BEGIN
 	SELECT @PPID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronPrizes_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8569,11 +8070,9 @@ SET PID = @PID,
 	AddedUser = @AddedUser
 WHERE PPID = @PPID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8585,11 +8084,9 @@ DELETE
 FROM [PatronReadingLog]
 WHERE PRLID = @PRLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8602,11 +8099,9 @@ FROM [PatronReadingLog]
 WHERE @PID = PID
 ORDER BY LoggingDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8618,11 +8113,9 @@ SELECT *
 FROM [PatronReadingLog]
 WHERE PRLID = @PRLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8671,11 +8164,9 @@ BEGIN
 	SELECT @PRLID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReadingLog_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8708,11 +8199,9 @@ SET PID = @PID,
 	ReviewID = @ReviewID
 WHERE PRLID = @PRLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8724,11 +8213,9 @@ DELETE
 FROM [PatronReview]
 WHERE PRID = @PRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8740,11 +8227,9 @@ SELECT *
 FROM [PatronReview]
 WHERE @PID = PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8756,11 +8241,9 @@ SELECT *
 FROM [PatronReview]
 WHERE PRID = @PRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetByLogID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_GetByLogID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8772,11 +8255,9 @@ SELECT *
 FROM [PatronReview]
 WHERE PRLID = @PRLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8822,11 +8303,9 @@ BEGIN
 	SELECT @PRID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronReview_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronReview_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8857,11 +8336,9 @@ SET PID = @PID,
 	ApprovedBy = @ApprovedBy
 WHERE PRID = @PRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8873,11 +8350,9 @@ DELETE
 FROM [PatronRewardCodes]
 WHERE PRCID = @PRCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8889,11 +8364,9 @@ SELECT *
 FROM [PatronRewardCodes]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8905,11 +8378,9 @@ SELECT *
 FROM [PatronRewardCodes]
 WHERE PRCID = @PRCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8952,11 +8423,9 @@ BEGIN
 	SELECT @PRCID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PatronRewardCodes_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -8985,11 +8454,9 @@ SET PID = @PID,
 	AddedUser = @AddedUser
 WHERE PRCID = @PRCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9001,11 +8468,9 @@ DELETE
 FROM [PrizeDrawing]
 WHERE PDID = @PDID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_DrawWinners]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_DrawWinners]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9163,11 +8628,9 @@ FROM PrizeDrawingWinners
 WHERE PDID = @PDID
 	AND NotificationID = 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9182,11 +8645,9 @@ LEFT JOIN PrizeTemplate t ON pd.TID = t.TID
 WHERE pd.TenID = @TenID
 ORDER BY PDID DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetAllWinners]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetAllWinners]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9202,11 +8663,9 @@ LEFT JOIN Patron p ON pdw.PatronID = p.PID
 WHERE PDID = @PDID
 ORDER BY PDID DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9218,11 +8677,9 @@ SELECT *
 FROM [PrizeDrawing]
 WHERE PDID = @PDID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9294,11 +8751,9 @@ BEGIN
 	SELECT @PDID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9347,11 +8802,9 @@ SET PrizeName = @PrizeName,
 WHERE PDID = @PDID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9363,11 +8816,9 @@ DELETE
 FROM [PrizeDrawingWinners]
 WHERE PDWID = @PDWID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9378,11 +8829,9 @@ AS
 SELECT *
 FROM [PrizeDrawingWinners]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9394,11 +8843,9 @@ SELECT *
 FROM [PrizeDrawingWinners]
 WHERE PDWID = @PDWID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9441,11 +8888,9 @@ BEGIN
 	SELECT @PDWID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawingWinners_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9474,11 +8919,9 @@ SET PDID = @PDID,
 	AddedUser = @AddedUser
 WHERE PDWID = @PDWID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9490,11 +8933,9 @@ DELETE
 FROM [PrizeTemplate]
 WHERE TID = @TID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9513,11 +8954,9 @@ WHERE (
 		)
 ORDER BY TID DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9528,11 +8967,9 @@ SELECT *
 FROM [PrizeTemplate]
 WHERE TID = @TID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9646,11 +9083,9 @@ BEGIN
 	SELECT @TID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_PrizeTemplate_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9727,11 +9162,9 @@ SET TName = @TName,
 WHERE TID = @TID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_AssignCodeForPatron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_AssignCodeForPatron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9766,11 +9199,9 @@ SELECT *,
 FROM ProgramCodes
 WHERE PCID = @PCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9782,11 +9213,9 @@ DELETE
 FROM [ProgramCodes]
 WHERE PCID = @PCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Generate]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Generate]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9834,11 +9263,9 @@ SELECT @PID,
 FROM numbers
 OPTION (MAXRECURSION 0)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9849,11 +9276,9 @@ AS
 SELECT *
 FROM [ProgramCodes]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllByProgram]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllByProgram]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9865,11 +9290,9 @@ SELECT *
 FROM [ProgramCodes]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllForPatron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllForPatron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9881,11 +9304,9 @@ SELECT *
 FROM [ProgramCodes]
 WHERE PatronId = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9897,11 +9318,9 @@ SELECT *
 FROM [ProgramCodes]
 WHERE PCID = @PCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetExportList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetExportList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9923,11 +9342,9 @@ LEFT JOIN Patron p ON pc.PatronId = p.PID
 WHERE pc.PID = @PID
 ORDER BY PCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -9968,11 +9385,9 @@ BEGIN
 	SELECT @PCID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Stats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Stats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10005,11 +9420,9 @@ SELECT isnull((
 			ORDER BY PCID DESC
 			), '') AS LastUsedCode
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10036,11 +9449,9 @@ SET PID = @PID,
 	PatronId = @PatronId
 WHERE PCID = @PCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10055,11 +9466,9 @@ DELETE
 FROM [ProgramGame]
 WHERE PGID = @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGame_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGame_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10073,11 +9482,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGame_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGame_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10089,11 +9496,9 @@ SELECT *
 FROM [ProgramGame]
 WHERE PGID = @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10180,11 +9585,9 @@ BEGIN
 	SELECT @PGID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGame_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10243,11 +9646,9 @@ SET GameName = @GameName,
 WHERE PGID = @PGID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10266,11 +9667,9 @@ WHERE PGLID = @PGLID
 
 EXEC [app_ProgramGameLevel_Reorder] @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10287,11 +9686,9 @@ FROM [ProgramGameLevel]
 WHERE PGID = @PGID
 ORDER BY LevelNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10303,11 +9700,9 @@ SELECT *
 FROM [ProgramGameLevel]
 WHERE PGLID = @PGLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10381,11 +9776,9 @@ BEGIN
 	SELECT @PGLID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10423,11 +9816,9 @@ BEGIN
 	WHERE PGLID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10461,11 +9852,9 @@ BEGIN
 	WHERE PGLID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10486,11 +9875,9 @@ INNER JOIN (
 	AND PGID = @PGID
 WHERE PGID = @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGameLevel_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10537,11 +9924,9 @@ SET PGID = @PGID,
 	AwardBadgeIDBonus = @AwardBadgeIDBonus
 WHERE PGLID = @PGLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10553,11 +9938,9 @@ DELETE
 FROM [ProgramGamePointConversion]
 WHERE PGCID = @PGCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10569,11 +9952,9 @@ SELECT *
 FROM [ProgramGamePointConversion]
 WHERE PGID = @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetByActivityType]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetByActivityType]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10587,11 +9968,9 @@ FROM [ProgramGamePointConversion]
 WHERE ActivityTypeId = @ActivityTypeID
 	AND PGID = @PGID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10603,11 +9982,9 @@ SELECT *
 FROM [ProgramGamePointConversion]
 WHERE PGCID = @PGCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10650,11 +10027,9 @@ BEGIN
 	SELECT @PGCID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ProgramGamePointConversion_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10683,11 +10058,9 @@ SET PGID = @PGID,
 	AddedUser = @AddedUser
 WHERE PGCID = @PGCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10735,11 +10108,9 @@ WHERE PID = @PID
 
 EXEC [app_Programs_Reorder] @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10758,11 +10129,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllActive]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllActive]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10786,11 +10155,9 @@ WHERE IsActive = 1
 		)
 ORDER BY POrder ASC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllOrdered]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllOrdered]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10814,11 +10181,9 @@ WHERE (
 		)
 ORDER BY POrder ASC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllTabs]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetAllTabs]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10843,11 +10208,9 @@ WHERE IsActive = 1
 		)
 ORDER BY POrder ASC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10859,11 +10222,9 @@ SELECT *
 FROM [Programs]
 WHERE PID = @PID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramForAgeAndGrade]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramForAgeAndGrade]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10937,11 +10298,9 @@ ORDER BY MaxAge ASC,
 
 RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -10963,11 +10322,9 @@ SELECT @ID
 
 RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_GetProgramMinigames]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_GetProgramMinigames]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11031,11 +10388,9 @@ ELSE
 		order by pg.LevelNumber					
 */
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11190,11 +10545,9 @@ BEGIN
 	SELECT @PID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11235,11 +10588,9 @@ BEGIN
 	WHERE PID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11276,11 +10627,9 @@ BEGIN
 	WHERE PID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11300,11 +10649,9 @@ INNER JOIN (
 	) drRowNumbers ON drRowNumbers.PID = Programs.PID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Programs_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Programs_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11406,11 +10753,9 @@ SET AdminName = @AdminName,
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11422,11 +10767,9 @@ DELETE
 FROM [RegistrationSettings]
 WHERE RID = @RID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11441,11 +10784,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11457,11 +10798,9 @@ SELECT *
 FROM [RegistrationSettings]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -11982,11 +11321,9 @@ BEGIN
 	SELECT @RID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -12334,11 +11671,9 @@ SET Literacy1Label = @Literacy1Label,
 WHERE RID = @RID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -12350,11 +11685,9 @@ DELETE
 FROM [ReportTemplate]
 WHERE RTID = @RTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -12369,11 +11702,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -12384,11 +11715,9 @@ SELECT *
 FROM [ReportTemplate]
 WHERE RTID = @RTID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -12774,11 +12103,9 @@ BEGIN
 	SELECT @RTID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_ReportTemplate_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13036,11 +12363,9 @@ SET ProgId = @ProgId,
 WHERE RTID = @RTID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13050,11 +12375,9 @@ DELETE
 FROM [SchoolCrosswalk]
 WHERE ID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13104,11 +12427,9 @@ FROM [SchoolCrosswalk] w
 RIGHT JOIN @Schools l ON w.SchoolID = l.CID
 ORDER BY l.Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13118,11 +12439,9 @@ SELECT *
 FROM [SchoolCrosswalk]
 WHERE ID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetBySchoolID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetBySchoolID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13132,11 +12451,9 @@ SELECT *
 FROM SchoolCrosswalk
 WHERE SchoolID = @ID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetFilteredSchoolDDValues]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetFilteredSchoolDDValues]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13196,11 +12513,9 @@ WHERE (
 		)
 ORDER BY Code
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13271,11 +12586,9 @@ BEGIN
 	SELECT @ID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13323,11 +12636,9 @@ SET SchoolID = @SchoolID,
 WHERE ID = @ID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13339,11 +12650,9 @@ DELETE
 FROM [SentEmailLog]
 WHERE EID = @EID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_DeleteAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_DeleteAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13353,11 +12662,9 @@ AS
 DELETE
 FROM [SentEmailLog]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13368,11 +12675,9 @@ AS
 SELECT *
 FROM [SentEmailLog]
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13384,11 +12689,9 @@ SELECT *
 FROM [SentEmailLog]
 WHERE EID = @EID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13422,11 +12725,9 @@ BEGIN
 	SELECT @EID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SentEmailLog_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13449,11 +12750,9 @@ SET SentDateTime = @SentDateTime,
 	Body = @Body
 WHERE EID = @EID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13472,11 +12771,9 @@ WHERE SQCID = @SQCID
 
 EXEC app_SQChoices_Reorder @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13495,11 +12792,9 @@ FROM [SQChoices]
 WHERE QID = @QID
 ORDER BY ChoiceOrder
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetAllInList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetAllInList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13514,11 +12809,9 @@ WHERE SQCID IN (
 		)
 ORDER BY ChoiceOrder
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13529,11 +12822,9 @@ SELECT *
 FROM [SQChoices]
 WHERE SQCID = @SQCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13603,11 +12894,9 @@ BEGIN
 	SELECT @SQCID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13644,11 +12933,9 @@ BEGIN
 	WHERE SQCID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13681,11 +12968,9 @@ BEGIN
 	WHERE SQCID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13706,11 +12991,9 @@ INNER JOIN (
 	AND QID = @QID
 WHERE QID = @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQChoices_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQChoices_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13755,11 +13038,9 @@ SET QID = @QID
 	FldText3 = @FldText3
 WHERE SQCID = @SQCID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13778,11 +13059,9 @@ WHERE SQMLID = @SQMLID
 
 EXEC app_SQMatrixLines_Reorder @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13799,11 +13078,9 @@ FROM [SQMatrixLines]
 WHERE QID = @QID
 ORDER BY LineOrder
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13814,11 +13091,9 @@ SELECT *
 FROM [SQMatrixLines]
 WHERE SQMLID = @SQMLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13877,11 +13152,9 @@ BEGIN
 	SELECT @SQMLID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13918,11 +13191,9 @@ BEGIN
 	WHERE SQMLID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13955,11 +13226,9 @@ BEGIN
 	WHERE SQMLID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -13980,11 +13249,9 @@ INNER JOIN (
 	AND QID = @QID
 WHERE QID = @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SQMatrixLines_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14020,11 +13287,9 @@ SET QID = @QID,
 	FldText3 = @FldText3
 WHERE SQMLID = @SQMLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPReport_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPReport_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14036,11 +13301,9 @@ DELETE
 FROM [SRPReport]
 WHERE RID = @RID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPReport_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPReport_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14056,11 +13319,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPReport_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPReport_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14072,11 +13333,9 @@ SELECT *
 FROM [SRPReport]
 WHERE RID = @RID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPReport_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPReport_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14468,11 +13727,9 @@ BEGIN
 	SELECT @RID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPReport_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPReport_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14734,11 +13991,9 @@ SET RTID = @RTID,
 WHERE RID = @RID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14751,11 +14006,9 @@ FROM [SRPSettings]
 WHERE SID = @SID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14769,11 +14022,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14785,11 +14036,9 @@ SELECT *
 FROM [SRPSettings]
 WHERE SID = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetByName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_GetByName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14804,11 +14053,9 @@ WHERE NAME = @Name
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14883,11 +14130,9 @@ BEGIN
 	SELECT @SID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SRPSettings_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14937,11 +14182,9 @@ SET NAME = @Name,
 WHERE SID = @SID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -14988,11 +14231,9 @@ DELETE
 FROM [Survey]
 WHERE SID = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15006,11 +14247,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_GetAllFinalized]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_GetAllFinalized]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15025,11 +14264,9 @@ WHERE (
 		)
 	AND STATUS = 2
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15040,11 +14277,9 @@ SELECT *
 FROM [Survey]
 WHERE SID = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_GetNumQuestions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_GetNumQuestions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15054,11 +14289,9 @@ SELECT isnull(Max(QNumber), 0) AS NumQuestions
 FROM SurveyQuestion
 WHERE SID = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15130,11 +14363,9 @@ BEGIN
 	SELECT @SID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Survey_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Survey_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15183,11 +14414,9 @@ SET NAME = @Name,
 WHERE SID = @SID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15198,11 +14427,9 @@ DELETE
 FROM [SurveyAnswers]
 WHERE SAID = @SAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15218,11 +14445,9 @@ INNER JOIN SurveyQuestion q ON a.QID = q.QID
 WHERE a.SRID = @SRID
 ORDER BY q.QNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetAllExpanded]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetAllExpanded]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15247,11 +14472,9 @@ FROM SurveyAnswers a
 INNER JOIN SurveyQuestion q ON a.QID = q.QID
 WHERE SRID = @SRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15262,11 +14485,9 @@ SELECT *
 FROM [SurveyAnswers]
 WHERE SAID = @SAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15347,11 +14568,9 @@ BEGIN
 	SELECT @SAID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyAnswers_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15405,11 +14624,9 @@ SET SRID = @SRID,
 	FldText3 = @FldText3
 WHERE SAID = @SAID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15427,11 +14644,9 @@ WHERE QID = @QID
 
 EXEC app_SurveyQuestion_Reorder @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15447,11 +14662,9 @@ FROM [SurveyQuestion]
 WHERE SID = @SID
 ORDER BY QNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15462,11 +14675,9 @@ SELECT *
 FROM [SurveyQuestion]
 WHERE QID = @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetPageFromQNum]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_GetPageFromQNum]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15506,11 +14717,9 @@ WHERE SID = @SID
 		)
 ORDER BY QNumber
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15583,11 +14792,9 @@ BEGIN
 	SELECT @QID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_MoveDn]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_MoveDn]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15624,11 +14831,9 @@ BEGIN
 	WHERE QID = @NextRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_MoveUp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_MoveUp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15661,11 +14866,9 @@ BEGIN
 	WHERE QID = @PreviousRecordID
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Reorder]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Reorder]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15686,11 +14889,9 @@ INNER JOIN (
 	AND SID = @SID
 WHERE SID = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyQuestion_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15736,11 +14937,9 @@ SET SID = @SID,
 	FldText3 = @FldText3
 WHERE QID = @QID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15755,11 +14954,9 @@ DELETE
 FROM [SurveyResults]
 WHERE SRID = @SRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15780,11 +14977,9 @@ WHERE TenID = @TenID
 		OR @SID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllComplete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllComplete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15838,11 +15033,9 @@ WHERE sr.TenID = @TenID
 		OR @PID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllExpanded]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllExpanded]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15863,11 +15056,9 @@ WHERE TenID = @TenID
 		OR @SID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetAllStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15968,11 +15159,9 @@ ORDER BY q.QNumber,
 	a.QID,
 	a.SQMLID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -15983,11 +15172,9 @@ SELECT *
 FROM [SurveyResults]
 WHERE SRID = @SRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetBySurveyAndSource]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetBySurveyAndSource]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16005,11 +15192,9 @@ WHERE PID = @PID
 	AND SourceID = @SrcID
 ORDER BY StartDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetExport]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetExport]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16205,11 +15390,9 @@ DROP TABLE #Results
 
 DROP TABLE #T1
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQClarifications]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQClarifications]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16236,11 +15419,9 @@ WHERE a.SID = @SID
 	AND SQMLID = @SQMLID
 	AND convert(VARCHAR(8000), ChoiceAnswerText) = @Answer
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQComments]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQComments]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16250,11 +15431,9 @@ CREATE PROCEDURE [dbo].[app_SurveyResults_GetQComments] @SID INT = NULL,
 AS
 SELECT 1
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQFreeForm]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQFreeForm]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16280,11 +15459,9 @@ WHERE a.SID = @SID
 	AND SQMLID = @SQMLID
 	AND convert(VARCHAR(8000), FreeFormAnswer) <> ''
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16300,11 +15477,9 @@ WHERE SID = @SID
 	AND SQMLID = @SQMLID
 GROUP BY CONVERT(VARCHAR(8000), ChoiceAnswerText)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStatsMedium]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStatsMedium]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16332,11 +15507,9 @@ WHERE a.SID = @SID
 	AND SQMLID = @SQMLID
 GROUP BY CONVERT(VARCHAR(8000), ChoiceAnswerText)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStatsSimple]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetQStatsSimple]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16403,11 +15576,9 @@ LEFT JOIN #Stats2 d ON c.ChoiceText = d.Value
 WHERE QID = @QID
 ORDER BY c.ChoiceOrder
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetSources]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_GetSources]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16454,11 +15625,9 @@ WHERE (
 		OR @SID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16539,11 +15708,9 @@ BEGIN
 	SELECT @SRID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_SurveyResults_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16597,11 +15764,9 @@ SET TenID = @TenID,
 	FldText3 = @FldText3
 WHERE SRID = @SRID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16612,11 +15777,9 @@ DELETE
 FROM [Tenant]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16627,11 +15790,9 @@ SELECT *
 FROM [Tenant]
 ORDER BY LandingName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetAllActive]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetAllActive]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16644,11 +15805,9 @@ WHERE isActiveFlag = 1
 	AND isMasterFlag = 0
 ORDER BY LandingName
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByDomainName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByDomainName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16672,11 +15831,9 @@ IF EXISTS (
 
 RETURN @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16687,11 +15844,9 @@ SELECT *
 FROM [Tenant]
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByProgramID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetByProgramID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16715,11 +15870,9 @@ IF EXISTS (
 
 RETURN @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_GetMasterID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_GetMasterID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16750,11 +15903,9 @@ SELECT @TenID
 
 RETURN @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16856,11 +16007,9 @@ BEGIN
 	SELECT @TenID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Tenant_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_Tenant_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16928,11 +16077,9 @@ SET NAME = @Name,
 	FldText3 = @FldText3
 WHERE TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_TenantInitData_GetPKbyOriginalPK]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_TenantInitData_GetPKbyOriginalPK]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16950,11 +16097,9 @@ BEGIN
 		AND SrcPK = @SrcPK
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_TenantInitData_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[app_TenantInitData_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -16986,11 +16131,9 @@ BEGIN
 	SELECT @InitID = SCOPE_IDENTITY()
 END
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17006,11 +16149,9 @@ DELETE
 FROM dbo.SRPGroups
 WHERE GID = @GID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_DeleteAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_DeleteAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17021,11 +16162,9 @@ AS
 DELETE
 FROM [dbo].[SRPGroups]
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_DeleteByPrimaryKey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_DeleteByPrimaryKey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17038,11 +16177,9 @@ FROM [dbo].[SRPGroups]
 WHERE [GID] = @GID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Get]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Get]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17056,11 +16193,9 @@ SELECT *
 FROM dbo.SRPGroups
 WHERE GID = @GID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17074,11 +16209,9 @@ WHERE (
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_GetByPrimaryKey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_GetByPrimaryKey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17090,11 +16223,9 @@ SELECT *
 FROM [dbo].[SRPGroups]
 WHERE [GID] = @GID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17152,11 +16283,9 @@ VALUES (
 
 SELECT @@IDENTITY
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroups_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17197,11 +16326,9 @@ SET [GroupName] = @GroupName,
 WHERE [GID] = @GID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPGroupsGroups_GetSpecialUserPermissionsNotGranted]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPGroupsGroups_GetSpecialUserPermissionsNotGranted]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17226,11 +16353,9 @@ WHERE dbo.SRPPermissionsMaster.PermissionID NOT IN (
 		WHERE dbo.SRPGroupPermissions.GID = @GID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17245,11 +16370,9 @@ DELETE
 FROM dbo.SRPPermissionsMaster
 WHERE @PermissionID = PermissionID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_DeleteByModule]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_DeleteByModule]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17264,11 +16387,9 @@ DELETE
 FROM dbo.SRPPermissionsMaster
 WHERE ModId = @ModId
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Get]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Get]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17283,11 +16404,9 @@ SELECT *
 FROM dbo.SRPPermissionsMaster
 WHERE PermissionID = @PermissionID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByModule]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByModule]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17302,11 +16421,9 @@ SELECT *
 FROM dbo.SRPPermissionsMaster
 WHERE ModID = @ModID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByModuleName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByModuleName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17322,11 +16439,9 @@ FROM dbo.SRPModule
 INNER JOIN dbo.SRPPermissionsMaster ON dbo.SRPModule.ModId = dbo.SRPPermissionsMaster.MODID
 WHERE dbo.SRPModule.ModName = @ModuleName
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_GetByName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17341,11 +16456,9 @@ SELECT *
 FROM dbo.SRPPermissionsMaster
 WHERE PermissionName = @PermissionName
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17372,11 +16485,9 @@ VALUES (
 	@MODID
 	)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPPermissionsMaster_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17396,11 +16507,9 @@ SET PermissionName = @PermissionName,
 	MODID = @MODID
 WHERE PermissionID = @PermissionID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_DeleteAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_DeleteAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17411,11 +16520,9 @@ AS
 DELETE
 FROM [dbo].[SRPSettings]
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_DeleteByPrimaryKey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_DeleteByPrimaryKey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17427,11 +16534,9 @@ DELETE
 FROM [dbo].[SRPSettings]
 WHERE [SID] = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17442,11 +16547,9 @@ AS
 SELECT *
 FROM [dbo].[SRPSettings]
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetByName]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetByName]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17458,11 +16561,9 @@ SELECT *
 FROM [dbo].[SRPSettings]
 WHERE [Name] = @Name
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetByPrimaryKey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_GetByPrimaryKey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17474,11 +16575,9 @@ SELECT *
 FROM [dbo].[SRPSettings]
 WHERE [SID] = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17519,11 +16618,9 @@ VALUES (
 
 SELECT @@IDENTITY
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPSettings_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17555,11 +16652,9 @@ SET [Name] = @Name,
 	[DefaultValue] = @DefaultValue
 WHERE [SID] = @SID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Delete]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Delete]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17578,11 +16673,9 @@ SET isDeleted = 1,
 	LastModUser = @ActionUsername
 WHERE UID = @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_EmailExists]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_EmailExists]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17604,11 +16697,9 @@ IF @RowCount > 0
 ELSE
 	RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Get]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Get]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17636,11 +16727,9 @@ SELECT *
 FROM dbo.SRPUser
 WHERE UID = @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetActiveSessions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetActiveSessions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17667,11 +16756,9 @@ FROM dbo.SRPUser
 INNER JOIN dbo.SRPUserLoginHistory ON dbo.SRPUser.UID = dbo.SRPUserLoginHistory.UID
 WHERE dbo.SRPUserLoginHistory.EndDateTime IS NULL
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17689,11 +16776,9 @@ WHERE IsDeleted = 0
 		OR @TenID IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAllPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAllPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17725,11 +16810,9 @@ INNER JOIN dbo.SRPUserPermissions ON dbo.SRPPermissionsMaster.PermissionID = dbo
 INNER JOIN dbo.SRPUser ON dbo.SRPUserPermissions.UID = dbo.SRPUser.UID
 WHERE dbo.SRPUser.UID = @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAllPermissionsAUDIT]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetAllPermissionsAUDIT]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17774,11 +16857,9 @@ INNER JOIN dbo.SRPUser ON dbo.SRPUserPermissions.UID = dbo.SRPUser.UID
 WHERE dbo.SRPUser.UID = @UID
 ORDER BY PermissionID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetByUsername]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetByUsername]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17793,11 +16874,9 @@ SELECT *
 FROM dbo.SRPUser
 WHERE Username = @Username
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17820,11 +16899,9 @@ INNER JOIN dbo.SRPUserGroups ON dbo.SRPGroups.GID = dbo.SRPUserGroups.GID
 INNER JOIN dbo.SRPUser ON dbo.SRPUserGroups.UID = dbo.SRPUser.UID
 WHERE dbo.SRPUser.UID = @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroupsFlagged]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroupsFlagged]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17858,11 +16935,9 @@ WHERE UID = @UID
 	OR UID IS NULL
 	AND SRPGroups.TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroupsNonMembers]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetGroupsNonMembers]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17888,11 +16963,9 @@ WHERE dbo.SRPGroups.GID NOT IN (
 		WHERE dbo.SRPUserGroups.UID = @UID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginHistory]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginHistory]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17912,11 +16985,9 @@ WHERE u.UID = @UID
 	AND u.UID = h.UID
 ORDER BY StartDateTime DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginNow]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginNow]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17936,11 +17007,9 @@ WHERE EndDateTime IS NULL
 	AND u.UID = h.UID
 ORDER BY StartDateTime DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginNowTenID]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetLoginNowTenID]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17961,11 +17030,9 @@ WHERE EndDateTime IS NULL
 	AND u.TenID = @TenID
 ORDER BY StartDateTime DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -17988,11 +17055,9 @@ INNER JOIN dbo.SRPUserPermissions ON dbo.SRPPermissionsMaster.PermissionID = dbo
 INNER JOIN dbo.SRPUser ON dbo.SRPUserPermissions.UID = dbo.SRPUser.UID
 WHERE dbo.SRPUser.UID = @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissionsFlagged]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissionsFlagged]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18020,11 +17085,9 @@ LEFT JOIN dbo.SRPUserPermissions ON dbo.SRPPermissionsMaster.PermissionID = dbo.
 WHERE UID = @UID
 	OR UID IS NULL
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissionsNotGranted]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_GetSpecialUserPermissionsNotGranted]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18050,17 +17113,15 @@ WHERE dbo.SRPPermissionsMaster.PermissionID NOT IN (
 		WHERE dbo.SRPUserPermissions.UID = @UID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Insert]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Insert]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
 ------------------------------------------------------------------------
 CREATE PROCEDURE [dbo].[cbspSRPUser_Insert] @Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@FirstName VARCHAR(50),
 	@LastName VARCHAR(50),
 	@EmailAddress VARCHAR(128),
@@ -18148,17 +17209,14 @@ SELECT @@IDENTITY
 
 RETURN @@IDENTITY
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Login]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Login]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
 /****** Object:  StoredProcedure [dbo].[cbspSRPUser_Login]    Script Date: 01/05/2015 14:43:27 ******/
 CREATE PROCEDURE [dbo].[cbspSRPUser_Login] @UserName VARCHAR(50),
-	@Password VARCHAR(50),
 	@SessionId VARCHAR(128) = 'N/A',
 	@IP VARCHAR(50) = 'N/A',
 	@MachineName VARCHAR(50) = 'N/A',
@@ -18179,7 +17237,6 @@ SELECT @Count = isnull(Count(*), 0),
 	@IsDeleted = IsDeleted
 FROM dbo.SRPUser
 WHERE Username = @UserName
-	AND Password = @Password
 	AND IsDeleted = 0
 	AND IsActive = 1
 GROUP BY UID,
@@ -18230,11 +17287,9 @@ END
 
 RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Logout]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Logout]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18249,11 +17304,9 @@ SET EndDateTime = getdate()
 WHERE UID = @UID
 	AND EndDateTime IS NULL
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_LogoutAll]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_LogoutAll]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18269,11 +17322,9 @@ SET EndDateTime = getdate()
 WHERE EndDateTime IS NULL
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_ResetPassword]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_ResetPassword]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18298,18 +17349,16 @@ WHERE UID = @UID
 
 EXEC cbspSRPUser_GetAllPermissions @UID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Update]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_Update]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
 ------------------------------------------------------------------------
 CREATE PROCEDURE [dbo].[cbspSRPUser_Update] @UID INT,
 	@Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@FirstName VARCHAR(50),
 	@LastName VARCHAR(50),
 	@EmailAddress VARCHAR(128),
@@ -18363,11 +17412,9 @@ SET Username = @Username,
 WHERE UID = @UID
 	AND TenID = @TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UpdateGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UpdateGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18403,11 +17450,9 @@ WHERE GID IN (
 		WHERE UID = @UID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UpdateSpecialUserPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UpdateSpecialUserPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18443,11 +17488,9 @@ WHERE PermissionID IN (
 		WHERE UID = @UID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UsernameExists]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUser_UsernameExists]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18469,11 +17512,9 @@ IF @RowCount > 0
 ELSE
 	RETURN 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18494,11 +17535,9 @@ INNER JOIN dbo.SRPGroupPermissions ON dbo.SRPPermissionsMaster.PermissionID = db
 INNER JOIN dbo.SRPGroups ON dbo.SRPGroupPermissions.GID = dbo.SRPGroups.GID
 WHERE dbo.SRPGroups.GID = @GID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissionsFlagged]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissionsFlagged]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18526,11 +17565,9 @@ LEFT JOIN dbo.SRPGroupPermissions ON dbo.SRPPermissionsMaster.PermissionID = dbo
 WHERE GID = @GID
 	OR GID IS NULL
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissionsNotGranted]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetPermissionsNotGranted]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18556,11 +17593,9 @@ WHERE dbo.SRPPermissionsMaster.PermissionID NOT IN (
 		WHERE dbo.SRPGroupPermissions.GID = @GID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsers]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsers]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18585,11 +17620,9 @@ INNER JOIN dbo.SRPUser ON dbo.SRPUserGroups.UID = dbo.SRPUser.UID
 WHERE dbo.SRPGroups.GID = @GID
 	AND dbo.SRPUser.IsDeleted = 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsersFlagged]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsersFlagged]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18625,11 +17658,9 @@ WHERE (
 	AND dbo.SRPUser.IsDeleted = 0
 	AND dbo.SRPUser.TenID = dbo.SRPGroups.TenID
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsersNonMembers]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_GetUsersNonMembers]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18661,11 +17692,9 @@ WHERE dbo.SRPGroups.GID NOT IN (
 		)
 	AND dbo.SRPUser.IsDeleted = 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_UpdatePermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_UpdatePermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18701,11 +17730,9 @@ WHERE PermissionID IN (
 		WHERE GID = @GID
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_UpdateUsers]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[cbspSRPUserGroups_UpdateUsers]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18741,11 +17768,9 @@ WHERE UID IN (
 		)
 	AND IsDeleted = 0
 GO
-
-/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18849,11 +17874,9 @@ WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + con
 --select @SQL1
 EXEC (@SQL1)
 GO
-
-/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -18952,11 +17975,9 @@ FROM Patron p ' + CASE len(@Filter)
 EXEC (@SQL1)
 	--select @SQL1
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -19513,11 +18534,9 @@ WHERE Patron.TenID = @TenID
 GROUP BY AdminName
 ORDER BY AdminName
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -19600,11 +18619,9 @@ GROUP BY ProgID,
 ORDER BY ProgID,
 	Age
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_GameLevelStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_GameLevelStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -19682,11 +18699,9 @@ GROUP BY ProgID,
 ORDER BY AdminName,
 	LevelAchieved
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_MiniGameStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_MiniGameStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -19846,11 +18861,9 @@ ORDER BY Username,
 	MGType,
 	MiniGameTypeName
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_PatronActivity]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_PatronActivity]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -19989,11 +19002,9 @@ ORDER BY AdminName,
 	p.FirstName,
 	p.LastName
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_PatronFilter]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_PatronFilter]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20027,11 +19038,9 @@ WHERE TenID = @TenID
 		OR @LibSys IS NULL
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_PatronFilter_Expanded]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_PatronFilter_Expanded]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20089,11 +19098,9 @@ WHERE TenID = @TenID
 			) >= @Points
 		)
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_PrizeRecipients]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_PrizeRecipients]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20141,11 +19148,9 @@ ORDER BY AdminName,
 	LastName,
 	RedeemedFlag DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_ReadingActivityReport]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_ReadingActivityReport]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20208,11 +19213,9 @@ ORDER BY pg.AdminName,
 	p.FirstName,
 	p.LastName
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_RegistrationStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_RegistrationStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20291,11 +19294,9 @@ GROUP BY ProgID,
 ORDER BY ProgID,
 	Age
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_TenantReport]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_TenantReport]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20411,11 +19412,9 @@ SELECT 'TOTAL: ',
 			), 0) AS [# Reading Minutes]
 WHERE @IncSummary = 1
 GO
-
-/****** Object:  StoredProcedure [dbo].[rpt_TenantSummaryReport]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_TenantSummaryReport]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20643,11 +19642,9 @@ WHERE t.TenID = @TenID
 	-- AND (x.ProgID = @ProgID or @ProgId is null) AND (x.PrimaryLibrary = @BranchID or @BranchID is null) AND (rtrim(ltrim(isnull(x.SchoolName,''))) = @School or @School is null) AND (rtrim(ltrim(isnull(x.District,''))) = @LibSys or @LibSys is null)
 	-- AND (y.ProgID = @ProgID or @ProgId is null) AND (y.PrimaryLibrary = @BranchID or @BranchID is null) AND (rtrim(ltrim(isnull(y.SchoolName,''))) = @School or @School is null) AND (rtrim(ltrim(isnull(y.District,''))) = @LibSys or @LibSys is null)
 GO
-
-/****** Object:  StoredProcedure [dbo].[uspSplitIntegerList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  StoredProcedure [dbo].[uspSplitIntegerList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20762,11 +19759,9 @@ DROP TABLE #list_items
 
 RETURN
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fnSplitBigInt]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fnSplitBigInt]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20803,11 +19798,9 @@ BEGIN
 	RETURN
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fnSplitString]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fnSplitString]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20845,11 +19838,9 @@ BEGIN
 	RETURN
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fx_ConvertPoints]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fx_ConvertPoints]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20896,11 +19887,9 @@ BEGIN
 	RETURN @ret
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fx_IsFinisher]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fx_IsFinisher]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -20962,11 +19951,9 @@ BEGIN
 	RETURN @ret
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fx_IsFinisher2]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fx_IsFinisher2]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -21037,11 +20024,9 @@ BEGIN
 	RETURN @ret
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fx_IsLevelFinisher]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fx_IsLevelFinisher]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -21091,11 +20076,9 @@ BEGIN
 	RETURN @ret
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[fx_PatronHasAllBadgesInList]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[fx_PatronHasAllBadgesInList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -21133,11 +20116,9 @@ BEGIN
 	RETURN @ret
 END
 GO
-
-/****** Object:  UserDefinedFunction [dbo].[ProgramGameCummulativePoints]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  UserDefinedFunction [dbo].[ProgramGameCummulativePoints]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -21219,19 +20200,15 @@ BEGIN
 	RETURN
 END
 GO
-
-/****** Object:  Table [dbo].[Avatar]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Avatar]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Avatar] (
-	[AID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Avatar](
+	[AID] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NULL,
 	[Gender] [varchar](1) NULL,
 	[LastModDate] [datetime] NULL,
@@ -21248,31 +20225,24 @@ CREATE TABLE [dbo].[Avatar] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Avatar] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Avatar] PRIMARY KEY CLUSTERED 
+(
+	[AID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Award]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Award]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Award] (
-	[AID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Award](
+	[AID] [int] IDENTITY(1,1) NOT NULL,
 	[AwardName] [varchar](80) NULL,
 	[BadgeID] [int] NULL,
 	[NumPoints] [int] NULL,
@@ -21295,31 +20265,24 @@ CREATE TABLE [dbo].[Award] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED 
+(
+	[AID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Badge]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Badge]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Badge] (
-	[BID] [int] IDENTITY(1000, 1) NOT NULL,
+CREATE TABLE [dbo].[Badge](
+	[BID] [int] IDENTITY(1000,1) NOT NULL,
 	[AdminName] [varchar](50) NULL,
 	[UserName] [varchar](50) NULL,
 	[GenNotificationFlag] [bit] NULL,
@@ -21345,123 +20308,88 @@ CREATE TABLE [dbo].[Badge] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Badge] PRIMARY KEY CLUSTERED ([BID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Badge] PRIMARY KEY CLUSTERED 
+(
+	[BID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[BadgeAgeGrp]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[BadgeAgeGrp]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[BadgeAgeGrp] (
+CREATE TABLE [dbo].[BadgeAgeGrp](
 	[BID] [int] NOT NULL,
 	[CID] [int] NOT NULL,
-	CONSTRAINT [PK_BadgeAgeGrp] PRIMARY KEY CLUSTERED (
-		[BID] ASC,
-		[CID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BadgeAgeGrp] PRIMARY KEY CLUSTERED 
+(
+	[BID] ASC,
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[BadgeBranch]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[BadgeBranch]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[BadgeBranch] (
+CREATE TABLE [dbo].[BadgeBranch](
 	[BID] [int] NOT NULL,
 	[CID] [int] NOT NULL,
-	CONSTRAINT [PK_BadgeBranch] PRIMARY KEY CLUSTERED (
-		[BID] ASC,
-		[CID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BadgeBranch] PRIMARY KEY CLUSTERED 
+(
+	[BID] ASC,
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[BadgeCategory]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[BadgeCategory]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[BadgeCategory] (
+CREATE TABLE [dbo].[BadgeCategory](
 	[BID] [int] NOT NULL,
 	[CID] [int] NOT NULL,
-	CONSTRAINT [PK_BadgeCategory] PRIMARY KEY CLUSTERED (
-		[BID] ASC,
-		[CID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BadgeCategory] PRIMARY KEY CLUSTERED 
+(
+	[BID] ASC,
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[BadgeLocation]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[BadgeLocation]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[BadgeLocation] (
+CREATE TABLE [dbo].[BadgeLocation](
 	[BID] [int] NOT NULL,
 	[CID] [int] NOT NULL,
-	CONSTRAINT [PK_BadgeLocation] PRIMARY KEY CLUSTERED (
-		[BID] ASC,
-		[CID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BadgeLocation] PRIMARY KEY CLUSTERED 
+(
+	[BID] ASC,
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[BookList]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[BookList]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[BookList] (
-	[BLID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[BookList](
+	[BLID] [int] IDENTITY(1,1) NOT NULL,
 	[AdminName] [varchar](50) NULL,
 	[ListName] [varchar](50) NULL,
 	[AdminDescription] [text] NULL,
@@ -21487,31 +20415,24 @@ CREATE TABLE [dbo].[BookList] (
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
 	[NumBooksToComplete] [int] NULL,
-	CONSTRAINT [PK_BookList] PRIMARY KEY CLUSTERED ([BLID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BookList] PRIMARY KEY CLUSTERED 
+(
+	[BLID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[BookListBooks]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[BookListBooks]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[BookListBooks] (
-	[BLBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[BookListBooks](
+	[BLBID] [int] IDENTITY(1,1) NOT NULL,
 	[BLID] [int] NULL,
 	[Author] [varchar](50) NULL,
 	[Title] [varchar](150) NULL,
@@ -21531,31 +20452,24 @@ CREATE TABLE [dbo].[BookListBooks] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_BookListBooks] PRIMARY KEY CLUSTERED ([BLBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_BookListBooks] PRIMARY KEY CLUSTERED 
+(
+	[BLBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Code]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Code]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Code] (
-	[CID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Code](
+	[CID] [int] IDENTITY(1,1) NOT NULL,
 	[CTID] [int] NULL,
 	[Code] [varchar](25) NULL,
 	[Description] [varchar](80) NULL,
@@ -21569,31 +20483,24 @@ CREATE TABLE [dbo].[Code] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Code] PRIMARY KEY CLUSTERED ([CID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Code] PRIMARY KEY CLUSTERED 
+(
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[CodeType]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[CodeType]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[CodeType] (
-	[CTID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[CodeType](
+	[CTID] [int] IDENTITY(1,1) NOT NULL,
 	[isSystem] [bit] NULL,
 	[CodeTypeName] [varchar](50) NULL,
 	[Description] [text] NULL,
@@ -21607,31 +20514,24 @@ CREATE TABLE [dbo].[CodeType] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_CodeType] PRIMARY KEY CLUSTERED ([CTID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_CodeType] PRIMARY KEY CLUSTERED 
+(
+	[CTID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[CustomEventFields]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[CustomEventFields]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[CustomEventFields] (
-	[CID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[CustomEventFields](
+	[CID] [int] IDENTITY(1,1) NOT NULL,
 	[Use1] [bit] NULL,
 	[Label1] [varchar](50) NULL,
 	[DDValues1] [varchar](50) NULL,
@@ -21655,31 +20555,24 @@ CREATE TABLE [dbo].[CustomEventFields] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_CustomEventFields] PRIMARY KEY CLUSTERED ([TenID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_CustomEventFields] PRIMARY KEY CLUSTERED 
+(
+	[TenID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[CustomRegistrationFields]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[CustomRegistrationFields]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[CustomRegistrationFields] (
-	[CID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[CustomRegistrationFields](
+	[CID] [int] IDENTITY(1,1) NOT NULL,
 	[Use1] [bit] NULL,
 	[Label1] [varchar](50) NULL,
 	[DDValues1] [varchar](50) NULL,
@@ -21709,31 +20602,24 @@ CREATE TABLE [dbo].[CustomRegistrationFields] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_CustomRegistrationFields] PRIMARY KEY CLUSTERED ([CID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_CustomRegistrationFields] PRIMARY KEY CLUSTERED 
+(
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Event]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Event]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Event] (
-	[EID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Event](
+	[EID] [int] IDENTITY(1,1) NOT NULL,
 	[EventTitle] [varchar](150) NULL,
 	[EventDate] [datetime] NULL,
 	[EventTime] [varchar](15) NULL,
@@ -21762,31 +20648,24 @@ CREATE TABLE [dbo].[Event] (
 	[EndDate] [datetime] NULL,
 	[EndTime] [varchar](50) NULL,
 	[ShortDescription] [text] NULL,
-	CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED ([EID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED 
+(
+	[EID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[GamePlayStats]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[GamePlayStats]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[GamePlayStats] (
-	[GPSID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[GamePlayStats](
+	[GPSID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[MGID] [int] NULL,
 	[MGType] [int] NULL,
@@ -21794,31 +20673,24 @@ CREATE TABLE [dbo].[GamePlayStats] (
 	[Difficulty] [varchar](50) NULL,
 	[CompletedPlay] [bit] NULL,
 	[Completed] [datetime] NULL,
-	CONSTRAINT [PK_GamePlayStats] PRIMARY KEY CLUSTERED ([GPSID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_GamePlayStats] PRIMARY KEY CLUSTERED 
+(
+	[GPSID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[LibraryCrosswalk]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[LibraryCrosswalk]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[LibraryCrosswalk] (
-	[ID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[LibraryCrosswalk](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[BranchID] [int] NULL,
 	[DistrictID] [int] NULL,
 	[City] [varchar](50) NULL,
@@ -21832,31 +20704,24 @@ CREATE TABLE [dbo].[LibraryCrosswalk] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_LibraryCrosswalk] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_LibraryCrosswalk] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGChooseAdv]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGChooseAdv]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGChooseAdv] (
-	[CAID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGChooseAdv](
+	[CAID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[EnableMediumDifficulty] [bit] NULL,
 	[EnableHardDifficulty] [bit] NULL,
@@ -21864,31 +20729,24 @@ CREATE TABLE [dbo].[MGChooseAdv] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGChooseAdv] PRIMARY KEY CLUSTERED ([CAID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGChooseAdv] PRIMARY KEY CLUSTERED 
+(
+	[CAID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGChooseAdvSlides]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGChooseAdvSlides]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGChooseAdvSlides] (
-	[CASID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGChooseAdvSlides](
+	[CASID] [int] IDENTITY(1,1) NOT NULL,
 	[CAID] [int] NOT NULL,
 	[MGID] [int] NULL,
 	[Difficulty] [int] NULL,
@@ -21900,31 +20758,24 @@ CREATE TABLE [dbo].[MGChooseAdvSlides] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGChooseAdvSlides] PRIMARY KEY CLUSTERED ([CASID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGChooseAdvSlides] PRIMARY KEY CLUSTERED 
+(
+	[CASID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGCodeBreaker]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGCodeBreaker]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGCodeBreaker] (
-	[CBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGCodeBreaker](
+	[CBID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[EasyString] [varchar](250) NULL,
 	[EnableMediumDifficulty] [bit] NULL,
@@ -21935,52 +20786,40 @@ CREATE TABLE [dbo].[MGCodeBreaker] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGCodeBreaker] PRIMARY KEY CLUSTERED ([CBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGCodeBreaker] PRIMARY KEY CLUSTERED 
+(
+	[CBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGCodeBreakerKey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGCodeBreakerKey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[MGCodeBreakerKey] (
-	[CBKID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGCodeBreakerKey](
+	[CBKID] [int] IDENTITY(1,1) NOT NULL,
 	[CBID] [int] NOT NULL,
 	[MGID] [int] NULL,
-	CONSTRAINT [PK_MGCodeBreakerKey] PRIMARY KEY CLUSTERED ([CBKID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGCodeBreakerKey] PRIMARY KEY CLUSTERED 
+(
+	[CBKID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[MGHiddenPic]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[MGHiddenPic]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGHiddenPic] (
-	[HPID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGHiddenPic](
+	[HPID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[EnableMediumDifficulty] [bit] NULL,
 	[EnableHardDifficulty] [bit] NULL,
@@ -21991,62 +20830,48 @@ CREATE TABLE [dbo].[MGHiddenPic] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGHiddenPic] PRIMARY KEY CLUSTERED ([HPID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGHiddenPic] PRIMARY KEY CLUSTERED 
+(
+	[HPID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGHiddenPicBk]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGHiddenPicBk]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGHiddenPicBk] (
-	[HPBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGHiddenPicBk](
+	[HPBID] [int] IDENTITY(1,1) NOT NULL,
 	[HPID] [int] NOT NULL,
 	[MGID] [int] NULL,
 	[LastModDate] [datetime] NULL,
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGHiddenPicBk] PRIMARY KEY CLUSTERED ([HPBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGHiddenPicBk] PRIMARY KEY CLUSTERED 
+(
+	[HPBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGMatchingGame]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGMatchingGame]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGMatchingGame] (
-	[MAGID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGMatchingGame](
+	[MAGID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[CorrectRoundsToWinCount] [int] NULL,
 	[EasyGameSize] [int] NULL,
@@ -22058,31 +20883,24 @@ CREATE TABLE [dbo].[MGMatchingGame] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGMatchingGame] PRIMARY KEY CLUSTERED ([MAGID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGMatchingGame] PRIMARY KEY CLUSTERED 
+(
+	[MAGID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGMatchingGameTiles]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGMatchingGameTiles]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGMatchingGameTiles] (
-	[MAGTID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGMatchingGameTiles](
+	[MAGTID] [int] IDENTITY(1,1) NOT NULL,
 	[MAGID] [int] NOT NULL,
 	[MGID] [int] NULL,
 	[Tile1UseMedium] [bit] NULL,
@@ -22095,31 +20913,24 @@ CREATE TABLE [dbo].[MGMatchingGameTiles] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGMatchingGameTiles] PRIMARY KEY CLUSTERED ([MAGTID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGMatchingGameTiles] PRIMARY KEY CLUSTERED 
+(
+	[MAGTID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGMixAndMatch]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGMixAndMatch]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGMixAndMatch] (
-	[MMID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGMixAndMatch](
+	[MMID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[CorrectRoundsToWinCount] [int] NULL,
 	[EnableMediumDifficulty] [bit] NULL,
@@ -22128,31 +20939,24 @@ CREATE TABLE [dbo].[MGMixAndMatch] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGMixAndMatch] PRIMARY KEY CLUSTERED ([MMID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGMixAndMatch] PRIMARY KEY CLUSTERED 
+(
+	[MMID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGMixAndMatchItems]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGMixAndMatchItems]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGMixAndMatchItems] (
-	[MMIID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGMixAndMatchItems](
+	[MMIID] [int] IDENTITY(1,1) NOT NULL,
 	[MMID] [int] NOT NULL,
 	[MGID] [int] NULL,
 	[ItemImage] [varchar](150) NULL,
@@ -22166,31 +20970,24 @@ CREATE TABLE [dbo].[MGMixAndMatchItems] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGMixAndMatchItems] PRIMARY KEY CLUSTERED ([MMIID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGMixAndMatchItems] PRIMARY KEY CLUSTERED 
+(
+	[MMIID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGOnlineBook]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGOnlineBook]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGOnlineBook] (
-	[OBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGOnlineBook](
+	[OBID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[EnableMediumDifficulty] [bit] NULL,
 	[EnableHardDifficulty] [bit] NULL,
@@ -22198,31 +20995,24 @@ CREATE TABLE [dbo].[MGOnlineBook] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGOnlineBook] PRIMARY KEY CLUSTERED ([OBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGOnlineBook] PRIMARY KEY CLUSTERED 
+(
+	[OBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGOnlineBookPages]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGOnlineBookPages]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGOnlineBookPages] (
-	[OBPGID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGOnlineBookPages](
+	[OBPGID] [int] IDENTITY(1,1) NOT NULL,
 	[OBID] [int] NULL,
 	[MGID] [int] NULL,
 	[PageNumber] [int] NULL,
@@ -22236,31 +21026,24 @@ CREATE TABLE [dbo].[MGOnlineBookPages] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGOnlineBookPages] PRIMARY KEY CLUSTERED ([OBPGID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGOnlineBookPages] PRIMARY KEY CLUSTERED 
+(
+	[OBPGID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGWordMatch]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGWordMatch]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGWordMatch] (
-	[WMID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGWordMatch](
+	[WMID] [int] IDENTITY(1,1) NOT NULL,
 	[MGID] [int] NULL,
 	[CorrectRoundsToWinCount] [int] NULL,
 	[NumOptionsToChooseFrom] [int] NULL,
@@ -22270,31 +21053,24 @@ CREATE TABLE [dbo].[MGWordMatch] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_WGMixAndMatch] PRIMARY KEY CLUSTERED ([WMID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_WGMixAndMatch] PRIMARY KEY CLUSTERED 
+(
+	[WMID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[MGWordMatchItems]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[MGWordMatchItems]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[MGWordMatchItems] (
-	[WMIID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[MGWordMatchItems](
+	[WMIID] [int] IDENTITY(1,1) NOT NULL,
 	[WMID] [int] NOT NULL,
 	[MGID] [int] NULL,
 	[ItemImage] [varchar](150) NULL,
@@ -22308,31 +21084,24 @@ CREATE TABLE [dbo].[MGWordMatchItems] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_MGWordMatchItems] PRIMARY KEY CLUSTERED ([WMIID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_MGWordMatchItems] PRIMARY KEY CLUSTERED 
+(
+	[WMIID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Minigame]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Minigame]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Minigame] (
-	[MGID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Minigame](
+	[MGID] [int] IDENTITY(1,1) NOT NULL,
 	[MiniGameType] [int] NULL,
 	[MiniGameTypeName] [varchar](50) NULL,
 	[AdminName] [varchar](50) NULL,
@@ -22355,31 +21124,24 @@ CREATE TABLE [dbo].[Minigame] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Minigame] PRIMARY KEY CLUSTERED ([MGID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Minigame] PRIMARY KEY CLUSTERED 
+(
+	[MGID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Notifications]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Notifications]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Notifications] (
-	[NID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Notifications](
+	[NID] [int] IDENTITY(1,1) NOT NULL,
 	[PID_To] [int] NULL,
 	[PID_From] [int] NULL,
 	[isQuestion] [bit] NULL,
@@ -22400,31 +21162,24 @@ CREATE TABLE [dbo].[Notifications] (
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
 	[isUnread] [bit] NULL,
-	CONSTRAINT [PK_Notifications] PRIMARY KEY CLUSTERED ([NID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Notifications] PRIMARY KEY CLUSTERED 
+(
+	[NID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Offer]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Offer]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Offer] (
-	[OID] [int] IDENTITY(100000, 1) NOT NULL,
+CREATE TABLE [dbo].[Offer](
+	[OID] [int] IDENTITY(100000,1) NOT NULL,
 	[isEnabled] [bit] NULL,
 	[AdminName] [varchar](50) NULL,
 	[Title] [varchar](150) NULL,
@@ -22452,35 +21207,28 @@ CREATE TABLE [dbo].[Offer] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Offer] PRIMARY KEY CLUSTERED ([OID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Offer] PRIMARY KEY CLUSTERED 
+(
+	[OID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Patron]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Patron]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Patron] (
-	[PID] [int] IDENTITY(100000, 1) NOT NULL,
+CREATE TABLE [dbo].[Patron](
+	[PID] [int] IDENTITY(100000,1) NOT NULL,
 	[IsMasterAccount] [bit] NULL,
 	[MasterAcctPID] [int] NULL,
 	[Username] [varchar](50) NULL,
-	[Password] [varchar](50) NULL,
+	[Password] [varchar](255) NULL,
 	[DOB] [datetime] NULL,
 	[Age] [int] NULL,
 	[SchoolGrade] [varchar](5) NULL,
@@ -22538,77 +21286,60 @@ CREATE TABLE [dbo].[Patron] (
 	[Score2Pct] [decimal](18, 2) NULL,
 	[Score1Date] [datetime] NULL,
 	[Score2Date] [datetime] NULL,
-	CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED 
+(
+	[PID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PatronBadges]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PatronBadges]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[PatronBadges] (
-	[PBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronBadges](
+	[PBID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[BadgeID] [int] NULL,
 	[DateEarned] [datetime] NULL,
-	CONSTRAINT [PK_PatronBadges] PRIMARY KEY CLUSTERED ([PBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronBadges] PRIMARY KEY CLUSTERED 
+(
+	[PBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[PatronBookLists]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[PatronBookLists]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[PatronBookLists] (
-	[PBLBID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronBookLists](
+	[PBLBID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[BLBID] [int] NOT NULL,
 	[BLID] [int] NULL,
 	[HasReadFlag] [bit] NULL,
 	[LastModDate] [datetime] NULL,
-	CONSTRAINT [PK_PatronBookLists] PRIMARY KEY CLUSTERED ([PBLBID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronBookLists] PRIMARY KEY CLUSTERED 
+(
+	[PBLBID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[PatronPoints]    Script Date: 8/31/2015 14:43:36 ******/
+GO
+/****** Object:  Table [dbo].[PatronPoints]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PatronPoints] (
-	[PPID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronPoints](
+	[PPID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[NumPoints] [int] NULL,
 	[AwardDate] [datetime] NULL,
@@ -22630,31 +21361,24 @@ CREATE TABLE [dbo].[PatronPoints] (
 	[GameLevel] [int] NULL,
 	[GameLevelID] [int] NULL,
 	[GameLevelActivityID] [int] NULL,
-	CONSTRAINT [PK_PatronPoints] PRIMARY KEY CLUSTERED ([PPID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronPoints] PRIMARY KEY CLUSTERED 
+(
+	[PPID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PatronPrizes]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PatronPrizes]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PatronPrizes] (
-	[PPID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronPrizes](
+	[PPID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[PrizeSource] [int] NULL,
 	[BadgeID] [int] NULL,
@@ -22665,31 +21389,24 @@ CREATE TABLE [dbo].[PatronPrizes] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_PatronPrizes] PRIMARY KEY CLUSTERED ([PPID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronPrizes] PRIMARY KEY CLUSTERED 
+(
+	[PPID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PatronReadingLog]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PatronReadingLog]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PatronReadingLog] (
-	[PRLID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronReadingLog](
+	[PRLID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[ReadingType] [int] NULL,
 	[ReadingTypeLabel] [varchar](50) NULL,
@@ -22700,31 +21417,24 @@ CREATE TABLE [dbo].[PatronReadingLog] (
 	[Title] [varchar](150) NULL,
 	[HasReview] [bit] NULL,
 	[ReviewID] [int] NULL,
-	CONSTRAINT [PK_PatronReadingLog] PRIMARY KEY CLUSTERED ([PRLID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronReadingLog] PRIMARY KEY CLUSTERED 
+(
+	[PRLID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PatronReview]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PatronReview]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PatronReview] (
-	[PRID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronReview](
+	[PRID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[PRLID] [int] NULL,
 	[Author] [varchar](50) NULL,
@@ -22734,31 +21444,24 @@ CREATE TABLE [dbo].[PatronReview] (
 	[ReviewDate] [datetime] NULL,
 	[ApprovalDate] [datetime] NULL,
 	[ApprovedBy] [varchar](50) NULL,
-	CONSTRAINT [PK_PatronReview] PRIMARY KEY CLUSTERED ([PRID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronReview] PRIMARY KEY CLUSTERED 
+(
+	[PRID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PatronRewardCodes]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PatronRewardCodes]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PatronRewardCodes] (
-	[PRCID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PatronRewardCodes](
+	[PRCID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[BadgeID] [int] NULL,
 	[ProgID] [int] NULL,
@@ -22767,31 +21470,24 @@ CREATE TABLE [dbo].[PatronRewardCodes] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_PatronRewardCodes] PRIMARY KEY CLUSTERED ([PRCID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PatronRewardCodes] PRIMARY KEY CLUSTERED 
+(
+	[PRCID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PrizeDrawing]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PrizeDrawing]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PrizeDrawing] (
-	[PDID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PrizeDrawing](
+	[PDID] [int] IDENTITY(1,1) NOT NULL,
 	[PrizeName] [varchar](250) NULL,
 	[TID] [int] NULL,
 	[DrawingDateTime] [datetime] NULL,
@@ -22810,31 +21506,24 @@ CREATE TABLE [dbo].[PrizeDrawing] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_PrizeDrawing] PRIMARY KEY CLUSTERED ([PDID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PrizeDrawing] PRIMARY KEY CLUSTERED 
+(
+	[PDID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PrizeDrawingWinners]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PrizeDrawingWinners]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PrizeDrawingWinners] (
-	[PDWID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PrizeDrawingWinners](
+	[PDWID] [int] IDENTITY(1,1) NOT NULL,
 	[PDID] [int] NULL,
 	[PatronID] [int] NULL,
 	[NotificationID] [int] NULL,
@@ -22843,31 +21532,24 @@ CREATE TABLE [dbo].[PrizeDrawingWinners] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_PrizeDrawingWinners] PRIMARY KEY CLUSTERED ([PDWID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PrizeDrawingWinners] PRIMARY KEY CLUSTERED 
+(
+	[PDWID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[PrizeTemplate]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[PrizeTemplate]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[PrizeTemplate] (
-	[TID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[PrizeTemplate](
+	[TID] [int] IDENTITY(1,1) NOT NULL,
 	[TName] [varchar](150) NULL,
 	[NumPrizes] [int] NULL,
 	[IncPrevWinnersFlag] [bit] NULL,
@@ -22900,31 +21582,24 @@ CREATE TABLE [dbo].[PrizeTemplate] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_PrizeTemplate] PRIMARY KEY CLUSTERED ([TID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_PrizeTemplate] PRIMARY KEY CLUSTERED 
+(
+	[TID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[ProgramCodes]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[ProgramCodes]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[ProgramCodes] (
-	[PCID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[ProgramCodes](
+	[PCID] [int] IDENTITY(1,1) NOT NULL,
 	[PID] [int] NULL,
 	[CodeNumber] [int] NULL,
 	[CodeValue] [uniqueidentifier] NULL,
@@ -22933,31 +21608,24 @@ CREATE TABLE [dbo].[ProgramCodes] (
 	[DateUsed] [datetime] NULL,
 	[PatronId] [int] NULL,
 	[ShortCode] [varchar](20) NULL,
-	CONSTRAINT [PK_ProgramCodes] PRIMARY KEY CLUSTERED ([PCID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_ProgramCodes] PRIMARY KEY CLUSTERED 
+(
+	[PCID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[ProgramGame]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[ProgramGame]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[ProgramGame] (
-	[PGID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[ProgramGame](
+	[PGID] [int] IDENTITY(1,1) NOT NULL,
 	[GameName] [varchar](50) NULL,
 	[MapImage] [varchar](50) NULL,
 	[BonusMapImage] [varchar](50) NULL,
@@ -22981,31 +21649,24 @@ CREATE TABLE [dbo].[ProgramGame] (
 	[FldText3] [text] NULL,
 	[Minigame1ID] [int] NULL,
 	[Minigame2ID] [int] NULL,
-	CONSTRAINT [PK_ProgramGame] PRIMARY KEY CLUSTERED ([PGID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_ProgramGame] PRIMARY KEY CLUSTERED 
+(
+	[PGID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[ProgramGameLevel]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[ProgramGameLevel]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[ProgramGameLevel] (
-	[PGLID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[ProgramGameLevel](
+	[PGLID] [int] IDENTITY(1,1) NOT NULL,
 	[PGID] [int] NULL,
 	[LevelNumber] [int] NULL,
 	[LocationX] [int] NULL,
@@ -23023,31 +21684,24 @@ CREATE TABLE [dbo].[ProgramGameLevel] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_ProgramGameLevel] PRIMARY KEY CLUSTERED ([PGLID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_ProgramGameLevel] PRIMARY KEY CLUSTERED 
+(
+	[PGLID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[ProgramGamePointConversion]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[ProgramGamePointConversion]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[ProgramGamePointConversion] (
-	[PGCID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[ProgramGamePointConversion](
+	[PGCID] [int] IDENTITY(1,1) NOT NULL,
 	[PGID] [int] NULL,
 	[ActivityTypeId] [int] NULL,
 	[ActivityCount] [int] NULL,
@@ -23056,31 +21710,24 @@ CREATE TABLE [dbo].[ProgramGamePointConversion] (
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_ProgramGamePointConversion] PRIMARY KEY CLUSTERED ([PGCID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_ProgramGamePointConversion] PRIMARY KEY CLUSTERED 
+(
+	[PGCID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Programs]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Programs]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Programs] (
-	[PID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Programs](
+	[PID] [int] IDENTITY(1,1) NOT NULL,
 	[AdminName] [varchar](50) NULL,
 	[Title] [varchar](50) NULL,
 	[TabName] [varchar](20) NULL,
@@ -23126,31 +21773,24 @@ CREATE TABLE [dbo].[Programs] (
 	[PreTestMandatory] [bit] NULL,
 	[PretestEndDate] [datetime] NULL,
 	[PostTestStartDate] [datetime] NULL,
-	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED 
+(
+	[PID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[RegistrationSettings]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[RegistrationSettings]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[RegistrationSettings] (
-	[RID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[RegistrationSettings](
+	[RID] [int] IDENTITY(1,1) NOT NULL,
 	[Literacy1Label] [varchar](50) NULL,
 	[Literacy2Label] [varchar](50) NULL,
 	[DOB_Prompt] [bit] NULL,
@@ -23319,31 +21959,24 @@ CREATE TABLE [dbo].[RegistrationSettings] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_RegistrationSettings] PRIMARY KEY CLUSTERED ([RID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_RegistrationSettings] PRIMARY KEY CLUSTERED 
+(
+	[RID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[ReportTemplate]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[ReportTemplate] (
-	[RTID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[ReportTemplate](
+	[RTID] [int] IDENTITY(1,1) NOT NULL,
 	[ProgId] [int] NULL,
 	[ReportName] [varchar](150) NULL,
 	[DisplayFilters] [bit] NULL,
@@ -23467,31 +22100,24 @@ CREATE TABLE [dbo].[ReportTemplate] (
 	[Score2Inc] [bit] NULL,
 	[Score1PctInc] [bit] NULL,
 	[Score2PctInc] [bit] NULL,
-	CONSTRAINT [PK_ReportTemplate] PRIMARY KEY CLUSTERED ([RTID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_ReportTemplate] PRIMARY KEY CLUSTERED 
+(
+	[RTID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SchoolCrosswalk]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SchoolCrosswalk]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SchoolCrosswalk] (
-	[ID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SchoolCrosswalk](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[SchoolID] [int] NULL,
 	[SchTypeID] [int] NULL,
 	[DistrictID] [int] NULL,
@@ -23510,61 +22136,47 @@ CREATE TABLE [dbo].[SchoolCrosswalk] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SchoolCrosswalk] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SchoolCrosswalk] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SentEmailLog]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SentEmailLog]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SentEmailLog] (
-	[EID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SentEmailLog](
+	[EID] [int] IDENTITY(1,1) NOT NULL,
 	[SentDateTime] [datetime] NULL,
 	[SentFrom] [varchar](150) NULL,
 	[SentTo] [varchar](150) NULL,
 	[Subject] [varchar](150) NULL,
 	[Body] [text] NULL,
-	CONSTRAINT [PK_SentEmailLog] PRIMARY KEY CLUSTERED ([EID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SentEmailLog] PRIMARY KEY CLUSTERED 
+(
+	[EID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SQChoices]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SQChoices]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SQChoices] (
-	[SQCID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SQChoices](
+	[SQCID] [int] IDENTITY(1,1) NOT NULL,
 	[QID] [int] NULL,
 	[ChoiceOrder] [int] NULL,
 	[ChoiceText] [varchar](50) NULL,
@@ -23581,31 +22193,24 @@ CREATE TABLE [dbo].[SQChoices] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SQChoices] PRIMARY KEY CLUSTERED ([SQCID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SQChoices] PRIMARY KEY CLUSTERED 
+(
+	[SQCID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SQMatrixLines]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SQMatrixLines]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SQMatrixLines] (
-	[SQMLID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SQMatrixLines](
+	[SQMLID] [int] IDENTITY(1,1) NOT NULL,
 	[QID] [int] NULL,
 	[LineOrder] [int] NULL,
 	[LineText] [varchar](500) NULL,
@@ -23618,62 +22223,46 @@ CREATE TABLE [dbo].[SQMatrixLines] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SQMatrixLines] PRIMARY KEY CLUSTERED ([SQMLID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SQMatrixLines] PRIMARY KEY CLUSTERED 
+(
+	[SQMLID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPGroupPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPGroupPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPGroupPermissions] (
+CREATE TABLE [dbo].[SRPGroupPermissions](
 	[GID] [int] NOT NULL,
 	[PermissionID] [int] NOT NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_GroupPermissions] PRIMARY KEY CLUSTERED (
-		[GID] ASC,
-		[PermissionID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_GroupPermissions] PRIMARY KEY CLUSTERED 
+(
+	[GID] ASC,
+	[PermissionID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPGroups] (
-	[GID] [int] IDENTITY(1000, 1) NOT NULL,
+CREATE TABLE [dbo].[SRPGroups](
+	[GID] [int] IDENTITY(1000,1) NOT NULL,
 	[GroupName] [varchar](50) NULL,
 	[GroupDescription] [varchar](255) NULL,
 	[LastModDate] [datetime] NULL,
@@ -23690,59 +22279,61 @@ CREATE TABLE [dbo].[SRPGroups] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SRPGroups] PRIMARY KEY CLUSTERED ([GID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPGroups] PRIMARY KEY CLUSTERED 
+(
+	[GID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPPermissionsMaster]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPPermissionsMaster]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPPermissionsMaster] (
+CREATE TABLE [dbo].[SRPPermissionsMaster](
 	[PermissionID] [int] NOT NULL,
 	[PermissionName] [varchar](50) NULL,
 	[PermissionDesc] [varchar](2000) NULL,
 	[MODID] [int] NULL,
-	CONSTRAINT [PK_SRPPermissionsMaster] PRIMARY KEY CLUSTERED ([PermissionID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPPermissionsMaster] PRIMARY KEY CLUSTERED 
+(
+	[PermissionID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPReport]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPRecovery]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
+CREATE TABLE [dbo].[SRPRecovery](
+	[Token] [nvarchar](50) NOT NULL,
+	[UID] [int] NOT NULL,
+	[Generated] [datetime] NOT NULL,
+ CONSTRAINT [PK_SRPRecovery] PRIMARY KEY CLUSTERED 
+(
+	[Token] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
+/****** Object:  Table [dbo].[SRPReport]    Script Date: 9/2/2015 15:54:23 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPReport] (
-	[RID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SRPReport](
+	[RID] [int] IDENTITY(1,1) NOT NULL,
 	[RTID] [int] NOT NULL,
 	[ProgId] [int] NULL,
 	[ReportName] [varchar](150) NULL,
@@ -23868,31 +22459,24 @@ CREATE TABLE [dbo].[SRPReport] (
 	[Score2Inc] [bit] NULL,
 	[Score1PctInc] [bit] NULL,
 	[Score2PctInc] [bit] NULL,
-	CONSTRAINT [PK_SRPReport] PRIMARY KEY CLUSTERED ([RID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPReport] PRIMARY KEY CLUSTERED 
+(
+	[RID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPSettings]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPSettings]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPSettings] (
-	[SID] [int] IDENTITY(1000, 1) NOT NULL,
+CREATE TABLE [dbo].[SRPSettings](
+	[SID] [int] IDENTITY(1000,1) NOT NULL,
 	[Name] [varchar](50) NULL,
 	[Value] [text] NULL,
 	[StorageType] [varchar](50) NULL,
@@ -23912,36 +22496,29 @@ CREATE TABLE [dbo].[SRPSettings] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SRPSettings] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPSettings] PRIMARY KEY CLUSTERED 
+(
+	[SID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPUser]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPUser]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPUser] (
-	[UID] [int] IDENTITY(1000, 1) NOT NULL,
-	[Username] [varchar](50) NULL,
-	[Password] [varchar](50) NULL,
+CREATE TABLE [dbo].[SRPUser](
+	[UID] [int] IDENTITY(1000,1) NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[Password] [varchar](255) NOT NULL,
 	[FirstName] [varchar](50) NULL,
 	[LastName] [varchar](50) NULL,
-	[EmailAddress] [varchar](128) NULL,
+	[EmailAddress] [varchar](128) NOT NULL,
 	[Division] [varchar](50) NULL,
 	[Department] [varchar](50) NULL,
 	[Title] [varchar](50) NULL,
@@ -23964,62 +22541,46 @@ CREATE TABLE [dbo].[SRPUser] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SRPUser] PRIMARY KEY CLUSTERED ([UID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPUser] PRIMARY KEY CLUSTERED 
+(
+	[UID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPUserGroups]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPUserGroups]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPUserGroups] (
+CREATE TABLE [dbo].[SRPUserGroups](
 	[UID] [int] NOT NULL,
 	[GID] [int] NOT NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_SRPUserGroups] PRIMARY KEY CLUSTERED (
-		[UID] ASC,
-		[GID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPUserGroups] PRIMARY KEY CLUSTERED 
+(
+	[UID] ASC,
+	[GID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPUserLoginHistory]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPUserLoginHistory]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPUserLoginHistory] (
-	[UIDLH] [int] IDENTITY(1000, 1) NOT NULL,
+CREATE TABLE [dbo].[SRPUserLoginHistory](
+	[UIDLH] [int] IDENTITY(1000,1) NOT NULL,
 	[UID] [nchar](10) NULL,
 	[SessionsID] [varchar](128) NULL,
 	[StartDateTime] [datetime] NULL,
@@ -24027,62 +22588,46 @@ CREATE TABLE [dbo].[SRPUserLoginHistory] (
 	[MachineName] [varchar](50) NULL,
 	[Browser] [varchar](50) NULL,
 	[EndDateTime] [datetime] NULL,
-	CONSTRAINT [PK_SRPUserLoginHistory] PRIMARY KEY CLUSTERED ([UIDLH] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPUserLoginHistory] PRIMARY KEY CLUSTERED 
+(
+	[UIDLH] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SRPUserPermissions]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SRPUserPermissions]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SRPUserPermissions] (
+CREATE TABLE [dbo].[SRPUserPermissions](
 	[UID] [int] NOT NULL,
 	[PermissionID] [int] NOT NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
-	CONSTRAINT [PK_SRPUserPermissions] PRIMARY KEY CLUSTERED (
-		[UID] ASC,
-		[PermissionID] ASC
-		) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SRPUserPermissions] PRIMARY KEY CLUSTERED 
+(
+	[UID] ASC,
+	[PermissionID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Survey]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Survey]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Survey] (
-	[SID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Survey](
+	[SID] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NULL,
 	[LongName] [varchar](150) NULL,
 	[Description] [text] NULL,
@@ -24101,31 +22646,24 @@ CREATE TABLE [dbo].[Survey] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED 
+(
+	[SID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SurveyAnswers]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SurveyAnswers]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SurveyAnswers] (
-	[SAID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SurveyAnswers](
+	[SAID] [int] IDENTITY(1,1) NOT NULL,
 	[SRID] [int] NOT NULL,
 	[TenID] [int] NULL,
 	[PID] [int] NULL,
@@ -24147,31 +22685,24 @@ CREATE TABLE [dbo].[SurveyAnswers] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SurveyAnswers] PRIMARY KEY CLUSTERED ([SAID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SurveyAnswers] PRIMARY KEY CLUSTERED 
+(
+	[SAID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SurveyQuestion]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SurveyQuestion]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SurveyQuestion] (
-	[QID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SurveyQuestion](
+	[QID] [int] IDENTITY(1,1) NOT NULL,
 	[SID] [int] NULL,
 	[QNumber] [int] NULL,
 	[QType] [int] NULL,
@@ -24189,31 +22720,24 @@ CREATE TABLE [dbo].[SurveyQuestion] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SurveyQuestion] PRIMARY KEY CLUSTERED ([QID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SurveyQuestion] PRIMARY KEY CLUSTERED 
+(
+	[QID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[SurveyResults]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[SurveyResults]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[SurveyResults] (
-	[SRID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[SurveyResults](
+	[SRID] [int] IDENTITY(1,1) NOT NULL,
 	[TenID] [int] NULL,
 	[PID] [int] NULL,
 	[SID] [int] NULL,
@@ -24235,31 +22759,24 @@ CREATE TABLE [dbo].[SurveyResults] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_SurveyResults_1] PRIMARY KEY CLUSTERED ([SRID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_SurveyResults_1] PRIMARY KEY CLUSTERED 
+(
+	[SRID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[Tenant]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[Tenant]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[Tenant] (
-	[TenID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[Tenant](
+	[TenID] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](150) NULL,
 	[LandingName] [varchar](50) NULL,
 	[AdminName] [varchar](50) NULL,
@@ -24288,53 +22805,41 @@ CREATE TABLE [dbo].[Tenant] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Tenant] PRIMARY KEY CLUSTERED ([TenID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+ CONSTRAINT [PK_Tenant] PRIMARY KEY CLUSTERED 
+(
+	[TenID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  Table [dbo].[TenantInitData]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  Table [dbo].[TenantInitData]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
-
-CREATE TABLE [dbo].[TenantInitData] (
-	[InitID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[TenantInitData](
+	[InitID] [int] IDENTITY(1,1) NOT NULL,
 	[IntitType] [varchar](50) NULL,
 	[DestTID] [int] NULL,
 	[SrcPK] [int] NULL,
 	[DateCreated] [datetime] NULL,
 	[DstPK] [int] NULL,
-	CONSTRAINT [PK_TenantInitData] PRIMARY KEY CLUSTERED ([InitID] ASC) WITH (
-		PAD_INDEX = OFF,
-		STATISTICS_NORECOMPUTE = OFF,
-		IGNORE_DUP_KEY = OFF,
-		ALLOW_ROW_LOCKS = ON,
-		ALLOW_PAGE_LOCKS = ON
-		) ON [PRIMARY]
-	) ON [PRIMARY]
-GO
+ CONSTRAINT [PK_TenantInitData] PRIMARY KEY CLUSTERED 
+(
+	[InitID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
+GO
 SET ANSI_PADDING OFF
 GO
-
-/****** Object:  View [dbo].[rpt_GamePlayStats1]    Script Date: 8/31/2015 14:43:36 ******/
+/****** Object:  View [dbo].[rpt_GamePlayStats1]    Script Date: 9/2/2015 15:54:23 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -24430,3078 +22935,592 @@ ORDER BY Username,
 	MGType,
 	MiniGameTypeName
 GO
-
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_BadgeID] DEFAULT((0))
-FOR [BadgeID]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_NumPoints] DEFAULT((0))
-FOR [NumPoints]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_BranchID] DEFAULT((0))
-FOR [BranchID]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_ProgramID] DEFAULT((0))
-FOR [ProgramID]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_District] DEFAULT('')
-FOR [District]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_SchoolName] DEFAULT('')
-FOR [SchoolName]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_BadgeList] DEFAULT('')
-FOR [BadgeList]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Award] ADD CONSTRAINT [DF_Award_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Badge] ADD CONSTRAINT [DF_Badge_AssignProgramPrizeCode] DEFAULT((0))
-FOR [AssignProgramPrizeCode]
-GO
-
-ALTER TABLE [dbo].[Badge] ADD CONSTRAINT [DF_Badge_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Badge] ADD CONSTRAINT [DF_Badge_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Badge] ADD CONSTRAINT [DF_Badge_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Badge] ADD CONSTRAINT [DF_Badge_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[BookList] ADD CONSTRAINT [DF_BookList_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[BookList] ADD CONSTRAINT [DF_BookList_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[BookList] ADD CONSTRAINT [DF_BookList_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[BookList] ADD CONSTRAINT [DF_BookList_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[BookListBooks] ADD CONSTRAINT [DF_BookListBooks_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[BookListBooks] ADD CONSTRAINT [DF_BookListBooks_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[BookListBooks] ADD CONSTRAINT [DF_BookListBooks_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[BookListBooks] ADD CONSTRAINT [DF_BookListBooks_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[CodeType] ADD CONSTRAINT [DF_CodeType_isSystem] DEFAULT((0))
-FOR [isSystem]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_Use1] DEFAULT((0))
-FOR [Use1]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_Use2] DEFAULT((0))
-FOR [Use2]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_Use3] DEFAULT((0))
-FOR [Use3]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[CustomEventFields] ADD CONSTRAINT [DF_CustomEventFields_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_Use1] DEFAULT((0))
-FOR [Use1]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_Use2] DEFAULT((0))
-FOR [Use2]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_Use3] DEFAULT((0))
-FOR [Use3]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_Use4] DEFAULT((0))
-FOR [Use4]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_Use5] DEFAULT((0))
-FOR [Use5]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[CustomRegistrationFields] ADD CONSTRAINT [DF_CustomRegistrationFields_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Event] ADD CONSTRAINT [DF_Event_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Event] ADD CONSTRAINT [DF_Event_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Event] ADD CONSTRAINT [DF_Event_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Event] ADD CONSTRAINT [DF_Event_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[GamePlayStats] ADD CONSTRAINT [DF_GamePlayStats_Started] DEFAULT(getdate())
-FOR [Started]
-GO
-
-ALTER TABLE [dbo].[GamePlayStats] ADD CONSTRAINT [DF_GamePlayStats_CompletedPlay] DEFAULT((0))
-FOR [CompletedPlay]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdv] ADD CONSTRAINT [DF_MGChooseAdv_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdv] ADD CONSTRAINT [DF_MGChooseAdv_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdv] ADD CONSTRAINT [DF_MGChooseAdv_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdv] ADD CONSTRAINT [DF_MGChooseAdv_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_Difficulty] DEFAULT((1))
-FOR [Difficulty]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_StepNumber] DEFAULT((- 1))
-FOR [StepNumber]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides] ADD CONSTRAINT [DF_MGChooseAdvSlides_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGCodeBreaker] ADD CONSTRAINT [DF_MGCodeBreaker_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGCodeBreaker] ADD CONSTRAINT [DF_MGCodeBreaker_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGCodeBreaker] ADD CONSTRAINT [DF_MGCodeBreaker_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGCodeBreaker] ADD CONSTRAINT [DF_MGCodeBreaker_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPic] ADD CONSTRAINT [DF_MGHiddenPic_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPic] ADD CONSTRAINT [DF_MGHiddenPic_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPic] ADD CONSTRAINT [DF_MGHiddenPic_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPic] ADD CONSTRAINT [DF_MGHiddenPic_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPicBk] ADD CONSTRAINT [DF_MGHiddenPicBk_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPicBk] ADD CONSTRAINT [DF_MGHiddenPicBk_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPicBk] ADD CONSTRAINT [DF_MGHiddenPicBk_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGHiddenPicBk] ADD CONSTRAINT [DF_MGHiddenPicBk_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_EasyGameSize] DEFAULT((2))
-FOR [EasyGameSize]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_MediumGameSize] DEFAULT((4))
-FOR [MediumGameSize]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_HardGameSize] DEFAULT((6))
-FOR [HardGameSize]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGame] ADD CONSTRAINT [DF_MGMatchingGame_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGameTiles] ADD CONSTRAINT [DF_MGMatchingGameTiles_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGameTiles] ADD CONSTRAINT [DF_MGMatchingGameTiles_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGameTiles] ADD CONSTRAINT [DF_MGMatchingGameTiles_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGMatchingGameTiles] ADD CONSTRAINT [DF_MGMatchingGameTiles_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatch] ADD CONSTRAINT [DF_MGMixAndMatch_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatch] ADD CONSTRAINT [DF_MGMixAndMatch_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatch] ADD CONSTRAINT [DF_MGMixAndMatch_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatch] ADD CONSTRAINT [DF_MGMixAndMatch_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatchItems] ADD CONSTRAINT [DF_MGMixAndMatchItems_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatchItems] ADD CONSTRAINT [DF_MGMixAndMatchItems_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatchItems] ADD CONSTRAINT [DF_MGMixAndMatchItems_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGMixAndMatchItems] ADD CONSTRAINT [DF_MGMixAndMatchItems_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBook] ADD CONSTRAINT [DF_MGOnlineBook_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBook] ADD CONSTRAINT [DF_MGOnlineBook_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBook] ADD CONSTRAINT [DF_MGOnlineBook_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBook] ADD CONSTRAINT [DF_MGOnlineBook_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBookPages] ADD CONSTRAINT [DF_MGOnlineBookPages_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBookPages] ADD CONSTRAINT [DF_MGOnlineBookPages_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBookPages] ADD CONSTRAINT [DF_MGOnlineBookPages_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGOnlineBookPages] ADD CONSTRAINT [DF_MGOnlineBookPages_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGWordMatch] ADD CONSTRAINT [DF_MGWordMatch_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGWordMatch] ADD CONSTRAINT [DF_MGWordMatch_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGWordMatch] ADD CONSTRAINT [DF_MGWordMatch_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGWordMatch] ADD CONSTRAINT [DF_MGWordMatch_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[MGWordMatchItems] ADD CONSTRAINT [DF_MGWordMatchItems_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[MGWordMatchItems] ADD CONSTRAINT [DF_MGWordMatchItems_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[MGWordMatchItems] ADD CONSTRAINT [DF_MGWordMatchItems_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[MGWordMatchItems] ADD CONSTRAINT [DF_MGWordMatchItems_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Minigame] ADD CONSTRAINT [DF_Minigame_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Minigame] ADD CONSTRAINT [DF_Minigame_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Minigame] ADD CONSTRAINT [DF_Minigame_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Minigame] ADD CONSTRAINT [DF_Minigame_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_PID_To] DEFAULT((0))
-FOR [PID_To]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_PID_From] DEFAULT((0))
-FOR [PID_From]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_isQuestion] DEFAULT((0))
-FOR [isQuestion]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_Subject] DEFAULT('')
-FOR [Subject]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Notifications] ADD CONSTRAINT [DF_Notifications_isUnread] DEFAULT((1))
-FOR [isUnread]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_RedirectURL] DEFAULT('')
-FOR [RedirectURL]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_MaxImpressions] DEFAULT((0))
-FOR [MaxImpressions]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_TotalImpressions] DEFAULT((0))
-FOR [TotalImpressions]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_ZipCode] DEFAULT('')
-FOR [ZipCode]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_AgeStart] DEFAULT((0))
-FOR [AgeStart]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_AgeEnd] DEFAULT((0))
-FOR [AgeEnd]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_ProgramId] DEFAULT((0))
-FOR [ProgramId]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_BranchId] DEFAULT((0))
-FOR [BranchId]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Offer] ADD CONSTRAINT [DF_Offer_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_IsMasterAccount] DEFAULT((0))
-FOR [IsMasterAccount]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_RegistrationDate] DEFAULT(getdate())
-FOR [RegistrationDate]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_Score1] DEFAULT((0))
-FOR [Score1]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_Score2] DEFAULT((0))
-FOR [Score2]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_Score1Pct] DEFAULT((0))
-FOR [Score1Pct]
-GO
-
-ALTER TABLE [dbo].[Patron] ADD CONSTRAINT [DF_Patron_Score2Pct] DEFAULT((0))
-FOR [Score2Pct]
-GO
-
-ALTER TABLE [dbo].[PatronBookLists] ADD CONSTRAINT [DF_PatronBookLists_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PatronPrizes] ADD CONSTRAINT [DF_PatronPrizes_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PatronPrizes] ADD CONSTRAINT [DF_PatronPrizes_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[PatronPrizes] ADD CONSTRAINT [DF_PatronPrizes_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[PatronPrizes] ADD CONSTRAINT [DF_PatronPrizes_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[PatronRewardCodes] ADD CONSTRAINT [DF_PatronRewardCodes_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PatronRewardCodes] ADD CONSTRAINT [DF_PatronRewardCodes_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[PatronRewardCodes] ADD CONSTRAINT [DF_PatronRewardCodes_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[PatronRewardCodes] ADD CONSTRAINT [DF_PatronRewardCodes_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawing] ADD CONSTRAINT [DF_PrizeDrawing_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawing] ADD CONSTRAINT [DF_PrizeDrawing_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawing] ADD CONSTRAINT [DF_PrizeDrawing_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawing] ADD CONSTRAINT [DF_PrizeDrawing_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawingWinners] ADD CONSTRAINT [DF_PrizeDrawingWinners_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawingWinners] ADD CONSTRAINT [DF_PrizeDrawingWinners_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawingWinners] ADD CONSTRAINT [DF_PrizeDrawingWinners_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[PrizeDrawingWinners] ADD CONSTRAINT [DF_PrizeDrawingWinners_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[PrizeTemplate] ADD CONSTRAINT [DF_PrizeTemplate_NumPrizes] DEFAULT((1))
-FOR [NumPrizes]
-GO
-
-ALTER TABLE [dbo].[PrizeTemplate] ADD CONSTRAINT [DF_PrizeTemplate_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[PrizeTemplate] ADD CONSTRAINT [DF_PrizeTemplate_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[PrizeTemplate] ADD CONSTRAINT [DF_PrizeTemplate_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[PrizeTemplate] ADD CONSTRAINT [DF_PrizeTemplate_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[ProgramCodes] ADD CONSTRAINT [DF_ProgramCodes_isUsed] DEFAULT((0))
-FOR [isUsed]
-GO
-
-ALTER TABLE [dbo].[ProgramCodes] ADD CONSTRAINT [DF_ProgramCodes_DateCreated] DEFAULT(getdate())
-FOR [DateCreated]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_Minigame1ID] DEFAULT((0))
-FOR [Minigame1ID]
-GO
-
-ALTER TABLE [dbo].[ProgramGame] ADD CONSTRAINT [DF_ProgramGame_Minigame2ID] DEFAULT((0))
-FOR [Minigame2ID]
-GO
-
-ALTER TABLE [dbo].[ProgramGameLevel] ADD CONSTRAINT [DF_ProgramGameLevel_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGameLevel] ADD CONSTRAINT [DF_ProgramGameLevel_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[ProgramGameLevel] ADD CONSTRAINT [DF_ProgramGameLevel_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGameLevel] ADD CONSTRAINT [DF_ProgramGameLevel_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[ProgramGamePointConversion] ADD CONSTRAINT [DF_ProgramGamePointConversion_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGamePointConversion] ADD CONSTRAINT [DF_ProgramGamePointConversion_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[ProgramGamePointConversion] ADD CONSTRAINT [DF_ProgramGamePointConversion_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[ProgramGamePointConversion] ADD CONSTRAINT [DF_ProgramGamePointConversion_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_IsActive] DEFAULT((0))
-FOR [IsActive]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_IsHidden] DEFAULT((0))
-FOR [IsHidden]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_ParentalConsentFlag] DEFAULT((0))
-FOR [ParentalConsentFlag]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_CompletionPoints] DEFAULT((0))
-FOR [CompletionPoints]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Programs] ADD CONSTRAINT [DF_Programs_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_Literacy1Label] DEFAULT('AR Level')
-FOR [Literacy1Label]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_Literacy2Label] DEFAULT('Lexile Level')
-FOR [Literacy2Label]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[RegistrationSettings] ADD CONSTRAINT [DF_RegistrationSettings_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_ProgId] DEFAULT((0))
-FOR [ProgId]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_RegistrationDate1] DEFAULT(getdate())
-FOR [RegistrationDateStart]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_RegistrationDate] DEFAULT(getdate())
-FOR [RegistrationDateEnd]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[ReportTemplate] ADD CONSTRAINT [DF_ReportTemplate_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SentEmailLog] ADD CONSTRAINT [DF_SentEmailLog_SentDateTime] DEFAULT(getdate())
-FOR [SentDateTime]
-GO
-
-ALTER TABLE [dbo].[SRPGroupPermissions] ADD CONSTRAINT [DF_SRPGroupPermissions_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPGroupPermissions] ADD CONSTRAINT [DF_SRPGroupPermissions_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SRPGroups] ADD CONSTRAINT [DF_SRPGroups_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[SRPGroups] ADD CONSTRAINT [DF_SRPGroups_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[SRPGroups] ADD CONSTRAINT [DF_SRPGroups_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPGroups] ADD CONSTRAINT [DF_SRPGroups_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_ProgId] DEFAULT((0))
-FOR [ProgId]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_RegistrationDateStart] DEFAULT(getdate())
-FOR [RegistrationDateStart]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_RegistrationDateEnd] DEFAULT(getdate())
-FOR [RegistrationDateEnd]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPReport] ADD CONSTRAINT [DF_SRPReport_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SRPSettings] ADD CONSTRAINT [DF_SRPSettings_StorageType] DEFAULT('Text')
-FOR [StorageType]
-GO
-
-ALTER TABLE [dbo].[SRPSettings] ADD CONSTRAINT [DF_SRPSettings_EditType] DEFAULT('TextBox')
-FOR [EditType]
-GO
-
-ALTER TABLE [dbo].[SRPUser] ADD CONSTRAINT [DF_SRPUser_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[SRPUser] ADD CONSTRAINT [DF_SRPUser_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[SRPUser] ADD CONSTRAINT [DF_SRPUser_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPUser] ADD CONSTRAINT [DF_SRPUser_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SRPUserGroups] ADD CONSTRAINT [DF_SRPUserGroups_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPUserGroups] ADD CONSTRAINT [DF_SRPUserGroups_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[SRPUserPermissions] ADD CONSTRAINT [DF_SRPUserPermissions_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[SRPUserPermissions] ADD CONSTRAINT [DF_SRPUserPermissions_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_isActiveFlag] DEFAULT((0))
-FOR [isActiveFlag]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_isMasterFlag] DEFAULT((0))
-FOR [isMasterFlag]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_showNotifications] DEFAULT((1))
-FOR [showNotifications]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_showOffers] DEFAULT((1))
-FOR [showOffers]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_showBadges] DEFAULT((1))
-FOR [showBadges]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_showEvents] DEFAULT((1))
-FOR [showEvents]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_NotificationsMenuText] DEFAULT('Notifications')
-FOR [NotificationsMenuText]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_OffersMenuText] DEFAULT('Offers')
-FOR [OffersMenuText]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_BadgesMenuText] DEFAULT('Badges')
-FOR [BadgesMenuText]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_EventsMenuText] DEFAULT('Events')
-FOR [EventsMenuText]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_LastModDate] DEFAULT(getdate())
-FOR [LastModDate]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_LastModUser] DEFAULT('N/A')
-FOR [LastModUser]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_AddedDate] DEFAULT(getdate())
-FOR [AddedDate]
-GO
-
-ALTER TABLE [dbo].[Tenant] ADD CONSTRAINT [DF_Tenant_AddedUser] DEFAULT('N/A')
-FOR [AddedUser]
-GO
-
-ALTER TABLE [dbo].[TenantInitData] ADD CONSTRAINT [DF_TenantInitData_DateCreated] DEFAULT(getdate())
-FOR [DateCreated]
-GO
-
-ALTER TABLE [dbo].[BookListBooks]
-	WITH CHECK ADD CONSTRAINT [FK_BookListBooks_BookList] FOREIGN KEY ([BLID]) REFERENCES [dbo].[BookList]([BLID])
-GO
-
+ALTER TABLE [dbo].[Avatar] ADD  CONSTRAINT [DF_Avatar_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Avatar] ADD  CONSTRAINT [DF_Avatar_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Avatar] ADD  CONSTRAINT [DF_Avatar_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Avatar] ADD  CONSTRAINT [DF_Avatar_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_BadgeID]  DEFAULT ((0)) FOR [BadgeID]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_NumPoints]  DEFAULT ((0)) FOR [NumPoints]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_BranchID]  DEFAULT ((0)) FOR [BranchID]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_ProgramID]  DEFAULT ((0)) FOR [ProgramID]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_District]  DEFAULT ('') FOR [District]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_SchoolName]  DEFAULT ('') FOR [SchoolName]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_BadgeList]  DEFAULT ('') FOR [BadgeList]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Award] ADD  CONSTRAINT [DF_Award_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Badge] ADD  CONSTRAINT [DF_Badge_AssignProgramPrizeCode]  DEFAULT ((0)) FOR [AssignProgramPrizeCode]
+GO
+ALTER TABLE [dbo].[Badge] ADD  CONSTRAINT [DF_Badge_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Badge] ADD  CONSTRAINT [DF_Badge_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Badge] ADD  CONSTRAINT [DF_Badge_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Badge] ADD  CONSTRAINT [DF_Badge_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[BookList] ADD  CONSTRAINT [DF_BookList_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[BookList] ADD  CONSTRAINT [DF_BookList_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[BookList] ADD  CONSTRAINT [DF_BookList_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[BookList] ADD  CONSTRAINT [DF_BookList_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[BookListBooks] ADD  CONSTRAINT [DF_BookListBooks_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[BookListBooks] ADD  CONSTRAINT [DF_BookListBooks_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[BookListBooks] ADD  CONSTRAINT [DF_BookListBooks_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[BookListBooks] ADD  CONSTRAINT [DF_BookListBooks_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[CodeType] ADD  CONSTRAINT [DF_CodeType_isSystem]  DEFAULT ((0)) FOR [isSystem]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_Use1]  DEFAULT ((0)) FOR [Use1]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_Use2]  DEFAULT ((0)) FOR [Use2]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_Use3]  DEFAULT ((0)) FOR [Use3]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[CustomEventFields] ADD  CONSTRAINT [DF_CustomEventFields_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_Use1]  DEFAULT ((0)) FOR [Use1]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_Use2]  DEFAULT ((0)) FOR [Use2]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_Use3]  DEFAULT ((0)) FOR [Use3]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_Use4]  DEFAULT ((0)) FOR [Use4]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_Use5]  DEFAULT ((0)) FOR [Use5]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[CustomRegistrationFields] ADD  CONSTRAINT [DF_CustomRegistrationFields_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Event] ADD  CONSTRAINT [DF_Event_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Event] ADD  CONSTRAINT [DF_Event_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Event] ADD  CONSTRAINT [DF_Event_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Event] ADD  CONSTRAINT [DF_Event_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[GamePlayStats] ADD  CONSTRAINT [DF_GamePlayStats_Started]  DEFAULT (getdate()) FOR [Started]
+GO
+ALTER TABLE [dbo].[GamePlayStats] ADD  CONSTRAINT [DF_GamePlayStats_CompletedPlay]  DEFAULT ((0)) FOR [CompletedPlay]
+GO
+ALTER TABLE [dbo].[MGChooseAdv] ADD  CONSTRAINT [DF_MGChooseAdv_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGChooseAdv] ADD  CONSTRAINT [DF_MGChooseAdv_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGChooseAdv] ADD  CONSTRAINT [DF_MGChooseAdv_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGChooseAdv] ADD  CONSTRAINT [DF_MGChooseAdv_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_Difficulty]  DEFAULT ((1)) FOR [Difficulty]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_StepNumber]  DEFAULT ((-1)) FOR [StepNumber]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGChooseAdvSlides] ADD  CONSTRAINT [DF_MGChooseAdvSlides_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGCodeBreaker] ADD  CONSTRAINT [DF_MGCodeBreaker_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGCodeBreaker] ADD  CONSTRAINT [DF_MGCodeBreaker_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGCodeBreaker] ADD  CONSTRAINT [DF_MGCodeBreaker_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGCodeBreaker] ADD  CONSTRAINT [DF_MGCodeBreaker_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGHiddenPic] ADD  CONSTRAINT [DF_MGHiddenPic_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGHiddenPic] ADD  CONSTRAINT [DF_MGHiddenPic_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGHiddenPic] ADD  CONSTRAINT [DF_MGHiddenPic_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGHiddenPic] ADD  CONSTRAINT [DF_MGHiddenPic_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGHiddenPicBk] ADD  CONSTRAINT [DF_MGHiddenPicBk_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGHiddenPicBk] ADD  CONSTRAINT [DF_MGHiddenPicBk_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGHiddenPicBk] ADD  CONSTRAINT [DF_MGHiddenPicBk_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGHiddenPicBk] ADD  CONSTRAINT [DF_MGHiddenPicBk_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_EasyGameSize]  DEFAULT ((2)) FOR [EasyGameSize]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_MediumGameSize]  DEFAULT ((4)) FOR [MediumGameSize]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_HardGameSize]  DEFAULT ((6)) FOR [HardGameSize]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGMatchingGame] ADD  CONSTRAINT [DF_MGMatchingGame_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGMatchingGameTiles] ADD  CONSTRAINT [DF_MGMatchingGameTiles_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGMatchingGameTiles] ADD  CONSTRAINT [DF_MGMatchingGameTiles_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGMatchingGameTiles] ADD  CONSTRAINT [DF_MGMatchingGameTiles_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGMatchingGameTiles] ADD  CONSTRAINT [DF_MGMatchingGameTiles_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGMixAndMatch] ADD  CONSTRAINT [DF_MGMixAndMatch_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGMixAndMatch] ADD  CONSTRAINT [DF_MGMixAndMatch_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGMixAndMatch] ADD  CONSTRAINT [DF_MGMixAndMatch_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGMixAndMatch] ADD  CONSTRAINT [DF_MGMixAndMatch_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGMixAndMatchItems] ADD  CONSTRAINT [DF_MGMixAndMatchItems_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGMixAndMatchItems] ADD  CONSTRAINT [DF_MGMixAndMatchItems_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGMixAndMatchItems] ADD  CONSTRAINT [DF_MGMixAndMatchItems_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGMixAndMatchItems] ADD  CONSTRAINT [DF_MGMixAndMatchItems_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGOnlineBook] ADD  CONSTRAINT [DF_MGOnlineBook_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGOnlineBook] ADD  CONSTRAINT [DF_MGOnlineBook_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGOnlineBook] ADD  CONSTRAINT [DF_MGOnlineBook_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGOnlineBook] ADD  CONSTRAINT [DF_MGOnlineBook_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGOnlineBookPages] ADD  CONSTRAINT [DF_MGOnlineBookPages_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGOnlineBookPages] ADD  CONSTRAINT [DF_MGOnlineBookPages_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGOnlineBookPages] ADD  CONSTRAINT [DF_MGOnlineBookPages_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGOnlineBookPages] ADD  CONSTRAINT [DF_MGOnlineBookPages_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGWordMatch] ADD  CONSTRAINT [DF_MGWordMatch_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGWordMatch] ADD  CONSTRAINT [DF_MGWordMatch_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGWordMatch] ADD  CONSTRAINT [DF_MGWordMatch_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGWordMatch] ADD  CONSTRAINT [DF_MGWordMatch_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[MGWordMatchItems] ADD  CONSTRAINT [DF_MGWordMatchItems_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[MGWordMatchItems] ADD  CONSTRAINT [DF_MGWordMatchItems_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[MGWordMatchItems] ADD  CONSTRAINT [DF_MGWordMatchItems_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[MGWordMatchItems] ADD  CONSTRAINT [DF_MGWordMatchItems_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Minigame] ADD  CONSTRAINT [DF_Minigame_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Minigame] ADD  CONSTRAINT [DF_Minigame_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Minigame] ADD  CONSTRAINT [DF_Minigame_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Minigame] ADD  CONSTRAINT [DF_Minigame_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_PID_To]  DEFAULT ((0)) FOR [PID_To]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_PID_From]  DEFAULT ((0)) FOR [PID_From]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_isQuestion]  DEFAULT ((0)) FOR [isQuestion]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_Subject]  DEFAULT ('') FOR [Subject]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Notifications] ADD  CONSTRAINT [DF_Notifications_isUnread]  DEFAULT ((1)) FOR [isUnread]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_RedirectURL]  DEFAULT ('') FOR [RedirectURL]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_MaxImpressions]  DEFAULT ((0)) FOR [MaxImpressions]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_TotalImpressions]  DEFAULT ((0)) FOR [TotalImpressions]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_ZipCode]  DEFAULT ('') FOR [ZipCode]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_AgeStart]  DEFAULT ((0)) FOR [AgeStart]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_AgeEnd]  DEFAULT ((0)) FOR [AgeEnd]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_ProgramId]  DEFAULT ((0)) FOR [ProgramId]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_BranchId]  DEFAULT ((0)) FOR [BranchId]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Offer] ADD  CONSTRAINT [DF_Offer_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_IsMasterAccount]  DEFAULT ((0)) FOR [IsMasterAccount]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_RegistrationDate]  DEFAULT (getdate()) FOR [RegistrationDate]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_Score1]  DEFAULT ((0)) FOR [Score1]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_Score2]  DEFAULT ((0)) FOR [Score2]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_Score1Pct]  DEFAULT ((0)) FOR [Score1Pct]
+GO
+ALTER TABLE [dbo].[Patron] ADD  CONSTRAINT [DF_Patron_Score2Pct]  DEFAULT ((0)) FOR [Score2Pct]
+GO
+ALTER TABLE [dbo].[PatronBookLists] ADD  CONSTRAINT [DF_PatronBookLists_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PatronPrizes] ADD  CONSTRAINT [DF_PatronPrizes_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PatronPrizes] ADD  CONSTRAINT [DF_PatronPrizes_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[PatronPrizes] ADD  CONSTRAINT [DF_PatronPrizes_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[PatronPrizes] ADD  CONSTRAINT [DF_PatronPrizes_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[PatronRewardCodes] ADD  CONSTRAINT [DF_PatronRewardCodes_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PatronRewardCodes] ADD  CONSTRAINT [DF_PatronRewardCodes_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[PatronRewardCodes] ADD  CONSTRAINT [DF_PatronRewardCodes_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[PatronRewardCodes] ADD  CONSTRAINT [DF_PatronRewardCodes_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[PrizeDrawing] ADD  CONSTRAINT [DF_PrizeDrawing_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PrizeDrawing] ADD  CONSTRAINT [DF_PrizeDrawing_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[PrizeDrawing] ADD  CONSTRAINT [DF_PrizeDrawing_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[PrizeDrawing] ADD  CONSTRAINT [DF_PrizeDrawing_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[PrizeDrawingWinners] ADD  CONSTRAINT [DF_PrizeDrawingWinners_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PrizeDrawingWinners] ADD  CONSTRAINT [DF_PrizeDrawingWinners_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[PrizeDrawingWinners] ADD  CONSTRAINT [DF_PrizeDrawingWinners_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[PrizeDrawingWinners] ADD  CONSTRAINT [DF_PrizeDrawingWinners_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[PrizeTemplate] ADD  CONSTRAINT [DF_PrizeTemplate_NumPrizes]  DEFAULT ((1)) FOR [NumPrizes]
+GO
+ALTER TABLE [dbo].[PrizeTemplate] ADD  CONSTRAINT [DF_PrizeTemplate_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[PrizeTemplate] ADD  CONSTRAINT [DF_PrizeTemplate_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[PrizeTemplate] ADD  CONSTRAINT [DF_PrizeTemplate_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[PrizeTemplate] ADD  CONSTRAINT [DF_PrizeTemplate_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[ProgramCodes] ADD  CONSTRAINT [DF_ProgramCodes_isUsed]  DEFAULT ((0)) FOR [isUsed]
+GO
+ALTER TABLE [dbo].[ProgramCodes] ADD  CONSTRAINT [DF_ProgramCodes_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_Minigame1ID]  DEFAULT ((0)) FOR [Minigame1ID]
+GO
+ALTER TABLE [dbo].[ProgramGame] ADD  CONSTRAINT [DF_ProgramGame_Minigame2ID]  DEFAULT ((0)) FOR [Minigame2ID]
+GO
+ALTER TABLE [dbo].[ProgramGameLevel] ADD  CONSTRAINT [DF_ProgramGameLevel_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[ProgramGameLevel] ADD  CONSTRAINT [DF_ProgramGameLevel_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[ProgramGameLevel] ADD  CONSTRAINT [DF_ProgramGameLevel_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[ProgramGameLevel] ADD  CONSTRAINT [DF_ProgramGameLevel_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[ProgramGamePointConversion] ADD  CONSTRAINT [DF_ProgramGamePointConversion_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[ProgramGamePointConversion] ADD  CONSTRAINT [DF_ProgramGamePointConversion_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[ProgramGamePointConversion] ADD  CONSTRAINT [DF_ProgramGamePointConversion_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[ProgramGamePointConversion] ADD  CONSTRAINT [DF_ProgramGamePointConversion_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_IsActive]  DEFAULT ((0)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_IsHidden]  DEFAULT ((0)) FOR [IsHidden]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_ParentalConsentFlag]  DEFAULT ((0)) FOR [ParentalConsentFlag]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_CompletionPoints]  DEFAULT ((0)) FOR [CompletionPoints]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Programs] ADD  CONSTRAINT [DF_Programs_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_Literacy1Label]  DEFAULT ('AR Level') FOR [Literacy1Label]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_Literacy2Label]  DEFAULT ('Lexile Level') FOR [Literacy2Label]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[RegistrationSettings] ADD  CONSTRAINT [DF_RegistrationSettings_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_ProgId]  DEFAULT ((0)) FOR [ProgId]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_RegistrationDate1]  DEFAULT (getdate()) FOR [RegistrationDateStart]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_RegistrationDate]  DEFAULT (getdate()) FOR [RegistrationDateEnd]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[ReportTemplate] ADD  CONSTRAINT [DF_ReportTemplate_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SentEmailLog] ADD  CONSTRAINT [DF_SentEmailLog_SentDateTime]  DEFAULT (getdate()) FOR [SentDateTime]
+GO
+ALTER TABLE [dbo].[SRPGroupPermissions] ADD  CONSTRAINT [DF_SRPGroupPermissions_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPGroupPermissions] ADD  CONSTRAINT [DF_SRPGroupPermissions_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SRPGroups] ADD  CONSTRAINT [DF_SRPGroups_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[SRPGroups] ADD  CONSTRAINT [DF_SRPGroups_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[SRPGroups] ADD  CONSTRAINT [DF_SRPGroups_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPGroups] ADD  CONSTRAINT [DF_SRPGroups_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_ProgId]  DEFAULT ((0)) FOR [ProgId]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_RegistrationDateStart]  DEFAULT (getdate()) FOR [RegistrationDateStart]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_RegistrationDateEnd]  DEFAULT (getdate()) FOR [RegistrationDateEnd]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPReport] ADD  CONSTRAINT [DF_SRPReport_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SRPSettings] ADD  CONSTRAINT [DF_SRPSettings_StorageType]  DEFAULT ('Text') FOR [StorageType]
+GO
+ALTER TABLE [dbo].[SRPSettings] ADD  CONSTRAINT [DF_SRPSettings_EditType]  DEFAULT ('TextBox') FOR [EditType]
+GO
+ALTER TABLE [dbo].[SRPUser] ADD  CONSTRAINT [DF_SRPUser_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[SRPUser] ADD  CONSTRAINT [DF_SRPUser_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[SRPUser] ADD  CONSTRAINT [DF_SRPUser_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPUser] ADD  CONSTRAINT [DF_SRPUser_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SRPUserGroups] ADD  CONSTRAINT [DF_SRPUserGroups_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPUserGroups] ADD  CONSTRAINT [DF_SRPUserGroups_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[SRPUserPermissions] ADD  CONSTRAINT [DF_SRPUserPermissions_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[SRPUserPermissions] ADD  CONSTRAINT [DF_SRPUserPermissions_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_isActiveFlag]  DEFAULT ((0)) FOR [isActiveFlag]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_isMasterFlag]  DEFAULT ((0)) FOR [isMasterFlag]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_showNotifications]  DEFAULT ((1)) FOR [showNotifications]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_showOffers]  DEFAULT ((1)) FOR [showOffers]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_showBadges]  DEFAULT ((1)) FOR [showBadges]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_showEvents]  DEFAULT ((1)) FOR [showEvents]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_NotificationsMenuText]  DEFAULT ('Notifications') FOR [NotificationsMenuText]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_OffersMenuText]  DEFAULT ('Offers') FOR [OffersMenuText]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_BadgesMenuText]  DEFAULT ('Badges') FOR [BadgesMenuText]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_EventsMenuText]  DEFAULT ('Events') FOR [EventsMenuText]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_LastModDate]  DEFAULT (getdate()) FOR [LastModDate]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_LastModUser]  DEFAULT ('N/A') FOR [LastModUser]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_AddedDate]  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Tenant] ADD  CONSTRAINT [DF_Tenant_AddedUser]  DEFAULT ('N/A') FOR [AddedUser]
+GO
+ALTER TABLE [dbo].[TenantInitData] ADD  CONSTRAINT [DF_TenantInitData_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
+GO
+ALTER TABLE [dbo].[BookListBooks]  WITH CHECK ADD  CONSTRAINT [FK_BookListBooks_BookList] FOREIGN KEY([BLID])
+REFERENCES [dbo].[BookList] ([BLID])
+GO
 ALTER TABLE [dbo].[BookListBooks] CHECK CONSTRAINT [FK_BookListBooks_BookList]
 GO
-
-ALTER TABLE [dbo].[Code]
-	WITH CHECK ADD CONSTRAINT [FK_Code_CodeType] FOREIGN KEY ([CTID]) REFERENCES [dbo].[CodeType]([CTID])
+ALTER TABLE [dbo].[Code]  WITH CHECK ADD  CONSTRAINT [FK_Code_CodeType] FOREIGN KEY([CTID])
+REFERENCES [dbo].[CodeType] ([CTID])
 GO
-
 ALTER TABLE [dbo].[Code] CHECK CONSTRAINT [FK_Code_CodeType]
 GO
-
-ALTER TABLE [dbo].[MGChooseAdv]
-	WITH CHECK ADD CONSTRAINT [FK_MGChooseAdv_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGChooseAdv]  WITH CHECK ADD  CONSTRAINT [FK_MGChooseAdv_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGChooseAdv] CHECK CONSTRAINT [FK_MGChooseAdv_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGChooseAdvSlides]
-	WITH CHECK ADD CONSTRAINT [FK_MGChooseAdvSlides_MGChooseAdv] FOREIGN KEY ([CAID]) REFERENCES [dbo].[MGChooseAdv]([CAID])
+ALTER TABLE [dbo].[MGChooseAdvSlides]  WITH CHECK ADD  CONSTRAINT [FK_MGChooseAdvSlides_MGChooseAdv] FOREIGN KEY([CAID])
+REFERENCES [dbo].[MGChooseAdv] ([CAID])
 GO
-
 ALTER TABLE [dbo].[MGChooseAdvSlides] CHECK CONSTRAINT [FK_MGChooseAdvSlides_MGChooseAdv]
 GO
-
-ALTER TABLE [dbo].[MGCodeBreaker]
-	WITH CHECK ADD CONSTRAINT [FK_MGCodeBreaker_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGCodeBreaker]  WITH CHECK ADD  CONSTRAINT [FK_MGCodeBreaker_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGCodeBreaker] CHECK CONSTRAINT [FK_MGCodeBreaker_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGCodeBreakerKey]
-	WITH CHECK ADD CONSTRAINT [FK_MGCodeBreakerKey_MGCodeBreaker] FOREIGN KEY ([CBID]) REFERENCES [dbo].[MGCodeBreaker]([CBID])
+ALTER TABLE [dbo].[MGCodeBreakerKey]  WITH CHECK ADD  CONSTRAINT [FK_MGCodeBreakerKey_MGCodeBreaker] FOREIGN KEY([CBID])
+REFERENCES [dbo].[MGCodeBreaker] ([CBID])
 GO
-
 ALTER TABLE [dbo].[MGCodeBreakerKey] CHECK CONSTRAINT [FK_MGCodeBreakerKey_MGCodeBreaker]
 GO
-
-ALTER TABLE [dbo].[MGHiddenPic]
-	WITH CHECK ADD CONSTRAINT [FK_MGHiddenPic_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGHiddenPic]  WITH CHECK ADD  CONSTRAINT [FK_MGHiddenPic_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGHiddenPic] CHECK CONSTRAINT [FK_MGHiddenPic_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGHiddenPicBk]
-	WITH CHECK ADD CONSTRAINT [FK_MGHiddenPicBk_MGHiddenPic1] FOREIGN KEY ([HPID]) REFERENCES [dbo].[MGHiddenPic]([HPID])
+ALTER TABLE [dbo].[MGHiddenPicBk]  WITH CHECK ADD  CONSTRAINT [FK_MGHiddenPicBk_MGHiddenPic1] FOREIGN KEY([HPID])
+REFERENCES [dbo].[MGHiddenPic] ([HPID])
 GO
-
 ALTER TABLE [dbo].[MGHiddenPicBk] CHECK CONSTRAINT [FK_MGHiddenPicBk_MGHiddenPic1]
 GO
-
-ALTER TABLE [dbo].[MGMatchingGame]
-	WITH CHECK ADD CONSTRAINT [FK_MGMatchingGame_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGMatchingGame]  WITH CHECK ADD  CONSTRAINT [FK_MGMatchingGame_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGMatchingGame] CHECK CONSTRAINT [FK_MGMatchingGame_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGMatchingGameTiles]
-	WITH CHECK ADD CONSTRAINT [FK_MGMatchingGameTiles_MGMatchingGame] FOREIGN KEY ([MAGID]) REFERENCES [dbo].[MGMatchingGame]([MAGID])
+ALTER TABLE [dbo].[MGMatchingGameTiles]  WITH CHECK ADD  CONSTRAINT [FK_MGMatchingGameTiles_MGMatchingGame] FOREIGN KEY([MAGID])
+REFERENCES [dbo].[MGMatchingGame] ([MAGID])
 GO
-
 ALTER TABLE [dbo].[MGMatchingGameTiles] CHECK CONSTRAINT [FK_MGMatchingGameTiles_MGMatchingGame]
 GO
-
-ALTER TABLE [dbo].[MGMixAndMatch]
-	WITH CHECK ADD CONSTRAINT [FK_MGMixAndMatch_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGMixAndMatch]  WITH CHECK ADD  CONSTRAINT [FK_MGMixAndMatch_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGMixAndMatch] CHECK CONSTRAINT [FK_MGMixAndMatch_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGMixAndMatchItems]
-	WITH CHECK ADD CONSTRAINT [FK_MGMixAndMatchItems_MGMixAndMatch] FOREIGN KEY ([MMID]) REFERENCES [dbo].[MGMixAndMatch]([MMID])
+ALTER TABLE [dbo].[MGMixAndMatchItems]  WITH CHECK ADD  CONSTRAINT [FK_MGMixAndMatchItems_MGMixAndMatch] FOREIGN KEY([MMID])
+REFERENCES [dbo].[MGMixAndMatch] ([MMID])
 GO
-
 ALTER TABLE [dbo].[MGMixAndMatchItems] CHECK CONSTRAINT [FK_MGMixAndMatchItems_MGMixAndMatch]
 GO
-
-ALTER TABLE [dbo].[MGOnlineBook]
-	WITH CHECK ADD CONSTRAINT [FK_MGOnlineBook_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGOnlineBook]  WITH CHECK ADD  CONSTRAINT [FK_MGOnlineBook_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGOnlineBook] CHECK CONSTRAINT [FK_MGOnlineBook_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGOnlineBookPages]
-	WITH CHECK ADD CONSTRAINT [FK_MGOnlineBookPages_MGOnlineBook] FOREIGN KEY ([OBID]) REFERENCES [dbo].[MGOnlineBook]([OBID])
+ALTER TABLE [dbo].[MGOnlineBookPages]  WITH CHECK ADD  CONSTRAINT [FK_MGOnlineBookPages_MGOnlineBook] FOREIGN KEY([OBID])
+REFERENCES [dbo].[MGOnlineBook] ([OBID])
 GO
-
 ALTER TABLE [dbo].[MGOnlineBookPages] CHECK CONSTRAINT [FK_MGOnlineBookPages_MGOnlineBook]
 GO
-
-ALTER TABLE [dbo].[MGWordMatch]
-	WITH CHECK ADD CONSTRAINT [FK_MGWordMatch_Minigame] FOREIGN KEY ([MGID]) REFERENCES [dbo].[Minigame]([MGID])
+ALTER TABLE [dbo].[MGWordMatch]  WITH CHECK ADD  CONSTRAINT [FK_MGWordMatch_Minigame] FOREIGN KEY([MGID])
+REFERENCES [dbo].[Minigame] ([MGID])
 GO
-
 ALTER TABLE [dbo].[MGWordMatch] CHECK CONSTRAINT [FK_MGWordMatch_Minigame]
 GO
-
-ALTER TABLE [dbo].[MGWordMatchItems]
-	WITH CHECK ADD CONSTRAINT [FK_MGWordMatchItems_MGWordMatch] FOREIGN KEY ([WMID]) REFERENCES [dbo].[MGWordMatch]([WMID])
+ALTER TABLE [dbo].[MGWordMatchItems]  WITH CHECK ADD  CONSTRAINT [FK_MGWordMatchItems_MGWordMatch] FOREIGN KEY([WMID])
+REFERENCES [dbo].[MGWordMatch] ([WMID])
 GO
-
 ALTER TABLE [dbo].[MGWordMatchItems] CHECK CONSTRAINT [FK_MGWordMatchItems_MGWordMatch]
 GO
-
-ALTER TABLE [dbo].[ProgramCodes]
-	WITH CHECK ADD CONSTRAINT [FK_ProgramCodes_Programs] FOREIGN KEY ([PID]) REFERENCES [dbo].[Programs]([PID])
+ALTER TABLE [dbo].[ProgramCodes]  WITH CHECK ADD  CONSTRAINT [FK_ProgramCodes_Programs] FOREIGN KEY([PID])
+REFERENCES [dbo].[Programs] ([PID])
 GO
-
 ALTER TABLE [dbo].[ProgramCodes] CHECK CONSTRAINT [FK_ProgramCodes_Programs]
 GO
-
-ALTER TABLE [dbo].[ProgramGameLevel]
-	WITH CHECK ADD CONSTRAINT [FK_ProgramGameLevel_ProgramGame] FOREIGN KEY ([PGID]) REFERENCES [dbo].[ProgramGame]([PGID])
+ALTER TABLE [dbo].[ProgramGameLevel]  WITH CHECK ADD  CONSTRAINT [FK_ProgramGameLevel_ProgramGame] FOREIGN KEY([PGID])
+REFERENCES [dbo].[ProgramGame] ([PGID])
 GO
-
 ALTER TABLE [dbo].[ProgramGameLevel] CHECK CONSTRAINT [FK_ProgramGameLevel_ProgramGame]
 GO
-
-ALTER TABLE [dbo].[ProgramGamePointConversion]
-	WITH CHECK ADD CONSTRAINT [FK_ProgramGamePointConversion_Programs] FOREIGN KEY ([PGID]) REFERENCES [dbo].[Programs]([PID])
+ALTER TABLE [dbo].[ProgramGamePointConversion]  WITH CHECK ADD  CONSTRAINT [FK_ProgramGamePointConversion_Programs] FOREIGN KEY([PGID])
+REFERENCES [dbo].[Programs] ([PID])
 GO
-
 ALTER TABLE [dbo].[ProgramGamePointConversion] CHECK CONSTRAINT [FK_ProgramGamePointConversion_Programs]
 GO
-
-ALTER TABLE [dbo].[SRPGroupPermissions]
-	WITH CHECK ADD CONSTRAINT [FK_GroupPermissions_SRPGroups] FOREIGN KEY ([GID]) REFERENCES [dbo].[SRPGroups]([GID])
+ALTER TABLE [dbo].[SRPGroupPermissions]  WITH CHECK ADD  CONSTRAINT [FK_GroupPermissions_SRPGroups] FOREIGN KEY([GID])
+REFERENCES [dbo].[SRPGroups] ([GID])
 GO
-
 ALTER TABLE [dbo].[SRPGroupPermissions] CHECK CONSTRAINT [FK_GroupPermissions_SRPGroups]
 GO
-
-ALTER TABLE [dbo].[SRPUserGroups]
-	WITH CHECK ADD CONSTRAINT [FK_SRPUserGroups_SRPGroups] FOREIGN KEY ([GID]) REFERENCES [dbo].[SRPGroups]([GID])
+ALTER TABLE [dbo].[SRPUserGroups]  WITH CHECK ADD  CONSTRAINT [FK_SRPUserGroups_SRPGroups] FOREIGN KEY([GID])
+REFERENCES [dbo].[SRPGroups] ([GID])
 GO
-
 ALTER TABLE [dbo].[SRPUserGroups] CHECK CONSTRAINT [FK_SRPUserGroups_SRPGroups]
 GO
-
-ALTER TABLE [dbo].[SRPUserGroups]
-	WITH CHECK ADD CONSTRAINT [FK_SRPUserGroups_SRPUser] FOREIGN KEY ([UID]) REFERENCES [dbo].[SRPUser]([UID])
+ALTER TABLE [dbo].[SRPUserGroups]  WITH CHECK ADD  CONSTRAINT [FK_SRPUserGroups_SRPUser] FOREIGN KEY([UID])
+REFERENCES [dbo].[SRPUser] ([UID])
 GO
-
 ALTER TABLE [dbo].[SRPUserGroups] CHECK CONSTRAINT [FK_SRPUserGroups_SRPUser]
 GO
-
-ALTER TABLE [dbo].[SRPUserPermissions]
-	WITH CHECK ADD CONSTRAINT [FK_UserPermissions_SRPUser] FOREIGN KEY ([UID]) REFERENCES [dbo].[SRPUser]([UID])
+ALTER TABLE [dbo].[SRPUserPermissions]  WITH CHECK ADD  CONSTRAINT [FK_UserPermissions_SRPUser] FOREIGN KEY([UID])
+REFERENCES [dbo].[SRPUser] ([UID])
 GO
-
 ALTER TABLE [dbo].[SRPUserPermissions] CHECK CONSTRAINT [FK_UserPermissions_SRPUser]
-GO
-
-/* INSERT INITIAL SETUP DATA */
-INSERT INTO Tenant (
-	[Name],
-	[LandingName],
-	[AdminName],
-	[isActiveFlag],
-	[isMasterFlag],
-	[Description],
-	[DomainName],
-	[showNotifications],
-	[showOffers],
-	[showBadges],
-	[showEvents],
-	[NotificationsMenuText],
-	[OffersMenuText],
-	[BadgesMenuText],
-	[EventsMenuText],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'Master Tenant',
-	'The Great Reading Adventure',
-	'Master Tenant',
-	1,
-	1,
-	'<p>Master Great Reading Adventure Tenant</p>',
-	'www.greatreadingadventure.com',
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	'',
-	'',
-	GETDATE(),
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	1000,
-	'Modify Security Permission',
-	'Allows a user to access any of the screens in the security module',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	2000,
-	'Delete Program Permission',
-	'Allows a user to trigger the Purge Program functionality',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	2100,
-	'Add Program Permission',
-	'Allows a user to create a new Program',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	2200,
-	'Modify  Program Permission',
-	'Allows a user to create a new Program',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	3000,
-	'System Setup Permission',
-	'Allows a user to access any of the screens used to perform the setup of the system',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4000,
-	'Drawings Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4100,
-	'Settings Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4200,
-	'Reports Management',
-	'Allows access to reports',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4300,
-	'Games Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4400,
-	'Book Lists Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4500,
-	'Events Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4600,
-	'Offers Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4700,
-	'Badges Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4800,
-	'Avatars Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	4900,
-	'Awards Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	5000,
-	'Notifications Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	5100,
-	'Patrons Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	5200,
-	'Test Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	5300,
-	'Reviews Management',
-	'Allows access to the respective maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPPermissionsMaster (
-	[PermissionID],
-	[PermissionName],
-	[PermissionDesc],
-	[MODID]
-	)
-VALUES (
-	8000,
-	'Master Tenant Administrator',
-	'Allows access to the tenant maintenance screens.',
-	NULL
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'SysName',
-	'The Great Reading Adventure',
-	'Text',
-	'TextBox',
-	0,
-	'System Name',
-	'Friendly name given to the application',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'ContactEmail',
-	'info@test.greatreadingadventure.com',
-	'Text',
-	'TextBox',
-	0,
-	'Contact Email Address',
-	'The user exposed contact us email address',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'ContactName',
-	'System Administrator',
-	'Text',
-	'TextBox',
-	0,
-	'Contact Name',
-	'The name associated with the contact email address.',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'FromEmailName',
-	'Webmaster',
-	'Text',
-	'TextBox',
-	0,
-	'From Email Name',
-	'Name of the person impersonated in system generated messages (e.g. Webmaster)',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'FromEmailAddress',
-	'info@test.greatreadingadventure.com',
-	'Text',
-	'TextBox',
-	0,
-	'From Email Address',
-	'System generated messages email address ',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'PageSize',
-	'10',
-	'int',
-	'TextBox',
-	0,
-	'# of Items Per Page',
-	'Page Size',
-	'',
-	'5',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'MaxPtsDay',
-	'500',
-	'int',
-	'TextBox',
-	0,
-	'Max Points Per Day',
-	'Maximum Points/Day allowed for logging',
-	'',
-	'500',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'MaxMin',
-	'60',
-	'int',
-	'TextBox',
-	0,
-	'Max Log Min/Entry',
-	'Maximum Minutes/Entry allowed for logging',
-	'',
-	'60',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'MaxBook',
-	'2',
-	'int',
-	'TextBox',
-	0,
-	'Max Log Books/Entry',
-	'Maximum Books/Entry allowed for logging',
-	'',
-	'5',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'MaxPage',
-	'90',
-	'int',
-	'TextBox',
-	0,
-	'Max Log Page/Entry',
-	'Maximum Page/Entry allowed for logging',
-	'',
-	'100',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'DupEvtCodes',
-	'False',
-	'int',
-	'Checkbox',
-	0,
-	'Duplicate Secret Codes',
-	'Whether or not duplicate secret codes are allowed',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'FBReviewOn',
-	'True',
-	'int',
-	'Checkbox',
-	0,
-	'Facebook Book Reviews<br>
-  Are Enabled',
-	'Whether or not posting book reviews to Facebook is allowed',
-	'',
-	'False',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Branch',
-	'Library Branches',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Library District',
-	'Library District',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'School Type',
-	'Types of schools',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'School',
-	'School Names',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'School District',
-	'School District Names',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Badge Category',
-	'Badge Category',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Badge Age Group',
-	'Badge Age Group',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CodeType (
-	[isSystem],
-	[CodeTypeName],
-	[Description],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Badge Location',
-	'Badge Location',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO CustomEventFields (
-	[Use1],
-	[Label1],
-	[DDValues1],
-	[Use2],
-	[Use3],
-	[Label2],
-	[Label3],
-	[DDValues2],
-	[DDValues3],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	0,
-	'Custom 1',
-	'',
-	0,
-	0,
-	'Custom 2',
-	'Custom 3',
-	'',
-	'',
-	getdate(),
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-
-INSERT INTO CustomRegistrationFields (
-	[Use1],
-	[Label1],
-	[DDValues1],
-	[Use2],
-	[Use3],
-	[Use4],
-	[Use5],
-	[Label2],
-	[Label3],
-	[Label4],
-	[Label5],
-	[DDValues2],
-	[DDValues3],
-	[DDValues4],
-	[DDValues5],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	'Custom 1',
-	'1',
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	'',
-	getdate(),
-	'sysadmin',
-	getdate(),
-	'N/A',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO RegistrationSettings (
-	[Literacy1Label],
-	[Literacy2Label],
-	[DOB_Prompt],
-	[Age_Prompt],
-	[SchoolGrade_Prompt],
-	[FirstName_Prompt],
-	[MiddleName_Prompt],
-	[LastName_Prompt],
-	[Gender_Prompt],
-	[EmailAddress_Prompt],
-	[PhoneNumber_Prompt],
-	[StreetAddress1_Prompt],
-	[StreetAddress2_Prompt],
-	[City_Prompt],
-	[State_Prompt],
-	[ZipCode_Prompt],
-	[Country_Prompt],
-	[County_Prompt],
-	[ParentGuardianFirstName_Prompt],
-	[ParentGuardianLastName_Prompt],
-	[ParentGuardianMiddleName_Prompt],
-	[PrimaryLibrary_Prompt],
-	[LibraryCard_Prompt],
-	[SchoolName_Prompt],
-	[District_Prompt],
-	[Teacher_Prompt],
-	[GroupTeamName_Prompt],
-	[SchoolType_Prompt],
-	[LiteracyLevel1_Prompt],
-	[LiteracyLevel2_Prompt],
-	[ParentPermFlag_Prompt],
-	[Over18Flag_Prompt],
-	[ShareFlag_Prompt],
-	[TermsOfUseflag_Prompt],
-	[Custom1_Prompt],
-	[Custom2_Prompt],
-	[Custom3_Prompt],
-	[Custom4_Prompt],
-	[Custom5_Prompt],
-	[DOB_Req],
-	[Age_Req],
-	[SchoolGrade_Req],
-	[FirstName_Req],
-	[MiddleName_Req],
-	[LastName_Req],
-	[Gender_Req],
-	[EmailAddress_Req],
-	[PhoneNumber_Req],
-	[StreetAddress1_Req],
-	[StreetAddress2_Req],
-	[City_Req],
-	[State_Req],
-	[ZipCode_Req],
-	[Country_Req],
-	[County_Req],
-	[ParentGuardianFirstName_Req],
-	[ParentGuardianLastName_Req],
-	[ParentGuardianMiddleName_Req],
-	[PrimaryLibrary_Req],
-	[LibraryCard_Req],
-	[SchoolName_Req],
-	[District_Req],
-	[Teacher_Req],
-	[GroupTeamName_Req],
-	[SchoolType_Req],
-	[LiteracyLevel1_Req],
-	[LiteracyLevel2_Req],
-	[ParentPermFlag_Req],
-	[Over18Flag_Req],
-	[ShareFlag_Req],
-	[TermsOfUseflag_Req],
-	[Custom1_Req],
-	[Custom2_Req],
-	[Custom3_Req],
-	[Custom4_Req],
-	[Custom5_Req],
-	[DOB_Show],
-	[Age_Show],
-	[SchoolGrade_Show],
-	[FirstName_Show],
-	[MiddleName_Show],
-	[LastName_Show],
-	[Gender_Show],
-	[EmailAddress_Show],
-	[PhoneNumber_Show],
-	[StreetAddress1_Show],
-	[StreetAddress2_Show],
-	[City_Show],
-	[State_Show],
-	[ZipCode_Show],
-	[Country_Show],
-	[County_Show],
-	[ParentGuardianFirstName_Show],
-	[ParentGuardianLastName_Show],
-	[ParentGuardianMiddleName_Show],
-	[PrimaryLibrary_Show],
-	[LibraryCard_Show],
-	[SchoolName_Show],
-	[District_Show],
-	[Teacher_Show],
-	[GroupTeamName_Show],
-	[SchoolType_Show],
-	[LiteracyLevel1_Show],
-	[LiteracyLevel2_Show],
-	[ParentPermFlag_Show],
-	[Over18Flag_Show],
-	[ShareFlag_Show],
-	[TermsOfUseflag_Show],
-	[Custom1_Show],
-	[Custom2_Show],
-	[Custom3_Show],
-	[Custom4_Show],
-	[Custom5_Show],
-	[DOB_Edit],
-	[Age_Edit],
-	[SchoolGrade_Edit],
-	[FirstName_Edit],
-	[MiddleName_Edit],
-	[LastName_Edit],
-	[Gender_Edit],
-	[EmailAddress_Edit],
-	[PhoneNumber_Edit],
-	[StreetAddress1_Edit],
-	[StreetAddress2_Edit],
-	[City_Edit],
-	[State_Edit],
-	[ZipCode_Edit],
-	[Country_Edit],
-	[County_Edit],
-	[ParentGuardianFirstName_Edit],
-	[ParentGuardianLastName_Edit],
-	[ParentGuardianMiddleName_Edit],
-	[PrimaryLibrary_Edit],
-	[LibraryCard_Edit],
-	[SchoolName_Edit],
-	[District_Edit],
-	[Teacher_Edit],
-	[GroupTeamName_Edit],
-	[SchoolType_Edit],
-	[LiteracyLevel1_Edit],
-	[LiteracyLevel2_Edit],
-	[ParentPermFlag_Edit],
-	[Over18Flag_Edit],
-	[ShareFlag_Edit],
-	[TermsOfUseflag_Edit],
-	[Custom1_Edit],
-	[Custom2_Edit],
-	[Custom3_Edit],
-	[Custom4_Edit],
-	[Custom5_Edit],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[SDistrict_Prompt],
-	[SDistrict_Req],
-	[SDistrict_Show],
-	[SDistrict_Edit],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'AR Level',
-	'Lexile Level',
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
-	0,
-	1,
-	1,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	1,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
-	0,
-	1,
-	1,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	1,
-	1,
-	1,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	GETDATE(),
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPGroups (
-	[GroupName],
-	[GroupDescription],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'Administrator',
-	'Full Access',
-	GETDATE(),
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPUser (
-	[Username],
-	[Password],
-	[FirstName],
-	[LastName],
-	[EmailAddress],
-	[Division],
-	[Department],
-	[Title],
-	[IsActive],
-	[MustResetPassword],
-	[IsDeleted],
-	[LastPasswordReset],
-	[DeletedDate],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'sysadmin',
-	'changeme05!',
-	'System',
-	'Administrator',
-	'info@test.greatreadingadventure.com',
-	'',
-	'',
-	'',
-	1,
-	1,
-	0,
-	GETDATE(),
-	NULL,
-	GETDATE(),
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
-INSERT INTO SRPUserGroups (
-	[UID],
-	[GID],
-	[AddedDate],
-	[AddedUser]
-	)
-SELECT UID,
-	GID,
-	getdate(),
-	'sysadmin'
-FROM SRPUser
-FULL JOIN SRPGroups ON 1 = 1
-GO
-
-INSERT INTO SRPGroupPermissions (
-	[GID],
-	[PermissionID],
-	[AddedDate],
-	[AddedUser]
-	)
-SELECT GID,
-	PermissionID,
-	getdate(),
-	'sysadmin'
-FROM SRPGroups
-FULL JOIN SRPPermissionsMaster ON 1 = 1
-GO
-
-INSERT INTO Programs (
-	[AdminName],
-	[Title],
-	[TabName],
-	[POrder],
-	[IsActive],
-	[IsHidden],
-	[StartDate],
-	[EndDate],
-	[MaxAge],
-	[MaxGrade],
-	[LoggingStart],
-	[LoggingEnd],
-	[ParentalConsentFlag],
-	[ParentalConsentText],
-	[PatronReviewFlag],
-	[LogoutURL],
-	[ProgramGameID],
-	[HTML1],
-	[HTML2],
-	[HTML3],
-	[HTML4],
-	[HTML5],
-	[HTML6],
-	[BannerImage],
-	[RegistrationBadgeID],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[LastModDate],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3],
-	[PreTestID],
-	[PostTestID],
-	[PreTestMandatory],
-	[PretestEndDate],
-	[PostTestStartDate]
-	)
-VALUES (
-	'Sample Program 1',
-	'Program 1',
-	'Program 1',
-	1,
-	1,
-	0,
-	'Aug  1 2015 12:00AM',
-	'Dec 31 2020 12:00AM',
-	4,
-	12,
-	'Aug  1 2015 12:00AM',
-	'Dec 31 2020 12:00AM',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	1,
-	'',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'',
-	0,
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	GETDATE(),
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	'',
-	0,
-	0,
-	0,
-	GETDATE(),
-	GETDATE()
-	)
-GO
-
-INSERT INTO Programs (
-	[AdminName],
-	[Title],
-	[TabName],
-	[POrder],
-	[IsActive],
-	[IsHidden],
-	[StartDate],
-	[EndDate],
-	[MaxAge],
-	[MaxGrade],
-	[LoggingStart],
-	[LoggingEnd],
-	[ParentalConsentFlag],
-	[ParentalConsentText],
-	[PatronReviewFlag],
-	[LogoutURL],
-	[ProgramGameID],
-	[HTML1],
-	[HTML2],
-	[HTML3],
-	[HTML4],
-	[HTML5],
-	[HTML6],
-	[BannerImage],
-	[RegistrationBadgeID],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[LastModDate],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3],
-	[PreTestID],
-	[PostTestID],
-	[PreTestMandatory],
-	[PretestEndDate],
-	[PostTestStartDate]
-	)
-VALUES (
-	'Sample Program 2',
-	'Program 2',
-	'Program 2',
-	2,
-	1,
-	0,
-	'Aug  1 2015 12:00AM',
-	'Dec 31 2020 12:00AM',
-	12,
-	12,
-	'Aug  1 2015 12:00AM',
-	'Dec 31 2020 12:00AM',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	1,
-	'',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'',
-	0,
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	GETDATE(),
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	'',
-	0,
-	0,
-	0,
-	GETDATE(),
-	GETDATE()
-	)
-GO
-
-IF EXISTS (
-		SELECT *
-		FROM sys.objects
-		WHERE object_id = OBJECT_ID(N'[dbo].[rpt_PatronFilter_Expanded]')
-			AND type IN (
-				N'P',
-				N'PC'
-				)
-		)
-	DROP PROCEDURE [dbo].[rpt_PatronFilter_Expanded]
-GO
-
-CREATE PROCEDURE [dbo].[rpt_PatronFilter_Expanded] @ProgId INT = NULL,
-	@BranchID INT = NULL,
-	@School VARCHAR(50) = NULL,
-	@LibSys VARCHAR(50) = NULL,
-	@TenID INT = NULL,
-	@Points INT = 0,
-	@PointType INT = - 1,
-	@StartDate DATETIME = NULL,
-	@EndDate DATETIME = NULL
-AS
-SET ARITHABORT OFF
-SET ANSI_WARNINGS OFF
-
-SELECT DISTINCT Patron.PID
-FROM Patron
-WHERE TenID = @TenID
-	AND ProgID > 0
-	AND (
-		ProgID = @ProgId
-		OR @ProgId IS NULL
-		)
-	AND (
-		PrimaryLibrary = @BranchID
-		OR @BranchID IS NULL
-		)
-	AND (
-		rtrim(ltrim(isnull(SchoolName, ''))) = @School
-		OR @School IS NULL
-		)
-	AND (
-		rtrim(ltrim(isnull(District, ''))) = @LibSys
-		OR @LibSys IS NULL
-		)
-	AND (
-		@Points = 0
-		OR (
-			SELECT isNull(SUM(NumPoints), 0)
-			FROM PatronPoints
-			WHERE (
-					AwardReasonCd = @PointType
-					OR @PointType < 0
-					)
-				AND (
-					AwardDate >= @StartDate
-					OR @StartDate IS NULL
-					)
-				AND (
-					AwardDate <= @EndDate
-					OR @EndDate IS NULL
-					)
-				AND PatronPoints.PID = Patron.PID
-			) >= @Points
-		)
 GO

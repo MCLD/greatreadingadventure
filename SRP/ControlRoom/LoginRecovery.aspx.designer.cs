@@ -49,13 +49,13 @@ namespace GRA.SRP.ControlRoom {
         protected global::System.Web.UI.WebControls.Label lblMessage;
         
         /// <summary>
-        /// uxUsername control.
+        /// uxEmailaddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox uxUsername;
+        protected global::System.Web.UI.WebControls.TextBox uxEmailaddress;
         
         /// <summary>
         /// Button1 control.

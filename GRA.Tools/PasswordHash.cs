@@ -29,7 +29,7 @@
 using System;
 using System.Security.Cryptography;
 
-namespace PasswordHash {
+namespace GRA.Tools.PasswordHash {
     /// <summary>
     /// Salted password hashing with PBKDF2-SHA1.
     /// Author: havoc AT defuse.ca
@@ -46,10 +46,11 @@ namespace PasswordHash {
         // The following constants may be changed without breaking existing hashes.
         public const int SALT_BYTE_SIZE = 24;
         /// <summary>
-        /// HASH_BYTE_SIZE should *not* be greater than <see cref="BLOCK_SIZE"/>.  A HASH_BYTE_SIZE greater than block size makes
-        /// the defender's job more difficult, without making the attackers job more difficult, because the defender
-        /// must calculate all blocks, but the attacker only has to check the first block.  Instead,
-        /// increase the iteration count and salt size to make the attacker's job more difficult.
+        /// HASH_BYTE_SIZE should *not* be greater than <see cref="BLOCK_SIZE"/>.  A HASH_BYTE_SIZE
+        /// greater than block size makes the defender's job more difficult, without making the
+        /// attackers job more difficult, because the defender must calculate all blocks, but the
+        /// attacker only has to check the first block.  Instead, increase the iteration count and
+        /// salt size to make the attacker's job more difficult.
         /// </summary>
         public const int HASH_BYTE_SIZE = BLOCK_SIZE;
         public const int PBKDF2_ITERATIONS = 1000;
@@ -58,15 +59,23 @@ namespace PasswordHash {
         public const int SALT_INDEX = 1;
         public const int PBKDF2_INDEX = 2;
 
+        private const string PasswordDelimiter = ":";
+
         /// <summary>
         /// Creates a salted PBKDF2 hash of the password.
         /// </summary>
         /// <param name="password">The password to hash.</param>
-        /// <param name="pbkdf2Iterations">The number of iterations of the pbkdf2 algorithm. Higher numbers take longer to create and validate, and are thus harder to crack.</param>
-        /// <param name="saltBytes">The length of the salt in bytes. As a rule of thumb, the salt should be at least as long as <see cref="hashBytes"/>.</param>
-        /// <param name="hashBytes">The length of the final password hash in bytes. This should *not* exceed <see cref="BLOCK_SIZE"/>.</param>
+        /// <param name="pbkdf2Iterations">The number of iterations of the pbkdf2 algorithm. Higher
+        /// numbers take longer to create and validate, and are thus harder to crack.</param>
+        /// <param name="saltBytes">The length of the salt in bytes. As a rule of thumb, the salt
+        /// should be at least as long as <see cref="hashBytes"/>.</param>
+        /// <param name="hashBytes">The length of the final password hash in bytes. This should
+        /// *not* exceed <see cref="BLOCK_SIZE"/>.</param>
         /// <returns>The hash of the password.</returns>
-        public static string CreateHash(string password, int pbkdf2Iterations = PBKDF2_ITERATIONS, int saltBytes = SALT_BYTE_SIZE, int hashBytes = HASH_BYTE_SIZE) {
+        public static string CreateHash(string password,
+                                        int pbkdf2Iterations = PBKDF2_ITERATIONS,
+                                        int saltBytes = SALT_BYTE_SIZE,
+                                        int hashBytes = HASH_BYTE_SIZE) {
             // Generate a random salt
             using(RNGCryptoServiceProvider csprng = new RNGCryptoServiceProvider()) {
                 byte[] salt = new byte[saltBytes];
@@ -74,9 +83,12 @@ namespace PasswordHash {
 
                 // Hash the password and encode the parameters
                 byte[] hash = PBKDF2(password, salt, pbkdf2Iterations, hashBytes);
-                return pbkdf2Iterations + ":" +
-                    Convert.ToBase64String(salt) + ":" +
-                    Convert.ToBase64String(hash);
+                return string.Format("{0}{1}{2}{3}{4}",
+                                     pbkdf2Iterations,
+                                     PasswordDelimiter,
+                                     Convert.ToBase64String(salt),
+                                     PasswordDelimiter,
+                                     Convert.ToBase64String(hash));
             }
         }
 
@@ -88,14 +100,20 @@ namespace PasswordHash {
         /// <returns>True if the password is correct. False otherwise.</returns>
         public static bool ValidatePassword(string password, string correctHash) {
             // Extract the parameters from the hash
-            char[] delimiter = { ':' };
-            string[] split = correctHash.Split(delimiter);
-            int iterations = Int32.Parse(split[ITERATION_INDEX]);
-            byte[] salt = Convert.FromBase64String(split[SALT_INDEX]);
-            byte[] hash = Convert.FromBase64String(split[PBKDF2_INDEX]);
+            try {
+                if(!correctHash.Contains(PasswordDelimiter)) {
+                    return false;
+                }
+                string[] split = correctHash.Split(PasswordDelimiter.ToCharArray()[0]);
+                int iterations = Int32.Parse(split[ITERATION_INDEX]);
+                byte[] salt = Convert.FromBase64String(split[SALT_INDEX]);
+                byte[] hash = Convert.FromBase64String(split[PBKDF2_INDEX]);
 
-            byte[] testHash = PBKDF2(password, salt, iterations, hash.Length);
-            return SlowEquals(hash, testHash);
+                byte[] testHash = PBKDF2(password, salt, iterations, hash.Length);
+                return SlowEquals(hash, testHash);
+            } catch (Exception) {
+                return false;
+            }
         }
 
         /// <summary>
@@ -121,7 +139,10 @@ namespace PasswordHash {
         /// <param name="iterations">The PBKDF2 iteration count.</param>
         /// <param name="outputBytes">The length of the hash to generate, in bytes.</param>
         /// <returns>A hash of the password.</returns>
-        private static byte[] PBKDF2(string password, byte[] salt, int iterations, int outputBytes) {
+        private static byte[] PBKDF2(string password,
+                                     byte[] salt,
+                                     int iterations,
+                                     int outputBytes) {
             using(Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt)) {
                 pbkdf2.IterationCount = iterations;
                 return pbkdf2.GetBytes(outputBytes);
