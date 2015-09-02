@@ -10,6 +10,7 @@ using SRP_DAL;
 using GRA.SRP.ControlRoom.Modules.Setup;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
+using GRA.Communications;
 
 namespace GRA.SRP.ControlRoom
 {

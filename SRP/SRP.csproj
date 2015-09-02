@@ -2489,7 +2489,6 @@
     <Compile Include="Controls\ChangePassword.ascx.designer.cs">
       <DependentUpon>ChangePassword.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Code\EmailService.cs" />
     <Compile Include="Controls\Events.ascx.cs">
       <DependentUpon>Events.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2818,7 +2817,6 @@
     <Compile Include="Layout\TSelection.Master.designer.cs">
       <DependentUpon>TSelection.Master</DependentUpon>
     </Compile>
-    <Compile Include="LogExtensions.cs" />
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2944,6 +2942,14 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GRA.Communications\GRA.Communications.csproj">
+      <Project>{27443946-6ec6-4631-b35c-6cbb7cbf1103}</Project>
+      <Name>GRA.Communications</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GRA.Tools\GRA.Tools.csproj">
+      <Project>{b50b80e5-5996-42a1-bcdb-795ebc93e893}</Project>
+      <Name>GRA.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SQLHelper\SQLHelper.csproj">
       <Project>{E933400A-F1B2-4809-BE26-DB13F9BA758D}</Project>
       <Name>SQLHelper</Name>

@@ -16,16 +16,14 @@
 // specific language governing permissions and limitations under the License.
 // ==============================================================================
 
-namespace GRA.SRP
-{
+namespace GRA {
     using System.Collections.Concurrent;
     using LoggingExtensions.Logging;
 
     /// <summary>
     /// Extensions to help make logging awesome - this should be installed into the root namespace of your application
     /// </summary>
-    public static class LogExtensions
-    {
+    public static class LogExtensions {
         /// <summary>
         /// Concurrent dictionary that ensures only one instance of a logger for a type.
         /// </summary>
@@ -37,9 +35,8 @@ namespace GRA.SRP
         /// <typeparam name="T"></typeparam>
         /// <param name="type">The type to get the logger for.</param>
         /// <returns>Instance of a logger for the object.</returns>
-        public static ILog Log<T>(this T type)
-        {
-            string objectName = typeof (T).FullName;
+        public static ILog Log<T>(this T type) {
+            string objectName = typeof(T).FullName;
             return Log(objectName);
         }
 
@@ -48,8 +45,7 @@ namespace GRA.SRP
         /// </summary>
         /// <param name="objectName">Either use the fully qualified object name or the short. If used with Log&lt;T&gt;() you must use the fully qualified object name"/></param>
         /// <returns>Instance of a logger for the object.</returns>
-        public static ILog Log(this string objectName)
-        {
+        public static ILog Log(this string objectName) {
             return _dictionary.GetOrAdd(objectName, LoggingExtensions.Logging.Log.GetLoggerFor);
         }
     }

@@ -102,6 +102,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\GRA.Tools\GRA.Tools.csproj">
+      <Project>{b50b80e5-5996-42a1-bcdb-795ebc93e893}</Project>
+      <Name>GRA.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SQLHelper\SQLHelper.csproj">
       <Project>{E933400A-F1B2-4809-BE26-DB13F9BA758D}</Project>
       <Name>SQLHelper</Name>
