@@ -8,64 +8,29 @@ using System.IO;
 using Microsoft.ApplicationBlocks.Data;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
+using GRA.Tools.PasswordHash;
+using System.Text;
+using GRA.Tools;
 
-
-namespace GRA.SRP.Core.Utilities
-{
+namespace GRA.SRP.Core.Utilities {
     [Serializable]
-    public class SRPUser: EntityBase
-    {
+    public class SRPUser : EntityBase {
         public override string Version { get { return "2.0"; } }
 
-        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
-        //ConfigurationManager.ConnectionStrings["SRPConn"].ToString();
+        private const int pbkdf2Iterations = 150000;
 
-        #region Fields (18)
-
-        private DateTime? _addedDate;
-        private string _addedUser;
-        private DateTime? _deletedDate;
-        private string _department;
-        private string _division;
-        private string _emailAddress;
-        private string _firstName;
-        private bool _isActive = true;
-        private bool _isDeleted = false;
-        private DateTime? _lastModDate;
-        private string _lastModUser;
-        private string _lastName;
-        private DateTime? _lastPasswordReset;
-        private bool _mustResetPassword = false;
-        private string _password;
-        private string _title;
-        private int? _uid;
-
-        private int myTenID = 0;
-        private int myFldInt1 = 0;
-        private int myFldInt2 = 0;
-        private int myFldInt3 = 0;
-        private bool myFldBit1 = false;
-        private bool myFldBit2 = false;
-        private bool myFldBit3 = false;
-        private string myFldText1 = "";
-        private string myFldText2 = "";
-        private string myFldText3 = "";
-
-        #endregion Fields
+        private static readonly string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         #region Constructors (2)
-        public SRPUser(int pUid)
-        {
+        public SRPUser(int pUid) {
             List<SRPPermission> perms = new List<SRPPermission>();
 
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", pUid);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_Get", arrParams);
-            if (reader.Read())
-            {
+            if(reader.Read()) {
                 Uid = (int)reader["UID"];
-                Username = reader["Username"].ToString(); ;
-                Password = reader["Password"].ToString();
+                Username = reader["Username"].ToString();
                 FirstName = reader["FirstName"].ToString();
                 LastName = reader["LastName"].ToString();
                 EmailAddress = reader["EmailAddress"].ToString();
@@ -96,194 +61,56 @@ namespace GRA.SRP.Core.Utilities
 
         }
 
-        public SRPUser()
-        {
-            _uid = null;  // meaning it is not from database
+        public SRPUser() {
+            this.Uid = null;  // meaning it is not from database
         }
 
         #endregion Constructors
 
         #region Properties (18)
-
-        public DateTime? AddedDate
-        {
-            get { return _addedDate; }
-            set { _addedDate = value; }
-        }
-
-        public string AddedUser
-        {
-            get { return _addedUser; }
-            set { _addedUser = value; }
-        }
-
-        public DateTime? DeletedDate
-        {
-            get { return _deletedDate; }
-            set { _deletedDate = value; }
-        }
-
-        public string Department
-        {
-            get { return _department; }
-            set { _department = value; }
-        }
-
-        public string Division
-        {
-            get { return _division; }
-            set { _division = value; }
-        }
-
-        public string EmailAddress
-        {
-            get { return _emailAddress; }
-            set { _emailAddress = value; }
-        }
-
-        public string FirstName
-        {
-            get { return _firstName; }
-            set { _firstName = value; }
-        }
-
-        public bool IsActive
-        {
-            get { return _isActive; }
-            set { _isActive = value; }
-        }
-
-        public bool IsDeleted
-        {
-            get { return _isDeleted; }
-            set { _isDeleted = value; }
-        }
-
-        public DateTime? LastModDate
-        {
-            get { return _lastModDate; }
-            set { _lastModDate = value; }
-        }
-
-        public string LastModUser
-        {
-            get { return _lastModUser; }
-            set { _lastModUser = value; }
-        }
-
-        public string LastName
-        {
-            get { return _lastName; }
-            set { _lastName = value; }
-        }
-
-        public DateTime? LastPasswordReset
-        {
-            get { return _lastPasswordReset; }
-            set { _lastPasswordReset = value; }
-        }
-
-        public bool MustResetPassword
-        {
-            get { return _mustResetPassword; }
-            set { _mustResetPassword = value; }
-        }
-
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; }
-        }
-
-        public string Title
-        {
-            get { return _title; }
-            set { _title = value; }
-        }
-
-        public int? Uid
-        {
-            get { return _uid; }
-            set { _uid = value; }
-        }
-
+        public DateTime? AddedDate { get; set; }
+        public string AddedUser { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string Department { get; set; }
+        public string Division { get; set; }
+        public string EmailAddress { get; set; }
+        public string FirstName { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? LastModDate { get; set; }
+        public string LastModUser { get; set; }
+        public string LastName { get; set; }
+        public DateTime? LastPasswordReset { get; set; }
+        public bool MustResetPassword { get; set; }
+        //public string Password { get; set; }
+        public string ValidatePassword { private get; set; }
+        public string NewPassword { private get; set; }
+        public string Title { get; set; }
+        public int? Uid { get; set; }
         public string Username { get; set; }
-
-        public int TenID
-        {
-            get { return myTenID; }
-            set { myTenID = value; }
-        }
-
-        public int FldInt1
-        {
-            get { return myFldInt1; }
-            set { myFldInt1 = value; }
-        }
-
-        public int FldInt2
-        {
-            get { return myFldInt2; }
-            set { myFldInt2 = value; }
-        }
-
-        public int FldInt3
-        {
-            get { return myFldInt3; }
-            set { myFldInt3 = value; }
-        }
-
-        public bool FldBit1
-        {
-            get { return myFldBit1; }
-            set { myFldBit1 = value; }
-        }
-
-        public bool FldBit2
-        {
-            get { return myFldBit2; }
-            set { myFldBit2 = value; }
-        }
-
-        public bool FldBit3
-        {
-            get { return myFldBit3; }
-            set { myFldBit3 = value; }
-        }
-
-        public string FldText1
-        {
-            get { return myFldText1; }
-            set { myFldText1 = value; }
-        }
-
-        public string FldText2
-        {
-            get { return myFldText2; }
-            set { myFldText2 = value; }
-        }
-
-        public string FldText3
-        {
-            get { return myFldText3; }
-            set { myFldText3 = value; }
-        }
+        public int TenID { get; set; }
+        public int FldInt1 { get; set; }
+        public int FldInt2 { get; set; }
+        public int FldInt3 { get; set; }
+        public bool FldBit1 { get; set; }
+        public bool FldBit2 { get; set; }
+        public bool FldBit3 { get; set; }
+        public string FldText1 { get; set; }
+        public string FldText2 { get; set; }
+        public string FldText3 { get; set; }
         #endregion Properties
 
         #region Methods (27)
 
 
-        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode)
-        {
+        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
             // Remove any old error Codes
             ClearErrorCodes();
 
             ClearErrorCodes();
-            if (validationMode == BusinessRulesValidationMode.INSERT)
-            {
+            if(validationMode == BusinessRulesValidationMode.INSERT) {
                 SRPUser obj = FetchByUsername(Username);
-                if (obj != null)
-                {
+                if(obj != null) {
                     AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "Username already exists.",
                                                                     BusinessRulesValidationCode.UNSPECIFIED));
                 }
@@ -292,18 +119,17 @@ namespace GRA.SRP.Core.Utilities
             //return true;
         }
 
-        public bool Delete()
-        {
+        public bool Delete() {
             return Delete(Uid);
         }
 
-        public static bool Delete(int? u)
-        {
-            if (u == null) return false;
+        public static bool Delete(int? u) {
+            if(u == null)
+                return false;
 
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@UID", u);
-            arrParams[1] = new SqlParameter("@ActionUsername", ((SRPUser) HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
+            arrParams[1] = new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
             SqlHelper.ExecuteScalar(conn, CommandType.Text, "UPDATE dbo.SRPUser SET isDeleted = 1, DeletedDate = getdate(), LastModDate = getdate(), LastModUser = @ActionUsername WHERE UID = @UID", arrParams);
             return true;
         }
@@ -335,14 +161,13 @@ namespace GRA.SRP.Core.Utilities
         //    }
         //}
 
-        public List<SRPPermission> EffectiveUserPermissions()
-        {
-            return EffectiveUserPermissions(_uid);
+        public List<SRPPermission> EffectiveUserPermissions() {
+            return EffectiveUserPermissions(this.Uid);
         }
 
-        public static List<SRPPermission> EffectiveUserPermissions(int? pUid)
-        {
-            if (pUid == null) return (new List<SRPPermission>());
+        public static List<SRPPermission> EffectiveUserPermissions(int? pUid) {
+            if(pUid == null)
+                return (new List<SRPPermission>());
 
             List<SRPPermission> perms = new List<SRPPermission>();
 
@@ -352,8 +177,7 @@ namespace GRA.SRP.Core.Utilities
 
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAllPermissions", arrParams);
 
-            while (reader.Read())
-            {
+            while(reader.Read()) {
                 SRPPermission perm = new SRPPermission();
                 perm.Permission = (int)reader["PermissionID"];
                 perm.Name = reader["PermissionName"].ToString();
@@ -364,9 +188,9 @@ namespace GRA.SRP.Core.Utilities
             return perms;
         }
 
-        public static bool EmailExists(string pEmail)
-        {
-            if (pEmail.Length == 0) return false;
+        public static bool EmailExists(string pEmail) {
+            if(pEmail.Length == 0)
+                return false;
 
             var arrParams = new SqlParameter[2];
 
@@ -378,24 +202,20 @@ namespace GRA.SRP.Core.Utilities
             return ((int)arrParams[1].Value == 1);
         }
 
-        public static SRPUser Fetch(int pUid)
-        {
+        public static SRPUser Fetch(int pUid) {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", pUid);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_Get", arrParams);
             SRPUser u = GetFromReader(reader);
-            return u;            
+            return u;
         }
 
-        public static SRPUser GetFromReader(SqlDataReader reader)
-        {
+        public static SRPUser GetFromReader(SqlDataReader reader) {
             SRPUser returnVal = null;
-            if (reader.Read())
-            {
+            if(reader.Read()) {
                 returnVal = new SRPUser();
                 returnVal.Uid = (int)reader["UID"];
-                returnVal.Username = reader["Username"].ToString(); ;
-                returnVal.Password = reader["Password"].ToString();
+                returnVal.Username = reader["Username"].ToString();
                 returnVal.FirstName = reader["FirstName"].ToString();
                 returnVal.LastName = reader["LastName"].ToString();
                 returnVal.EmailAddress = reader["EmailAddress"].ToString();
@@ -429,23 +249,19 @@ namespace GRA.SRP.Core.Utilities
         }
 
 
-        public static DataTable FetchAllAsDataTable(bool forCurrentTenantOnly = true)
-        {
+        public static DataTable FetchAllAsDataTable(bool forCurrentTenantOnly = true) {
             var arrParams = new SqlParameter[1];
-            if (forCurrentTenantOnly)
-            {
+            if(forCurrentTenantOnly) {
                 arrParams[0] = new SqlParameter("@TenID",
                     (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                             -1 :
                             (int)HttpContext.Current.Session["TenantID"])
                 );
-            }
-            else
-            {
+            } else {
                 arrParams[0] = new SqlParameter("@TenID", DBNull.Value);
             }
 
-            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll",arrParams);
+            var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll", arrParams);
 
             DataTable dt = new DataTable();
             dt.Load(reader);
@@ -454,8 +270,7 @@ namespace GRA.SRP.Core.Utilities
         }
 
 
-        public static DataTable FetchAllAsDataTable(int TenID)
-        {
+        public static DataTable FetchAllAsDataTable(int TenID) {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID", TenID);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll", arrParams);
@@ -466,31 +281,25 @@ namespace GRA.SRP.Core.Utilities
 
         }
 
-        public static List<SRPUser> FetchAll(bool forCurrentTenantOnly = true)
-        {
+        public static List<SRPUser> FetchAll(bool forCurrentTenantOnly = true) {
             var arrParams = new SqlParameter[1];
-            if (forCurrentTenantOnly)
-            {
+            if(forCurrentTenantOnly) {
                 arrParams[0] = new SqlParameter("@TenID",
                     (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                             -1 :
                             (int)HttpContext.Current.Session["TenantID"])
                 );
-            }
-            else
-            {
+            } else {
                 arrParams[0] = new SqlParameter("@TenID", DBNull.Value);
             }
 
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetAll", arrParams);
             List<SRPUser> retValue = new List<SRPUser>();
 
-            while (reader.Read())
-            {
+            while(reader.Read()) {
                 SRPUser aUser = new SRPUser();
                 aUser.Uid = (int)reader["UID"];
                 aUser.Username = (string)reader["Username"];
-                aUser.Password = (string)reader["Password"];
                 aUser.FirstName = (string)reader["FirstName"];
                 aUser.LastName = (string)reader["LastName"];
                 aUser.EmailAddress = (string)reader["EmailAddress"];
@@ -531,8 +340,7 @@ namespace GRA.SRP.Core.Utilities
             return retValue;
         }
 
-        public static SRPUser FetchByUsername(string pUsername)
-        {
+        public static SRPUser FetchByUsername(string pUsername) {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@Username", pUsername);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "cbspSRPUser_GetByUsername", arrParams);
@@ -540,132 +348,307 @@ namespace GRA.SRP.Core.Utilities
             return u;
 
         }
-
-        public bool Insert()
-        {
-            Uid = Insert(this);
-            return Uid > 0;
+        public string GetUsernameByEmail(string emailAddress) {
+            string userEmailQuery = "SELECT [Username] FROM [SRPUser] WHERE [EmailAddress] = @emailAddress AND [IsDeleted] = 0";
+            SqlParameter parameter = new SqlParameter("emailAddress", emailAddress);
+            object result = SqlHelper.ExecuteScalar(conn,
+                                                    CommandType.Text,
+                                                    userEmailQuery,
+                                                    parameter);
+            return result == null
+                   ? null
+                   : result.ToString();
         }
 
-        public static int Insert(SRPUser u)
-        {
-            if (u == null) return -1;
-            var arrParams = new SqlParameter[22];
-            arrParams[0] = new SqlParameter("@Username", u.Username);
-            arrParams[1] = new SqlParameter("@Password", u.Password);
-            arrParams[2] = new SqlParameter("@FirstName", u.FirstName);
-            arrParams[3] = new SqlParameter("@LastName", u.LastName);
-            arrParams[4] = new SqlParameter("@EmailAddress", u.EmailAddress);
-            arrParams[5] = new SqlParameter("@Division", u.Division);
-            arrParams[6] = new SqlParameter("@Department", u.Department);
-            arrParams[7] = new SqlParameter("@Title", u.Title);
-            arrParams[8] = new SqlParameter("@IsActive", u.IsActive);
-            arrParams[9] = new SqlParameter("@MustResetPassword", u.MustResetPassword);
-            arrParams[10] = new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
+        public bool Insert() {
+            string existingUsername = GetUsernameByEmail(this.EmailAddress);
+            if(!string.IsNullOrEmpty(existingUsername)) {
+                throw new Exception(string.Format("Cannot create user: user with email address {0} already exists",
+                                                  this.EmailAddress));
+            }
 
-            arrParams[11] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.TenID, u.TenID.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt1, u.FldInt1.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt2, u.FldInt2.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt3, u.FldInt3.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit1, u.FldBit1.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit2, u.FldBit2.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit3, u.FldBit3.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText1, u.FldText1.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText2, u.FldText2.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText3, u.FldText3.GetTypeCode()));
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            string passwordHash = PasswordHash.CreateHash(this.NewPassword,
+                                                          pbkdf2Iterations);
+
+            parameters.Add(new SqlParameter("@Username", this.Username));
+            parameters.Add(new SqlParameter("@Password", passwordHash));
+            parameters.Add(new SqlParameter("@FirstName", this.FirstName));
+            parameters.Add(new SqlParameter("@LastName", this.LastName));
+            parameters.Add(new SqlParameter("@EmailAddress", this.EmailAddress));
+            parameters.Add(new SqlParameter("@Division", this.Division));
+            parameters.Add(new SqlParameter("@Department", this.Department));
+            parameters.Add(new SqlParameter("@Title", this.Title));
+            parameters.Add(new SqlParameter("@IsActive", this.IsActive));
+            parameters.Add(new SqlParameter("@MustResetPassword", this.MustResetPassword));
+            parameters.Add(new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username));
+
+            parameters.Add(new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TenID, this.TenID.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt1, this.FldInt1.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt2, this.FldInt2.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt3, this.FldInt3.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode())));
+            if(!string.IsNullOrEmpty(this.FldText1)) {
+                parameters.Add(new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, this.FldText1.GetTypeCode())));
+            }
+            if(!string.IsNullOrEmpty(this.FldText2)) {
+                parameters.Add(new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, this.FldText2.GetTypeCode())));
+            }
+            if(!string.IsNullOrEmpty(this.FldText3)) {
+                parameters.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode())));
+            }
 
 
-            arrParams[21] = new SqlParameter("@Return_Value", -1);
-            arrParams[21].Direction = ParameterDirection.ReturnValue;
-            u.Uid = Convert.ToInt32(SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Insert", arrParams));
-            return (int)u.Uid;
+            SqlParameter returnValue = new SqlParameter("@Return_Value", -1);
+            returnValue.Direction = ParameterDirection.ReturnValue;
+            parameters.Add(returnValue);
+
+            try {
+                this.Uid = Convert.ToInt32(SqlHelper.ExecuteScalar(conn,
+                                                                   CommandType.StoredProcedure,
+                                                                   "dbo.cbspSRPUser_Insert",
+                                                                   parameters.ToArray()));
+            } catch(Exception ex) {
+                this.Log().Error(() => string.Format("Unable to insert SRPUser {0}: {1}",
+                                                     this.Username,
+                                                     ex.Message));
+                return false;
+            }
+
+            return this.Uid > 0;
         }
 
-        public static bool Login(string logon, string password, string session, string ip, string machine, string browser)
-        {
-            var arrParams = new SqlParameter[6];
-            arrParams[0] = new SqlParameter("@UserName", logon);
-            arrParams[1] = new SqlParameter("@Password", password);
-            arrParams[2] = new SqlParameter("@SessionId", session);
-            arrParams[3] = new SqlParameter("@MachineName", machine);
-            arrParams[4] = new SqlParameter("@Browser", browser);
-            arrParams[5] = new SqlParameter("@IP", ip);
-
-            int result = (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Login", arrParams);
-            return (result == 1);
+        public static bool VerifyPassword(string logon, string password) {
+            string passwordHashQuery = "SELECT [Password] FROM [SRPUser] WHERE [UserName] = @UserName";
+            SqlParameter parameter = new SqlParameter("UserName", logon);
+            string passwordHash = (string)SqlHelper.ExecuteScalar(conn,
+                                                                  CommandType.Text,
+                                                                  passwordHashQuery,
+                                                                  parameter);
+            if(string.IsNullOrEmpty(passwordHash)) {
+                // no such user
+                return false;
+            }
+            return PasswordHash.ValidatePassword(password, passwordHash);
         }
 
-        public bool Logoff()
-        {
-            return Logoff(_uid);
+        public static bool Login(string logon,
+                                 string password,
+                                 string session,
+                                 string ip,
+                                 string machine,
+                                 string browser) {
+            // validate password hash
+            bool valid = VerifyPassword(logon, password);
+
+            if(valid) {
+                var arrParams = new SqlParameter[5];
+                arrParams[0] = new SqlParameter("@UserName", logon);
+                arrParams[1] = new SqlParameter("@SessionId", session);
+                arrParams[2] = new SqlParameter("@MachineName", machine);
+                arrParams[3] = new SqlParameter("@Browser", browser);
+                arrParams[4] = new SqlParameter("@IP", ip);
+
+                int result = (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Login", arrParams);
+                return (result == 1);
+            } else {
+                return false;
+            }
+        }
+
+        public bool Logoff() {
+            return Logoff(this.Uid);
 
         }
 
-        public static bool Logoff(int? uid)
-        {
+        public static bool Logoff(int? uid) {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", uid);
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "cbspSRPUser_Logout", arrParams);
-            try
-            {
+            try {
                 HttpContext.Current.Session.Remove(SessionData.IsLoggedIn.ToString());
                 HttpContext.Current.Session.Remove(SessionData.UserProfile.ToString());
                 HttpContext.Current.Session.Remove(SessionData.StringPermissionList.ToString());
                 //HttpContext.Current.Session.RemoveAll();
-            }catch{}
+            } catch { }
             return true;
         }
 
-        public static void LogoffAll()
-        {
+        public static void LogoffAll() {
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "cbspSRPUser_LogoutAll");
         }
 
-        public bool Update()
-        {
-            return Update(this);
+        public bool Update() {
+            return Update(false, null);
         }
 
-        public static bool Update(SRPUser u)
-        {
-            if (u == null)
-            {
-                u.AddErrorCode("User object", "N/A", "User object is null.", BusinessRulesValidationCode.UNSPECIFIED);
+        private bool Update(bool clearTokens = false, string actionUsername = null) {
+            string existingUsername = GetUsernameByEmail(this.EmailAddress);
+            if(!string.IsNullOrEmpty(existingUsername)
+               && existingUsername != this.Username) {
+                throw new Exception(string.Format("Cannot update user: a user already exists with email address: {0}",
+                                                  this.EmailAddress));
+            }
+
+            string passwordHash = null;
+            if(!string.IsNullOrEmpty(this.NewPassword)) {
+                passwordHash = PasswordHash.CreateHash(this.NewPassword,
+                                                       pbkdf2Iterations);
+            } else {
+                string passwordHashQuery = "SELECT [Password] FROM [SRPUser] WHERE [Uid] = @uid";
+                SqlParameter parameter = new SqlParameter("uid", this.Uid);
+                passwordHash = (string)SqlHelper.ExecuteScalar(conn,
+                                                               CommandType.Text,
+                                                               passwordHashQuery,
+                                                               parameter);
+            }
+
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@UID", this.Uid));
+            parameters.Add(new SqlParameter("@Username", this.Username));
+            parameters.Add(new SqlParameter("@Password", passwordHash));
+            parameters.Add(new SqlParameter("@FirstName", this.FirstName));
+            parameters.Add(new SqlParameter("@LastName", this.LastName));
+            parameters.Add(new SqlParameter("@EmailAddress", this.EmailAddress));
+            parameters.Add(new SqlParameter("@Division", this.Division));
+            parameters.Add(new SqlParameter("@Department", this.Department));
+            parameters.Add(new SqlParameter("@Title", this.Title));
+            parameters.Add(new SqlParameter("@IsActive", this.IsActive));
+            parameters.Add(new SqlParameter("@MustResetPassword", this.MustResetPassword));
+            parameters.Add(new SqlParameter("@LastPasswordReset", this.LastPasswordReset));
+            if(string.IsNullOrEmpty(actionUsername)) {
+                actionUsername = ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username;
+            }
+            parameters.Add(new SqlParameter("@ActionUsername", actionUsername));
+
+            parameters.Add(new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TenID, this.TenID.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt1, this.FldInt1.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt2, this.FldInt2.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt3, this.FldInt3.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode())));
+            parameters.Add(new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode())));
+            if(!string.IsNullOrEmpty(this.FldText1)) {
+                parameters.Add(new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, this.FldText1.GetTypeCode())));
+            }
+            if(!string.IsNullOrEmpty(this.FldText2)) {
+                parameters.Add(new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, this.FldText2.GetTypeCode())));
+            }
+            if(!string.IsNullOrEmpty(this.FldText3)) {
+                parameters.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode())));
+            }
+            try {
+                using(var connection = new SqlConnection(conn)) {
+                    connection.Open();
+                    using(SqlTransaction transaction = connection.BeginTransaction("UpdateUser")) {
+                        SqlHelper.ExecuteNonQuery(transaction,
+                                                  CommandType.StoredProcedure,
+                                                  "dbo.cbspSRPUser_Update",
+                                                  parameters.ToArray());
+                        if(clearTokens) {
+                            string removeTokensQuery = "DELETE FROM [SRPRecovery] WHERE [UID] = @uid";
+                            SqlHelper.ExecuteNonQuery(transaction,
+                                                      CommandType.Text,
+                                                      removeTokensQuery,
+                                                      new SqlParameter("uid", this.Uid));
+                        }
+                        transaction.Commit();
+                    }
+                    connection.Close();
+                }
+            } catch(Exception ex) {
+                this.Log().Error(() => string.Format("Unable to update SRPUser {0}: {1}",
+                                                     this.Uid,
+                                                     ex.Message));
                 return false;
             }
-            var arrParams = new SqlParameter[23];
-            arrParams[0] = new SqlParameter("@UID", u.Uid);
-            arrParams[1] = new SqlParameter("@Username", u.Username);
-            arrParams[2] = new SqlParameter("@Password", u.Password);
-            arrParams[3] = new SqlParameter("@FirstName", u.FirstName);
-            arrParams[4] = new SqlParameter("@LastName", u.LastName);
-            arrParams[5] = new SqlParameter("@EmailAddress", u.EmailAddress);
-            arrParams[6] = new SqlParameter("@Division", u.Division);
-            arrParams[7] = new SqlParameter("@Department", u.Department);
-            arrParams[8] = new SqlParameter("@Title", u.Title);
-            arrParams[9] = new SqlParameter("@IsActive", u.IsActive);
-            arrParams[10] = new SqlParameter("@MustResetPassword", u.MustResetPassword);
-            arrParams[11] = new SqlParameter("@LastPasswordReset", u.LastPasswordReset);
-            arrParams[12] = new SqlParameter("@ActionUsername", ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username);
-
-            arrParams[13] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.TenID, u.TenID.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt1, u.FldInt1.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt2, u.FldInt2.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldInt3, u.FldInt3.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit1, u.FldBit1.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit2, u.FldBit2.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldBit3, u.FldBit3.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText1, u.FldText1.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText2, u.FldText2.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(u.FldText3, u.FldText3.GetTypeCode()));
-
-            SqlHelper.ExecuteNonQuery( conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_Update", arrParams);
             return true;
         }
 
-        public static bool UsernameExists(string pUsername)
-        {
-            if (pUsername.Length == 0) return false;
+        public static SRPUser GetUserByToken(string token, int hoursWindow = 2) {
+            StringBuilder sql = new StringBuilder();
+            sql.Append("SELECT [UID] FROM [SRPRecovery] WHERE [Token] = @token ");
+            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) < @hourswindow");
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("token", token));
+            parameters.Add(new SqlParameter("hourswindow", hoursWindow));
+
+            object uidObject = null;
+            try {
+                uidObject = SqlHelper.ExecuteScalar(conn,
+                                                    CommandType.Text,
+                                                    sql.ToString(),
+                                                    parameters.ToArray());
+            } catch(Exception ex) {
+                "SRPUser".Log().Error(() => "Unable to retrieve user from token {Token}: {Message}"
+                                            .FormatWith(
+                                            new {
+                                                Token = token,
+                                                Message = ex.Message
+                                            }));
+                return null;
+            }
+
+            int uid = 0;
+            if(uidObject == null
+               || !int.TryParse(uidObject.ToString(), out uid)) {
+                "SRPUser".Log().Error(() => "Unable parse returned UID of {0}".FormatWith(uid));
+                return null;
+            }
+
+            return Fetch(uid);
+        }
+
+        public static SRPUser UpdatePasswordByToken(string token,
+                                                    string newPassword,
+                                                    int hoursWindow = 2) {
+            SRPUser user = GetUserByToken(token);
+            user.NewPassword = newPassword;
+            user.MustResetPassword = false;
+            user.LastPasswordReset = DateTime.Now;
+            user.Update(true, user.Username);
+
+            user.NewPassword = null;
+            return user;
+        }
+
+        public string GeneratePasswordResetToken(int desiredLength = 12) {
+            if(this.Uid == null) {
+                throw new Exception("Unable to perform password reset, no user provided.");
+            }
+            string resetToken = Password.GeneratePasswordResetToken(desiredLength);
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.AppendLine("DELETE FROM [SRPRecovery] WHERE [UID] = @uid;");
+            sql.Append("INSERT INTO [SRPRecovery] ([Token], [UID], [Generated]) values ");
+            sql.AppendLine("(@token, @uid, GETDATE());");
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter("uid", this.Uid));
+            parameters.Add(new SqlParameter("token", resetToken));
+
+            try {
+                SqlHelper.ExecuteNonQuery(conn,
+                                          CommandType.Text,
+                                          sql.ToString(),
+                                          parameters.ToArray());
+                return resetToken;
+            } catch(Exception ex) {
+                this.Log().Error(() => "Unable to save password reset token to database: {Message}"
+                                       .FormatWith(ex));
+                return null;
+            }
+        }
+
+        public static bool UsernameExists(string pUsername) {
+            if(pUsername.Length == 0)
+                return false;
 
             var parm = new SqlParameter[2];
             parm[0] = new SqlParameter("@EmailAddress", pUsername);
@@ -678,8 +661,7 @@ namespace GRA.SRP.Core.Utilities
 
         // ////////////////////////////////////////////////////////////////////////////
 
-        protected static DataTable CreateDataTable()
-        {
+        protected static DataTable CreateDataTable() {
             DataTable dataTable = new DataTable();
             dataTable.TableName = "SRPUser";
             DataColumn dataColumn;
@@ -692,7 +674,7 @@ namespace GRA.SRP.Core.Utilities
             dataColumn = dataTable.Columns.Add("Username", typeof(string));
             dataColumn.MaxLength = 50;
             dataColumn = dataTable.Columns.Add("Password", typeof(string));
-            dataColumn.MaxLength = 50;
+            dataColumn.MaxLength = 255;
             dataColumn = dataTable.Columns.Add("FirstName", typeof(string));
             dataColumn.Caption = "First Name";
             dataColumn.MaxLength = 50;
@@ -754,11 +736,10 @@ namespace GRA.SRP.Core.Utilities
         }
 
         protected static DataTable MapRecordsToDataTable(IDataReader reader,
-                                        int startIndex, int length, ref int totalRecordCount)
-        {
-            if (0 > startIndex)
+                                        int startIndex, int length, ref int totalRecordCount) {
+            if(0 > startIndex)
                 throw new ArgumentOutOfRangeException("startIndex", startIndex, "StartIndex cannot be less than zero.");
-            if (0 > length)
+            if(0 > length)
                 throw new ArgumentOutOfRangeException("length", length, "Length cannot be less than zero.");
 
             int columnCount = reader.FieldCount;
@@ -768,15 +749,13 @@ namespace GRA.SRP.Core.Utilities
             dataTable.BeginLoadData();
             object[] values = new object[columnCount];
 
-            while (reader.Read())
-            {
+            while(reader.Read()) {
                 ri++;
-                if (ri > 0 && ri <= length)
-                {
+                if(ri > 0 && ri <= length) {
                     reader.GetValues(values);
                     dataTable.LoadDataRow(values, true);
 
-                    if (ri == length && 0 != totalRecordCount)
+                    if(ri == length && 0 != totalRecordCount)
                         break;
                 }
             }
@@ -786,14 +765,12 @@ namespace GRA.SRP.Core.Utilities
             return dataTable;
         }
 
-        protected static DataTable MapRecordsToDataTable(IDataReader reader)
-        {
+        protected static DataTable MapRecordsToDataTable(IDataReader reader) {
             int totalRecordCount = 0;
             return MapRecordsToDataTable(reader, 0, int.MaxValue, ref totalRecordCount);
         }
 
-        public static DataTable GetAllAsDataTable()
-        {
+        public static DataTable GetAllAsDataTable() {
             SqlDataReader reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetAll");
             DataTable dt = MapRecordsToDataTable(reader);
             return dt;
@@ -802,8 +779,7 @@ namespace GRA.SRP.Core.Utilities
 
         // ////////////////////////////////////////////////////////////////////////////
 
-        protected static DataTable CreateLoginHistoryDataTable()
-        {
+        protected static DataTable CreateLoginHistoryDataTable() {
             DataTable dataTable = new DataTable();
             dataTable.TableName = "SRPUserLoginHistory";
             DataColumn dataColumn;
@@ -842,11 +818,10 @@ namespace GRA.SRP.Core.Utilities
         }
 
         protected static DataTable MapLoginHistoryRecordsToDataTable(IDataReader reader,
-                                int startIndex, int length, ref int totalRecordCount)
-        {
-            if (0 > startIndex)
+                                int startIndex, int length, ref int totalRecordCount) {
+            if(0 > startIndex)
                 throw new ArgumentOutOfRangeException("startIndex", startIndex, "StartIndex cannot be less than zero.");
-            if (0 > length)
+            if(0 > length)
                 throw new ArgumentOutOfRangeException("length", length, "Length cannot be less than zero.");
 
             int columnCount = reader.FieldCount;
@@ -856,15 +831,13 @@ namespace GRA.SRP.Core.Utilities
             dataTable.BeginLoadData();
             object[] values = new object[columnCount];
 
-            while (reader.Read())
-            {
+            while(reader.Read()) {
                 ri++;
-                if (ri > 0 && ri <= length)
-                {
+                if(ri > 0 && ri <= length) {
                     reader.GetValues(values);
                     dataTable.LoadDataRow(values, true);
 
-                    if (ri == length && 0 != totalRecordCount)
+                    if(ri == length && 0 != totalRecordCount)
                         break;
                 }
             }
@@ -874,14 +847,12 @@ namespace GRA.SRP.Core.Utilities
             return dataTable;
         }
 
-        protected static DataTable MapLoginHistoryRecordsToDataTable(IDataReader reader)
-        {
+        protected static DataTable MapLoginHistoryRecordsToDataTable(IDataReader reader) {
             int totalRecordCount = 0;
             return MapLoginHistoryRecordsToDataTable(reader, 0, int.MaxValue, ref totalRecordCount);
         }
 
-        public static DataTable GetLoginHistory(int pUid)
-        {
+        public static DataTable GetLoginHistory(int pUid) {
             var parm = new SqlParameter[1];
             parm[0] = new SqlParameter("@UID", pUid);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetLoginHistory", parm);
@@ -889,16 +860,14 @@ namespace GRA.SRP.Core.Utilities
             return dt;
         }
 
-        public static DataTable GetLogedInNowAll()
-        {
+        public static DataTable GetLogedInNowAll() {
             SqlDataReader reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetLoginNow");
             DataTable dt = MapLoginHistoryRecordsToDataTable(reader);
             return dt;
 
         }
 
-        public static DataTable GetLogedInNow(int TenID)
-        {
+        public static DataTable GetLogedInNow(int TenID) {
             var parm = new SqlParameter[1];
             parm[0] = new SqlParameter("@TenID", TenID);
             SqlDataReader reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetLoginNowTenID", parm);
@@ -906,8 +875,7 @@ namespace GRA.SRP.Core.Utilities
             return dt;
         }
 
-        public static DataTable GetGroupList(int uid)
-        {
+        public static DataTable GetGroupList(int uid) {
 
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", uid);
@@ -921,8 +889,7 @@ namespace GRA.SRP.Core.Utilities
 
         }
 
-        public static DataTable GetUserGroupList(int uid)
-        {
+        public static DataTable GetUserGroupList(int uid) {
 
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@UID", uid);
@@ -935,8 +902,7 @@ namespace GRA.SRP.Core.Utilities
 
         }
 
-        public static DataTable GetPermissionList(int uid)
-        {
+        public static DataTable GetPermissionList(int uid) {
             var parm = new SqlParameter[1];
             parm[0] = new SqlParameter("@UID", uid);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetSpecialUserPermissionsFlagged", parm);
@@ -945,8 +911,7 @@ namespace GRA.SRP.Core.Utilities
             return dt;
         }
 
-        public static DataTable GetUserPermissionsAuditList(int uid)
-        {
+        public static DataTable GetUserPermissionsAuditList(int uid) {
             var parm = new SqlParameter[1];
             parm[0] = new SqlParameter("@UID", uid);
             var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "dbo.cbspSRPUser_GetAllPermissionsAUDIT", parm);
@@ -1059,8 +1024,7 @@ namespace GRA.SRP.Core.Utilities
         //    return dataTable;
         //}
 
-        public static bool UpdateMemberGroups(int pUID, string gidList, string actionUsername)
-        {
+        public static bool UpdateMemberGroups(int pUID, string gidList, string actionUsername) {
             //using (DAC dac = GenericSingleton<DAC>.GetInstance())
             //{
             //    List<IDbDataParameter> parm = new List<IDbDataParameter>();
@@ -1089,8 +1053,7 @@ namespace GRA.SRP.Core.Utilities
             return true;
         }
 
-        public static bool UpdatePermissions(int pUID, string permissionIDList, string actionUsername)
-        {
+        public static bool UpdatePermissions(int pUID, string permissionIDList, string actionUsername) {
             var parm = new SqlParameter[3];
             parm[0] = new SqlParameter("@UID", pUID);
             parm[1] = new SqlParameter("@PermissionID_LIST", permissionIDList);

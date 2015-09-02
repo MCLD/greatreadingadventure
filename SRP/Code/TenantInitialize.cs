@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom
         private static readonly string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
 
-        public static void InitializeSecurity(SRPUser u, int TID)
+        public static void InitializeSecurity(SRPUser u, int TID, string newPassword)
         {
             var MTID = Core.Utilities.Tenant.GetMasterID();
             u.TenID = TID;
@@ -40,10 +40,12 @@ namespace GRA.SRP.ControlRoom
 
             var Message = "Summer Reading Program - Your account has been created";
 
+            // TODO security - this should not email the password in cleartext
+
             string baseUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.ApplicationPath.TrimEnd('/');
             var EmailBody =
                 "<h1>Dear " + u.FirstName + ",</h1><br><br>Your account has been created and has full administrative access to your organization's Summer reading Program. <br>This is your current account information. Please make sure you reset your password as soon as you are able to log back in.<br><br>" +
-                "Username: " + u.Username + "<br>Password: " + u.Password + "<br><br>If you have any questions regarding your account please contact " + SRPSettings.GetSettingValue("ContactName") +
+                "Username: " + u.Username + "<br>Password: " + newPassword + "<br><br>If you have any questions regarding your account please contact " + SRPSettings.GetSettingValue("ContactName") +
                 " at " + SRPSettings.GetSettingValue("ContactEmail") + "." +
                 "<br><br><br><a href='" + baseUrl + "'>" + baseUrl + "</a> <br> ";
 

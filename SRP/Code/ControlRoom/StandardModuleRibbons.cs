@@ -353,7 +353,7 @@ namespace GRA.SRP.Core.Utilities
             pnl.ImageAlt = "User Security Functions";
             pnl.ImagePath = "/ControlRoom/Images/User-password.png";
             pnl.Add(new RibbonLink { Name = "Control Room Users", Url = "/ControlRoom/Modules/Security/Default.aspx" });
-            pnl.Add(new RibbonLink { Name = "Add New User", Url = "/ControlRoom/Modules/Security/UserAddEdit.aspx" });
+            pnl.Add(new RibbonLink { Name = "Add New User", Url = "/ControlRoom/Modules/Security/UserAddEdit.aspx?type=new" });
             pnl.Add(new RibbonLink { Name = "Currently Logged In", Url = "/ControlRoom/Modules/Security/CurrentSessions.aspx" });
             returnList.Add(pnl);
             

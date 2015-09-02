@@ -8,52 +8,41 @@ using System.Web.UI.WebControls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 
-namespace GRA.SRP.ControlRoom
-{
-    public partial class Login : Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP.ControlRoom {
+    public partial class Login : Page {
+        protected void Page_Load(object sender, EventArgs e) {
             uxLogin.Focus();
-            if (Page.IsPostBack)
-            {
-                
+            if(Page.IsPostBack) {
+
                 uxLogin.PasswordRequiredErrorMessage = GRA.SRP.ControlRoom.SRPResources.PasswordRequired;
                 Page.Validate("uxLogin");
-                if (!Page.IsValid)
-                {
+                if(!Page.IsValid) {
                     uxMessageBox.Visible = true;
                 }
             }
         }
 
-        public void OnAuthenticate(object sender, AuthenticateEventArgs e)
-        {
-            if (Page.IsValid)
-            {
+        public void OnAuthenticate(object sender, AuthenticateEventArgs e) {
+            if(Page.IsValid) {
                 SRPUser user = new SRPUser();
 
                 bool auth = SRPUser.Login(uxLogin.UserName,
-                                                 uxLogin.Password, Session.SessionID,
-                                                 Request.UserHostAddress == "::1" ? "127.0.0.1" : Request.UserHostAddress,
-                                                 Request.UserHostName == "::1" ? "localhost" : Request.UserHostName,
-                                                 Request.Browser.Browser + " - v" + Request.Browser.MajorVersion + Request.Browser.MinorVersionString);
-                if (!auth)
-                {
+                                          uxLogin.Password, Session.SessionID,
+                                          Request.UserHostAddress == "::1" ? "127.0.0.1" : Request.UserHostAddress,
+                                          Request.UserHostName == "::1" ? "localhost" : Request.UserHostName,
+                                          Request.Browser.Browser + " - v" + Request.Browser.MajorVersion + Request.Browser.MinorVersionString);
+                if(!auth) {
                     uxMessageBox.Visible = true;
                     FailureText.Text = SRPResources.BadUserPass;
                     //Account Inactive
                     //
                     e.Authenticated = false;
-                }
-                else
-                {
+                } else {
                     e.Authenticated = true;
                 }
 
 
-                if (e.Authenticated)
-                {
+                if(e.Authenticated) {
                     // Put User Profile into Session.
                     // Put Security roles into session
                     // = ConfigurationManager.AppSettings["ApplicationName"];
@@ -64,7 +53,7 @@ namespace GRA.SRP.ControlRoom
                     List<SRPPermission> perms = user.EffectiveUserPermissions();
                     //Session[SessionData.PermissionList.ToString()] = perms;
                     string permList = "";
-                    foreach (SRPPermission perm in perms)
+                    foreach(SRPPermission perm in perms)
                         permList += String.Format("#{0}", perm.Permission);
                     Session[SessionData.StringPermissionList.ToString()] = permList;
 
@@ -72,10 +61,11 @@ namespace GRA.SRP.ControlRoom
                     var tenant = Tenant.FetchObject(user.TenID);
                     Session["Tenant"] = tenant;
                     Session["IsMasterTenant"] = tenant.isMasterFlag;
-                   
 
-                    if (user.MustResetPassword)
-                    {
+
+                    if(user.MustResetPassword) {
+                        this.Log().Info(() => "Redirecting {Username} to mandatory password reset."
+                                              .FormatWith(user));
                         Response.Redirect("~/ControlRoom/PasswordReset.aspx");
                     }
                     //List<CMSFolder> folders = user.EffectiveUserFolders();
@@ -102,15 +92,12 @@ namespace GRA.SRP.ControlRoom
 
                     FormsAuthentication.RedirectFromLoginPage(uxLogin.UserName, false);
                 }
-            }
-            else
-            {
+            } else {
                 uxMessageBox.Visible = true;
             }
         }
 
-        protected void Page_PreInit(object sender, EventArgs e)
-        {
+        protected void Page_PreInit(object sender, EventArgs e) {
             ////IsSecure = false;
             //string crRestrictions = CMSSettings.GetSetting("CRRestrictions");
             //if (crRestrictions.Equals("1"))
@@ -131,56 +118,44 @@ namespace GRA.SRP.ControlRoom
             //}
         }
 
-        protected bool CheckIPListForMatch(string List)
-        {
+        protected bool CheckIPListForMatch(string List) {
             string browserIP = Request.UserHostAddress;
             List = string.Format("|{0}|", List);
-            if (List.Contains(browserIP))
+            if(List.Contains(browserIP))
                 return true;
             string[] browserIPArray = browserIP.Split('.');
             string[] listIPArray = List.Split('|');
-            foreach (var checkIP in listIPArray)
-            {
-                if (checkIP.Length > 0)
-                {
+            foreach(var checkIP in listIPArray) {
+                if(checkIP.Length > 0) {
                     string[] checkIPArray = checkIP.Split('.');
                     bool CompleteMatch = true;
-                    try
-                    {
-                        for (int i = 0; i < (browserIPArray.Length); i++)
-                        {
-                            if (browserIPArray[i] != checkIPArray[i])
-                            {
-                                if (checkIPArray[i].ToLower() != "x" && checkIPArray[i] != "*")
-                                {
+                    try {
+                        for(int i = 0; i < (browserIPArray.Length); i++) {
+                            if(browserIPArray[i] != checkIPArray[i]) {
+                                if(checkIPArray[i].ToLower() != "x" && checkIPArray[i] != "*") {
                                     CompleteMatch = false;
                                     break;
                                 }
                             }
                         }
 
-                    }
-                    catch (Exception)
-                    {
+                    } catch(Exception) {
                         CompleteMatch = false;
                     }
-                    if (CompleteMatch)
+                    if(CompleteMatch)
                         return true;
                 }
             }
             return false;
         }
 
-        protected void LinkButton1_Click(object sender, EventArgs e)
-        {
+        protected void LinkButton1_Click(object sender, EventArgs e) {
             uxLogin.PasswordRequiredErrorMessage = "";
             Page.Validate("uxLogin");
 
-            if (Page.IsValid || (uxLogin.UserName.Length > 0 && !Page.IsValid))
-            {
+            if(Page.IsValid || (uxLogin.UserName.Length > 0 && !Page.IsValid)) {
                 SRPUser u = SRPUser.FetchByUsername(uxLogin.UserName);
-                if (u != null)
-                {
+                if(u != null) {
 
                     // send email
 

@@ -3,7 +3,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@IsMasterAccount BIT,
 	@MasterAcctPID INT,
 	@Username VARCHAR(50),
-	@Password VARCHAR(50),
+	@Password VARCHAR(255),
 	@DOB DATETIME,
 	@Age INT,
 	@SchoolGrade VARCHAR(5),

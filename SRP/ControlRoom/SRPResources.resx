@@ -177,4 +177,10 @@
   <data name="Username" xml:space="preserve">
     <value>User Name</value>
   </data>
+  <data name="PasswordEmailSubject" xml:space="preserve">
+    <value>Password reset request</value>
+  </data>
+  <data name="PasswordEmailSuccessSubject" xml:space="preserve">
+    <value>Your password has been reset!</value>
+  </data>
 </root>

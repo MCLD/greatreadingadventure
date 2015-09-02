@@ -8,31 +8,25 @@ using SRPApp.Classes;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 
-namespace GRA.SRP.ControlRoom.Modules.Tenant
-{
-    public partial class TenantUserAddEdit : BaseControlRoomPage
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP.ControlRoom.Modules.Tenant {
+    public partial class TenantUserAddEdit : BaseControlRoomPage {
+        protected void Page_Load(object sender, EventArgs e) {
 
             MasterPage.IsSecure = false;
             MasterPage.PageTitle = "Organization - Add / Edit User";
 
             ControlRoomAccessPermission.CheckControlRoomAccessPermission(1000); // Change Appropriately;
 
-            if (!IsPostBack)
-            {
+            if(!IsPostBack) {
                 List<RibbonPanel> moduleRibbonPanels = StandardModuleRibbons.MasterTenantRibbon();
-                foreach (var moduleRibbonPanel in moduleRibbonPanels)
-                {
+                foreach(var moduleRibbonPanel in moduleRibbonPanels) {
                     MasterPage.PageRibbon.Add(moduleRibbonPanel);
                 }
                 MasterPage.PageRibbon.DataBind();
             }
 
 
-            if (!IsPostBack)
-            {
+            if(!IsPostBack) {
                 lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"] = "";
                 //lblUID.Text = Request["PK"];
                 dv.ChangeMode(lblUID.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
@@ -42,205 +36,176 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             }
         }
 
-        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
-        {
+        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e) {
             string returnURL = "~/ControlRoom/Modules/Tenant/TenantUserList.aspx";
-            if (e.CommandName.ToLower() == "back")
-            {
+            if(e.CommandName.ToLower() == "back") {
                 Response.Redirect(returnURL);
             }
-            if (e.CommandName.ToLower() == "refresh")
-            {
-                try
-                {
+            if(e.CommandName.ToLower() == "refresh") {
+                try {
                     odsSRPUser.DataBind();
                     dv.DataBind();
                     dv.ChangeMode(DetailsViewMode.Edit);
 
                     MasterPage.PageMessage = SRPResources.RefreshOK;
 
-                }
-                catch (Exception ex)
-                {
+                } catch(Exception ex) {
                     MasterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
 
-            if (e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback")
-            {
-                try
-                {
+            if(e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback") {
+                try {
 
-                        SRPUser obj = new SRPUser();
+                    SRPUser obj = new SRPUser();
 
 
-                        obj.Username = ((TextBox)((DetailsView)sender).FindControl("Username")).Text;
-                        obj.Password = ((TextBox)((DetailsView)sender).FindControl("Password")).Text;
-                        obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
-                        obj.LastName = ((TextBox)((DetailsView)sender).FindControl("LastName")).Text;
-                        obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("EmailAddress")).Text;
-                        obj.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
-                        obj.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
-                        obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
-                        //((TextBox)((DetailsView)sender).FindControl("Password")).Attributes["value"] = obj.Password;
+                    obj.Username = ((TextBox)((DetailsView)sender).FindControl("Username")).Text;
+                    obj.NewPassword = ((TextBox)((DetailsView)sender).FindControl("Password")).Text;
+                    obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
+                    obj.LastName = ((TextBox)((DetailsView)sender).FindControl("LastName")).Text;
+                    obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("EmailAddress")).Text;
+                    obj.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
+                    obj.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
+                    obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
+                    //((TextBox)((DetailsView)sender).FindControl("Password")).Attributes["value"] = obj.Password;
 
-                        obj.IsActive = true;
-                        obj.MustResetPassword = true;
-                        obj.IsDeleted = false;
+                    obj.IsActive = true;
+                    obj.MustResetPassword = true;
+                    obj.IsDeleted = false;
 
-                        obj.AddedDate = DateTime.Now;
-                        obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
-                        obj.LastModDate = obj.AddedDate;
-                        obj.LastModUser = obj.AddedUser;
+                    obj.AddedDate = DateTime.Now;
+                    obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+                    obj.LastModDate = obj.AddedDate;
+                    obj.LastModUser = obj.AddedUser;
 
-                        obj.TenID = int.Parse(Session["ATENID"].ToString());
+                    obj.TenID = int.Parse(Session["ATENID"].ToString());
 
-                        if (obj.IsValid(BusinessRulesValidationMode.INSERT))
-                        {
-                            obj.Insert();
-                            if (e.CommandName.ToLower() == "addandback")
-                            {
-                                Response.Redirect(returnURL);
-                            }
-
-                            lblUID.Text = obj.Uid.ToString();
-
-                            odsSRPUser.DataBind();
-                            dv.DataBind();
-                            dv.ChangeMode(DetailsViewMode.Edit);
-
-                            MasterPage.PageMessage = SRPResources.AddedOK;
+                    if(obj.IsValid(BusinessRulesValidationMode.INSERT)) {
+                        obj.Insert();
+                        if(e.CommandName.ToLower() == "addandback") {
+                            Response.Redirect(returnURL);
                         }
-                        else
-                        {
-                            string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                            foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
-                            {
-                                message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
-                            }
-                            message = string.Format("{0}</ul>", message);
-                            MasterPage.PageError = message;
+
+                        lblUID.Text = obj.Uid.ToString();
+
+                        odsSRPUser.DataBind();
+                        dv.DataBind();
+                        dv.ChangeMode(DetailsViewMode.Edit);
+
+                        MasterPage.PageMessage = SRPResources.AddedOK;
+                    } else {
+                        string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                        foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                            message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
-                }
-                catch (Exception ex)
-                {
+                        message = string.Format("{0}</ul>", message);
+                        MasterPage.PageError = message;
+                    }
+                } catch(Exception ex) {
                     MasterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
 
                 }
             }
-            if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
-            {
-                try
-                {
+            if(e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback") {
+                try {
 
-                        int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
-                        SRPUser obj = new SRPUser(pk);
+                    int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    SRPUser obj = new SRPUser(pk);
 
 
-                        obj.Username = ((TextBox)((DetailsView)sender).FindControl("Username")).Text;
-                        obj.Password = ((TextBox)((DetailsView)sender).FindControl("Password")).Text;
-                        obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
-                        obj.LastName = ((TextBox)((DetailsView)sender).FindControl("LastName")).Text;
-                        obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("EmailAddress")).Text;
-                        obj.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
-                        obj.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
-                        obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
-                        obj.IsActive = ((CheckBox)((DetailsView)sender).FindControl("IsActive")).Checked;
-                        obj.MustResetPassword = ((CheckBox)((DetailsView)sender).FindControl("MustResetPassword")).Checked;
-                        //((TextBox)((DetailsView)sender).FindControl("Password")).Attributes.Add("value", obj.Password);
+                    obj.Username = ((TextBox)((DetailsView)sender).FindControl("Username")).Text;
+                    obj.NewPassword = ((TextBox)((DetailsView)sender).FindControl("Password")).Text;
+                    obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
+                    obj.LastName = ((TextBox)((DetailsView)sender).FindControl("LastName")).Text;
+                    obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("EmailAddress")).Text;
+                    obj.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
+                    obj.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
+                    obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
+                    obj.IsActive = ((CheckBox)((DetailsView)sender).FindControl("IsActive")).Checked;
+                    obj.MustResetPassword = ((CheckBox)((DetailsView)sender).FindControl("MustResetPassword")).Checked;
+                    //((TextBox)((DetailsView)sender).FindControl("Password")).Attributes.Add("value", obj.Password);
 
 
-                        //obj.IsDeleted = ((TextBox)((DetailsView)sender).FindControl("IsDeleted")).Text;
-                        //obj.LastPasswordReset = ((TextBox)((DetailsView)sender).FindControl("LastPasswordReset")).Text;
-                        //obj.DeletedDate = ((TextBox)((DetailsView)sender).FindControl("DeletedDate")).Text;
-                        //obj.LastModDate = ((TextBox)((DetailsView)sender).FindControl("LastModDate")).Text;
-                        //obj.LastModUser = ((TextBox)((DetailsView)sender).FindControl("LastModUser")).Text;
-                        //obj.AddedDate = ((TextBox)((DetailsView)sender).FindControl("AddedDate")).Text;
-                        //obj.AddedUser = ((TextBox)((DetailsView)sender).FindControl("AddedUser")).Text;
+                    //obj.IsDeleted = ((TextBox)((DetailsView)sender).FindControl("IsDeleted")).Text;
+                    //obj.LastPasswordReset = ((TextBox)((DetailsView)sender).FindControl("LastPasswordReset")).Text;
+                    //obj.DeletedDate = ((TextBox)((DetailsView)sender).FindControl("DeletedDate")).Text;
+                    //obj.LastModDate = ((TextBox)((DetailsView)sender).FindControl("LastModDate")).Text;
+                    //obj.LastModUser = ((TextBox)((DetailsView)sender).FindControl("LastModUser")).Text;
+                    //obj.AddedDate = ((TextBox)((DetailsView)sender).FindControl("AddedDate")).Text;
+                    //obj.AddedUser = ((TextBox)((DetailsView)sender).FindControl("AddedUser")).Text;
 
-                        obj.LastModDate = DateTime.Now;
-                        obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+                    obj.LastModDate = DateTime.Now;
+                    obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 
-                        if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
-                        {
-                            obj.Update();
+                    if(obj.IsValid(BusinessRulesValidationMode.UPDATE)) {
+                        obj.Update();
 
-                            SaveGroups((DetailsView)sender, obj);
-                            //SavePermissions((DetailsView)sender, obj);
-                            //SaveFolders((DetailsView)sender, obj);
+                        SaveGroups((DetailsView)sender, obj);
+                        //SavePermissions((DetailsView)sender, obj);
+                        //SaveFolders((DetailsView)sender, obj);
 
-                            if (e.CommandName.ToLower() == "saveandback")
-                            {
-                                Response.Redirect(returnURL);
-                            }
-                            odsSRPUser.DataBind();
-                            dv.DataBind();
-                            dv.ChangeMode(DetailsViewMode.Edit);
-
-                            MasterPage.PageMessage = SRPResources.SaveOK;
-                            
+                        if(e.CommandName.ToLower() == "saveandback") {
+                            Response.Redirect(returnURL);
                         }
-                        else
-                        {
-                            string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                            foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
-                            {
-                                message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
-                            }
-                            message = string.Format("{0}</ul>", message);
-                            MasterPage.PageError = message;
+                        odsSRPUser.DataBind();
+                        dv.DataBind();
+                        dv.ChangeMode(DetailsViewMode.Edit);
+
+                        MasterPage.PageMessage = SRPResources.SaveOK;
+
+                    } else {
+                        string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                        foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                            message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
-                }
-                catch (Exception ex)
-                {
+                        message = string.Format("{0}</ul>", message);
+                        MasterPage.PageError = message;
+                    }
+                } catch(Exception ex) {
                     MasterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
 
                 }
             }
-            
+
 
 
         }
 
-        protected void SaveGroups(DetailsView dv, SRPUser obj)
-        {
+        protected void SaveGroups(DetailsView dv, SRPUser obj) {
             GridView gv = (GridView)dv.FindControl("gvUserGroups");
             string memberGroups = "";
-            foreach (GridViewRow row in gv.Rows)
-            {
-                if (((CheckBox)row.FindControl("isMember")).Checked)
-                {
+            foreach(GridViewRow row in gv.Rows) {
+                if(((CheckBox)row.FindControl("isMember")).Checked) {
                     memberGroups = string.Format("{0},{1}", memberGroups, ((Label)row.FindControl("GID")).Text);
                 }
             }
-            if (memberGroups.Length > 0) memberGroups = memberGroups.Substring(1, memberGroups.Length - 1);
+            if(memberGroups.Length > 0)
+                memberGroups = memberGroups.Substring(1, memberGroups.Length - 1);
 
             SRPUser.UpdateMemberGroups((int)obj.Uid, memberGroups, ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username);
         }
 
-        protected void SavePermissions(DetailsView dv, SRPUser obj)
-        {
+        protected void SavePermissions(DetailsView dv, SRPUser obj) {
             GridView gv = (GridView)dv.FindControl("gvUserPermissions");
             string groupPermissions = "";
-            foreach (GridViewRow row in gv.Rows)
-            {
-                if (((CheckBox)row.FindControl("isChecked")).Checked)
-                {
+            foreach(GridViewRow row in gv.Rows) {
+                if(((CheckBox)row.FindControl("isChecked")).Checked) {
                     groupPermissions = string.Format("{0},{1}", groupPermissions, ((Label)row.FindControl("PermissionID")).Text);
                 }
             }
-            if (groupPermissions.Length > 0) groupPermissions = groupPermissions.Substring(1, groupPermissions.Length - 1);
+            if(groupPermissions.Length > 0)
+                groupPermissions = groupPermissions.Substring(1, groupPermissions.Length - 1);
 
             SRPUser.UpdatePermissions((int)obj.Uid, groupPermissions, ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username);
         }
 
-        protected void dv_PreRender(object sender, EventArgs e)
-        {
-            var pwd = (TextBox)((DetailsView) sender).FindControl("Password");
+        protected void dv_PreRender(object sender, EventArgs e) {
+            var pwd = (TextBox)((DetailsView)sender).FindControl("Password");
             pwd.Attributes.Add("Value", pwd.Text);
         }
 
-     
+
 
 
 

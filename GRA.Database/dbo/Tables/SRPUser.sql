@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[SRPUser] (
     [UID]               INT           IDENTITY (1000, 1) NOT NULL,
-    [Username]          VARCHAR (50)  NULL,
-    [Password]          VARCHAR (50)  NULL,
+    [Username]          VARCHAR (50)  NOT NULL,
+    [Password]          VARCHAR (255)  NOT NULL,
     [FirstName]         VARCHAR (50)  NULL,
     [LastName]          VARCHAR (50)  NULL,
-    [EmailAddress]      VARCHAR (128) NULL,
+    [EmailAddress]      VARCHAR (128) NOT NULL,
     [Division]          VARCHAR (50)  NULL,
     [Department]        VARCHAR (50)  NULL,
     [Title]             VARCHAR (50)  NULL,

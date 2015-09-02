@@ -1,7 +1,6 @@
 ﻿
 /****** Object:  StoredProcedure [dbo].[cbspSRPUser_Login]    Script Date: 01/05/2015 14:43:27 ******/
 CREATE PROCEDURE [dbo].[cbspSRPUser_Login] @UserName VARCHAR(50),
-	@Password VARCHAR(50),
 	@SessionId VARCHAR(128) = 'N/A',
 	@IP VARCHAR(50) = 'N/A',
 	@MachineName VARCHAR(50) = 'N/A',
@@ -22,7 +21,6 @@ SELECT @Count = isnull(Count(*), 0),
 	@IsDeleted = IsDeleted
 FROM dbo.SRPUser
 WHERE Username = @UserName
-	AND Password = @Password
 	AND IsDeleted = 0
 	AND IsActive = 1
 GROUP BY UID,
