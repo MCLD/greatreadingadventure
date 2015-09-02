@@ -1,0 +1,22 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Badge_Delete] @BID INT
+AS
+DELETE
+FROM BadgeAgeGrp
+WHERE BID = @BID
+
+DELETE
+FROM BadgeLocation
+WHERE BID = @BID
+
+DELETE
+FROM BadgeCategory
+WHERE BID = @BID
+
+DELETE
+FROM BadgeBranch
+WHERE BID = @BID
+
+DELETE
+FROM [Badge]
+WHERE BID = @BID

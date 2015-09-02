@@ -1,0 +1,63 @@
+﻿
+--Create the Delete Proc
+CREATE PROCEDURE [dbo].[app_Minigame_Delete] @MGID INT
+AS
+DELETE
+FROM dbo.MGOnlineBookPages
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGOnlineBook
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGMixAndMatchItems
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGMixAndMatch
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGCodeBreakerKey
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGCodeBreaker
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGMatchingGameTiles
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGMatchingGame
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGHiddenPicBk
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGHiddenPic
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGChooseAdvSlides
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGChooseAdv
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGWordMatchItems
+WHERE MGID = @MGID
+
+DELETE
+FROM dbo.MGWordMatch
+WHERE MGID = @MGID
+
+DELETE
+FROM [Minigame]
+WHERE MGID = @MGID

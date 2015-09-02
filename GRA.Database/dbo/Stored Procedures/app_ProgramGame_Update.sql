@@ -1,0 +1,55 @@
+﻿
+--Create the Update Proc
+CREATE PROCEDURE [dbo].[app_ProgramGame_Update] (
+	@PGID INT,
+	@GameName VARCHAR(50),
+	@MapImage VARCHAR(50),
+	@BonusMapImage VARCHAR(50),
+	@BoardWidth INT,
+	@BoardHeight INT,
+	@BonusLevelPointMultiplier MONEY,
+	@LevelCompleteImage VARCHAR(50),
+	@LastModUser VARCHAR(50),
+	@AddedDate DATETIME,
+	@AddedUser VARCHAR(50),
+	@LastModDate DATETIME,
+	@TenID INT = 0,
+	@FldInt1 INT = 0,
+	@FldInt2 INT = 0,
+	@FldInt3 INT = 0,
+	@FldBit1 BIT = 0,
+	@FldBit2 BIT = 0,
+	@FldBit3 BIT = 0,
+	@FldText1 TEXT = '',
+	@FldText2 TEXT = '',
+	@FldText3 TEXT = '',
+	@Minigame1ID INT = 0,
+	@Minigame2ID INT = 0
+	)
+AS
+UPDATE ProgramGame
+SET GameName = @GameName,
+	MapImage = @MapImage,
+	BonusMapImage = @BonusMapImage,
+	BoardWidth = @BoardWidth,
+	BoardHeight = @BoardHeight,
+	BonusLevelPointMultiplier = @BonusLevelPointMultiplier,
+	LevelCompleteImage = @LevelCompleteImage,
+	LastModUser = @LastModUser,
+	AddedDate = @AddedDate,
+	AddedUser = @AddedUser,
+	LastModDate = @LastModDate,
+	TenID = @TenID,
+	FldInt1 = @FldInt1,
+	FldInt2 = @FldInt2,
+	FldInt3 = @FldInt3,
+	FldBit1 = @FldBit1,
+	FldBit2 = @FldBit2,
+	FldBit3 = @FldBit3,
+	FldText1 = @FldText1,
+	FldText2 = @FldText2,
+	FldText3 = @FldText3,
+	Minigame1ID = @Minigame1ID,
+	Minigame2ID = @Minigame2ID
+WHERE PGID = @PGID
+	AND TenID = @TenID

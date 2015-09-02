@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[Notifications] (
+    [NID]         INT           IDENTITY (1, 1) NOT NULL,
+    [PID_To]      INT           CONSTRAINT [DF_Notifications_PID_To] DEFAULT ((0)) NULL,
+    [PID_From]    INT           CONSTRAINT [DF_Notifications_PID_From] DEFAULT ((0)) NULL,
+    [isQuestion]  BIT           CONSTRAINT [DF_Notifications_isQuestion] DEFAULT ((0)) NULL,
+    [Subject]     VARCHAR (150) CONSTRAINT [DF_Notifications_Subject] DEFAULT ('') NULL,
+    [Body]        TEXT          NULL,
+    [AddedDate]   DATETIME      CONSTRAINT [DF_Notifications_AddedDate] DEFAULT (getdate()) NULL,
+    [AddedUser]   VARCHAR (50)  CONSTRAINT [DF_Notifications_AddedUser] DEFAULT ('N/A') NULL,
+    [LastModDate] DATETIME      CONSTRAINT [DF_Notifications_LastModDate] DEFAULT (getdate()) NULL,
+    [LastModUser] VARCHAR (50)  CONSTRAINT [DF_Notifications_LastModUser] DEFAULT ('N/A') NULL,
+    [TenID]       INT           NULL,
+    [FldInt1]     INT           NULL,
+    [FldInt2]     INT           NULL,
+    [FldInt3]     INT           NULL,
+    [FldBit1]     BIT           NULL,
+    [FldBit2]     BIT           NULL,
+    [FldBit3]     BIT           NULL,
+    [FldText1]    TEXT          NULL,
+    [FldText2]    TEXT          NULL,
+    [FldText3]    TEXT          NULL,
+    [isUnread]    BIT           CONSTRAINT [DF_Notifications_isUnread] DEFAULT ((1)) NULL,
+    CONSTRAINT [PK_Notifications] PRIMARY KEY CLUSTERED ([NID] ASC)
+);
+

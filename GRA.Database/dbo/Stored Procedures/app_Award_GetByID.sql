@@ -1,0 +1,6 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Award_GetByID] @AID INT
+AS
+SELECT *
+FROM [Award]
+WHERE AID = @AID

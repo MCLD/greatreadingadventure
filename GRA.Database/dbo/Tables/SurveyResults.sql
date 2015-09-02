@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[SurveyResults] (
+    [SRID]         INT            IDENTITY (1, 1) NOT NULL,
+    [TenID]        INT            NULL,
+    [PID]          INT            NULL,
+    [SID]          INT            NULL,
+    [StartDate]    DATETIME       NULL,
+    [EndDate]      DATETIME       NULL,
+    [IsComplete]   BIT            NULL,
+    [IsScorable]   BIT            NULL,
+    [LastAnswered] INT            NULL,
+    [Score]        INT            NULL,
+    [ScorePct]     DECIMAL (5, 2) NULL,
+    [Source]       VARCHAR (50)   NULL,
+    [SourceID]     INT            NULL,
+    [FldInt1]      INT            NULL,
+    [FldInt2]      INT            NULL,
+    [FldInt3]      INT            NULL,
+    [FldBit1]      BIT            NULL,
+    [FldBit2]      BIT            NULL,
+    [FldBit3]      BIT            NULL,
+    [FldText1]     TEXT           NULL,
+    [FldText2]     TEXT           NULL,
+    [FldText3]     TEXT           NULL,
+    CONSTRAINT [PK_SurveyResults_1] PRIMARY KEY CLUSTERED ([SRID] ASC)
+);
+

@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[MGCodeBreakerKey] (
+    [CBKID] INT IDENTITY (1, 1) NOT NULL,
+    [CBID]  INT NOT NULL,
+    [MGID]  INT NULL,
+    CONSTRAINT [PK_MGCodeBreakerKey] PRIMARY KEY CLUSTERED ([CBKID] ASC),
+    CONSTRAINT [FK_MGCodeBreakerKey_MGCodeBreaker] FOREIGN KEY ([CBID]) REFERENCES [dbo].[MGCodeBreaker] ([CBID])
+);
+

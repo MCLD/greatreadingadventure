@@ -1,0 +1,657 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>GRA.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{0ec77b83-ac95-4325-ba45-40c7f2db457f}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>GRA.Database</RootNamespace>
+    <AssemblyName>GRA.Database</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="Snapshots" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\BookList.sql" />
+    <Build Include="dbo\Tables\BookListBooks.sql" />
+    <Build Include="dbo\Tables\Code.sql" />
+    <Build Include="dbo\Tables\CodeType.sql" />
+    <Build Include="dbo\Tables\CustomEventFields.sql" />
+    <Build Include="dbo\Tables\CustomRegistrationFields.sql" />
+    <Build Include="dbo\Tables\Event.sql" />
+    <Build Include="dbo\Tables\GamePlayStats.sql" />
+    <Build Include="dbo\Tables\LibraryCrosswalk.sql" />
+    <Build Include="dbo\Tables\MGChooseAdv.sql" />
+    <Build Include="dbo\Tables\MGChooseAdvSlides.sql" />
+    <Build Include="dbo\Tables\MGCodeBreaker.sql" />
+    <Build Include="dbo\Tables\MGCodeBreakerKey.sql" />
+    <Build Include="dbo\Tables\MGHiddenPic.sql" />
+    <Build Include="dbo\Tables\MGHiddenPicBk.sql" />
+    <Build Include="dbo\Tables\MGMatchingGame.sql" />
+    <Build Include="dbo\Tables\MGMatchingGameTiles.sql" />
+    <Build Include="dbo\Tables\MGMixAndMatch.sql" />
+    <Build Include="dbo\Tables\MGMixAndMatchItems.sql" />
+    <Build Include="dbo\Tables\MGOnlineBook.sql" />
+    <Build Include="dbo\Tables\MGOnlineBookPages.sql" />
+    <Build Include="dbo\Tables\MGWordMatch.sql" />
+    <Build Include="dbo\Tables\MGWordMatchItems.sql" />
+    <Build Include="dbo\Tables\Minigame.sql" />
+    <Build Include="dbo\Tables\Notifications.sql" />
+    <Build Include="dbo\Tables\Offer.sql" />
+    <Build Include="dbo\Tables\Patron.sql" />
+    <Build Include="dbo\Tables\PatronBadges.sql" />
+    <Build Include="dbo\Tables\PatronBookLists.sql" />
+    <Build Include="dbo\Tables\PatronPoints.sql" />
+    <Build Include="dbo\Tables\PatronPrizes.sql" />
+    <Build Include="dbo\Tables\PatronReadingLog.sql" />
+    <Build Include="dbo\Tables\PatronReview.sql" />
+    <Build Include="dbo\Tables\PatronRewardCodes.sql" />
+    <Build Include="dbo\Tables\PrizeDrawing.sql" />
+    <Build Include="dbo\Tables\PrizeDrawingWinners.sql" />
+    <Build Include="dbo\Tables\PrizeTemplate.sql" />
+    <Build Include="dbo\Tables\ProgramCodes.sql" />
+    <Build Include="dbo\Tables\ProgramGame.sql" />
+    <Build Include="dbo\Tables\ProgramGameLevel.sql" />
+    <Build Include="dbo\Tables\ProgramGamePointConversion.sql" />
+    <Build Include="dbo\Tables\Programs.sql" />
+    <Build Include="dbo\Tables\RegistrationSettings.sql" />
+    <Build Include="dbo\Tables\ReportTemplate.sql" />
+    <Build Include="dbo\Tables\SchoolCrosswalk.sql" />
+    <Build Include="dbo\Tables\SentEmailLog.sql" />
+    <Build Include="dbo\Tables\SQChoices.sql" />
+    <Build Include="dbo\Tables\SQMatrixLines.sql" />
+    <Build Include="dbo\Tables\SRPGroupPermissions.sql" />
+    <Build Include="dbo\Tables\SRPGroups.sql" />
+    <Build Include="dbo\Tables\SRPPermissionsMaster.sql" />
+    <Build Include="dbo\Tables\SRPReport.sql" />
+    <Build Include="dbo\Tables\SRPSettings.sql" />
+    <Build Include="dbo\Tables\SRPUser.sql" />
+    <Build Include="dbo\Tables\SRPUserGroups.sql" />
+    <Build Include="dbo\Tables\SRPUserLoginHistory.sql" />
+    <Build Include="dbo\Tables\SRPUserPermissions.sql" />
+    <Build Include="dbo\Tables\Survey.sql" />
+    <Build Include="dbo\Tables\SurveyAnswers.sql" />
+    <Build Include="dbo\Tables\SurveyQuestion.sql" />
+    <Build Include="dbo\Tables\SurveyResults.sql" />
+    <Build Include="dbo\Tables\Avatar.sql" />
+    <Build Include="dbo\Tables\Tenant.sql" />
+    <Build Include="dbo\Tables\Award.sql" />
+    <Build Include="dbo\Tables\TenantInitData.sql" />
+    <Build Include="dbo\Tables\Badge.sql" />
+    <Build Include="dbo\Tables\BadgeAgeGrp.sql" />
+    <Build Include="dbo\Tables\BadgeBranch.sql" />
+    <Build Include="dbo\Tables\BadgeCategory.sql" />
+    <Build Include="dbo\Tables\BadgeLocation.sql" />
+    <Build Include="dbo\Views\rpt_GamePlayStats1.sql" />
+    <Build Include="dbo\Functions\fx_ConvertPoints.sql" />
+    <Build Include="dbo\Functions\fx_IsFinisher.sql" />
+    <Build Include="dbo\Functions\fx_IsFinisher2.sql" />
+    <Build Include="dbo\Functions\fx_IsLevelFinisher.sql" />
+    <Build Include="dbo\Functions\fx_PatronHasAllBadgesInList.sql" />
+    <Build Include="dbo\Functions\fnSplitBigInt.sql" />
+    <Build Include="dbo\Functions\fnSplitString.sql" />
+    <Build Include="dbo\Functions\ProgramGameCummulativePoints.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReadingLog_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_GetByLogID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_GetRandomBK.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_GetPageFromQNum.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReview_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPic_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronRewardCodes_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronRewardCodes_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronRewardCodes_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronRewardCodes_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyQuestion_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronRewardCodes_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_DrawWinners.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGHiddenPicBk_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllComplete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Avatar_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllExpanded.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetAllWinners.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Avatar_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Avatar_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_Avatar_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetBySurveyAndSource.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawing_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Avatar_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetExport.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetRandomPlayItems.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQClarifications.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQComments.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGame_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_GetBadgeListMembership.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQFreeForm.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGameTiles_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGameTiles_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_GetPatronQualifyingAwards.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQStatsMedium.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeTemplate_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGameTiles_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_GetPatronQualifyingAwardsWTenant.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetQStatsSimple.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeTemplate_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGameTiles_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_GetSources.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeTemplate_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMatchingGameTiles_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeTemplate_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyResults_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PrizeTemplate_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_AssignCodeForPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeAgeGroups.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeBookLists.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetAllActive.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_Generate.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeBranches.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetByDomainName.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeCategories.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetAllByProgram.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatch_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeEventIDS.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetByProgramID.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetAllForPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeEvents.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_GetMasterID.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeGallery.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetExportList.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeGames.sql" />
+    <Build Include="dbo\Stored Procedures\app_Tenant_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_GetRandom3.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeLocations.sql" />
+    <Build Include="dbo\Stored Procedures\app_TenantInitData_GetPKbyOriginalPK.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_Stats.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeReading.sql" />
+    <Build Include="dbo\Stored Procedures\app_TenantInitData_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramCodes_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGMixAndMatchItems_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGame_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetEnrollmentPrograms.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_DeleteAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGame_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetList.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_DeleteByPrimaryKey.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGame_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_Get.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGame_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGame_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_UpdateBadgeAgeGroups.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_GetByPrimaryKey.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_UpdateBadgeBranches.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBook_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_UpdateBadgeCategories.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroups_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_UpdateBadgeLocations.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPGroupsGroups_GetSpecialUserPermissionsNotGranted.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_DeleteByModule.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_GetByPage.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_Get.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_GetForDisplay.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_GetByModule.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGameLevel_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_GetByModuleName.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_GetByName.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_GetByActivityType.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGOnlineBookPages_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPPermissionsMaster_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_DeleteAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_GetForDisplay.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_DeleteByPrimaryKey.sql" />
+    <Build Include="dbo\Stored Procedures\app_ProgramGamePointConversion_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_GetForPatronDisplay.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_GetByName.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookListBooks_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_GetByPrimaryKey.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetAllActive.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_GetRandomX.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetAllOrdered.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPSettings_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetAllTabs.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatch_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetAllLibrarySystems.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatchItems_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetAllSchools.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_EmailExists.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetDefaultProgramForAgeAndGrade.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatchItems_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetAllTypeID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Get.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetDefaultProgramID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatchItems_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetAllTypeName.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetActiveSessions.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_GetProgramMinigames.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatchItems_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGWordMatchItems_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetAllPermissions.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Code_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetAllPermissionsAUDIT.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_CodeType_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_CodeType_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetGroups.sql" />
+    <Build Include="dbo\Stored Procedures\app_Programs_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_GetList.sql" />
+    <Build Include="dbo\Stored Procedures\app_CodeType_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetGroupsFlagged.sql" />
+    <Build Include="dbo\Stored Procedures\app_RegistrationSettings_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_CodeType_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetGroupsNonMembers.sql" />
+    <Build Include="dbo\Stored Procedures\app_RegistrationSettings_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Minigame_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_CodeType_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetLoginHistory.sql" />
+    <Build Include="dbo\Stored Procedures\app_RegistrationSettings_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomEventFields_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetLoginNow.sql" />
+    <Build Include="dbo\Stored Procedures\app_RegistrationSettings_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomEventFields_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetLoginNowTenID.sql" />
+    <Build Include="dbo\Stored Procedures\app_RegistrationSettings_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_GetAllFromPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomEventFields_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetSpecialUserPermissions.sql" />
+    <Build Include="dbo\Stored Procedures\app_ReportTemplate_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_GetAllToPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomEventFields_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetSpecialUserPermissionsFlagged.sql" />
+    <Build Include="dbo\Stored Procedures\app_ReportTemplate_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_GetAllUnreadToPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomEventFields_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_GetSpecialUserPermissionsNotGranted.sql" />
+    <Build Include="dbo\Stored Procedures\app_ReportTemplate_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomRegistrationFields_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_ReportTemplate_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomRegistrationFields_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Login.sql" />
+    <Build Include="dbo\Stored Procedures\app_ReportTemplate_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Notifications_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomRegistrationFields_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Logout.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offer_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomRegistrationFields_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_LogoutAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offer_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_CustomRegistrationFields_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_ResetPassword.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offer_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetBySchoolID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offer_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetAdminSearch.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_UpdateGroups.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetFilteredSchoolDDValues.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offer_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_UpdateSpecialUserPermissions.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Offers_GetForDisplay.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUser_UsernameExists.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_CanManageSubAccount.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetEventCountByEventCode.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetPermissions.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_CheckIfFinisher.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetEventList.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetPermissionsFlagged.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_DeleteAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetEventsByEventCode.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetPermissionsNotGranted.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_GetUpcomingDisplay.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetUsers.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetByEmail.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_InitTenant.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetUsersFlagged.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_GetUsersNonMembers.sql" />
+    <Build Include="dbo\Stored Procedures\app_SentEmailLog_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetByUsername.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_Update.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_UpdatePermissions.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetPatronForEdit.sql" />
+    <Build Include="dbo\Stored Procedures\app_GamePlayStats_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\cbspSRPUserGroups_UpdateUsers.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetScoreRank.sql" />
+    <Build Include="dbo\Stored Procedures\app_GamePlayStats_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\GetPatronsPaged.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_GetAllInList.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_GetSubAccountList.sql" />
+    <Build Include="dbo\Stored Procedures\app_GamePlayStats_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\GetTotalPatrons.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_GamePlayStats_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_DashboardStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_Login.sql" />
+    <Build Include="dbo\Stored Procedures\app_GamePlayStats_Update.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_FinisherStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_Patron_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_GameLevelStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBadges_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_MiniGameStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBadges_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_PatronActivity.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQChoices_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBadges_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_GetByLibraryID.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_PatronFilter.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBadges_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_GetFilteredBranchDDValues.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBadges_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_GetFilteredDistrictDDValues.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_PrizeRecipients.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBookLists_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_ReadingActivityReport.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBookLists_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_Update.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_RegistrationStats.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBookLists_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_TenantReport.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBookLists_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_TenantSummaryReport.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronBookLists_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\uspSplitIntegerList.sql" />
+    <Build Include="dbo\Stored Procedures\app_SQMatrixLines_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPReport_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPReport_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPReport_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetLastPatronEntryID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdv_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPReport_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetPatronPointsBookList.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPReport_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetPatronPointsByKeyword.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetPatronPointsByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_GetAllByDifficulty.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_PatronFilter_Expanded.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetProgramLeaderboard.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetTotalPatronPoints.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_GetPlaySlide.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_GetByName.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_GetTotalPatronPointsOnDate.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_MoveDn.sql" />
+    <Build Include="dbo\Stored Procedures\app_SRPSettings_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPoints_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_MoveUp.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_Reorder.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGChooseAdvSlides_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_GetAllFinalized.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_GetByDrawingID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_GetNumQuestions.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronPrizes_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_GetByIDWithParent.sql" />
+    <Build Include="dbo\Stored Procedures\app_Survey_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReadingLog_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_GetByMGID.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReadingLog_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReadingLog_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_MGCodeBreaker_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_SurveyAnswers_GetAllExpanded.sql" />
+    <Build Include="dbo\Stored Procedures\app_PatronReadingLog_Insert.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Snapshots\GRA-2.2.1.dacpac" />
+  </ItemGroup>
+</Project>

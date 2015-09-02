@@ -1,0 +1,27 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Tenant_GetMasterID]
+AS
+SET NOCOUNT ON
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+DECLARE @TenID INT
+
+SELECT @TenID = - 1
+
+IF EXISTS (
+		SELECT TOP 1 *
+		FROM Tenant
+		WHERE isMasterFlag = 1
+		)
+	SELECT TOP 1 @TenID = TenID
+	FROM Tenant
+	WHERE isMasterFlag = 1
+ELSE
+	SELECT TOP 1 @TenID = TenID
+	FROM Tenant
+	WHERE isActiveFlag = 1
+	ORDER BY TenID
+
+SELECT @TenID
+
+RETURN @TenID

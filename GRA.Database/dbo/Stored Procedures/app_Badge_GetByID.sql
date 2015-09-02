@@ -1,0 +1,6 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Badge_GetByID] @BID INT
+AS
+SELECT *
+FROM [Badge]
+WHERE BID = @BID

@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRA.Communications", "GRA.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRA.Tools", "GRA.Tools\GRA.Tools.csproj", "{B50B80E5-5996-42A1-BCDB-795EBC93E893}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "GRA.Database", "GRA.Database\GRA.Database.sqlproj", "{0EC77B83-AC95-4325-BA45-40C7F2DB457F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,18 @@ Global
 		{B50B80E5-5996-42A1-BCDB-795EBC93E893}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B50B80E5-5996-42A1-BCDB-795EBC93E893}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{B50B80E5-5996-42A1-BCDB-795EBC93E893}.Test|Any CPU.Build.0 = Release|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Dev|Any CPU.Build.0 = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Dev|Any CPU.Deploy.0 = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{0EC77B83-AC95-4325-BA45-40C7F2DB457F}.Test|Any CPU.Deploy.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

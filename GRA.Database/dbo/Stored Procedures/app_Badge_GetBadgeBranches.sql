@@ -1,0 +1,31 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Badge_GetBadgeBranches] @BID INT,
+	@TenID INT
+AS
+SET NOCOUNT ON
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+DECLARE @CTID INT
+
+SELECT @CTID = CTID
+FROM dbo.CodeType
+WHERE TenID = @TenID
+	AND CodeTypeName = 'Branch'
+
+SELECT @BID AS BID,
+	c.CID,
+	c.Code AS NAME, --c.CTID,
+	CASE 
+		WHEN bb.BID IS NULL
+			THEN 0
+		ELSE 1
+		END AS Checked
+FROM dbo.BadgeBranch bb
+RIGHT JOIN Code c ON bb.CID = c.CID
+	AND c.TenID = @TenID
+	AND c.CTID = @CTID
+WHERE bb.BID = @BID
+	OR bb.BID IS NULL
+	AND c.TenID = @TenID
+	AND c.CTID = @CTID
+ORDER BY c.Code
