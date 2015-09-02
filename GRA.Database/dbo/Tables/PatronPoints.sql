@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[PatronPoints] (
+    [PPID]                INT          IDENTITY (1, 1) NOT NULL,
+    [PID]                 INT          NULL,
+    [NumPoints]           INT          NULL,
+    [AwardDate]           DATETIME     NULL,
+    [AwardReason]         VARCHAR (50) NULL,
+    [AwardReasonCd]       INT          NULL,
+    [BadgeAwardedFlag]    BIT          NULL,
+    [BadgeID]             INT          NULL,
+    [PBID]                INT          NULL,
+    [isReading]           BIT          NULL,
+    [LogID]               INT          NULL,
+    [isEvent]             BIT          NULL,
+    [EventID]             INT          NULL,
+    [EventCode]           VARCHAR (50) NULL,
+    [isBookList]          BIT          NULL,
+    [BookListID]          INT          NULL,
+    [isGame]              BIT          NULL,
+    [isGameLevelActivity] BIT          NULL,
+    [GameID]              INT          NULL,
+    [GameLevel]           INT          NULL,
+    [GameLevelID]         INT          NULL,
+    [GameLevelActivityID] INT          NULL,
+    CONSTRAINT [PK_PatronPoints] PRIMARY KEY CLUSTERED ([PPID] ASC)
+);
+

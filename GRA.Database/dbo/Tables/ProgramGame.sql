@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[ProgramGame] (
+    [PGID]                      INT          IDENTITY (1, 1) NOT NULL,
+    [GameName]                  VARCHAR (50) NULL,
+    [MapImage]                  VARCHAR (50) NULL,
+    [BonusMapImage]             VARCHAR (50) NULL,
+    [BoardWidth]                INT          NULL,
+    [BoardHeight]               INT          NULL,
+    [BonusLevelPointMultiplier] MONEY        NULL,
+    [LevelCompleteImage]        VARCHAR (50) NULL,
+    [LastModUser]               VARCHAR (50) CONSTRAINT [DF_ProgramGame_LastModUser] DEFAULT ('N/A') NULL,
+    [AddedDate]                 DATETIME     CONSTRAINT [DF_ProgramGame_AddedDate] DEFAULT (getdate()) NULL,
+    [AddedUser]                 VARCHAR (50) CONSTRAINT [DF_ProgramGame_AddedUser] DEFAULT ('N/A') NULL,
+    [LastModDate]               DATETIME     CONSTRAINT [DF_ProgramGame_LastModDate] DEFAULT (getdate()) NULL,
+    [TenID]                     INT          NULL,
+    [FldInt1]                   INT          NULL,
+    [FldInt2]                   INT          NULL,
+    [FldInt3]                   INT          NULL,
+    [FldBit1]                   BIT          NULL,
+    [FldBit2]                   BIT          NULL,
+    [FldBit3]                   BIT          NULL,
+    [FldText1]                  TEXT         NULL,
+    [FldText2]                  TEXT         NULL,
+    [FldText3]                  TEXT         NULL,
+    [Minigame1ID]               INT          CONSTRAINT [DF_ProgramGame_Minigame1ID] DEFAULT ((0)) NULL,
+    [Minigame2ID]               INT          CONSTRAINT [DF_ProgramGame_Minigame2ID] DEFAULT ((0)) NULL,
+    CONSTRAINT [PK_ProgramGame] PRIMARY KEY CLUSTERED ([PGID] ASC)
+);
+

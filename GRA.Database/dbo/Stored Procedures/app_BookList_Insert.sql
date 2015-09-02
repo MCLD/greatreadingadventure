@@ -1,0 +1,90 @@
+﻿
+/****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 01/05/2015 14:43:20 ******/
+--Create the Insert Proc
+CREATE PROCEDURE [dbo].[app_BookList_Insert] (
+	@AdminName VARCHAR(50),
+	@ListName VARCHAR(50),
+	@AdminDescription TEXT,
+	@Description TEXT,
+	@LiteracyLevel1 INT,
+	@LiteracyLevel2 INT,
+	@ProgID INT,
+	@LibraryID INT,
+	@AwardBadgeID INT,
+	@AwardPoints INT,
+	@LastModDate DATETIME,
+	@LastModUser VARCHAR(50),
+	@AddedDate DATETIME,
+	@AddedUser VARCHAR(50),
+	@TenID INT = 0,
+	@FldInt1 INT = 0,
+	@FldInt2 INT = 0,
+	@FldInt3 INT = 0,
+	@FldBit1 BIT = 0,
+	@FldBit2 BIT = 0,
+	@FldBit3 BIT = 0,
+	@FldText1 TEXT = '',
+	@FldText2 TEXT = '',
+	@FldText3 TEXT = '',
+	@NumBooksToComplete INT = 0,
+	@BLID INT OUTPUT
+	)
+AS
+BEGIN
+	INSERT INTO BookList (
+		AdminName,
+		ListName,
+		AdminDescription,
+		Description,
+		LiteracyLevel1,
+		LiteracyLevel2,
+		ProgID,
+		LibraryID,
+		AwardBadgeID,
+		AwardPoints,
+		LastModDate,
+		LastModUser,
+		AddedDate,
+		AddedUser,
+		TenID,
+		FldInt1,
+		FldInt2,
+		FldInt3,
+		FldBit1,
+		FldBit2,
+		FldBit3,
+		FldText1,
+		FldText2,
+		FldText3,
+		NumBooksToComplete
+		)
+	VALUES (
+		@AdminName,
+		@ListName,
+		@AdminDescription,
+		@Description,
+		@LiteracyLevel1,
+		@LiteracyLevel2,
+		@ProgID,
+		@LibraryID,
+		@AwardBadgeID,
+		@AwardPoints,
+		@LastModDate,
+		@LastModUser,
+		@AddedDate,
+		@AddedUser,
+		@TenID,
+		@FldInt1,
+		@FldInt2,
+		@FldInt3,
+		@FldBit1,
+		@FldBit2,
+		@FldBit3,
+		@FldText1,
+		@FldText2,
+		@FldText3,
+		@NumBooksToComplete
+		)
+
+	SELECT @BLID = SCOPE_IDENTITY()
+END

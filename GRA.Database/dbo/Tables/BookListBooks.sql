@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[BookListBooks] (
+    [BLBID]       INT           IDENTITY (1, 1) NOT NULL,
+    [BLID]        INT           NULL,
+    [Author]      VARCHAR (50)  NULL,
+    [Title]       VARCHAR (150) NULL,
+    [ISBN]        VARCHAR (50)  NULL,
+    [URL]         VARCHAR (150) NULL,
+    [LastModDate] DATETIME      CONSTRAINT [DF_BookListBooks_LastModDate] DEFAULT (getdate()) NULL,
+    [LastModUser] VARCHAR (50)  CONSTRAINT [DF_BookListBooks_LastModUser] DEFAULT ('N/A') NULL,
+    [AddedDate]   DATETIME      CONSTRAINT [DF_BookListBooks_AddedDate] DEFAULT (getdate()) NULL,
+    [AddedUser]   VARCHAR (50)  CONSTRAINT [DF_BookListBooks_AddedUser] DEFAULT ('N/A') NULL,
+    [TenID]       INT           NULL,
+    [FldInt1]     INT           NULL,
+    [FldInt2]     INT           NULL,
+    [FldInt3]     INT           NULL,
+    [FldBit1]     BIT           NULL,
+    [FldBit2]     BIT           NULL,
+    [FldBit3]     BIT           NULL,
+    [FldText1]    TEXT          NULL,
+    [FldText2]    TEXT          NULL,
+    [FldText3]    TEXT          NULL,
+    CONSTRAINT [PK_BookListBooks] PRIMARY KEY CLUSTERED ([BLBID] ASC),
+    CONSTRAINT [FK_BookListBooks_BookList] FOREIGN KEY ([BLID]) REFERENCES [dbo].[BookList] ([BLID])
+);
+

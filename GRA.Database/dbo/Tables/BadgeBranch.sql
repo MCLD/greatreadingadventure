@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[BadgeBranch] (
+    [BID] INT NOT NULL,
+    [CID] INT NOT NULL,
+    CONSTRAINT [PK_BadgeBranch] PRIMARY KEY CLUSTERED ([BID] ASC, [CID] ASC)
+);
+

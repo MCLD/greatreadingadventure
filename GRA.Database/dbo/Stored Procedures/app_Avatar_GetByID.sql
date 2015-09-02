@@ -1,0 +1,6 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Avatar_GetByID] @AID INT
+AS
+SELECT *
+FROM [Avatar]
+WHERE AID = @AID

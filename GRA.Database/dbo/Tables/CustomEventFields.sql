@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[CustomEventFields] (
+    [CID]         INT          IDENTITY (1, 1) NOT NULL,
+    [Use1]        BIT          CONSTRAINT [DF_CustomEventFields_Use1] DEFAULT ((0)) NULL,
+    [Label1]      VARCHAR (50) NULL,
+    [DDValues1]   VARCHAR (50) NULL,
+    [Use2]        BIT          CONSTRAINT [DF_CustomEventFields_Use2] DEFAULT ((0)) NULL,
+    [Use3]        BIT          CONSTRAINT [DF_CustomEventFields_Use3] DEFAULT ((0)) NULL,
+    [Label2]      VARCHAR (50) NULL,
+    [Label3]      VARCHAR (50) NULL,
+    [DDValues2]   VARCHAR (50) NULL,
+    [DDValues3]   VARCHAR (50) NULL,
+    [LastModDate] DATETIME     CONSTRAINT [DF_CustomEventFields_LastModDate] DEFAULT (getdate()) NULL,
+    [LastModUser] VARCHAR (50) CONSTRAINT [DF_CustomEventFields_LastModUser] DEFAULT ('N/A') NULL,
+    [AddedDate]   DATETIME     CONSTRAINT [DF_CustomEventFields_AddedDate] DEFAULT (getdate()) NULL,
+    [AddedUser]   VARCHAR (50) CONSTRAINT [DF_CustomEventFields_AddedUser] DEFAULT ('N/A') NULL,
+    [TenID]       INT          NOT NULL,
+    [FldInt1]     INT          NULL,
+    [FldInt2]     INT          NULL,
+    [FldInt3]     INT          NULL,
+    [FldBit1]     BIT          NULL,
+    [FldBit2]     BIT          NULL,
+    [FldBit3]     BIT          NULL,
+    [FldText1]    TEXT         NULL,
+    [FldText2]    TEXT         NULL,
+    [FldText3]    TEXT         NULL,
+    CONSTRAINT [PK_CustomEventFields] PRIMARY KEY CLUSTERED ([TenID] ASC)
+);
+

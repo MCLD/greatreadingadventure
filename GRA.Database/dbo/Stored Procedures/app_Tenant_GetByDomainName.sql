@@ -1,0 +1,20 @@
+﻿
+CREATE PROCEDURE [dbo].[app_Tenant_GetByDomainName] @Domain VARCHAR(128)
+AS
+SET NOCOUNT ON
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+DECLARE @TenID INT
+
+SELECT @TenID = - 1
+
+IF EXISTS (
+		SELECT *
+		FROM Tenant
+		WHERE DomainName = @Domain
+		)
+	SELECT @TenID = TenID
+	FROM Tenant
+	WHERE DomainName = @Domain
+
+RETURN @TenID

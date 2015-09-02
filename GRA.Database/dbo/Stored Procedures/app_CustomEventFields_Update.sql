@@ -1,0 +1,55 @@
+﻿
+--Create the Update Proc
+CREATE PROCEDURE [dbo].[app_CustomEventFields_Update] (
+	@CID INT,
+	@Use1 BIT,
+	@Label1 VARCHAR(50),
+	@DDValues1 VARCHAR(50),
+	@Use2 BIT,
+	@Use3 BIT,
+	@Label2 VARCHAR(50),
+	@Label3 VARCHAR(50),
+	@DDValues2 VARCHAR(50),
+	@DDValues3 VARCHAR(50),
+	@LastModDate DATETIME,
+	@LastModUser VARCHAR(50),
+	@AddedDate DATETIME,
+	@AddedUser VARCHAR(50),
+	@TenID INT = 0,
+	@FldInt1 INT = 0,
+	@FldInt2 INT = 0,
+	@FldInt3 INT = 0,
+	@FldBit1 BIT = 0,
+	@FldBit2 BIT = 0,
+	@FldBit3 BIT = 0,
+	@FldText1 TEXT = '',
+	@FldText2 TEXT = '',
+	@FldText3 TEXT = ''
+	)
+AS
+UPDATE CustomEventFields
+SET Use1 = @Use1,
+	Label1 = @Label1,
+	DDValues1 = @DDValues1,
+	Use2 = @Use2,
+	Use3 = @Use3,
+	Label2 = @Label2,
+	Label3 = @Label3,
+	DDValues2 = @DDValues2,
+	DDValues3 = @DDValues3,
+	LastModDate = @LastModDate,
+	LastModUser = @LastModUser,
+	AddedDate = @AddedDate,
+	AddedUser = @AddedUser,
+	TenID = @TenID,
+	FldInt1 = @FldInt1,
+	FldInt2 = @FldInt2,
+	FldInt3 = @FldInt3,
+	FldBit1 = @FldBit1,
+	FldBit2 = @FldBit2,
+	FldBit3 = @FldBit3,
+	FldText1 = @FldText1,
+	FldText2 = @FldText2,
+	FldText3 = @FldText3
+WHERE CID = @CID
+	AND TenID = @TenID
