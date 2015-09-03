@@ -7,16 +7,20 @@ Reading Adventure wouldn't exist!
 
 * * *
 
-- [ASP.NET AJAX Control Toolkit](#ASP.NET-AJAX-Control-Toolkit)
-- [Bootstrap](#Bootstrap)
-- [CKEditor](#CKEditor)
-- [DocumentFormat.OpenXML](#DocumentFormat.OpenXML)
-- [FormatWith](#FormatWith)
-- [Html Agility Pack](#Html-Agility-Pack)
-- [jQuery](#jQuery)
-- [Password Hashing With PBKDF2](#Password-Hashing-With-PBKDF2)
-- [this.Log Logging Extension](#this.Log-Logging-Extension)
-- [SRP_DAL](#SRP_DAL)
+- [ASP.NET AJAX Control Toolkit](#aspnet-ajax-control-toolkit)
+- [Bootstrap](#bootstrap)
+- [CKEditor](#ckeditor)
+- [DocumentFormat.OpenXML](#documentformat.-openxml)
+- [ELMAH](#elmah)
+- [FormatWith](#formatwith)
+- [FontAwesome](#fontawesome)
+- [Html Agility Pack](#html-agility-pack)
+- [jQuery](#jquery)
+- [Microsoft Ajax Minifier](#microsoft-ajax-minifier)
+- [NLog](#nlog)
+- [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
+- [this.Log Logging Extension](#thislog-logging-extension)
+- [SRP_DAL](#srp_dal)
 
 * * *
 
@@ -49,6 +53,20 @@ Reading Adventure wouldn't exist!
 
 * * *
 
+## ELMAH
+- <https://elmah.github.io/>
+- Copyright (c) 2004-2009 Atif Aziz. All Rights Reserved.
+- License (Apache) <http://elmah.googlecode.com/svn/trunk/COPYING.txt>
+
+* * *
+
+## FontAwesome
+- <https://fortawesome.github.io/Font-Awesome/>
+- Created by Dave Gandy
+- License (SIL OFL 1.1) <http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL>
+
+* * *
+
 ## FormatWith
 - <http://james.newtonking.com/archive/2008/03/29/formatwith-2-0-string-formatting-with-named-variables>
 - Code author: James Newton-King
@@ -66,6 +84,20 @@ Reading Adventure wouldn't exist!
 - <https://jquery.com/>
 - Copyright 2015 The jQuery Foundation.
 - License (MIT) <https://jquery.org/license/>
+
+* * *
+
+## Microsoft Ajax Minifier
+- <http://ajaxmin.codeplex.com/>
+- Copyright 2010 Microsoft Corporation
+- License (Apache) <http://ajaxmin.codeplex.com/license>
+
+* * *
+
+## NLog
+ - <http://nlog-project.org/>
+ - Copyright (c) 2004-2011 Jaroslaw Kowalski <jaak@jkowalski.net>
+ - License (BSD 3-clause) <https://github.com/NLog/NLog/blob/master/LICENSE.txt>
 
 * * *
 
