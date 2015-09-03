@@ -17,6 +17,9 @@ using System.Web.Configuration;
 using System.Configuration;
 using System.Net.Configuration;
 using System.Net.Mail;
+using GRA.Communications;
+using GRA.SRP.DAL;
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom {
     public partial class DBCreate : BaseControlRoomPage {
@@ -35,6 +38,7 @@ namespace GRA.SRP.ControlRoom {
                      */
                 } catch {
                     // got an error, so there is no database ... continue with initialize ...
+                    this.Log().Info(() => "Error selecting programs, forwarding to setup.");
                 }
 
             }
@@ -49,6 +53,7 @@ namespace GRA.SRP.ControlRoom {
                 SqlTransaction transaction = connection.BeginTransaction("InstallTransaction");
                 command.Connection = connection;
                 command.Transaction = transaction;
+                int queryCount = 0;
                 using(var sr = new StreamReader(Server.MapPath(path))) {
                     while(!sr.EndOfStream) {
                         var sb = new StringBuilder();
@@ -64,6 +69,7 @@ namespace GRA.SRP.ControlRoom {
                         try {
                             command.CommandText = sb.ToString();
                             command.ExecuteNonQuery();
+                            queryCount++;
                         } catch(Exception ex) {
                             string error = string.Format("Error: {0} data: {1} on query: {2}",
                                                          ex.Message,
@@ -75,6 +81,12 @@ namespace GRA.SRP.ControlRoom {
 
                     }
                     sr.Close();
+                    this.Log().Info(() => "Finished processing {FileName}: {QueryCount} queries and {IssuesCount} issues."
+                                          .FormatWith(new {
+                                              FileName = path.Substring(path.LastIndexOf("/") + 1),
+                                              QueryCount = queryCount,
+                                              IssuesCount = issues.Count
+                                          }));
                 }
                 if(issues.Count == 0) {
                     try {
@@ -119,7 +131,7 @@ namespace GRA.SRP.ControlRoom {
                 return;
             }
 
-            this.Log().Info(() => "Initial GRA configuration, using LocalDb is {LocalDbMode}"
+            this.Log().Info(() => "GRA setup started, using LocalDb is: {LocalDbMode}"
                                   .FormatWith(new { LocalDbMode = localDbMode }));
 
             // test writing to Web.config before we go further
@@ -265,6 +277,7 @@ namespace GRA.SRP.ControlRoom {
                     try {
                         connection.Open();
                         try {
+                            // update the sysadmin user's email
                             SqlCommand updateEmail = new SqlCommand("UPDATE [SRPUser] SET [EmailAddress] = @emailAddress WHERE [Username] = 'sysadmin';",
                                                                     connection);
                             updateEmail.Parameters.AddWithValue("@emailAddress", Mailaddress.Text);
@@ -274,6 +287,8 @@ namespace GRA.SRP.ControlRoom {
                             issues.Add("Unable to update sysadmin email: {Message}".FormatWith(ex));
                         }
                         try {
+                            // update the sysadmin contact email and mail from address
+                            // TODO email - provide better setup for email
                             SqlCommand updateEmail = new SqlCommand("UPDATE [SRPSettings] SET [Value] = @emailAddress WHERE [Name] IN ('ContactEmail', 'FromEmailAddress');",
                                                                     connection);
                             updateEmail.Parameters.AddWithValue("@emailAddress", Mailaddress.Text);
@@ -310,7 +325,35 @@ namespace GRA.SRP.ControlRoom {
             if(issues.Count == 0) {
                 // Delete the Install File
                 //System.IO.File.Delete(Server.MapPath(InstallFile));
-                this.Log().Info(() => "GRA initial setup complete!");
+                this.Log().Info(() => "Great Reading Adventure setup complete!");
+                try {
+                    // TODO email - move this template out to the database
+                    var values = new {
+                        SystemName = "The Great Reading Adventure",
+                        ControlRoomLink = string.Format("{0}{1}",
+                                                        BaseUrl,
+                                                        "/ControlRoom/"),
+                    };
+
+                    StringBuilder body = new StringBuilder();
+                    body.Append("<p>Congratulations! You have successfully configured ");
+                    body.Append("{SystemName}!</p><p>You may now ");
+                    body.Append("<a href=\"{ControlRoomLink}\">log in</a> using the default ");
+                    body.Append("system administrator credentials.</p><p>For more information on ");
+                    body.Append("setting up and using the {SystemName} software, feel free to ");
+                    body.Append("visit the ");
+                    body.Append("<a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
+                    body.Append("</p>");
+
+                    EmailService.SendEmail(Mailaddress.Text,
+                                           "{SystemName} - Setup complete!"
+                                           .FormatWith(values),
+                                           body.ToString().FormatWith(values));
+                    this.Log().Info(() => "Welcome email sent.");
+                } catch(Exception ex) {
+                    this.Log().Error(() => "Welcome email sending failure: {Message}"
+                                           .FormatWith(ex));
+                }
 
                 Response.Redirect("~/ControlRoom/");
             } else {

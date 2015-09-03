@@ -42,7 +42,7 @@ namespace GRA.SRP.ControlRoom {
                 this.Log().Info(() => "User at {RemoteAddress} requested password reset for nonexistent email {UserEmail}"
                                       .FormatWith(values));
 
-                // TODO move this template out to the database
+                // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
                 body.Append("address. Unfortunately no account could be found associated with ");
@@ -83,7 +83,7 @@ namespace GRA.SRP.ControlRoom {
 
                 this.Log().Info(() => "User at {RemoteAddress} requested password reset for email {UserEmail}"
                                       .FormatWith(values));
-                // TODO move this template out to the database
+                // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
                 body.Append("address.</p>");

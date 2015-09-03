@@ -45,6 +45,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GRA.Tools\GRA.Tools.csproj">
+      <Project>{b50b80e5-5996-42a1-bcdb-795ebc93e893}</Project>
+      <Name>GRA.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SRPUtilities\SRPUtilities.csproj">
       <Project>{6572b6f8-043b-44d6-ba15-90a7fd78f5a6}</Project>
       <Name>SRPUtilities</Name>
