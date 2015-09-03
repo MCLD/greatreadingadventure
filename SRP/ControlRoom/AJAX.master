@@ -7,16 +7,13 @@
 <%@ Register src="~/ControlRoom/Controls/CRRibbon.ascx" tagname="CRRibbon" tagprefix="uc2" %>
 <%@ Register src="~/ControlRoom/Controls/CRTopMenu.ascx" tagname="CRTopMenu" tagprefix="uc3" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+<html>
 <head id="Head1" runat="server">
 <link href='/ico_cms.png' rel='icon' type='image/vnd.microsoft.icon'/> 
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
 
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <style type="text/css">
     #blur
     {
@@ -140,7 +137,7 @@
     </div> 
 
     </center>
-
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 </form>
 </body>
 </html>

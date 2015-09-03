@@ -24,8 +24,6 @@ namespace GRA.SRP.Classes
                 var patron = new Patron();
                 if (Patron.Login(PUserName.Text.Trim(), PPassword.Text.Trim()))
                 {
-
-                    Session["PatronLoggedIn"] = true;
                     var bp = Patron.GetObjectByUsername(PUserName.Text.Trim());
                     
                     var pgm = DAL.Programs.FetchObject(bp.ProgID);
@@ -35,21 +33,7 @@ namespace GRA.SRP.Classes
                         bp.ProgID = progID;
                         bp.Update();
                     }
-
-                    Session["Patron"] = bp;
-                    Session["ProgramID"] = bp.ProgID;
-                    Session["PatronProgramID"] = bp.ProgID;
-                    Session["CurrentProgramID"] = bp.ProgID;
-                    Session["TenantID"] = bp.TenID;
-                    Session["IsMasterAcct"] = bp.IsMasterAccount;
-                    if (bp.IsMasterAccount)
-                    {
-                        Session["MasterAcctPID"] = bp.PID;
-                    }
-                    else
-                    {
-                        Session["MasterAcctPID"] = 0;
-                    }
+                    new PatronSession(Session).Establish(bp);
 
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();

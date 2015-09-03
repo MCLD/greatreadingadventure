@@ -133,6 +133,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                     sysadmin.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     sysadmin.LastModDate = sysadmin.AddedDate;
                     sysadmin.LastModUser = sysadmin.AddedUser;
+                    sysadmin.IsActive = true;
 
                     if (sysadmin.IsValid(BusinessRulesValidationMode.INSERT))
                     {

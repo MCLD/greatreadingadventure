@@ -537,7 +537,6 @@
     <Build Include="dbo\Stored Procedures\app_GamePlayStats_Insert.sql" />
     <Build Include="dbo\Stored Procedures\rpt_DashboardStats.sql" />
     <Build Include="dbo\Stored Procedures\app_SQChoices_Insert.sql" />
-    <Build Include="dbo\Stored Procedures\app_Patron_Login.sql" />
     <Build Include="dbo\Stored Procedures\app_GamePlayStats_Update.sql" />
     <Build Include="dbo\Stored Procedures\rpt_FinisherStats.sql" />
     <Build Include="dbo\Stored Procedures\app_SQChoices_MoveDn.sql" />
@@ -650,6 +649,7 @@
     <Build Include="dbo\Stored Procedures\app_SurveyAnswers_GetAllExpanded.sql" />
     <Build Include="dbo\Stored Procedures\app_PatronReadingLog_Insert.sql" />
     <Build Include="dbo\Tables\SRPRecovery.sql" />
+    <Build Include="dbo\Tables\PatronRecovery.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

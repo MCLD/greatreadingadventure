@@ -37,11 +37,22 @@ namespace GRA.SRP
                 ddTenants.DataSource = ds;
                 ddTenants.DataBind();
 
-                // if there are no subtenants then we'll go directly to the master tenant
-                if (ddTenants.Items.Count == 1 && string.IsNullOrEmpty(ddTenants.Items[0].Value)) {
-                    Session["TenantID"] = TenID;
-                    var tenant = Tenant.FetchObject(TenID);
+                Tenant tenant = null;
+
+                if(ddTenants.Items.Count == 1 && string.IsNullOrEmpty(ddTenants.Items[0].Value)) {
+                    // if there are no tenants then we'll go directly to the master tenant
+                    tenant = Tenant.FetchObject(TenID);
+                } else if(ddTenants.Items.Count == 2 && string.IsNullOrEmpty(ddTenants.Items[0].Value)) {
+                    // if there is only one tenant we will default to that
+                    var row = ds.Tables[0].Rows[0];
+                    var tenId = row["TenId"] as int?;
+                    if(tenId != null) {
+                        tenant = Tenant.FetchObject((int)tenId);
+                    }
+                }
+                if(tenant != null) {
                     Session["Tenant"] = tenant;
+                    Session["TenantID"] = tenant.TenID;
                     Session["IsMasterTenant"] = tenant.isMasterFlag;
                     Response.Redirect("~/Default.aspx");
                 }

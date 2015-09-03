@@ -16,20 +16,41 @@ namespace GRA.SRP
     {
 
 
-        protected void Page_Load(object sender, EventArgs e)
-        {
+        protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
 
             //var systemName = SRPSettings.GetSettingValue("SystemName");
             //PageTitle = (string.IsNullOrEmpty(systemName) ? "Summer Reading Program" : systemName);
 
+            if(string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(PageTitle)) {
+                Page.Title = PageTitle;
+            }
+
             Control ctl = LoadControl("~/Controls/ProgramCSS.ascx");
             var plc = FindControl("ProgramCSS");
             plc.Controls.Add(ctl);
 
-            var thisPage = (BaseSRPPage) Page;
-            if (thisPage.IsSecure && !thisPage.IsLoggedIn) Response.Redirect("~/Logout.aspx");
+            var thisPage = (BaseSRPPage)Page;
+            if(thisPage.IsSecure && !thisPage.IsLoggedIn) Response.Redirect("~/Logout.aspx");
 
+            object patronMessage = Session["PatronMessage"];
+
+            if(patronMessage != null) {
+                object patronMessageLevel = Session["PatronMessageLevel"];
+                string alertLevel = "alert-success";
+                if(patronMessageLevel != null) {
+                    alertLevel = string.Format("alert-{0}", patronMessageLevel.ToString());
+                    Session.Remove("PatronMessageLevel");
+                }
+                alertContainer.CssClass = string.Format("{0} {1}",
+                                                        alertContainer.CssClass,
+                                                        alertLevel);
+                alertMessage.Text = patronMessage.ToString();
+                alertContainer.Visible = true;
+                Session.Remove("PatronMessage");
+            } else {
+                alertContainer.Visible = false;
+            }
 
             if (!IsPostBack)
             {

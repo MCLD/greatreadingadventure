@@ -57,6 +57,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="this.Log, Version=0.0.3.0, Culture=neutral, PublicKeyToken=cbf7544467682e94, processorArchitecture=MSIL">
+      <HintPath>..\packages\this.Log.0.0.3.0\lib\net40\this.Log.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Avatar.cs" />
@@ -121,6 +125,10 @@
     <Compile Include="SurveyResults.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GRA.Tools\GRA.Tools.csproj">
+      <Project>{b50b80e5-5996-42a1-bcdb-795ebc93e893}</Project>
+      <Name>GRA.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SQLHelper\SQLHelper.csproj">
       <Project>{E933400A-F1B2-4809-BE26-DB13F9BA758D}</Project>
       <Name>SQLHelper</Name>
@@ -129,6 +137,12 @@
       <Project>{6572B6F8-043B-44D6-BA15-90A7FD78F5A6}</Project>
       <Name>SRPUtilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
