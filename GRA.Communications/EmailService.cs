@@ -5,6 +5,7 @@ using System.Net.Mail;
 using System.Web;
 using GRA.SRP.DAL;
 using GRA.SRP.Core.Utilities;
+using GRA;
 
 namespace GRA.Communications {
     public class EmailService {
@@ -63,7 +64,7 @@ namespace GRA.Communications {
                     return myString;
                 } catch //(Exception ex)
                   {
-                    return "{CONTENT}";
+                    return "{Content}";
                 }
             }
         }
@@ -74,9 +75,19 @@ namespace GRA.Communications {
                                      string subject,
                                      string body) {
             try {
+                string mailBody;
                 using(var mm = new MailMessage(fromAddress, toAddress)) {
+                    if(UseTemplates) {
+                        mailBody = EmailTemplate.FormatWith(new {
+                            Subject = subject,
+                            Content = body
+                        });
+                    } else {
+                        mailBody = body;
+                    }
+
                     mm.Subject = subject;
-                    mm.Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body;
+                    mm.Body = mailBody;
                     mm.IsBodyHtml = true;
 
                     using(var smtp = new SmtpClient()) {
@@ -90,7 +101,7 @@ namespace GRA.Communications {
                         SentFrom = fromAddress,
                         SentTo = toAddress,
                         Subject = subject,
-                        Body = UseTemplates ? EmailTemplate.Replace("{CONTENT}", body) : body
+                        Body = mailBody
                     };
                     l.Insert();
                 }
@@ -100,12 +111,11 @@ namespace GRA.Communications {
             return true;
         }
 
-        public static bool SendEmail (string toAddress, string subject, string body) {
-            return SendEmail(EmailFrom, toAddress,
-                             subject, body);
+        public static bool SendEmail(string toAddress, string subject, string body) {
+            return SendEmail(EmailFrom, toAddress, subject, body);
         }
 
-        public static bool SendEmail (string fromAddress,
+        public static bool SendEmail(string fromAddress,
                                       List<string> toAddress,
                                       string subject,
                                       string body) {
@@ -115,7 +125,7 @@ namespace GRA.Communications {
             return true;
         }
 
-        public static bool SendEmail (List<string> toAddress,
+        public static bool SendEmail(List<string> toAddress,
                                       string subject,
                                       string body) {
             foreach(string address in toAddress) {

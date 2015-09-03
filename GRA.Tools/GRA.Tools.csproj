@@ -49,6 +49,7 @@
     <Compile Include="Password.cs" />
     <Compile Include="PasswordHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

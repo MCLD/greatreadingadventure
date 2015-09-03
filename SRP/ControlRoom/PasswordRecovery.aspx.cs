@@ -1,6 +1,7 @@
 ﻿using GRA.Communications;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
+using GRA.Tools;
 using SRPApp.Classes;
 using System;
 using System.Collections.Generic;
@@ -50,12 +51,6 @@ namespace GRA.SRP.ControlRoom {
 
             // user requested a password for an email address that is not in the database
             // if account doesn't exist, send an email saying so
-
-            string baseUrl = string.Format("{0}://{1}{2}",
-                                           Request.Url.Scheme,
-                                           Request.Url.Authority,
-                                           Request.ApplicationPath.TrimEnd('/'));
-
             var values = new {
                 SystemName = SRPSettings.GetSettingValue("SysName"),
                 ContactName = SRPSettings.GetSettingValue("ContactName"),
@@ -63,7 +58,7 @@ namespace GRA.SRP.ControlRoom {
                 RemoteAddress = Request.UserHostAddress,
                 UserEmail = user.EmailAddress,
                 ControlRoomLink = string.Format("{0}{1}",
-                                                baseUrl,
+                                                BaseUrl,
                                                 "/ControlRoom/"),
                 PasswordResetSuccessSubject = SRPResources.PasswordEmailSuccessSubject
             };
@@ -71,7 +66,7 @@ namespace GRA.SRP.ControlRoom {
             this.Log().Info(() => "Password reset process for {UserEmail} complete from {RemoteAddress}"
                                   .FormatWith(values));
 
-            // TODO move this template out to the database
+            // TODO email - move this template out to the database
             StringBuilder body = new StringBuilder();
             body.Append("<p>The password reset for your {SystemName} account is now complete.</p>");
             body.Append("<p>You may now <a href=\"{ControlRoomLink}\">log in</a> using your new ");
