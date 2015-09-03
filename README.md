@@ -23,6 +23,6 @@ If you have any trouble getting the package to build, please submit an [issue](h
 
 ## License
 
-The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT). For other included packages and those fetched by NuGet, please see the LICENSE file in the project.
+The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT). For other included packages and those fetched by NuGet, please see the [CREDITS.md](https://github.com/MCLD/greatreadingadventure/blob/master/CREDITS.md) file.
 
 The Great Reading Adventure was initially developed by the [Maricopa County Library District](http://www.mcldaz.org/) with support by the [Arizona State Library, Archives and Public Records](http://www.azlibrary.gov/), a division of the Secretary of State, with federal funds from the [Institute of Museum and Library Services](http://www.imls.gov/).
