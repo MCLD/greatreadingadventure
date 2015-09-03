@@ -17,11 +17,7 @@ namespace GRA.SRP.ControlRoom {
         }
         protected void Button1_Click(object sender, EventArgs e) {
             string userId = new SRPUser().GetUsernameByEmail(uxEmailaddress.Text);
-            string senderAddress = Request.UserHostAddress;
-            string baseUrl = string.Format("{0}://{1}{2}",
-                                           Request.Url.Scheme,
-                                           Request.Url.Authority,
-                                           Request.ApplicationPath.TrimEnd('/'));
+            string remoteAddress = Request.UserHostAddress;
 
             if(string.IsNullOrEmpty(userId)) {
                 // user requested a password for an email address that is not in the database
@@ -30,11 +26,11 @@ namespace GRA.SRP.ControlRoom {
                 var values = new {
                     SystemName = SRPSettings.GetSettingValue("SysName"),
                     ControlRoomLink = string.Format("{0}{1}",
-                                                    baseUrl,
+                                                    BaseUrl,
                                                     "/ControlRoom/LoginRecovery.aspx"),
                     ContactName = SRPSettings.GetSettingValue("ContactName"),
                     ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
-                    RemoteAddress = senderAddress,
+                    RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject
                 };
@@ -71,12 +67,12 @@ namespace GRA.SRP.ControlRoom {
                 var values = new {
                     SystemName = SRPSettings.GetSettingValue("SysName"),
                     PasswordResetLink = string.Format("{0}{1}?token={2}",
-                                                      baseUrl,
+                                                      BaseUrl,
                                                       "/ControlRoom/PasswordRecovery.aspx",
                                                       passwordResetToken),
                     ContactName = SRPSettings.GetSettingValue("ContactName"),
                     ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
-                    RemoteAddress = senderAddress,
+                    RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject,
                 };
@@ -87,8 +83,8 @@ namespace GRA.SRP.ControlRoom {
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
                 body.Append("address.</p>");
-                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> to create ");
-                body.Append("a new password for your account.</p>");
+                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> in the ");
+                body.Append("next hour to create a new password for your account.</p>");
                 body.Append("<p>If you did not initiate this request, take no action and your ");
                 body.Append("password will not be changed.</p>");
                 body.Append("<p>If you have any comments or questions, please contact ");

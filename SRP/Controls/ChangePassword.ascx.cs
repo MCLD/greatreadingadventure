@@ -9,36 +9,28 @@ using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace GRA.SRP.Classes
-{
-    public partial class ChangePassword : System.Web.UI.UserControl
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP.Classes {
+    public partial class ChangePassword : System.Web.UI.UserControl {
+        protected void Page_Load(object sender, EventArgs e) {
             uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
             uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
-        {
-            if (Page.IsValid) 
-            {
-                if (!(string.IsNullOrEmpty(NPassword.Text.Trim())))
-                {
+        protected void btnLogin_Click(object sender, EventArgs e) {
+            if(Page.IsValid) {
+                if(!(string.IsNullOrEmpty(NPassword.Text.Trim()))) {
                     var patron = (Patron)Session["Patron"];
-                    if (patron.Password != CPass.Text.Trim())
-                    {
+                    if(!Patron.VerifyPassword(patron.Username, CPass.Text.Trim())) {
                         lblError.Text =
                             "You entered an incorrect password.";
 
-                             CPass.Attributes.Add("Value", CPass.Text);
-                             NPassword.Attributes.Add("Value", NPassword.Text);
-                             NPasswordR.Attributes.Add("Value", NPasswordR.Text);
+                        CPass.Attributes.Add("Value", CPass.Text);
+                        NPassword.Attributes.Add("Value", NPassword.Text);
+                        NPasswordR.Attributes.Add("Value", NPasswordR.Text);
                         return;
                     }
 
-                    if (NPassword.Text.Trim() != NPasswordR.Text.Trim())
-                    {
+                    if(NPassword.Text.Trim() != NPasswordR.Text.Trim()) {
                         lblError.Text =
                             "The new password and new password re-entry do not match.";
                         CPass.Attributes.Add("Value", CPass.Text);
@@ -46,14 +38,14 @@ namespace GRA.SRP.Classes
                         NPasswordR.Attributes.Add("Value", NPasswordR.Text);
                         return;
                     }
-                    patron.Password = NPassword.Text.Trim();
+                    patron.NewPassword = NPassword.Text.Trim();
                     patron.Update();
 
-                        Session["PatronLoggedIn"] = true;
-                        Session["Patron"] = patron;
-                        Session["ProgramID"] = patron.ProgID;
-                        Session["PatronProgramID"] = patron.ProgID;
-                        Session["CurrentProgramID"] = patron.ProgID;
+                    Session["PatronLoggedIn"] = true;
+                    Session["Patron"] = patron;
+                    Session["ProgramID"] = patron.ProgID;
+                    Session["PatronProgramID"] = patron.ProgID;
+                    Session["CurrentProgramID"] = patron.ProgID;
 
 
                     lblError.Text =
@@ -61,8 +53,6 @@ namespace GRA.SRP.Classes
                     pnlfields.Visible = false;
                 }
             }
-
-
         }
     }
 }

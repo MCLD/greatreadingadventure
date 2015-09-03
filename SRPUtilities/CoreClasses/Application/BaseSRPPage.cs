@@ -154,6 +154,19 @@ namespace SRPApp.Classes
             LoadRadioButtonLists(ctl);
             LoadDropDownListLists(ctl);
             LoadButtons(ctl);
+            if(string.IsNullOrEmpty(Page.Title) || Page.Title == "Home Page") {
+                string systemName = GetResourceString("System_Name");
+                if(systemName != "System_Name") {
+                    string title = systemName;
+                    string slogan = GetResourceString("Slogan");
+                    if(slogan != "Slogan") {
+                        title = string.Format("{0} - {1}",
+                                              title,
+                                              slogan);
+                    }
+                    Page.Title = title;
+                }
+            }
         }
 
         public void TranslateDropDownList(Control c)

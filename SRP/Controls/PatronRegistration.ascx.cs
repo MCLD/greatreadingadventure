@@ -623,7 +623,7 @@ namespace GRA.SRP.Controls
 
                 p.ProgID = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("ProgID")).SelectedValue);
                 p.Username = ((TextBox)(rptr.Items[0]).FindControl("Username")).Text;
-                p.Password = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
+                p.NewPassword = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
 
                 var famAcct = (RadioButtonList)rptr.Items[0].FindControl("FamilyAccount");
                 p.IsMasterAccount = (famAcct.SelectedValue == "Yes" && MasterPID.Text.Length==0);

@@ -874,6 +874,7 @@
     <Content Include="MyNotifications.aspx" />
     <Content Include="MyOffers.aspx" />
     <Content Include="MyProgram.aspx" />
+    <Content Include="PasswordRecovery.aspx" />
     <Content Include="PlayMinigame.aspx" />
     <Content Include="ReadingLists.aspx" />
     <Content Include="Recover.aspx" />
@@ -1238,9 +1239,6 @@
     <Content Include="ShareBadge.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.4.1.js" />
-    <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="ShareReview.aspx" />
     <Content Include="Thanks.aspx" />
     <Content Include="Web.config">
@@ -1362,6 +1360,7 @@
     <Compile Include="Code\ControlRoom\RibbonLink.cs" />
     <Compile Include="Code\ControlRoom\SRPTopMenuItem.cs" />
     <Compile Include="Code\ControlRoom\StandardModuleRibbons.cs" />
+    <Compile Include="Code\PatronSession.cs" />
     <Compile Include="ControlRoom\AJAX.master.cs">
       <DependentUpon>AJAX.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2896,6 +2895,13 @@
     </Compile>
     <Compile Include="MyProgram.aspx.designer.cs">
       <DependentUpon>MyProgram.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PasswordRecovery.aspx.cs">
+      <DependentUpon>PasswordRecovery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PasswordRecovery.aspx.designer.cs">
+      <DependentUpon>PasswordRecovery.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayMinigame.aspx.cs">
       <DependentUpon>PlayMinigame.aspx</DependentUpon>

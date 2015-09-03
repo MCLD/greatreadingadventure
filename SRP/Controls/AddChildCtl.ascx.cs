@@ -32,7 +32,13 @@ namespace GRA.SRP.Controls
                 }
 
                 //var patron = (Patron)Session["Patron"];
-                var patron = Patron.FetchObject((int)Session["MasterAcctPID"]);
+                Patron patron = null;
+                if((int)Session["MasterAcctPID"] == 0) {
+                    // we are the parent
+                    patron = (Patron)Session["Patron"];
+                } else {
+                    patron = Patron.FetchObject((int)Session["MasterAcctPID"]);
+                }
                 var ds = Patron.GetPatronForEdit(patron.PID);
                 ds.Tables[0].Rows[0]["Username"] = "";
                 ds.Tables[0].Rows[0]["Password"] = "";
@@ -206,7 +212,13 @@ namespace GRA.SRP.Controls
             try
             {
                 //var patron = (Patron)Session["Patron"];
-                var patron = Patron.FetchObject((int)Session["MasterAcctPID"]); 
+                Patron patron = null;
+                if((int)Session["MasterAcctPID"] == 0) {
+                    // we are the parent
+                    patron = (Patron)Session["Patron"];
+                } else {
+                    patron = Patron.FetchObject((int)Session["MasterAcctPID"]);
+                }
                 var p = new Patron();
                 DateTime _d;
                 var DOB = rptr.Items[0].FindControl("DOB") as TextBox;
@@ -219,7 +231,7 @@ namespace GRA.SRP.Controls
 
                 p.ProgID = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("ProgID")).SelectedValue);
                 p.Username = ((TextBox)(rptr.Items[0]).FindControl("Username")).Text;
-                p.Password = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
+                p.NewPassword = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
 
                 p.IsMasterAccount = false;
                 p.MasterAcctPID = patron.PID;

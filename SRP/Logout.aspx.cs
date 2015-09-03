@@ -21,13 +21,7 @@ namespace GRA.SRP
                 if (p.LogoutURL.Trim().Length > 0) navTo = p.LogoutURL;
             }
 
-            Session.Remove("PatronLoggedIn");
-            Session.Remove("Patron");
-            Session.Remove("ProgramID");
-            Session.Remove("PatronProgramID");
-            Session.Remove("CurrentProgramID");
-            Session.Remove("IsMasterAcct");
-            Session.Remove("MasterAcctPID");
+            new PatronSession(Session).Clear();
 
             Response.Redirect(navTo);
 

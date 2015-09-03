@@ -11,411 +11,102 @@ using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools.PasswordHash;
+using System.Text;
+using System.Collections.Generic;
+using GRA.Tools;
 
-namespace GRA.SRP.DAL
-{
+namespace GRA.SRP.DAL {
 
-[Serializable]    public class Patron : EntityBase
-    {
+    [Serializable]
+    public class Patron : EntityBase {
         public static new string Version { get { return "2.0"; } }
 
-        #region Private Variables
+        private const int pbkdf2Iterations = 150000;
 
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
-        private int myPID;
-        private bool myIsMasterAccount =  false;
-        private int myMasterAcctPID = 0;
-        private string myUsername = "";
-        private string myPassword = "";
-        private DateTime myDOB;
-        private int myAge = 0;
-        private string mySchoolGrade = "";
-        private int myProgID = 0;
-        private string myFirstName = "";
-        private string myMiddleName = "";
-        private string myLastName = "";
-        private string myGender = "";
-        private string myEmailAddress = "";
-        private string myPhoneNumber = "";
-        private string myStreetAddress1 = "";
-        private string myStreetAddress2 = "";
-        private string myCity = "";
-        private string myState = "";
-        private string myZipCode = "";
-        private string myCountry = "";
-        private string myCounty = "";
-        private string myParentGuardianFirstName = "";
-        private string myParentGuardianLastName = "";
-        private string myParentGuardianMiddleName = "";
-        private int myPrimaryLibrary = 0;
-        private string myLibraryCard = "";
-        private string mySchoolName = "";
-        private string myDistrict = "";
-        private string myTeacher = "";
-        private string myGroupTeamName = "";
-        private int mySchoolType = 0;
-        private int myLiteracyLevel1 = 0;
-        private int myLiteracyLevel2 = 0;
-        private bool myParentPermFlag = true;
-        private bool myOver18Flag = false;
-        private bool myShareFlag = false;
-        private bool myTermsOfUseflag;
-        private string myCustom1 = "";
-        private string myCustom2 = "";
-        private string myCustom3 = "";
-        private string myCustom4 = "";
-        private string myCustom5 = "";
-        private int myAvatarID = 0;
-        private int mySDistrict = 0;
-
-        private int myTenID = 0;
-        private int myFldInt1 = 0;
-        private int myFldInt2 = 0;
-        private int myFldInt3 = 0;
-        private bool myFldBit1 = false;
-        private bool myFldBit2 = false;
-        private bool myFldBit3 = false;
-        private string myFldText1 = "";
-        private string myFldText2 = "";
-        private string myFldText3 = "";
-
-
-        private int myScore1 = 0;
-        private int myScore2 = 0;
-        private decimal myScore1Pct = 0;
-        private decimal myScore2Pct = 0;
-        private DateTime myScore1Date ;
-        private DateTime myScore2Date ;
-
-        #endregion
-
         #region Accessors
 
-        public int PID
-        {
-            get { return myPID; }
-            set { myPID = value; }
-        }
-        public bool IsMasterAccount
-        {
-            get { return myIsMasterAccount; }
-            set { myIsMasterAccount = value; }
-        }
-        public int MasterAcctPID
-        {
-            get { return myMasterAcctPID; }
-            set { myMasterAcctPID = value; }
-        }
-        public string Username
-        {
-            get { return myUsername; }
-            set { myUsername = value; }
-        }
-        public string Password
-        {
-            get { return myPassword; }
-            set { myPassword = value; }
-        }
-        public DateTime DOB
-        {
-            get { return myDOB; }
-            set { myDOB = value; }
-        }
-        public int Age
-        {
-            get { return myAge; }
-            set { myAge = value; }
-        }
-        public string SchoolGrade
-        {
-            get { return mySchoolGrade; }
-            set { mySchoolGrade = value; }
-        }
-        public int ProgID
-        {
-            get { return myProgID; }
-            set { myProgID = value; }
-        }
-        public string FirstName
-        {
-            get { return myFirstName; }
-            set { myFirstName = value; }
-        }
-        public string MiddleName
-        {
-            get { return myMiddleName; }
-            set { myMiddleName = value; }
-        }
-        public string LastName
-        {
-            get { return myLastName; }
-            set { myLastName = value; }
-        }
-        public string Gender
-        {
-            get { return myGender; }
-            set { myGender = value; }
-        }
-        public string EmailAddress
-        {
-            get { return myEmailAddress; }
-            set { myEmailAddress = value; }
-        }
-        public string PhoneNumber
-        {
-            get { return myPhoneNumber; }
-            set { myPhoneNumber = value; }
-        }
-        public string StreetAddress1
-        {
-            get { return myStreetAddress1; }
-            set { myStreetAddress1 = value; }
-        }
-        public string StreetAddress2
-        {
-            get { return myStreetAddress2; }
-            set { myStreetAddress2 = value; }
-        }
-        public string City
-        {
-            get { return myCity; }
-            set { myCity = value; }
-        }
-        public string State
-        {
-            get { return myState; }
-            set { myState = value; }
-        }
-        public string ZipCode
-        {
-            get { return myZipCode; }
-            set { myZipCode = value; }
-        }
-        public string Country
-        {
-            get { return myCountry; }
-            set { myCountry = value; }
-        }
-        public string County
-        {
-            get { return myCounty; }
-            set { myCounty = value; }
-        }
-        public string ParentGuardianFirstName
-        {
-            get { return myParentGuardianFirstName; }
-            set { myParentGuardianFirstName = value; }
-        }
-        public string ParentGuardianLastName
-        {
-            get { return myParentGuardianLastName; }
-            set { myParentGuardianLastName = value; }
-        }
-        public string ParentGuardianMiddleName
-        {
-            get { return myParentGuardianMiddleName; }
-            set { myParentGuardianMiddleName = value; }
-        }
-        public int PrimaryLibrary
-        {
-            get { return myPrimaryLibrary; }
-            set { myPrimaryLibrary = value; }
-        }
-        public string LibraryCard
-        {
-            get { return myLibraryCard; }
-            set { myLibraryCard = value; }
-        }
-        public string SchoolName
-        {
-            get { return mySchoolName; }
-            set { mySchoolName = value; }
-        }
-        public string District
-        {
-            get { return myDistrict; }
-            set { myDistrict = value; }
-        }
-        public string Teacher
-        {
-            get { return myTeacher; }
-            set { myTeacher = value; }
-        }
-        public string GroupTeamName
-        {
-            get { return myGroupTeamName; }
-            set { myGroupTeamName = value; }
-        }
-        public int SchoolType
-        {
-            get { return mySchoolType; }
-            set { mySchoolType = value; }
-        }
-        public int LiteracyLevel1
-        {
-            get { return myLiteracyLevel1; }
-            set { myLiteracyLevel1 = value; }
-        }
-        public int LiteracyLevel2
-        {
-            get { return myLiteracyLevel2; }
-            set { myLiteracyLevel2 = value; }
-        }
-        public bool ParentPermFlag
-        {
-            get { return myParentPermFlag; }
-            set { myParentPermFlag = value; }
-        }
-        public bool Over18Flag
-        {
-            get { return myOver18Flag; }
-            set { myOver18Flag = value; }
-        }
-        public bool ShareFlag
-        {
-            get { return myShareFlag; }
-            set { myShareFlag = value; }
-        }
-        public bool TermsOfUseflag
-        {
-            get { return myTermsOfUseflag; }
-            set { myTermsOfUseflag = value; }
-        }
-        public string Custom1
-        {
-            get { return myCustom1; }
-            set { myCustom1 = value; }
-        }
-        public string Custom2
-        {
-            get { return myCustom2; }
-            set { myCustom2 = value; }
-        }
-        public string Custom3
-        {
-            get { return myCustom3; }
-            set { myCustom3 = value; }
-        }
-        public string Custom4
-        {
-            get { return myCustom4; }
-            set { myCustom4 = value; }
-        }
-        public string Custom5
-        {
-            get { return myCustom5; }
-            set { myCustom5 = value; }
-        }
-        public int AvatarID
-        {
-            get { return myAvatarID; }
-            set { myAvatarID = value; }
-        }
-        public int SDistrict
-        {
-            get { return mySDistrict; }
-            set { mySDistrict = value; }
-        }
-        public int TenID
-        {
-            get { return myTenID; }
-            set { myTenID = value; }
-        }
+        public int PID { get; set; }
+        public bool IsMasterAccount { get; set; }
+        public int MasterAcctPID { get; set; }
+        public string Username { get; set; }
+        public string NewPassword { private get; set; }
+        public DateTime DOB { get; set; }
+        public int Age { get; set; }
+        public string SchoolGrade { get; set; }
+        public int ProgID { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Gender { get; set; }
+        public string EmailAddress { get; set; }
+        public string PhoneNumber { get; set; }
+        public string StreetAddress1 { get; set; }
+        public string StreetAddress2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
+        public string County { get; set; }
+        public string ParentGuardianFirstName { get; set; }
+        public string ParentGuardianLastName { get; set; }
+        public string ParentGuardianMiddleName { get; set; }
+        public int PrimaryLibrary { get; set; }
+        public string LibraryCard { get; set; }
+        public string SchoolName { get; set; }
+        public string District { get; set; }
+        public string Teacher { get; set; }
+        public string GroupTeamName { get; set; }
+        public int SchoolType { get; set; }
+        public int LiteracyLevel1 { get; set; }
+        public int LiteracyLevel2 { get; set; }
+        public bool ParentPermFlag { get; set; }
+        public bool Over18Flag { get; set; }
+        public bool ShareFlag { get; set; }
+        public bool TermsOfUseflag { get; set; }
+        public string Custom1 { get; set; }
+        public string Custom2 { get; set; }
+        public string Custom3 { get; set; }
+        public string Custom4 { get; set; }
+        public string Custom5 { get; set; }
+        public int AvatarID { get; set; }
+        public int SDistrict { get; set; }
+        public int TenID { get; set; }
 
-        public int FldInt1
-        {
-            get { return myFldInt1; }
-            set { myFldInt1 = value; }
-        }
+        public int FldInt1 { get; set; }
 
-        public int FldInt2
-        {
-            get { return myFldInt2; }
-            set { myFldInt2 = value; }
-        }
+        public int FldInt2 { get; set; }
 
-        public int FldInt3
-        {
-            get { return myFldInt3; }
-            set { myFldInt3 = value; }
-        }
+        public int FldInt3 { get; set; }
 
-        public bool FldBit1
-        {
-            get { return myFldBit1; }
-            set { myFldBit1 = value; }
-        }
+        public bool FldBit1 { get; set; }
 
-        public bool FldBit2
-        {
-            get { return myFldBit2; }
-            set { myFldBit2 = value; }
-        }
+        public bool FldBit2 { get; set; }
 
-        public bool FldBit3
-        {
-            get { return myFldBit3; }
-            set { myFldBit3 = value; }
-        }
+        public bool FldBit3 { get; set; }
 
-        public string FldText1
-        {
-            get { return myFldText1; }
-            set { myFldText1 = value; }
-        }
+        public string FldText1 { get; set; }
 
-        public string FldText2
-        {
-            get { return myFldText2; }
-            set { myFldText2 = value; }
-        }
+        public string FldText2 { get; set; }
 
-        public string FldText3
-        {
-            get { return myFldText3; }
-            set { myFldText3 = value; }
-        }
+        public string FldText3 { get; set; }
 
 
-        public int Score1
-        {
-            get { return myScore1; }
-            set { myScore1 = value; }
-        }
-        public int Score2
-        {
-            get { return myScore2; }
-            set { myScore2 = value; }
-        }
-        public decimal Score1Pct
-        {
-            get { return myScore1Pct; }
-            set { myScore1Pct = value; }
-        }
-        public decimal Score2Pct
-        {
-            get { return myScore2Pct; }
-            set { myScore2Pct = value; }
-        }
+        public int Score1 { get; set; }
+        public int Score2 { get; set; }
+        public decimal Score1Pct { get; set; }
+        public decimal Score2Pct { get; set; }
 
-        public DateTime Score1Date
-        {
-            get { return myScore1Date; }
-            set { myScore1Date = value; }
-        }
+        public DateTime Score1Date { get; set; }
 
-        public DateTime Score2Date
-        {
-            get { return myScore2Date; }
-            set { myScore2Date = value; }
-        }
+        public DateTime Score2Date { get; set; }
         #endregion
 
         #region Constructors
 
-        public Patron()
-        {
+        public Patron() {
             TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
         }
 
@@ -423,24 +114,21 @@ namespace GRA.SRP.DAL
 
         #region stored procedure wrappers
 
-        public static string GetTestRank(int PID, int WhichScore)
-        {
+        public static string GetTestRank(int PID, int WhichScore) {
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
             arrParams[1] = new SqlParameter("@WhichScore", WhichScore);
 
-            var ds =  SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetScoreRank", arrParams);
+            var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetScoreRank", arrParams);
             var ret = "N/A";
 
-            if (ds.Tables[0].Rows.Count > 0)
-            {
+            if(ds.Tables[0].Rows.Count > 0) {
                 ret = string.Format("{0:0.##} Percentile", ds.Tables[0].Rows[0]["Percentile"]);
             }
             return ret;
         }
 
-        public static DataSet CRSearch()
-        {
+        public static DataSet CRSearch() {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
@@ -462,10 +150,9 @@ namespace GRA.SRP.DAL
                 <asp:SessionParameter DefaultValue="" Name="searchGender" SessionField="PS_Gender" Type="String" />
          * 
          */
-        
+
         public static DataSet GetPaged(string sort, int startRowIndex, int maximumRows
-            , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender)
-        {
+            , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender) {
             SqlParameter[] arrParams = new SqlParameter[11];
             arrParams[0] = new SqlParameter("@startRowIndex", startRowIndex);
             arrParams[1] = new SqlParameter("@maximumRows", maximumRows);
@@ -482,13 +169,12 @@ namespace GRA.SRP.DAL
                                         -1 :
                                         (int)HttpContext.Current.Session["TenantID"])
                             );
-            
+
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetPatronsPaged", arrParams);
         }
 
         public static int GetTotalPagedCount(string sort, int startRowIndex, int maximumRows
-           , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender)
-        {
+           , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender) {
             SqlParameter[] arrParams = new SqlParameter[11];
             arrParams[0] = new SqlParameter("@startRowIndex", startRowIndex);
             arrParams[1] = new SqlParameter("@maximumRows", maximumRows);
@@ -506,10 +192,9 @@ namespace GRA.SRP.DAL
                                         (int)HttpContext.Current.Session["TenantID"])
                             );
 
-            return (int) SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetTotalPatrons", arrParams).Tables[0].Rows[0][0];
+            return (int)SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetTotalPatrons", arrParams).Tables[0].Rows[0][0];
         }
-        public static DataSet GetAll()
-        {
+        public static DataSet GetAll() {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
@@ -519,8 +204,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetAll", arrParams);
         }
 
-        public static Patron FetchObject(int PID)
-        {
+        public static Patron FetchObject(int PID) {
 
             // declare reader
 
@@ -532,8 +216,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -545,15 +228,19 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["PID"].ToString(), out _int)) result.PID = _int;
+                if(int.TryParse(dr["PID"].ToString(), out _int))
+                    result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int)) result.MasterAcctPID = _int;
+                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                    result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                result.Password = dr["Password"].ToString();
-                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime)) result.DOB = _datetime;
-                if (int.TryParse(dr["Age"].ToString(), out _int)) result.Age = _int;
+                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                    result.DOB = _datetime;
+                if(int.TryParse(dr["Age"].ToString(), out _int))
+                    result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if (int.TryParse(dr["ProgID"].ToString(), out _int)) result.ProgID = _int;
+                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                    result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
                 result.LastName = dr["LastName"].ToString();
@@ -570,15 +257,19 @@ namespace GRA.SRP.DAL
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int)) result.PrimaryLibrary = _int;
+                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                    result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if (int.TryParse(dr["SchoolType"].ToString(), out _int)) result.SchoolType = _int;
-                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int)) result.LiteracyLevel1 = _int;
-                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int)) result.LiteracyLevel2 = _int;
+                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                    result.SchoolType = _int;
+                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                    result.LiteracyLevel1 = _int;
+                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                    result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
                 result.ShareFlag = bool.Parse(dr["ShareFlag"].ToString());
@@ -588,13 +279,19 @@ namespace GRA.SRP.DAL
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if (int.TryParse(dr["AvatarID"].ToString(), out _int)) result.AvatarID = _int;
-                if (int.TryParse(dr["SDistrict"].ToString(), out _int)) result.SDistrict = _int;
+                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
+                    result.AvatarID = _int;
+                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                    result.SDistrict = _int;
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) result.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    result.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    result.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    result.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 result.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -602,13 +299,19 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if (int.TryParse(dr["Score1"].ToString(), out _int)) result.Score1 = _int;
-                if (int.TryParse(dr["Score2"].ToString(), out _int)) result.Score2 = _int;
-                var _decimal = (decimal) 0.0;
-                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal)) result.Score1Pct = _decimal;
-                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal)) result.Score2Pct = _decimal;
-                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime)) result.Score1Date = _datetime;
-                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime)) result.Score2Date = _datetime;
+                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                    result.Score1 = _int;
+                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                    result.Score2 = _int;
+                var _decimal = (decimal)0.0;
+                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                    result.Score1Pct = _decimal;
+                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                    result.Score2Pct = _decimal;
+                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                    result.Score1Date = _datetime;
+                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                    result.Score2Date = _datetime;
 
                 dr.Close();
 
@@ -622,8 +325,7 @@ namespace GRA.SRP.DAL
 
         }
 
-        public bool Fetch(int PID)
-        {
+        public bool Fetch(int PID) {
 
             // declare reader
 
@@ -635,8 +337,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -648,15 +349,19 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["PID"].ToString(), out _int)) this.PID = _int;
+                if(int.TryParse(dr["PID"].ToString(), out _int))
+                    this.PID = _int;
                 this.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int)) this.MasterAcctPID = _int;
+                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                    this.MasterAcctPID = _int;
                 this.Username = dr["Username"].ToString();
-                this.Password = dr["Password"].ToString();
-                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime)) this.DOB = _datetime;
-                if (int.TryParse(dr["Age"].ToString(), out _int)) this.Age = _int;
+                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                    this.DOB = _datetime;
+                if(int.TryParse(dr["Age"].ToString(), out _int))
+                    this.Age = _int;
                 this.SchoolGrade = dr["SchoolGrade"].ToString();
-                if (int.TryParse(dr["ProgID"].ToString(), out _int)) this.ProgID = _int;
+                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                    this.ProgID = _int;
                 this.FirstName = dr["FirstName"].ToString();
                 this.MiddleName = dr["MiddleName"].ToString();
                 this.LastName = dr["LastName"].ToString();
@@ -673,15 +378,19 @@ namespace GRA.SRP.DAL
                 this.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 this.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 this.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int)) this.PrimaryLibrary = _int;
+                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                    this.PrimaryLibrary = _int;
                 this.LibraryCard = dr["LibraryCard"].ToString();
                 this.SchoolName = dr["SchoolName"].ToString();
                 this.District = dr["District"].ToString();
                 this.Teacher = dr["Teacher"].ToString();
                 this.GroupTeamName = dr["GroupTeamName"].ToString();
-                if (int.TryParse(dr["SchoolType"].ToString(), out _int)) this.SchoolType = _int;
-                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int)) this.LiteracyLevel1 = _int;
-                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int)) this.LiteracyLevel2 = _int;
+                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                    this.SchoolType = _int;
+                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                    this.LiteracyLevel1 = _int;
+                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                    this.LiteracyLevel2 = _int;
                 this.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 this.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
                 this.ShareFlag = bool.Parse(dr["ShareFlag"].ToString());
@@ -691,13 +400,19 @@ namespace GRA.SRP.DAL
                 this.Custom3 = dr["Custom3"].ToString();
                 this.Custom4 = dr["Custom4"].ToString();
                 this.Custom5 = dr["Custom5"].ToString();
-                if (int.TryParse(dr["AvatarID"].ToString(), out _int)) this.AvatarID = _int;
-                if (int.TryParse(dr["SDistrict"].ToString(), out _int)) this.SDistrict = _int;
+                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
+                    this.AvatarID = _int;
+                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                    this.SDistrict = _int;
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) this.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) this.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) this.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) this.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    this.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    this.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    this.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    this.FldInt3 = _int;
                 this.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 this.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 this.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -705,13 +420,19 @@ namespace GRA.SRP.DAL
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
 
-                if (int.TryParse(dr["Score1"].ToString(), out _int)) this.Score1 = _int;
-                if (int.TryParse(dr["Score2"].ToString(), out _int)) this.Score2 = _int;
+                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                    this.Score1 = _int;
+                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                    this.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal)) this.Score1Pct = _decimal;
-                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal)) this.Score2Pct = _decimal;
-                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime)) this.Score1Date = _datetime;
-                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime)) this.Score2Date = _datetime;
+                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                    this.Score1Pct = _decimal;
+                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                    this.Score2Pct = _decimal;
+                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                    this.Score1Date = _datetime;
+                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                    this.Score2Date = _datetime;
 
                 dr.Close();
 
@@ -725,213 +446,317 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Insert()
-        {
+        public int Insert() {
 
-            return Insert(this);
+            List<SqlParameter> parameters = new List<SqlParameter>();
 
+            string passwordHash = PasswordHash.CreateHash(this.NewPassword,
+                                                          pbkdf2Iterations);
+
+            parameters.Add(new SqlParameter("@IsMasterAccount", this.IsMasterAccount));
+            parameters.Add(new SqlParameter("@MasterAcctPID", this.MasterAcctPID));
+            parameters.Add(new SqlParameter("@Username", this.Username));
+            parameters.Add(new SqlParameter("@Password", passwordHash));
+            parameters.Add(new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode())));
+            parameters.Add(new SqlParameter("@Age", this.Age));
+            parameters.Add(new SqlParameter("@SchoolGrade", this.SchoolGrade));
+            parameters.Add(new SqlParameter("@ProgID", this.ProgID));
+            parameters.Add(new SqlParameter("@FirstName", this.FirstName));
+            parameters.Add(new SqlParameter("@MiddleName", this.MiddleName));
+            parameters.Add(new SqlParameter("@LastName", this.LastName));
+            parameters.Add(new SqlParameter("@Gender", this.Gender));
+            parameters.Add(new SqlParameter("@EmailAddress", this.EmailAddress));
+            parameters.Add(new SqlParameter("@PhoneNumber", this.PhoneNumber));
+            parameters.Add(new SqlParameter("@StreetAddress1", this.StreetAddress1));
+            parameters.Add(new SqlParameter("@StreetAddress2", this.StreetAddress2));
+            parameters.Add(new SqlParameter("@City", this.City));
+            parameters.Add(new SqlParameter("@State", this.State));
+            parameters.Add(new SqlParameter("@ZipCode", this.ZipCode));
+            parameters.Add(new SqlParameter("@Country", this.Country));
+            parameters.Add(new SqlParameter("@County", this.County));
+            parameters.Add(new SqlParameter("@ParentGuardianFirstName", this.ParentGuardianFirstName));
+            parameters.Add(new SqlParameter("@ParentGuardianLastName", this.ParentGuardianLastName));
+            parameters.Add(new SqlParameter("@ParentGuardianMiddleName", this.ParentGuardianMiddleName));
+            parameters.Add(new SqlParameter("@PrimaryLibrary", this.PrimaryLibrary));
+            parameters.Add(new SqlParameter("@LibraryCard", this.LibraryCard));
+            parameters.Add(new SqlParameter("@SchoolName", this.SchoolName));
+            parameters.Add(new SqlParameter("@District", this.District));
+            parameters.Add(new SqlParameter("@Teacher", this.Teacher));
+            parameters.Add(new SqlParameter("@GroupTeamName", this.GroupTeamName));
+            parameters.Add(new SqlParameter("@SchoolType", this.SchoolType));
+            parameters.Add(new SqlParameter("@LiteracyLevel1", this.LiteracyLevel1));
+            parameters.Add(new SqlParameter("@LiteracyLevel2", this.LiteracyLevel2));
+            parameters.Add(new SqlParameter("@ParentPermFlag", this.ParentPermFlag));
+            parameters.Add(new SqlParameter("@Over18Flag", this.Over18Flag));
+            parameters.Add(new SqlParameter("@ShareFlag", this.ShareFlag));
+            parameters.Add(new SqlParameter("@TermsOfUseflag", this.TermsOfUseflag));
+            parameters.Add(new SqlParameter("@Custom1", this.Custom1));
+            parameters.Add(new SqlParameter("@Custom2", this.Custom2));
+            parameters.Add(new SqlParameter("@Custom3", this.Custom3));
+            parameters.Add(new SqlParameter("@Custom4", this.Custom4));
+            parameters.Add(new SqlParameter("@Custom5", this.Custom5));
+            parameters.Add(new SqlParameter("@AvatarID", this.AvatarID));
+            parameters.Add(new SqlParameter("@SDistrict", this.SDistrict));
+
+            parameters.Add(new SqlParameter("@TenID", this.TenID));
+            parameters.Add(new SqlParameter("@FldInt1", this.FldInt1));
+            parameters.Add(new SqlParameter("@FldInt2", this.FldInt2));
+            parameters.Add(new SqlParameter("@FldInt3", this.FldInt3));
+            parameters.Add(new SqlParameter("@FldBit1", this.FldBit1));
+            parameters.Add(new SqlParameter("@FldBit2", this.FldBit2));
+            parameters.Add(new SqlParameter("@FldBit3", this.FldBit3));
+            parameters.Add(new SqlParameter("@FldText1", this.FldText1));
+            parameters.Add(new SqlParameter("@FldText2", this.FldText2));
+            parameters.Add(new SqlParameter("@FldText3", this.FldText3));
+
+            parameters.Add(new SqlParameter("@Score1", this.Score1));
+            parameters.Add(new SqlParameter("@Score2", this.Score2));
+            parameters.Add(new SqlParameter("@Score1Pct", this.Score1Pct));
+            parameters.Add(new SqlParameter("@Score2Pct", this.Score2Pct));
+            parameters.Add(new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Date, this.Score1Date.GetTypeCode())));
+            parameters.Add(new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Date, this.Score2Date.GetTypeCode())));
+
+            var pidOutput = new SqlParameter("@PID", this.PID);
+            pidOutput.Direction = ParameterDirection.Output;
+            parameters.Add(pidOutput);
+
+            SqlHelper.ExecuteNonQuery(conn,
+                                      CommandType.StoredProcedure,
+                                      "app_Patron_Insert",
+                                      parameters.ToArray());
+
+            this.PID = int.Parse(pidOutput.Value.ToString());
+
+            return this.PID;
         }
 
-        public static int Insert(Patron o)
-        {
-
-            SqlParameter[] arrParams = new SqlParameter[61];
-
-            arrParams[0] = new SqlParameter("@IsMasterAccount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@MasterAcctPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Username", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Password", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@EmailAddress", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@PhoneNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@StreetAddress1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@StreetAddress2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@State", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@ZipCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@Country", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@County", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@ParentGuardianFirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@ParentGuardianLastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@ParentGuardianMiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@LibraryCard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@District", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@Teacher", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@GroupTeamName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@SchoolType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@LiteracyLevel1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@LiteracyLevel2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@ParentPermFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@Over18Flag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@ShareFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@TermsOfUseflag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[40] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
-            arrParams[41] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
-
-            arrParams[44] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[45] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[46] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[47] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[48] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[49] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[50] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[51] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
-
-            arrParams[54] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
-            arrParams[55] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
-            arrParams[56] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
-            arrParams[57] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
-            arrParams[58] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
-            arrParams[59] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
-
-            arrParams[60] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[60].Direction = ParameterDirection.Output;
-
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Patron_Insert", arrParams);
-
-            o.PID = int.Parse(arrParams[60].Value.ToString());
-
-            return o.PID;
-
+        public static bool VerifyPassword(string logon, string password) {
+            string passwordHashQuery = "SELECT [Password] FROM [Patron] WHERE [UserName] = @UserName";
+            SqlParameter parameter = new SqlParameter("UserName", logon);
+            string passwordHash = (string)SqlHelper.ExecuteScalar(conn,
+                                                                  CommandType.Text,
+                                                                  passwordHashQuery,
+                                                                  parameter);
+            if(string.IsNullOrEmpty(passwordHash)) {
+                // no such user
+                return false;
+            }
+            return PasswordHash.ValidatePassword(password, passwordHash);
         }
 
-        public int Update()
-        {
 
-            return Update(this);
-
+        public int Update() {
+            return this.Update(false);
         }
 
-        public static int Update(Patron o)
-        {
+        private int Update(bool clearTokens = false) {
 
             int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[61];
 
-            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@IsMasterAccount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsMasterAccount, o.IsMasterAccount.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@MasterAcctPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MasterAcctPID, o.MasterAcctPID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Username", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Username, o.Username.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Password", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Password, o.Password.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DOB, o.DOB.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Age, o.Age.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolGrade, o.SchoolGrade.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgID, o.ProgID.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FirstName, o.FirstName.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MiddleName, o.MiddleName.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastName, o.LastName.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@EmailAddress", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EmailAddress, o.EmailAddress.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@PhoneNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhoneNumber, o.PhoneNumber.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@StreetAddress1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress1, o.StreetAddress1.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@StreetAddress2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StreetAddress2, o.StreetAddress2.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@State", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.State, o.State.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@ZipCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ZipCode, o.ZipCode.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@Country", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Country, o.Country.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@County", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.County, o.County.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@ParentGuardianFirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianFirstName, o.ParentGuardianFirstName.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@ParentGuardianLastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianLastName, o.ParentGuardianLastName.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@ParentGuardianMiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentGuardianMiddleName, o.ParentGuardianMiddleName.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PrimaryLibrary, o.PrimaryLibrary.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@LibraryCard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LibraryCard, o.LibraryCard.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolName, o.SchoolName.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@District", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.District, o.District.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@Teacher", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Teacher, o.Teacher.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@GroupTeamName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GroupTeamName, o.GroupTeamName.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@SchoolType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SchoolType, o.SchoolType.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@LiteracyLevel1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel1, o.LiteracyLevel1.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@LiteracyLevel2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LiteracyLevel2, o.LiteracyLevel2.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@ParentPermFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentPermFlag, o.ParentPermFlag.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@Over18Flag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Over18Flag, o.Over18Flag.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@ShareFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShareFlag, o.ShareFlag.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@TermsOfUseflag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TermsOfUseflag, o.TermsOfUseflag.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[40] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[41] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom4, o.Custom4.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom5, o.Custom5.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AvatarID, o.AvatarID.GetTypeCode()));
-            arrParams[44] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict, o.SDistrict.GetTypeCode()));
-
-            arrParams[45] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[46] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[47] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[48] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[49] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[50] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[51] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
-
-
-            arrParams[55] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1, o.Score1.GetTypeCode()));
-            arrParams[56] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2, o.Score2.GetTypeCode()));
-            arrParams[57] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Pct, o.Score1Pct.GetTypeCode()));
-            arrParams[58] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Pct, o.Score2Pct.GetTypeCode()));
-            arrParams[59] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score1Date, o.Score1Date.GetTypeCode()));
-            arrParams[60] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Score2Date, o.Score2Date.GetTypeCode()));
-            try
-            {
-
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Patron_Update", arrParams);
-
+            string passwordHash = null;
+            if(!string.IsNullOrEmpty(this.NewPassword)) {
+                passwordHash = PasswordHash.CreateHash(this.NewPassword,
+                                                       pbkdf2Iterations);
+            } else {
+                string passwordHashQuery = "SELECT [Password] FROM [Patron] WHERE [Pid] = @pid";
+                SqlParameter parameter = new SqlParameter("pid", this.PID);
+                passwordHash = (string)SqlHelper.ExecuteScalar(conn,
+                                                               CommandType.Text,
+                                                               passwordHashQuery,
+                                                               parameter);
             }
 
-            catch (SqlException exx)
-            {
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.PID, this.PID.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@IsMasterAccount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.IsMasterAccount, this.IsMasterAccount.GetTypeCode()));
+            arrParams[2] = new SqlParameter("@MasterAcctPID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.MasterAcctPID, this.MasterAcctPID.GetTypeCode()));
+            arrParams[3] = new SqlParameter("@Username", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Username, this.Username.GetTypeCode()));
+            arrParams[4] = new SqlParameter("@Password", passwordHash);
+            arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode()));
+            arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Age, this.Age.GetTypeCode()));
+            arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
+            arrParams[8] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ProgID, this.ProgID.GetTypeCode()));
+            arrParams[9] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FirstName, this.FirstName.GetTypeCode()));
+            arrParams[10] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.MiddleName, this.MiddleName.GetTypeCode()));
+            arrParams[11] = new SqlParameter("@LastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.LastName, this.LastName.GetTypeCode()));
+            arrParams[12] = new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Gender, this.Gender.GetTypeCode()));
+            arrParams[13] = new SqlParameter("@EmailAddress", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.EmailAddress, this.EmailAddress.GetTypeCode()));
+            arrParams[14] = new SqlParameter("@PhoneNumber", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.PhoneNumber, this.PhoneNumber.GetTypeCode()));
+            arrParams[15] = new SqlParameter("@StreetAddress1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.StreetAddress1, this.StreetAddress1.GetTypeCode()));
+            arrParams[16] = new SqlParameter("@StreetAddress2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.StreetAddress2, this.StreetAddress2.GetTypeCode()));
+            arrParams[17] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.City, this.City.GetTypeCode()));
+            arrParams[18] = new SqlParameter("@State", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.State, this.State.GetTypeCode()));
+            arrParams[19] = new SqlParameter("@ZipCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ZipCode, this.ZipCode.GetTypeCode()));
+            arrParams[20] = new SqlParameter("@Country", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Country, this.Country.GetTypeCode()));
+            arrParams[21] = new SqlParameter("@County", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.County, this.County.GetTypeCode()));
+            arrParams[22] = new SqlParameter("@ParentGuardianFirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ParentGuardianFirstName, this.ParentGuardianFirstName.GetTypeCode()));
+            arrParams[23] = new SqlParameter("@ParentGuardianLastName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ParentGuardianLastName, this.ParentGuardianLastName.GetTypeCode()));
+            arrParams[24] = new SqlParameter("@ParentGuardianMiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ParentGuardianMiddleName, this.ParentGuardianMiddleName.GetTypeCode()));
+            arrParams[25] = new SqlParameter("@PrimaryLibrary", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.PrimaryLibrary, this.PrimaryLibrary.GetTypeCode()));
+            arrParams[26] = new SqlParameter("@LibraryCard", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.LibraryCard, this.LibraryCard.GetTypeCode()));
+            arrParams[27] = new SqlParameter("@SchoolName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolName, this.SchoolName.GetTypeCode()));
+            arrParams[28] = new SqlParameter("@District", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.District, this.District.GetTypeCode()));
+            arrParams[29] = new SqlParameter("@Teacher", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Teacher, this.Teacher.GetTypeCode()));
+            arrParams[30] = new SqlParameter("@GroupTeamName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.GroupTeamName, this.GroupTeamName.GetTypeCode()));
+            arrParams[31] = new SqlParameter("@SchoolType", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolType, this.SchoolType.GetTypeCode()));
+            arrParams[32] = new SqlParameter("@LiteracyLevel1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.LiteracyLevel1, this.LiteracyLevel1.GetTypeCode()));
+            arrParams[33] = new SqlParameter("@LiteracyLevel2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.LiteracyLevel2, this.LiteracyLevel2.GetTypeCode()));
+            arrParams[34] = new SqlParameter("@ParentPermFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ParentPermFlag, this.ParentPermFlag.GetTypeCode()));
+            arrParams[35] = new SqlParameter("@Over18Flag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Over18Flag, this.Over18Flag.GetTypeCode()));
+            arrParams[36] = new SqlParameter("@ShareFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ShareFlag, this.ShareFlag.GetTypeCode()));
+            arrParams[37] = new SqlParameter("@TermsOfUseflag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TermsOfUseflag, this.TermsOfUseflag.GetTypeCode()));
+            arrParams[38] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom1, this.Custom1.GetTypeCode()));
+            arrParams[39] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom2, this.Custom2.GetTypeCode()));
+            arrParams[40] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom3, this.Custom3.GetTypeCode()));
+            arrParams[41] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom4, this.Custom4.GetTypeCode()));
+            arrParams[42] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom5, this.Custom5.GetTypeCode()));
+            arrParams[43] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.AvatarID, this.AvatarID.GetTypeCode()));
+            arrParams[44] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SDistrict, this.SDistrict.GetTypeCode()));
 
-                System.Diagnostics.Debug.Write(exx.Message);
+            arrParams[45] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TenID, this.TenID.GetTypeCode()));
+            arrParams[46] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt1, this.FldInt1.GetTypeCode()));
+            arrParams[47] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt2, this.FldInt2.GetTypeCode()));
+            arrParams[48] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt3, this.FldInt3.GetTypeCode()));
+            arrParams[49] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode()));
+            arrParams[50] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode()));
+            arrParams[51] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, this.FldText1.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, this.FldText2.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode()));
 
+
+            arrParams[55] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1, this.Score1.GetTypeCode()));
+            arrParams[56] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2, this.Score2.GetTypeCode()));
+            arrParams[57] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Pct, this.Score1Pct.GetTypeCode()));
+            arrParams[58] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Pct, this.Score2Pct.GetTypeCode()));
+            arrParams[59] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Date, this.Score1Date.GetTypeCode()));
+            arrParams[60] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Date, this.Score2Date.GetTypeCode()));
+
+            try {
+                using(var connection = new SqlConnection(conn)) {
+                    connection.Open();
+                    using(SqlTransaction transaction = connection.BeginTransaction("UpdatePatron")) {
+                        SqlHelper.ExecuteNonQuery(transaction,
+                                                  CommandType.StoredProcedure,
+                                                  "dbo.app_Patron_Update",
+                                                  arrParams);
+                        if(clearTokens) {
+                            string removeTokensQuery = "DELETE FROM [PatronRecovery] WHERE [PID] = @pid";
+                            SqlHelper.ExecuteNonQuery(transaction,
+                                                      CommandType.Text,
+                                                      removeTokensQuery,
+                                                      new SqlParameter("pid", this.PID));
+                        }
+                        transaction.Commit();
+                    }
+                    connection.Close();
+                }
+                return 1;
+
+            } catch(Exception ex) {
+                this.Log().Error(() => string.Format("Unable to update Patron {0}/{1}: {2}",
+                                                     this.PID,
+                                                     this.Username,
+                                                     ex.Message));
+                return 0;
+            }
+        }
+
+        public static Patron GetUserByToken(string token, int hoursWindow = 2) {
+            StringBuilder sql = new StringBuilder();
+            sql.Append("SELECT [PID] FROM [PatronRecovery] WHERE [Token] = @token ");
+            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) < @hourswindow");
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("token", token));
+            parameters.Add(new SqlParameter("hourswindow", hoursWindow));
+
+            object pidObject = null;
+            try {
+                pidObject = SqlHelper.ExecuteScalar(conn,
+                                                    CommandType.Text,
+                                                    sql.ToString(),
+                                                    parameters.ToArray());
+            } catch(Exception ex) {
+                "Patron".Log().Error(() => "Unable to retrieve patron from token {Token}: {Message}"
+                                            .FormatWith(
+                                            new {
+                                                Token = token,
+                                                Message = ex.Message
+                                            }));
+                return null;
             }
 
-            return iReturn;
+            int pid = 0;
+            if(pidObject == null
+               || !int.TryParse(pidObject.ToString(), out pid)) {
+                "SRPUser".Log().Error(() => "Unable parse returned PID of {0}".FormatWith(pid));
+                return null;
+            }
 
+            Patron p = new Patron();
+            if(p.Fetch(pid)) {
+                return p;
+            } else {
+                return null;
+            }
         }
 
-        public int Delete()
-        {
+        public static Patron UpdatePasswordByToken(string token,
+                                                   string newPassword,
+                                                   int hoursWindow = 2) {
+            Patron user = GetUserByToken(token);
+            user.NewPassword = newPassword;
+            user.Update(true);
 
-            return Delete(this);
-
+            user.NewPassword = null;
+            return user;
         }
 
-        public static int Delete(Patron o)
-        {
+        public string GeneratePasswordResetToken(int desiredLength = 12) {
+            if(this.PID == 0) {
+                throw new Exception("Unable to perform password reset, no user provided.");
+            }
+            string resetToken = Password.GeneratePasswordResetToken(desiredLength);
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.AppendLine("DELETE FROM [PatronRecovery] WHERE [PID] = @pid;");
+            sql.Append("INSERT INTO [PatronRecovery] ([Token], [PID], [Generated]) values ");
+            sql.AppendLine("(@token, @pid, GETDATE());");
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter("pid", this.PID));
+            parameters.Add(new SqlParameter("token", resetToken));
+
+            try {
+                SqlHelper.ExecuteNonQuery(conn,
+                                          CommandType.Text,
+                                          sql.ToString(),
+                                          parameters.ToArray());
+                return resetToken;
+            } catch(Exception ex) {
+                this.Log().Error(() => "Unable to save password reset token to database: {Message}"
+                                       .FormatWith(ex));
+                return null;
+            }
+        }
+
+        public int Delete() {
 
             int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.PID, this.PID.GetTypeCode()));
 
-            try
-            {
+            try {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Patron_Delete", arrParams);
 
-            }
-
-            catch (SqlException exx)
-            {
+            } catch(SqlException exx) {
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -943,17 +768,14 @@ namespace GRA.SRP.DAL
 
         #endregion
 
-        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode)
-        {
+        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
             // Remove any old error Codes
             ClearErrorCodes();
 
             ClearErrorCodes();
-            if (validationMode == BusinessRulesValidationMode.INSERT)
-            {
+            if(validationMode == BusinessRulesValidationMode.INSERT) {
                 Patron obj = GetObjectByUsername(Username);
-                if (obj != null)
-                {
+                if(obj != null) {
                     AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "The Username you have chosen is already in use.  Please select a different Username.",
                                                                     BusinessRulesValidationCode.UNSPECIFIED));
                 }
@@ -963,20 +785,11 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static bool Login(string logon, string password)
-        {
-            var arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@UserName", logon);
-            arrParams[1] = new SqlParameter("@Password", password);
-            arrParams[2] = new SqlParameter("@SessionID", HttpContext.Current.Session.SessionID);
-
-
-            var result = (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "app_Patron_Login", arrParams);
-            return (result == 1);
+        public static bool Login(string logon, string password) {
+            return VerifyPassword(logon, password);
         }
 
-        public static Patron GetObjectByUsername(string logon)
-        {
+        public static Patron GetObjectByUsername(string logon) {
 
             // declare reader
 
@@ -988,8 +801,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByUsername", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -1001,15 +813,19 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["PID"].ToString(), out _int)) result.PID = _int;
+                if(int.TryParse(dr["PID"].ToString(), out _int))
+                    result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int)) result.MasterAcctPID = _int;
+                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                    result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                result.Password = dr["Password"].ToString();
-                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime)) result.DOB = _datetime;
-                if (int.TryParse(dr["Age"].ToString(), out _int)) result.Age = _int;
+                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                    result.DOB = _datetime;
+                if(int.TryParse(dr["Age"].ToString(), out _int))
+                    result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if (int.TryParse(dr["ProgID"].ToString(), out _int)) result.ProgID = _int;
+                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                    result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
                 result.LastName = dr["LastName"].ToString();
@@ -1026,15 +842,19 @@ namespace GRA.SRP.DAL
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int)) result.PrimaryLibrary = _int;
+                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                    result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if (int.TryParse(dr["SchoolType"].ToString(), out _int)) result.SchoolType = _int;
-                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int)) result.LiteracyLevel1 = _int;
-                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int)) result.LiteracyLevel2 = _int;
+                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                    result.SchoolType = _int;
+                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                    result.LiteracyLevel1 = _int;
+                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                    result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
                 result.ShareFlag = bool.Parse(dr["ShareFlag"].ToString());
@@ -1044,13 +864,19 @@ namespace GRA.SRP.DAL
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if (int.TryParse(dr["AvatarID"].ToString(), out _int)) result.AvatarID = _int;
-                if (int.TryParse(dr["SDistrict"].ToString(), out _int)) result.SDistrict = _int;
+                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
+                    result.AvatarID = _int;
+                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                    result.SDistrict = _int;
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) result.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    result.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    result.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    result.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 result.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -1058,13 +884,19 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if (int.TryParse(dr["Score1"].ToString(), out _int)) result.Score1 = _int;
-                if (int.TryParse(dr["Score2"].ToString(), out _int)) result.Score2 = _int;
+                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                    result.Score1 = _int;
+                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                    result.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal)) result.Score1Pct = _decimal;
-                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal)) result.Score2Pct = _decimal;
-                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime)) result.Score1Date = _datetime;
-                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime)) result.Score2Date = _datetime;
+                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                    result.Score1Pct = _decimal;
+                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                    result.Score2Pct = _decimal;
+                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                    result.Score1Date = _datetime;
+                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                    result.Score2Date = _datetime;
 
                 dr.Close();
 
@@ -1078,8 +910,7 @@ namespace GRA.SRP.DAL
 
         }
 
-        public static Patron GetObjectByEmail(string email)
-        {
+        public static Patron GetObjectByEmail(string email) {
 
             // declare reader
 
@@ -1091,8 +922,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByEmail", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -1104,15 +934,19 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["PID"].ToString(), out _int)) result.PID = _int;
+                if(int.TryParse(dr["PID"].ToString(), out _int))
+                    result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int)) result.MasterAcctPID = _int;
+                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                    result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                result.Password = dr["Password"].ToString();
-                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime)) result.DOB = _datetime;
-                if (int.TryParse(dr["Age"].ToString(), out _int)) result.Age = _int;
+                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                    result.DOB = _datetime;
+                if(int.TryParse(dr["Age"].ToString(), out _int))
+                    result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if (int.TryParse(dr["ProgID"].ToString(), out _int)) result.ProgID = _int;
+                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                    result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
                 result.LastName = dr["LastName"].ToString();
@@ -1129,15 +963,19 @@ namespace GRA.SRP.DAL
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int)) result.PrimaryLibrary = _int;
+                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                    result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if (int.TryParse(dr["SchoolType"].ToString(), out _int)) result.SchoolType = _int;
-                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int)) result.LiteracyLevel1 = _int;
-                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int)) result.LiteracyLevel2 = _int;
+                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                    result.SchoolType = _int;
+                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                    result.LiteracyLevel1 = _int;
+                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                    result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
                 result.ShareFlag = bool.Parse(dr["ShareFlag"].ToString());
@@ -1147,13 +985,19 @@ namespace GRA.SRP.DAL
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if (int.TryParse(dr["AvatarID"].ToString(), out _int)) result.AvatarID = _int;
-                if (int.TryParse(dr["SDistrict"].ToString(), out _int)) result.SDistrict = _int;
+                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
+                    result.AvatarID = _int;
+                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                    result.SDistrict = _int;
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) result.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    result.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    result.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    result.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 result.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -1161,13 +1005,19 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if (int.TryParse(dr["Score1"].ToString(), out _int)) result.Score1 = _int;
-                if (int.TryParse(dr["Score2"].ToString(), out _int)) result.Score2 = _int;
+                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                    result.Score1 = _int;
+                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                    result.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal)) result.Score1Pct = _decimal;
-                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal)) result.Score2Pct = _decimal;
-                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime)) result.Score1Date = _datetime;
-                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime)) result.Score2Date = _datetime;
+                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                    result.Score1Pct = _decimal;
+                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                    result.Score2Pct = _decimal;
+                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                    result.Score1Date = _datetime;
+                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                    result.Score2Date = _datetime;
 
                 dr.Close();
 
@@ -1182,10 +1032,9 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static bool CanManageSubAccount(int ma, int sa)
-        {
+        public static bool CanManageSubAccount(int ma, int sa) {
             var arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@MainAccount", ma); 
+            arrParams[0] = new SqlParameter("@MainAccount", ma);
             arrParams[1] = new SqlParameter("@SubAccount", sa);
 
             var result = (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "app_Patron_CanManageSubAccount", arrParams);
@@ -1193,8 +1042,7 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static DataSet GetSubAccountList(int maid)
-        {
+        public static DataSet GetSubAccountList(int maid) {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@PID", maid);
 
@@ -1202,21 +1050,19 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static DataSet GetPatronForEdit(int PID)
-        {
-           var TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
-                            -1 :
-                            (int)HttpContext.Current.Session["TenantID"]
-                );
+        public static DataSet GetPatronForEdit(int PID) {
+            var TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                             -1 :
+                             (int)HttpContext.Current.Session["TenantID"]
+                 );
 
             return GetPatronForEdit(PID, TenID);
         }
 
-        public static DataSet GetPatronForEdit(int PID, int TenID)
-        {
+        public static DataSet GetPatronForEdit(int PID, int TenID) {
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
-            arrParams[1] = new SqlParameter("@TenID",TenID );
+            arrParams[1] = new SqlParameter("@TenID", TenID);
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetPatronForEdit", arrParams);
         }

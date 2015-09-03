@@ -132,7 +132,7 @@ namespace GRA.SRP.ControlRoom.Controls
                     DateTime _d;
 
                     p.Username = ((TextBox)(e.Item).FindControl("Username")).Text;
-                    p.Password = ((TextBox)(e.Item).FindControl("Password")).Text;
+                    p.NewPassword = ((TextBox)(e.Item).FindControl("Password")).Text;
 
                     var DOB = e.Item.FindControl("DOB") as TextBox;
                     if (DOB != null && DOB.Text != "")

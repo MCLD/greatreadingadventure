@@ -29,10 +29,6 @@ namespace GRA.SRP.ControlRoom {
             }
         }
         protected void Button1_Click(object sender, EventArgs e) {
-            //  check if token is valid (exists, hasn't expired) - if not, advise to start over
-            //  allow password to be changed
-            //  delete reset token
-            //  email user confirmation of change
             object tokenObject = this.ViewState["token"];
             if(tokenObject == null) {
                 passwordUpdate.Visible = false;
