@@ -10917,7 +10917,7 @@ BEGIN
 		AND IsHidden = 0
 	ORDER BY POrder ASC
 
-	SELECT @ID
+	--SELECT @ID
 END
 
 IF (@ID IS NULL)
@@ -10928,7 +10928,7 @@ IF (@ID IS NULL)
 	ORDER BY POrder ASC
 
 --select @ID
-SELECT @ID
+--SELECT @ID
 
 SELECT *
 FROM #temp
