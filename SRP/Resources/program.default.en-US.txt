@@ -176,7 +176,7 @@ Ask A Question=Ask A Question
 Notifications btn Print=Print
 Notifications Ask Question Title=Ask Question
 Submit Question=Submit Question
-Notifications Ask Question Submitted Done=We have received yor question and will get back to you soon.
+Notifications Ask Question Submitted Done=We have received your question and will get back to you soon.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
