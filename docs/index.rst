@@ -12,7 +12,14 @@ The code is open source, and is `available on GitHub`_.
 .. _The Great Reading Adventure: http://www.thegreatreadingadventure.com/
 .. _available on GitHub: https://github.com/MCLD/greatreadingadventure
 
-The documentation is split into several main sections:
+
+.. note::
+	This documentation is currently very incomplete. If you need help, please don't hesitate to
+	contact developers and users on `The Great Reading Adventure Forum`_.
+
+.. _The Great Reading Adventure Forum: http://forum.greatreadingadventure.com/
+
+This manual is split into several main sections:
 
 * :ref:`install` - downloading and installing The Great Reading Adventure software
 * :ref:`setup` - setting up your reading program
@@ -25,19 +32,18 @@ Contents
 .. _install:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Installation
 
+   installation/getting-started
    installation/system-requirements
-   installation/download-the-gra
-   installation/database-creation
-   installation/installing-the-site
+   installation/download-and-install
 
 
 .. _setup:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Initial Setup
 
    setup/tenancy
@@ -45,7 +51,7 @@ Contents
 .. _running:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Running your reading programs
 
    running/notifications
@@ -53,7 +59,7 @@ Contents
 .. _howto:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: How-To
 
    how-to/create-a-badge
