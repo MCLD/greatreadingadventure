@@ -1,5 +1,4 @@
-﻿/* INSERT INITIAL SETUP DATA */
-INSERT INTO Tenant (
+﻿INSERT INTO Tenant (
 	[Name],
 	[LandingName],
 	[AdminName],
@@ -1708,7 +1707,11 @@ FROM SRPGroups
 FULL JOIN SRPPermissionsMaster ON 1 = 1
 GO
 
-INSERT INTO Programs (
+SET IDENTITY_INSERT [dbo].[Programs] ON 
+GO
+
+INSERT [dbo].[Programs] (
+	[PID],
 	[AdminName],
 	[Title],
 	[TabName],
@@ -1734,6 +1737,7 @@ INSERT INTO Programs (
 	[HTML6],
 	[BannerImage],
 	[RegistrationBadgeID],
+	[CompletionPoints],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
@@ -1755,54 +1759,57 @@ INSERT INTO Programs (
 	[PostTestStartDate]
 	)
 VALUES (
-	'Sample Program 1',
-	'Program 1',
-	'Program 1',
+	1,
+	N'Prereaders',
+	N'The Great Reading Adventure',
+	N'Prereaders',
 	1,
 	1,
 	0,
-	DATEADD(d,0,DATEDIFF(d,0,GETDATE())),
-	DATEADD(yy, 1, DATEADD(d,0,DATEDIFF(d,0,GETDATE()))),
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
 	4,
-	12,
-	DATEADD(d,0,DATEDIFF(d,0,GETDATE())),
-	DATEADD(yy, 1, DATEADD(d,0,DATEDIFF(d,0,GETDATE()))),
 	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	0,
+	N'',
+	0,
+	N'',
+	0,
+	N'<p>This is an example of a prereader program intended for children between the ages of 0 and 4.</p>',
+	N'<p>This area might contain links or images to program sponsors.</p>',
+	N'On this left side text, you might list branches which are participating in this library program. Below is some filler text.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dictum dictum nulla sit amet fermentum. Fusce id magna nisl. Nulla facilisi.</p>',
+	N'On the right side, you may want to list the rules for your program, for example: one minute of reading earns one point. Below is some filler text.</p><p>Pellentesque consequat tellus ac fermentum vulputate. Mauris nec orci sit amet nisl aliquam porta. Donec vitae dui ornare, consectetur diam sed, malesuada ante.</p>',
+	N'',
+	N'<p>Our reading program has not started yet. Sign up now and you can start entering your minutes the day the program begins!</p>',
+	N'',
+	0,
+	0,
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
 	1,
-	'',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'',
-	0,
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	GETDATE(),
-	1,
 	0,
 	0,
 	0,
 	0,
 	0,
 	0,
-	'',
-	'',
-	'',
+	N'',
+	N'',
+	N'',
 	0,
 	0,
 	0,
-	GETDATE(),
-	GETDATE()
+	NULL,
+	NULL
 	)
 GO
 
-INSERT INTO Programs (
+INSERT [dbo].[Programs] (
+	[PID],
 	[AdminName],
 	[Title],
 	[TabName],
@@ -1828,6 +1835,7 @@ INSERT INTO Programs (
 	[HTML6],
 	[BannerImage],
 	[RegistrationBadgeID],
+	[CompletionPoints],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
@@ -1849,49 +1857,543 @@ INSERT INTO Programs (
 	[PostTestStartDate]
 	)
 VALUES (
-	'Sample Program 2',
-	'Program 2',
-	'Program 2',
+	2,
+	N'Kids',
+	N'The Great Reading Adventure',
+	N'Kids',
 	2,
 	1,
 	0,
-	DATEADD(d,0,DATEDIFF(d,0,GETDATE())),
-	DATEADD(yy, 1, DATEADD(d,0,DATEDIFF(d,0,GETDATE()))),
-	12,
-	12,
-	DATEADD(d,0,DATEDIFF(d,0,GETDATE())),
-	DATEADD(yy, 1, DATEADD(d,0,DATEDIFF(d,0,GETDATE()))),
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	11,
 	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	0,
+	N'',
+	0,
+	N'',
+	0,
+	N'<p>This is an example of a kid program intended for children between the ages of 5 and 11.</p>',
+	N'<p>This area might contain links or images to program sponsors.</p>',
+	N'On this left side text, you might list branches which are participating in this library program. Below is some filler text.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dictum dictum nulla sit amet fermentum. Fusce id magna nisl. Nulla facilisi.</p>',
+	N'On the right side, you may want to list the rules for your program, for example: one minute of reading earns one point. Below is some filler text.</p><p>Pellentesque consequat tellus ac fermentum vulputate. Mauris nec orci sit amet nisl aliquam porta. Donec vitae dui ornare, consectetur diam sed, malesuada ante.</p>',
+	N'',
+	N'<p>Our reading program has not started yet. Sign up now and you can start entering your minutes the day the program begins!</p>',
+	N'',
+	0,
+	0,
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
 	1,
-	'',
-	0,
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed malesuada augue. Aenean nec aliquam risus. Mauris sit amet eros aliquet, placerat sem non, viverra augue. Phasellus dignissim, erat sed sollicitudin convallis, enim felis elementum justo, eget molestie arcu nisl sit amet urna. Quisque a justo dignissim, tincidunt turpis quis, rhoncus augue. Nunc non porttitor orci. Ut vestibulum gravida enim, ut pharetra enim aliquam quis. Nulla mollis, mauris id interdum elementum, diam orci dapibus turpis, et consectetur turpis diam scelerisque lorem. Ut sit amet odio enim. Nullam varius turpis vel malesuada eleifend. Aliquam at semper ligula. Sed sed interdum dolor, ac condimentum nulla.</p>',
-	'',
-	0,
-	'sysadmin',
-	GETDATE(),
-	'N/A',
-	GETDATE(),
-	1,
 	0,
 	0,
 	0,
 	0,
 	0,
 	0,
-	'',
-	'',
-	'',
+	N'',
+	N'',
+	N'',
 	0,
 	0,
 	0,
-	GETDATE(),
-	GETDATE()
+	NULL,
+	NULL
 	)
+GO
+
+INSERT [dbo].[Programs] (
+	[PID],
+	[AdminName],
+	[Title],
+	[TabName],
+	[POrder],
+	[IsActive],
+	[IsHidden],
+	[StartDate],
+	[EndDate],
+	[MaxAge],
+	[MaxGrade],
+	[LoggingStart],
+	[LoggingEnd],
+	[ParentalConsentFlag],
+	[ParentalConsentText],
+	[PatronReviewFlag],
+	[LogoutURL],
+	[ProgramGameID],
+	[HTML1],
+	[HTML2],
+	[HTML3],
+	[HTML4],
+	[HTML5],
+	[HTML6],
+	[BannerImage],
+	[RegistrationBadgeID],
+	[CompletionPoints],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[LastModDate],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3],
+	[PreTestID],
+	[PostTestID],
+	[PreTestMandatory],
+	[PretestEndDate],
+	[PostTestStartDate]
+	)
+VALUES (
+	3,
+	N'Teens',
+	N'The Great Reading Adventure',
+	N'Teens',
+	3,
+	1,
+	0,
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	17,
+	0,
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	0,
+	N'',
+	0,
+	N'',
+	0,
+	N'<p>This is an example of a teen program intended for teenagers between the ages of 12 and 17.</p>',
+	N'<p>This area might contain links or images to program sponsors.</p>',
+	N'On this left side text, you might list branches which are participating in this library program. Below is some filler text.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dictum dictum nulla sit amet fermentum. Fusce id magna nisl. Nulla facilisi.</p>',
+	N'On the right side, you may want to list the rules for your program, for example: one minute of reading earns one point. Below is some filler text.</p><p>Pellentesque consequat tellus ac fermentum vulputate. Mauris nec orci sit amet nisl aliquam porta. Donec vitae dui ornare, consectetur diam sed, malesuada ante.</p>',
+	N'',
+	N'<p>Our reading program has not started yet. Sign up now and you can start entering your minutes the day the program begins!</p>',
+	N'',
+	0,
+	0,
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N'',
+	0,
+	0,
+	0,
+	NULL,
+	NULL
+	)
+GO
+
+INSERT [dbo].[Programs] (
+	[PID],
+	[AdminName],
+	[Title],
+	[TabName],
+	[POrder],
+	[IsActive],
+	[IsHidden],
+	[StartDate],
+	[EndDate],
+	[MaxAge],
+	[MaxGrade],
+	[LoggingStart],
+	[LoggingEnd],
+	[ParentalConsentFlag],
+	[ParentalConsentText],
+	[PatronReviewFlag],
+	[LogoutURL],
+	[ProgramGameID],
+	[HTML1],
+	[HTML2],
+	[HTML3],
+	[HTML4],
+	[HTML5],
+	[HTML6],
+	[BannerImage],
+	[RegistrationBadgeID],
+	[CompletionPoints],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[LastModDate],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3],
+	[PreTestID],
+	[PostTestID],
+	[PreTestMandatory],
+	[PretestEndDate],
+	[PostTestStartDate]
+	)
+VALUES (
+	4,
+	N'Adults',
+	N'The Great Reading Adventure',
+	N'Adults',
+	4,
+	1,
+	0,
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	0,
+	0,
+	DATEADD(d, 0, DATEDIFF(d, 0, GETDATE())),
+	DATEADD(yy, 1, DATEADD(d, 0, DATEDIFF(d, 0, GETDATE()))),
+	0,
+	N'',
+	0,
+	N'',
+	0,
+	N'<p>This is an example of an adult program intended for adults who are at least 18 years old.</p>',
+	N'<p>This area might contain links or images to program sponsors.</p>',
+	N'On this left side text, you might list branches which are participating in this library program. Below is some filler text.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse dictum dictum nulla sit amet fermentum. Fusce id magna nisl. Nulla facilisi.</p>',
+	N'On the right side, you may want to list the rules for your program, for example: one minute of reading earns one point. Below is some filler text.</p><p>Pellentesque consequat tellus ac fermentum vulputate. Mauris nec orci sit amet nisl aliquam porta. Donec vitae dui ornare, consectetur diam sed, malesuada ante.</p>',
+	N'',
+	N'<p>Our reading program has not started yet. Sign up now and you can start entering your minutes the day the program begins!</p>',
+	N'',
+	0,
+	0,
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N'',
+	0,
+	0,
+	0,
+	NULL,
+	NULL
+	)
+GO
+
+SET IDENTITY_INSERT [dbo].[Programs] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] ON
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	1,
+	1,
+	0,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	2,
+	1,
+	1,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	3,
+	1,
+	3,
+	1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	4,
+	2,
+	0,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	5,
+	2,
+	1,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	6,
+	2,
+	3,
+	1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	7,
+	3,
+	0,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	8,
+	3,
+	1,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	9,
+	3,
+	3,
+	1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	10,
+	4,
+	0,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	11,
+	4,
+	1,
+	1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+
+INSERT [dbo].[ProgramGamePointConversion] (
+	[PGCID],
+	[PGID],
+	[ActivityTypeId],
+	[ActivityCount],
+	[PointCount],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser]
+	)
+VALUES (
+	12,
+	4,
+	3,
+	1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin'
+	)
+GO
+SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
 GO
