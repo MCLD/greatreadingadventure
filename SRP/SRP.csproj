@@ -796,6 +796,7 @@
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
     <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="font\fontawesome-webfont.svg" />
     <Content Include="FramedSurvey.aspx" />
     <Content Include="GameMap.aspx" />
     <Content Include="images\arrow-left.png" />
@@ -1263,6 +1264,10 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="font\fontawesome-webfont.eot" />
+    <Content Include="font\fontawesome-webfont.ttf" />
+    <Content Include="font\fontawesome-webfont.woff" />
+    <Content Include="font\FontAwesome.otf" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
