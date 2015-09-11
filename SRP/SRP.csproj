@@ -1375,6 +1375,8 @@
     <Compile Include="ControlRoom\AJAX.master.designer.cs">
       <DependentUpon>AJAX.master</DependentUpon>
     </Compile>
+    <Compile Include="ControlRoom\CRLogout.cs" />
+    <Compile Include="ControlRoom\CRSessionKey.cs" />
     <Compile Include="ControlRoom\Control.Master.cs">
       <DependentUpon>Control.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

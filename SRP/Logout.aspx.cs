@@ -7,24 +7,23 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 
-namespace GRA.SRP
-{
-    public partial class Logout : BaseSRPPage
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP {
+    public partial class Logout : BaseSRPPage {
+        protected void Page_Load(object sender, EventArgs e) {
             IsSecure = false;
             var navTo = "~/";
-            if (IsLoggedIn)
-            {
+            if(IsLoggedIn) {
                 var p = Programs.FetchObject((int)Session["PatronProgramID"]);
-                if (p.LogoutURL.Trim().Length > 0) navTo = p.LogoutURL;
+                if(p.LogoutURL.Trim().Length > 0) {
+                    navTo = p.LogoutURL;
+                }
             }
 
             new PatronSession(Session).Clear();
 
+            Session.Abandon();
+            Response.Cookies.Add(new HttpCookie("ASP.NET_SessionId", ""));
             Response.Redirect(navTo);
-
         }
     }
 }

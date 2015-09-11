@@ -80,7 +80,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
                         obj.LastModDate = obj.AddedDate;
                         obj.LastModUser = obj.AddedUser;
 
-                        obj.TenID = (int)Session["TenantID"];
+                        obj.TenID = (int)CRTenantID;
 
                         if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                         {

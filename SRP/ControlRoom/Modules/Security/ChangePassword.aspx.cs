@@ -59,12 +59,13 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
                               : currentUser.Username,
                     User = user.Username
                 };
-                this.Log().Info(() => string.Format("Admin user {Changer} changed password for user {User}"
-                                                    .FormatWith(changeInfo)));
+                this.Log().Info("Admin user {0} changed password for user {1}",
+                                changeInfo.Changer,
+                                changeInfo.User);
             } catch (Exception ex) {
-                this.Log().Error(() => string.Format("Admin user unable to change password for user {0}: {1}",
-                                                     userId,
-                                                     ex.Message));
+                this.Log().Error("Admin user unable to change password for user {0}: {1}",
+                                 userId,
+                                 ex.Message);
                 Error.Text = string.Format("An error occurred: {0}", ex.Message);
             }
             Response.Redirect("UserAddEdit.aspx");

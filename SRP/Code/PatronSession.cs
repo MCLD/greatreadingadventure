@@ -26,8 +26,7 @@ namespace GRA.SRP {
 
                 return true;
             } catch(Exception ex) {
-                this.Log().Error(() => "Unable to establish patron session: {Message}"
-                                       .FormatWith(ex));
+                this.Log().Error(() => "Unable to establish patron session", ex);
                 return false;
             }
         }

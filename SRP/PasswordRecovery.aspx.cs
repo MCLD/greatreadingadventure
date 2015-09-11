@@ -75,8 +75,10 @@ namespace GRA.SRP {
                     PasswordResetSuccessSubject = "Your password has been reset!"
                 };
 
-                this.Log().Info(() => "Password reset process for {Username} ({UserEmail}) complete from {RemoteAddress}"
-                                      .FormatWith(values));
+                this.Log().Info("Password reset process for {0} ({1}) complete from {2}",
+                                values.Username,
+                                values.UserEmail,
+                                values.RemoteAddress);
 
                 // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();

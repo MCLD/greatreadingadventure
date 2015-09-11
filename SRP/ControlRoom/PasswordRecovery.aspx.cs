@@ -59,8 +59,9 @@ namespace GRA.SRP.ControlRoom {
                 PasswordResetSuccessSubject = SRPResources.PasswordEmailSuccessSubject
             };
 
-            this.Log().Info(() => "Password reset process for {UserEmail} complete from {RemoteAddress}"
-                                  .FormatWith(values));
+            this.Log().Info("Password reset process for {0} complete from {1}",
+                            values.UserEmail,
+                            values.RemoteAddress);
 
             // TODO email - move this template out to the database
             StringBuilder body = new StringBuilder();

@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             {
                 SetPageRibbon(StandardModuleRibbons.SubTenantRibbon());
 
-                lblPK.Text = Session["TenantID"].ToString();
+                lblPK.Text = CRTenantID.ToString();
                 dv.ChangeMode(DetailsViewMode.Edit);
                 Page.DataBind();
             }

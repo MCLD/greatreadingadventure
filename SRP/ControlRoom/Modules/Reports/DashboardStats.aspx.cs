@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
 
                 var arrParams = new SqlParameter[1];
-                arrParams[0] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+                arrParams[0] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
 
                 var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_DashboardStats", arrParams);
 
@@ -264,7 +264,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             {
                 arrParams[4] = new SqlParameter("@Level", int.Parse( Level.Text));
             }
-            arrParams[5] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+            arrParams[5] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
 
             //var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_FinisherStats", arrParams);
 

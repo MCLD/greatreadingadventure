@@ -51,9 +51,7 @@ namespace GRA.SRP
                     }
                 }
                 if(tenant != null) {
-                    Session["Tenant"] = tenant;
                     Session["TenantID"] = tenant.TenID;
-                    Session["IsMasterTenant"] = tenant.isMasterFlag;
                     Response.Redirect("~/Default.aspx");
                 }
             }

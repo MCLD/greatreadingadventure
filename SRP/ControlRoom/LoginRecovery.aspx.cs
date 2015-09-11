@@ -35,8 +35,9 @@ namespace GRA.SRP.ControlRoom {
                     PasswordResetSubject = SRPResources.PasswordEmailSubject
                 };
 
-                this.Log().Info(() => "User at {RemoteAddress} requested password reset for nonexistent email {UserEmail}"
-                                      .FormatWith(values));
+                this.Log().Info("User at {0} requested password reset for nonexistent email {1}",
+                                values.RemoteAddress,
+                                values.UserEmail);
 
                 // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();
@@ -77,8 +78,10 @@ namespace GRA.SRP.ControlRoom {
                     PasswordResetSubject = SRPResources.PasswordEmailSubject,
                 };
 
-                this.Log().Info(() => "User at {RemoteAddress} requested password reset for email {UserEmail}"
-                                      .FormatWith(values));
+                this.Log().Info("User at {0} requested password reset for email {1}",
+                                values.RemoteAddress,
+                                values.UserEmail);
+
                 // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
