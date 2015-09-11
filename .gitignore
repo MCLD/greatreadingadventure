@@ -246,6 +246,13 @@ SRP/Images/Games/MixMatch/*.jpg
 SRP/Images/Games/WordMatch/*.jpg
 SRP/Images/Offers/*.jpg
 
+# exclude program css files except for the default four programs
+SRP/CSS/Program/*.css
+!SRP/CSS/Program/1.css
+!SRP/CSS/Program/2.css
+!SRP/CSS/Program/3.css
+!SRP/CSS/Program/4.css
+
 # configuration transforms
 SRP/Web.Dev.config
 SRP/Web.Test.config
