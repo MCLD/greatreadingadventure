@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Organization List");
 
-            if (!(bool)Session["IsMasterTenant"])
+            if (!(bool)CRIsMasterTenant)
             {
                 Response.Redirect("MyTenantAccount.aspx");
             }

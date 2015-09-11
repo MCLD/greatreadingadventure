@@ -22,7 +22,7 @@ using GRA.SRP.DAL;
 using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom {
-    public partial class DBCreate : BaseControlRoomPage {
+    public partial class DBCreate : System.Web.UI.Page {
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
                 try {
@@ -38,7 +38,7 @@ namespace GRA.SRP.ControlRoom {
                      */
                 } catch {
                     // got an error, so there is no database ... continue with initialize ...
-                    this.Log().Info(() => "Error selecting programs, forwarding to setup.");
+                    this.Log().Info("Error selecting programs, forwarding to setup.");
                 }
 
             }
@@ -75,18 +75,15 @@ namespace GRA.SRP.ControlRoom {
                                                          ex.Message,
                                                          ex.Data,
                                                          sb);
-                            this.Log().Error(() => error);
-                            issues.Add(error);
+                            issues.Add(LogAndReturnError(error));
                         }
 
                     }
                     sr.Close();
-                    this.Log().Info(() => "Finished processing {FileName}: {QueryCount} queries and {IssuesCount} issues."
-                                          .FormatWith(new {
-                                              FileName = path.Substring(path.LastIndexOf("/") + 1),
-                                              QueryCount = queryCount,
-                                              IssuesCount = issues.Count
-                                          }));
+                    this.Log().Info("Finished processing {0}: {1} queries and {2} issues.",
+                                    path.Substring(path.LastIndexOf("/") + 1),
+                                    queryCount,
+                                    issues.Count);
                 }
                 if(issues.Count == 0) {
                     try {
@@ -95,8 +92,7 @@ namespace GRA.SRP.ControlRoom {
                         string error = string.Format("Error committing transaction: {0}, data: {1}",
                                                      ex.Message,
                                                      ex.Data);
-                        this.Log().Error(() => error);
-                        issues.Add(error);
+                        issues.Add(LogAndReturnError(error));
                     }
                 } else {
                     try {
@@ -105,12 +101,16 @@ namespace GRA.SRP.ControlRoom {
                         string error = string.Format("Error rolling back transaction: {0}, data: {1}",
                                                      ex.Message,
                                                      ex.Data);
-                        this.Log().Error(() => error);
-                        issues.Add(error);
+                        issues.Add(LogAndReturnError(error));
                     }
                 }
             }
             return issues;
+        }
+
+        private string LogAndReturnError(string errorMessage) {
+            this.Log().Error(errorMessage);
+            return errorMessage;
         }
         protected void InstallBtn_Click(object sender, EventArgs e) {
             ////////////////////////////////////////
@@ -131,8 +131,7 @@ namespace GRA.SRP.ControlRoom {
                 return;
             }
 
-            this.Log().Info(() => "GRA setup started, using LocalDb is: {LocalDbMode}"
-                                  .FormatWith(new { LocalDbMode = localDbMode }));
+            this.Log().Info("GRA setup started, using LocalDb is: {0}", localDbMode);
 
             // test writing to Web.config before we go further
             if(!localDbMode) {
@@ -143,8 +142,7 @@ namespace GRA.SRP.ControlRoom {
                 try {
                     webConfig = WebConfigurationManager.OpenWebConfiguration("~");
                 } catch(Exception ex) {
-                    this.Log().Error(() => "There was an error reading the Web.config: {Message}"
-                                           .FormatWith(ex));
+                    this.Log().Error("There was an error reading the Web.config: {0}", ex.Message);
                     FailureText.Text = "There was an error when trying to read the Web.config file, see below:";
                     errorLabel.Text = ex.Message;
                     return;
@@ -152,8 +150,8 @@ namespace GRA.SRP.ControlRoom {
                 try {
                     webConfig.Save();
                 } catch(Exception ex) {
-                    this.Log().Error(() => "There was an error writing the Web.config file: {Message}"
-                                           .FormatWith(ex));
+                    this.Log().Error("There was an error writing the Web.config file: {0}",
+                                     ex.Message);
                     FailureText.Text = "There was an error when trying to write to the Web.config file, see below:";
                     errorLabel.Text = ex.Message;
                     return;
@@ -190,8 +188,8 @@ namespace GRA.SRP.ControlRoom {
                 try {
                     result = SqlHelper.ExecuteScalar(localDbCs, CommandType.Text, existsQuery);
                 } catch(Exception ex) {
-                    this.Log().Error(() => "There was an error when trying to connect to LocalDb: {Message}"
-                                           .FormatWith(ex));
+                    this.Log().Error("There was an error when trying to connect to LocalDb: {0}",
+                                     ex.Message);
                     FailureText.Text = "There was an error when trying to connect to LocalDb, see below:";
                     errorLabel.Text = ex.Message;
                     return;
@@ -202,8 +200,8 @@ namespace GRA.SRP.ControlRoom {
                     try {
                         SqlHelper.ExecuteNonQuery(localDbCs, CommandType.Text, createDb);
                     } catch(Exception ex) {
-                        this.Log().Error(() => "There was an error creating the database: {Message}"
-                                         .FormatWith(ex));
+                        this.Log().Error("There was an error creating the database: {0}",
+                                         ex.Message);
                         FailureText.Text = "There was an error creating the database, see below:";
                         errorLabel.Text = ex.Message;
                     }
@@ -230,8 +228,8 @@ namespace GRA.SRP.ControlRoom {
             try {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.Text, "SELECT 1");
             } catch(Exception ex) {
-                this.Log().Error(() => "There was an error when trying to connect with the SA account: {Message}"
-                                       .FormatWith(ex));
+                this.Log().Error("There was an error when trying to connect with the SA account: {0}",
+                                 ex.Message);
                 FailureText.Text = "There was an error when trying to connect with the SA account, see below:";
                 errorLabel.Text = ex.Message;
                 return;
@@ -240,8 +238,8 @@ namespace GRA.SRP.ControlRoom {
             try {
                 SqlHelper.ExecuteNonQuery(rcon, CommandType.Text, "SELECT 1");
             } catch(Exception ex) {
-                this.Log().Error(() => "There was an error when trying to connect with the runtime account: {Message}"
-                                       .FormatWith(ex));
+                this.Log().Error("There was an error when trying to connect with the runtime account: {0}",
+                                 ex.Message);
                 FailureText.Text = "There was an error when trying to connect with the runtime account, see below:";
                 errorLabel.Text = ex.Message;
                 return;
@@ -252,27 +250,24 @@ namespace GRA.SRP.ControlRoom {
             ////////////////////////////////////////
             List<string> issues = new List<string>();
 
-            this.Log().Info(() => "Executing the queries to create the database schema.");
+            this.Log().Info("Executing the queries to create the database schema.");
             issues = ExecuteSqlFile(createSchemaFile, conn);
 
             if(issues.Count == 0) {
-                this.Log().Info(() => "Executing the queries to insert the initial data.");
+                this.Log().Info("Executing the queries to insert the initial data.");
                 issues = ExecuteSqlFile(initialDataFile, conn);
                 if(issues.Count != 0) {
-                    issues.Add("Could not insert initial data. GRA will not work until the data will insert properly. Please resolve the issue, recreate the database, and run this process again.");
-                    this.Log().Error(() => "Could not insert initial data. GRA will not work until the data will insert properly. Please resolve the issue, recreate the database, and run this process again.");
-
+                    issues.Add(LogAndReturnError("Could not insert initial data. GRA will not work until the data will insert properly. Please resolve the issue, recreate the database, and run this process again."));
                 }
             } else {
                 // schema create didn't work
-                issues.Add("Not inserting initial data due to schema issue. Please resolve the issue, recreate the database, and run this process again.");
-                this.Log().Error(() => "Not inserting initial data due to schema issue. Please resolve the issue, recreate the database, and run this process again.");
+                issues.Add(LogAndReturnError("Not inserting initial data due to schema issue. Please resolve the issue, recreate the database, and run this process again."));
             }
 
             if(issues.Count == 0) {
                 // update email address with what the user entered
-                this.Log().Info(() => "Updating the administrative email addresses to: {Text}"
-                                      .FormatWith(Mailaddress));
+                this.Log().Info("Updating the administrative email addresses to: {0}",
+                                Mailaddress);
                 using(var connection = new SqlConnection(conn)) {
                     try {
                         connection.Open();
@@ -283,8 +278,8 @@ namespace GRA.SRP.ControlRoom {
                             updateEmail.Parameters.AddWithValue("@emailAddress", Mailaddress.Text);
                             updateEmail.ExecuteNonQuery();
                         } catch(Exception ex) {
-                            this.Log().Error(() => "Unable to update sysadmin email: {Message}".FormatWith(ex));
-                            issues.Add("Unable to update sysadmin email: {Message}".FormatWith(ex));
+                            issues.Add(LogAndReturnError(string.Format("Unable to update sysadmin email: {0}",
+                                                         ex.Message)));
                         }
                         try {
                             // update the sysadmin contact email and mail from address
@@ -294,12 +289,10 @@ namespace GRA.SRP.ControlRoom {
                             updateEmail.Parameters.AddWithValue("@emailAddress", Mailaddress.Text);
                             updateEmail.ExecuteNonQuery();
                         } catch(Exception ex) {
-                            this.Log().Error(() => "Unable to update settings emails: {Message}".FormatWith(ex));
-                            issues.Add("Unable to update settings emails: {Message}".FormatWith(ex));
+                            issues.Add(LogAndReturnError(string.Format("Unable to update settings emails: {0}", ex.Message)));
                         }
                     } catch(Exception ex) {
-                        this.Log().Error(() => "Error connecting to update email address: {Message}".FormatWith(ex));
-                        issues.Add("Error connecting to update email address: {Message}".FormatWith(ex));
+                        issues.Add(LogAndReturnError(string.Format("Error connecting to update email address: {0}", ex.Message)));
                     } finally {
                         connection.Close();
                     }
@@ -331,7 +324,7 @@ namespace GRA.SRP.ControlRoom {
                     var values = new {
                         SystemName = "The Great Reading Adventure",
                         ControlRoomLink = string.Format("{0}{1}",
-                                                        BaseUrl,
+                                                        WebTools.GetBaseUrl(Request),
                                                         "/ControlRoom/"),
                     };
 

@@ -14,12 +14,10 @@ namespace GRA.Tools {
         /// <param name="request">The <see cref="HttpRequest"/> object</param>
         /// <returns>The URL to the current path with the trailing slash removed.</returns>
         public static string GetBaseUrl(HttpRequest request) {
-            return "{Scheme}://{Authority}{ApplicationPath}"
-                   .FormatWith(new {
-                       Scheme = request.Url.Scheme,
-                       Authority = request.Url.Authority,
-                       ApplicationPath = request.ApplicationPath.TrimEnd('/')
-                   });
+            return string.Format("{0}://{1}{2}",
+                                 request.Url.Scheme,
+                                 request.Url.Authority,
+                                 request.ApplicationPath.TrimEnd('/'));
         }
     }
 }

@@ -7,6 +7,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 using GRA.Tools;
+using GRA;
 
 namespace SRPApp.Classes {
     public class BaseControlRoomPage : System.Web.UI.Page {
@@ -17,9 +18,45 @@ namespace SRPApp.Classes {
         protected SRPUser SRPUser;
         protected List<SRPPermission> UserPermissions;
         protected string UserPermissionList = string.Empty;
-
-
         #endregion
+
+        public BaseControlRoomPage() {
+            this.Load += (s, e) => {
+                var tenantIdSession = Session["TenantID"];
+                int? tenantId = tenantIdSession as int?;
+                int? crTenantId = CRTenantID;
+                if(tenantIdSession == null
+                   || tenantId == null
+                   || crTenantId == null
+                   || tenantId != crTenantId) {
+                    // tenant mismatch between user's TenantID and CR login tenant id
+                    // log out user
+                    try {
+                        SRPUser user = Session[SessionData.UserProfile.ToString()] as SRPUser;
+                        if(user == null) {
+                            this.Log()
+                                .Debug("Unknown user has mismatched tenants, clearing any login");
+                        } else {
+                            this.Log()
+                                .Debug("User {0} has mismatched tenants, clearing any login",
+                                       user.Username);
+                        }
+                    } catch(Exception ex) {
+                        this.Log()
+                            .Debug("Unknown user, mismatched tenants, error occurred, clearing: {0}",
+                                   ex.Message);
+                    }
+                    GRA.SRP.ControlRoom.CRLogout.Logout(this);
+                    return;
+                }
+
+                if(this.ViewState["TenantID"] == null) {
+                    this.Log().Debug("ViewState Tenant ID is null");
+                }
+                this.Log().Debug("Setting ViewState Tenant ID to {0}", crTenantId);
+                this.ViewState["TenantID"] = crTenantId;
+            };
+        }
 
         protected string PageTitle {
             //get { return masterPage.PageMessage; }
@@ -83,12 +120,6 @@ namespace SRPApp.Classes {
             base.OnInit(e);
         }
 
-
-        protected void PageLoad(object sender, EventArgs e) {
-
-
-        }
-
         protected Control FindControlRecursive(Control rootControl, string controlID) {
             if(rootControl.ID == controlID)
                 return rootControl;
@@ -101,5 +132,41 @@ namespace SRPApp.Classes {
             }
             return null;
         }
+
+        protected bool? SafeSessionReturnBool(string sessionKey) {
+            var sessionValue = Session[sessionKey];
+            try {
+                return (bool)sessionValue;
+            } catch(Exception) {
+                return null;
+            }
+        }
+
+        protected int? SafeSessionReturnInt(string sessionKey) {
+            try {
+                return (int)Session[sessionKey];
+            } catch(Exception) {
+                return null;
+            }
+        }
+
+        protected int? CRTenantID {
+            set {
+                Session[GRA.SRP.ControlRoom.CRSessionKey.TenantID] = value;
+            }
+            get {
+                return SafeSessionReturnInt(GRA.SRP.ControlRoom.CRSessionKey.TenantID);
+            }
+        }
+
+        protected bool? CRIsMasterTenant {
+            set {
+                Session[GRA.SRP.ControlRoom.CRSessionKey.IsMaster] = value;
+            }
+            get {
+                return SafeSessionReturnBool(GRA.SRP.ControlRoom.CRSessionKey.IsMaster);
+            }
+        }
+
     }
 }

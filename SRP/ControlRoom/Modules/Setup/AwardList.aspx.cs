@@ -200,7 +200,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 arrParams[3] = new SqlParameter("@School", awd.SchoolName);
             }
 
-            arrParams[4] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]) );
+            arrParams[4] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
 
             return ds;

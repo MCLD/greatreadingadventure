@@ -70,7 +70,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 arrParams[3] = new SqlParameter("@School", School.SelectedValue);
             }
             arrParams[4] = new SqlParameter("@ActivityType", ReadingType.SelectedValue);
-            arrParams[5] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+            arrParams[5] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
 
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_ReadingActivityReport", arrParams);
 

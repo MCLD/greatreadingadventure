@@ -64,7 +64,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             {
                 arrParams[2] = new SqlParameter("@end", GlobalUtilities.DBSafeDate(EndDate.Text));
             }
-            arrParams[3] = new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"]));
+            arrParams[3] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
 
 
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_MiniGameStats", arrParams);

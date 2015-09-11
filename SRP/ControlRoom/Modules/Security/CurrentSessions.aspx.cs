@@ -58,13 +58,13 @@ namespace GRA.SRP.ControlRoom.Modules.Security
         {
             var ds = new DataSet();
             DataTable dt = null;
-            if ((bool)Session["IsMasterTenant"])
+            if ((bool)CRIsMasterTenant)
             {
                 dt = SRPUser.GetLogedInNowAll();    
             }
             else
             {
-                dt = SRPUser.GetLogedInNow((int)Session["TenantID"]);               
+                dt = SRPUser.GetLogedInNow((int)CRTenantID);               
             }
             
             ds.Tables.Add(dt);

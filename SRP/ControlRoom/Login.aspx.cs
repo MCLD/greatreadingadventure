@@ -11,6 +11,18 @@ using GRA.SRP.Utilities;
 namespace GRA.SRP.ControlRoom {
     public partial class Login : Page {
         protected void Page_Load(object sender, EventArgs e) {
+            if(Session[CRSessionKey.TenantID] != null) {
+                SRPUser currentUser = Session[SessionData.UserProfile.ToString()] as SRPUser;
+                string loggedInAs = string.Empty;
+                if(currentUser != null) {
+                    loggedInAs = string.Format(" as {0}", currentUser.Username);
+                }
+                Session[CRSessionKey.CRMessage] = string.Format("You are already logged in{0}. If you wish to log in as another user, please select Logoff first.",
+                                                                loggedInAs);
+                Response.Redirect("~/ControlRoom/Default.aspx", true);
+                return;
+            }
+
             uxLogin.Focus();
             if(Page.IsPostBack) {
 
@@ -58,14 +70,14 @@ namespace GRA.SRP.ControlRoom {
                     Session[SessionData.StringPermissionList.ToString()] = permList;
 
                     Session["TenantID"] = user.TenID;
+                    Session[CRSessionKey.TenantID] = user.TenID;
                     var tenant = Tenant.FetchObject(user.TenID);
-                    Session["Tenant"] = tenant;
-                    Session["IsMasterTenant"] = tenant.isMasterFlag;
+                    Session[CRSessionKey.IsMaster] = tenant.isMasterFlag;
 
 
                     if(user.MustResetPassword) {
-                        this.Log().Info(() => "Redirecting {Username} to mandatory password reset."
-                                              .FormatWith(user));
+                        this.Log().Info("Redirecting {0} to mandatory password reset.",
+                                        user.Username);
                         Response.Redirect("~/ControlRoom/PasswordReset.aspx");
                     }
                     //List<CMSFolder> folders = user.EffectiveUserFolders();

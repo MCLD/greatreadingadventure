@@ -24,6 +24,13 @@ namespace GRA.SRP.ControlRoom
                     FormsAuthentication.RedirectToLoginPage();
                 }
             }
+            if(Session[CRSessionKey.CRMessage] != null) {
+                this.PageTitle = "Great Reading Adventure - Control Room<BR> &nbsp;Notification";
+                this.PageError = Session[CRSessionKey.CRMessage].ToString();
+                this.DisplayMessageOnLoad = true;
+                Session.Remove(CRSessionKey.CRMessage);
+            }
+
             CheckPermissions();
             lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             pnlMessage.Visible = DisplayMessageOnLoad;

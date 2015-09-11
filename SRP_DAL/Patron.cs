@@ -679,19 +679,16 @@ namespace GRA.SRP.DAL {
                                                     sql.ToString(),
                                                     parameters.ToArray());
             } catch(Exception ex) {
-                "Patron".Log().Error(() => "Unable to retrieve patron from token {Token}: {Message}"
-                                            .FormatWith(
-                                            new {
-                                                Token = token,
-                                                Message = ex.Message
-                                            }));
+                "Patron".Log().Error(() => string.Format("Unable to retrieve patron from token {0}",
+                                                         token),
+                                     ex);
                 return null;
             }
 
             int pid = 0;
             if(pidObject == null
                || !int.TryParse(pidObject.ToString(), out pid)) {
-                "SRPUser".Log().Error(() => "Unable parse returned PID of {0}".FormatWith(pid));
+                "SRPUser".Log().Error("Unable parse returned PID: {0}", pid);
                 return null;
             }
 
@@ -738,8 +735,7 @@ namespace GRA.SRP.DAL {
                                           parameters.ToArray());
                 return resetToken;
             } catch(Exception ex) {
-                this.Log().Error(() => "Unable to save password reset token to database: {Message}"
-                                       .FormatWith(ex));
+                this.Log().Error(() => "Unable to save password reset token to database", ex);
                 return null;
             }
         }

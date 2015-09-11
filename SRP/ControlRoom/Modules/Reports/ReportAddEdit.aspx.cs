@@ -1778,7 +1778,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         return;
                     }
 
-                    AddSqlParameter(ref arrParams, new SqlParameter("@TenID", (Session["TenantID"] == null || Session["TenantID"].ToString() == "" ? -1 : (int)Session["TenantID"])));
+                    AddSqlParameter(ref arrParams, new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID));
                     whereClause = Coalesce(whereClause, "(p.TenID = @TenID)", " AND ");
 
                     // Should this be DISTINCT ?????????

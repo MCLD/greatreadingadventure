@@ -596,7 +596,7 @@ namespace GRA.SRP.Core.Utilities {
             int uid = 0;
             if(uidObject == null
                || !int.TryParse(uidObject.ToString(), out uid)) {
-                "SRPUser".Log().Error(() => "Unable parse returned UID of {0}".FormatWith(uid));
+                "SRPUser".Log().Error("Unable parse returned UID of {0}", uid);
                 return null;
             }
 
@@ -640,8 +640,7 @@ namespace GRA.SRP.Core.Utilities {
                                           parameters.ToArray());
                 return resetToken;
             } catch(Exception ex) {
-                this.Log().Error(() => "Unable to save password reset token to database: {Message}"
-                                       .FormatWith(ex));
+                this.Log().Error(() => "Unable to save password reset token to database", ex);
                 return null;
             }
         }

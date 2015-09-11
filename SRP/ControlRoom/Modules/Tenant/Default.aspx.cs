@@ -17,7 +17,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             MasterPage.RequiredPermission = 8000;
             MasterPage.IsSecure = true; 
             
-            if ((bool)Session["IsMasterTenant"])
+            if ((bool)CRIsMasterTenant)
             {
                 Response.Redirect("TenantList.aspx");
             }

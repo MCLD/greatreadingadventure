@@ -76,11 +76,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 arrParams[3] = new SqlParameter("@School", School.SelectedValue);
             }
-            arrParams[4] = new SqlParameter("@TenID",
-                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
-                                        -1 :
-                                        (int)HttpContext.Current.Session["TenantID"])
-                            );
+            arrParams[4] = new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID);
 
             if (NumPoints.Text == "")
             {
