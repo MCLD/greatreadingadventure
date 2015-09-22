@@ -15,6 +15,8 @@ You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadven
 There are also some additional [requested features in this document](https://docs.google.com/spreadsheets/d/1n4vCkW0WWNyRh3dvPy5eBwGedzXQ4RnjuZQTuPKJ-Bg/edit?usp=sharing).
 
 ## Development
+[![Build status](https://ci.appveyor.com/api/projects/status/pk9qomsbk8rp5t3c?svg=true)](https://ci.appveyor.com/project/haraldnagel/greatreadingadventure)
+
 If you are a software developer or Web designer interested in contributing to the project, please take a look at the [Development](https://github.com/MCLD/greatreadingadventure/wiki/Development) topic on the project's GitHub Wiki.
 
 ## License
