@@ -27,9 +27,6 @@ This manual is split into several main sections:
 * :ref:`running-docs` - using the GRA day-to-day during your reading program
 * :ref:`howto-docs` - how to perform specific tasks
 
-Contents
-========
-
 .. _intro-docs:
 
 .. toctree::
