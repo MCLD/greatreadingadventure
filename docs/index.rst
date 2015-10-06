@@ -21,24 +21,22 @@ The code is open source, and is `available on GitHub`_.
 
 This manual is split into several main sections:
 
-* :ref:`starting` - What is The Great Reading Adventure? How does it work?
-* :ref:`install` - downloading and installing The Great Reading Adventure software
-* :ref:`setup` - setting up your reading program
-* :ref:`running` - using the GRA day-to-day during your reading program
-* :ref:`howto` - how to perform specific tasks
+* :ref:`intro-docs` - What is The Great Reading Adventure? How does it work?
+* :ref:`install-docs` - downloading and installing The Great Reading Adventure software
+* :ref:`setup-docs` - setting up your reading program
+* :ref:`running-docs` - using the GRA day-to-day during your reading program
+* :ref:`howto-docs` - how to perform specific tasks
 
-Contents
-========
-.. _starting:
+.. _intro-docs:
 
 .. toctree::
    :maxdepth: 1
    :caption: Introduction
 
-   introduction/overview
+   introduction/gra-overview
 
 
-.. _install:
+.. _install-docs:
 
 .. toctree::
    :maxdepth: 1
@@ -49,7 +47,7 @@ Contents
    installation/download-and-install
 
 
-.. _setup:
+.. _setup-docs:
 
 .. toctree::
    :maxdepth: 1
@@ -57,7 +55,7 @@ Contents
 
    setup/tenancy
 
-.. _running:
+.. _running-docs:
 
 .. toctree::
    :maxdepth: 1
@@ -65,7 +63,7 @@ Contents
 
    running/notifications
    
-.. _howto:
+.. _howto-docs:
 
 .. toctree::
    :maxdepth: 1
