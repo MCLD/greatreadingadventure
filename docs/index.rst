@@ -29,7 +29,6 @@ This manual is split into several main sections:
 
 Contents
 ========
-
 .. _starting:
 
 .. toctree::
