@@ -33,7 +33,7 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Introduction
 
-   introduction/overview
+   introduction/gra-overview
 
 
 .. _install-docs:
