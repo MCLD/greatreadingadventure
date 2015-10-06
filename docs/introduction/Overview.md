@@ -1,6 +1,8 @@
+# Overview
+
 The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. We hope you like it and will consider becoming a part of the community.
 
-## Digital Badges
+## Digital badges
 
 >“Digital Badges are an assessment and credentialing mechanism that is housed and managed online. Badges are designed to make visible and validate learning in both formal and informal settings and hold the potential to help transform where and how learning is valued.”
 >>
@@ -15,11 +17,11 @@ Digital badges are a great way to enhance your reading program. They can be used
 * The participant automatically receives the badge.
 Our badge wizard makes the process super simple: you just create an event, upload a badge, and assign a secret code. It’s a great new way to tie the online summer reading program to the events in your bricks-and-mortar locations.
 
-## Literacy Activities
+## Literacy activities
 
 A good online summer reading program ought to deliver quality content to participants. The Great Reading Adventure features seven unique content templates. Each game can be configured for sound and three different difficulty levels. Templates include: e-books, Code Breaker, Memory, Matching, Word Matching, Hidden Picture, and Choose Your Own Adventure style games.
 
-## Unparalleled Reporting
+## Unparalleled reporting
 
 With The Great Reading Adventure, immediate access to your program’s vital statistics is just a click away! Our stats dashboard gives you a visual breakdown of your registrations and completions (further broken out by gender and age).
 
@@ -27,7 +29,7 @@ Using our super-versatile ad-hoc reporting, you can compare participation data w
 
 All reports are exportable to HTML and Excel, putting all the summer reading data you need right at your fingertips.
 
-## Customizable Everything
+## Customizable everything
 
 Is your library a member of the CSLP? Or iREAD? The GRA is ready for you to drop your theme artwork in and create a program that’s all your own. Our home pages are designed with simple “what you see is what you get” editors, so, if you’re comfortable using word processing software, you’ll be right at home in the GRA. If you’re a little more tech-savvy, you can delve into the CSS.
 
@@ -45,7 +47,7 @@ In addition to the home screen, you can customize:
 * Prizes
 * And more!
 
-## Built-in Evaluation
+## Built-in evaluation
 
 You put a lot of time and effort into your summer reading program- it’s important to know that what you’re doing has an impact. The GRA’s comprehensive evaluation tools will help you do just that.
 
