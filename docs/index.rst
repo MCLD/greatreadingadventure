@@ -30,6 +30,7 @@ This manual is split into several main sections:
 Contents
 ========
 
+
 .. _intro:
 
 .. toctree::
@@ -38,7 +39,7 @@ Contents
 
    introduction/overview
 
-   
+
 .. _install:
 
 .. toctree::
