@@ -5,7 +5,7 @@ The Great Reading Adventure is a robust, open source software designed to manage
 ## Digital badges
 
 >“Digital Badges are an assessment and credentialing mechanism that is housed and managed online. Badges are designed to make visible and validate learning in both formal and informal settings and hold the potential to help transform where and how learning is valued.”
-> &mdash; <cite>MacArthur Foundation</cite>
+>-- MacArthur Foundation
 
 Digital badges are a great way to enhance your reading program. They can be used in addition to (or as a replacement for) physical incentive prizes. Digital badges go far beyond the momentary happiness that a toy incentive provides, as they carry with them recognition of achievement, engagement, and personal identity. The Great Reading Adventure makes it easy to create badges for those who participate in library and other community activities.
 
