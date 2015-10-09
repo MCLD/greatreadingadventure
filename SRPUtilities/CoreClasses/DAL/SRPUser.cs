@@ -106,12 +106,18 @@ namespace GRA.SRP.Core.Utilities {
         protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
             // Remove any old error Codes
             ClearErrorCodes();
-
-            ClearErrorCodes();
             if(validationMode == BusinessRulesValidationMode.INSERT) {
-                SRPUser obj = FetchByUsername(Username);
+                SRPUser obj = FetchByUsername(this.Username);
                 if(obj != null) {
-                    AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "Username already exists.",
+                    AddErrorCode(new BusinessRulesValidationMessage("Username",
+                                                                    "Username",
+                                                                    "A user with this username already exists.",
+                                                                    BusinessRulesValidationCode.UNSPECIFIED));
+                }
+                if(SRPUser.EmailExists(this.EmailAddress)) {
+                    AddErrorCode(new BusinessRulesValidationMessage("EmailAddress",
+                                                                    "Email address",
+                                                                    "A user with this email address already exists.",
                                                                     BusinessRulesValidationCode.UNSPECIFIED));
                 }
             }
@@ -1078,7 +1084,6 @@ namespace GRA.SRP.Core.Utilities {
         //        return true;
         //    }
         //}
-
 
         #endregion Methods
     }
