@@ -99,7 +99,9 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
 
                         obj.FldInt1 = ((TextBox)((DetailsView)sender).FindControl("FldInt1")).Text.SafeToInt();
                     }
-                    catch (Exception exc) { }
+                    catch (Exception exc) {
+                        this.Log().Error("Error parsing new tenant information: {0}", exc.Message);
+                    }
 
                     /*
                     
@@ -142,7 +144,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                             obj.Insert();
                             var TID = obj.TenID;
 
-                            TenantInitialize.InitializeSecurity(sysadmin, TID, newPassword);                       
+                            TenantInitialize.InitializeSecurity(sysadmin, TID, newPassword);
                             TenantInitialize.InitializeData(TID);
 
                             if (e.CommandName.ToLower() == "addandback")
@@ -188,6 +190,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                 {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
+                    this.Log().Error("Error adding tenant: {0}", ex.Message);
                 }
             }
             if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
