@@ -10,10 +10,8 @@ using SRPApp.Classes;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 
-namespace GRA.SRP
-{
-    public partial class SRPMaster : BaseSRPMaster
-    {
+namespace GRA.SRP {
+    public partial class SRPMaster : BaseSRPMaster {
 
 
         protected void Page_Load(object sender, EventArgs e) {
@@ -31,7 +29,8 @@ namespace GRA.SRP
             plc.Controls.Add(ctl);
 
             var thisPage = (BaseSRPPage)Page;
-            if(thisPage.IsSecure && !thisPage.IsLoggedIn) Response.Redirect("~/Logout.aspx");
+            if(thisPage.IsSecure && !thisPage.IsLoggedIn)
+                Response.Redirect("~/Logout.aspx");
 
             object patronMessage = Session["PatronMessage"];
 
@@ -52,32 +51,32 @@ namespace GRA.SRP
                 alertContainer.Visible = false;
             }
 
-            if (!IsPostBack)
-            {
+            if(!IsPostBack) {
                 lnkRegister.Visible = true;
                 lnkLogin.Visible = true;
                 lnkLogout.Visible = false;
                 n.Visible = b.Visible = v.Visible = o.Visible = a.Visible = p.Visible = f.Visible = false;
-                home1.Visible = true;
-                home2.Visible = false;
+                slogan.Visible = true;
 
-                if (thisPage.IsLoggedIn)
-                {
+                if(thisPage.IsLoggedIn) {
                     lnkRegister.Visible = false;
                     lnkLogin.Visible = false;
                     lnkLogout.Visible = true;
-
-                    home2.Visible = n.Visible = b.Visible = v.Visible = o.Visible = r.Visible = a.Visible = p.Visible = true;
-                    home1.Visible = false;
+                    slogan.Visible = false;
+                    n.Visible = b.Visible = v.Visible = o.Visible = r.Visible = a.Visible = p.Visible = true;
+                    homeLink.HRef = "/MyProgram.aspx";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
-                    if (Session["IsMasterAcct"] != null)
-                        f.Visible = (bool)Session["IsMasterAcct"];
-
-
-                    if (!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover))
-                    {
-                        if (Session["PreTestMandatory"] != null && (bool)Session["PreTestMandatory"])
-                        {
+                    if(Session["IsMasterAcct"] as bool? == true) {
+                        a.Title = "My Family";
+                    }
+                    var unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
+                    if(!string.IsNullOrEmpty(unread) && unread != "0") {
+                        unreadBadge.InnerText = unread;
+                        unreadBadge.Visible = true;
+                        nIcon.Attributes["class"] = nIcon.Attributes["class"] + " text-primary";
+                    }
+                    if(!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover)) {
+                        if(Session["PreTestMandatory"] != null && (bool)Session["PreTestMandatory"]) {
                             TestingBL.PatronNeedsPreTest();
                         }
                     }

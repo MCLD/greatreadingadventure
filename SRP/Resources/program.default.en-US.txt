@@ -28,10 +28,10 @@ Button=Press Me!
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoginForm Title=Login
-LoginForm no account=Don't have an account?  
-LoginForm register=<b>Register now...</b>
-LoginForm forgot pass=Did you forget your password?
-LoginForm recover=<b>Get it by email...</b>
+LoginForm no account=  
+LoginForm register=Register
+LoginForm forgot pass=
+LoginForm recover=Lost password
 LoginForm username=Username:
 LoginForm password=Password:
 LoginForm terms=I accept the terms and conditions
