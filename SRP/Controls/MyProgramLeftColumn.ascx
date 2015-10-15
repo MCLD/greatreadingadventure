@@ -5,14 +5,5 @@
 <%@ Register src="MyGameLoggingNavControl.ascx" tagname="MyGameLoggingNavControl" tagprefix="uc3" %>
 
 <uc3:MyGameLoggingNavControl ID="MyGameLoggingNavControl1" runat="server" />
-
 <uc2:NotificationCounterControl ID="NotificationCounterControl1" runat="server" />
-
-&nbsp;
-
 <uc1:MyBadgesListControl ID="MyBadgesListControl1" runat="server" />
- 
- <br />
-
-
- 

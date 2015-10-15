@@ -130,6 +130,24 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor b;
         
         /// <summary>
+        /// r control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
+        
+        /// <summary>
+        /// m control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor m;
+        
+        /// <summary>
         /// v control.
         /// </summary>
         /// <remarks>
@@ -146,15 +164,6 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor o;
-        
-        /// <summary>
-        /// r control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
         
         /// <summary>
         /// f control.
