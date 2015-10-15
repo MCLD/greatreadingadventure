@@ -27,35 +27,43 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" id="homeLink" href="/" runat="server">
+                        <span class="glyphicon glyphicon-book"></span>
                         <asp:Label runat="server">System_Name</asp:Label></a>
+                    <%if(!this.CurrentPage.IsLoggedIn) { %>
+
                     <p class="navbar-text hidden-xs" id="slogan" runat="server" style="margin-left: 3em;">
                         <em>
                             <asp:Label runat="server">Slogan</asp:Label></em>
                     </p>
+                    <% } %>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <%if(!this.CurrentPage.IsLoggedIn) { %>
                         <li><a href="/Register.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">RegisterMasterBtn</asp:Label></a></li>
                         <li><a href="/Login.aspx" runat="server" id="lnkLogin">
                             <asp:Label ID="Label1" runat="server">LoginMasterBtn</asp:Label></a></li>
-
-                        <li><a href="/MyNotifications.aspx" class="menu-item" id="n" runat="server" visible="false" data-toggle="tooltip" data-placement="bottom" title="Notifications">
+                        <%} else { %>
+                        <li><a href="/MyNotifications.aspx" class="menu-item" id="n" runat="server" data-toggle="tooltip" data-placement="bottom" title="Notifications">
                             <span class="glyphicon glyphicon-envelope" runat="server" id="nIcon"></span>
-                            <span id="unreadBadge" runat="server" visible="false" class="label label-primary label-as-badge">0</span>
+                            <% if(!string.IsNullOrEmpty(this.Unread) && this.Unread != "0") { %>
+                            <span id="unreadBadge" runat="server" class="label label-primary label-as-badge text-primary"><% =this.Unread %></span>
+                            <% } %>
                         </a></li>
-                        <li><a href="/MyBadges.aspx" class="menu-item" id="b" runat="server" visible="false">Badges</a></li>
-                        <li><a href="/Events.aspx" class="menu-item" id="v" runat="server" visible="false">Events</a></li>
-                        <li><a href="/MyOffers.aspx" class="menu-item" id="o" runat="server" visible="false">Offers</a></li>
+                        <li><a href="/MyBadges.aspx" class="menu-item" id="b" runat="server">Badges</a></li>
+                        <li><a href="/ReadingLists.aspx" class="menu-item" id="r" runat="server">Activities</a></li>
+                        <li><a href="/MyLogEntry.aspx" class="menu-item" id="m" runat="server">Adventures</a></li>
+                        <li><a href="/Events.aspx" class="menu-item" id="v" runat="server">Events</a></li>
+                        <!--<li><a href="/MyOffers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>-->
 
-                        <li><a href="/ReadingLists.aspx" class="menu-item" id="r" runat="server" visible="false">Book Lists</a></li>
-
-                        <!--<li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server" visible="false">Family Members</a></li>-->
-                        <li><a href="/MyAccount.aspx" class="menu-item myAccountItem" id="a" runat="server" visible="false" data-toggle="tooltip" data-placement="bottom" title="My Account"><span class="glyphicon glyphicon-user"></span></a></li>
-                        <!--<li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server" visible="false">Change Password</a></li>-->
+                        <!--<li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server">Family Members</a></li>-->
+                        <li><a href="/MyAccount.aspx" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account"><span class="glyphicon glyphicon-user"></span></a></li>
+                        <!--<li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server">Change Password</a></li>-->
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">
                             <asp:Label ID="Label2" runat="server">LogoutMasterBtn</asp:Label></a></li>
+                        <% } %>
                     </ul>
                 </div>
                 <!--/.nav-collapse -->

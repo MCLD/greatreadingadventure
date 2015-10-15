@@ -12,7 +12,8 @@ using GRA.SRP.DAL;
 
 namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
-
+        public BaseSRPPage CurrentPage { get; set; }
+        public string Unread { get; set; }
 
         protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
@@ -28,8 +29,8 @@ namespace GRA.SRP {
             var plc = FindControl("ProgramCSS");
             plc.Controls.Add(ctl);
 
-            var thisPage = (BaseSRPPage)Page;
-            if(thisPage.IsSecure && !thisPage.IsLoggedIn)
+            this.CurrentPage = (BaseSRPPage)Page;
+            if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn)
                 Response.Redirect("~/Logout.aspx");
 
             object patronMessage = Session["PatronMessage"];
@@ -52,29 +53,13 @@ namespace GRA.SRP {
             }
 
             if(!IsPostBack) {
-                lnkRegister.Visible = true;
-                lnkLogin.Visible = true;
-                lnkLogout.Visible = false;
-                n.Visible = b.Visible = v.Visible = o.Visible = a.Visible = p.Visible = f.Visible = false;
-                slogan.Visible = true;
-
-                if(thisPage.IsLoggedIn) {
-                    lnkRegister.Visible = false;
-                    lnkLogin.Visible = false;
-                    lnkLogout.Visible = true;
-                    slogan.Visible = false;
-                    n.Visible = b.Visible = v.Visible = o.Visible = r.Visible = a.Visible = p.Visible = true;
+                if(this.CurrentPage.IsLoggedIn) {
                     homeLink.HRef = "/MyProgram.aspx";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if(Session["IsMasterAcct"] as bool? == true) {
                         a.Title = "My Family";
                     }
-                    var unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
-                    if(!string.IsNullOrEmpty(unread) && unread != "0") {
-                        unreadBadge.InnerText = unread;
-                        unreadBadge.Visible = true;
-                        nIcon.Attributes["class"] = nIcon.Attributes["class"] + " text-primary";
-                    }
+                    this.Unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
                     if(!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover)) {
                         if(Session["PreTestMandatory"] != null && (bool)Session["PreTestMandatory"]) {
                             TestingBL.PatronNeedsPreTest();
