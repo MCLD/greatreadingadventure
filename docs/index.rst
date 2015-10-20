@@ -44,7 +44,9 @@ This manual is split into several main sections:
 
    installation/getting-started
    installation/system-requirements
-   installation/download-and-install
+   installation/download-the-software
+   installation/create-the-database
+   installation/install-the-software
 
 
 .. _setup-docs:
