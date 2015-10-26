@@ -11,7 +11,7 @@ If this Web server is configured solely for the Great Reading Adventure, you can
 3. Right-click on the `c:\inetpub\wwwroot\` directory and select **Properties**.
 4. Choose the **Security** tab and then click the **Edit** button next to *To change permissions, click Edit*.
 5. Select **Add** in the **Permissions for wwwroot** window.
-6. In the **Enter the object names to select** box, enter in `IIS_IUSRS` and click **OK**.
+6. In the **Enter the object names to select** box, enter in `IIS_IUSRS` and click **OK** (the `IIS_IUSRS` group is a local group on this machine, so ensure that the **From this location** box has the name of the Web server and not your domain - you can change this by clicking **Locations...** and select the server).
 7. Select the check box next to **Full control** in the **Allow** column.
 8. Select **OK** to close this window and **OK** to close the **wwwroot Properties** window.
 9. Open up the **Internet Information Services Manager** on the Web server.
@@ -40,7 +40,7 @@ Your system administrator can help you select the correct approach.
 3. Right-click on directory created in step 1 above and select **Properties**.
 4. Choose the **Security** tab and then click the **Edit** button next to *To change permissions, click Edit*.
 5. Select **Add** in the **Permissions for ...** window.
-6. In the **Enter the object names to select** box, enter in `IIS_IUSRS` and click **OK**.
+6. In the **Enter the object names to select** box, enter in `IIS_IUSRS` and click **OK** (the `IIS_IUSRS` group is a local group on this machine, so ensure that the **From this location** box has the name of the Web server and not your domain - you can change this by clicking **Locations...** and select the server).
 7. Select the check box next to **Full control** in the **Allow** column.
 8. Select **OK** to close this window and **OK** to close the **Properties** window.
 9. Open up the **Internet Information Services Manager** on the Web server.
