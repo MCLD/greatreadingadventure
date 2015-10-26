@@ -191,7 +191,7 @@ namespace GRA.SRP.Controls
         {
             var MGID = e.CommandArgument.ToString();
             Session["MGID"] = MGID;
-            Session["GoToUrl"] = "~/MyLogEntry.aspx";
+            Session["GoToUrl"] = "~/Adventures/";
             Response.Redirect("~/PlayMinigame.aspx");
         }
 

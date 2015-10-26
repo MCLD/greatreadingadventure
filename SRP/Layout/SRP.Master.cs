@@ -14,6 +14,116 @@ namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
         public BaseSRPPage CurrentPage { get; set; }
         public string Unread { get; set; }
+        public string SystemNameText {
+            get {
+                if(SRPPage != null) {
+                    return SRPPage.GetResourceString("System_Name");
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string SloganText {
+            get {
+                if(SRPPage != null) {
+                    return SRPPage.GetResourceString("Slogan");
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string UpsellText {
+            get {
+                if(SRPPage != null) {
+                    return SRPPage.GetResourceString("Upsell");
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string CopyrightStatementText {
+            get {
+                if(SRPPage != null) {
+                    return SRPPage.GetResourceString("Copyright_Statement");
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string RegisterPageActive {
+            get {
+                if(Request.Path.EndsWith("Register.aspx")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string LoginPageActive {
+            get {
+                if(Request.Path.EndsWith("Login.aspx")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string DashboardPageActive {
+            get {
+                if(Request.Path.EndsWith("Dashboard.aspx")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+
+        public string NotificationsSectionActive {
+            get {
+                if(Request.Path.Contains("/Notifications/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string AdventuresSectionActive {
+            get {
+                if(Request.Path.Contains("/Adventures/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+        public string ChallengesSectionActive {
+            get {
+                if(Request.Path.Contains("/Challenges/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+        public string EventsSectionActive {
+            get {
+                if(Request.Path.Contains("/Events/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string AccountSectionActive {
+            get {
+                if(Request.Path.Contains("/Account/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
@@ -54,7 +164,7 @@ namespace GRA.SRP {
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {
-                    homeLink.HRef = "/MyProgram.aspx";
+                    homeLink.HRef = "~/Dashboard.aspx";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if(Session["IsMasterAcct"] as bool? == true) {
                         a.Title = "My Family";

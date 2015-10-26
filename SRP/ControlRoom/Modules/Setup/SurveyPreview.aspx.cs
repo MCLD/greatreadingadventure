@@ -94,7 +94,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             }
             else
             {
-                Response.Redirect("MyProgram.aspx");
+                Response.Redirect("~/Dashboard.aspx");
             }
         }
 

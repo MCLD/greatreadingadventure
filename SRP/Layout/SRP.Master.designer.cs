@@ -58,13 +58,13 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor homeLink;
         
         /// <summary>
-        /// slogan control.
+        /// Slogan control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl slogan;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Slogan;
         
         /// <summary>
         /// lnkRegister control.
@@ -121,13 +121,13 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl unreadBadge;
         
         /// <summary>
-        /// b control.
+        /// m control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor b;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor m;
         
         /// <summary>
         /// r control.
@@ -137,15 +137,6 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
-        
-        /// <summary>
-        /// m control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor m;
         
         /// <summary>
         /// v control.
@@ -245,23 +236,5 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
-        
-        /// <summary>
-        /// Upsell control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Upsell;
-        
-        /// <summary>
-        /// Label3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label3;
     }
 }

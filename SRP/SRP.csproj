@@ -746,6 +746,7 @@
     <Content Include="Controls\ActivityHistCtl.ascx" />
     <Content Include="Controls\AddChildCtl.ascx" />
     <Content Include="Controls\AudioUploadCtl.ascx" />
+    <Content Include="Controls\Avatar.ascx" />
     <Content Include="Controls\BadgeAwardCtl.ascx" />
     <Content Include="Controls\Badges.ascx" />
     <Content Include="Controls\ChangeFamilyPassword.ascx" />
@@ -774,7 +775,6 @@
     <Content Include="Controls\MyProgramLeftColumn.ascx" />
     <Content Include="Controls\MyProgramRightColumn.ascx" />
     <Content Include="Controls\MyWithGameProgramCenterColumn.ascx" />
-    <Content Include="Controls\NotificationCounterControl.ascx" />
     <Content Include="Controls\PatronNotificationsCtl.ascx" />
     <Content Include="Controls\Offers.ascx" />
     <Content Include="Controls\PatronLogin.ascx" />
@@ -788,6 +788,7 @@
     <Content Include="Controls\RecoverPassword.ascx" />
     <Content Include="Controls\SimpleLoggingControl.ascx" />
     <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
+    <Content Include="Controls\Welcome.ascx" />
     <Content Include="CSS\bootstrap.css" />
     <Content Include="CSS\font-awesome.min.css" />
     <Content Include="CSS\Program\1.css" />
@@ -798,7 +799,7 @@
     <Content Include="CSS\responsive.css" />
     <Content Include="CSS\theme-style.css" />
     <Content Include="EnterFamMemberLog.aspx" />
-    <Content Include="Events.aspx" />
+    <Content Include="Events\Default.aspx" />
     <Content Include="FamilyAccountList.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
@@ -811,7 +812,8 @@
     <Content Include="images\arrow-right.png" />
     <Content Include="images\arrows.png" />
     <Content Include="images\Audit.png" />
-    <Content Include="images\Avatars\avatars-placeholder.txt" />
+    <Content Include="images\Avatars\no_avatar.png" />
+    <Content Include="images\Avatars\no_avatar_sm.png" />
     <Content Include="images\Badges\badges-placeholder.txt" />
     <Content Include="images\Banners\banners-placeholder.txt" />
     <Content Include="images\bg-sequence.jpg" />
@@ -876,16 +878,16 @@
     <Content Include="js\script.js" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
-    <Content Include="MyAccount.aspx" />
+    <Content Include="Account\Default.aspx" />
     <Content Include="MyBadges.aspx" />
     <Content Include="MyGameboard.aspx" />
-    <Content Include="MyLogEntry.aspx" />
-    <Content Include="MyNotifications.aspx" />
+    <Content Include="Adventures\Default.aspx" />
+    <Content Include="Notifications\Default.aspx" />
     <Content Include="MyOffers.aspx" />
-    <Content Include="MyProgram.aspx" />
+    <Content Include="Dashboard.aspx" />
     <Content Include="PasswordRecovery.aspx" />
     <Content Include="PlayMinigame.aspx" />
-    <Content Include="ReadingLists.aspx" />
+    <Content Include="Challenges\Default.aspx" />
     <Content Include="Recover.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Resources\program.default.en-US.txt" />
@@ -1270,6 +1272,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Layout\TSelection.Master" />
     <Content Include="CSS\font\fontawesome-webfont.eot" />
@@ -1292,7 +1295,8 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\PublishProfiles\*.pubxml" />
+    <None Include="Properties\PublishProfiles\Dev.pubxml" />
+    <None Include="Properties\PublishProfiles\Test deploy.pubxml" />
     <Content Include="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2506,6 +2510,13 @@
       <DependentUpon>AudioUploadCtl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Code\AwardPoints.cs" />
+    <Compile Include="Controls\Avatar.ascx.cs">
+      <DependentUpon>Avatar.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Avatar.ascx.designer.cs">
+      <DependentUpon>Avatar.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BadgeAwardCtl.ascx.cs">
       <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2702,13 +2713,6 @@
     <Compile Include="Controls\MyWithGameProgramCenterColumn.ascx.designer.cs">
       <DependentUpon>MyWithGameProgramCenterColumn.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NotificationCounterControl.ascx.cs">
-      <DependentUpon>NotificationCounterControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\NotificationCounterControl.ascx.designer.cs">
-      <DependentUpon>NotificationCounterControl.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PatronNotificationsCtl.ascx.cs">
       <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2803,6 +2807,13 @@
     </Compile>
     <Compile Include="Code\STGUtilities.cs" />
     <Compile Include="Code\TestingBL.cs" />
+    <Compile Include="Controls\Welcome.ascx.cs">
+      <DependentUpon>Welcome.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Welcome.ascx.designer.cs">
+      <DependentUpon>Welcome.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2817,12 +2828,12 @@
     <Compile Include="EnterFamMemberLog.aspx.designer.cs">
       <DependentUpon>EnterFamMemberLog.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Events.aspx.cs">
-      <DependentUpon>Events.aspx</DependentUpon>
+    <Compile Include="Events\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Events.aspx.designer.cs">
-      <DependentUpon>Events.aspx</DependentUpon>
+    <Compile Include="Events\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="FamilyAccountList.aspx.cs">
       <DependentUpon>FamilyAccountList.aspx</DependentUpon>
@@ -2876,12 +2887,12 @@
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyAccount.aspx.cs">
-      <DependentUpon>MyAccount.aspx</DependentUpon>
+    <Compile Include="Account\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyAccount.aspx.designer.cs">
-      <DependentUpon>MyAccount.aspx</DependentUpon>
+    <Compile Include="Account\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="MyBadges.aspx.cs">
       <DependentUpon>MyBadges.aspx</DependentUpon>
@@ -2897,19 +2908,19 @@
     <Compile Include="MyGameboard.aspx.designer.cs">
       <DependentUpon>MyGameboard.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyLogEntry.aspx.cs">
-      <DependentUpon>MyLogEntry.aspx</DependentUpon>
+    <Compile Include="Adventures\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyLogEntry.aspx.designer.cs">
-      <DependentUpon>MyLogEntry.aspx</DependentUpon>
+    <Compile Include="Adventures\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyNotifications.aspx.cs">
-      <DependentUpon>MyNotifications.aspx</DependentUpon>
+    <Compile Include="Notifications\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyNotifications.aspx.designer.cs">
-      <DependentUpon>MyNotifications.aspx</DependentUpon>
+    <Compile Include="Notifications\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="MyOffers.aspx.cs">
       <DependentUpon>MyOffers.aspx</DependentUpon>
@@ -2918,12 +2929,12 @@
     <Compile Include="MyOffers.aspx.designer.cs">
       <DependentUpon>MyOffers.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyProgram.aspx.cs">
-      <DependentUpon>MyProgram.aspx</DependentUpon>
+    <Compile Include="Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyProgram.aspx.designer.cs">
-      <DependentUpon>MyProgram.aspx</DependentUpon>
+    <Compile Include="Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="PasswordRecovery.aspx.cs">
       <DependentUpon>PasswordRecovery.aspx</DependentUpon>
@@ -2940,12 +2951,12 @@
       <DependentUpon>PlayMinigame.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadingLists.aspx.cs">
-      <DependentUpon>ReadingLists.aspx</DependentUpon>
+    <Compile Include="Challenges\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ReadingLists.aspx.designer.cs">
-      <DependentUpon>ReadingLists.aspx</DependentUpon>
+    <Compile Include="Challenges\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Recover.aspx.cs">
       <DependentUpon>Recover.aspx</DependentUpon>

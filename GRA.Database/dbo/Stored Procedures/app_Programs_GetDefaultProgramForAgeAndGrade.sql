@@ -59,12 +59,4 @@ IF (@ID IS NULL)
 		AND IsHidden = 0
 	ORDER BY POrder ASC
 
---select @ID
---SELECT @ID
-
-SELECT *
-FROM #temp
-ORDER BY MaxAge ASC,
-	POrder ASC
-
-RETURN 0
+SELECT @ID

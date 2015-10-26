@@ -12,11 +12,11 @@
 
     <div class="secondary-nav">
         <ul class="nav">
-            <li><a href="/ReadingLists.aspx" 
+            <li><a href="~/Challenges/" runat="server" 
                     ><!--<i class="icon-angle-right"></i> Reading Lists <i class="icon-angle-left"></i><br /><small>Reading lists reccommended by our librarians</small></a>-->
                     <i class="icon-angle-right"></i> Book Lists <i class="icon-angle-left"></i><br /><small>Earn badges by reading my library's top picks</small></a></li>
 
-            <li><a href="/Events.aspx" 
+            <li><a href="~/Events/" runat="server" 
                     ><i class="icon-angle-right"><!--</i> Events <i class="icon-angle-left"></i><br /><small>Upcoming events you might be interested in</small></a>-->
                     </i> Events <i class="icon-angle-left"></i><br /><small>Earn badges by going to awesome library programs</small></a></li>
             <li><a href="/MyOffers.aspx" 

@@ -13,7 +13,7 @@ namespace GRA.SRP.Controls
         {
             if (string.IsNullOrEmpty(Request["b"]))
             {
-                Response.Redirect("~/MyProgram.aspx");
+                Response.Redirect("~/Dashboard.aspx");
             }
 
             if (Session["GoToUrl"] != null && Session["GoToUrl"].ToString() == "")
@@ -49,7 +49,7 @@ namespace GRA.SRP.Controls
             {
                 if (ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0)
                 {
-                    ViewState["gotourl"] = "~/MyProgram.aspx";
+                    ViewState["gotourl"] = "~/Dashboard.aspx";
                 }
                 return ViewState["gotourl"].ToString();
             }

@@ -108,7 +108,7 @@ namespace GRA.SRP.Controls
             Session["CurrentProgramID"] = bp.ProgID;
             Session["TenantID"] = bp.TenID;
 
-            Response.Redirect("~/MyProgram.aspx");
+            Response.Redirect("~/Dashboard.aspx");
         }
     }
 }

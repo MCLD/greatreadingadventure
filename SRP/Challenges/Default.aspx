@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Reading Lists" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="ReadingLists.aspx.cs" Inherits="GRA.SRP.ReadingLists" %>
+    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.ReadingLists" %>
 
 
 

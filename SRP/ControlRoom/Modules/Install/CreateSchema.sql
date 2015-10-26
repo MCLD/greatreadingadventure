@@ -10221,7 +10221,6 @@ BEGIN
 	WHERE MaxAge >= @Age
 	ORDER BY MaxAge ASC,
 		POrder ASC
-		--select @ID
 END
 ELSE IF (
 		@Grade > 0
@@ -10233,7 +10232,6 @@ BEGIN
 	WHERE MaxGrade >= @Grade
 	ORDER BY MaxGrade ASC,
 		POrder ASC
-		--select @ID
 END
 ELSE
 BEGIN
@@ -10242,8 +10240,6 @@ BEGIN
 	WHERE IsActive = 1
 		AND IsHidden = 0
 	ORDER BY POrder ASC
-
-	--SELECT @ID
 END
 
 IF (@ID IS NULL)
@@ -10253,15 +10249,7 @@ IF (@ID IS NULL)
 		AND IsHidden = 0
 	ORDER BY POrder ASC
 
---select @ID
---SELECT @ID
-
-SELECT *
-FROM #temp
-ORDER BY MaxAge ASC,
-	POrder ASC
-
-RETURN 0
+select @ID
 GO
 /****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramID]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON

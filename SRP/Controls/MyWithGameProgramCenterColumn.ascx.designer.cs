@@ -13,15 +13,6 @@ namespace GRA.SRP.Controls {
     public partial class MyWithGameProgramCenterColumn {
         
         /// <summary>
-        /// imgAvatar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatar;
-        
-        /// <summary>
         /// lblSponsor control.
         /// </summary>
         /// <remarks>
