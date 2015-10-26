@@ -55,7 +55,7 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Initial Setup
 
-   setup/tenancy
+   setup/database-setup
 
 .. _running-docs:
 
