@@ -1,30 +1,41 @@
 # System Requirements
 
-Microsoft Windows Server 2008 R2 or later
+The GRA requires the following services to run. These services may all be hosted on the same machine
+or may be hosted on separate machines for performance reasons.
 
-IIS Web Server 7 or later
+## Web server
+[Microsoft Internet Information Services (IIS)](https://www.iis.net/) version 7.0
+  or later.
+  * Windows Server 2008 shipped with IIS 7 making it the minimum requirement for operating system.
+  * The [.NET Framework](https://msdn.microsoft.com/en-us/vstudio/aa496123.aspx) version 4.0 or later must be installed with IIS configured to run ASP.NET pages.
+  * Ideally, the GRA runs in its own Application Pool configured in the **Integrated managed pipline** mode.
+  * File management (i.e. uploading images, configuration changes, etc.) occur by allowing the account running the App Pool to have write access to the Web server files on disk. In many configurations, that means that the `IUSR` user should be granted write access to the file system.
 
-* Running on an application pool configured in Classic managed pipeline mode, with .NET Framework
-v4.0.x.
-* The root folder physical path, configured with Modify permissions for the IIS_IUSRS user. (Web
-sites can be configured many different ways, including customizing the user id of the web process.
-Whatever that user is, id different than IIS_IUSRS will need Modify permission to the root
-folder physical path).
+## Database server
+[Microsoft SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/) 2008 or later.
+  * The GRA uses its own database with its own database users so it can easily and safely coexist with other SQL Server databases.
+  * SQL Server must allow connections via [SQL Server authentication mode](https://msdn.microsoft.com/en-us/library/ms144284.aspx).
+  * The GRA requires an empty database to be created manually or with a script.
+  * The GRA also requires two users for initial setup:
+    * A database user with owner access (role `db_owner`) for creating the initial database structures and inserting the initial
+      data.
+    * A database user with read/write access (roles `db_datareader` and `db_datawriter`) to the database for running the GRA software.
 
-SQL Server 2008 or later
 
-* The database can run on the same or a different physical or virtual machine as long as network
-connectivity can be established between the two machines.
-* The SQL Server is configured with SQL Server authentication mode.
-* An empty database has been created for the application database (i.e. SRP_Web).
-* One SQL Server authentication login, with dbo security privileges to the application database.
-This user will be used to create the database objects and populate the initial data.One SQL
-Server authentication login, with read/write security privileges to the application database. This
-user will be used to access the database at runtime.
-* NOTE: At this point, SQL Server Express, SQLite, and MySQL will not work (but it would be great if you could modify the install scripts to make them work).  
+## Mail server
+A mail service accepting mail via SMTP.
+  * The GRA sends mail in certain instances and requires the ability to connect to an SMTP server.
+  * The SMTP server built-in to IIS can be used, any other on-site mail server can be used (Microsoft Exchange Server, Postfix, etc.), or a mail service can be used.
 
-Mail server
+## Checklist
 
-* Configured to send out email on behalf of the web application. This can be the local SMTP service
-on the webserver, or a remote relay server. Regardless, make note of the server name/
-address.
+- [ ] Ensure you have a Windows server running Windows Server 2008 or newer
+- [ ] Ensure your server has the .NET Framework version 4.0 or newer installed
+- [ ] Confirm that you can create a new Web site in IIS on this server
+- [ ] Confirm that you will be permitted to configure it so that Web site files can be writable by the `IUSR` user.
+
+- [ ] Ensure you have access to a Microsoft SQL Server version 2008 or newer
+- [ ] Ensure that you'll be able to authenticate in **SQL Server authentication mode**
+- [ ] Confirm that you'll be able to create a database
+- [ ] Ensure that you have a mail server with an accessible SMTP port
+- [ ] Collect the hostname or IP address and any required authentication information for connecting to the mail server
