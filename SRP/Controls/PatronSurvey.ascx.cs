@@ -18,7 +18,7 @@ namespace GRA.SRP.Controls
             {
                 SRID.Text = Session["SRID"] == null ? "0" : Session["SRID"].ToString();
                 SID.Text = Session["SID"] == null ? "" : Session["SID"].ToString();
-                if (SID.Text == "") Response.Redirect("MyProgram.aspx");
+                if (SID.Text == "") Response.Redirect("~/Dashboard.aspx");
 
                 var p = (Patron)Session["Patron"];
 

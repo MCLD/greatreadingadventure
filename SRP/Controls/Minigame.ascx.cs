@@ -17,7 +17,7 @@ namespace GRA.SRP.Controls
             {
                 if (string.IsNullOrEmpty(Request["MGID"]) && (Session["MGID"] == null || Session["MGID"].ToString() == ""))
                 {
-                    Response.Redirect("~/MyAccount.aspx");
+                    Response.Redirect("~/Account/");
                 }
                 if (!string.IsNullOrEmpty(Request["MGID"]))
                 {
@@ -75,7 +75,7 @@ namespace GRA.SRP.Controls
             // Turn Off AJAX so we can use the JQuery for game boad manipulation on Hidden Picture AND Matching Game
             if (string.IsNullOrEmpty(Request["MGID"]) && (Session["MGID"] == null || Session["MGID"].ToString() == ""))
             {
-                Response.Redirect("~/MyAccount.aspx");
+                Response.Redirect("~/Account/");
             }
             if (!string.IsNullOrEmpty(Request["MGID"]))
             {
@@ -595,7 +595,7 @@ namespace GRA.SRP.Controls
             {
                 if (ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0)
                 {
-                    ViewState["gotourl"] = "~/MyLogEntry.aspx";
+                    ViewState["gotourl"] = "~/Adventures/";
                 }
                 return ViewState["gotourl"].ToString();
             }

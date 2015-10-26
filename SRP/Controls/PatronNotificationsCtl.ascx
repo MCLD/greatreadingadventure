@@ -14,7 +14,7 @@
 
         document.body.innerHTML = printContents;
 
-        document.location.href = "MyNotifications.aspx";
+        document.location.href = "~/Notifications/";
 
         window.print();
 

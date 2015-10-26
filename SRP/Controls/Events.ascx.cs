@@ -141,7 +141,7 @@ namespace GRA.SRP.Controls
 
         protected void btnList_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Events.aspx");
+            Response.Redirect("~/Events/");
         }
     }
 }

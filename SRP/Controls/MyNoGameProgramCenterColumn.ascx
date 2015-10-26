@@ -2,11 +2,7 @@
 
 <%@ Register src="SimpleLoggingControl.ascx" tagname="SimpleLoggingControl" tagprefix="uc1" %>
 
-<center><asp:Image ID="imgAvatar" runat="server"  width="160px"/></center>
-
-
-<uc1:SimpleLoggingControl ID="SimpleLoggingControl1" 
-    runat="server" />
+<uc1:SimpleLoggingControl ID="SimpleLoggingControl1" runat="server" />
 
 <br />
 <asp:Label ID="lblSponsor" runat="server" Text="Label"></asp:Label>

@@ -18,7 +18,7 @@ namespace GRA.SRP.Controls
             {
                 if (string.IsNullOrEmpty(Request["ActHistPID"]) && (Session["ActHistPID"] == null || Session["ActHistPID"].ToString() == ""))
                 {
-                    Response.Redirect("~/MyAccount.aspx");
+                    Response.Redirect("~/Account/");
                 }
 
                 lblPID.Text = Session["ActHistPID"].ToString();

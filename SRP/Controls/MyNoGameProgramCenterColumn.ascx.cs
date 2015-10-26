@@ -12,14 +12,11 @@ namespace GRA.SRP.Controls
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["PatronLoggedIn"] == null || !(bool)Session["PatronLoggedIn"]) Response.Redirect("~/");
-
-            var patron = (Patron) (Session["Patron"]);
             var pgm = DAL.Programs.FetchObject(int.Parse(Session["PatronProgramID"].ToString()));
-
-            imgAvatar.ImageUrl = "~/images/Avatars/" + patron.AvatarID + ".png";
-            lblSponsor.Text = pgm.HTML2;    //sponsor
-            lblFooter.Text = pgm.HTML5;     //footer
+            if(pgm != null) {
+                lblSponsor.Text = pgm.HTML2;    //sponsor
+                lblFooter.Text = pgm.HTML5;     //footer
+            }
         }
     }
 }

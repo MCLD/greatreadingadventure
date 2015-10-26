@@ -38,7 +38,7 @@ namespace GRA.SRP.Classes
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();
 
-                    Response.Redirect("~/MyProgram.aspx");
+                    Response.Redirect("~/Dashboard.aspx");
                 }
                 else
                 {

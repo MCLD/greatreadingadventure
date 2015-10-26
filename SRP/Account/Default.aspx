@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="My Account" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyAccount.aspx.cs" Inherits="GRA.SRP.MyAccount"
+    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.MyAccount"
     MaintainScrollPositionOnPostback="true" %>
 
 <%@ Import Namespace="GRA.SRP.DAL" %>

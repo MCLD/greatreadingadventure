@@ -1,12 +1,12 @@
 ﻿<%@ Page Title="My Notifications" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyNotifications.aspx.cs" Inherits="GRA.SRP.MyNotifications" 
+    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.MyNotifications" 
     EnableEventValidation="false" 
     %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
 
 
-<%@ Register src="Controls/PatronNotificationsCtl.ascx" tagname="PatronNotificationsCtl" tagprefix="uc1" %>
+<%@ Register src="~/Controls/PatronNotificationsCtl.ascx" tagname="PatronNotificationsCtl" tagprefix="uc1" %>
 
 
 

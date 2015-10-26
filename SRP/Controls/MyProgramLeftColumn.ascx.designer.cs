@@ -22,15 +22,6 @@ namespace GRA.SRP.Controls {
         protected global::GRA.SRP.Controls.MyGameLoggingNavControl MyGameLoggingNavControl1;
         
         /// <summary>
-        /// NotificationCounterControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.NotificationCounterControl NotificationCounterControl1;
-        
-        /// <summary>
         /// MyBadgesListControl1 control.
         /// </summary>
         /// <remarks>

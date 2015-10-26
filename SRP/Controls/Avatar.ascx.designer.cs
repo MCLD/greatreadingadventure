@@ -10,24 +10,15 @@
 namespace GRA.SRP.Controls {
     
     
-    public partial class NotificationCounterControl {
+    public partial class Avatar {
         
         /// <summary>
-        /// Count1 control.
+        /// imgAvatar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Count1;
-        
-        /// <summary>
-        /// Count2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Count2;
+        protected global::System.Web.UI.WebControls.Image imgAvatar;
     }
 }

@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Events" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Events.aspx.cs" Inherits="GRA.SRP.Events" 
+    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.Events" 
     EnableEventValidation="false" 
     %>
 <%@ Import Namespace="GRA.SRP.DAL" %>

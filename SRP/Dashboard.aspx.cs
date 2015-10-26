@@ -36,15 +36,6 @@ namespace GRA.SRP
             }
             if (pgm.IsOpen)
             {
-                ctl = LoadControl("~/Controls/MyProgramLeftColumn.ascx");
-                plc = LeftColumn;
-                plc.Controls.Add(ctl);
-                ((MyProgramLeftColumn) ctl).GamemapNavControl.Visible = (pgm.ProgramGameID != 0);
-
-                ctl = LoadControl("~/Controls/MyProgramRightColumn.ascx");
-                plc = RightColumn;
-                plc.Controls.Add(ctl);
-
                 if (pgm.ProgramGameID == 0)
                 {
                     ctl = LoadControl("~/Controls/MyNoGameProgramCenterColumn.ascx");

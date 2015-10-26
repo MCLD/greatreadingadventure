@@ -76,7 +76,7 @@ namespace GRA.SRP.Controls
         {
             if (e.CommandName == "cancel")
             {
-                Response.Redirect("~/MyProgram.aspx");
+                Response.Redirect("~/Dashboard.aspx");
             }
 
             lblError.Text = "";

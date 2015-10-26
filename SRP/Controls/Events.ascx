@@ -13,7 +13,7 @@
         document.body.innerHTML = printContents;
         window.print();
 
-        document.location.href = "Events.aspx";
+        document.location.href = "~/Events/";
     }
 </script>
 

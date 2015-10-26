@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyGameLoggingNavControl.ascx.cs" Inherits="GRA.SRP.Controls.MyGameLoggingNavControl" %>
 <div class="secondary-nav" style="margin-top: -20px!important; border: 0px solid black;">
     <ul class="nav">
-        <li><a href="/MyLogEntry.aspx">
+        <li><a href="~/Adventures/" runat="server">
             <table>
                 <tr>
                     <td>
