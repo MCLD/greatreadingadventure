@@ -152,14 +152,14 @@ Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Offers text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Offers Title=Promotional Offers
+Offers Title=Offers
 Offers btn Print=Print
 Offers btn Back=Go Back
 Offers Serial=Serial #
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Events Title=Upcoming Events
+Events Title=Events
 Events btn Filter=Filter
 Events btn Clear=Clear
 Events Label When=When: 
@@ -171,18 +171,18 @@ Events btn Back=Go Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Notifications Title=Notifications
-Ask A Question=Ask A Question
+Notifications Title=Mail
+Ask A Question=Send a mail message
 Notifications btn Print=Print
-Notifications Ask Question Title=Ask Question
-Submit Question=Submit Question
-Notifications Ask Question Submitted Done=We have received your question and will get back to you soon.
+Notifications Ask Question Title=Send a mail message
+Submit Question=Submit mail
+Notifications Ask Question Submitted Done=We received your message and will reply soon!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Reading Lists Title=Book Lists Recommended By Our Librarians
-Reading Lists Instructions=Our librarians have put together several reading lists, for a variety of reading interests and levels.  Select the list name to see the books on the list, and then let us know which of the books you have read.  Complete the reading list and you might just earn a prize, cool badges and even reading points!
-Reading Lists No Lists=No reading lists are available at this time.
+Reading Lists Title=Challenges
+Reading Lists Instructions=Accept a Challenge to earn points and win badges!
+Reading Lists No Lists=No Challenges available right now, check back soon!
 Reading Lists btn Print=Print
 Reading Lists btn Save=Save
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
