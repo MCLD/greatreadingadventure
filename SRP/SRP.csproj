@@ -882,8 +882,8 @@
     <Content Include="MyBadges.aspx" />
     <Content Include="MyGameboard.aspx" />
     <Content Include="Adventures\Default.aspx" />
-    <Content Include="Notifications\Default.aspx" />
-    <Content Include="MyOffers.aspx" />
+    <Content Include="Mail\Default.aspx" />
+    <Content Include="Offers.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="PasswordRecovery.aspx" />
     <Content Include="PlayMinigame.aspx" />
@@ -2915,19 +2915,19 @@
     <Compile Include="Adventures\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Notifications\Default.aspx.cs">
+    <Compile Include="Mail\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Notifications\Default.aspx.designer.cs">
+    <Compile Include="Mail\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyOffers.aspx.cs">
-      <DependentUpon>MyOffers.aspx</DependentUpon>
+    <Compile Include="Offers.aspx.cs">
+      <DependentUpon>Offers.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyOffers.aspx.designer.cs">
-      <DependentUpon>MyOffers.aspx</DependentUpon>
+    <Compile Include="Offers.aspx.designer.cs">
+      <DependentUpon>Offers.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>

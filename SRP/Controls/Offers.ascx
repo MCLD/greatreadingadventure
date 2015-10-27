@@ -13,7 +13,7 @@
 
         document.body.innerHTML = printContents;
  
-        document.location.href = "MyOffers.aspx";
+        document.location.href = "Offers.aspx";
  
         window.print();
 

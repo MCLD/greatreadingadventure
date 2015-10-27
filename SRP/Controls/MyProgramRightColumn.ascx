@@ -19,7 +19,7 @@
             <li><a href="~/Events/" runat="server" 
                     ><i class="icon-angle-right"><!--</i> Events <i class="icon-angle-left"></i><br /><small>Upcoming events you might be interested in</small></a>-->
                     </i> Events <i class="icon-angle-left"></i><br /><small>Earn badges by going to awesome library programs</small></a></li>
-            <li><a href="/MyOffers.aspx" 
+            <li><a href="/Offers.aspx" 
                     ><!--<i class="icon-angle-right"></i> Offers <i class="icon-angle-left"></i><br /><small>Coupons and other exclusive offers you might be interested in </small></a>-->
                     <i class="icon-angle-right"></i> Offers <i class="icon-angle-left"></i><br /><small>Download promo coupons from select community partners</small></a></li>
         </ul>

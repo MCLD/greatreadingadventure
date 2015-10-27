@@ -43,7 +43,7 @@ namespace GRA.SRP.Controls
 
         protected void btnList_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Notifications/");
+            Response.Redirect("~/Mail/");
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
@@ -51,7 +51,7 @@ namespace GRA.SRP.Controls
             var o = Notifications.FetchObject(int.Parse(NID.Text));
 
             o.Delete();
-            Response.Redirect("~/Notifications/");
+            Response.Redirect("~/Mail/");
 
         }
 
@@ -67,7 +67,7 @@ namespace GRA.SRP.Controls
             var o = Notifications.FetchObject(int.Parse(NID.Text));
             o.isUnread = true;
             o.Update();
-            Response.Redirect("~/Notifications/");
+            Response.Redirect("~/Mail/");
 
         }
 

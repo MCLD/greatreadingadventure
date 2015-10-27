@@ -14,7 +14,7 @@
 
         document.body.innerHTML = printContents;
 
-        document.location.href = "~/Notifications/";
+        document.location.href = "~/Mail/";
 
         window.print();
 

@@ -42,9 +42,12 @@
                         <li class="<%=this.LoginPageActive %>"><a href="/Login.aspx" runat="server" id="lnkLogin">
                             <asp:Label ID="Label1" runat="server">LoginMasterBtn</asp:Label></a></li>
                         <%} else { %>
-                        <li class="<%=this.DashboardPageActive %>"><a href="~/Dashboard.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Dashboard"><span class="glyphicon glyphicon-book"></span> <span class="visible-xs-inline">My Dashboard</span></a></li>
-                        <li class="<%=this.NotificationsSectionActive %>"><a href="~/Notifications/" class="menu-item" id="n" runat="server" data-toggle="tooltip" data-placement="bottom" title="Notifications">
-                            <span class="glyphicon glyphicon-envelope" runat="server" id="nIcon"></span> <span class="visible-xs-inline">Notifications</span>
+                        <li class="<%=this.DashboardPageActive %>"><a href="~/Dashboard.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
+                            <span class="glyphicon glyphicon-book"></span>
+                            <span class="visible-xs-inline">My Dashboard</span></a></li>
+                        <li class="<%=this.MailSectionActive %>"><a href="~/Mail/" class="menu-item" id="n" runat="server" data-toggle="tooltip" data-placement="bottom" title="Mail">
+                            <span class="glyphicon glyphicon-envelope" runat="server" id="nIcon"></span>
+                            <span class="visible-xs-inline">Notifications</span>
                             <% if(!string.IsNullOrEmpty(this.Unread) && this.Unread != "0") { %>
                             <span id="unreadBadge" runat="server" class="label label-primary label-as-badge text-primary"><% =this.Unread %></span>
                             <% } %>
@@ -52,10 +55,12 @@
                         <li class="<%=this.AdventuresSectionActive %>"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
                         <li class="<%=this.ChallengesSectionActive %>"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
                         <li class="<%=this.EventsSectionActive %>"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
-                        <!--<li><a href="/MyOffers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>-->
+                        <!--<li><a href="/Offers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>-->
 
                         <!--<li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server">Family Members</a></li>-->
-                        <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account"><span class="glyphicon glyphicon-user"></span> <span class="visible-xs-inline">My Account</span></a></li>
+                        <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account">
+                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="visible-xs-inline">My Account</span></a></li>
                         <!--<li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server">Change Password</a></li>-->
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">

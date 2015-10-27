@@ -82,9 +82,9 @@ namespace GRA.SRP {
         }
 
 
-        public string NotificationsSectionActive {
+        public string MailSectionActive {
             get {
-                if(Request.Path.Contains("/Notifications/")) {
+                if(Request.Path.Contains("/Mail/")) {
                     return "active";
                 }
                 return string.Empty;
