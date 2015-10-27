@@ -77,9 +77,9 @@ FamAccts Impersonate Cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-MyAccount Title=My Account Setup
-FamilyAccount Title=Family Account Setup
-MyAccount SaveBtn=Submit
+MyAccount Title=My Account Settings
+FamilyAccount Title=Family Account Settings
+MyAccount SaveBtn=Update
 MyAccount CancelBtn=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen

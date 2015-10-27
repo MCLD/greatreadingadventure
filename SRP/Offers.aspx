@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="My Offers" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyOffers.aspx.cs" Inherits="GRA.SRP.MyOffers" 
+    CodeBehind="Offers.aspx.cs" Inherits="GRA.SRP.MyOffers" 
     EnableEventValidation="false" 
     %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
