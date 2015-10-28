@@ -21,22 +21,12 @@
 
     }
 </script>
-<div id="fb-root"></div>
-<script>    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<%=(ConfigurationManager.AppSettings["FBAPPID"] ?? "121002584737306") %>";
-        fjs.parentNode.insertBefore(js, fjs);
-    } (document, 'script', 'facebook-jssdk'));</script>
-
-
 
 <asp:Panel ID="pnlList" runat="server" Visible="true">
 
 <div class="row" style="min-height: 400px;">
 	<div class="span12">
-        <h1><asp:Label ID="Label1" runat="server" Text="Badges Title"></asp:Label></h1>
+        <h1><asp:Label ID="Label1" runat="server" Text="Badges"></asp:Label></h1>
         
         <table width="100%" cellpadding="5" cellspacing="0">
             
@@ -47,15 +37,6 @@
             
                 <td width="25%" valign="bottom" align="center" style="padding-left:20px; padding-right: 20px; border-bottom: 1px solid gray">
                     <h4><%# Eval("Title") %></h4>
-
-                    <div class="fb-share-button" data-href='<%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/ShareBadge.aspx?BID=" + Eval("BadgeID") %>' data-type="button"></div>
-                    <!--
-                    <div class="fb-share-button" data-href='<%# "http://srp.stglink.com/ShareBadge.aspx?BID=" + Eval("BadgeID") %>' data-type="button"></div>
-                    
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/ShareBadge.aspx?BID=" + Eval("BadgeID") %>" target="_blank">
-                      Share on Facebook
-                    </a>
-                    -->
 
                     <br /><br />
 

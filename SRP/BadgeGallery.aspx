@@ -2,9 +2,6 @@
     MasterPageFile="~/Layout/SRP.Master" 
     CodeBehind="BadgeGallery.aspx.cs" Inherits="GRA.SRP.BadgeGallery" %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
-<%@ Register src="~/Controls/ProgramTabs.ascx" tagname="ProgramTabs" tagprefix="uc1" %>
-<%@ Register src="~/Controls/ProgramBanner.ascx" tagname="ProgramBanner" tagprefix="uc2" %>
-
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 </asp:Content>
@@ -38,11 +35,6 @@
     }
 </script>
 
-
-
-
-<uc1:ProgramTabs ID="ProgramTabs1" runat="server" />
-<uc2:ProgramBanner ID="ProgramBanner1" runat="server" />
 
 <div class="row"> 
     <div class="span12"> 

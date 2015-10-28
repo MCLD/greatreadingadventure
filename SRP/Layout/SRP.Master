@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title runat="server"></title>
     <asp:ContentPlaceHolder ID="TopOfHeader" runat="server"></asp:ContentPlaceHolder>
-    <link href="http://fonts.googleapis.com/css?family=Open Sans:300,400,600,700" rel="stylesheet" type="text/css">
     <link href="/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="/Content/gra.css" rel="stylesheet" />
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -17,7 +16,7 @@
 </head>
 <body class="page">
     <form id="mainForm" runat="server">
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-default navbar-static-top no-print">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -65,8 +64,6 @@
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">
                             <asp:Label ID="Label2" runat="server">LogoutMasterBtn</asp:Label></a></li>
-                        <%--                        <li><a href="~/Notifications/" runat="server">
-                            <span class="glyphicons glyphicon-question-sign"></span></a></li>--%>
                         <% } %>
                     </ul>
                 </div>
@@ -74,19 +71,22 @@
             </div>
         </nav>
 
-        <div id="content2">
-            <div class="container">
-                <asp:Panel ID="alertContainer" CssClass="alert" runat="server" Visible="false">
-                    <asp:Label ID="alertMessage" runat="server"></asp:Label>
-                </asp:Panel>
-                <asp:PlaceHolder ID="Content" runat="server" />
-                <asp:ContentPlaceHolder ID="MainContent" runat="server">
-                </asp:ContentPlaceHolder>
+        <div class="container" id="content2">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <asp:Panel ID="alertContainer" CssClass="alert" runat="server" Visible="false">
+                        <asp:Label ID="alertGlyphicon" runat="server"></asp:Label>
+                        <asp:Label ID="alertMessage" runat="server"></asp:Label>
+                    </asp:Panel>
+                </div>
             </div>
+            <asp:PlaceHolder ID="Content" runat="server" />
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
         </div>
 
         <% if(!string.IsNullOrEmpty(this.UpsellText)) { %>
-        <div id="content-below" class="container">
+        <div id="content-below" class="container no-print">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 upsell">
                     <div class="row">
@@ -106,7 +106,7 @@
         </div>
         <% } %>
         <% if(!string.IsNullOrEmpty(this.CopyrightStatementText)) { %>
-        <footer class="footer">
+        <footer class="footer no-print">
             <div class="container">
                 <p class="text-muted">
                     <%=this.CopyrightStatementText %>
@@ -117,7 +117,7 @@
     </form>
     <script src="/Scripts/jquery-2.1.4.min.js"></script>
     <script src="/Scripts/bootstrap.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
