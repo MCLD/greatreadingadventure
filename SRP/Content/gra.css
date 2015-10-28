@@ -1,11 +1,5 @@
 ﻿.upsell {
-    background: repeating-linear-gradient(
-      -55deg,
-      #222,
-      #222 10px,
-      #333 10px,
-      #333 20px
-    );
+    background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
     padding-top: 0.8em;
     padding-bottom: 0.8em;
     border-radius: 1em;
@@ -39,4 +33,26 @@
 
 .left-spacer {
     margin-left: 1em;
+}
+
+@media print {
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
+.margin-1em-top {
+    margin-top: 1em;
+}
+
+.margin-1em-left {
+    margin-left: 1em;
+}
+
+.margin-1em-right {
+    margin-right: 1em;
+}
+
+.margin-1em-bottom {
+    margin-bottom: 1em;
 }

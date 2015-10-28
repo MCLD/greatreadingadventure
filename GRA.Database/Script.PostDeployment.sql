@@ -824,50 +824,6 @@ VALUES (
 	)
 GO
 
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'FBReviewOn',
-	'True',
-	'int',
-	'Checkbox',
-	0,
-	'Facebook Book Reviews<br>Are Enabled',
-	'Whether or not posting book reviews to Facebook is allowed',
-	'',
-	'False',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
 INSERT INTO CodeType (
 	[isSystem],
 	[CodeTypeName],

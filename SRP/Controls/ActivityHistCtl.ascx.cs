@@ -88,17 +88,6 @@ namespace GRA.SRP.Controls
             if (review.Trim() != "")
             {
                 ret = string.Format("{0}<br/>{1}", ret, review);
-
-
-                if ( SRPSettings.GetSettingValue("FBReviewOn").SafeToBool())
-                {
-                    var fbButton = string.Format("<div class=\"fb-share-button\" data-href='{0}://{1}{2}/ShareReview.aspx?ID={3}' data-type=\"button\"></div>",
-                                Request.Url.Scheme, Request.Url.Authority, Request.ApplicationPath.TrimEnd('/'), PRID);
-
-                    ret = string.Format("{0}<br/>{1}", ret, fbButton);
-                }
-
-
             }
             return ret;
         }

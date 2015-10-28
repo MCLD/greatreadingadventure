@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
+using GRA.Tools;
 
 namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
@@ -125,6 +126,33 @@ namespace GRA.SRP {
             }
         }
 
+        protected void Page_PreRender(object sender, EventArgs e) {
+            object patronMessage = Session[SessionKey.PatronMessage];
+
+            if(patronMessage != null) {
+                object patronMessageLevel = Session[SessionKey.PatronMessageLevel];
+                string alertLevel = "alert-success";
+                if(patronMessageLevel != null) {
+                    alertLevel = string.Format("alert-{0}", patronMessageLevel.ToString());
+                    Session.Remove(SessionKey.PatronMessageLevel);
+                }
+                alertContainer.CssClass = string.Format("{0} {1}",
+                                                        alertContainer.CssClass,
+                                                        alertLevel);
+                object patronMessageGlyph = Session[SessionKey.PatronMessageGlyphicon];
+                if(patronMessageGlyph != null) {
+                    alertGlyphicon.CssClass = string.Format("glyphicon glyphicon-{0} margin-1em-right",
+                                                            patronMessageGlyph);
+                    Session.Remove(SessionKey.PatronMessageGlyphicon);
+                }
+                alertMessage.Text = patronMessage.ToString();
+                alertContainer.Visible = true;
+                Session.Remove(SessionKey.PatronMessage);
+            } else {
+                alertContainer.Visible = false;
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
 
@@ -142,25 +170,6 @@ namespace GRA.SRP {
             this.CurrentPage = (BaseSRPPage)Page;
             if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn)
                 Response.Redirect("~/Logout.aspx");
-
-            object patronMessage = Session["PatronMessage"];
-
-            if(patronMessage != null) {
-                object patronMessageLevel = Session["PatronMessageLevel"];
-                string alertLevel = "alert-success";
-                if(patronMessageLevel != null) {
-                    alertLevel = string.Format("alert-{0}", patronMessageLevel.ToString());
-                    Session.Remove("PatronMessageLevel");
-                }
-                alertContainer.CssClass = string.Format("{0} {1}",
-                                                        alertContainer.CssClass,
-                                                        alertLevel);
-                alertMessage.Text = patronMessage.ToString();
-                alertContainer.Visible = true;
-                Session.Remove("PatronMessage");
-            } else {
-                alertContainer.Visible = false;
-            }
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {

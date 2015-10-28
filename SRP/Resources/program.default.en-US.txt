@@ -172,6 +172,7 @@ Events btn Back=Go Back
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Notifications Title=Mail
+Notifications From=The Great Reading Adventure Team
 Ask A Question=Send a mail message
 Notifications btn Print=Print
 Notifications Ask Question Title=Send a mail message
