@@ -139,9 +139,11 @@ namespace GRA.SRP {
                 alertContainer.CssClass = string.Format("{0} {1}",
                                                         alertContainer.CssClass,
                                                         alertLevel);
+                alertGlyphicon.Visible = false;
                 object patronMessageGlyph = Session[SessionKey.PatronMessageGlyphicon];
                 if(patronMessageGlyph != null) {
-                    alertGlyphicon.CssClass = string.Format("glyphicon glyphicon-{0} margin-1em-right",
+                    alertGlyphicon.Visible = true;
+                    alertGlyphicon.CssClass = string.Format("glyphicon glyphicon-{0} margin-halfem-right",
                                                             patronMessageGlyph);
                     Session.Remove(SessionKey.PatronMessageGlyphicon);
                 }

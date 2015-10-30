@@ -14,6 +14,8 @@ namespace GRA.SRP.Controls {
         public string SubjectHasError { get; set; }
         public string BodyHasError { get; set; }
 
+        public bool UserHasMessages { get; set; }
+
         public string SuccessIfTrue(object isTrue) {
             var boolIsTrue = isTrue as bool?;
             if(boolIsTrue != null && boolIsTrue == true) {
@@ -27,6 +29,8 @@ namespace GRA.SRP.Controls {
                 var ds = DAL.Notifications.GetAllToPatron(((Patron)Session["Patron"]).PID);
                 rptr.DataSource = ds;
                 rptr.DataBind();
+
+                this.UserHasMessages = ds.Tables[0].Rows.Count > 0;
             }
         }
 

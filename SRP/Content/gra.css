@@ -56,3 +56,19 @@
 .margin-1em-bottom {
     margin-bottom: 1em;
 }
+
+.margin-halfem-top {
+    margin-top: 0.5em;
+}
+
+.margin-halfem-left {
+    margin-left: 0.5em;
+}
+
+.margin-halfem-right {
+    margin-right: 0.5em;
+}
+
+.margin-halfem-bottom {
+    margin-bottom: 0.5em;
+}

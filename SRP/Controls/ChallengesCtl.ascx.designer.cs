@@ -10,52 +10,7 @@
 namespace GRA.SRP.Controls {
     
     
-    public partial class ReadingListCtl {
-        
-        /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-        
-        /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-        
-        /// <summary>
-        /// Label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
-        
-        /// <summary>
-        /// rptr control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptr;
+    public partial class ChallengesCtl {
         
         /// <summary>
         /// lblNoLists control.
@@ -65,6 +20,15 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNoLists;
+        
+        /// <summary>
+        /// rptr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptr;
         
         /// <summary>
         /// pnlDetail control.
@@ -85,15 +49,6 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Label lblTitle;
         
         /// <summary>
-        /// lblMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
-        
-        /// <summary>
         /// lblDesc control.
         /// </summary>
         /// <remarks>
@@ -101,6 +56,24 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDesc;
+        
+        /// <summary>
+        /// lblPoints control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPoints;
+        
+        /// <summary>
+        /// BadgeImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label BadgeImage;
         
         /// <summary>
         /// rptr2 control.
@@ -112,13 +85,13 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Repeater rptr2;
         
         /// <summary>
-        /// btnPrint control.
+        /// btnClose control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrint;
+        protected global::System.Web.UI.WebControls.Button btnClose;
         
         /// <summary>
         /// btnSave control.

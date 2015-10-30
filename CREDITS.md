@@ -20,6 +20,7 @@ Reading Adventure wouldn't exist!
 - [NLog](#nlog)
 - [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
 - [this.Log Logging Extension](#thislog-logging-extension)
+- [Safely using .ready() before including jQuery](#safely-using-ready-before-including-jquery)
 - [SRP_DAL](#srp_dal)
 
 * * *
@@ -113,6 +114,12 @@ Reading Adventure wouldn't exist!
 - <https://github.com/ferventcoder/this.Log>
 - RealDimensions Software, LLC - Copyright © 2012
 - License (Apache) <https://github.com/ferventcoder/this.Log/blob/master/LICENSE>
+
+* * *
+
+## Safely using .ready() before including jQuery
+- <http://writing.colin-gourlay.com/safely-using-ready-before-including-jquery/>
+- Colin Gourlay <colin@colin-gourlay.com>
 
 * * *
 

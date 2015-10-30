@@ -88,6 +88,7 @@ DROP TABLE #temp
 SELECT ROW_NUMBER() OVER (
 		ORDER BY bl.BLID
 		) AS Rank,
-	bl.*
+	bl.*,
+	(select count(*) from [PatronBookLists] pbl WHERE pbl.[blid] = bl.[blid] AND pbl.[HasReadFlag] = 1) as NumBooksCompleted
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID

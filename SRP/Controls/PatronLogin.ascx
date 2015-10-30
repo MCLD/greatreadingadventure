@@ -2,8 +2,7 @@
 <%@ Import Namespace="GRA.SRP.DAL" %>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            <asp:Label ID="Label1" runat="server" Text="LoginForm Title"></asp:Label></h3>
+        <span class="lead"><asp:Label ID="Label1" runat="server" Text="LoginForm Title"></asp:Label></span>
     </div>
     <div class="panel-body form-horizontal">
         <asp:Label ID="lblError" runat="server" Text="" Font-Bold="True" ForeColor="#CC0000"></asp:Label>
@@ -35,15 +34,15 @@
 
     </div>
     <div class="panel-footer clearfix">
-        <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-default pull-right left-spacer"
-            Text="LoginForm button" CausesValidation="true"
-            ValidationGroup="uxLogin" OnClick="btnLogin_Click" />
-
-        <a href="/Register.aspx" class="btn btn-default pull-right left-spacer">
-            <asp:Label ID="Label3" runat="server" Text="LoginForm register" /></a>
-
-        <a href="/Recover.aspx" class="btn btn-default pull-right">
-            <asp:Label ID="Label5" runat="server" Text="LoginForm recover" /></a>
+        <div class="pull-right clearfix">
+            <a href="/Recover.aspx" class="btn btn-default">
+                <asp:Label ID="Label5" runat="server" Text="LoginForm recover" /></a>
+            <a href="/Register.aspx" class="btn btn-default">
+                <asp:Label ID="Label3" runat="server" Text="LoginForm register" /></a>
+            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-default"
+                Text="LoginForm button" CausesValidation="true"
+                ValidationGroup="uxLogin" OnClick="btnLogin_Click" />
+        </div>
     </div>
 </div>
 

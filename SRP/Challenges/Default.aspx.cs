@@ -1,21 +1,17 @@
-﻿
+﻿using SRPApp.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using SRPApp.Classes;
-using GRA.SRP.DAL;
 
-namespace GRA.SRP
-{
-    public partial class ReadingLists : BaseSRPPage
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP.Challenges {
+    public partial class Default : BaseSRPPage {
+        protected void Page_Load(object sender, EventArgs e) {
             IsSecure = true;
-            if (!IsPostBack) TranslateStrings(this);
+            if(!IsPostBack)
+                TranslateStrings(this);
 
         }
     }
