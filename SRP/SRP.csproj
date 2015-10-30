@@ -113,6 +113,7 @@
     <Content Include="BadgeDetail.aspx" />
     <Content Include="BadgeGallery.aspx" />
     <Content Include="Blank.aspx" />
+    <Content Include="Challenges\Default.aspx" />
     <Content Include="ChangeFamMemberAct.aspx" />
     <Content Include="ChangeFamMemberPwd.aspx" />
     <Content Include="ChangePassword.aspx" />
@@ -784,7 +785,7 @@
     <Content Include="Controls\ProgramCSS.ascx" />
     <Content Include="Controls\ProgramTabs.ascx" />
     <Content Include="Controls\PublicProgramView.ascx" />
-    <Content Include="Controls\ReadingListCtl.ascx" />
+    <Content Include="Controls\ChallengesCtl.ascx" />
     <Content Include="Controls\RecoverPassword.ascx" />
     <Content Include="Controls\SimpleLoggingControl.ascx" />
     <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
@@ -887,7 +888,6 @@
     <Content Include="Dashboard.aspx" />
     <Content Include="PasswordRecovery.aspx" />
     <Content Include="PlayMinigame.aspx" />
-    <Content Include="Challenges\Default.aspx" />
     <Content Include="Recover.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="Resources\program.default.en-US.txt" />
@@ -1358,6 +1358,13 @@
     </Compile>
     <Compile Include="Blank.aspx.designer.cs">
       <DependentUpon>Blank.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Challenges\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Challenges\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="ChangeFamMemberAct.aspx.cs">
       <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
@@ -2776,12 +2783,12 @@
     <Compile Include="Controls\PublicProgramView.ascx.designer.cs">
       <DependentUpon>PublicProgramView.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ReadingListCtl.ascx.cs">
-      <DependentUpon>ReadingListCtl.ascx</DependentUpon>
+    <Compile Include="Controls\ChallengesCtl.ascx.cs">
+      <DependentUpon>ChallengesCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Controls\ReadingListCtl.ascx.designer.cs">
-      <DependentUpon>ReadingListCtl.ascx</DependentUpon>
+    <Compile Include="Controls\ChallengesCtl.ascx.designer.cs">
+      <DependentUpon>ChallengesCtl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\RecoverPassword.ascx.cs">
       <DependentUpon>RecoverPassword.ascx</DependentUpon>
@@ -2951,13 +2958,6 @@
       <DependentUpon>PlayMinigame.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Challenges\Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Challenges\Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Recover.aspx.cs">
       <DependentUpon>Recover.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

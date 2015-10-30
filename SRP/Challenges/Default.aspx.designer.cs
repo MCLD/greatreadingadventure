@@ -7,18 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP {
+namespace GRA.SRP.Challenges {
     
     
-    public partial class ReadingLists {
+    public partial class Default {
         
         /// <summary>
-        /// ReadingListCtl1 control.
+        /// ChallengesCtl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.ReadingListCtl ReadingListCtl1;
+        protected global::GRA.SRP.Controls.ChallengesCtl ChallengesCtl;
     }
 }

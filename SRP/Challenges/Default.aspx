@@ -1,22 +1,9 @@
-﻿<%@ Page Title="Reading Lists" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.ReadingLists" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.Challenges.Default" %>
 
+<%@ Register Src="~/Controls/ChallengesCtl.ascx" TagPrefix="uc1" TagName="ChallengesCtl" %>
 
-
-
-<%@ Register src="~/Controls/ReadingListCtl.ascx" tagname="ReadingListCtl" tagprefix="uc1" %>
-
-
-
-
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="Content1" ContentPlaceHolderID="TopOfHeader" runat="server">
 </asp:Content>
-<asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-
-    
-    <uc1:ReadingListCtl ID="ReadingListCtl1" runat="server" />
-
-    
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <uc1:ChallengesCtl runat="server" ID="ChallengesCtl" />
 </asp:Content>
-
-

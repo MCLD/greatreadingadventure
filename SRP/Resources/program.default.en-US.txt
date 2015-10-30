@@ -182,9 +182,9 @@ Notifications Ask Question Submitted Done=We received your message and will repl
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Reading Lists Title=Challenges
-Reading Lists Instructions=Accept a Challenge to earn points and win badges!
+Reading Lists Instructions=Complete a Challenge to earn points and win badges!
 Reading Lists No Lists=No Challenges available right now, check back soon!
-Reading Lists btn Print=Print
+Reading Lists btn Close=Close
 Reading Lists btn Save=Save
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
