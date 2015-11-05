@@ -1,7 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyPointsControl.ascx.cs" Inherits="GRA.SRP.Controls.MyPointsControl" %>
 
-
-<div class="pill" style="color: darkred;">
-    <b>My Score:</b> <asp:Label ID="lblPoints" runat="server" Text="Label"></asp:Label> points
-    <asp:Label ID="lblNextLevel" runat="server" Text=""></asp:Label>
-</div>
+<p><asp:HyperLink runat="server" NavigateUrl="~/ActivityHistory.aspx">I have <asp:Label ID="lblPoints" runat="server" Text="Label"></asp:Label> points.</asp:HyperLink></p>
+<p><asp:Label ID="lblNextLevel" runat="server" Text=""></asp:Label></p>

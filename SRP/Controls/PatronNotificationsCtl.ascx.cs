@@ -64,7 +64,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected void btnAsk_Click(object sender, EventArgs e) {
-            pnlList.Visible = pnlDetail.Visible = pnlDone.Visible = false;
+            pnlList.Visible = pnlDetail.Visible = false;
             pnlAsk.Visible = true;
         }
 

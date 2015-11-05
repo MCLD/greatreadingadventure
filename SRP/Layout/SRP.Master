@@ -8,12 +8,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title runat="server"></title>
     <asp:ContentPlaceHolder ID="TopOfHeader" runat="server"></asp:ContentPlaceHolder>
-    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
-    <link href="/Content/gra.css" rel="stylesheet" />
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
     <link rel="shortcut icon" href="favicon.png">
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link href="/Content/gra.css" rel="stylesheet" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script>(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if(x=="ready"){w.bindReadyQ.push(y);}else{w.readyQ.push(x);}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if(f===d||f===u){return a}else{p(f)}}})(window,document)</script>
+    <script src="/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="/Scripts/jquery.ddslick.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+        function focusFirstField() {
+            $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
+        }
+    </script>
 </head>
 <body class="page">
     <form id="mainForm" runat="server">
@@ -57,11 +68,9 @@
                         <li class="<%=this.EventsSectionActive %>"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
                         <!--<li><a href="/Offers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>-->
 
-                        <!--<li><a href="/FamilyAccountList.aspx" class="menu-item" id="f" runat="server">Family Members</a></li>-->
                         <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account">
                             <span class="glyphicon glyphicon-user"></span>
                             <span class="visible-xs-inline">My Account</span></a></li>
-                        <!--<li><a href="/ChangePassword.aspx" class="menu-item" id="p" runat="server">Change Password</a></li>-->
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">
                             <asp:Label ID="Label2" runat="server">LogoutMasterBtn</asp:Label></a></li>
@@ -116,14 +125,7 @@
         </footer>
         <% } %>
     </form>
-    <script src="/Scripts/jquery-2.1.4.min.js"></script>
-    <script>(function($,d){$.each(readyQ,function(i,f){$(f)});$.each(bindReadyQ,function(i,f){$(d).bind("ready",f)})})(jQuery,document)</script>
-    <script src="/Scripts/bootstrap.min.js"></script>
-    <script src="/js/script.js"></script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
+    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
+    </asp:ContentPlaceHolder>
 </body>
 </html>

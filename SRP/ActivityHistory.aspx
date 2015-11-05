@@ -7,10 +7,7 @@
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 </asp:Content>
+
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-
-
 <uc1:ActivityHistCtl ID="ActivityHistCtl1" runat="server" />
-
-
 </asp:Content>

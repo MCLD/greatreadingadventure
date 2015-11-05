@@ -39,7 +39,7 @@
                 <asp:Label ID="Label5" runat="server" Text="LoginForm recover" /></a>
             <a href="/Register.aspx" class="btn btn-default">
                 <asp:Label ID="Label3" runat="server" Text="LoginForm register" /></a>
-            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-default"
+            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"
                 Text="LoginForm button" CausesValidation="true"
                 ValidationGroup="uxLogin" OnClick="btnLogin_Click" />
         </div>

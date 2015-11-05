@@ -1,4 +1,10 @@
-﻿.upsell {
+﻿@media print {
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
+.upsell {
     background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
     padding-top: 0.8em;
     padding-bottom: 0.8em;
@@ -22,25 +28,35 @@
     background-color: #eee;
 }
 
+/* provide a minimum width on tooltips to reduce wrapping */
 .tooltip-inner {
     white-space: pre-wrap;
     min-width: 80px;
 }
 
+/* background colors for rows in the activity history screen */
+.award-reading {
+    background-color: #ddffdd;
+}
+
+.award-event {
+    background-color: #ddddff;
+}
+
+.award-challenge {
+    background-color: #ffffdd;
+}
+
+.award-adventure {
+    background-color: #ffddff;
+}
+
+/* badges in the top nav bar are actually labels */
 .label-as-badge {
     border-radius: 1em;
 }
 
-.left-spacer {
-    margin-left: 1em;
-}
-
-@media print {
-    .no-print, .no-print * {
-        display: none !important;
-    }
-}
-
+/* general spacing help */
 .margin-1em-top {
     margin-top: 1em;
 }

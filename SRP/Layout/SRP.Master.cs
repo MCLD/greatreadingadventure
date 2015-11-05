@@ -177,7 +177,7 @@ namespace GRA.SRP {
                 if(this.CurrentPage.IsLoggedIn) {
                     homeLink.HRef = "~/Dashboard.aspx";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
-                    if(Session["IsMasterAcct"] as bool? == true) {
+                    if(Session[SessionKey.IsMasterAccount] as bool? == true) {
                         a.Title = "My Family";
                     }
                     this.Unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();

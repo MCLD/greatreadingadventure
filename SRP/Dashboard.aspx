@@ -7,19 +7,9 @@
 <%@ Register Src="~/Controls/MyPointsControl.ascx" TagPrefix="uc1" TagName="MyPointsControl" %>
 <%@ Register Src="~/Controls/LeaderBoardControl.ascx" TagPrefix="uc1" TagName="LeaderBoardControl" %>
 
-
-
-
-
-
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <div class="row">
-        <div class="col-sm-12 text-center">
-            <uc1:Welcome runat="server" ID="Welcome" />
-        </div>
-    </div>
     <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
     </asp:ScriptManager>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
@@ -30,10 +20,17 @@
                         <div class="col-xs-12 text-center">
                             <uc1:Avatar runat="server" ID="Avatar" />
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 text-center">
+                            <uc1:MyPointsControl runat="server" ID="MyPointsControl" />
+                        </div>
+                        <div class="col-xs-12 margin-1em-top">
                             <uc1:MyBadgesListControl runat="server" ID="MyBadgesListControl" />
                         </div>
                     </div>
+                </div>
+
+                <div class="col-sm-6 text-center">
+                    <uc1:Welcome runat="server" ID="Welcome" />
                 </div>
 
                 <div class="col-sm-6">
@@ -43,7 +40,7 @@
                 <div class="col-sm-3">
                     <div class="row">
                         <div class="col-xs-12">
-                            <uc1:MyPointsControl runat="server" ID="MyPointsControl" />
+                            Literacy Tip
                         </div>
                         <div class="col-xs-12">
                             <uc1:LeaderBoardControl runat="server" ID="LeaderBoardControl" />

@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
-
+using GRA.Tools;
 
 namespace GRA.SRP.Classes {
     public partial class ChangeFamilyPassword : System.Web.UI.UserControl {
@@ -26,7 +26,7 @@ namespace GRA.SRP.Classes {
 
                 var patron = (Patron)Session["Patron"];
                 //if (!patron.IsMasterAccount)
-                if(Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"]) {
+                if(Session[SessionKey.IsMasterAccount] == null || !(bool)Session[SessionKey.IsMasterAccount]) {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");
                 }

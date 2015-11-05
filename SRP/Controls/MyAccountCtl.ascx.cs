@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
@@ -18,7 +19,6 @@ namespace GRA.SRP.Controls
                 rptr.DataBind();
 
                 ((BaseSRPPage)Page).TranslateStrings(rptr);
-
             }
         }
 
@@ -154,11 +154,6 @@ namespace GRA.SRP.Controls
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            if (e.CommandName == "cancel")
-            {
-                Response.Redirect("~/Dashboard.aspx");
-            }
-
             if (e.CommandName.ToLower() == "childadd")
             {
                 Response.Redirect("~/AddChildAccount.aspx");
@@ -343,7 +338,6 @@ namespace GRA.SRP.Controls
             var i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
-
             ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary"); 
             txt = (TextBox)e.Item.FindControl("PrimaryLibraryTxt");
             i = ctl.Items.FindByValue(txt.Text);
@@ -371,6 +365,11 @@ namespace GRA.SRP.Controls
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
             //--
+
+            var familyListButton = e.Item.FindControl("FamilyAccountList");
+            if(familyListButton != null) {
+                familyListButton.Visible = Session[SessionKey.IsMasterAccount] as bool? == true;
+            }
 
 
             var cr = CustomRegistrationFields.FetchObject();
@@ -449,9 +448,6 @@ namespace GRA.SRP.Controls
                 i = ctl.Items.FindByValue(txt.Text);
                 if (i != null) ctl.SelectedValue = txt.Text;
             }
-
-
-
         }
 
         protected bool CanAddChildAccounts(string dob, string age)
