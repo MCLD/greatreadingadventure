@@ -11,3 +11,8 @@
         <uc3:PatronLogin ID="PatronLogin1" runat="server" />
     </div>
 </asp:Content>
+<asp:Content ID="BottomOfPage" runat="server" ContentPlaceHolderID="BottomOfPage">
+    <script>
+        $().ready(focusFirstField());
+    </script>
+</asp:Content>

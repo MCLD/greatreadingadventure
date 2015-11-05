@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
@@ -31,7 +32,7 @@ namespace GRA.SRP.Controls
 
                 //var patron = (Patron)Session["Patron"];
                 //if (!patron.IsMasterAccount)
-                if (Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"])
+                if (Session[SessionKey.IsMasterAccount] == null || !(bool)Session[SessionKey.IsMasterAccount])
                 {
                     // kick them out
                     Response.Redirect("~/Logout.aspx");

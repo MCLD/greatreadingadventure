@@ -13,15 +13,6 @@ namespace GRA.SRP {
     public partial class MyProgram {
         
         /// <summary>
-        /// Welcome control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.Welcome Welcome;
-        
-        /// <summary>
         /// ScriptManager1 control.
         /// </summary>
         /// <remarks>
@@ -49,6 +40,15 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.Avatar Avatar;
         
         /// <summary>
+        /// MyPointsControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl;
+        
+        /// <summary>
         /// MyBadgesListControl control.
         /// </summary>
         /// <remarks>
@@ -58,6 +58,15 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.MyBadgesListControl MyBadgesListControl;
         
         /// <summary>
+        /// Welcome control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.Welcome Welcome;
+        
+        /// <summary>
         /// CenterColumn control.
         /// </summary>
         /// <remarks>
@@ -65,15 +74,6 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder CenterColumn;
-        
-        /// <summary>
-        /// MyPointsControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl;
         
         /// <summary>
         /// LeaderBoardControl control.

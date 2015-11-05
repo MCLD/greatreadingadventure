@@ -157,15 +157,6 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor o;
         
         /// <summary>
-        /// f control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor f;
-        
-        /// <summary>
         /// a control.
         /// </summary>
         /// <remarks>
@@ -173,15 +164,6 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor a;
-        
-        /// <summary>
-        /// p control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor p;
         
         /// <summary>
         /// lnkLogout control.
@@ -245,5 +227,14 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        
+        /// <summary>
+        /// BottomOfPage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder BottomOfPage;
     }
 }

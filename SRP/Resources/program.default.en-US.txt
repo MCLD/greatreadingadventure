@@ -79,8 +79,7 @@ FamAccts Impersonate Cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 MyAccount Title=My Account Settings
 FamilyAccount Title=Family Account Settings
-MyAccount SaveBtn=Update
-MyAccount CancelBtn=Cancel
+MyAccount SaveBtn=Save
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,7 +189,7 @@ Reading Lists btn Save=Save
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LoggingForm Title=Family Account Activity Logging
-Activity History Title=Activity History
-Activity History btn Filter=Filter
+activity-history-title=Activity History
+activity-history-other-family=View another family member:
 Play Now=Play Now <br /><small>Go to the game map</small>
 Reading Log=Play Now:<br /><small>Log my reading, enter a secret code, and play mini-games</small>

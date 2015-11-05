@@ -13,15 +13,6 @@ namespace GRA.SRP.Controls {
     public partial class MyBadgesListControl {
         
         /// <summary>
-        /// rptr control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptr;
-        
-        /// <summary>
         /// NoBadges control.
         /// </summary>
         /// <remarks>
@@ -29,5 +20,14 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label NoBadges;
+        
+        /// <summary>
+        /// rptr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptr;
     }
 }

@@ -111,8 +111,8 @@
             </div>
             <div class="modal-footer">
                 <div class="pull-right clearfix">
-                    <asp:Button ID="btnClose" runat="server" Text="Reading Lists btn Close" OnClick="btnClose_Click" CssClass="btn btn-standard" />
-                    <asp:Button ID="btnSave" runat="server" Text="Reading Lists btn Save" OnClick="btnSave_Click" CssClass="btn btn-standard" />
+                    <asp:Button ID="btnClose" runat="server" Text="Reading Lists btn Close" OnClick="btnClose_Click" CssClass="btn btn-default" />
+                    <asp:Button ID="btnSave" runat="server" Text="Reading Lists btn Save" OnClick="btnSave_Click" CssClass="btn btn-default" />
                 </div>
             </div>
         </div>

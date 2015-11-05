@@ -10,6 +10,7 @@ using GRA.SRP.ControlRoom;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
@@ -809,7 +810,7 @@ namespace GRA.SRP.Controls
                         Session["PatronProgramID"] = p.ProgID;
                         Session["CurrentProgramID"] = p.ProgID;
                         Session["TenantID"] = p.TenID;
-                        Session["IsMasterAcct"] = p.IsMasterAccount;
+                        Session[SessionKey.IsMasterAccount] = p.IsMasterAccount;
                         if (p.IsMasterAccount)
                         {
                             Session["MasterAcctPID"] = p.PID;

@@ -495,11 +495,11 @@ namespace GRA.SRP.DAL
                 case PointAwardReason.EventAttendance:
                     return "Attended Event ";
                 case PointAwardReason.BookListCompletion:
-                    return "Completed Book List";
+                    return "Completed a Challenge";
                 case PointAwardReason.GameCompletion:
-                    return "Won a Game";
+                    return "Completed an Adventure";
                 case PointAwardReason.MiniGameCompletion:
-                    return "Won a Mini-Game";
+                    return "Completed an Adventure";
                 case PointAwardReason.Other:
                     return "Other";
                 default:

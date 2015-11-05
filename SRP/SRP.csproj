@@ -116,7 +116,7 @@
     <Content Include="Challenges\Default.aspx" />
     <Content Include="ChangeFamMemberAct.aspx" />
     <Content Include="ChangeFamMemberPwd.aspx" />
-    <Content Include="ChangePassword.aspx" />
+    <Content Include="Account\ChangePassword.aspx" />
     <Content Include="ckeditor\adapters\jquery.js" />
     <Content Include="ckeditor\CHANGES.html" />
     <Content Include="ckeditor\ckeditor.js" />
@@ -801,7 +801,7 @@
     <Content Include="CSS\theme-style.css" />
     <Content Include="EnterFamMemberLog.aspx" />
     <Content Include="Events\Default.aspx" />
-    <Content Include="FamilyAccountList.aspx" />
+    <Content Include="Account\FamilyAccountList.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -1253,6 +1253,7 @@
     <Content Include="Scripts\jquery.bpopup.0.9.4.min.js" />
     <Content Include="Scripts\jquery.bpopup.min.js" />
     <Content Include="Scripts\jquery.ddslick.js" />
+    <Content Include="Scripts\jquery.ddslick.min.js" />
     <Content Include="Scripts\MediaBox\an7effects-1.5.5.js" />
     <Content Include="Scripts\MediaBox\mediaboxAdv-1.3.4b.js" />
     <Content Include="Scripts\MediaBox\mediaboxAdvBlack21.css" />
@@ -1380,11 +1381,11 @@
     <Compile Include="ChangeFamMemberPwd.aspx.designer.cs">
       <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ChangePassword.aspx.cs">
+    <Compile Include="Account\ChangePassword.aspx.cs">
       <DependentUpon>ChangePassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ChangePassword.aspx.designer.cs">
+    <Compile Include="Account\ChangePassword.aspx.designer.cs">
       <DependentUpon>ChangePassword.aspx</DependentUpon>
     </Compile>
     <Compile Include="Code\ControlRoom\BaseControlRoomMaster.cs">
@@ -2842,11 +2843,11 @@
     <Compile Include="Events\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="FamilyAccountList.aspx.cs">
+    <Compile Include="Account\FamilyAccountList.aspx.cs">
       <DependentUpon>FamilyAccountList.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="FamilyAccountList.aspx.designer.cs">
+    <Compile Include="Account\FamilyAccountList.aspx.designer.cs">
       <DependentUpon>FamilyAccountList.aspx</DependentUpon>
     </Compile>
     <Compile Include="FramedSurvey.aspx.cs">

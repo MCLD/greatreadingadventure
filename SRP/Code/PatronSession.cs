@@ -1,4 +1,5 @@
 ﻿using GRA.SRP.DAL;
+using GRA.Tools;
 using System;
 using System.Web.SessionState;
 
@@ -16,7 +17,7 @@ namespace GRA.SRP {
                 Session["PatronProgramID"] = patron.ProgID;
                 Session["CurrentProgramID"] = patron.ProgID;
                 Session["TenantID"] = patron.TenID;
-                Session["IsMasterAcct"] = patron.IsMasterAccount;
+                Session[SessionKey.IsMasterAccount] = patron.IsMasterAccount;
                 if(patron.IsMasterAccount) {
                     Session["MasterAcctPID"] = patron.PID;
                 } else {
@@ -37,7 +38,7 @@ namespace GRA.SRP {
             Session.Remove("ProgramID");
             Session.Remove("PatronProgramID");
             Session.Remove("CurrentProgramID");
-            Session.Remove("IsMasterAcct");
+            Session.Remove(SessionKey.IsMasterAccount);
             Session.Remove("MasterAcctPID");
         }
     }
