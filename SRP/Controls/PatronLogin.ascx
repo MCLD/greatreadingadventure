@@ -2,47 +2,86 @@
 <%@ Import Namespace="GRA.SRP.DAL" %>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <span class="lead"><asp:Label ID="Label1" runat="server" Text="LoginForm Title"></asp:Label></span>
+        <span class="modal-title lead">
+            <asp:Label ID="loginTitle" runat="server" Text="loginform-title"></asp:Label></span>
     </div>
     <div class="panel-body form-horizontal">
-        <asp:Label ID="lblError" runat="server" Text="" Font-Bold="True" ForeColor="#CC0000"></asp:Label>
-        <asp:ValidationSummary ID="ValidationSummary1" runat="server" DisplayMode="List"
-            ShowMessageBox="True" ShowSummary="True" ValidationGroup="uxLogin" ForeColor="#CC0000" Font-Bold="True" />
-
-        <div class="form-group">
+        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" runat="server" ClientIDMode="Static" id="loginErrorMessage"></p>
+        <div class="form-group has-feedback" id="loginLoginGroup">
             <label class="col-sm-3 control-label">
-                <asp:Label ID="Label6" runat="server" Text="LoginForm username"></asp:Label></label>
+                <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
             <div class="col-sm-9">
-                <asp:TextBox ID="PUserName" runat="server" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="UserNameRequired" runat="server"
-                    ControlToValidate="PUserName" ErrorMessage="Username is required"
-                    ToolTip="Username required" ValidationGroup="uxLogin" Display="None" EnableClientScript="false"></asp:RequiredFieldValidator>
+                <asp:TextBox ClientIDMode="Static" ID="loginUsername" runat="server" CssClass="form-control"></asp:TextBox>
+                <span id="loginUsernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none;"></span>
             </div>
         </div>
-
-        <div class="form-group">
+        <div class="form-group has-feeback" id="loginPasswordGroup">
             <label class="col-sm-3 control-label">
-                <asp:Label ID="Label7" runat="server" Text="LoginForm password"></asp:Label></label>
+                <asp:Label runat="server" Text="loginform-password"></asp:Label></label>
             <div class="col-sm-9">
-                <asp:TextBox ID="PPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="PasswordRequired" runat="server"
-                    ControlToValidate="PPassword" ErrorMessage="Password is required"
-                    ToolTip="Password required" ValidationGroup="uxLogin" Display="None" EnableClientScript="false"></asp:RequiredFieldValidator>
+                <asp:TextBox ClientIDMode="Static" ID="loginPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
+                <span id="loginPasswordErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none; right: 15px;"></span>
             </div>
-
         </div>
-
     </div>
     <div class="panel-footer clearfix">
         <div class="pull-right clearfix">
-            <a href="/Recover.aspx" class="btn btn-default">
-                <asp:Label ID="Label5" runat="server" Text="LoginForm recover" /></a>
-            <a href="/Register.aspx" class="btn btn-default">
-                <asp:Label ID="Label3" runat="server" Text="LoginForm register" /></a>
-            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"
-                Text="LoginForm button" CausesValidation="true"
-                ValidationGroup="uxLogin" OnClick="btnLogin_Click" />
+            <a href="~/Recover.aspx" runat="server" class="btn btn-default" ClientIDMode="Static" 
+                id="recoverButton">
+                <asp:Label runat="server" Text="loginform-recover" /></a>
+            <a href="~/Register.aspx" runat="server" class="btn btn-default" ClientIDMode="Static" 
+                id="registerButton">
+                <asp:Label runat="server" Text="loginform-register" /></a>
+            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static" 
+                Text="loginform-submit-button" OnClientClick="return validateLogin();"
+                OnClick="loginClick" data-loading-text="Verifying..." />
         </div>
     </div>
 </div>
 
+<script>
+    function validateLogin() {
+        var valid = true;
+
+        var username = $("#loginUsername").val();
+        if (!username || username.trim().length == 0) {
+            $("#loginUsernameErrorGlyph").show();
+            if (!$("#loginLoginGroup").hasClass("has-error")) {
+                $("#loginLoginGroup").toggleClass("has-error");
+            }
+            valid = false;
+        } else {
+            $("#loginUsernameErrorGlyph").hide();
+            if ($("#loginLoginGroup").hasClass("has-error")) {
+                $("#loginLoginGroup").toggleClass("has-error");
+            }
+        }
+
+        var password = $("#loginPassword").val();
+        if (!password || password.trim().length == 0) {
+            $("#loginPasswordErrorGlyph").show();
+            if (!$("#loginPasswordGroup").hasClass("has-error")) {
+                $("#loginPasswordGroup").toggleClass("has-error");
+            }
+            valid = false;
+        } else {
+            $("#loginPasswordErrorGlyph").hide();
+            if ($("#loginPasswordGroup").hasClass("has-error")) {
+                $("#loginPasswordGroup").toggleClass("has-error");
+            }
+        }
+        if (valid) {
+            $("#btnLogin").button("loading");
+            $("#loginErrorMessage").hide();
+            $("#loginUsername").prop("readonly", true);
+            $("#loginPassword").prop("readonly", true);
+            $("#recoverButton").toggleClass("disabled");
+            $("#registerButton").toggleClass("disabled");
+
+        } else {
+            $('#loginErrorMessage').text("Please enter a username and password.");
+            $("#loginErrorMessage").show();
+        }
+        return valid;
+    }
+</script>

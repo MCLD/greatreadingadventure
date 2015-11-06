@@ -10,5 +10,4 @@ SELECT ROW_NUMBER() OVER (
 FROM [PatronBadges] pb
 LEFT JOIN Badge b ON pb.BadgeID = b.BID
 WHERE PID = @PID
-ORDER BY DateEarned,
-	PBID
+ORDER BY Rank DESC

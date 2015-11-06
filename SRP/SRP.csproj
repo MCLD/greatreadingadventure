@@ -771,11 +771,9 @@
     <Content Include="Controls\MyBadgesListControl.ascx" />
     <Content Include="Controls\MyGameLoggingNavControl.ascx" />
     <Content Include="Controls\MyGamemapNavControl.ascx" />
-    <Content Include="Controls\MyNoGameProgramCenterColumn.ascx" />
     <Content Include="Controls\MyPointsControl.ascx" />
     <Content Include="Controls\MyProgramLeftColumn.ascx" />
     <Content Include="Controls\MyProgramRightColumn.ascx" />
-    <Content Include="Controls\MyWithGameProgramCenterColumn.ascx" />
     <Content Include="Controls\PatronNotificationsCtl.ascx" />
     <Content Include="Controls\Offers.ascx" />
     <Content Include="Controls\PatronLogin.ascx" />
@@ -815,7 +813,8 @@
     <Content Include="images\Audit.png" />
     <Content Include="images\Avatars\no_avatar.png" />
     <Content Include="images\Avatars\no_avatar_sm.png" />
-    <Content Include="images\Badges\badges-placeholder.txt" />
+    <Content Include="images\Badges\no_badge.png" />
+    <Content Include="images\Badges\no_badge_sm.png" />
     <Content Include="images\Banners\banners-placeholder.txt" />
     <Content Include="images\bg-sequence.jpg" />
     <Content Include="images\bg_diamond.png" />
@@ -2668,13 +2667,6 @@
     <Compile Include="Controls\MyGamemapNavControl.ascx.designer.cs">
       <DependentUpon>MyGamemapNavControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MyNoGameProgramCenterColumn.ascx.cs">
-      <DependentUpon>MyNoGameProgramCenterColumn.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\MyNoGameProgramCenterColumn.ascx.designer.cs">
-      <DependentUpon>MyNoGameProgramCenterColumn.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyPointsControl.ascx.cs">
       <DependentUpon>MyPointsControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2695,13 +2687,6 @@
     </Compile>
     <Compile Include="Controls\MyProgramRightColumn.ascx.designer.cs">
       <DependentUpon>MyProgramRightColumn.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MyWithGameProgramCenterColumn.ascx.cs">
-      <DependentUpon>MyWithGameProgramCenterColumn.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\MyWithGameProgramCenterColumn.ascx.designer.cs">
-      <DependentUpon>MyWithGameProgramCenterColumn.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PatronNotificationsCtl.ascx.cs">
       <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>

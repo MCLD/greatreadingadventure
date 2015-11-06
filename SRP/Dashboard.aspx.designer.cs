@@ -13,24 +13,6 @@ namespace GRA.SRP {
     public partial class MyProgram {
         
         /// <summary>
-        /// ScriptManager1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-        
-        /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
-        /// <summary>
         /// Avatar control.
         /// </summary>
         /// <remarks>
@@ -67,13 +49,40 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.Welcome Welcome;
         
         /// <summary>
-        /// CenterColumn control.
+        /// ProgramNotOpenText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CenterColumn;
+        protected global::System.Web.UI.WebControls.Label ProgramNotOpenText;
+        
+        /// <summary>
+        /// SimpleLoggingControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.SimpleLoggingControl SimpleLoggingControl;
+        
+        /// <summary>
+        /// SponsorText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label SponsorText;
+        
+        /// <summary>
+        /// FooterText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label FooterText;
         
         /// <summary>
         /// LeaderBoardControl control.

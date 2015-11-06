@@ -10,9 +10,12 @@ using SRPApp.Classes;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.Tools;
+using System.Text;
 
 namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
+        private const string NoBadgePath = "~/images/Badges/no_badge.png";
+
         public BaseSRPPage CurrentPage { get; set; }
         public string Unread { get; set; }
         public string SystemNameText {
@@ -126,6 +129,9 @@ namespace GRA.SRP {
             }
         }
 
+        public bool ShowBadgePopup { get; set; }
+        public bool ShowLoginPopup { get; set; }
+        public string LoginPopupErrorMessage { get; set; }
         protected void Page_PreRender(object sender, EventArgs e) {
             object patronMessage = Session[SessionKey.PatronMessage];
 
@@ -153,6 +159,64 @@ namespace GRA.SRP {
             } else {
                 alertContainer.Visible = false;
             }
+
+            var displayBadge = Session[SessionKey.DisplayBadge];
+            if(displayBadge != null) {
+                int badgeId = 0;
+                if(int.TryParse(displayBadge.ToString(), out badgeId)) {
+                    var badge = DAL.Badge.FetchObject(badgeId);
+                    if(badge != null) {
+                        this.ShowBadgePopup = true;
+                        badgePopupPanel.Visible = true;
+                        Session.Remove(SessionKey.DisplayBadge);
+                        badgePopupTitle.Text = badge.UserName;
+
+                        string badgePath = NoBadgePath;
+                        string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
+                                                                  badgeId);
+                        if(System.IO.File.Exists(Server.MapPath(potentialBadgePath))) {
+                            badgePath = potentialBadgePath;
+                        }
+
+                        badgePopupImage.ImageUrl = badgePath;
+                        badgePopupImage.AlternateText = string.Format("{0} Badge", badge.UserName);
+
+                        StringBuilder earn = new StringBuilder();
+
+                        string earnText = DAL.Badge.GetBadgeReading(badgeId);
+                        if(earnText.Length > 0) {
+                            earn.AppendFormat("<li>Earn points by reading: {0}.</li>", earnText);
+                        }
+
+                        earnText = DAL.Badge.GetEnrollmentPrograms(badgeId);
+                        if(earnText.Length > 0) {
+                            earn.AppendFormat("<li>Enroll in a reading program: {0}</li>", earnText);
+                        }
+
+                        earnText = DAL.Badge.GetBadgeBookLists(badgeId);
+                        if(earnText.Length > 0) {
+                            earn.AppendFormat("<li>Complete a Challenge: {0}</li>", earnText);
+                        }
+
+                        earnText = DAL.Badge.GetBadgeGames(badgeId);
+                        if(earnText.Length > 0) {
+                            earn.AppendFormat("<li>Unlock and complete an Adventure: {0}</li>", earnText);
+                        }
+
+                        earnText = DAL.Badge.GetBadgeEvents(badgeId);
+                        if(earnText.Length > 0) {
+                            earn.AppendFormat("<li>Attend an Event: {0}</li>", earnText);
+                        }
+
+                        if(earn.Length > 0) {
+                            badgePopupEarn.Visible = true;
+                            badgePopupEarnText.Text = earn.ToString();
+                        } else {
+                            badgePopupEarn.Visible = false;
+                        }
+                    }
+                }
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e) {
@@ -170,8 +234,9 @@ namespace GRA.SRP {
             plc.Controls.Add(ctl);
 
             this.CurrentPage = (BaseSRPPage)Page;
-            if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn)
+            if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn) {
                 Response.Redirect("~/Logout.aspx");
+            }
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {
@@ -186,11 +251,50 @@ namespace GRA.SRP {
                             TestingBL.PatronNeedsPreTest();
                         }
                     }
+                } else {
+                    this.loginPopupPanel.Visible = true;
+                    if(Session[SessionKey.RequestedPath] != null) {
+                        this.ShowLoginPopup = true;
+                    }
                 }
+            }
+        }
 
+        protected void loginPopupClick(object sender, EventArgs e) {
+            if(!(string.IsNullOrEmpty(loginPopupUsername.Text.Trim()) || string.IsNullOrEmpty(loginPopupPassword.Text.Trim()))) {
+                var patron = new Patron();
+                if(Patron.Login(loginPopupUsername.Text.Trim(), loginPopupPassword.Text.Trim())) {
+                    var bp = Patron.GetObjectByUsername(loginPopupUsername.Text.Trim());
+
+                    var pgm = DAL.Programs.FetchObject(bp.ProgID);
+                    if(pgm == null) {
+                        int schoolGrade;
+                        int.TryParse(bp.SchoolGrade, out schoolGrade);
+                        var progID = Programs.GetDefaultProgramForAgeAndGrade(bp.Age, schoolGrade); //Programs.FetchObject(Programs.GetDefaultProgramID());
+                        bp.ProgID = progID;
+                        bp.Update();
+                    }
+                    new PatronSession(Session).Establish(bp);
+
+                    TestingBL.CheckPatronNeedsPreTest();
+                    TestingBL.CheckPatronNeedsPostTest();
+
+                    if(Session[SessionKey.RequestedPath] != null) {
+                        string requestedPath = Session[SessionKey.RequestedPath].ToString();
+                        Session.Remove(SessionKey.RequestedPath);
+                        Response.Redirect(requestedPath);
+                    } else {
+                        Response.Redirect("~/Dashboard.aspx");
+                    }
+                } else {
+                    this.LoginPopupErrorMessage = "Invalid username or password.";
+                    Session["PatronLoggedIn"] = false;
+                    Session["Patron"] = null;
+                }
             }
 
         }
+
     }
 }
 

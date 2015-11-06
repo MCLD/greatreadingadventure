@@ -1,23 +1,17 @@
 ﻿<%@ Page Title="My Badges" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="MyBadges.aspx.cs" Inherits="GRA.SRP.MyBadges" 
-    EnableEventValidation="false" 
-    %>
+    CodeBehind="MyBadges.aspx.cs" Inherits="GRA.SRP.MyBadges"
+    EnableEventValidation="false" %>
+
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-
-<%@ Register src="Controls/Badges.ascx" tagname="Badges" tagprefix="uc1" %>
-
+<%@ Register Src="Controls/Badges.ascx" TagName="Badges" TagPrefix="uc1" %>
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-
-
-
-
-    <uc1:Badges ID="Badges1" runat="server" />
-
-
-
-
+    <div class="row">
+        <div class="col-xs-12">
+            <uc1:Badges ID="Badges" runat="server" />
+        </div>
+    </div>
 </asp:Content>

@@ -36,23 +36,30 @@ namespace GRA.SRP
             }
             if (pgm.IsOpen)
             {
-                if (pgm.ProgramGameID == 0)
-                {
-                    ctl = LoadControl("~/Controls/MyNoGameProgramCenterColumn.ascx");
-                }
-                else
-                {
-                    ctl = LoadControl("~/Controls/MyWithGameProgramCenterColumn.ascx");
-                }
-                plc = CenterColumn;
-                plc.Controls.Add(ctl);
+                SimpleLoggingControl.Visible = true;
+                ProgramNotOpenText.Visible = false;
             }
             else
             {
-                ctl = new Label();
-                ((Label) ctl).Text = "<h2>"+pgm.Title+"</h2><hr>" + pgm.HTML6;
-                plc = CenterColumn;
-                plc.Controls.Add(ctl);
+                SimpleLoggingControl.Visible = false;
+                ProgramNotOpenText.Visible = true;
+                ProgramNotOpenText.Text = pgm.HTML6;
+            }
+
+            if(pgm != null) {
+                if(!string.IsNullOrWhiteSpace(pgm.HTML2)) {
+                    SponsorText.Text = pgm.HTML2;
+                    SponsorText.Visible = true;
+                } else {
+                    SponsorText.Visible = false;
+                }
+
+                if(!string.IsNullOrWhiteSpace(pgm.HTML5)) {
+                    FooterText.Text = string.Format("<hr>{0}", pgm.HTML5);
+                    FooterText.Visible = true;
+                } else {
+                    FooterText.Visible = false;
+                }
             }
 
             if (!IsPostBack) TranslateStrings(this);

@@ -2,24 +2,24 @@
 
 <div class="row">
     <div class="col-xs-12 text-center">
-        <span class="lead"><asp:HyperLink runat="server" NavigateUrl="~/MyBadges.aspx">My Badges</asp:HyperLink></span>
+        <span class="lead"><asp:HyperLink runat="server" NavigateUrl="~/MyBadges.aspx"><asp:Label runat="server" Text="badges-my-badges"></asp:Label></asp:HyperLink></span>
         <hr style="margin-bottom:5px !important; margin-top:5px !important; "/>
     </div>
 </div>
-<%--    <small>See <a href="/MyBadges.aspx">my badges </a></small><br />
-    <small>Discover <a href="/BadgeGallery.aspx">more badges </a></small>--%>
 <div class="row">
     <div class="col-xs-12">
-        <asp:Label ID="NoBadges" runat="server" Text="You have not earned any badges yet." Visible="false" CssClass="margin-1em-bottom"></asp:Label>
+        <asp:Label ID="NoBadges" runat="server" Text="badges-none-earned" Visible="false" CssClass="margin-1em-bottom"></asp:Label>
     </div>
-    <asp:Repeater runat="server" ID="rptr">
+    <asp:Repeater runat="server" ID="rptr" OnItemCommand="Repeater_ItemCommand">
         <ItemTemplate>
-            <div class="<%=this.BadgeClass %> text-center">
-                <img src='/images/badges/sm_<%# Eval("BadgeID") %>.png' />
+            <div class="<%=this.BadgeClass %> text-center" data-toggle="tooltip" data-placement="right" title="<%# "You earned the " + Eval("Title") + " badge on " + ((DateTime)Eval("DateEarned")).ToShortDateString() %>">
+                <asp:LinkButton runat="server" CommandName="BadgeDetails" CommandArgument='<%#Eval("BadgeID") %>' CssClass="thumbnail">
+                    <asp:Image runat="server" ImageUrl='<%# "~/images/badges/sm_" + Eval("BadgeID") + ".png"%>'/>
+                </asp:LinkButton>
             </div>
         </ItemTemplate>
     </asp:Repeater>
         <div class="col-xs-12 text-center">
-        <asp:HyperLink runat="server" NavigateUrl="~/BadgeGallery.aspx"><em>Explore more available badges...</em></asp:HyperLink>
+        <asp:HyperLink runat="server" NavigateUrl="~/BadgeGallery.aspx"><em>Explore more badges...</em></asp:HyperLink>
     </div>
 </div>

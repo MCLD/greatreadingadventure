@@ -14,4 +14,5 @@
         <div class="col-xs-12">
             <uc3:PublicProgramView ID="PublicProgramView1" runat="server" />
         </div>
+    </div>
 </asp:Content>

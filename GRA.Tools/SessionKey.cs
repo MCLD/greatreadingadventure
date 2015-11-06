@@ -9,5 +9,7 @@ namespace GRA.Tools {
         public const string PatronMessageGlyphicon = "PatMsgGly";
         public const string PatronMessageLevel = "PatMsgLev";
         public const string IsMasterAccount = "IsMasterAcct";
+        public const string DisplayBadge = "DispBdg";
+        public const string RequestedPath = "ReqPath";
     }
 }
