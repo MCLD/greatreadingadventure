@@ -8,12 +8,12 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 namespace SRPApp.Classes {
     public class BaseSRPPage : System.Web.UI.Page {
         public BaseSRPPage() {
             PreInit += basePagePreInit;
-
         }
 
         #region Properties
@@ -23,8 +23,12 @@ namespace SRPApp.Classes {
             get { return _isSecure; }
             set {
                 _isSecure = value;
-                if(IsSecure && !IsLoggedIn)
-                    Response.Redirect("~/Login.aspx");
+                if(IsSecure && !IsLoggedIn) {
+                    if(Session[SessionKey.RequestedPath] == null) {
+                        Session[SessionKey.RequestedPath] = Request.Path;
+                    }
+                    Response.Redirect("~");
+                }
             }
         }
 
@@ -112,9 +116,12 @@ namespace SRPApp.Classes {
                 // PatronID =  patron.PK
                 // ProgramID = patron.programid
             }
-            if(IsSecure && !IsLoggedIn)
-                Response.Redirect("~/Login.aspx");
-
+            if(IsSecure && !IsLoggedIn) {
+                if(Session[SessionKey.RequestedPath] == null) {
+                    Session[SessionKey.RequestedPath] = Request.Path;
+                }
+                Response.Redirect("~");
+            }
 
             base.OnPreLoad(e);
         }

@@ -27,15 +27,12 @@ Button=Press Me!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoginForm Title=Login
-LoginForm no account=  
-LoginForm register=Register
-LoginForm forgot pass=
-LoginForm recover=Lost password
-LoginForm username=Username:
-LoginForm password=Password:
-LoginForm terms=I accept the terms and conditions
-LoginForm button=Login
+loginform-title=Login
+loginform-register=Register
+loginform-recover=Lost password
+loginform-username=Username:
+loginform-password=Password:
+loginform-submit-button=Login
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Recover form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,3 +190,8 @@ activity-history-title=Activity History
 activity-history-other-family=View another family member:
 Play Now=Play Now <br /><small>Go to the game map</small>
 Reading Log=Play Now:<br /><small>Log my reading, enter a secret code, and play mini-games</small>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Badges
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+badges-my-badges=My Badges
+badges-none-earned=You have not earned any badges yet.

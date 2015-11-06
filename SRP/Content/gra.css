@@ -88,3 +88,7 @@
 .margin-halfem-bottom {
     margin-bottom: 0.5em;
 }
+
+.no-underline {
+    text-decoration: none !important;
+}

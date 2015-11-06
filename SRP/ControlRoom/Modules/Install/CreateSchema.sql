@@ -7355,9 +7355,9 @@ SELECT ROW_NUMBER() OVER (
 FROM [PatronBadges] pb
 LEFT JOIN Badge b ON pb.BadgeID = b.BID
 WHERE PID = @PID
-ORDER BY DateEarned,
-	PBID
+ORDER BY Rank DESC
 GO
+
 /****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetByID]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
 GO

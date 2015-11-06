@@ -13,12 +13,12 @@ namespace GRA.SRP {
     public partial class MyBadges {
         
         /// <summary>
-        /// Badges1 control.
+        /// Badges control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.Badges Badges1;
+        protected global::GRA.SRP.Controls.Badges Badges;
     }
 }

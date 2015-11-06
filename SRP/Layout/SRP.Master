@@ -48,9 +48,9 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <%if(!this.CurrentPage.IsLoggedIn) { %>
-                        <li class="<%=this.RegisterPageActive %>"><a href="/Register.aspx" runat="server" id="lnkRegister">
+                        <li class="<%=this.RegisterPageActive %>"><a href="~/Register.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">RegisterMasterBtn</asp:Label></a></li>
-                        <li class="<%=this.LoginPageActive %>"><a href="/Login.aspx" runat="server" id="lnkLogin">
+                        <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
                             <asp:Label ID="Label1" runat="server">LoginMasterBtn</asp:Label></a></li>
                         <%} else { %>
                         <li class="<%=this.DashboardPageActive %>"><a href="~/Dashboard.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
@@ -80,6 +80,80 @@
                 <!--/.nav-collapse -->
             </div>
         </nav>
+
+        <asp:Panel ID="badgePopupPanel" runat="server" Visible="false" CssClass="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span class="modal-title lead">
+                            <asp:Label ID="badgePopupTitle" runat="server"></asp:Label></span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <asp:Image ID="badgePopupImage" runat="server" CssClass="center-block" />
+                            </div>
+                            <asp:Panel ID="badgePopupEarn" runat="server" CssClass="col-sm-10 col-sm-offset-1 margin-1em-top">
+                                Ways to earn this badge:
+                                <div class="margin-halfem-top">
+                                    <asp:Label ID="badgePopupEarnText" runat="server" Text=""></asp:Label>
+                                </div>
+                            </asp:Panel>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-right clearfix">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
+
+        <asp:Panel ID="loginPopupPanel" runat="server" Visible="false" CssClass="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <span class="modal-title lead">
+                            <asp:Label ID="loginPopupTitle" runat="server" Text="loginform-title"></asp:Label></span>
+                    </div>
+                    <div class="modal-body form-horizontal">
+                        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" id="loginPopupErrorMessage"><%=this.LoginPopupErrorMessage%></p>
+                        <div class="form-group has-feedback" id="loginPopupLoginGroup">
+                            <label class="col-sm-3 control-label">
+                                <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
+                            <div class="col-sm-9">
+                                <asp:TextBox ID="loginPopupUsername" runat="server" CssClass="form-control"></asp:TextBox>
+                                <span id="loginPopupUsernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none;"></span>
+                            </div>
+                        </div>
+                        <div class="form-group has-feeback" id="loginPopupPasswordGroup">
+                            <label class="col-sm-3 control-label">
+                                <asp:Label runat="server" Text="loginform-password"></asp:Label></label>
+                            <div class="col-sm-9">
+                                <asp:TextBox ID="loginPopupPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
+                                <span id="loginPopupPasswordErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none; right: 15px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer clearfix">
+                        <div class="pull-right clearfix">
+                            <a href="~/Recover.aspx" runat="server" class="btn btn-default"
+                                id="loginPopupRecoverButton">
+                                <asp:Label runat="server" Text="loginform-recover" /></a>
+                            <a href="~/Register.aspx" runat="server" class="btn btn-default"
+                                id="loginPopupRegisterButton">
+                                <asp:Label runat="server" Text="loginform-register" /></a>
+                            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"
+                                Text="loginform-submit-button" OnClientClick="return passwordPopupValidateLogin();"
+                                OnClick="loginPopupClick" data-loading-text="Verifying..." />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
 
         <div class="container" id="content2">
             <div class="row">
@@ -127,5 +201,96 @@
     </form>
     <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
     </asp:ContentPlaceHolder>
+    <script>
+        $(function () {
+            if ("<%=this.ShowLoginPopup%>" == "True") {
+                showLoginPopup();
+            } else {
+                if ("<%=this.ShowBadgePopup%>" == "True") {
+                    var elems = $("div[id$='badgePopupPanel']");
+                    elems.each(function (index) {
+                        $(this).modal('show');
+                    });
+                }
+            }
+        });
+        $('#loginPopupPanel').on('shown.bs.modal', function () {
+            $('#loginPopupUsername').focus();
+        })
+        function showLoginPopup() {
+            var elems = $("div[id$='loginPopupPanel']");
+            elems.each(function (index) {
+                $(this).modal('show');
+            });
+            $("#loginPopupUsernameErrorGlyph").hide();
+            $("#loginPopupPasswordErrorGlyph").hide();
+            if ($("#loginPopupLoginGroup").hasClass("has-error")) {
+                $("#loginPopupLoginGroup").toggleClass("has-error");
+            }
+            if ($("#loginPopupPasswordGroup").hasClass("has-error")) {
+                $("#loginPopupPasswordGroup").toggleClass("has-error");
+            }
+            $("#loginPopupErrorMessage").hide();
+            return false;
+        }
+        $().ready(function () {
+            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
+                showLoginPopup();
+                $("#loginPopupUsernameErrorGlyph").show();
+                $("#loginPopupPasswordErrorGlyph").show();
+                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
+                }
+                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+                $("#loginPopupErrorMessage").show();
+            }
+        });
+        function passwordPopupValidateLogin() {
+            var valid = true;
+
+            var username = $("#loginPopupUsername").val();
+            if (!username || username.trim().length == 0) {
+                $("#loginPopupUsernameErrorGlyph").show();
+                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
+                }
+                valid = false;
+            } else {
+                $("#loginPopupUsernameErrorGlyph").hide();
+                if ($("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
+                }
+            }
+
+            var password = $("#loginPopupPassword").val();
+            if (!password || password.trim().length == 0) {
+                $("#loginPopupPasswordErrorGlyph").show();
+                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+                valid = false;
+            } else {
+                $("#loginPopupPasswordErrorGlyph").hide();
+                if ($("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+            }
+            if (valid) {
+                $("#btnLogin").button("loading");
+                $("#loginPopupErrorMessage").hide();
+                $("#loginPopupUsername").prop("readonly", true);
+                $("#loginPopupPassword").prop("readonly", true);
+                $("#loginPopupRecoverButton").toggleClass("disabled");
+                $("#loginPopupRegisterButton").toggleClass("disabled");
+
+            } else {
+                $('#loginPopupErrorMessage').text("Please enter a username and password.");
+                $("#loginPopupErrorMessage").show();
+            }
+            return valid;
+        }
+    </script>
 </body>
 </html>

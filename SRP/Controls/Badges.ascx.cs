@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
@@ -25,22 +26,9 @@ namespace GRA.SRP.Controls
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            pnlList.Visible = false;
-
-
-            var o = new PatronBadges();
-            o.Fetch(int.Parse(e.CommandArgument.ToString()));
-
-            var b = new DAL.Badge();
-            b.Fetch(o.BadgeID);
-
-            lblTitle.Text = b.UserName;
-
-
-
-            Badge.ImageUrl = WebHelper.GetAppURL("/images/Badges/" + o.BadgeID + ".png").Replace("///", "/");// +DateTime.Now.ToString();
-            o.Update();
-            pnlDetail.Visible = true;
+            if(e.CommandName.Equals("badgedetails", StringComparison.CurrentCultureIgnoreCase)) {
+                Session[SessionKey.DisplayBadge] = e.CommandArgument;
+            }
         }
 
         protected void btnList_Click(object sender, EventArgs e)
