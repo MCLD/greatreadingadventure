@@ -10,6 +10,7 @@ using GRA.Tools;
 
 namespace GRA.SRP.Controls {
     public partial class ChallengesCtl : System.Web.UI.UserControl {
+        private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?badgeid={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
         public bool ShowModal { get; set; }
 
         protected string ShowBadge(object badgeIdObject) {
@@ -17,7 +18,7 @@ namespace GRA.SRP.Controls {
             if(badgeId == null || badgeId == 0) {
                 return "No badge.";
             } else {
-                return string.Format("<img src=\"/images/badges/sm_{0}.png\" />", badgeId);
+                return string.Format(BadgeLinkAndImage, badgeId);
             }
         }
 
@@ -83,7 +84,7 @@ namespace GRA.SRP.Controls {
                     award += " and <strong>a badge</strong>.";
                 }
 
-                BadgeImage.Text = string.Format("<img src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
             } else {
                 BadgeImage.Text = string.Empty;
                 award += ".";
@@ -179,7 +180,7 @@ namespace GRA.SRP.Controls {
                     var sBadges = pa.AwardPointsToPatron(bl.AwardPoints, PointAwardReason.BookListCompletion,
                                                             bookListID: bl.BLID);
                     if(sBadges.Length > 0) {
-                        Response.Redirect("~/BadgeAward.aspx?b=" + sBadges);
+                        Response.Redirect("~/Badges/BadgeAward.aspx?b=" + sBadges);
                     }
                 }
             }

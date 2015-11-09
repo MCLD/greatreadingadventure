@@ -194,4 +194,6 @@ Reading Log=Play Now:<br /><small>Log my reading, enter a secret code, and play 
 ;;  Badges
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 badges-my-badges=My Badges
+badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
+badges-none-available=No badges found. Check back soon!

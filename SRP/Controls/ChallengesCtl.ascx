@@ -20,8 +20,10 @@
                 <tr>
                     <th>Challenge</th>
                     <th>Steps completed toward goal</th>
-                    <th>Points<br />earned</th>
-                    <th>Badge<br />earned</th>
+                    <th>Points<br />
+                        earned</th>
+                    <th>Badge<br />
+                        earned</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +46,9 @@
                                 <%#Eval("AwardPoints") %>
                             </td>
                             <td>
-                                <%#ShowBadge(Eval("AwardBadgeID")) %>
+                                <div class="clearfix">
+                                    <%#ShowBadge(Eval("AwardBadgeID")) %>
+                                </div>
                             </td>
                         </tr>
                     </ItemTemplate>
@@ -69,7 +73,6 @@
                     </div>
                     <div class="col-xs-3 col-sm-2" style="min-width: 64px;">
                         <asp:Label ID="BadgeImage" runat="server" CssClass="pull-right"></asp:Label>
-
                     </div>
                 </div>
                 <table class="table table-striped" style="margin-top: 1em;">

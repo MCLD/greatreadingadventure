@@ -233,6 +233,12 @@ SRP/Images/Games/MixMatch/*.png
 SRP/Images/Games/WordMatch/*.png
 SRP/Images/Offers/*.png
 
+# exclusions for missing image images
+!SRP/Images/Avatars/no_avatar.png
+!SRP/Images/Avatars/no_avatar_sm.png
+!SRP/Images/Badges/no_badge.png
+!SRP/Images/Badges/no_badge_sm.png
+
 SRP/Images/Avatars/*.jpg
 SRP/Images/Badges/*.jpg
 SRP/Images/Banners/*.jpg

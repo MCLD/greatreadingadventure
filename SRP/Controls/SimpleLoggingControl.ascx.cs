@@ -174,7 +174,7 @@ namespace GRA.SRP.Controls
             if (sBadges != "")
             {
                 Session["GoToUrl"] = GoToUrl;
-                Response.Redirect("~/BadgeAward.aspx?b=" + sBadges);
+                Response.Redirect("~/Badges/BadgeAward.aspx?b=" + sBadges);
             }
         
             lblMessage.ForeColor = System.Drawing.Color.Green;

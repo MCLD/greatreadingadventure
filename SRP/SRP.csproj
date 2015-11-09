@@ -72,6 +72,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.1.2\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
@@ -109,9 +113,10 @@
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
     <Content Include="App_Themes\Default\font-awesome.css" />
-    <Content Include="BadgeAward.aspx" />
-    <Content Include="BadgeDetail.aspx" />
-    <Content Include="BadgeGallery.aspx" />
+    <Content Include="Badges\BadgeAward.aspx" />
+    <Content Include="Badges\BadgeDetail.aspx" />
+    <Content Include="Badges\Default.aspx" />
+    <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
     <Content Include="Challenges\Default.aspx" />
     <Content Include="ChangeFamMemberAct.aspx" />
@@ -861,7 +866,7 @@
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="Account\Default.aspx" />
-    <Content Include="MyBadges.aspx" />
+    <Content Include="Badges\MyBadges.aspx" />
     <Content Include="MyGameboard.aspx" />
     <Content Include="Adventures\Default.aspx" />
     <Content Include="Mail\Default.aspx" />
@@ -1228,6 +1233,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="ControlRoom\Web.config" />
+    <Content Include="Handlers\GetBadgeInfo.ashx" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -1313,26 +1319,33 @@
     <Compile Include="AddlSurvey.aspx.designer.cs">
       <DependentUpon>AddlSurvey.aspx</DependentUpon>
     </Compile>
-    <Compile Include="BadgeAward.aspx.cs">
+    <Compile Include="Badges\BadgeAward.aspx.cs">
       <DependentUpon>BadgeAward.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="BadgeAward.aspx.designer.cs">
+    <Compile Include="Badges\BadgeAward.aspx.designer.cs">
       <DependentUpon>BadgeAward.aspx</DependentUpon>
     </Compile>
-    <Compile Include="BadgeDetail.aspx.cs">
+    <Compile Include="Badges\BadgeDetail.aspx.cs">
       <DependentUpon>BadgeDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="BadgeDetail.aspx.designer.cs">
+    <Compile Include="Badges\BadgeDetail.aspx.designer.cs">
       <DependentUpon>BadgeDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="BadgeGallery.aspx.cs">
-      <DependentUpon>BadgeGallery.aspx</DependentUpon>
+    <Compile Include="Badges\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="BadgeGallery.aspx.designer.cs">
-      <DependentUpon>BadgeGallery.aspx</DependentUpon>
+    <Compile Include="Badges\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Badges\Details.aspx.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Badges\Details.aspx.designer.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
     </Compile>
     <Compile Include="Blank.aspx.cs">
       <DependentUpon>Blank.aspx</DependentUpon>
@@ -2834,6 +2847,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\GetBadgeInfo.ashx.cs">
+      <DependentUpon>GetBadgeInfo.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\JsonBase.cs" />
     <Compile Include="Layout\SRP.Master.cs">
       <DependentUpon>SRP.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2869,11 +2886,11 @@
     <Compile Include="Account\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyBadges.aspx.cs">
+    <Compile Include="Badges\MyBadges.aspx.cs">
       <DependentUpon>MyBadges.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyBadges.aspx.designer.cs">
+    <Compile Include="Badges\MyBadges.aspx.designer.cs">
       <DependentUpon>MyBadges.aspx</DependentUpon>
     </Compile>
     <Compile Include="MyGameboard.aspx.cs">

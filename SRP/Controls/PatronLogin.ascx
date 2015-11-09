@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PatronLogin.ascx.cs" Inherits="GRA.SRP.Classes.PatronLogin" %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
-<div class="panel panel-default">
+<asp:Panel runat="server" DefaultButton="btnLogin" CssClass="panel panel-default">
     <div class="panel-heading">
         <span class="modal-title lead">
             <asp:Label ID="loginTitle" runat="server" Text="loginform-title"></asp:Label></span>
@@ -37,8 +37,7 @@
                 OnClick="loginClick" data-loading-text="Verifying..." />
         </div>
     </div>
-</div>
-
+</asp:Panel>
 <script>
     function validateLogin() {
         var valid = true;
