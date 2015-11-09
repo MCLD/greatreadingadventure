@@ -372,7 +372,7 @@ namespace GRA.SRP.Controls
             var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));
             var pa = new AwardPoints(int.Parse(PID.Text));
             var sBadges = pa.AwardPointsToPatron(mg.NumberPoints, PointAwardReason.MiniGameCompletion, mg.MGID);
-            if (sBadges.Length > 0) Response.Redirect("~/BadgeAward.aspx?b=" + sBadges);
+            if (sBadges.Length > 0) Response.Redirect("~/Badges/BadgeAward.aspx?b=" + sBadges);
             
 
             //var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));

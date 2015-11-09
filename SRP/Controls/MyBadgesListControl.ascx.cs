@@ -39,11 +39,5 @@ namespace GRA.SRP.Controls {
             }
             ViewState["BadgeCount"] = badgeCount;
         }
-
-        protected void Repeater_ItemCommand(object sender, RepeaterCommandEventArgs e) {
-            if(e.CommandName.ToLower() == "badgedetails") {
-                Session[SessionKey.DisplayBadge] = e.CommandArgument;
-            }
-        }
     }
 }

@@ -8,32 +8,20 @@ using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.Tools;
 
-namespace GRA.SRP.Controls
-{
-    public partial class Badges : System.Web.UI.UserControl
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP.Controls {
+    public partial class Badges : System.Web.UI.UserControl {
+        protected void Page_Load(object sender, EventArgs e) {
 
-            if (!IsPostBack)
-            {
-                var ds = DAL.PatronBadges.GetAll(((Patron) Session["Patron"]).PID);
+            if(!IsPostBack) {
+                var ds = DAL.PatronBadges.GetAll(((Patron)Session["Patron"]).PID);
                 rptr.DataSource = ds;
                 rptr.DataBind();
                 NoBadges.Visible = (ds.Tables[0].Rows.Count == 0);
             }
         }
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if(e.CommandName.Equals("badgedetails", StringComparison.CurrentCultureIgnoreCase)) {
-                Session[SessionKey.DisplayBadge] = e.CommandArgument;
-            }
-        }
-
-        protected void btnList_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/MyBadges.aspx");
+        protected void btnList_Click(object sender, EventArgs e) {
+            Response.Redirect("~/Badges/MyBadges.aspx");
         }
     }
 }

@@ -6,7 +6,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 <hr />
-<b>Badge Gallery Direct URL: </b> <a href='/BadgeGallery.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target=_blank><%= Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/BadgeGallery.aspx?PID=" + Programs.GetDefaultProgramID() %></a>
+<b>Badge Gallery Direct URL: </b> <a href='/Badges/Default.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target=_blank><%= Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Badges/Default.aspx?PID=" + Programs.GetDefaultProgramID() %></a>
 <hr />
 <asp:ObjectDataSource ID="odsData" runat="server" 
         SelectMethod="GetAll" 

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
@@ -12,6 +7,7 @@ using GRA.Tools;
 namespace GRA.SRP.Classes {
     public partial class PatronLogin : System.Web.UI.UserControl {
         protected void Page_Load(object sender, EventArgs e) {
+
         }
 
         protected string LoginErrorMessage { get; set; }
@@ -42,7 +38,7 @@ namespace GRA.SRP.Classes {
                     }
                 } else {
                     Session[SessionKey.PatronMessage] = "Invalid username or password.";
-                    Session[SessionKey.PatronMessageLevel] = "danger";
+                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
                     Session[SessionKey.PatronMessageGlyphicon] = "remove";
                     Session["PatronLoggedIn"] = false;
                     Session["Patron"] = null;

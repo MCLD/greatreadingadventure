@@ -14,8 +14,6 @@ using System.Text;
 
 namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
-        private const string NoBadgePath = "~/images/Badges/no_badge.png";
-
         public BaseSRPPage CurrentPage { get; set; }
         public string Unread { get; set; }
         public string SystemNameText {
@@ -129,9 +127,11 @@ namespace GRA.SRP {
             }
         }
 
-        public bool ShowBadgePopup { get; set; }
         public bool ShowLoginPopup { get; set; }
         public string LoginPopupErrorMessage { get; set; }
+
+        public string BasePath { get; set; }
+
         protected void Page_PreRender(object sender, EventArgs e) {
             object patronMessage = Session[SessionKey.PatronMessage];
 
@@ -158,64 +158,6 @@ namespace GRA.SRP {
                 Session.Remove(SessionKey.PatronMessage);
             } else {
                 alertContainer.Visible = false;
-            }
-
-            var displayBadge = Session[SessionKey.DisplayBadge];
-            if(displayBadge != null) {
-                int badgeId = 0;
-                if(int.TryParse(displayBadge.ToString(), out badgeId)) {
-                    var badge = DAL.Badge.FetchObject(badgeId);
-                    if(badge != null) {
-                        this.ShowBadgePopup = true;
-                        badgePopupPanel.Visible = true;
-                        Session.Remove(SessionKey.DisplayBadge);
-                        badgePopupTitle.Text = badge.UserName;
-
-                        string badgePath = NoBadgePath;
-                        string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
-                                                                  badgeId);
-                        if(System.IO.File.Exists(Server.MapPath(potentialBadgePath))) {
-                            badgePath = potentialBadgePath;
-                        }
-
-                        badgePopupImage.ImageUrl = badgePath;
-                        badgePopupImage.AlternateText = string.Format("{0} Badge", badge.UserName);
-
-                        StringBuilder earn = new StringBuilder();
-
-                        string earnText = DAL.Badge.GetBadgeReading(badgeId);
-                        if(earnText.Length > 0) {
-                            earn.AppendFormat("<li>Earn points by reading: {0}.</li>", earnText);
-                        }
-
-                        earnText = DAL.Badge.GetEnrollmentPrograms(badgeId);
-                        if(earnText.Length > 0) {
-                            earn.AppendFormat("<li>Enroll in a reading program: {0}</li>", earnText);
-                        }
-
-                        earnText = DAL.Badge.GetBadgeBookLists(badgeId);
-                        if(earnText.Length > 0) {
-                            earn.AppendFormat("<li>Complete a Challenge: {0}</li>", earnText);
-                        }
-
-                        earnText = DAL.Badge.GetBadgeGames(badgeId);
-                        if(earnText.Length > 0) {
-                            earn.AppendFormat("<li>Unlock and complete an Adventure: {0}</li>", earnText);
-                        }
-
-                        earnText = DAL.Badge.GetBadgeEvents(badgeId);
-                        if(earnText.Length > 0) {
-                            earn.AppendFormat("<li>Attend an Event: {0}</li>", earnText);
-                        }
-
-                        if(earn.Length > 0) {
-                            badgePopupEarn.Visible = true;
-                            badgePopupEarnText.Text = earn.ToString();
-                        } else {
-                            badgePopupEarn.Visible = false;
-                        }
-                    }
-                }
             }
         }
 

@@ -797,8 +797,8 @@ namespace GRA.SRP.Controls
 
                     var sBadges = "";
                     sBadges = list.Aggregate(sBadges, (current, b) => current + "|" + b.BID.ToString());
-                    if (p.IsMasterAccount && sBadges.Length > 0) GoToUrl = ("~/BadgeAward.aspx?b=" + sBadges);  // if family account and is master, and has badges, rememebr to show them
-                    if (!p.IsMasterAccount && p.MasterAcctPID == 0 && sBadges.Length > 0) GoToUrl = ("~/BadgeAward.aspx?b=" + sBadges); // if not family master or not family at all and badges, rememebr to show ...
+                    if (p.IsMasterAccount && sBadges.Length > 0) GoToUrl = ("~/Badges/BadgeAward.aspx?b=" + sBadges);  // if family account and is master, and has badges, rememebr to show them
+                    if (!p.IsMasterAccount && p.MasterAcctPID == 0 && sBadges.Length > 0) GoToUrl = ("~/Badges/BadgeAward.aspx?b=" + sBadges); // if not family master or not family at all and badges, rememebr to show ...
 
 
                     if (registeringMasterAccount)

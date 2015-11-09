@@ -4,7 +4,7 @@
 
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<%@ Register Src="Controls/Badges.ascx" TagName="Badges" TagPrefix="uc1" %>
+<%@ Register Src="~/Controls/Badges.ascx" TagName="Badges" TagPrefix="uc1" %>
 
 <asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
 </asp:Content>

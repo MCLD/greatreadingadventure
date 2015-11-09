@@ -92,3 +92,14 @@
 .no-underline {
     text-decoration: none !important;
 }
+
+.badge-with-info-height {
+    height: 180px;
+    display: block;
+}
+
+.badge-without-info-height {
+    height: 150px;
+    display: block;
+}
+
