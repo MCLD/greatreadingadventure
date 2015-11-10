@@ -4,7 +4,7 @@ CodeBehind="ShareBadge.aspx.cs" Inherits="GRA.SRP.ShareBadge"
  %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 <meta property="og:title" content="I have earned a new badge in the Summer Reading Program"/>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">

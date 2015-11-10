@@ -10,6 +10,8 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Text;
+using GRA.SRP.Utilities.CoreClasses;
 
 namespace GRA.SRP.DAL
 {
@@ -757,6 +759,29 @@ namespace GRA.SRP.DAL
 
         #endregion
 
+        /// <summary>
+        /// Formats an event date to be nice for end users.
+        /// 
+        /// Must have an Event object with the following properties specified: EventDate,
+        /// EventTime, EndDate, EndTime
+        /// </summary>
+        /// <param name="e">The Event object</param>
+        /// <returns>A nice string describing start and end times.</returns>
+        public static string DisplayEventDateTime(Event e) {
+            StringBuilder sb = new StringBuilder(e.EventDate.ToNormalDate());
+            if(!string.IsNullOrWhiteSpace(e.EventTime)) {
+                sb.AppendFormat(" {0}", e.EventTime);
+            }
+            if(e.EndDate != null && e.EndDate > e.EventDate) {
+                sb.AppendFormat(" until {0}",
+                                e.EndDate.ToNormalDate().Replace("01/01/1900",
+                                                                 string.Empty));
+                if(!string.IsNullOrWhiteSpace(e.EndTime)) {
+                    sb.AppendFormat(" {0}", e.EndTime);
+                }
+            }
+            return sb.ToString();
+        }
     }//end class
 
 }//end namespace

@@ -4,7 +4,7 @@
 
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -27,14 +27,14 @@
             </asp:DropDownList>
             <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
-                <asp:ListItem Value="0" Text="Branch"></asp:ListItem>
+                <asp:ListItem Value="0" Text="All libraries/branches"></asp:ListItem>
             </asp:DropDownList>
             <asp:DropDownList ID="LocationID" runat="server" DataSourceID="odsDDLoc"
                 DataTextField="Code" DataValueField="CID"
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
                 <asp:ListItem Value="0" Text="Location"></asp:ListItem>
             </asp:DropDownList>
-            <asp:Button ID="btnFilter" runat="server" Text="Events btn Filter"
+            <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
                 CssClass="btn btn-default btn-small" OnClick="btnFilter_Click" />
         </div>
     </div>
@@ -45,7 +45,7 @@
         <asp:Repeater runat="server" ID="rptr" DataSourceID="odsBadges">
             <ItemTemplate>
                 <div class="col-xs-6 col-sm-3 col-md-2">
-                    <a href='<%# Eval("BID", "~/Badges/Details.aspx?badgeid={0}") %>'
+                    <a href='<%# Eval("BID", "~/Badges/Details.aspx?BadgeId={0}") %>'
                         runat="server"
                         onclick='<%# Eval("BID", "return ShowBadgeInfo({0});") %>'
                         class="thumbnail no-underline badge-without-info-height">

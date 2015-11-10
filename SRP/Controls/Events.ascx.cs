@@ -9,138 +9,103 @@ using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 
 
-namespace GRA.SRP.Controls
-{
-    public partial class Events : System.Web.UI.UserControl
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
+namespace GRA.SRP.Controls {
+    public partial class Events : System.Web.UI.UserControl {
+        public string FirstAvailableDate { get; set; }
+        public string LastAvailableDate { get; set; }
+
+        protected string DisplayEventDateTime(DateTime? eventDate,
+                                              string eventTime,
+                                              DateTime? endDate,
+                                              string endTime) {
+            DateTime nonNullEndDate;
+            if(endDate == null) {
+                nonNullEndDate = DateTime.MinValue;
+            } else {
+                nonNullEndDate = (DateTime)endDate;
+            }
+            return Event.DisplayEventDateTime(new Event {
+                EventDate = (DateTime)eventDate,
+                EventTime = eventTime,
+                EndDate = nonNullEndDate,
+                EndTime = endTime
+            });
+        }
+
+        protected void Page_Load(object sender, EventArgs e) {
+            if(!IsPostBack) {
 
                 GetFilterSessionValues();
                 GetData();
+            }
+
+            int programId;
+            var sessionProgramId = Session["ProgramID"];
+            if(sessionProgramId == null
+               || !int.TryParse(sessionProgramId.ToString(), out programId)) {
+                programId = Programs.GetDefaultProgramID();
 
             }
+            var program = Programs.FetchObject(programId);
+
+            this.FirstAvailableDate = program.StartDate.ToShortDateString();
+            this.LastAvailableDate = program.EndDate.ToShortDateString();
         }
 
-        protected void btnFilter_Click(object sender, EventArgs e)
-        {
+        protected void btnFilter_Click(object sender, EventArgs e) {
             SetFilterSessionValues();
             GetData();
         }
 
-        protected void btnClear_Click(object sender, EventArgs e)
-        {
+        protected void btnClear_Click(object sender, EventArgs e) {
             StartDate.Text = EndDate.Text = "";
             BranchId.SelectedValue = "0";
             SetFilterSessionValues();
             GetData();
         }
 
-        public void GetData()
-        {
-            var ds = DAL.Event.GetUpcomingDisplay(Session["UEL_Start"].ToString(), Session["UEL_End"].ToString(), int.Parse(Session["UEL_Branch"].ToString()));
+        public void GetData() {
+            var ds = DAL.Event.GetUpcomingDisplay(Session["UEL_Start"].ToString(),
+                                                  Session["UEL_End"].ToString(),
+                                                  int.Parse(Session["UEL_Branch"].ToString()));
             rptr.DataSource = ds;
             rptr.DataBind();
-            ((BaseSRPPage)Page).TranslateStrings(rptr);            
         }
-        public void SetFilterSessionValues()
-        {
+        public void SetFilterSessionValues() {
             Session["UEL_Start"] = StartDate.Text;
             Session["UEL_End"] = EndDate.Text;
             Session["UEL_Branch"] = BranchId.SelectedValue;
             Session["UEL_Filtered"] = "1";
         }
 
-        public void GetFilterSessionValues()
-        {
-            if (Session["UEL_Start"] != null) 
-            {
+        public void GetFilterSessionValues() {
+            if(Session["UEL_Start"] != null) {
                 StartDate.Text = Session["UEL_Start"].ToString();
-            }
-            else
-            {
+            } else {
                 Session["UEL_Start"] = "";
             }
-            if (Session["UEL_End"] != null)
-            {
+            if(Session["UEL_End"] != null) {
                 EndDate.Text = Session["UEL_End"].ToString();
-            }
-            else
-            {
+            } else {
                 Session["UEL_End"] = "";
             }
-            if (Session["UEL_Branch"] != null) 
-            {
-                try { BranchId.SelectedValue = Session["UEL_Branch"].ToString(); }
-                catch (Exception) { }
-            }
-            else
-            {
+            if(Session["UEL_Branch"] != null) {
+                try { BranchId.SelectedValue = Session["UEL_Branch"].ToString(); } catch(Exception) { }
+            } else {
                 Session["UEL_Branch"] = 0;
             }
         }
 
-        public bool WasFiltered()
-        {
+        public bool WasFiltered() {
             return (Session["UEL_Filtered"] != null);
         }
 
 
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            pnlList.Visible = false;
-
-
-            var o = new Event();
-            o.Fetch(int.Parse(e.CommandArgument.ToString()));
-
-            lblTitle.Text = o.EventTitle;
-            lblWhen.Text = o.EventDate.ToNormalDate() + " " + o.EventTime;
-
-            if (o.EndDate.ToShortDateString().Replace("1/1/0001","") != "")
-            {
-                lblWhen.Text = lblWhen.Text + " thru " + o.EndDate.ToNormalDate() + " " + (o.EndTime == "" ? "" : o.EndTime);
-            } 
-            else
-            {
-                if (o.EndTime != "")
-                {
-                    lblWhen.Text = lblWhen.Text + " until " + o.EndTime;  
-                }
-            }
-
-            var c = new Codes();
-            if (o.BranchID != 0) lblWhere.Text = (Codes.FetchObject(o.BranchID)).Code;
-
-            lblHtml.Text = o.HTML;
-
-            var cf = CustomEventFields.FetchObject();
-            if (cf.Use1)
-            {
-                Panel1.Visible = true;
-                CF1Label.Text = cf.Label1;
-                CF1Value.Text = o.Custom1;
-            }
-            if (cf.Use2)
-            {
-                Panel2.Visible = true;
-                CF2Label.Text = cf.Label2;
-                CF2Value.Text = o.Custom2;
-            } 
-            if (cf.Use3)
-            {
-                Panel3.Visible = true;
-                CF3Label.Text = cf.Label3;
-                CF3Value.Text = o.Custom3;
-            }
-            pnlDetail.Visible = true;
+        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
         }
 
-        protected void btnList_Click(object sender, EventArgs e)
-        {
+        protected void btnList_Click(object sender, EventArgs e) {
             Response.Redirect("~/Events/");
         }
     }

@@ -2,8 +2,6 @@
 
 <%@ Register Src="~/Controls/ChallengesCtl.ascx" TagPrefix="uc1" TagName="ChallengesCtl" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TopOfHeader" runat="server">
-</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <uc1:ChallengesCtl runat="server" ID="ChallengesCtl" />
 </asp:Content>

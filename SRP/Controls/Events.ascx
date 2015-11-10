@@ -1,162 +1,188 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Events.ascx.cs" Inherits="GRA.SRP.Controls.Events" %>
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
-<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
-</asp:ScriptManager>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-<ContentTemplate>
-<script language="javascript" type="text/javascript">
-
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-        window.print();
-
-        document.location.href = "~/Events/";
-    }
-</script>
-
 <asp:Panel ID="pnlList" runat="server" Visible="true">
 
-<div class="row" style="min-height: 400px;">
-	<div class="span12">
-        <h1><asp:Label ID="Label1" runat="server" Text="Events Title"></asp:Label></h1>
-        
-        <table width="100%" cellpadding="5" cellspacing="0" border="0">
-        <tr><td><hr /></td></tr>
-
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="h1">
+                <asp:Label runat="server" Text="events-title"></asp:Label></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            Start Date:
+                <asp:TextBox
+                    ID="StartDate"
+                    runat="server"
+                    Width="6em"
+                    CssClass="datepicker margin-1em-right"></asp:TextBox>
+            End Date:                        
+                <asp:TextBox
+                    ID="EndDate"
+                    runat="server"
+                    Width="6em"
+                    CssClass="datepicker margin-1em-right"></asp:TextBox>
+            Branch/Library:
+                <asp:DropDownList
+                    ID="BranchId"
+                    runat="server"
+                    DataSourceID="odsDDBranch"
+                    DataTextField="Code"
+                    DataValueField="CID"
+                    AppendDataBoundItems="True"
+                    CssClass="margin-1em-right">
+                    <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
+                </asp:DropDownList>
+            <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
+                OnClick="btnFilter_Click" CssClass="btn btn-default btn-xs" />
+            &nbsp;
+            <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-xs" />
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                
-<table  width="100%" cellpadding="0" cellspacing="0">
-    <tr>
-        <td width="90px" nowrap=nowrap ><b>Start Date:</b> &nbsp;</td>
-        <td>
-                        <asp:TextBox ID="StartDate" runat="server" Width="75px"                         
-                            Text='' CssClass="datepicker"></asp:TextBox>
-
-        </td>
-        <td  width="90px" nowrap=nowrap><b>End Date:</b> &nbsp;</td>
-        <td>
-                        <asp:TextBox ID="EndDate" runat="server" Width="75px"                         
-                            Text='' CssClass="datepicker"></asp:TextBox>
-
-        </td>
-
-        <td  width="150px" nowrap=nowrap><b>Branch/Library:</b> &nbsp;</td>
-        <td>
-                        <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
-                            AppendDataBoundItems="True" Width="200px"
-                         >
-                            <asp:ListItem Value="0" Text=""></asp:ListItem>
-                        </asp:DropDownList>
-        </td>
-        <td>
-            <asp:Button ID="btnFilter" runat="server" Text="Events btn Filter" 
-                onclick="btnFilter_Click" CssClass="btn e"/>
-                &nbsp;
-            <asp:Button ID="btnClear" runat="server" Text="Events btn Clear" onclick="btnClear_Click"  CssClass="btn e"
-                 />
-
-        </td>
-    </tr>
-</table>
-
-                
-                </td>
+                <th>
+                    <asp:Label runat="server" Text="events-header-what"></asp:Label></th>
+                <th>
+                    <asp:Label runat="server" Text="events-header-when"></asp:Label></th>
+                <th>
+                    <asp:Label runat="server" Text="events-header-where"></asp:Label></th>
             </tr>
-            <tr><td><hr /></td></tr>
-            <asp:Repeater runat="server" ID="rptr" onitemcommand="rptr_ItemCommand" >
+        </thead>
+        <tbody>
+            <asp:Repeater runat="server" ID="rptr" OnItemCommand="rptr_ItemCommand">
                 <ItemTemplate>
-            
-            <tr  style = "border-left: 0px solid black;">
-            
-                <td width="100%" valign="bottom" align="left" style="padding-left:300px; padding-right: 300px;padding-bottom: 15px;">
-                    <h5><asp:Label ID="Label1" runat="server" Text="Events Label When"></asp:Label> 
-                        <%# ((DateTime)Eval("EventDate")).ToNormalDate() %> <%# Eval("EventTime") %> 
-
-                        <%# Eval("EndDate") == DBNull.Value ? "" : " thru " + ((DateTime)Eval("EndDate")).ToNormalDate().Replace("01/01/1900","")%> 
-
-                        <%# (Eval("EndTime").ToString() != "" ? (Eval("EndDate") == DBNull.Value ? " - " + Eval("EndTime") : Eval("EndTime")) : "")%>
-
-
-                    </h5>
-                    <h5><asp:Label ID="Label2" runat="server" Text="Events Label What"></asp:Label> <%# Eval("EventTitle") %></h5>
-                    <h6><asp:Label ID="Label3" runat="server" Text="Events Label Where"></asp:Label> <%# Eval("Branch")%></h6>
-                    <%# (Eval("HTML").ToString().Length > 300 ?  Eval("HTML").ToString().Substring(0, 300) + " ..." : Eval("HTML"))%>
-                    <br /><br />
-                    <asp:Button ID="btnView" runat="server" Text="Events Btn Details" CommandArgument='<%# Eval("EID") %>' Visible="true" CssClass="" />
-                    <hr />
-                </td>
-            
-            </tr>              
-                
-                
+                    <tr>
+                        <td><a href="#" onclick="return ShowEventInfo(<%# Eval("EID") %>);"><%# Eval("EventTitle") %></a>
+                        </td>
+                        <td>
+                            <%# DisplayEventDateTime(Eval("EventDate") as DateTime?,
+                                                     Eval("EventTime").ToString(),
+                                                     Eval("EndDate") as DateTime?,
+                                                     Eval("EndTime").ToString()) %>
+                        </td>
+                        <td><%# Eval("Branch")%></td>
+                    </tr>
                 </ItemTemplate>
             </asp:Repeater>
-        
-        </table>
-	</div> 
-</div> 
-
+        </tbody>
+    </table>
 </asp:Panel>
 
-
-
-<asp:Panel ID="pnlDetail" runat="server" Visible="false">
-
-<div class="row" style="min-height: 400px;" >
-<div class="span2"></div>
-	<div class="span8">
-        <div id="printarea"> 
-            <center>
-            <h2><asp:Label ID="lblTitle" runat="server" Text=""></asp:Label></h2>
-            <br />
-            <h3><asp:Label ID="lblWhen" runat="server" Text=""></asp:Label> - <asp:Label ID="lblWhere" runat="server" Text=""></asp:Label></h3>
-            <br /><br />
-            <div style="text-align: left;">
-                <asp:Label ID="lblHtml" runat="server" Text=""></asp:Label>
-
-                <asp:Panel ID="Panel1" runat="server" Visible="false">
-                    <b><asp:Label ID="CF1Label" runat="server" Text="Label"></asp:Label>: </b><asp:Label ID="CF1Value" runat="server" Text="Label"></asp:Label>
-                </asp:Panel>
-                <asp:Panel ID="Panel2" runat="server" Visible="false">
-                    <b><asp:Label ID="CF2Label" runat="server" Text="Label"></asp:Label>: </b><asp:Label ID="CF2Value" runat="server" Text="Label"></asp:Label>
-                </asp:Panel>
-                <asp:Panel ID="Panel3" runat="server" Visible="false">
-                    <b><asp:Label ID="CF3Label" runat="server" Text="Label"></asp:Label>: </b><asp:Label ID="CF3Value" runat="server" Text="Label"></asp:Label>
-                </asp:Panel>
-
+<div id="eventPopupPanel" style="display: none;" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <span class="lead">
+                    <asp:Label runat="server" Text="events-prompt"></asp:Label>
+                    <span class="modal-title" id="eventPopupTitle"></span></span>
             </div>
-            </center>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        This event takes place on
+                        <strong><span id="eventPopupWhen"></span></strong>
+                        at
+                        <strong><span id="eventPopupWhere"></span></strong>.
+                    </div>
+                    <div class="col-sm-12 margin-1em-top">
+                        <span id="eventPopupShortDescription"></span>
+                    </div>
+                </div>
+                <div class="row" id="eventPopupDetailsPanel">
+                    <div class="col-sm-12 margin-1em-top">Event details:</div>
+                    <div class="col-sm-10 col-sm-offset-1 margin-1em-top">
+                        <span id="eventPopupDescription"></span>
+                    </div>
+                </div>
+                <div class="row margin-1em-top" id="eventPopupCustom1Panel">
+                    <span id="eventPopupCustomLabel1"></span>: 
+                    <span id="eventPopupCustomValue1"></span>
+                </div>
+                <div class="row margin-1em-top" id="eventPopupCustom2Panel">
+                    <span id="eventPopupCustomLabel2"></span>: 
+                    <span id="eventPopupCustomValue2"></span>
+                </div>
+                <div class="row margin-1em-top" id="eventPopupCustom3Panel">
+                    <span id="eventPopupCustomLabel3"></span>: 
+                    <span id="eventPopupCustomValue3"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right clearfix">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-        <center>
-        <br /><br /><br /><br />
-        
-        <asp:Button ID="Button1" runat="server" Text="Events btn Print"  CssClass="btn e" Width="150px" OnClientClick="printDiv('printarea')"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <asp:Button ID="btnList" runat="server" Text="Events btn Back" onclick="btnList_Click" CssClass="btn e"  Width="150px"/>
-        </center>
-	</div> 
-</div> 
+    </div>
+</div>
 
-</asp:Panel>
+<asp:ObjectDataSource ID="odsDDBranch" runat="server"
+    SelectMethod="GetAlByTypeName"
+    TypeName="GRA.SRP.DAL.Codes">
+    <SelectParameters>
+        <asp:Parameter Name="Name" DefaultValue="Branch" Type="String" />
+    </SelectParameters>
+</asp:ObjectDataSource>
 
-    <asp:ObjectDataSource ID="odsDDBranch" runat="server" 
-        SelectMethod="GetAlByTypeName" 
-        TypeName="GRA.SRP.DAL.Codes">
-        <SelectParameters>
-            <asp:Parameter Name="Name" DefaultValue = "Branch" Type="String" />
-        </SelectParameters>
-    </asp:ObjectDataSource>
-
-
-<script language="javascript" type="text/javascript">
+<script>
     $(function () {
-        $(".datepicker").datepicker();
+        $(".datepicker").datepick({
+            changeMonth: false,
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            showSpeed: 'fast',
+            minDate: '<%=this.FirstAvailableDate%>',
+            maxDate: '<%=this.LastAvailableDate%>'
+        });
     });
+
+    function ShowEventInfo(eventId) {
+        var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/GetEventInfo.ashx?EventId=' + eventId)
+            .done(function (data, textStatus, jqXHR) {
+                if (!data.Success) {
+                    alert("Couldn't show event information: " + data.ErrorMessage);
+                } else {
+                    $('#eventPopupTitle').text(data.Title);
+                    $('#eventPopupWhen').text(data.When);
+                    $('#eventPopupWhere').text(data.Where);
+                    $('#eventPopupShortDescription').text(data.ShortDescription);
+                    if (data.Description) {
+                        $('#eventPopupDetailsPanel').show();
+                        $('#eventPopupDescription').html(data.Description);
+                    } else {
+                        $('#eventPopupDetailsPanel').hide();
+                    }
+                    if (data.CustomLabel1 && data.CustomValue1) {
+                        $('#eventPopupCustom1Panel').show();
+                        $('#eventPopupCustomLabel1').text(data.CustomLabel1);
+                        $('#eventPopupCustomValue1').text(data.CustomValue1);
+                    } else {
+                        $('#eventPopupCustom1Panel').hide();
+                    }
+                    if (data.CustomLabel2 && data.CustomValue2) {
+                        $('#eventPopupCustom2Panel').show();
+                        $('#eventPopupCustomLabel2').text(data.CustomLabel2);
+                        $('#eventPopupCustomValue2').text(data.CustomValue2);
+                    } else {
+                        $('#eventPopupCustom2Panel').hide();
+                    }
+                    if (data.CustomLabel3 && data.CustomValue3) {
+                        $('#eventPopupCustom3Panel').show();
+                        $('#eventPopupCustomLabel3').text(data.CustomLabel3);
+                        $('#eventPopupCustomValue3').text(data.CustomValue3);
+                    } else {
+                        $('#eventPopupCustom3Panel').hide();
+                    }
+
+                    $('#eventPopupPanel').modal('show');
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                alert("Couldn't contact server to get event details: " + errorThrown);
+            });
+        return false;
+    }
 </script>
-
-
-</ContentTemplate>
-</asp:UpdatePanel>

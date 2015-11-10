@@ -4,7 +4,7 @@ CodeBehind="ShareReview.aspx.cs" Inherits="GRA.SRP.ShareReview"
  %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 <meta property="og:title" content="I have reviewed a book for the Summer Reading Program"/>
 <meta property="og:image" content='<%=Request.Url.Scheme+"://"+Request.Url.Authority %>/images/books.png' />
 </asp:Content>

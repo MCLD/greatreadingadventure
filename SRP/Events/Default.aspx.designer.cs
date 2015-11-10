@@ -13,12 +13,12 @@ namespace GRA.SRP {
     public partial class Events {
         
         /// <summary>
-        /// Events1 control.
+        /// EventsControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.Events Events1;
+        protected global::GRA.SRP.Controls.Events EventsControl;
     }
 }

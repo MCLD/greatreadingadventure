@@ -10,7 +10,7 @@ using GRA.Tools;
 
 namespace GRA.SRP.Controls {
     public partial class ChallengesCtl : System.Web.UI.UserControl {
-        private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?badgeid={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
+        private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
         public bool ShowModal { get; set; }
 
         protected string ShowBadge(object badgeIdObject) {

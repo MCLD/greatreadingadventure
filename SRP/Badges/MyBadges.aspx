@@ -6,8 +6,6 @@
 
 <%@ Register Src="~/Controls/Badges.ascx" TagName="Badges" TagPrefix="uc1" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
-</asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="row">
         <div class="col-xs-12">

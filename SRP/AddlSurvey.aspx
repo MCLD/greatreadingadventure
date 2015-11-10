@@ -7,7 +7,7 @@
 <%@ Register src="Controls/PatronSurvey.ascx" tagname="PatronSurvey" tagprefix="uc1" %>
 
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
 

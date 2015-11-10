@@ -4,16 +4,18 @@
 <div class="row">
     <div class="col-sm-12">
         <span class="h1">
-            <asp:Label runat="server" Text="Reading Lists Title"></asp:Label></span>
+            <asp:Label runat="server" Text="challenges-title"></asp:Label></span>
     </div>
+</div>
+<div class="row margin-halfem-top">
     <div class="col-sm-12">
-        <asp:Label runat="server" Text="Reading Lists Instructions"></asp:Label>
+        <asp:Label runat="server" Text="challenges-instructions"></asp:Label>
     </div>
 </div>
 <div class="row">
     <div class="col-sm-12">
         <p>
-            <asp:Label ID="lblNoLists" runat="server" Text="Reading Lists No Lists" Visible="false"></asp:Label>
+            <asp:Label ID="lblNoLists" runat="server" Text="challenges-no-challenges" Visible="false"></asp:Label>
         </p>
         <table class="table table-striped">
             <thead>
@@ -62,8 +64,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="lead">Challenge:
-                <asp:Label ID="lblTitle" runat="server" Visible="false"></asp:Label></span>
+                <span class="lead">
+                    <asp:Label runat="server" Text="challenges-prompt"></asp:Label>
+                    <asp:Label ID="lblTitle" runat="server" Visible="false"></asp:Label></span>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -75,47 +78,51 @@
                         <asp:Label ID="BadgeImage" runat="server" CssClass="pull-right"></asp:Label>
                     </div>
                 </div>
-                <table class="table table-striped" style="margin-top: 1em;">
-                    <tr>
-                        <th>Complete</th>
-                        <th>Task</th>
-                    </tr>
-                    <asp:Repeater runat="server" ID="rptr2" OnItemCommand="rptr_ItemCommand">
-                        <ItemTemplate>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-striped" style="margin-top: 1em;">
                             <tr>
-                                <td class="pull-center">
-                                    <asp:CheckBox ID="chkRead" runat="server" Checked='<%# Eval("HasRead") %>' />
-                                    <asp:Label ID="PBLBID" runat="server" Visible="false" Text='<%# Eval("PBLBID") %>'></asp:Label>
-                                    <asp:Label ID="BLBID" runat="server" Visible="false" Text='<%# Eval("BLBID") %>'></asp:Label>
-                                    <asp:Label ID="BLID" runat="server" Visible="false" Text='<%# Eval("BLID") %>'></asp:Label>
-                                </td>
+                                <th class="text-center">Complete</th>
+                                <th>Task</th>
+                            </tr>
+                            <asp:Repeater runat="server" ID="rptr2" OnItemCommand="rptr_ItemCommand">
+                                <ItemTemplate>
+                                    <tr>
+                                        <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
+                                            <asp:CheckBox ID="chkRead" runat="server" Checked='<%# Eval("HasRead") %>' />
+                                            <asp:Label ID="PBLBID" runat="server" Visible="false" Text='<%# Eval("PBLBID") %>'></asp:Label>
+                                            <asp:Label ID="BLBID" runat="server" Visible="false" Text='<%# Eval("BLBID") %>'></asp:Label>
+                                            <asp:Label ID="BLID" runat="server" Visible="false" Text='<%# Eval("BLID") %>'></asp:Label>
+                                        </td>
 
-                                <td>
-                                    <div class="row">
-                                        <div class="col-xs-3 col-sm-1">
-                                            <%# Eval("ISBN").ToString().Length > 0 ? string.Format("<a href='javascript: Cover({0});'><img class='cover' src='http://covers.openlibrary.org/b/isbn/{0}-S.jpg' style='width: 32px; margin-right: 10px;  ' align=left/></a>", Eval("ISBN")) : ""%>
-                                        </div>
-                                        <div class="col-xs-9 col-sm-11">
-                                            Read
+                                        <td>
+                                            <div class="row">
+                                                <div class="hidden-xs col-sm-2">
+                                                    <%# Eval("ISBN").ToString().Length > 0 ? string.Format("<a href='javascript: Cover({0});'><img class='cover' src='http://covers.openlibrary.org/b/isbn/{0}-S.jpg' style='width: 32px; margin-right: 10px;  ' align=left/></a>", Eval("ISBN")) : ""%>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-10">
+                                                    Read
                                     <strong>
                                         <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%# Eval("URL") %>' Target="_blank"
                                             Visible='<%# Eval("URL").ToString().Trim().Length > 0 %>' Font-Underline='<%# Eval("URL").ToString().Trim().Length > 0 %>'><%# Eval("Title") %></asp:HyperLink>
                                         <asp:Label ID="Label3" runat="server" Text='<%# Eval("Title") %>'
                                             Visible='<%# Eval("URL").ToString().Trim().Length == 0 %>'></asp:Label></strong>
-                                            by <strong><%# Eval("Author") %></strong>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ItemTemplate>
-                    </asp:Repeater>
+                                                    by <strong><%# Eval("Author") %></strong>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ItemTemplate>
+                            </asp:Repeater>
 
-                </table>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <div class="pull-right clearfix">
-                    <asp:Button ID="btnClose" runat="server" Text="Reading Lists btn Close" OnClick="btnClose_Click" CssClass="btn btn-default" />
-                    <asp:Button ID="btnSave" runat="server" Text="Reading Lists btn Save" OnClick="btnSave_Click" CssClass="btn btn-default" />
+                    <asp:Button ID="btnClose" runat="server" Text="challenges-close" OnClick="btnClose_Click" CssClass="btn btn-default" />
+                    <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />
                 </div>
             </div>
         </div>

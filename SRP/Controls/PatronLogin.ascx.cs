@@ -29,9 +29,8 @@ namespace GRA.SRP.Classes {
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();
 
-                    if(Session[SessionKey.RequestedPath] != null) {
-                        string requestedPath = Session[SessionKey.RequestedPath].ToString();
-                        Session.Remove(SessionKey.RequestedPath);
+                    if(ViewState[SessionKey.RequestedPath] != null) {
+                        string requestedPath = ViewState[SessionKey.RequestedPath].ToString();
                         Response.Redirect(requestedPath);
                     } else {
                         Response.Redirect("~/Dashboard.aspx");

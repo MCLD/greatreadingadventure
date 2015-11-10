@@ -3,7 +3,7 @@
 
 <%@ Register Src="Controls/PatronLogin.ascx" TagName="PatronLogin" TagPrefix="uc3" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="col-sm-6 col-sm-offset-3">

@@ -9,7 +9,7 @@
 </div>
 <asp:Panel ID="pnlList" runat="server" Visible="true">
     <div class="row">
-        <div class="col-sm-12 no-print">
+        <div class="col-sm-12 hidden-print">
             <div class="btn-group" role="group">
                 <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
                     <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
@@ -57,7 +57,7 @@
 
 <asp:Panel ID="pnlDetail" runat="server" Visible="false">
     <div class="row">
-        <div class="col-sm-12 no-print">
+        <div class="col-sm-12 hidden-print">
             <div class="btn-group" role="group">
                 <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
                     <span class="glyphicon glyphicon-list margin-halfem-right"></span>
@@ -94,7 +94,7 @@
 
 <asp:Panel ID="pnlAsk" runat="server" Visible="false">
     <div class="row">
-        <div class="col-sm-12 no-print">
+        <div class="col-sm-12 hidden-print">
             <div class="btn-group" role="group">
                 <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
                     <span class="glyphicon glyphicon-list margin-halfem-right"></span>

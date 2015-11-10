@@ -6,7 +6,7 @@
 
 <%@ Register src="~/Controls/FamilyList.ascx" tagname="FamilyList" tagprefix="uc3" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
 

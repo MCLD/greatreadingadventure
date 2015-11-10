@@ -7,54 +7,72 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP.Controls {
+namespace GRA.SRP.Challenges {
     
     
-    public partial class GameLoggingControl {
+    public partial class Details {
         
         /// <summary>
-        /// rptrx1 control.
+        /// challengeDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptrx1;
+        protected global::System.Web.UI.WebControls.Panel challengeDetails;
         
         /// <summary>
-        /// rptrx2 control.
+        /// challengeTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptrx2;
+        protected global::System.Web.UI.WebControls.Label challengeTitle;
         
         /// <summary>
-        /// MyPointsControl1 control.
+        /// lblDesc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl1;
+        protected global::System.Web.UI.WebControls.Label lblDesc;
         
         /// <summary>
-        /// LeaderBoardControl1 control.
+        /// lblPoints control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl1;
+        protected global::System.Web.UI.WebControls.Label lblPoints;
         
         /// <summary>
-        /// MyGamemapNavControl1 control.
+        /// BadgeImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.MyGamemapNavControl MyGamemapNavControl1;
+        protected global::System.Web.UI.WebControls.Label BadgeImage;
+        
+        /// <summary>
+        /// rptr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptr;
+        
+        /// <summary>
+        /// btnSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSave;
     }
 }

@@ -7,16 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title runat="server"></title>
-    <asp:ContentPlaceHolder ID="TopOfHeader" runat="server"></asp:ContentPlaceHolder>
     <link rel="shortcut icon" href="favicon.png">
-    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
-    <link href="/Content/gra.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server"/>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server"/>
+    <link href="~/Content/gra.css" rel="stylesheet" runat="server"/>
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script src="/Scripts/jquery-2.1.4.min.js"></script>
-    <script src="/Scripts/jquery.ddslick.min.js"></script>
-    <script src="/Scripts/bootstrap.min.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/js/script.js")%>"></script>
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
@@ -25,10 +24,11 @@
             $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
         }
     </script>
+    <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body class="page">
     <form id="mainForm" runat="server">
-        <nav class="navbar navbar-default navbar-static-top no-print">
+        <nav class="navbar navbar-default navbar-static-top hidden-print">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -48,6 +48,8 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <%if(!this.CurrentPage.IsLoggedIn) { %>
+                        <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span></a></li>
+                        <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li class="<%=this.RegisterPageActive %>"><a href="~/Register.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">RegisterMasterBtn</asp:Label></a></li>
                         <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
@@ -63,10 +65,11 @@
                             <span id="unreadBadge" runat="server" class="label label-primary label-as-badge text-primary"><% =this.Unread %></span>
                             <% } %>
                         </a></li>
-                        <li class="<%=this.AdventuresSectionActive %>"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
-                        <li class="<%=this.ChallengesSectionActive %>"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
-                        <li class="<%=this.EventsSectionActive %>"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
-                        <!--<li><a href="/Offers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>-->
+                        <li id="badgesNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span></a></li>
+                        <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
+                        <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
+                        <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
+                        <li id="offersNav" runat="server"><a href="/Offers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>
 
                         <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account">
                             <span class="glyphicon glyphicon-user"></span>
@@ -169,7 +172,7 @@
         </div>
 
         <% if(!string.IsNullOrEmpty(this.UpsellText)) { %>
-        <div id="content-below" class="container no-print">
+        <div id="content-below" class="container hidden-print">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 upsell">
                     <div class="row">
@@ -189,7 +192,7 @@
         </div>
         <% } %>
         <% if(!string.IsNullOrEmpty(this.CopyrightStatementText)) { %>
-        <footer class="footer no-print">
+        <footer class="footer hidden-print">
             <div class="container">
                 <p class="text-muted">
                     <%=this.CopyrightStatementText %>
@@ -293,7 +296,7 @@
             }
 
             function ShowBadgeInfo(badgeId) {
-                var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/GetBadgeInfo.ashx?badgeid=' + badgeId)
+                var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/GetBadgeInfo.ashx?BadgeId=' + badgeId)
                 .done(function (data, textStatus, jqXHR) {
                     if (!data.Success) {
                         alert("Couldn't show badge information: " + data.ErrorMessage);
