@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace GRA.SRP.Badges {
@@ -23,7 +24,7 @@ namespace GRA.SRP.Badges {
                         int PID = Programs.GetDefaultProgramID();
                         Session["ProgramID"] = PID.ToString();
                     } catch {
-                        Response.Redirect("~/Default.aspx");
+                        Response.Redirect("~/Badges/");
                     }
                 }
             }
@@ -35,11 +36,12 @@ namespace GRA.SRP.Badges {
                 badgeBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
             }
 
+            Badge badge = null;
             int badgeId = 0;
             string displayBadge = Request.QueryString["BadgeId"];
             if(!string.IsNullOrEmpty(displayBadge)
                 && int.TryParse(displayBadge.ToString(), out badgeId)) {
-                var badge = DAL.Badge.FetchObject(badgeId);
+                badge = DAL.Badge.FetchObject(badgeId);
                 if(badge != null) {
                     badgeTitle.Text = badge.UserName;
 
@@ -86,10 +88,19 @@ namespace GRA.SRP.Badges {
                     } else {
                         badgeEarnPanel.Visible = false;
                     }
+                    badgeDetails.Visible = true;
                 }
                 badgeDetails.Visible = true;
-            } else {
+            }
+            if(badge == null) {
                 badgeDetails.Visible = false;
+                var cph = Page.Master.FindControl("HeaderContent") as ContentPlaceHolder;
+                if(cph != null) {
+                    cph.Controls.Add(new HtmlMeta {
+                        Name = "robots",
+                        Content = "noindex"
+                    });
+                }
                 Session[SessionKey.PatronMessage] = "Could not find details on that badge.";
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
                 Session[SessionKey.PatronMessageGlyphicon] = "remove";

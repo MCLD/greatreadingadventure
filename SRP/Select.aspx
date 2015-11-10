@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Layout/TSelection.Master" AutoEventWireup="true"
     CodeBehind="Select.aspx.cs" Inherits="GRA.SRP.Select" %>
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 <style>
 .ovr
 {

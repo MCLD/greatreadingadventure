@@ -11,7 +11,7 @@
 <meta charset="utf-8">
 <title>Summer Reading Program</title>
 
-<asp:contentplaceholder id="TopOfHeader" runat="server">
+<asp:contentplaceholder id="HeaderContent" runat="server">
         
 
         </asp:contentplaceholder>

@@ -4,7 +4,7 @@
 <%@ Register Src="~/Controls/ProgramBanner.ascx" TagName="ProgramBanner" TagPrefix="uc2" %>
 <%@ Register Src="~/Controls/PublicProgramView.ascx" TagName="PublicProgramView" TagPrefix="uc3" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="row">

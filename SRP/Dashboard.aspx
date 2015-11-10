@@ -8,7 +8,7 @@
 <%@ Register Src="~/Controls/LeaderBoardControl.ascx" TagPrefix="uc1" TagName="LeaderBoardControl" %>
 <%@ Register Src="~/Controls/SimpleLoggingControl.ascx" TagName="SimpleLoggingControl" TagPrefix="uc1" %>
 
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="row">

@@ -8,7 +8,7 @@
 <%@ Register Src="~/Controls/ProgramTabs.ascx" TagName="ProgramTabs" TagPrefix="uc1" %>
 <%@ Register Src="~/Controls/ProgramBanner.ascx" TagName="ProgramBanner" TagPrefix="uc2" %>
 
-<asp:Content ID="TopOfHeader" ContentPlaceHolderID="TopOfHeader" runat="server">
+<asp:Content ID="HeaderContent" ContentPlaceHolderID="HeaderContent" runat="server">
 </asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <script language="javascript" type="text/javascript">

@@ -83,6 +83,14 @@ namespace GRA.SRP {
             }
         }
 
+        public string OffersPageActive {
+            get {
+                if(Request.Path.EndsWith("Offers.aspx")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
 
         public string MailSectionActive {
             get {
@@ -112,6 +120,15 @@ namespace GRA.SRP {
         public string EventsSectionActive {
             get {
                 if(Request.Path.Contains("/Events/")) {
+                    return "active";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string BadgesSectionActive {
+            get {
+                if(Request.Path.Contains("/Badges/")) {
                     return "active";
                 }
                 return string.Empty;
@@ -164,11 +181,8 @@ namespace GRA.SRP {
         protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
 
-            //var systemName = SRPSettings.GetSettingValue("SystemName");
-            //PageTitle = (string.IsNullOrEmpty(systemName) ? "Summer Reading Program" : systemName);
-
-            if(string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(PageTitle)) {
-                Page.Title = PageTitle;
+            if(string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(this.SystemNameText)) {
+                Page.Title = this.SystemNameText;
             }
 
             Control ctl = LoadControl("~/Controls/ProgramCSS.ascx");
@@ -179,6 +193,66 @@ namespace GRA.SRP {
             if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn) {
                 Response.Redirect("~/Logout.aspx");
             }
+
+            if(Session[SessionKey.AdventuresActive] == null) {
+                var programGames = DAL.ProgramGame.GetAll();
+                if(programGames.Tables.Count > 0 && programGames.Tables[0].Rows.Count > 0) {
+                    Session[SessionKey.AdventuresActive] = true;
+                } else {
+                    Session[SessionKey.AdventuresActive] = false;
+                }
+            }
+            adventuresNav.Visible = Session[SessionKey.AdventuresActive] as bool? == true;
+            adventuresNav.Attributes.Add("class", this.AdventuresSectionActive);
+
+            if(Session[SessionKey.ChallengesActive] == null) {
+                var challenges = DAL.BookList.GetAll();
+                if(challenges.Tables.Count > 0 && challenges.Tables[0].Rows.Count > 0) {
+                    Session[SessionKey.ChallengesActive] = true;
+                } else {
+                    Session[SessionKey.ChallengesActive] = false;
+                }
+            }
+            challengesNav.Visible = Session[SessionKey.ChallengesActive] as bool? == true;
+            challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
+
+            if(Session[SessionKey.OffersActive] == null) {
+                var offers = DAL.Offer.GetAll();
+                if(offers.Tables.Count > 0 && offers.Tables[0].Rows.Count > 0) {
+                    Session[SessionKey.OffersActive] = true;
+                } else {
+                    Session[SessionKey.OffersActive] = false;
+                }
+            }
+            offersNav.Visible = Session[SessionKey.OffersActive] as bool? == true;
+            offersNav.Attributes.Add("class", this.OffersPageActive);
+
+            if(Session[SessionKey.BadgesActive] == null) {
+                var badges = DAL.Badge.GetAll();
+                if(badges.Tables.Count > 0 && badges.Tables[0].Rows.Count > 0) {
+                    Session[SessionKey.BadgesActive] = true;
+                } else {
+                    Session[SessionKey.BadgesActive] = false;
+                }
+            }
+            badgesNav.Visible = Session[SessionKey.BadgesActive] as bool? == true;
+            badgesAnonNav.Visible = Session[SessionKey.BadgesActive] as bool? == true;
+            badgesNav.Attributes.Add("class", this.BadgesSectionActive);
+            badgesAnonNav.Attributes.Add("class", this.BadgesSectionActive);
+
+            if(Session[SessionKey.EventsActive] == null) {
+                var events = DAL.Event.GetAll();
+                if(events.Tables.Count > 0 && events.Tables[0].Rows.Count > 0) {
+                    Session[SessionKey.EventsActive] = true;
+                } else {
+                    Session[SessionKey.EventsActive] = false;
+                }
+            }
+            eventsNav.Visible = Session[SessionKey.EventsActive] as bool? == true;
+            eventsAnonNav.Visible = Session[SessionKey.EventsActive] as bool? == true;
+            eventsNav.Attributes.Add("class", this.EventsSectionActive);
+            eventsAnonNav.Attributes.Add("class", this.EventsSectionActive);
+
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {
@@ -197,6 +271,8 @@ namespace GRA.SRP {
                     this.loginPopupPanel.Visible = true;
                     if(Session[SessionKey.RequestedPath] != null) {
                         this.ShowLoginPopup = true;
+                        ViewState[SessionKey.RequestedPath] = Session[SessionKey.RequestedPath];
+                        Session.Remove(SessionKey.RequestedPath);
                     }
                 }
             }
@@ -224,6 +300,9 @@ namespace GRA.SRP {
                     if(Session[SessionKey.RequestedPath] != null) {
                         string requestedPath = Session[SessionKey.RequestedPath].ToString();
                         Session.Remove(SessionKey.RequestedPath);
+                        Response.Redirect(requestedPath);
+                    } else if(ViewState[SessionKey.RequestedPath] != null) {
+                        string requestedPath = ViewState[SessionKey.RequestedPath].ToString();
                         Response.Redirect(requestedPath);
                     } else {
                         Response.Redirect("~/Dashboard.aspx");

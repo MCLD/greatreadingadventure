@@ -17,7 +17,7 @@
                 data-toggle="tooltip"
                 data-placement="right"
                 title="<%# "You earned the " + Eval("Title") + " badge on " + ((DateTime)Eval("DateEarned")).ToShortDateString() %>">
-                <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?badgeid={0}") %>'
+                <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?BadgeId={0}") %>'
                     runat="server"
                     OnClick='<%# Eval("BadgeId", "return HideTooltipShowBadgeInfo(this.parentElement, {0});") %>'
                     class="thumbnail">

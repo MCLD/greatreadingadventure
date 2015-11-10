@@ -1,10 +1,4 @@
-﻿@media print {
-    .no-print, .no-print * {
-        display: none !important;
-    }
-}
-
-.upsell {
+﻿.upsell {
     background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
     padding-top: 0.8em;
     padding-bottom: 0.8em;
@@ -103,3 +97,16 @@
     display: block;
 }
 
+.challenge-checkbox-container > input {
+    width: 20px;
+    height: 20px;
+}
+
+.challenge-detailpage-header {
+    font-weight: bold;
+    font-size: larger;
+}
+
+.noPrevNext .datepick-cmd.datepick-disabled {
+    visibility: hidden;
+}

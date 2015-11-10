@@ -1,23 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GameLoggingControl.ascx.cs" Inherits="GRA.SRP.Controls.GameLoggingControl" %>
 <%@ Register src="MyGamemapNavControl.ascx" tagname="MyGamemapNavControl" tagprefix="uc3" %>
 
-
-<%@ Register src="SimpleLoggingControl.ascx" tagname="SimpleLoggingControl" tagprefix="uc1" %>
 <%@ Register src="MyPointsControl.ascx" tagname="MyPointsControl" tagprefix="uc1" %>
 <%@ Register src="LeaderBoardControl.ascx" tagname="LeaderBoardControl" tagprefix="uc2" %>
 
-
-
-<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
-</asp:ScriptManager>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-<ContentTemplate>
-
 <div class="row">
-	<div class="span5">
-	    <uc1:SimpleLoggingControl ID="SimpleLoggingControl1" runat="server" GoToUrl="~/MyLogEntry.aspx" StayOnPage="True"/>
-	</div>
-
     <div class="span4">
 
         <br />
@@ -147,8 +134,3 @@
 
 	</div>   
 </div> 
-
-
-</ContentTemplate>
-</asp:UpdatePanel>
-

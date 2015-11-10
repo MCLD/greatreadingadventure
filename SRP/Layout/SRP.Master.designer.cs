@@ -22,15 +22,6 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
         
         /// <summary>
-        /// TopOfHeader control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder TopOfHeader;
-        
-        /// <summary>
         /// ProgramCSS control.
         /// </summary>
         /// <remarks>
@@ -38,6 +29,15 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder ProgramCSS;
+        
+        /// <summary>
+        /// HeaderContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeaderContent;
         
         /// <summary>
         /// mainForm control.
@@ -65,6 +65,24 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Slogan;
+        
+        /// <summary>
+        /// badgesAnonNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl badgesAnonNav;
+        
+        /// <summary>
+        /// eventsAnonNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl eventsAnonNav;
         
         /// <summary>
         /// lnkRegister control.
@@ -121,6 +139,24 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl unreadBadge;
         
         /// <summary>
+        /// badgesNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl badgesNav;
+        
+        /// <summary>
+        /// adventuresNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl adventuresNav;
+        
+        /// <summary>
         /// m control.
         /// </summary>
         /// <remarks>
@@ -128,6 +164,15 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor m;
+        
+        /// <summary>
+        /// challengesNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl challengesNav;
         
         /// <summary>
         /// r control.
@@ -139,6 +184,15 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
         
         /// <summary>
+        /// eventsNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl eventsNav;
+        
+        /// <summary>
         /// v control.
         /// </summary>
         /// <remarks>
@@ -146,6 +200,15 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor v;
+        
+        /// <summary>
+        /// offersNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl offersNav;
         
         /// <summary>
         /// o control.

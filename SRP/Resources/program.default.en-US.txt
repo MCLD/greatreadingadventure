@@ -155,12 +155,17 @@ Offers Serial=Serial #
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Events Title=Events
+events-title=Events
+events-header-when=When
+events-header-where=Where
+events-header-what=What
+events-header-summary=Summary
+events-filter-button=Filter
+events-filter-clear-button=Clear
+events-prompt=Event: 
+
 Events btn Filter=Filter
 Events btn Clear=Clear
-Events Label When=When: 
-Events Label What=What: 
-Events Label Where=Where: 
 Events Btn Details=More Details ... 
 Events btn Print=Print
 Events btn Back=Go Back
@@ -177,11 +182,13 @@ Notifications Ask Question Submitted Done=We received your message and will repl
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Reading Lists Title=Challenges
-Reading Lists Instructions=Complete a Challenge to earn points and win badges!
-Reading Lists No Lists=No Challenges available right now, check back soon!
-Reading Lists btn Close=Close
-Reading Lists btn Save=Save
+challenges-title=Challenges
+challenges-instructions=Complete Challenges to earn points and win badges!
+challenges-no-challenges=There are currently no Challenges. Check back soon!
+challenges-prompt=Challenge: 
+challenges-close=Close
+challenges-save=Save
+challenges-return=Back to list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -197,3 +204,4 @@ badges-my-badges=My Badges
 badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found. Check back soon!
+badges-filter-button=Filter

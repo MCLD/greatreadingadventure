@@ -1,22 +1,21 @@
 ﻿<%@ Page Title="Events" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.Events" 
-    EnableEventValidation="false" 
-    %>
+    CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.Events"
+    EnableEventValidation="false" %>
+
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<%@ Register src="~/Controls/Events.ascx" tagname="Events" tagprefix="uc1" %>
+<%@ Register Src="~/Controls/Events.ascx" TagName="Events" TagPrefix="uc1" %>
 
-
-<asp:Content ID="TopOfHeader" runat="server" ContentPlaceHolderID="TopOfHeader">
+<asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
+    <script src="<%=ResolveUrl("~/Scripts/jquery.plugin.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery.datepick.min.js")%>"></script>
 </asp:Content>
+
+
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-
-
-
-
-    <uc1:Events ID="Events1" runat="server" />
-
-
-
-
+    <div class="row">
+        <div class="col-xs-12">
+            <uc1:Events ID="EventsControl" runat="server" />
+        </div>
+    </div>
 </asp:Content>

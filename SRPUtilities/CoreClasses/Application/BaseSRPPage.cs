@@ -97,7 +97,26 @@ namespace SRPApp.Classes {
                         }
                         // else go to tenant selection page ..
                         if(tenID < 0) {
-                            Response.Redirect("~/Select.aspx", true);
+                            // we don't have a tenant, let's see what's going on
+                            var ds = Tenant.GetAllActive();
+                            if(ds.Tables.Count == 1) {
+                                // table tenant fetched
+                                if(ds.Tables[0].Rows.Count == 0) {
+                                    // no tenants in the tenant table, we'll assume master
+                                    tenID = Tenant.GetMasterID();
+                                } else if(ds.Tables[0].Rows.Count == 1) {
+                                    // one tenant in the tenant talbe, we'll assume it
+                                    var row = ds.Tables[0].Rows[0];
+                                    var potentalTenant = row["TenId"] as int?;
+                                    if(potentalTenant != null) {
+                                        tenID = (int)potentalTenant;
+                                    }
+                                }
+
+                            }
+                            if(tenID < 0) {
+                                Response.Redirect("~/Select.aspx", true);
+                            }
                         }
                         Session["TenantID"] = tenID;
                     }
