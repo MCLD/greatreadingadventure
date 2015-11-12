@@ -16,6 +16,7 @@ Reading Adventure wouldn't exist!
 - [FontAwesome](#fontawesome)
 - [Html Agility Pack](#html-agility-pack)
 - [jQuery](#jquery)
+- [jQuery Datepicker](#jquery-datepicker)
 - [Microsoft Ajax Minifier](#microsoft-ajax-minifier)
 - [NLog](#nlog)
 - [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
@@ -84,6 +85,13 @@ Reading Adventure wouldn't exist!
 - <https://jquery.com/>
 - Copyright 2015 The jQuery Foundation.
 - License (MIT) <https://jquery.org/license/>
+
+* * *
+
+## jQuery Datepicker
+- <http://keith-wood.name/datepick.HTML>
+- Copyright 2007 - 2015 Keith Wood.
+- License (MIT) <http://keith-wood.name/licence.html>
 
 * * *
 

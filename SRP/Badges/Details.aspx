@@ -17,7 +17,7 @@
                     </div>
                     </asp:Panel>
                 </div>
-                <div class="panel-footer clearfix">
+                <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
                         <asp:HyperLink runat="server" ID="badgeBackLink" CssClass="btn btn-default">Back</asp:HyperLink>
                     </div>

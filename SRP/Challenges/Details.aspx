@@ -53,7 +53,7 @@
                         </ItemTemplate>
                     </asp:Repeater>
                 </table>
-                <div class="panel-footer clearfix">
+                <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
                         <a href="~/Challenges/" runat="server" class="btn btn-default"><asp:Label runat="server" Text="challenges-return"></asp:Label></a>
                         <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />

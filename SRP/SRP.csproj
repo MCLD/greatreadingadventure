@@ -806,6 +806,7 @@
     <Content Include="EnterFamMemberLog.aspx" />
     <Content Include="Events\Default.aspx" />
     <Content Include="Account\FamilyAccountList.aspx" />
+    <Content Include="Events\Details.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="favicon.png" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -871,7 +872,7 @@
     <Content Include="MyGameboard.aspx" />
     <Content Include="Adventures\Default.aspx" />
     <Content Include="Mail\Default.aspx" />
-    <Content Include="Offers.aspx" />
+    <Content Include="Offers\Default.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="PasswordRecovery.aspx" />
     <Content Include="PlayMinigame.aspx" />
@@ -2831,6 +2832,13 @@
     <Compile Include="Account\FamilyAccountList.aspx.designer.cs">
       <DependentUpon>FamilyAccountList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Events\Details.aspx.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Events\Details.aspx.designer.cs">
+      <DependentUpon>Details.aspx</DependentUpon>
+    </Compile>
     <Compile Include="FramedSurvey.aspx.cs">
       <DependentUpon>FramedSurvey.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2918,12 +2926,12 @@
     <Compile Include="Mail\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Offers.aspx.cs">
-      <DependentUpon>Offers.aspx</DependentUpon>
+    <Compile Include="Offers\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Offers.aspx.designer.cs">
-      <DependentUpon>Offers.aspx</DependentUpon>
+    <Compile Include="Offers\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>

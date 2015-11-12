@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 margin-halfem-top">
             Filter badges:
             <asp:DropDownList ID="CategoryId" runat="server" DataSourceID="odsDDCat" DataTextField="Code" DataValueField="CID"
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
@@ -35,7 +35,7 @@
                 <asp:ListItem Value="0" Text="Location"></asp:ListItem>
             </asp:DropDownList>
             <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
-                CssClass="btn btn-default btn-small" OnClick="btnFilter_Click" />
+                CssClass="btn btn-default btn-xs hidden-print" OnClick="btnFilter_Click" />
         </div>
     </div>
     <div class="row margin-1em-top">
@@ -49,7 +49,7 @@
                         runat="server"
                         onclick='<%# Eval("BID", "return ShowBadgeInfo({0});") %>'
                         class="thumbnail no-underline badge-without-info-height">
-                        <div class="text-center caption" style="padding-left: 2px; padding-right: 2px;"><small><%#Eval("Name") %></small></div>
+                        <div class="text-center caption thumbnail-side-padding" style="padding-left: 2px; padding-right: 2px;"><small><%#Eval("Name") %></small></div>
                         <asp:Image runat="server"
                             ImageUrl='<%# Eval("BID", "~/images/badges/sm_{0}.png") %>'
                             CssClass="center-block" />

@@ -10,7 +10,7 @@
 namespace GRA.SRP {
     
     
-    public partial class Events {
+    public partial class EventsPage {
         
         /// <summary>
         /// EventsControl control.

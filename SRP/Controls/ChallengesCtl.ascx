@@ -119,7 +119,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer hidden-print">
                 <div class="pull-right clearfix">
                     <asp:Button ID="btnClose" runat="server" Text="challenges-close" OnClick="btnClose_Click" CssClass="btn btn-default" />
                     <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />

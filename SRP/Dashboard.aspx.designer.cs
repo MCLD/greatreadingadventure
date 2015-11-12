@@ -31,13 +31,13 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl;
         
         /// <summary>
-        /// MyBadgesListControl control.
+        /// LeaderBoardControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.MyBadgesListControl MyBadgesListControl;
+        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl;
         
         /// <summary>
         /// Welcome control.
@@ -85,12 +85,12 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.Label FooterText;
         
         /// <summary>
-        /// LeaderBoardControl control.
+        /// MyBadgesListControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl;
+        protected global::GRA.SRP.Controls.MyBadgesListControl MyBadgesListControl;
     }
 }

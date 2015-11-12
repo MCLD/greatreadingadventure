@@ -19,12 +19,13 @@
                 <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?BadgeId={0}") %>'
                     runat="server"
                     OnClick='<%# Eval("BadgeId", "return ShowBadgeInfo({0});") %>'
-                    class="thumbnail no-underline badge-with-info-height">
-                    <div class="text-center caption" style="padding-left: 2px; padding-right: 2px;"><small><%#Eval("Title") %></small></div>
+                    class="thumbnail no-underline badge-with-info-height"
+                    >
+                    <div class="thumbnail-side-padding text-center caption"><small><%#Eval("Title") %></small></div>
                     <asp:Image runat="server"
                         ImageUrl='<%# Eval("BadgeId", "~/images/badges/sm_{0}.png")%>'
                         CssClass="center-block" />
-                    <div class="text-center caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
+                    <div class="thumbnail-side-padding text-center caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
                 </a>
             </div>
         </ItemTemplate>

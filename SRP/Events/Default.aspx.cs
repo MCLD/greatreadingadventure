@@ -9,7 +9,7 @@ using GRA.SRP.DAL;
 
 namespace GRA.SRP
 {
-    public partial class Events : BaseSRPPage
+    public partial class EventsPage : BaseSRPPage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -27,9 +27,6 @@ namespace GRA.SRP
                 }
             }
             TranslateStrings(this);
-
-            //IsSecure = true;
-            //if (!IsPostBack) TranslateStrings(this);
         }
     }
 }
