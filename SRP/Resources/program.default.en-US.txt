@@ -1,19 +1,11 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Header Text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-About_Us_hidden_header=About Us
-About_Us_Short_Text=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> is a robust, open-source software designed to manage library reading programs.
-Contact_Us_hidden_header=Contact Us
-Contact_Us_hidden_header_Phone= (602) 652-3000
-Contact_Us_hidden_header_Email= <a href="mailto:info@greatreadingadventure.com">info@greatreadingadventure.com</a>
-Contact_Us_hidden_header_Address= 2700 N. Central Ave, Ste 700, Phoenix, AZ 85004
-Info_hidden_header=More Information
-Info_hidden_header_Short_Text=Run a reading program for any-size library district with literacy testing, digital badges, and comprehensive reporting using this free software package. <a href="http://www.greatreadingadventure.com/" target="_blank">See the Web site</a> for more details.
-System_Name=Great Reading Adventure 
-Slogan=Reimagining Summer Reading
-Upsell=All of what you are seeing can be easily customized to match your library!
-Back To Top=Back To Top
-Copyright_Statement=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
+system-name=Great Reading Adventure 
+slogan=Reimagining Summer Reading
+upsell=All of what you are seeing can be easily customized to match your library!
+footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
+tenant-selection=Choose your library:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Global text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

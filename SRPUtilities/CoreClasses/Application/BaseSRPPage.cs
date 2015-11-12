@@ -178,11 +178,11 @@ namespace SRPApp.Classes {
             LoadDropDownListLists(ctl);
             LoadButtons(ctl);
             if(string.IsNullOrEmpty(Page.Title) || Page.Title == "Home Page") {
-                string systemName = GetResourceString("System_Name");
-                if(systemName != "System_Name") {
+                string systemName = GetResourceString("system-name");
+                if(systemName != "system-name") {
                     string title = systemName;
-                    string slogan = GetResourceString("Slogan");
-                    if(slogan != "Slogan") {
+                    string slogan = GetResourceString("slogan");
+                    if(slogan != "slogan") {
                         title = string.Format("{0} - {1}",
                                               title,
                                               slogan);
