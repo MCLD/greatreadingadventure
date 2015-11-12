@@ -1,92 +1,46 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Offers.ascx.cs" Inherits="GRA.SRP.Controls.Offers" %>
 
-<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
-</asp:ScriptManager>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-<ContentTemplate>
-
-<script language="javascript" type="text/javascript">
-
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
- 
-        document.location.href = "Offers.aspx";
- 
-        window.print();
-
-        //document.body.innerHTML = originalContents;
-        
-    }
-</script>
-
 <asp:Panel ID="pnlList" runat="server" Visible="true">
-
-<div class="row" style="min-height: 400px;">
-	<div class="span12">
-        <h1><asp:Label ID="Label1" runat="server" Text="Offers Title"></asp:Label></h1>
-        
-        <table width="100%" cellpadding="5" cellspacing="0">
-            
-            <asp:Repeater runat="server" ID="rptr" onitemcommand="rptr_ItemCommand" >
-                <ItemTemplate>
-            
-            <%# (((long)Eval("Rank")) % 4 == 1 ? "<tr>" : "") %>
-            
-                <td width="25%" valign="bottom" align="center" style="padding-left:20px; padding-right: 20px;padding-bottom: 20px;">
-                    <h5><%# Eval("Title") %></h5>
-                    <img src='/images/offers/md_<%# Eval("OID") %>.png' />
-                    <br /><br />
-                    <asp:Button ID="btnView" runat="server" Text="View" CommandArgument='<%# Eval("OID") %>' Visible='<%# !(bool)Eval("ExternalRedirectFlag") %>' CssClass="btn e" />
-                    <asp:HyperLink ID="HyperLink1" runat="server" Target="_blank" NavigateUrl='<%# Eval("RedirectURL") %>' Visible='<%# (bool)Eval("ExternalRedirectFlag") %>' CssClass="btn e" >View</asp:HyperLink>
-                    <hr />
-                </td>
-            
-            <%# (((long)Eval("Rank")) % 4 == 0 ? "</tr>" : "") %>                
-                
-                
-                </ItemTemplate>
-            </asp:Repeater>
-        
-        
-        
-        </table>
-	</div> 
-</div> 
-
-</asp:Panel>
-
-
-<asp:Panel ID="pnlDetail" runat="server" Visible="false">
-
-<div class="row" style="min-height: 400px;" >
-
-	<div class="span12">
-        
-        <div id="printarea">         
-            <center>
-            <h2><asp:Label ID="lblTitle" runat="server" Text=""></asp:Label></h2>
-            <br />
-            <asp:Image ID="Coupon" runat="server" />
-            <br /><br />
-            <asp:Label ID="Label2" runat="server" Text="Offers Serial"></asp:Label><asp:Label ID="lblSerial" runat="server" Text=""></asp:Label>
-
-            </center>
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>
+                <asp:Label ID="Label1" runat="server" Text="offers-title"></asp:Label></h1>
         </div>
-                
-        <center>
-        <br /><br /><br /><br />
-        
-        <asp:Button ID="Button1" runat="server" Text="Offers btn Print"  CssClass="btn e" Width="150px" OnClientClick="printDiv('printarea')"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <asp:Button ID="btnList" runat="server" Text="Go Back" onclick="btnList_Click" CssClass="btn e"  Width="150px"/>
-        </center>
-
-	</div> 
-
-</div> 
-
+    </div>
+    <div class="row">
+        <asp:Repeater runat="server" ID="rptr" OnItemCommand="rptr_ItemCommand" OnItemDataBound="rptr_ItemBound">
+            <ItemTemplate>
+                <div class="col-xs-6 col-sm-3 col-md-2">
+                    <div class="clearfix">
+                        <asp:LinkButton runat="server" ID="eventDetailsLink"
+                            CssClass="thumbnail no-underline offer-height">
+                        <div class="text-center caption" style="padding-left: 2px; padding-right: 2px;"><small><%# Eval("Title") %></small></div>
+                            <asp:Image runat="server" ImageUrl='<%#Eval("OID", "~/images/offers/md_{0}.png") %>'
+                                CssClass="center-block margin-1em-bottom" />
+                        </asp:LinkButton>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </asp:Repeater>
+    </div>
+</asp:Panel>
+<asp:Panel ID="pnlDetail" runat="server" Visible="false">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="text-center">
+                <asp:Label ID="lblTitle" runat="server" CssClass="lead"></asp:Label></div>
+        </div>
+        <div class="col-xs-12 margin-1em-top">
+            <asp:Image ID="Coupon" runat="server" CssClass="center-block"/>
+        </div>
+        <div class="col-xs-12 margin-halfem-top">
+            <div class="text-center">
+                <asp:Label runat="server" Text="offers-serial"></asp:Label><asp:Label ID="lblSerial" runat="server"></asp:Label></div>
+        </div>
+        <div class="col-xs-12 margin-1em-top hidden-print">
+            <div class="text-center"><asp:Button runat="server" Text="offers-back" OnClick="btnList_Click" CssClass="btn btn-default btn-lg"></asp:Button></div>
+        </div>
+    </div>
 </asp:Panel>
 
 

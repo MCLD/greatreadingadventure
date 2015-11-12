@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title runat="server"></title>
     <link rel="shortcut icon" href="favicon.png">
-    <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server"/>
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server"/>
-    <link href="~/Content/gra.css" rel="stylesheet" runat="server"/>
+    <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
     <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
@@ -28,7 +28,7 @@
 </head>
 <body class="page">
     <form id="mainForm" runat="server">
-        <nav class="navbar navbar-default navbar-static-top hidden-print">
+        <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -38,7 +38,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" id="homeLink" href="/" runat="server">
-                        <asp:Label runat="server"><%=this.SystemNameText %></asp:Label></a>
+                        <%=this.SystemNameText %></a>
                     <%if(!this.CurrentPage.IsLoggedIn && !string.IsNullOrEmpty(this.SloganText)) { %>
                     <p class="navbar-text hidden-xs" id="Slogan" runat="server" style="margin-left: 3em;">
                         <em><%=this.SloganText%></em>
@@ -69,7 +69,7 @@
                         <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
                         <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
                         <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
-                        <li id="offersNav" runat="server"><a href="/Offers.aspx" class="menu-item" id="o" runat="server">Offers</a></li>
+                        <li id="offersNav" runat="server"><a href="~/Offers/" class="menu-item" id="o" runat="server">Offers</a></li>
 
                         <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account">
                             <span class="glyphicon glyphicon-user"></span>
@@ -83,6 +83,14 @@
                 <!--/.nav-collapse -->
             </div>
         </nav>
+        <div class="container-fluid visible-print-block print-header">
+            <div class="row">
+                <div class="col-xs-8">
+                    <span class="lead"><%=this.SystemNameText %></span>
+                </div>
+                <div class="col-xs-4"><em><%=this.SloganText%></em></div>
+            </div>
+        </div>
 
         <div id="badgePopupPanel" style="display: none;" class="modal fade">
             <div class="modal-dialog">
@@ -287,8 +295,8 @@
                 return valid;
             }
             function HideTooltipShowBadgeInfo(sender, badgeId) {
-                if(sender) {
-                    if($(sender).tooltip) {
+                if (sender) {
+                    if ($(sender).tooltip) {
                         $(sender).tooltip('hide');
                     }
                 }
@@ -321,7 +329,7 @@
                 .fail(function (jqXHR, textStatus, errorThrown) {
                     alert("Couldn't contact server to get badge details: " + errorThrown);
                 });
-            return false;
+                return false;
             }
     </script>
 </body>

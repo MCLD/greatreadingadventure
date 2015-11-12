@@ -73,11 +73,6 @@ namespace GRA.SRP.Core.Utilities
             httpRes.Redirect(urlMsg, endResponse);
         }
 
-        public static string GetAppURL(string path)
-        {
-            return (string.Format("{0}{1}/{2}", HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority), AppPath, path));
-        }
-
         public static string RootUrl
         {
             get

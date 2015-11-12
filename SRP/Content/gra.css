@@ -22,6 +22,18 @@
     background-color: #eee;
 }
 
+.print-header {
+    border-bottom: 2px solid #ccc !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+}
+
+@media print {
+  a[href]:after {
+    content: "";
+  }
+}
+
 /* provide a minimum width on tooltips to reduce wrapping */
 .tooltip-inner {
     white-space: pre-wrap;
@@ -87,13 +99,18 @@
     text-decoration: none !important;
 }
 
+.thumbnail-side-padding {
+    padding-left: 0.2em !important;
+    padding-right: 0.2em !important;
+}
+
 .badge-with-info-height {
-    height: 180px;
+    min-height: 12em;
     display: block;
 }
 
 .badge-without-info-height {
-    height: 150px;
+    min-height: 150px;
     display: block;
 }
 
@@ -109,4 +126,9 @@
 
 .noPrevNext .datepick-cmd.datepick-disabled {
     visibility: hidden;
+}
+
+.offer-height {
+    min-height: 12em;
+    display: block;
 }

@@ -148,10 +148,9 @@ Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Offers text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Offers Title=Offers
-Offers btn Print=Print
-Offers btn Back=Go Back
-Offers Serial=Serial #
+offers-title=Offers
+offers-back=Back
+offers-serial=Offer Serial #
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -163,12 +162,6 @@ events-header-summary=Summary
 events-filter-button=Filter
 events-filter-clear-button=Clear
 events-prompt=Event: 
-
-Events btn Filter=Filter
-Events btn Clear=Clear
-Events Btn Details=More Details ... 
-Events btn Print=Print
-Events btn Back=Go Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

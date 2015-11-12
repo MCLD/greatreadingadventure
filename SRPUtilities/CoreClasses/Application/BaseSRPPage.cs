@@ -304,8 +304,6 @@ namespace SRPApp.Classes {
             } catch //(Exception ex)
               {
             }
-            if("y".Equals(Request.QueryString["print"]))
-                MasterPageFile = "~/master/Print.master";
         }
 
         public string GetResourceString(string resName) {

@@ -85,7 +85,7 @@ namespace GRA.SRP {
 
         public string OffersPageActive {
             get {
-                if(Request.Path.EndsWith("Offers.aspx")) {
+                if(Request.Path.Contains("/Offers/")) {
                     return "active";
                 }
                 return string.Empty;

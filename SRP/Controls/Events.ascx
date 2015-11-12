@@ -8,7 +8,7 @@
                 <asp:Label runat="server" Text="events-title"></asp:Label></span>
         </div>
     </div>
-    <div class="row">
+    <div class="row margin-halfem-top">
         <div class="col-sm-12">
             Start Date:
                 <asp:TextBox
@@ -34,9 +34,9 @@
                     <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
                 </asp:DropDownList>
             <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
-                OnClick="btnFilter_Click" CssClass="btn btn-default btn-xs" />
+                OnClick="btnFilter_Click" CssClass="btn btn-default btn-xs hidden-print" />
             &nbsp;
-            <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-xs" />
+            <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-xs hidden-print" />
         </div>
     </div>
     <table class="table table-striped">
@@ -54,7 +54,9 @@
             <asp:Repeater runat="server" ID="rptr" OnItemCommand="rptr_ItemCommand">
                 <ItemTemplate>
                     <tr>
-                        <td><a href="#" onclick="return ShowEventInfo(<%# Eval("EID") %>);"><%# Eval("EventTitle") %></a>
+                        <td><a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
+                               runat="server"
+                               onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
                         </td>
                         <td>
                             <%# DisplayEventDateTime(Eval("EventDate") as DateTime?,
