@@ -19,7 +19,7 @@ namespace GRA.SRP {
         public string SystemNameText {
             get {
                 if(SRPPage != null) {
-                    return SRPPage.GetResourceString("System_Name");
+                    return SRPPage.GetResourceString("system-name");
                 } else {
                     return string.Empty;
                 }
@@ -29,7 +29,7 @@ namespace GRA.SRP {
         public string SloganText {
             get {
                 if(SRPPage != null) {
-                    return SRPPage.GetResourceString("Slogan");
+                    return SRPPage.GetResourceString("slogan");
                 } else {
                     return string.Empty;
                 }
@@ -39,7 +39,7 @@ namespace GRA.SRP {
         public string UpsellText {
             get {
                 if(SRPPage != null) {
-                    return SRPPage.GetResourceString("Upsell");
+                    return SRPPage.GetResourceString("upsell");
                 } else {
                     return string.Empty;
                 }
@@ -49,7 +49,7 @@ namespace GRA.SRP {
         public string CopyrightStatementText {
             get {
                 if(SRPPage != null) {
-                    return SRPPage.GetResourceString("Copyright_Statement");
+                    return SRPPage.GetResourceString("footer-copyright");
                 } else {
                     return string.Empty;
                 }

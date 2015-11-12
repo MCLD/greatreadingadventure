@@ -794,15 +794,11 @@
     <Content Include="Controls\SimpleLoggingControl.ascx" />
     <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
     <Content Include="Controls\Welcome.ascx" />
-    <Content Include="CSS\bootstrap.css" />
-    <Content Include="CSS\font-awesome.min.css" />
     <Content Include="CSS\Program\1.css" />
     <Content Include="CSS\Program\2.css" />
     <Content Include="CSS\Program\3.css" />
     <Content Include="CSS\Program\4.css" />
     <Content Include="CSS\Program\Default.css" />
-    <Content Include="CSS\responsive.css" />
-    <Content Include="CSS\theme-style.css" />
     <Content Include="EnterFamMemberLog.aspx" />
     <Content Include="Events\Default.aspx" />
     <Content Include="Account\FamilyAccountList.aspx" />
@@ -864,7 +860,6 @@
     <Content Include="images\shield_yellow.png" />
     <Content Include="images\sm_preview-file.png" />
     <Content Include="images\tweet.png" />
-    <Content Include="js\script.js" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="Account\Default.aspx" />
@@ -1265,10 +1260,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Layout\TSelection.Master" />
-    <Content Include="CSS\font\fontawesome-webfont.eot" />
-    <Content Include="CSS\font\fontawesome-webfont.eot-v=3.0.1" />
-    <Content Include="CSS\font\fontawesome-webfont.ttf" />
-    <Content Include="CSS\font\fontawesome-webfont.woff" />
     <Content Include="LICENSE">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -12,4 +12,5 @@
     <div class="col-sm-12">
         <uc3:MyAccountCtl ID="MyAccountCtl1" runat="server" />
     </div>
+    Tenant: <%=Session["TenantID"].ToString() %>
 </asp:Content>
