@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CookieKey.cs" />
     <Compile Include="FormatWith.cs" />
     <Compile Include="LogExtensions.cs" />
     <Compile Include="Password.cs" />

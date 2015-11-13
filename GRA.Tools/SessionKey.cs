@@ -15,6 +15,8 @@ namespace GRA.Tools {
         public const string OffersActive = "OffAct";
         public const string EventsActive = "EvAct";
         public const string BadgesActive = "BadAct";
+        public const string Patron = "Patron";
+        public const string EarnedBadges = "ErnBdg";
     }
 
     public static class PatronMessageLevels {

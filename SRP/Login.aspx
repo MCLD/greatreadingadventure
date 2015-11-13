@@ -6,12 +6,7 @@
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-10 col-sm-offset-1">
         <uc3:PatronLogin ID="PatronLogin1" runat="server" />
     </div>
-</asp:Content>
-<asp:Content ID="BottomOfPage" runat="server" ContentPlaceHolderID="BottomOfPage">
-    <script>
-        $().ready(focusFirstField());
-    </script>
 </asp:Content>

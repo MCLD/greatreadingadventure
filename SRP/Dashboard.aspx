@@ -7,6 +7,8 @@
 <%@ Register Src="~/Controls/MyPointsControl.ascx" TagPrefix="uc1" TagName="MyPointsControl" %>
 <%@ Register Src="~/Controls/LeaderBoardControl.ascx" TagPrefix="uc1" TagName="LeaderBoardControl" %>
 <%@ Register Src="~/Controls/SimpleLoggingControl.ascx" TagName="SimpleLoggingControl" TagPrefix="uc1" %>
+<%@ Register Src="~/Controls/ReadingLogControl.ascx" TagPrefix="rlc" TagName="ReadingLogControl" %>
+
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
 </asp:Content>
@@ -31,7 +33,11 @@
                 <uc1:Welcome runat="server" ID="Welcome" />
             </div>
             <asp:Label ID="ProgramNotOpenText" runat="server" Text="" Visible="false"></asp:Label>
-            <uc1:SimpleLoggingControl ID="SimpleLoggingControl" runat="server" />
+
+            <rlc:ReadingLogControl runat="server" id="ReadingLogControl" />
+
+            <uc1:SimpleLoggingControl ID="SimpleLoggingControl" runat="server" Visible="false"/>
+            <br />
             <asp:Label ID="SponsorText" runat="server" Text="Label"></asp:Label>
             <asp:Label ID="FooterText" runat="server" Text="Label"></asp:Label>
         </div>

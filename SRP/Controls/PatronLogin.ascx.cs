@@ -3,11 +3,17 @@ using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
+using System.Web;
 
 namespace GRA.SRP.Classes {
     public partial class PatronLogin : System.Web.UI.UserControl {
         protected void Page_Load(object sender, EventArgs e) {
-
+            if(!Page.IsPostBack) {
+                if(Request.Cookies[CookieKey.Username] != null) {
+                    loginUsername.Text = Request.Cookies[CookieKey.Username].Value;
+                    loginRememberMe.Checked = true;
+                }
+            }
         }
 
         protected string LoginErrorMessage { get; set; }
@@ -15,12 +21,12 @@ namespace GRA.SRP.Classes {
         protected void loginClick(object sender, EventArgs e) {
             if(!(string.IsNullOrEmpty(loginUsername.Text.Trim()) || string.IsNullOrEmpty(loginPassword.Text.Trim()))) {
                 var patron = new Patron();
-                if(Patron.Login(loginUsername.Text.Trim(), loginPassword.Text.Trim())) {
+                if(Patron.Login(loginUsername.Text.Trim(), loginPassword.Text)) {
                     var bp = Patron.GetObjectByUsername(loginUsername.Text.Trim());
 
                     var pgm = DAL.Programs.FetchObject(bp.ProgID);
                     if(pgm == null) {
-                        var progID = Programs.GetDefaultProgramForAgeAndGrade(bp.Age, bp.SchoolGrade.SafeToInt()); //Programs.FetchObject(Programs.GetDefaultProgramID());
+                        var progID = Programs.GetDefaultProgramForAgeAndGrade(bp.Age, bp.SchoolGrade.SafeToInt());
                         bp.ProgID = progID;
                         bp.Update();
                     }
@@ -28,6 +34,18 @@ namespace GRA.SRP.Classes {
 
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();
+
+                    if(loginRememberMe.Checked) {
+                        var loginUsernameCookie = new HttpCookie(CookieKey.Username);
+                        loginUsernameCookie.Expires = DateTime.Now.AddDays(14);
+                        loginUsernameCookie.Value = loginUsername.Text.Trim();
+                        Response.SetCookie(loginUsernameCookie);
+                    } else {
+                        if(Request.Cookies[CookieKey.Username] != null) {
+                            Response.Cookies[CookieKey.Username].Expires = DateTime.Now.AddDays(-1);
+                        }
+                    }
+
 
                     if(ViewState[SessionKey.RequestedPath] != null) {
                         string requestedPath = ViewState[SessionKey.RequestedPath].ToString();

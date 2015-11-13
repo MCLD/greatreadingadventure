@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-sm-12">
         <span class="h1">
-            <asp:Label ID="Label1" runat="server" Text="Notifications Title"></asp:Label></span>
+            <asp:Label ID="Label1" runat="server" Text="notifications-title"></asp:Label></span>
     </div>
 </div>
 <asp:Panel ID="pnlList" runat="server" Visible="true">
@@ -106,7 +106,7 @@
         </div>
         <div class="col-sm-12">
             <div class="lead margin-1em-top margin-1em-bottom">
-                <asp:Label ID="Label2" runat="server" Text="Notifications Ask Question Title"></asp:Label>
+                <asp:Label ID="Label2" runat="server" Text="notifications-send-message"></asp:Label>
             </div>
             <div class="form-group <%= this.SubjectHasError %>">
                 <asp:Label AssociatedControlID="txtSubject" runat="server" CssClass="control-label">Subject</asp:Label>
