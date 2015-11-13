@@ -1,93 +1,81 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SimpleLoggingControl.ascx.cs" Inherits="GRA.SRP.Controls.SimpleLoggingControl" %>
-<div class="pill">
-    <h3>
-        <!--Log Activity-->
-        Reading Log</h3>
-    <style>
-        .padded {
-            padding: 10px 10px 10px 10px;
-        }
+<asp:Panel runat="server" ID="simpleLoggingControlPanel">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <span class="lead">
+                <asp:Label runat="server" Text="readinglog-reading-log"></asp:Label></span>
+            <hr style="margin-bottom: 5px !important; margin-top: 5px !important;" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-inline text-center">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="txtCountSubmitted">
+                        <asp:Label runat="server" Text="readinglog-reading-prompt"></asp:Label></label>
+                    <asp:TextBox ID="txtCountSubmitted"
+                        runat="server"
+                        CssClass="form-control"
+                        MaxLength="5"></asp:TextBox>
+                </div>
+                <div class="form-group">
+                    <label class="radio-inline">
+                        <asp:RadioButtonList ID="rbActivityType" runat="server">
+                        </asp:RadioButtonList></label>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        .attn {
-            border: 1px solid green;
-        }
-    </style>
+    <div class="row margin-1em-top">
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label for="txtTitle">Title:</label>
+                <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+        </div>
 
-    <table width="100%">
-        <tr>
-            <td colspan="3" class="padded ">
-                <asp:Label ID="lblMessage" runat="server" Text="" Font-Bold="true"></asp:Label>
-            </td>
-        </tr>
-    </table>
-    <table width="100%" runat="server" id="EntryTable">
-        <tr>
-            <td valign="top" nowrap><span style="padding-top: 5px;">I read </span>
-                <asp:TextBox ID="txtCountSubmitted" runat="server" Width="50px"></asp:TextBox>
-            </td>
-            <td nowrap>
-                <asp:RadioButtonList ID="rbActivityType" runat="server">
-                </asp:RadioButtonList>
-            </td>
-            <td width="100%"></td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <asp:Panel ID="pnlTitleAndAuthor" runat="server" Visible="true">
-                    <table width="98%">
-                        <tr>
-                            <td width="50%"><b>Title</b></td>
-                            <td width="50%"><b>Author</b></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:TextBox ID="txtTitle" runat="server" Width="100%"></asp:TextBox></td>
-                            <td>
-                                <asp:TextBox ID="txtAuthor" runat="server" Width="100%"></asp:TextBox></td>
-                        </tr>
-                    </table>
+        <div class="col-xs-12 col-md-6">
+            <div class="form-group">
+                <label for="txtAuthor">Author:</label>
+                <asp:TextBox ID="txtAuthor" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+        </div>
+    </div>
 
-                </asp:Panel>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <asp:Panel ID="pnlReview" runat="server" Visible="false">
-                    <b>Write a Review:</b><br />
-                    <asp:TextBox ID="Review" runat="server" Width="98%" Rows="4" TextMode="MultiLine"></asp:TextBox>
-                </asp:Panel>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" style="">
-                <strong>OR</strong>
-            </td>
-        </tr>
-        <tr>
-            <td valign="top" nowrap style="padding-top: 7px;">
-                <asp:Label ID="lblRedeem" runat="server" Text="Secret Code: "></asp:Label>
-                &nbsp;</td>
-            <td nowrap>
-                <asp:TextBox ID="txtProgramCode" runat="server" Width="200px"></asp:TextBox>
-            </td>
-            <td width="100%"></td>
-        </tr>
-    </table>
-    <table width="100%">
-        <tr>
-            <td colspan="3">
-                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="btn a" OnClick="btnSubmit_Click" />
-                <asp:Button ID="btnReSubmit" runat="server" Text="Submit More" CssClass="btn a" OnClick="btnReSubmit_Click" Visible="false" />
-                &nbsp; 
-        <asp:Button ID="btnHistory" CssClass="btn a" runat="server" Text="History" OnClick="btnHistory_Click" />
-            </td>
-        </tr>
+    <asp:Panel ID="pnlReview" runat="server" Visible="false">
+        <div class="row">
+            <div class="col-xs-12">
+                Write a Review:
+             <asp:TextBox ID="Review" runat="server" Width="98%" Rows="4" TextMode="MultiLine"></asp:TextBox>
+            </div>
+        </div>
+    </asp:Panel>
 
-    </table>
-    <asp:Label ID="lblPID" runat="server" Text="" Visible="false"></asp:Label>
-    <asp:Label ID="lblPGID" runat="server" Text="" Visible="false"></asp:Label>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <strong>OR</strong>
+        </div>
+    </div>
 
 
-</div>
+    <div class="row margin-1em-top">
+        <div class="col-xs-12">
+            <div class="form-inline text-center">
+                <label for="txtProgramCode">
+                    <asp:Label ID="lblRedeem" runat="server" Text="secret-code-prompt"></asp:Label></label>
+                <asp:TextBox ID="txtProgramCode" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+        </div>
+    </div>
 
-
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <asp:Button ID="btnSubmit" runat="server" Text="readinglog-submit-minutes" CssClass="btn btn-default" OnClick="btnSubmit_Click" />
+            </div>
+        </div>
+    </div>
+    <asp:Label ID="lblPID" runat="server" Visible="false"></asp:Label>
+    <asp:Label ID="lblPGID" runat="server" Visible="false"></asp:Label>
+</asp:Panel>

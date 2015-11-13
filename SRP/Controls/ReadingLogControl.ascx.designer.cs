@@ -10,114 +10,141 @@
 namespace GRA.SRP.Controls {
     
     
-    public partial class SimpleLoggingControl {
+    public partial class ReadingLogControl {
         
         /// <summary>
-        /// simpleLoggingControlPanel control.
+        /// readingLogControlPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel simpleLoggingControlPanel;
+        protected global::System.Web.UI.WebControls.Panel readingLogControlPanel;
         
         /// <summary>
-        /// txtCountSubmitted control.
+        /// countSubmittedLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCountSubmitted;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl countSubmittedLabel;
         
         /// <summary>
-        /// rbActivityType control.
+        /// readingActivityField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rbActivityType;
+        protected global::System.Web.UI.WebControls.TextBox readingActivityField;
         
         /// <summary>
-        /// txtTitle control.
+        /// activityTypeSelector control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTitle;
+        protected global::System.Web.UI.WebControls.DropDownList activityTypeSelector;
         
         /// <summary>
-        /// txtAuthor control.
+        /// activityTypeSingleLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAuthor;
+        protected global::System.Web.UI.WebControls.Label activityTypeSingleLabel;
         
         /// <summary>
-        /// pnlReview control.
+        /// submitButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlReview;
+        protected global::System.Web.UI.WebControls.LinkButton submitButton;
         
         /// <summary>
-        /// Review control.
+        /// enterBookDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Review;
+        protected global::System.Web.UI.WebControls.CheckBox enterBookDetails;
         
         /// <summary>
-        /// lblRedeem control.
+        /// readingLogPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRedeem;
+        protected global::System.Web.UI.WebControls.Panel readingLogPopup;
         
         /// <summary>
-        /// txtProgramCode control.
+        /// lblDesc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtProgramCode;
+        protected global::System.Web.UI.WebControls.Label lblDesc;
         
         /// <summary>
-        /// btnSubmit control.
+        /// lblPoints control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSubmit;
+        protected global::System.Web.UI.WebControls.Label lblPoints;
         
         /// <summary>
-        /// lblPID control.
+        /// BadgeImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPID;
+        protected global::System.Web.UI.WebControls.Label BadgeImage;
         
         /// <summary>
-        /// lblPGID control.
+        /// titleField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPGID;
+        protected global::System.Web.UI.WebControls.TextBox titleField;
+        
+        /// <summary>
+        /// authorField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox authorField;
+        
+        /// <summary>
+        /// cancelButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button cancelButton;
+        
+        /// <summary>
+        /// submitDetailsButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button submitDetailsButton;
     }
 }

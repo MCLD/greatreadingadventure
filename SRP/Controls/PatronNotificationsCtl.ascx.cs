@@ -36,7 +36,7 @@ namespace GRA.SRP.Controls {
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
             pnlList.Visible = false;
-            lblFrom.Text = ((BaseSRPPage)this.Page).GetResourceString("Notifications From");
+            lblFrom.Text = ((BaseSRPPage)this.Page).GetResourceString("notifications-from");
 
             var o = new Notifications();
             o.Fetch(int.Parse(e.CommandArgument.ToString()));
@@ -103,7 +103,7 @@ namespace GRA.SRP.Controls {
                 pnlAsk.Visible = false;
                 pnlList.Visible = true;
                 Session[SessionKey.PatronMessageGlyphicon] = "send";
-                Session[SessionKey.PatronMessage] = "Your message has been sent!";
+                Session[SessionKey.PatronMessage] = ((BaseSRPPage)this.Page).GetResourceString("notifications-message-sent");
             }
         }
     }

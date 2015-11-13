@@ -25,6 +25,7 @@ loginform-recover=Lost password
 loginform-username=Username:
 loginform-password=Password:
 loginform-submit-button=Login
+loginform-remember-me=Remember my username
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Recover form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,13 +158,10 @@ events-prompt=Event:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Notifications Title=Mail
-Notifications From=The Great Reading Adventure Team
-Ask A Question=Send a mail message
-Notifications btn Print=Print
-Notifications Ask Question Title=Send a mail message
-Submit Question=Submit mail
-Notifications Ask Question Submitted Done=We received your message and will reply soon!
+notifications-title=Mail
+notifications-from=The Great Reading Adventure Team
+notifications-send-message=Send a mail message
+notifications-message-sent=Your message has been sent!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,3 +188,13 @@ badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found. Check back soon!
 badges-filter-button=Filter
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Reading log
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+readinglog-reading-log=Reading log
+readinglog-reading-prompt=I read
+readinglog-submit=Submit
+readinglog-read-a-book=I read a book!
+readinglog-details-header=Enter book details
+readinglog-details-cancel=Cancel
+secret-code-prompt=Secret code:

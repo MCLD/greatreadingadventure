@@ -1,68 +1,4 @@
-﻿.upsell {
-    background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
-    padding-top: 0.8em;
-    padding-bottom: 0.8em;
-    border-radius: 1em;
-    margin-top: 2em;
-    color: white;
-}
-
-.upselltext {
-    margin-left: 2em;
-    margin-right: 2em;
-    display: inline-block;
-    font-weight: bold;
-}
-
-.footer {
-    font-style: italic;
-    padding-top: 0.8em;
-    width: 100%;
-    margin-top: 2em;
-    background-color: #eee;
-}
-
-.print-header {
-    border-bottom: 2px solid #ccc !important;
-    margin-top: 1em !important;
-    margin-bottom: 1em !important;
-}
-
-@media print {
-  a[href]:after {
-    content: "";
-  }
-}
-
-/* provide a minimum width on tooltips to reduce wrapping */
-.tooltip-inner {
-    white-space: pre-wrap;
-    min-width: 80px;
-}
-
-/* background colors for rows in the activity history screen */
-.award-reading {
-    background-color: #ddffdd;
-}
-
-.award-event {
-    background-color: #ddddff;
-}
-
-.award-challenge {
-    background-color: #ffffdd;
-}
-
-.award-adventure {
-    background-color: #ffddff;
-}
-
-/* badges in the top nav bar are actually labels */
-.label-as-badge {
-    border-radius: 1em;
-}
-
-/* general spacing help */
+﻿/* general formatting */
 .margin-1em-top {
     margin-top: 1em;
 }
@@ -104,19 +40,117 @@
     padding-right: 0.2em !important;
 }
 
+/* badges in the top nav bar are actually labels */
+.label-as-badge {
+    border-radius: 1em;
+}
+
+/* provide a minimum width on tooltips to reduce wrapping */
+.tooltip-inner {
+    white-space: pre-wrap;
+    min-width: 80px;
+}
+
+/* master page formatting */
+.upsell {
+    background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    border-radius: 1em;
+    margin-top: 2em;
+    color: white;
+}
+
+.upselltext {
+    margin-left: 2em;
+    margin-right: 2em;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.footer {
+    font-style: italic;
+    padding-top: 0.8em;
+    width: 100%;
+    margin-top: 2em;
+    background-color: #eee;
+}
+
+.print-header {
+    border-bottom: 2px solid #ccc !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+}
+
+@media print {
+    a[href]:after {
+        content: "";
+    }
+}
+
+/* background colors for rows in the activity history screen */
+.award-reading {
+    background-color: #ddffdd;
+}
+
+.award-event {
+    background-color: #ddddff;
+}
+
+.award-challenge {
+    background-color: #ffffdd;
+}
+
+.award-adventure {
+    background-color: #ffddff;
+}
+
+/* login popup and panel spacing */
+
+.loginPopupRememberMe {
+    display: block;
+}
+
+input#loginPopupRememberMe {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -0.8em;
+}
+
+.remember-me-label {
+    margin-left: 0.25em;
+    font-weight: normal;
+    display: inline-block;
+}
+
+.login-remember-me > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.login-remember-me > label {
+    font-weight: normal;
+    display: inline-block;
+    margin-left: 0.5em;
+    position: absolute;
+    top: 0.25em;
+}
+
+/* badge display spacing */
 .badge-with-info-height {
     min-height: 12em;
     display: block;
 }
 
 .badge-without-info-height {
-    min-height: 150px;
+    min-height: 11em;
     display: block;
 }
 
+/* challenge display */
 .challenge-checkbox-container > input {
-    width: 20px;
-    height: 20px;
+    width: 1.5em;
+    height: 1.5em;
 }
 
 .challenge-detailpage-header {
@@ -124,11 +158,46 @@
     font-size: larger;
 }
 
+/* date picker hide navigation to invalid months */
 .noPrevNext .datepick-cmd.datepick-disabled {
     visibility: hidden;
 }
 
+/* offer page */
 .offer-height {
     min-height: 12em;
     display: block;
 }
+
+/* readinglogcontrol */
+.readinglog-spacing {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.5em;
+}
+
+.readinglog-spacing-extra {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.8em;
+}
+
+.readinglog-inline {
+    display: inline;
+}
+
+.readinglog-checkbox {
+    display: block;
+    margin-top: 0.5em;
+}
+
+    .readinglog-checkbox > input {
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    .readinglog-checkbox > label {
+        font-weight: normal;
+        margin-left: 0.5em;
+        margin-top: 0.25em;
+    }

@@ -148,7 +148,16 @@
                         </div>
                     </div>
                     <div class="modal-footer clearfix">
-                        <div class="pull-right clearfix">
+                        <div class="pull-left">
+                            <asp:CheckBox runat="server"
+                                ID="loginPopupRememberMe" CssClass="checkbox-inline" />
+                            <label for="loginPopupRememberMe" class="form-control-static">
+                                <asp:Label runat="server"
+                                    Text="loginform-remember-me"
+                                    CssClass="remember-me-label"></asp:Label>
+                            </label>
+                        </div>
+                        <div class="pull-right">
                             <a href="~/Recover.aspx" runat="server" class="btn btn-default"
                                 id="loginPopupRecoverButton">
                                 <asp:Label runat="server" Text="loginform-recover" /></a>
@@ -216,9 +225,15 @@
                 showLoginPopup();
             }
         });
+
         $('#loginPopupPanel').on('shown.bs.modal', function () {
-            $('#loginPopupUsername').focus();
-        })
+            if ($('#loginPopupUsername').val().length > 0) {
+                $('#loginPopupPassword').focus();
+            } else {
+                $('#loginPopupUsername').focus();
+            }
+        });
+
         function showLoginPopup() {
             var elems = $("div[id$='loginPopupPanel']");
             elems.each(function (index) {
@@ -235,6 +250,7 @@
             $("#loginPopupErrorMessage").hide();
             return false;
         }
+
         $().ready(function () {
             if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
                 showLoginPopup();
@@ -248,88 +264,97 @@
                 }
                 $("#loginPopupErrorMessage").show();
             }
+
+            if ('<%=this.EarnedBadges%>'.trim() != '') {
+                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
+            }
         });
-            function passwordPopupValidateLogin() {
-                var valid = true;
 
-                var username = $("#loginPopupUsername").val();
-                if (!username || username.trim().length == 0) {
-                    $("#loginPopupUsernameErrorGlyph").show();
-                    if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
-                        $("#loginPopupLoginGroup").toggleClass("has-error");
-                    }
-                    valid = false;
-                } else {
-                    $("#loginPopupUsernameErrorGlyph").hide();
-                    if ($("#loginPopupLoginGroup").hasClass("has-error")) {
-                        $("#loginPopupLoginGroup").toggleClass("has-error");
-                    }
-                }
+        function passwordPopupValidateLogin() {
+            var valid = true;
 
-                var password = $("#loginPopupPassword").val();
-                if (!password || password.trim().length == 0) {
-                    $("#loginPopupPasswordErrorGlyph").show();
-                    if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
-                        $("#loginPopupPasswordGroup").toggleClass("has-error");
-                    }
-                    valid = false;
-                } else {
-                    $("#loginPopupPasswordErrorGlyph").hide();
-                    if ($("#loginPopupPasswordGroup").hasClass("has-error")) {
-                        $("#loginPopupPasswordGroup").toggleClass("has-error");
-                    }
+            var username = $("#loginPopupUsername").val();
+            if (!username || username.trim().length == 0) {
+                $("#loginPopupUsernameErrorGlyph").show();
+                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
                 }
-                if (valid) {
-                    $("#btnLogin").button("loading");
-                    $("#loginPopupErrorMessage").hide();
-                    $("#loginPopupUsername").prop("readonly", true);
-                    $("#loginPopupPassword").prop("readonly", true);
-                    $("#loginPopupRecoverButton").toggleClass("disabled");
-                    $("#loginPopupRegisterButton").toggleClass("disabled");
-
-                } else {
-                    $('#loginPopupErrorMessage').text("Please enter a username and password.");
-                    $("#loginPopupErrorMessage").show();
+                valid = false;
+            } else {
+                $("#loginPopupUsernameErrorGlyph").hide();
+                if ($("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
                 }
-                return valid;
-            }
-            function HideTooltipShowBadgeInfo(sender, badgeId) {
-                if (sender) {
-                    if ($(sender).tooltip) {
-                        $(sender).tooltip('hide');
-                    }
-                }
-                return ShowBadgeInfo(badgeId);
             }
 
-            function ShowBadgeInfo(badgeId) {
-                var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/GetBadgeInfo.ashx?BadgeId=' + badgeId)
-                .done(function (data, textStatus, jqXHR) {
-                    if (!data.Success) {
-                        alert("Couldn't show badge information: " + data.ErrorMessage);
+            var password = $("#loginPopupPassword").val();
+            if (!password || password.trim().length == 0) {
+                $("#loginPopupPasswordErrorGlyph").show();
+                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+                valid = false;
+            } else {
+                $("#loginPopupPasswordErrorGlyph").hide();
+                if ($("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+            }
+            if (valid) {
+                $("#btnLogin").button("loading");
+                $("#loginPopupErrorMessage").hide();
+                $("#loginPopupUsername").prop("readonly", true);
+                $("#loginPopupPassword").prop("readonly", true);
+                $("#loginPopupRecoverButton").toggleClass("disabled");
+                $("#loginPopupRegisterButton").toggleClass("disabled");
+
+            } else {
+                $('#loginPopupErrorMessage').text("Please enter a username and password.");
+                $("#loginPopupErrorMessage").show();
+            }
+            return valid;
+        }
+        function HideTooltipShowBadgeInfo(sender, badgeId) {
+            if (sender) {
+                if ($(sender).tooltip) {
+                    $(sender).tooltip('hide');
+                }
+            }
+            return ShowBadgeInfo(badgeId);
+        }
+
+        function ShowBadgeInfo(badgeId) {
+            var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/GetBadgeInfo.ashx?BadgeId=' + badgeId)
+            .done(function (data, textStatus, jqXHR) {
+                if (!data.Success) {
+                    alert("Couldn't show badge information: " + data.ErrorMessage);
+                } else {
+                    var fullTitle = data.UserName + ' Badge';
+                    $('#badgePopupTitle').text(fullTitle);
+                    var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
+                    $('#badgePopupImageContainer').empty();
+                    $('#badgePopupImageContainer').append(imageTag);
+                    if (data.Earn.length == 0) {
+                        $('#badgePopupEarn').hide();
                     } else {
-                        var fullTitle = data.UserName + ' Badge';
-                        $('#badgePopupTitle').text(fullTitle);
-                        var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
-                        $('#badgePopupImageContainer').empty();
-                        $('#badgePopupImageContainer').append(imageTag);
-                        if (data.Earn.length == 0) {
-                            $('#badgePopupEarn').hide();
-                        } else {
-                            $('#badgePopupEarn').show();
-                            $('#badgePopupEarnList').empty();
-                            $.each(data.Earn, function (index, value) {
-                                $('#badgePopupEarnList').append('<li>' + value + '</li>');
-                            });
-                        }
-                        $('#badgePopupPanel').modal('show');
+                        $('#badgePopupEarn').show();
+                        $('#badgePopupEarnList').empty();
+                        $.each(data.Earn, function (index, value) {
+                            $('#badgePopupEarnList').append('<li>' + value + '</li>');
+                        });
                     }
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    alert("Couldn't contact server to get badge details: " + errorThrown);
-                });
-                return false;
-            }
+                    $('#badgePopupPanel').modal('show');
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                alert("Couldn't contact server to get badge details: " + errorThrown);
+            });
+            return false;
+        }
+
+        function ShowEarnedBadges(badgeIdCsl) {
+
+        }
     </script>
 </body>
 </html>

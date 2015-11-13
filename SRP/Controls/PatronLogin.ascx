@@ -6,7 +6,7 @@
             <asp:Label ID="loginTitle" runat="server" Text="loginform-title"></asp:Label></span>
     </div>
     <div class="panel-body form-horizontal">
-        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" runat="server" ClientIDMode="Static" id="loginErrorMessage"></p>
+        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" runat="server" clientidmode="Static" id="loginErrorMessage"></p>
         <div class="form-group has-feedback" id="loginLoginGroup">
             <label class="col-sm-3 control-label">
                 <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
@@ -25,16 +25,27 @@
         </div>
     </div>
     <div class="panel-footer clearfix">
-        <div class="pull-right clearfix">
-            <a href="~/Recover.aspx" runat="server" class="btn btn-default" ClientIDMode="Static" 
-                id="recoverButton">
-                <asp:Label runat="server" Text="loginform-recover" /></a>
-            <a href="~/Register.aspx" runat="server" class="btn btn-default" ClientIDMode="Static" 
-                id="registerButton">
-                <asp:Label runat="server" Text="loginform-register" /></a>
-            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static" 
-                Text="loginform-submit-button" OnClientClick="return validateLogin();"
-                OnClick="loginClick" data-loading-text="Verifying..." />
+        <div class="row">
+            <div class="col-xs-12 col-sm-5">
+                <div class="pull-left login-remember-me">
+                    <asp:CheckBox runat="server"
+                        ID="loginRememberMe" Text="Remember my username" />
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-7">
+                <div class="pull-right">
+                    <a href="~/Recover.aspx" runat="server" class="btn btn-default" clientidmode="Static"
+                        id="recoverButton">
+                        <asp:Label runat="server" Text="loginform-recover" /></a>
+                    <a href="~/Register.aspx" runat="server" class="btn btn-default" clientidmode="Static"
+                        id="registerButton">
+                        <asp:Label runat="server" Text="loginform-register" /></a>
+                    <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static"
+                        Text="loginform-submit-button" OnClientClick="return validateLogin();"
+                        OnClick="loginClick" data-loading-text="Verifying..." />
+                </div>
+
+            </div>
         </div>
     </div>
 </asp:Panel>

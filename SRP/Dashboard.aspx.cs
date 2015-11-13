@@ -36,12 +36,10 @@ namespace GRA.SRP
             }
             if (pgm.IsOpen)
             {
-                SimpleLoggingControl.Visible = true;
                 ProgramNotOpenText.Visible = false;
             }
             else
             {
-                SimpleLoggingControl.Visible = false;
                 ProgramNotOpenText.Visible = true;
                 ProgramNotOpenText.Text = pgm.HTML6;
             }

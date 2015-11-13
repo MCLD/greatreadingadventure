@@ -144,6 +144,10 @@ namespace GRA.SRP {
             }
         }
 
+        public string EarnedBadges {
+            get; set;
+        }
+
         public bool ShowLoginPopup { get; set; }
         public string LoginPopupErrorMessage { get; set; }
 
@@ -159,8 +163,7 @@ namespace GRA.SRP {
                     alertLevel = string.Format("alert-{0}", patronMessageLevel.ToString());
                     Session.Remove(SessionKey.PatronMessageLevel);
                 }
-                alertContainer.CssClass = string.Format("{0} {1}",
-                                                        alertContainer.CssClass,
+                alertContainer.CssClass = string.Format("alert {0}",
                                                         alertLevel);
                 alertGlyphicon.Visible = false;
                 object patronMessageGlyph = Session[SessionKey.PatronMessageGlyphicon];
@@ -175,6 +178,11 @@ namespace GRA.SRP {
                 Session.Remove(SessionKey.PatronMessage);
             } else {
                 alertContainer.Visible = false;
+            }
+
+            var earnedBadges = Session[SessionKey.EarnedBadges];
+            if(earnedBadges != null) {
+                this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
             }
         }
 
@@ -274,21 +282,26 @@ namespace GRA.SRP {
                         ViewState[SessionKey.RequestedPath] = Session[SessionKey.RequestedPath];
                         Session.Remove(SessionKey.RequestedPath);
                     }
+                    if(Request.Cookies[CookieKey.Username] != null) {
+                        loginPopupUsername.Text = Request.Cookies[CookieKey.Username].Value;
+                        loginPopupRememberMe.Checked = true;
+                    }
                 }
             }
         }
 
         protected void loginPopupClick(object sender, EventArgs e) {
-            if(!(string.IsNullOrEmpty(loginPopupUsername.Text.Trim()) || string.IsNullOrEmpty(loginPopupPassword.Text.Trim()))) {
+            if(!(string.IsNullOrEmpty(loginPopupUsername.Text.Trim()) 
+               || string.IsNullOrEmpty(loginPopupPassword.Text.Trim()))) {
                 var patron = new Patron();
-                if(Patron.Login(loginPopupUsername.Text.Trim(), loginPopupPassword.Text.Trim())) {
+                if(Patron.Login(loginPopupUsername.Text.Trim(), loginPopupPassword.Text)) {
                     var bp = Patron.GetObjectByUsername(loginPopupUsername.Text.Trim());
 
                     var pgm = DAL.Programs.FetchObject(bp.ProgID);
                     if(pgm == null) {
                         int schoolGrade;
                         int.TryParse(bp.SchoolGrade, out schoolGrade);
-                        var progID = Programs.GetDefaultProgramForAgeAndGrade(bp.Age, schoolGrade); //Programs.FetchObject(Programs.GetDefaultProgramID());
+                        var progID = Programs.GetDefaultProgramForAgeAndGrade(bp.Age, schoolGrade);
                         bp.ProgID = progID;
                         bp.Update();
                     }
@@ -296,6 +309,17 @@ namespace GRA.SRP {
 
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();
+
+                    if(loginPopupRememberMe.Checked) {
+                        var loginUsernameCookie = new HttpCookie(CookieKey.Username);
+                        loginUsernameCookie.Expires = DateTime.Now.AddDays(14);
+                        loginUsernameCookie.Value = loginPopupUsername.Text.Trim();
+                        Response.SetCookie(loginUsernameCookie);
+                    } else {
+                        if(Request.Cookies[CookieKey.Username] != null) {
+                            Response.Cookies[CookieKey.Username].Expires = DateTime.Now.AddDays(-1);
+                        }
+                    }
 
                     if(Session[SessionKey.RequestedPath] != null) {
                         string requestedPath = Session[SessionKey.RequestedPath].ToString();
