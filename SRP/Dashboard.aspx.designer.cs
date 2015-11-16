@@ -67,13 +67,13 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.ReadingLogControl ReadingLogControl;
         
         /// <summary>
-        /// SimpleLoggingControl control.
+        /// CodeControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.SimpleLoggingControl SimpleLoggingControl;
+        protected global::GRA.SRP.Controls.CodeControl CodeControl;
         
         /// <summary>
         /// SponsorText control.

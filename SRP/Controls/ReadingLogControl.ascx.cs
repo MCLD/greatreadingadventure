@@ -26,7 +26,6 @@ namespace GRA.SRP.Controls {
                     return;
                 }
 
-                ViewState["PatronId"] = patron.PID.ToString();
                 ViewState["ProgramGameId"] = program.PID.ToString();
 
                 if(Request.Cookies[CookieKey.LogBookDetails] != null) {
@@ -107,7 +106,7 @@ namespace GRA.SRP.Controls {
                 return;
             }
 
-            var patronId = int.Parse(ViewState["PatronId"].ToString());
+            var patronId = ((Patron)Session[SessionKey.Patron]).PID;
             var programGameId = int.Parse(ViewState["ProgramGameId"].ToString());
 
             var pa = new AwardPoints(patronId);
@@ -139,41 +138,23 @@ namespace GRA.SRP.Controls {
                 title: titleField.Text);
 
             // clear out the form
-            readingActivityField.Text = string.Empty;
+            var bookButton = activityTypeSelector.Items.Count == 1
+                             && int.Parse(activityTypeSelector.Items[0].Value) == (int)ActivityType.Books;
+
+            if(!bookButton) { 
+                readingActivityField.Text = string.Empty;
+            }
             authorField.Text = string.Empty;
             titleField.Text = string.Empty;
 
-            // tabulate earned badges
-            int badgesEarnedCount = 0;
-            if(!string.IsNullOrEmpty(earnedBadges)) {
-                if(earnedBadges.Contains('|')) {
-                    badgesEarnedCount = earnedBadges.Split('|').Count();
-                } else {
-                    badgesEarnedCount = 1;
-                }
-            }
-
-            // prepare message
-            StringBuilder sb = new StringBuilder("<strong>Good job!</strong> Your reading activity has been logged. <strong>You earned ");
-            sb.Append(points);
-            sb.Append(" point");
-            if(points > 1) {
-                sb.Append("s");
-            }
-
-            if(badgesEarnedCount > 0) {
-                sb.Append(" and ");
-                sb.Append(badgesEarnedCount);
-                sb.Append(" badge");
-                if(badgesEarnedCount > 1) {
-                    sb.Append("s");
-                }
-            }
-
-            sb.Append("!</strong>");
-
             // set message and earned badges
-            Session[SessionKey.PatronMessage] = sb.ToString();
+            string earnedMessage = new PointCalculation().EarnedMessage(earnedBadges, points);
+            if(string.IsNullOrEmpty(earnedMessage)) {
+                Session[SessionKey.PatronMessage] = "<strong>Good job!</strong> Your reading activity has been logged.";
+            } else {
+                Session[SessionKey.PatronMessage] = string.Format("<strong>Good job!</strong> Your reading activity has been logged. <strong>{0}</strong>",
+                                                                  earnedMessage);
+            }
             Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Success;
             Session[SessionKey.PatronMessageGlyphicon] = "thumbs-up";
             Session[SessionKey.EarnedBadges] = earnedBadges;
@@ -192,7 +173,7 @@ namespace GRA.SRP.Controls {
             } else {
                 // log activity
                 if(Request.Cookies[CookieKey.LogBookDetails] != null) {
-                    Response.Cookies[CookieKey.LogBookDetails].Expires = DateTime.Now.AddDays(-1);
+                   Response.Cookies[CookieKey.LogBookDetails].Expires = DateTime.Now.AddDays(-1);
                 }
                 authorField.Text = string.Empty;
                 titleField.Text = string.Empty;

@@ -169,6 +169,13 @@ input#loginPopupRememberMe {
     display: block;
 }
 
+/* code control */
+.code-spacing {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.5em;
+}
+
 /* readinglogcontrol */
 .readinglog-spacing {
     margin-left: 0.1em;

@@ -197,4 +197,9 @@ readinglog-submit=Submit
 readinglog-read-a-book=I read a book!
 readinglog-details-header=Enter book details
 readinglog-details-cancel=Cancel
-secret-code-prompt=Secret code:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Code entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+secret-code-header=Secret code
+secret-code-prompt=Code:
+secret-code-submit=Submit

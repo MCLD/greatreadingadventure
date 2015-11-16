@@ -113,7 +113,6 @@
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
     <Content Include="App_Themes\Default\font-awesome.css" />
-    <Content Include="Badges\BadgeAward.aspx" />
     <Content Include="Badges\Default.aspx" />
     <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
@@ -758,6 +757,7 @@
     <Content Include="Controls\Badges.ascx" />
     <Content Include="Controls\ChangeFamilyPassword.ascx" />
     <Content Include="Controls\ChangePassword.ascx" />
+    <Content Include="Controls\CodeControl.ascx" />
     <Content Include="Controls\Events.ascx" />
     <Content Include="Controls\FamilyAccountCtl.ascx" />
     <Content Include="Controls\FamilyList.ascx" />
@@ -1313,13 +1313,6 @@
     </Compile>
     <Compile Include="AddlSurvey.aspx.designer.cs">
       <DependentUpon>AddlSurvey.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Badges\BadgeAward.aspx.cs">
-      <DependentUpon>BadgeAward.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Badges\BadgeAward.aspx.designer.cs">
-      <DependentUpon>BadgeAward.aspx</DependentUpon>
     </Compile>
     <Compile Include="Badges\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -2542,6 +2535,13 @@
     <Compile Include="Controls\ChangePassword.ascx.designer.cs">
       <DependentUpon>ChangePassword.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CodeControl.ascx.cs">
+      <DependentUpon>CodeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\CodeControl.ascx.designer.cs">
+      <DependentUpon>CodeControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Events.ascx.cs">
       <DependentUpon>Events.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3069,6 +3069,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />

@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ReadingLogControl.ascx.cs" Inherits="GRA.SRP.Controls.ReadingLogControl" %>
-<asp:Panel runat="server" ID="readingLogControlPanel">
+<asp:Panel runat="server" ID="readingLogControlPanel" DefaultButton="submitButton">
     <div class="row">
         <div class="col-xs-12 text-center">
             <span class="lead">
@@ -9,8 +9,11 @@
     </div>
     <div class="row">
         <div class="form-inline text-center">
+            <div class="col-xs-12" style="display: none;" id="readingLogControlMessageError">
+                <p class="text-danger" style="font-weight: bold;">Please enter how much you've read.</p>
+            </div>
             <div class="col-xs-12">
-                <div class="form-group">
+                <div class="form-group" id="readingLogControlFormGroup">
                     <label for="readingActivityField" runat="server" id="countSubmittedLabel" cssclass="readinglog-spacing">
                         <asp:Label runat="server" Text="readinglog-reading-prompt"></asp:Label></label>
                     <div class="block-center" style="display: inline-block;">
@@ -28,6 +31,7 @@
                         CssClass="btn btn-default btn-sm btn-success"
                         Text="readinglog-submit"
                         ID="submitButton"
+                        OnClientClick="return ValidateLogEntry();"
                         OnClick="submitButton_Click"></asp:LinkButton>
                 </div>
             </div>
@@ -103,11 +107,37 @@
     <script>
         $(function () {
             if ("<%=this.ShowModal%>" == "True") {
-            var elems = $("div[id$='readingLogPopup']");
-            elems.each(function (index) {
-                $(this).modal('show');
+                var elems = $("div[id$='readingLogPopup']");
+                elems.each(function (index) {
+                    $(this).modal('show');
+                });
+            }
+        });
+        function ValidateLogEntry() {
+            var elems = $("input[id$='readingActivityField']");
+            var valid = false;
+            elems.each(function () {
+                if (!valid && $(this).val().length > 0) {
+                    valid = true;
+                    return false;
+                }
             });
+
+            if (valid) {
+                if ($('#readingLogControlFormGroup').hasClass('has-error')) {
+                    $('#readingLogControlFormGroup').removeClass('has-error');
+                }
+                $('#readingLogControlMessageError').hide();
+
+            } else {
+                if (!$('#readingLogControlFormGroup').hasClass('has-error')) {
+                    $('#readingLogControlFormGroup').addClass('has-error');
+                }
+                $('#readingLogControlMessageError').show();
+
+            }
+            return valid;
+
         }
-    });
     </script>
 </asp:Panel>

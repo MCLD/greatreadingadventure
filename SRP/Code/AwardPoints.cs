@@ -6,10 +6,8 @@ using System.Web;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 
-namespace GRA.SRP.Controls
-{
-    public class AwardPoints
-    {
+namespace GRA.SRP.Controls {
+    public class AwardPoints {
         private Patron patron = null;
         public Programs pgm = null;
         private int StartingPoints = 0;
@@ -19,8 +17,7 @@ namespace GRA.SRP.Controls
         Badge EarnedBadge;
         DateTime now = DateTime.Now;
 
-        public AwardPoints(int PID)
-        {
+        public AwardPoints(int PID) {
             patron = Patron.FetchObject(PID);
             pgm = Programs.FetchObject(patron.ProgID);
             EarnedBadges = new List<Badge>();
@@ -35,7 +32,7 @@ namespace GRA.SRP.Controls
         //
         //
         // returns: a string based list of the badges they earned, or an empty string
-        public string AwardPointsToPatron(int points, PointAwardReason reason, 
+        public string AwardPointsToPatron(int points, PointAwardReason reason,
                 // Minigame
                 int MGID = 0,
                 // reading
@@ -46,36 +43,32 @@ namespace GRA.SRP.Controls
                 int bookListID = 0,
 
                 DateTime? forceDate = null
-            )
-        {
-            if (forceDate != null) now = (DateTime)forceDate;
+            ) {
+            if(forceDate != null)
+                now = (DateTime)forceDate;
 
             string retValue = "";
 
-        #region Reading - Log to PatronReadingLog
+            #region Reading - Log to PatronReadingLog
             PatronReadingLog rl = null;
-            if (reason == PointAwardReason.Reading)
-            {
-                rl = new PatronReadingLog
-                         {
-                             PID = patron.PID,
-                             ReadingType = (int) readingActivity,
-                             ReadingTypeLabel = (readingActivity).ToString(),
-                             ReadingAmount = readingAmount,
-                             ReadingPoints = points,
-                             LoggingDate = FormatHelper.ToNormalDate(now),
-                             Author = author.Trim(),
-                             Title = title.Trim(),
-                             HasReview = (review.Trim().Length > 0),
-                             ReviewID = 0
-                         };
+            if(reason == PointAwardReason.Reading) {
+                rl = new PatronReadingLog {
+                    PID = patron.PID,
+                    ReadingType = (int)readingActivity,
+                    ReadingTypeLabel = (readingActivity).ToString(),
+                    ReadingAmount = readingAmount,
+                    ReadingPoints = points,
+                    LoggingDate = FormatHelper.ToNormalDate(now),
+                    Author = author.Trim(),
+                    Title = title.Trim(),
+                    HasReview = (review.Trim().Length > 0),
+                    ReviewID = 0
+                };
                 rl.Insert();
-            
+
                 // If there is a review, record the review
-                if (review.Trim().Length > 0)
-                {
-                    var r = new PatronReview
-                    {
+                if(review.Trim().Length > 0) {
+                    var r = new PatronReview {
                         PID = patron.PID,
                         PRLID = rl.PRLID,
                         Author = rl.Author,
@@ -91,12 +84,11 @@ namespace GRA.SRP.Controls
                 }
 
             }
-        #endregion
+            #endregion
 
-        #region Award PatronPoints
+            #region Award PatronPoints
 
-            var pp = new PatronPoints
-            {
+            var pp = new PatronPoints {
                 PID = patron.PID,
                 NumPoints = points,
                 AwardDate = now,
@@ -119,33 +111,28 @@ namespace GRA.SRP.Controls
             var badgeAwarded = false;
             int badgeToAward = 0;               // <===========
 
-            DAL.Minigame mg = null; 
-            if (reason == PointAwardReason.MiniGameCompletion)
-            {
+            DAL.Minigame mg = null;
+            if(reason == PointAwardReason.MiniGameCompletion) {
                 mg = DAL.Minigame.FetchObject(MGID);
                 badgeAwarded = mg.AwardedBadgeID > 0;
                 badgeToAward = mg.AwardedBadgeID;
             }
-            if (reason == PointAwardReason.EventAttendance)
-            {
+            if(reason == PointAwardReason.EventAttendance) {
                 var evt = Event.GetEvent(eventID);
                 badgeAwarded = evt == null ? false : evt.BadgeID > 0;
                 badgeToAward = evt == null ? 0 : evt.BadgeID;
             }
-            if (reason == PointAwardReason.BookListCompletion)
-            {
-                var bl = BookList.FetchObject(bookListID);;
+            if(reason == PointAwardReason.BookListCompletion) {
+                var bl = BookList.FetchObject(bookListID);
+                ;
                 badgeAwarded = (bl.AwardBadgeID > 0);
                 badgeToAward = bl.AwardBadgeID;
             }
-            
+
             DataSet pbds = null;
-            if (badgeAwarded)
-            {
-                if (AwardBadgeToPatron(badgeToAward, patron, ref EarnedBadges))
-                {
-                    if (pp.PPID != 0)
-                    {
+            if(badgeAwarded) {
+                if(AwardBadgeToPatron(badgeToAward, patron, ref EarnedBadges)) {
+                    if(pp.PPID != 0) {
                         pp.BadgeAwardedFlag = true;
                         pp.BadgeID = badgeToAward;
                         pp.Update();
@@ -153,9 +140,9 @@ namespace GRA.SRP.Controls
                 }
             }
 
-        #endregion
+            #endregion
 
-        #region If jumped level, award another badge(s)
+            #region If jumped level, award another badge(s)
 
             // since thay just earned points, check if they also advanced a level in the board game (if there is a board game for the program)
             EndingPoints = PatronPoints.GetTotalPatronPoints(patron.PID);
@@ -166,50 +153,38 @@ namespace GRA.SRP.Controls
             EarnedBadge = TallyPoints(patron, pgm, StartingPoints, EndingPoints, ref earnedBadges2);
             pbds = PatronBadges.GetAll(patron.PID);
 
-            foreach (var badge in earnedBadges2)
-            {
-                EarnedBadge = badge;  
+            foreach(var badge in earnedBadges2) {
+                EarnedBadge = badge;
 
-                if (EarnedBadge!=null)
-                {
+                if(EarnedBadge != null) {
                     AwardBadgeToPatron(EarnedBadge.BID, patron, ref EarnedBadges);
                 }
 
 
             }
-            
-        #endregion
 
-        #region Check and give awards if any
+            #endregion
+
+            #region Check and give awards if any
 
             AwardBadgeToPatronViaMatchingAwards(patron, ref EarnedBadges);
 
-        #endregion
+            #endregion
 
-        #region Prepare return code
+            #region Prepare return code
             // did they earn one or more badges?
-            if (EarnedBadges.Count > 0)
-            {
-                var badges = EarnedBadges.Count.ToString();
-                //foreach(Badge b in EarnedBadges)
-                //{
-                //    badges = badges + "|" + b.BID.ToString();
-                //}
-                badges = EarnedBadges.Aggregate(badges, (current, b) => current + "|" + b.BID.ToString());
-                //Response.Redirect("~/BadgeAward.aspx?b=" + badges);
-                retValue = badges;
+            if(EarnedBadges.Count > 0) {
+                retValue = string.Join("|", EarnedBadges.Select(b => b.BID).Distinct());
             }
-        #endregion
+            #endregion
 
             return retValue;
         }
 
-        public Badge TallyPoints(Patron patron, Programs pgm, int StartingPoints, int EndingPoints, ref List<Badge> EarnedBadges)
-        {
+        public Badge TallyPoints(Patron patron, Programs pgm, int StartingPoints, int EndingPoints, ref List<Badge> EarnedBadges) {
             Badge b = null;
             //Tally up the points and figure out if we need to award a badge.  
-            if (pgm.ProgramGameID > 0)
-            {
+            if(pgm.ProgramGameID > 0) {
                 // only if we have a game we can earn badges by reading ....
                 var gm = ProgramGame.FetchObject(pgm.ProgramGameID);
                 var ds = ProgramGameLevel.GetAll(gm.PGID);
@@ -223,20 +198,17 @@ namespace GRA.SRP.Controls
 
                 // loop thru the levels to see where we are at ... before awarding the new points
                 var rp = StartingPoints;   //remaining points
-                if (bonus)
-                {
+                if(bonus) {
                     // if we are on the bonus, eliminate the "fully completed boards/levels) and then see what the remainder of the points is.
                     rp = rp - normalLevelTotalPoints;
                     rp = rp % bonusLevelTotalPoints;
                 }
 
-                for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
+                for(var i = 0; i < ds.Tables[0].Rows.Count; i++) {
                     var multiplier = (bonus ? gm.BonusLevelPointMultiplier : 1.00m);
                     var levelPoints = Convert.ToInt32(Convert.ToInt32(ds.Tables[0].Rows[i]["PointNumber"]) * multiplier);
                     rp = rp - levelPoints;
-                    if (rp < 0)
-                    {
+                    if(rp < 0) {
                         BeforeLevel = i;
                         break;
                     }
@@ -245,39 +217,30 @@ namespace GRA.SRP.Controls
 
                 // loop thru the levels to see where we are at ... AFTER awarding the new points
                 rp = EndingPoints;   //remaining points
-                if (bonus)
-                {
+                if(bonus) {
                     // if we are on the bonus, eliminate the "fully completed boards/levels) and then see what the remainder of the points is.
                     rp = rp - normalLevelTotalPoints;
                     rp = rp % bonusLevelTotalPoints;
                 }
-                for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
+                for(var i = 0; i < ds.Tables[0].Rows.Count; i++) {
                     var multiplier = (bonus ? gm.BonusLevelPointMultiplier : 1.00m);
                     var levelPoints = Convert.ToInt32(Convert.ToInt32(ds.Tables[0].Rows[i]["PointNumber"]) * multiplier);
                     rp = rp - levelPoints;
                     AfterLevel = i;
-                    if (rp < 0)
-                    {
+                    if(rp < 0) {
                         break;
-                    }
-                    else
-                    {
-                        if (!((i+1) < ds.Tables[0].Rows.Count))
-                        {
-                            AfterLevel = (i+1);
+                    } else {
+                        if(!((i + 1) < ds.Tables[0].Rows.Count)) {
+                            AfterLevel = (i + 1);
                         }
                     }
                 }
 
-                if (BeforeLevel != AfterLevel)
-                {
+                if(BeforeLevel != AfterLevel) {
                     // completed the "beforeLevel" and moved up to the "AfterLevel" , so check if we need to award a badge
-                    for (var i = BeforeLevel ; i < AfterLevel ; i++)
-                    {
+                    for(var i = BeforeLevel; i < AfterLevel; i++) {
                         var badgeToAward = Convert.ToInt32(ds.Tables[0].Rows[i]["AwardBadgeID" + bonusPostfix]);
-                        if (badgeToAward > 0)
-                        {
+                        if(badgeToAward > 0) {
                             b = Badge.GetBadge(badgeToAward);
                             EarnedBadges.Add(b);
                         }
@@ -287,21 +250,17 @@ namespace GRA.SRP.Controls
             return b;
         }
 
-        public int GetGameCompletionPoints(DataSet ds)
-        {
+        public int GetGameCompletionPoints(DataSet ds) {
             var ret = 0;
-            for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
-            {
+            for(var i = 0; i < ds.Tables[0].Rows.Count; i++) {
                 ret = ret + Convert.ToInt32(Convert.ToInt32(ds.Tables[0].Rows[i]["PointNumber"]));
             }
             return ret;
         }
 
-        public int GetGameCompletionBonusPoints(DataSet ds, decimal bonusLevelPointMultiplier)
-        {
+        public int GetGameCompletionBonusPoints(DataSet ds, decimal bonusLevelPointMultiplier) {
             var ret = 0;
-            for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
-            {
+            for(var i = 0; i < ds.Tables[0].Rows.Count; i++) {
                 var multiplier = bonusLevelPointMultiplier;
                 var levelPoints = Convert.ToInt32(Convert.ToInt32(ds.Tables[0].Rows[i]["PointNumber"]) * multiplier);
                 ret = ret + levelPoints;
@@ -309,8 +268,7 @@ namespace GRA.SRP.Controls
             return ret;
         }
 
-        public static bool AwardBadgeToPatron(int badgeToAward, Patron patron, ref List<Badge> earnedBadges)
-        {
+        public static bool AwardBadgeToPatron(int badgeToAward, Patron patron, ref List<Badge> earnedBadges) {
             var now = DateTime.Now;
 
             // check if badge was already earned...
@@ -318,25 +276,20 @@ namespace GRA.SRP.Controls
             var a = pbds.Tables[0].AsEnumerable().Where(r => r.Field<int>("BadgeID") == badgeToAward);
 
             var newTable = new DataTable();
-            try { newTable = a.CopyToDataTable(); }
-            catch { }
+            try { newTable = a.CopyToDataTable(); } catch { }
 
             // badge not found, award it!
-            if (newTable.Rows.Count == 0)
-            {
+            if(newTable.Rows.Count == 0) {
                 var pb = new PatronBadges { BadgeID = badgeToAward, DateEarned = now, PID = patron.PID };
                 pb.Insert();
 
                 var earnedBadge = Badge.GetBadge(badgeToAward);
-                if (earnedBadge != null)
-                {
+                if(earnedBadge != null) {
                     earnedBadges.Add(earnedBadge);
 
                     //if badge generates notification, then generate the notification
-                    if (earnedBadge.GenNotificationFlag)
-                    {
-                        var not = new Notifications
-                        {
+                    if(earnedBadge.GenNotificationFlag) {
+                        var not = new Notifications {
                             PID_To = patron.PID,
                             PID_From = 0,  //0 == System Notification
                             Subject = earnedBadge.NotificationSubject,
@@ -351,10 +304,8 @@ namespace GRA.SRP.Controls
                     }
 
                     //if badge generates prize, then generate the prize
-                    if (earnedBadge.IncludesPhysicalPrizeFlag)
-                    {
-                        var ppp = new DAL.PatronPrizes
-                        {
+                    if(earnedBadge.IncludesPhysicalPrizeFlag) {
+                        var ppp = new DAL.PatronPrizes {
                             PID = patron.PID,
                             PrizeSource = 1,
                             BadgeID = badgeToAward,
@@ -372,16 +323,14 @@ namespace GRA.SRP.Controls
 
 
                     // if badge generates award code, then generate the code
-                    if (earnedBadge.AssignProgramPrizeCode)
-                    {
+                    if(earnedBadge.AssignProgramPrizeCode) {
                         var rewardCode = "";
                         // get the Code value
                         // save the code value for the patron
                         rewardCode = ProgramCodes.AssignCodeForPatron(patron.ProgID, patron.ProgID);
 
                         // generate the notification
-                        var not = new Notifications
-                        {
+                        var not = new Notifications {
                             PID_To = patron.PID,
                             PID_From = 0,  //0 == System Notification
                             Subject = earnedBadge.PCNotificationSubject,
@@ -398,26 +347,21 @@ namespace GRA.SRP.Controls
 
 
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
-        public static bool AwardBadgeToPatronViaMatchingAwards(Patron patron, ref List<Badge> earnedBadges)
-        {
+        public static bool AwardBadgeToPatronViaMatchingAwards(Patron patron, ref List<Badge> earnedBadges) {
             var retcode = false;
             var ds = Award.GetMatchingAwards(patron.PID);
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                foreach (DataRow row in ds.Tables[0].Rows)
-                {
+            if(ds.Tables[0].Rows.Count > 0) {
+                foreach(DataRow row in ds.Tables[0].Rows) {
                     var bid = Convert.ToInt32(row["BadgeID"]);
                     var ret = AwardBadgeToPatron(bid, patron, ref earnedBadges);
 
                     retcode = ret || retcode;
-                } 
+                }
             }
 
             return retcode;
