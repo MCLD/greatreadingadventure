@@ -192,8 +192,6 @@ namespace GRA.SRP.ControlRoom.Controls
                     LoadControl();
                     masterPage.PageMessage = SRPResources.AddedOK;
 
-                       
-
                     if (e.CommandName.ToLower() == "saveandback")
                     {
                         Response.Redirect("PatronLog.aspx");

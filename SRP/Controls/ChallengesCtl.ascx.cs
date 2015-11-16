@@ -180,7 +180,7 @@ namespace GRA.SRP.Controls {
                     var sBadges = pa.AwardPointsToPatron(bl.AwardPoints, PointAwardReason.BookListCompletion,
                                                             bookListID: bl.BLID);
                     if(sBadges.Length > 0) {
-                        Response.Redirect("~/Badges/BadgeAward.aspx?b=" + sBadges);
+                        Session[SessionKey.EarnedBadges] = sBadges;
                     }
                 }
             }

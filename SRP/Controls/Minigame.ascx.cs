@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.DAL;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
@@ -372,7 +373,9 @@ namespace GRA.SRP.Controls
             var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));
             var pa = new AwardPoints(int.Parse(PID.Text));
             var sBadges = pa.AwardPointsToPatron(mg.NumberPoints, PointAwardReason.MiniGameCompletion, mg.MGID);
-            if (sBadges.Length > 0) Response.Redirect("~/Badges/BadgeAward.aspx?b=" + sBadges);
+            if (sBadges.Length > 0) {
+                Session[SessionKey.EarnedBadges] = sBadges;
+            }
             
 
             //var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));

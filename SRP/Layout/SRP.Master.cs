@@ -183,6 +183,7 @@ namespace GRA.SRP {
             var earnedBadges = Session[SessionKey.EarnedBadges];
             if(earnedBadges != null) {
                 this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
+                Session.Remove(SessionKey.EarnedBadges);
             }
         }
 
