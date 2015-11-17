@@ -1,0 +1,6 @@
+﻿<asp:RequiredFieldValidator runat="server" CssClass="text-danger gra-validation" />
+<asp:RangeValidator runat="server" CssClass="text-danger gra-validation" />
+<asp:CompareValidator runat="server" CssClass="text-danger gra-validation" />
+<asp:RegularExpressionValidator runat="server" CssClass="text-danger gra-validation" />
+<asp:CustomValidator runat="server" CssClass="text-danger gra-validation" />
+<asp:ValidationSummary runat="server" CssClass="alert alert-danger gra-validation-summary" />

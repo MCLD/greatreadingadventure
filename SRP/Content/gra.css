@@ -40,6 +40,20 @@
     padding-right: 0.2em !important;
 }
 
+.gra-validation {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.gra-validation-summary {
+    font-weight: bold;
+}
+
+.gra-registration-checkbox > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
 /* badges in the top nav bar are actually labels */
 .label-as-badge {
     border-radius: 1em;
