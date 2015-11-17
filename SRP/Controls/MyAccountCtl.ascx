@@ -38,7 +38,7 @@
 
                     <tr style='display: <%# ((bool)Eval("FirstName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label11" runat="server" Text="Registration label FirstName"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label11" runat="server" Text="registration-form-name-first"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="FirstName" runat="server" Text='<%# Eval("FirstName") %>' Enabled='<%# (bool)Eval("FirstName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvFirstName" runat="server" Enabled='<%# Eval("FirstName_Req") %>'
@@ -49,7 +49,7 @@
 
                     <tr style='display: <%# ((bool)Eval("MiddleName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label2" runat="server" Text="Registration label MiddleName"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label2" runat="server" Text="registration-form-name-middle"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="MiddleName" runat="server" Text='<%# Eval("MiddleName") %>' Enabled='<%# (bool)Eval("MiddleName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvMiddleName" runat="server" Enabled='<%# Eval("MiddleName_Req") %>'
@@ -60,7 +60,7 @@
 
                     <tr style='display: <%# ((bool)Eval("LastName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label3" runat="server" Text="Registration label LastName"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label3" runat="server" Text="registration-form-name-last"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="LastName" runat="server" Text='<%# Eval("LastName") %>' Enabled='<%# (bool)Eval("LastName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvLastName" runat="server" Enabled='<%# Eval("LastName_Req") %>'
@@ -72,7 +72,7 @@
 
                     <tr>
                         <td>
-                            <asp:Label ID="Label4" runat="server" Text="Registration label Avatar"></asp:Label></td>
+                            <asp:Label ID="Label4" runat="server" Text="registration-form-avatar"></asp:Label></td>
                         <td>
                             <select id="ddAvatar"></select>
                             <input id="AvatarID" cssclass="avatar" runat="server" visible="true" type="text" style="display: none;" />
@@ -97,7 +97,7 @@
 
                     <tr style='display: <%# ((bool)Eval("SchoolGrade_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label5" runat="server" Text="Registration label School Grade"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label5" runat="server" Text="registration-form-grade"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="SchoolGrade" runat="server" Text='<%# Eval("SchoolGrade") %>'
                                 Enabled='<%# (bool)Eval("SchoolGrade_Edit") %>'
@@ -110,7 +110,7 @@
 
                     <tr style='display: <%# ((bool)Eval("DOB_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label6" runat="server" Text="Registration label DOB"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label6" runat="server" Text="registration-form-dob"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="DOB" runat="server" Text='<%# (Eval("DOB").ToString() == "" ? "" : FormatHelper.ToNormalDate((DateTime)Eval("DOB"))) %>'
                                 Width="100px" Enabled='<%# (bool)Eval("DOB_Edit") %>' CssClass="datepicker"></asp:TextBox>
@@ -128,7 +128,7 @@
 
                     <tr style='display: <%# ((bool)Eval("Age_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label7" runat="server" Text="Registration label Age"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label7" runat="server" Text="registration-form-age"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="Age" runat="server" Text='<%# ((int) Eval("Age") ==0 ? "" : Eval("Age")) %>'
                                 Enabled='<%# (bool)Eval("Age_Edit") %>' Width="50px" CssClass="align-right"
@@ -165,7 +165,7 @@
 
                     <tr style='display: <%# ((bool)Eval("Gender_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label8" runat="server" Text="Registration label Gender"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label8" runat="server" Text="registration-form-gender"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="GenderTxt" runat="server" Text='<%# Eval("Gender") %>' Enabled='<%# (bool)Eval("Gender_Edit") %>' Visible="False"></asp:TextBox>
                             <asp:DropDownList ID="Gender" runat="server"
@@ -186,7 +186,7 @@
 
                     <tr style='display: <%# ((bool)Eval("EmailAddress_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label9" runat="server" Text="Registration label Email"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label9" runat="server" Text="registration-form-email"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="EmailAddress" runat="server" Text='<%# Eval("EmailAddress") %>' Enabled='<%# (bool)Eval("EmailAddress_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvEmailAddress" runat="server" Enabled='<%# Eval("EmailAddress_Req") %>'
@@ -202,7 +202,7 @@
 
                     <tr style='display: <%# ((bool)Eval("PhoneNumber_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label10" runat="server" Text="Registration label Phone"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label10" runat="server" Text="registration-form-phone"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="PhoneNumber" runat="server" Text='<%# Eval("PhoneNumber") %>' Enabled='<%# (bool)Eval("PhoneNumber_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvPhoneNumber" runat="server" Enabled='<%# Eval("PhoneNumber_Req") %>'
@@ -219,7 +219,7 @@
 
                     <tr style='display: <%# ((bool)Eval("StreetAddress1_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label12" runat="server" Text="Registration label Addr1"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label12" runat="server" Text="registration-form-address1"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="StreetAddress1" runat="server" Text='<%# Eval("StreetAddress1") %>' Enabled='<%# (bool)Eval("StreetAddress1_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvStreetAddress1" runat="server" Enabled='<%# Eval("StreetAddress1_Req") %>'
@@ -230,7 +230,7 @@
 
                     <tr style='display: <%# ((bool)Eval("StreetAddress2_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label13" runat="server" Text="Registration label Addr2"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label13" runat="server" Text="registration-form-address2"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="StreetAddress2" runat="server" Text='<%# Eval("StreetAddress2") %>' Enabled='<%# (bool)Eval("StreetAddress2_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvStreetAddress2" runat="server" Enabled='<%# Eval("StreetAddress2_Req") %>'
@@ -241,7 +241,7 @@
 
                     <tr style='display: <%# ((bool)Eval("City_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label14" runat="server" Text="Registration label City"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label14" runat="server" Text="registration-form-city"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="City" runat="server" Text='<%# Eval("City") %>' Enabled='<%# (bool)Eval("City_Edit") %>'
                                 AutoPostBack="true" OnTextChanged="City_TextChanged"></asp:TextBox>
@@ -253,7 +253,7 @@
 
                     <tr style='display: <%# ((bool)Eval("State_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label15" runat="server" Text="Registration label State"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label15" runat="server" Text="registration-form-state"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="State" runat="server" Text='<%# Eval("State") %>' Enabled='<%# (bool)Eval("State_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvState" runat="server" Enabled='<%# Eval("State_Req") %>'
@@ -265,7 +265,7 @@
 
                     <tr style='display: <%# ((bool)Eval("ZipCode_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label16" runat="server" Text="Registration label Zip"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label16" runat="server" Text="registration-form-zip"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="ZipCode" runat="server" Text='<%# Eval("ZipCode") %>' Enabled='<%# (bool)Eval("ZipCode_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvZipCode" runat="server" Enabled='<%# Eval("ZipCode_Req") %>'
@@ -280,7 +280,7 @@
 
                     <tr style='display: <%# ((bool)Eval("Country_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label17" runat="server" Text="Registration label Country"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label17" runat="server" Text="registration-form-country"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="Country" runat="server" Text='<%# Eval("Country") %>' Enabled='<%# (bool)Eval("Country_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvCountry" runat="server" Enabled='<%# Eval("Country_Req") %>'
@@ -291,7 +291,7 @@
 
                     <tr style='display: <%# ((bool)Eval("County_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label18" runat="server" Text="Registration label County"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label18" runat="server" Text="registration-form-county"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="County" runat="server" Text='<%# Eval("County") %>' Enabled='<%# (bool)Eval("County_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvCounty" runat="server" Enabled='<%# Eval("County_Req") %>'
@@ -302,7 +302,7 @@
 
                     <tr style='display: <%# ((bool)Eval("ParentGuardianFirstName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label19" runat="server" Text="Registration label PGFN"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label19" runat="server" Text="registration-form-guardian-name-first"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="ParentGuardianFirstName" runat="server" Text='<%# Eval("ParentGuardianFirstName") %>' Enabled='<%# (bool)Eval("ParentGuardianFirstName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvParentGuardianFirstName" runat="server" Enabled='<%# Eval("ParentGuardianFirstName_Req") %>'
@@ -313,7 +313,7 @@
 
                     <tr style='display: <%# ((bool)Eval("ParentGuardianMiddleName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label20" runat="server" Text="Registration label PGMN"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label20" runat="server" Text="registration-form-guardian-name-middle"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="ParentGuardianMiddleName" runat="server" Text='<%# Eval("ParentGuardianMiddleName") %>' Enabled='<%# (bool)Eval("ParentGuardianMiddleName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvParentGuardianMiddleName" runat="server" Enabled='<%# Eval("ParentGuardianMiddleName_Req") %>'
@@ -324,7 +324,7 @@
 
                     <tr style='display: <%# ((bool)Eval("ParentGuardianLastName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label21" runat="server" Text="Registration label PGLN"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label21" runat="server" Text="registration-form-guardian-name-last"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="ParentGuardianLastName" runat="server" Text='<%# Eval("ParentGuardianLastName") %>' Enabled='<%# (bool)Eval("ParentGuardianLastName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvParentGuardianLastName" runat="server" Enabled='<%# Eval("ParentGuardianLastName_Req") %>'
@@ -335,7 +335,7 @@
 
                     <tr style='display: <%# ((bool)Eval("District_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label26" runat="server" Text="Registration label District"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label26" runat="server" Text="registration-form-school-district"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Code" DataValueField="CID"
                                 AppendDataBoundItems="True"
@@ -359,7 +359,7 @@
 
                     <tr style='display: <%# ((bool)Eval("PrimaryLibrary_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label22" runat="server" Text="Registration label Library"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label22" runat="server" Text="registration-form-library"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
                                 AppendDataBoundItems="True"
@@ -380,7 +380,7 @@
 
                     <tr style='display: <%# ((bool)Eval("LibraryCard_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label23" runat="server" Text="Registration label LibraryCard"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label23" runat="server" Text="registration-form-library-card"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="LibraryCard" runat="server" Text='<%# Eval("LibraryCard") %>' Enabled='<%# (bool)Eval("LibraryCard_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvLibraryCard" runat="server" Enabled='<%# Eval("LibraryCard_Req") %>'
@@ -391,7 +391,7 @@
 
                     <tr style='display: <%# ((bool)Eval("SchoolType_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label28" runat="server" Text="Registration label SchoolType"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label28" runat="server" Text="registration-form-school-type"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Code" DataValueField="CID"
                                 AppendDataBoundItems="True"
@@ -438,7 +438,7 @@
 
                     <tr style='display: <%# ((bool)Eval("SchoolName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label24" runat="server" Text="Registration label School"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label24" runat="server" Text="registration-form-school"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Code" DataValueField="CID"
                                 AppendDataBoundItems="True"
@@ -462,7 +462,7 @@
 
                     <tr style='display: <%# ((bool)Eval("Teacher_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label25" runat="server" Text="Registration label Teacher"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label25" runat="server" Text="registration-form-teacher"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="Teacher" runat="server" Text='<%# Eval("Teacher") %>' Enabled='<%# (bool)Eval("Teacher_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvTeacher" runat="server" Enabled='<%# Eval("Teacher_Req") %>'
@@ -473,7 +473,7 @@
 
                     <tr style='display: <%# ((bool)Eval("GroupTeamName_Show")? "normal" : "none") %>'>
                         <td>
-                            <asp:Label ID="Label27" runat="server" Text="Registration label Group"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+                            <asp:Label ID="Label27" runat="server" Text="registration-form-group"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <asp:TextBox ID="GroupTeamName" runat="server" Text='<%# Eval("GroupTeamName") %>' Enabled='<%# (bool)Eval("GroupTeamName_Edit") %>'></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvGroupTeamName" runat="server" Enabled='<%# Eval("GroupTeamName_Req") %>'

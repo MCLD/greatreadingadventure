@@ -351,7 +351,7 @@
         <tr/>
 
         <tr  style='display: <%# ((bool)Eval("District_Show")? "normal" : "none") %>'>
-            <td><asp:Label ID="Label26" runat="server" Text="Registration label District"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+            <td><asp:Label ID="Label26" runat="server" Text="registration-form-school-district"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Code" DataValueField="CID" 
                     AppendDataBoundItems="True"
@@ -375,7 +375,7 @@
 
 
         <tr  style='display: <%# ((bool)Eval("PrimaryLibrary_Show")? "normal" : "none") %>'>
-            <td><asp:Label ID="Label22" runat="server" Text="Registration label Library"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+            <td><asp:Label ID="Label22" runat="server" Text="registration-form-library"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" 
                     AppendDataBoundItems="True"
@@ -396,7 +396,7 @@
         <tr/>
 
         <tr  style='display: <%# ((bool)Eval("LibraryCard_Show")? "normal" : "none") %>'>
-            <td><asp:Label ID="Label23" runat="server" Text="Registration label LibraryCard"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+            <td><asp:Label ID="Label23" runat="server" Text="registration-form-library-card"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:TextBox ID="LibraryCard" runat="server" Text='<%# Eval("LibraryCard") %>' Enabled='<%# (bool)Eval("LibraryCard_Edit") %>'
                 ></asp:TextBox>
@@ -407,7 +407,7 @@
         <tr/>
 
         <tr  style='display: <%# ((bool)Eval("SchoolType_Show")? "normal" : "none") %>'>
-            <td><asp:Label ID="Label28" runat="server" Text="Registration label SchoolType"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+            <td><asp:Label ID="Label28" runat="server" Text="registration-form-school-type"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Code" DataValueField="CID" 
                     AppendDataBoundItems="True"
@@ -455,7 +455,7 @@
 
 
         <tr  style='display: <%# ((bool)Eval("SchoolName_Show")? "normal" : "none") %>'>
-            <td><asp:Label ID="Label24" runat="server" Text="Registration label School"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
+            <td><asp:Label ID="Label24" runat="server" Text="registration-form-school"></asp:Label>&nbsp;&nbsp;&nbsp;</td>
             <td> 
                 <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Code" DataValueField="CID" 
                     AppendDataBoundItems="True"

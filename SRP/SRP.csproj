@@ -1234,6 +1234,7 @@
     <Content Include="Handlers\GetBadgeInfo.ashx" />
     <Content Include="Handlers\GetEventInfo.ashx" />
     <Content Include="Handlers\GetEarnedBadgesInfo.ashx" />
+    <Content Include="App_Themes\GRA\Controls.skin" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
