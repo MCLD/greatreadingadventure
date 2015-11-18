@@ -102,8 +102,8 @@ namespace GRA.SRP.Badges {
                     });
                 }
                 Session[SessionKey.PatronMessage] = "Could not find details on that badge.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
             }
         }
     }

@@ -47,11 +47,30 @@
 
 .gra-validation-summary {
     font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 2em;
 }
 
 .gra-registration-checkbox > input {
     width: 1.5em;
     height: 1.5em;
+}
+
+.gra-reg-glyph {
+    font-size: 1.1em;
+    margin-right: 0.5em;
+}
+
+.gra-username-verification {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.gra-reg-available {
+    display: none;
+}
+.gra-reg-unavailable {
+    display: none;
 }
 
 /* badges in the top nav bar are actually labels */

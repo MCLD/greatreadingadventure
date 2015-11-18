@@ -1235,6 +1235,7 @@
     <Content Include="Handlers\GetEventInfo.ashx" />
     <Content Include="Handlers\GetEarnedBadgesInfo.ashx" />
     <Content Include="App_Themes\GRA\Controls.skin" />
+    <Content Include="Handlers\IsUsernameAvailable.ashx" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -2865,6 +2866,9 @@
     </Compile>
     <Compile Include="Handlers\GetEventInfo.ashx.cs">
       <DependentUpon>GetEventInfo.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\IsUsernameAvailable.ashx.cs">
+      <DependentUpon>IsUsernameAvailable.ashx</DependentUpon>
     </Compile>
     <Compile Include="Handlers\JsonBase.cs" />
     <Compile Include="Layout\SRP.Master.cs">

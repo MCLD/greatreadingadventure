@@ -70,7 +70,7 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been an application error.&lt;br/&gt;{0}.
+        ///   Looks up a localized string similar to An error has occurred. {0}.
         /// </summary>
         public static string ApplicationError1 {
             get {

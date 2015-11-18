@@ -67,8 +67,8 @@ namespace GRA.SRP.Challenges {
             if(bl == null) {
                 challengeDetails.Visible = false;
                 Session[SessionKey.PatronMessage] = "Could not find details on that Challenge.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
             } else {
 
                 challengeTitle.Text = bl.ListName;

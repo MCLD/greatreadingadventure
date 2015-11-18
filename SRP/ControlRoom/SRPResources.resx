@@ -121,7 +121,7 @@
     <value>Record added successfully.</value>
   </data>
   <data name="ApplicationError1" xml:space="preserve">
-    <value>There has been an application error.&lt;br/&gt;{0}</value>
+    <value>An error has occurred. {0}</value>
   </data>
   <data name="BadUserPass" xml:space="preserve">
     <value>Invalid User Name or Password</value>
