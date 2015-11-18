@@ -831,7 +831,7 @@
                                 Username:
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="Username" runat="server" CssClass="form-control input-lg gra-register-username" Enabled="true"></asp:TextBox>
+                                <asp:TextBox ID="Username" runat="server" CssClass="form-control input-lg gra-register-username" Enabled="true" MaxLength="25"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <span class="glyphicon glyphicon-ok-sign gra-reg-glyph gra-reg-available text-success"></span>
