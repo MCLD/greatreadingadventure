@@ -20,9 +20,10 @@ namespace GRA.SRP {
             }
 
             new PatronSession(Session).Clear();
-
             Session.Abandon();
-            Response.Cookies.Add(new HttpCookie("ASP.NET_SessionId", ""));
+            if(Request.Cookies["ASP.NET_SessionId"] != null) {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);
+            }
             Response.Redirect(navTo);
         }
     }

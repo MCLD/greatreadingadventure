@@ -82,8 +82,8 @@ namespace GRA.SRP.Events {
                     });
                 }
                 Session[SessionKey.PatronMessage] = "Could not find details on that event.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
 
             }
         }

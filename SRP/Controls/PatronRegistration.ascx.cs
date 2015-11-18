@@ -11,6 +11,7 @@ using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
+using System.Text;
 
 namespace GRA.SRP.Controls {
     public partial class PatronRegistration : System.Web.UI.UserControl {
@@ -29,30 +30,6 @@ namespace GRA.SRP.Controls {
         }
 
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-            //var ctl = (DropDownList)rptr.Items[0].FindControl("Gender");
-            //var txt = (TextBox)rptr.Items[0].FindControl("GenderTxt");
-            //var i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-
-            //ctl = (DropDownList)rptr.Items[0].FindControl("PrimaryLibrary");
-            //txt = (TextBox)rptr.Items[0].FindControl("PrimaryLibraryTxt");
-            //i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-
-            //ctl = (DropDownList)rptr.Items[0].FindControl("SchoolType");
-            //txt = (TextBox)rptr.Items[0].FindControl("SchoolTypeTxt");
-            //i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-            //var uxNewPasswordStrengthValidator = (RegularExpressionValidator)e.Item.FindControl("uxNewPasswordStrengthValidator");
-            //uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
-            //uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
-            //uxNewPasswordStrengthValidator.Text = string.Format("<font color='red'>{0} </font>",
-            //                                                    uxNewPasswordStrengthValidator.ErrorMessage);
-
-
             var ctl = (DropDownList)e.Item.FindControl("Custom1DD");
             var txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
             var i = ctl.Items.FindByValue("");
@@ -316,17 +293,14 @@ namespace GRA.SRP.Controls {
                 newPanel.Visible = true;
 
                 Step.Text = (curStep + 1).ToString();
-                lblError.Text = "";
             }
             // Finished Current Step = 6 
 
 
             if(curStep == 7) {
-
-                lblError.Text = "";
-
-                if(!SaveAccount())
+                if(!SaveAccount()) {
                     return;
+                }
 
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = FindControl("Panel" + (curStep + 1).ToString());
@@ -346,6 +320,11 @@ namespace GRA.SRP.Controls {
                     btnPrev.Enabled = false;
                     btnDone.Visible = true;
                     return;
+                } else {
+                    // we're done with registration, we can just jump right in
+                    Session[SessionKey.PatronMessage] = ((BaseSRPPage)Page).GetResourceString("registration-success");
+                    Session[SessionKey.PatronMessageGlyphicon] = "thumbs-up";
+                    Response.Redirect("~/Dashboard.aspx");
                 }
 
                 newPanel.Visible = true;
@@ -666,94 +645,21 @@ namespace GRA.SRP.Controls {
                     p.Insert();
 
                     var prog = Programs.FetchObject(p.ProgID);
-                    var list = new List<Badge>();
+                    var earnedBadgesList = new List<Badge>();
                     if(prog.RegistrationBadgeID != 0) {
-
-                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref list);
-
-                        #region replaced by call above
-
-                        //    var now = DateTime.Now;
-                        //    var pb = new PatronBadges { BadgeID = prog.RegistrationBadgeID, DateEarned = now, PID = p.PID };
-                        //    pb.Insert();
-
-                        //    var EarnedBadge = Badge.GetBadge(prog.RegistrationBadgeID);
-
-                        //    //if badge generates notification, then generate the notification
-                        //    if (EarnedBadge.GenNotificationFlag)
-                        //    {
-                        //        var not = new Notifications
-                        //        {
-                        //            PID_To = p.PID,
-                        //            PID_From = 0,  //0 == System Notification
-                        //            Subject = EarnedBadge.NotificationSubject,
-                        //            Body = EarnedBadge.NotificationBody,
-                        //            isQuestion = false,
-                        //            AddedDate = now,
-                        //            LastModDate = now,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A"
-                        //        };
-                        //        not.Insert();
-                        //    }
-
-                        //    //if badge generates prize, then generate the prize
-                        //    if (EarnedBadge.IncludesPhysicalPrizeFlag)
-                        //    {
-                        //        var ppp = new DAL.PatronPrizes
-                        //        {
-                        //            PID = p.PID,
-                        //            PrizeSource = 1,
-                        //            PrizeName = EarnedBadge.PhysicalPrizeName,
-                        //            RedeemedFlag = false,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A",
-                        //            AddedDate = now,
-                        //            LastModDate = now
-                        //        };
-
-                        //        ppp.Insert();
-                        //    }
-
-
-
-                        //    // if badge generates award code, then generate the code
-                        //    if (EarnedBadge.AssignProgramPrizeCode)
-                        //    {
-                        //        var RewardCode = "";
-                        //        // get the Code value
-                        //        // save the code value for the patron
-                        //        RewardCode = ProgramCodes.AssignCodeForPatron(p.ProgID, p.ProgID);
-
-                        //        // generate the notification
-                        //        var not = new Notifications
-                        //        {
-                        //            PID_To = p.PID,
-                        //            PID_From = 0,  //0 == System Notification
-                        //            Subject = EarnedBadge.PCNotificationSubject,
-                        //            Body = EarnedBadge.PCNotificationBody.Replace("{ProgramRewardCode}", RewardCode),
-                        //            isQuestion = false,
-                        //            AddedDate = now,
-                        //            LastModDate = now,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A"
-                        //        };
-                        //        not.Insert();
-                        //    }
-
-                        #endregion
+                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref earnedBadgesList);
                     }
-                    AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                    AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref earnedBadgesList);
 
-                    var sBadges = "";
-                    sBadges = list.Aggregate(sBadges, (current, b) => current + "|" + b.BID.ToString());
-                    if(p.IsMasterAccount && sBadges.Length > 0) {
+                    var earnedBadges =  string.Join("|", earnedBadgesList.Select(b => b.BID).Distinct());
+  
+                    if(p.IsMasterAccount && earnedBadges.Length > 0) {
                         // if family account and is master, and has badges, rememebr to show them
-                        Session[SessionKey.EarnedBadges] = sBadges;
+                        Session[SessionKey.EarnedBadges] = earnedBadges;
                     }
-                    if(!p.IsMasterAccount && p.MasterAcctPID == 0 && sBadges.Length > 0) {
+                    if(!p.IsMasterAccount && p.MasterAcctPID == 0 && earnedBadges.Length > 0) {
                         // if not family master or not family at all and badges, rememebr to show ...
-                        Session[SessionKey.EarnedBadges] = sBadges;
+                        Session[SessionKey.EarnedBadges] = earnedBadges;
                     }
 
                     if(registeringMasterAccount) {
@@ -772,17 +678,24 @@ namespace GRA.SRP.Controls {
                         }
                     }
                 } else {
-                    string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                    StringBuilder message = new StringBuilder("<strong>");
+                    message.AppendFormat(SRPResources.ApplicationError1, "<ul>");
                     foreach(BusinessRulesValidationMessage m in p.ErrorCodes) {
-                        message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
+                        message.AppendFormat("<li>{0}</li>", m.ErrorMessage);
                     }
-                    message = string.Format("{0}</ul>", message);
-                    lblError.Text = message;
+                    message.Append("</ul></strong>");
+                    Session[SessionKey.PatronMessage] = message.ToString();
+                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                    Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                     return false;
                 }
             } catch(Exception ex) {
-                lblError.Text = String.Format(SRPResources.ApplicationError1, ex.Message);
-
+                this.Log().Error(string.Format("An exception was thrown during registration: {0}",
+                                               ex.Message));
+                Session[SessionKey.PatronMessage] = string.Format("<strong>{0}</strong>",
+                                                                  ex.Message);
+                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                 return false;
             }
             return true;

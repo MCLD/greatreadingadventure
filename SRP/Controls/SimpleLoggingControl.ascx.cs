@@ -105,7 +105,7 @@ namespace GRA.SRP.Controls {
                     Session[SessionKey.PatronMessage] = string.Format("That's an awful lot of reading! You can only submit {0} {1} at a time.",
                                                                       maxAmountForLogging,
                                                                       ((ActivityType)int.Parse(rbActivityType.SelectedValue)).ToString());
-                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
+                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
                     Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                     return;
                 }
@@ -120,7 +120,7 @@ namespace GRA.SRP.Controls {
                 var allPointsToday = PatronPoints.GetTotalPatronPoints(PID, DateTime.Now);
                 if(intCount + allPointsToday > maxPointsPerDayForLogging) {
                     Session[SessionKey.PatronMessage] = "Sorry but you have already reached the maximum amount of points that you can log in a day. Keep reading and come back tomorrow!";
-                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
+                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
                     Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                     return;
                 }
