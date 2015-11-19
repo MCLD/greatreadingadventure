@@ -4,7 +4,7 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_GetFilteredBranchDDValues] @Distric
 	@TenID INT = NULL
 AS
 SELECT DISTINCT BranchID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM LibraryCrosswalk w
 INNER JOIN Code c ON w.BranchID = c.CID
 WHERE (
