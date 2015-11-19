@@ -3345,7 +3345,7 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_GetFilteredBranchDDValues] @Distric
 	@TenID INT = NULL
 AS
 SELECT DISTINCT BranchID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM LibraryCrosswalk w
 INNER JOIN Code c ON w.BranchID = c.CID
 WHERE (
@@ -3373,7 +3373,7 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues] @City 
 	@TenID INT = NULL
 AS
 SELECT DISTINCT DistrictID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM LibraryCrosswalk w
 INNER JOIN Code c ON w.DistrictID = c.CID
 WHERE (
@@ -12419,7 +12419,7 @@ CREATE PROCEDURE [dbo].[app_SchoolCrosswalk_GetFilteredSchoolDDValues] @SchTypeI
 	@TenID INT = NULL
 AS
 SELECT DISTINCT SchoolID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM SchoolCrosswalk w
 INNER JOIN Code c ON w.SchoolID = c.CID
 WHERE (

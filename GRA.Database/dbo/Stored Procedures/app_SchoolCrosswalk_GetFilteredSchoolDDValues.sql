@@ -7,7 +7,7 @@ CREATE PROCEDURE [dbo].[app_SchoolCrosswalk_GetFilteredSchoolDDValues] @SchTypeI
 	@TenID INT = NULL
 AS
 SELECT DISTINCT SchoolID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM SchoolCrosswalk w
 INNER JOIN Code c ON w.SchoolID = c.CID
 WHERE (
