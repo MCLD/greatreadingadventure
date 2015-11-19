@@ -416,7 +416,7 @@
                                 <asp:Label runat="server" Text="registration-form-library-district"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Code" DataValueField="CID"
+                                <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Description" DataValueField="CID"
                                     AppendDataBoundItems="True"
                                     AutoPostBack="true"
                                     CssClass="form-control"
@@ -439,7 +439,7 @@
                                 <asp:Label runat="server" Text="registration-form-library"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
+                                <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
                                     AppendDataBoundItems="True" CssClass="form-control"
                                     Enabled='<%# (bool)Eval("PrimaryLibrary_Prompt") %>'>
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
@@ -474,7 +474,7 @@
                                 <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Code" DataValueField="CID"
+                                <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Description" DataValueField="CID"
                                     AppendDataBoundItems="True"
                                     AutoPostBack="true" CssClass="form-control"
                                     OnSelectedIndexChanged="SDistrict_SelectedIndexChanged">
@@ -496,7 +496,7 @@
                                 <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Code" DataValueField="CID"
+                                <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
                                     AppendDataBoundItems="True"
                                     Enabled='<%# (bool)Eval("SchoolType_Prompt") %>' CssClass="form-control"
                                     AutoPostBack="true"
@@ -520,7 +520,7 @@
                                 <asp:Label runat="server" Text="registration-form-school"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Code" DataValueField="CID"
+                                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Description" DataValueField="CID"
                                     AppendDataBoundItems="True" CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -645,13 +645,13 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Custom1_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <%# CustomRegistrationFields.FetchObject().Label1 %>:
+                                <%# this.CustomFields.Label1 %>:
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Custom1" runat="server" CssClass="form-control"
-                                    Visible='<%#string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues1)%>'></asp:TextBox>
-                                <asp:DropDownList ID="Custom1DD" runat="server" DataTextField="Code" DataValueField="Code"
-                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues1)%>'
+                                    Visible='<%#string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'></asp:TextBox>
+                                <asp:DropDownList ID="Custom1DD" runat="server" DataTextField="Description" DataValueField="Code"
+                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -659,25 +659,25 @@
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom1_Req") && !string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues1)%>'
-                                    ControlToValidate="Custom1DD" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label1 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom1_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'
+                                    ControlToValidate="Custom1DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label1 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom1_Req") && string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues1)%>'
-                                    ControlToValidate="Custom1" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label1 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom1_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'
+                                    ControlToValidate="Custom1" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label1 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Custom2_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <%# CustomRegistrationFields.FetchObject().Label2 %>:
+                                <%# this.CustomFields.Label2 %>:
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Custom2" runat="server" CssClass="form-control"
-                                    Visible='<%#string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues2)%>'></asp:TextBox>
-                                <asp:DropDownList ID="Custom2DD" runat="server" DataTextField="Code" DataValueField="Code"
-                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues2)%>'
+                                    Visible='<%#string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'></asp:TextBox>
+                                <asp:DropDownList ID="Custom2DD" runat="server" DataTextField="Description" DataValueField="Code"
+                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -685,25 +685,25 @@
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom2_Req") && !string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues2)%>'
-                                    ControlToValidate="Custom2DD" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label2 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom2_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'
+                                    ControlToValidate="Custom2DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label2 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom2_Req") && string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues2)%>'
-                                    ControlToValidate="Custom2" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label2 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom2_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'
+                                    ControlToValidate="Custom2" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label2 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Custom3_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <%# CustomRegistrationFields.FetchObject().Label3 %>:
+                                <%# this.CustomFields.Label3 %>:
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Custom3" runat="server" CssClass="form-control"
-                                    Visible='<%#string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues3)%>'></asp:TextBox>
-                                <asp:DropDownList ID="Custom3DD" runat="server" DataTextField="Code" DataValueField="Code"
-                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues3)%>'
+                                    Visible='<%#string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'></asp:TextBox>
+                                <asp:DropDownList ID="Custom3DD" runat="server" DataTextField="Description" DataValueField="Code"
+                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -711,25 +711,25 @@
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom3_Req") && !string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues3)%>'
-                                    ControlToValidate="Custom3DD" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label3 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom3_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'
+                                    ControlToValidate="Custom3DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label3 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom3_Req") && string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues3)%>'
-                                    ControlToValidate="Custom3" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label3 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom3_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'
+                                    ControlToValidate="Custom3" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label3 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Custom4_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <%# CustomRegistrationFields.FetchObject().Label4 %>:
+                                <%# this.CustomFields.Label4 %>:
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Custom4" runat="server" CssClass="form-control"
-                                    Visible='<%#string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues4)%>'></asp:TextBox>
-                                <asp:DropDownList ID="Custom4DD" runat="server" DataTextField="Code" DataValueField="Code"
-                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues4)%>'
+                                    Visible='<%#string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'></asp:TextBox>
+                                <asp:DropDownList ID="Custom4DD" runat="server" DataTextField="Description" DataValueField="Code"
+                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -737,12 +737,12 @@
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom4_Req") && !string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues4)%>'
-                                    ControlToValidate="Custom4DD" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label4 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom4_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'
+                                    ControlToValidate="Custom4DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label4 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom4_Req") && string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues4)%>'
-                                    ControlToValidate="Custom4" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label4 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom4_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'
+                                    ControlToValidate="Custom4" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label4 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                             </div>
                         </div>
@@ -750,13 +750,13 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Custom5_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <%# CustomRegistrationFields.FetchObject().Label5 %>:
+                                <%# this.CustomFields.Label5 %>:
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Custom5" runat="server" CssClass="form-control"
-                                    Visible='<%#string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues5)%>'></asp:TextBox>
-                                <asp:DropDownList ID="Custom5DD" runat="server" DataTextField="Code" DataValueField="Code"
-                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues5)%>'
+                                    Visible='<%#string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'></asp:TextBox>
+                                <asp:DropDownList ID="Custom5DD" runat="server" DataTextField="Description" DataValueField="Code"
+                                    AppendDataBoundItems="True" Visible='<%#!string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
@@ -764,12 +764,12 @@
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom5_Req") && !string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues5)%>'
-                                    ControlToValidate="Custom5DD" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label5 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom5_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'
+                                    ControlToValidate="Custom5DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label5 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
-                                    Enabled='<%# (bool)Eval("Custom5_Req") && string.IsNullOrEmpty(CustomRegistrationFields.FetchObject().DDValues5)%>'
-                                    ControlToValidate="Custom5" Display="Dynamic" ErrorMessage='<%# CustomRegistrationFields.FetchObject().Label5 + " is required"%>'
+                                    Enabled='<%# (bool)Eval("Custom5_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'
+                                    ControlToValidate="Custom5" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label5 + " is required"%>'
                                     SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                             </div>
                         </div>
@@ -929,14 +929,28 @@
     </div>
     <div class="panel-footer clearfix">
         <div class="pull-right">
-            <asp:Button ID="btnPrev" runat="server" Text="registration-button-previous"
-                CausesValidation="True" CssClass="btn btn-default" Enabled="False"
+            <asp:Button ID="btnPrev"
+                runat="server"
+                Text="registration-button-previous"
+                CausesValidation="True"
+                CssClass="btn btn-default"
+                Enabled="False"
                 OnClick="btnPrev_Click" />
-            <asp:Button ID="btnNext" runat="server" Text="registration-button-next"
-                CausesValidation="True" CssClass="btn btn-success" OnClick="btnNext_Click" />
+            <asp:Button ID="btnNext"
+                runat="server"
+                Text="registration-button-next"
+                CausesValidation="True"
+                CssClass="btn btn-success"
+                OnClick="btnNext_Click"
+                OnClientClick="return nextClick();" />
 
-            <asp:Button ID="btnDone" runat="server" Text="registration-button-done"
-                CausesValidation="True" CssClass="btn btn-default" Visible="False" OnClick="btnDone_Click" />
+            <asp:Button ID="btnDone"
+                runat="server"
+                Text="registration-button-done"
+                CausesValidation="True"
+                CssClass="btn btn-default"
+                Visible="False"
+                OnClick="btnDone_Click" />
         </div>
     </div>
 </asp:Panel>
@@ -948,10 +962,6 @@
         <asp:Parameter Name="Name" DefaultValue="School Type" Type="String" />
     </SelectParameters>
 </asp:ObjectDataSource>
-
-<asp:ObjectDataSource ID="ObjectDataSource1" runat="server"
-    SelectMethod="GetAllActive"
-    TypeName="GRA.SRP.DAL.Programs"></asp:ObjectDataSource>
 
 <asp:ObjectDataSource ID="odsDDDistrict" runat="server"
     SelectMethod="GetFilteredDistrictDDValues"
@@ -973,7 +983,6 @@
             PropertyName="Text" Type="String" />
     </SelectParameters>
 </asp:ObjectDataSource>
-
 
 <asp:ObjectDataSource ID="odsDDSDistrict" runat="server"
     SelectMethod="GetAlByTypeName"
@@ -1003,6 +1012,28 @@
 <asp:ObjectDataSource ID="odsDDPrograms" runat="server"
     SelectMethod="GetAllActive"
     TypeName="GRA.SRP.DAL.Programs"></asp:ObjectDataSource>
+
+<div class="modal fade" style="padding-top: 15%;" id="processingAccountCreation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <asp:Label runat="server" CssClass="lead" Text="registration-processing"></asp:Label>
+            </div>
+            <div class="modal-body text-center">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-success active"
+                        role="progressbar"
+                        aria-valuenow="100"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style="width: 100%">
+                    </div>
+                </div>
+                <em><span id="processingAccountCreationMessage">Beginning account creation...</span></em>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(function () {
@@ -1049,4 +1080,24 @@
             usernameAvailableUnavailable(false, false);
         });
     });
+
+    function nextClick() {
+        if ('<%=this.CurrentStep%>' == '7') {
+            setTimeout(loadingMessage, 5000);
+            $('#processingAccountCreation').modal({ backdrop: 'static' });
+        }
+        return true;
+    }
+
+    var loadingMessageCounter = 0;
+    var loadingMessageMessages = ["Reserving username...", "Encrypting password...", "Wrangling bits...", "Characterizing bytes...", "Reticulating splines...", "This is taking a while...", "Sorry about that..."];
+    function loadingMessage() {
+        console.log(loadingMessageMessages[loadingMessageCounter]);
+        $('#processingAccountCreationMessage').text(loadingMessageMessages[loadingMessageCounter]);
+        loadingMessageCounter++;
+        if (loadingMessageCounter > loadingMessageMessages.length - 1) {
+            loadingMessageCounter = 0;
+        }
+        setTimeout(loadingMessage, 5000);
+    }
 </script>

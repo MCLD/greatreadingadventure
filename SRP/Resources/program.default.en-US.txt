@@ -76,6 +76,7 @@ MyAccount SaveBtn=Save
 registration-title=Register and Create Account
 registration-instructions=Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.
 registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members.
+registration-processing=Creating your account...
 registration-success=Your account has been succesfully created!
 registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
 registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
