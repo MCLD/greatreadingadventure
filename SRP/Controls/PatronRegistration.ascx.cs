@@ -15,7 +15,20 @@ using System.Text;
 
 namespace GRA.SRP.Controls {
     public partial class PatronRegistration : System.Web.UI.UserControl {
-
+        private CustomRegistrationFields customFields;
+        protected CustomRegistrationFields CustomFields {
+            get {
+                if(customFields == null) {
+                    customFields = CustomRegistrationFields.FetchObject();
+                }
+                return customFields;
+            }
+        }
+        protected string CurrentStep {
+            get {
+                return Step.Text;
+            }
+        }
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
                 rptr.DataSource = RegistrationSettings.GetAll();
@@ -29,94 +42,39 @@ namespace GRA.SRP.Controls {
 
         }
 
+        protected void BindCustomDDL(RepeaterItemEventArgs e,
+                                     string ddValues,
+                                     string ddlControlId,
+                                     string tbControlId) {
+            if(!string.IsNullOrWhiteSpace(ddValues)) {
+                var ddlControl = (DropDownList)e.Item.FindControl(ddlControlId);
+                var dataSource = Codes.GetAlByTypeID(int.Parse(ddValues));
+                ddlControl.Items.Clear();
+                ddlControl.Items.Add(new ListItem("[Select a Value]", string.Empty));
+                foreach(DataRow row in dataSource.Tables[0].Rows) {
+                    var listItem = new ListItem(row["Description"].ToString(),
+                                                row["Code"].ToString());
+                    ddlControl.Items.Add(listItem);
+                }
+
+                string tbValue = ((TextBox)e.Item.FindControl(tbControlId)).Text;
+                var selected = ddlControl.Items.FindByValue(tbValue);
+                if(selected != null) {
+                    ddlControl.SelectedValue = tbValue;
+                }
+            }
+        }
+
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-            var ctl = (DropDownList)e.Item.FindControl("Custom1DD");
-            var txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
-            var i = ctl.Items.FindByValue("");
-            var cr = CustomRegistrationFields.FetchObject();
-            if(cr.DDValues1 != "") {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues1));
-                ctl = (DropDownList)e.Item.FindControl("Custom1DD");
-                txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for(int j = 0; j < ds.Tables[0].Rows.Count; j++) {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if(i != null)
-                    ctl.SelectedValue = txt.Text;
-            }
-            if(cr.DDValues2 != "") {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues2));
-                ctl = (DropDownList)e.Item.FindControl("Custom2DD");
-                txt = (TextBox)e.Item.FindControl("Custom2DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for(int j = 0; j < ds.Tables[0].Rows.Count; j++) {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if(i != null)
-                    ctl.SelectedValue = txt.Text;
-            }
-            if(cr.DDValues3 != "") {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues3));
-                ctl = (DropDownList)e.Item.FindControl("Custom3DD");
-                txt = (TextBox)e.Item.FindControl("Custom3DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for(int j = 0; j < ds.Tables[0].Rows.Count; j++) {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if(i != null)
-                    ctl.SelectedValue = txt.Text;
-            }
-            if(cr.DDValues4 != "") {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues4));
-                ctl = (DropDownList)e.Item.FindControl("Custom4DD");
-                txt = (TextBox)e.Item.FindControl("Custom4DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for(int j = 0; j < ds.Tables[0].Rows.Count; j++) {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if(i != null)
-                    ctl.SelectedValue = txt.Text;
-            }
-            if(cr.DDValues5 != "") {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues5));
-                ctl = (DropDownList)e.Item.FindControl("Custom5DD");
-                txt = (TextBox)e.Item.FindControl("Custom5DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for(int j = 0; j < ds.Tables[0].Rows.Count; j++) {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if(i != null)
-                    ctl.SelectedValue = txt.Text;
-            }
-
+            BindCustomDDL(e, this.customFields.DDValues1, "Custom1DD", "Custom1DDTXT");
+            BindCustomDDL(e, this.customFields.DDValues2, "Custom2DD", "Custom2DDTXT");
+            BindCustomDDL(e, this.customFields.DDValues3, "Custom3DD", "Custom3DDTXT");
+            BindCustomDDL(e, this.customFields.DDValues4, "Custom4DD", "Custom4DDTXT");
+            BindCustomDDL(e, this.customFields.DDValues5, "Custom5DD", "Custom5DDTXT");
         }
 
         protected void btnPrev_Click(object sender, EventArgs e) {
             var step = int.Parse(Step.Text);
-            //var curPanel = rptr.Items[0].FindControl("Panel" + step.ToString());
-            //var newPanel = rptr.Items[0].FindControl("Panel" + (step - 1).ToString());
-
-            //curPanel.Visible = false;
-            //newPanel.Visible = true;
-
-            //Step.Text = (step - 1).ToString();
-            //btnPrev.Enabled = (step != 2);
 
             if(Page.IsValid)
                 DoBusinessRulesPrev(step);
@@ -125,15 +83,13 @@ namespace GRA.SRP.Controls {
                 btnPrev.Enabled = false;
 
             var p = (TextBox)rptr.Items[0].FindControl("Password");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
             p = (TextBox)rptr.Items[0].FindControl("Password2");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
         }
 
         protected void btnNext_Click(object sender, EventArgs e) {
             var step = int.Parse(Step.Text);
-            //var curPanel = rptr.Items[0].FindControl("Panel" + step.ToString());
-            //var newPanel = rptr.Items[0].FindControl("Panel" + (step + 1).ToString());
 
             if(Page.IsValid)
                 DoBusinessRulesNext(step);
@@ -142,11 +98,10 @@ namespace GRA.SRP.Controls {
                 btnPrev.Enabled = false;
 
             var p = (TextBox)rptr.Items[0].FindControl("Password");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
             p = (TextBox)rptr.Items[0].FindControl("Password2");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
         }
-
 
         public void DoBusinessRulesNext(int curStep) {
             // code needs to have the steps in order for the ifs to flow properly on panels with now fields showing
@@ -159,7 +114,7 @@ namespace GRA.SRP.Controls {
                 var sGrade = ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text;
 
                 var age = -1;
-                if(sDOB != "") {
+                if(!string.IsNullOrEmpty(sDOB)) {
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
                 } else {
@@ -175,7 +130,7 @@ namespace GRA.SRP.Controls {
                     int.TryParse(sGrade, out grade);
 
                 var pgmDD = (DropDownList)rptr.Items[0].FindControl("ProgID");
-                if(pgmDD.SelectedValue == "0" || pgmDD.SelectedValue == "") {
+                if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
                     pgmDD.SelectedValue = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
                 }
 
@@ -296,7 +251,6 @@ namespace GRA.SRP.Controls {
             }
             // Finished Current Step = 6 
 
-
             if(curStep == 7) {
                 if(!SaveAccount()) {
                     return;
@@ -309,7 +263,6 @@ namespace GRA.SRP.Controls {
                 //newPanel.Visible = true;
 
                 Step.Text = (curStep + 1).ToString();
-
 
                 var famAcct = (DropDownList)rptr.Items[0].FindControl("FamilyAccount");
                 if(famAcct.SelectedValue == "Yes") {
@@ -366,25 +319,20 @@ namespace GRA.SRP.Controls {
                 RegisteringFamily.Text = "1";
                 RegistrationAge.Text = "0";
 
-                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Age")).Text = "";
-                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = "";
-                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = "";
-                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = "";
-                //((TextBox)rptr.Items[0].FindControl("SchoolName")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("District")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("Teacher")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("GroupTeamName")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Username")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Password")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Password")).Attributes.Add("Value", "");
-                ((TextBox)rptr.Items[0].FindControl("Password2")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Password2")).Attributes.Add("Value", "");
-                //((TextBox)rptr.Items[0].FindControl("AvatarID")).Text = "1";
+                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Age")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Username")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password")).Attributes.Add("Value", string.Empty);
+                ((TextBox)rptr.Items[0].FindControl("Password2")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password2")).Attributes.Add("Value", string.Empty);
             }
             // Finished Current Step = 9 
 
@@ -508,13 +456,12 @@ namespace GRA.SRP.Controls {
 
 
             if(curStep == 2) {
-
                 var sDOB = ((TextBox)rptr.Items[0].FindControl("DOB")).Text;
                 var sAge = ((TextBox)rptr.Items[0].FindControl("Age")).Text;
                 var sGrade = ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text;
 
                 var age = -1;
-                if(sDOB != "") {
+                if(!string.IsNullOrEmpty(sDOB)) {
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
                 } else {
@@ -530,7 +477,7 @@ namespace GRA.SRP.Controls {
                     int.TryParse(sGrade, out grade);
 
                 var pgmDD = (DropDownList)rptr.Items[0].FindControl("ProgID");
-                if(pgmDD.SelectedValue == "0" || pgmDD.SelectedValue == "") {
+                if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
                     pgmDD.SelectedValue = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
                 }
 
@@ -544,8 +491,6 @@ namespace GRA.SRP.Controls {
                 Step.Text = (curStep - 1).ToString();
             }
             // Finished Current Step = 2
-
-
         }
 
         public bool SaveAccount() {
@@ -553,7 +498,7 @@ namespace GRA.SRP.Controls {
                 var p = new Patron();
                 DateTime _d;
                 var DOB = rptr.Items[0].FindControl("DOB") as TextBox;
-                if(DOB != null && DOB.Text != "") {
+                if(DOB != null && string.IsNullOrEmpty(DOB.Text)) {
                     if(DateTime.TryParse(DOB.Text, out _d))
                         p.DOB = _d;
                 }
@@ -589,23 +534,27 @@ namespace GRA.SRP.Controls {
                 p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
 
-                //p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
-                //p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
-
                 p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);
                 p.SchoolName = ((DropDownList)(rptr.Items[0]).FindControl("SchoolName")).SelectedValue;
                 p.SchoolType = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue);
 
                 var lc = LibraryCrosswalk.FetchObjectByLibraryID(p.PrimaryLibrary);
                 if(lc != null) {
-                    p.District = lc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue : lc.DistrictID.ToString();
+                    p.District = lc.DistrictID == 0 
+                        ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue
+                        : lc.DistrictID.ToString();
                 } else {
                     p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
                 }
                 var sc = SchoolCrosswalk.FetchObjectBySchoolID(p.SchoolName.SafeToInt());
                 if(sc != null) {
-                    p.SDistrict = sc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt() : sc.DistrictID;
-                    p.SchoolType = sc.SchTypeID == 0 ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue) : sc.SchTypeID;
+                    p.SDistrict = sc.DistrictID == 0
+                        ? ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt()
+                        : sc.DistrictID;
+
+                    p.SchoolType = sc.SchTypeID == 0
+                        ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue)
+                        : sc.SchTypeID;
                 } else {
                     p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
                 }
@@ -621,38 +570,49 @@ namespace GRA.SRP.Controls {
                 p.ShareFlag = ((CheckBox)(rptr.Items[0]).FindControl("ShareFlag")).Checked;
                 p.TermsOfUseflag = ((CheckBox)(rptr.Items[0]).FindControl("TermsOfUseflag")).Checked;
 
-                var cr = CustomRegistrationFields.FetchObject();
-                p.Custom1 = cr.DDValues1 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom1DD")).SelectedValue;
-                p.Custom2 = cr.DDValues2 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom2DD")).SelectedValue;
-                p.Custom3 = cr.DDValues3 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom3DD")).SelectedValue;
-                p.Custom4 = cr.DDValues4 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom4DD")).SelectedValue;
-                p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
+                var cr = this.CustomFields;
+                p.Custom1 = string.IsNullOrEmpty(cr.DDValues1)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom1DD")).SelectedValue;
 
-                //p.Custom1 = ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text;
-                //p.Custom2 = ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text;
-                //p.Custom3 = ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text;
-                //p.Custom4 = ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text;
-                //p.Custom5 = ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text;
+                p.Custom2 = string.IsNullOrEmpty(cr.DDValues2)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom2DD")).SelectedValue;
+
+                p.Custom3 = string.IsNullOrEmpty(cr.DDValues3)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom3DD")).SelectedValue;
+
+                p.Custom4 = string.IsNullOrEmpty(cr.DDValues4)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom4DD")).SelectedValue;
+
+                p.Custom5 = string.IsNullOrEmpty(cr.DDValues5)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
 
                 p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)rptr.Items[0].FindControl("AvatarID")).Value);
 
                 var registeringMasterAccount = true;
-                if(RegisteringFamily.Text != "0") {
+                if(!RegisteringFamily.Text.Equals("0")) {
                     registeringMasterAccount = false;
                     p.MasterAcctPID = int.Parse(MasterPID.Text);
                 }
+
                 if(p.IsValid(BusinessRulesValidationMode.INSERT)) {
                     p.Insert();
 
                     var prog = Programs.FetchObject(p.ProgID);
                     var earnedBadgesList = new List<Badge>();
                     if(prog.RegistrationBadgeID != 0) {
-                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref earnedBadgesList);
+                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID,
+                                                       p,
+                                                       ref earnedBadgesList);
                     }
                     AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref earnedBadgesList);
 
-                    var earnedBadges =  string.Join("|", earnedBadgesList.Select(b => b.BID).Distinct());
-  
+                    var earnedBadges = string.Join("|", earnedBadgesList.Select(b => b.BID).Distinct());
+
                     if(p.IsMasterAccount && earnedBadges.Length > 0) {
                         // if family account and is master, and has badges, rememebr to show them
                         Session[SessionKey.EarnedBadges] = earnedBadges;
@@ -701,7 +661,6 @@ namespace GRA.SRP.Controls {
             return true;
         }
 
-
         protected void City_TextChanged(object sender, EventArgs e) {
             ReloadLibraryDistrict();
             ReloadSchoolDistrict();
@@ -728,7 +687,6 @@ namespace GRA.SRP.Controls {
         }
 
         protected void ReloadSchoolDistrict() {
-            //*
             var sc = (DropDownList)(rptr.Items[0]).FindControl("SchoolName");
             var st = (DropDownList)(rptr.Items[0]).FindControl("SchoolType");
             var sd = (DropDownList)(rptr.Items[0]).FindControl("SDistrict");
@@ -738,14 +696,17 @@ namespace GRA.SRP.Controls {
             var scVal = sc.SelectedValue;
             sc.Items.Clear();
             sc.Items.Add(new ListItem("[Select a Value]", "0"));
-            var ds = SchoolCrosswalk.GetFilteredSchoolDDValues(st.SelectedValue.SafeToInt(), sd.SelectedValue.SafeToInt(), city.Text, ag.Text.SafeToInt(), gr.Text.SafeToInt());
+            var ds = SchoolCrosswalk.GetFilteredSchoolDDValues(st.SelectedValue.SafeToInt(),
+                                                               sd.SelectedValue.SafeToInt(),
+                                                               city.Text,
+                                                               ag.Text.SafeToInt(),
+                                                               gr.Text.SafeToInt());
             foreach(DataRow r in ds.Tables[0].Rows) {
-                sc.Items.Add(new ListItem(r["Code"].ToString(), r["CID"].ToString()));
+                sc.Items.Add(new ListItem(r["Description"].ToString(), r["CID"].ToString()));
             }
 
             var si = sc.Items.FindByValue(scVal);
             sc.SelectedValue = si != null ? scVal : "0";
-            //*            
         }
 
         protected void ReloadLibraryDistrict() {
@@ -755,9 +716,10 @@ namespace GRA.SRP.Controls {
             var plVal = pl.SelectedValue;
             pl.Items.Clear();
             pl.Items.Add(new ListItem("[Select a Value]", "0"));
-            var ds = LibraryCrosswalk.GetFilteredBranchDDValues(int.Parse(dt.SelectedValue), city.Text);
+            var ds = LibraryCrosswalk.GetFilteredBranchDDValues(int.Parse(dt.SelectedValue),
+                                                                city.Text);
             foreach(DataRow r in ds.Tables[0].Rows) {
-                pl.Items.Add(new ListItem(r["Code"].ToString(), r["CID"].ToString()));
+                pl.Items.Add(new ListItem(r["Description"].ToString(), r["CID"].ToString()));
             }
             var il = pl.Items.FindByValue(plVal);
             pl.SelectedValue = il != null ? plVal : "0";
@@ -782,9 +744,5 @@ namespace GRA.SRP.Controls {
             }
             set { ViewState["gotourl"] = value; }
         }
-
-
-
-
     }
 }
