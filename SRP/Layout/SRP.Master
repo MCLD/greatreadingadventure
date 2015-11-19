@@ -79,7 +79,6 @@
                         <% } %>
                     </ul>
                 </div>
-                <!--/.nav-collapse -->
             </div>
         </nav>
         <div class="container-fluid visible-print-block print-header">
@@ -148,7 +147,7 @@
                     </div>
                     <div class="modal-body form-horizontal">
                         <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" id="loginPopupErrorMessage"><%=this.LoginPopupErrorMessage%></p>
-                        <div class="form-group has-feedback" id="loginPopupLoginGroup">
+                        <div class="form-group form-group-lg has-feedback" id="loginPopupLoginGroup">
                             <label class="col-sm-3 control-label">
                                 <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
                             <div class="col-sm-9">
@@ -156,7 +155,7 @@
                                 <span id="loginPopupUsernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none;"></span>
                             </div>
                         </div>
-                        <div class="form-group has-feeback" id="loginPopupPasswordGroup">
+                        <div class="form-group form-group-lg has-feeback" id="loginPopupPasswordGroup">
                             <label class="col-sm-3 control-label">
                                 <asp:Label runat="server" Text="loginform-password"></asp:Label></label>
                             <div class="col-sm-9">

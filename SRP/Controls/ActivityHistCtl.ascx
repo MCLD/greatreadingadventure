@@ -23,14 +23,14 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li>
-                        <asp:LinkButton id="allActivitiesFilter" runat="server" Text="All activitites" OnClick="FilterActivitiesClick"></asp:LinkButton></li>
+                        <asp:LinkButton ID="allActivitiesFilter" runat="server" Text="All activitites" OnClick="FilterActivitiesClick"></asp:LinkButton></li>
                     <li class="award-reading">
                         <asp:LinkButton runat="server" Text="Reading" OnClick="FilterActivitiesClick" CssClass="award-reading-text"></asp:LinkButton></li>
-                    <li class="award-adventure">
+                    <li class="award-adventure" runat="server" id="AdventureDropDownItem">
                         <asp:LinkButton runat="server" Text="Adventures" OnClick="FilterActivitiesClick"></asp:LinkButton></li>
-                    <li class="award-challenge">
+                    <li class="award-challenge" runat="server" id="ChallengeDropDownItem">
                         <asp:LinkButton runat="server" Text="Challenges" OnClick="FilterActivitiesClick"></asp:LinkButton></li>
-                    <li class="award-event">
+                    <li class="award-event" runat="server" id="EventsDropDownItem">
                         <asp:LinkButton runat="server" Text="Events" OnClick="FilterActivitiesClick"></asp:LinkButton></li>
                 </ul>
             </div>
@@ -40,39 +40,39 @@
 
 <div class="row margin-1em-top">
     <div class="col-xs-12 col-md-10 col-md-offset-1">
-        <span runat="server" id="noActivitiesLabel" visible="false">You currently have no logged activities.</span>
+        <span runat="server" id="noActivitiesLabel" visible="false">No activities logged.</span>
         <asp:Panel ID="activitiesPanel" runat="server" Visible="true">
-        <table class="table table-compact table-hover">
-            <thead>
-                <tr>
-                    <th>Points </th>
-                    <th>Reason</th>
-                    <th>Date Awarded</th>
-                </tr>
-            </thead>
-            <tbody>
-                <asp:Repeater runat="server" ID="rptr">
-                    <ItemTemplate>
-                        <tr class="<%#AwardClass(Eval("AwardReasonCd")) %>">
-                            <td>
-                                <%# ((int)Eval("NumPoints")).ToInt() %>
-                            </td>
-                            <td>
-                                <%# Eval("AwardReason") %><%# ((bool)Eval("isEvent") ? string.Format(" <strong>{0}</strong>, secret code: <em>{1}</em>",  Eval("EventTitle"),  Eval("EventCode")) : 
+            <table class="table table-compact table-hover">
+                <thead>
+                    <tr>
+                        <th>Points </th>
+                        <th>Reason</th>
+                        <th>Date Awarded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <asp:Repeater runat="server" ID="rptr">
+                        <ItemTemplate>
+                            <tr class="<%#AwardClass(Eval("AwardReasonCd")) %>">
+                                <td>
+                                    <%# ((int)Eval("NumPoints")).ToInt() %>
+                                </td>
+                                <td>
+                                    <%# Eval("AwardReason") %><%# ((bool)Eval("isEvent") ? string.Format(" <strong>{0}</strong>, secret code: <em>{1}</em>",  Eval("EventTitle"),  Eval("EventCode")) : 
                          ((bool)Eval("isBookList")  ? string.Format(": <strong>{0}</strong>",  Eval("ListName")) :
                          ((bool)Eval("isReading") ? FormatReading(Eval("Author").ToString(), Eval("Title").ToString(), Eval("Review").ToString(), (int)Eval("PRID")) + string.Format(", <strong>{0} {1}</strong>", Eval("ReadingAmount"), Eval("ReadingType")) :
                          ((bool)Eval("isGameLevelActivity") ? string.Format(": (<strong>{0}</strong>)", Eval("GameName")) : 
                          " (Unknown)"))))%>
-                            </td>
-                            <td>
-                                <%# ((DateTime)Eval("AwardDate")).ToNormalDate() %> 
-                            </td>
-                        </tr>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </tbody>
-        </table>
-     </asp:Panel>
+                                </td>
+                                <td>
+                                    <%# ((DateTime)Eval("AwardDate")).ToNormalDate() %> 
+                                </td>
+                            </tr>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </tbody>
+            </table>
+        </asp:Panel>
     </div>
 </div>
 

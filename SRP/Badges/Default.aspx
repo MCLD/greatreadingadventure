@@ -15,33 +15,34 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 margin-halfem-top">
-            Filter badges:
-            <asp:DropDownList ID="CategoryId" runat="server" DataSourceID="odsDDCat" DataTextField="Code" DataValueField="CID"
-                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
+        <div class="col-sm-12 margin-halfem-top form-inline">
+            <label>Filter badges:</label>
+            <asp:DropDownList ID="CategoryId" runat="server" DataSourceID="odsDDCat" DataTextField="Description" DataValueField="CID"
+                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Category"></asp:ListItem>
             </asp:DropDownList>
-            <asp:DropDownList ID="AgeGroupId" runat="server" DataSourceID="odsDDAge" DataTextField="Code" DataValueField="CID"
-                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
+            <asp:DropDownList ID="AgeGroupId" runat="server" DataSourceID="odsDDAge" DataTextField="Description" DataValueField="CID"
+                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Age"></asp:ListItem>
             </asp:DropDownList>
-            <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
-                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
+            <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
+                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="All libraries/branches"></asp:ListItem>
             </asp:DropDownList>
             <asp:DropDownList ID="LocationID" runat="server" DataSourceID="odsDDLoc"
-                DataTextField="Code" DataValueField="CID"
-                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound">
+                DataTextField="Description" DataValueField="CID"
+                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Location"></asp:ListItem>
             </asp:DropDownList>
-            <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
-                CssClass="btn btn-default btn-xs hidden-print" OnClick="btnFilter_Click" />
+            <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
+                <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
+                    CssClass="btn btn-default btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click" />
+                <asp:Button ID="btnClear" runat="server" Text="badges-filter-clear-button"
+                    CssClass="btn btn-default btn-sm hidden-print" OnClick="btnClear_Click" />
+            </div>
         </div>
     </div>
     <div class="row margin-1em-top">
-        <div class="col-xs-12">
-            <asp:Label ID="NoBadges" runat="server" Text="badges-none-available" Visible="false" CssClass="margin-1em-bottom"></asp:Label>
-        </div>
         <asp:Repeater runat="server" ID="rptr" DataSourceID="odsBadges">
             <ItemTemplate>
                 <div class="col-xs-6 col-sm-3 col-md-2">
@@ -56,6 +57,11 @@
                     </a>
                 </div>
             </ItemTemplate>
+            <FooterTemplate>
+                <div class="col-xs-12" runat="server" visible="<%#rptr.Items.Count == 0 %>">
+                    <strong><%=this.NoneAvailableText %></strong>
+                </div>
+            </FooterTemplate>
         </asp:Repeater>
     </div>
 

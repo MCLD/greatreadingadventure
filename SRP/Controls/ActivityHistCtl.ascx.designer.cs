@@ -58,6 +58,33 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.LinkButton allActivitiesFilter;
         
         /// <summary>
+        /// AdventureDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AdventureDropDownItem;
+        
+        /// <summary>
+        /// ChallengeDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ChallengeDropDownItem;
+        
+        /// <summary>
+        /// EventsDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl EventsDropDownItem;
+        
+        /// <summary>
         /// noActivitiesLabel control.
         /// </summary>
         /// <remarks>

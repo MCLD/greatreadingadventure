@@ -39,11 +39,11 @@ RecoverForm button=Email Password
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PwdResetForm Title=Change Password
-PwdResetForm current=Current password:  
-PwdResetForm newpassword=New password: 
-PwdResetForm newpassword repeat=Re-enter the new password:
-PwdResetForm button=Submit
+change-password-title=Change Password
+change-password-current=Current password:  
+change-password-new=New password: 
+change-password-verify=Verify new password:
+change-password-submit=Change my password
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change family password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -67,9 +67,11 @@ FamAccts Impersonate Cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-MyAccount Title=My Account Settings
-FamilyAccount Title=Family Account Settings
-MyAccount SaveBtn=Save
+myaccount-title=My Account Settings
+myaccount-family-title=Family Account Settings
+myaccount-save=Save
+myaccount-family=Family Members
+myaccount-add-child=Add Child
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,6 +159,7 @@ events-header-summary=Summary
 events-filter-button=Filter
 events-filter-clear-button=Clear
 events-prompt=Event: 
+events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -188,8 +191,9 @@ Reading Log=Play Now:<br /><small>Log my reading, enter a secret code, and play 
 badges-my-badges=My Badges
 badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
-badges-none-available=No badges found. Check back soon!
+badges-none-available=No badges found.
 badges-filter-button=Filter
+badges-filter-clear-button=Clear
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

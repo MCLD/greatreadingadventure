@@ -6,7 +6,7 @@
 <div class="container">
     <div class="form-wrapper form-wide">
 	      <h3 class="title-divider">
-              <asp:Label ID="Label1" runat="server" Text="FamilyAccount Title"></asp:Label>
+              <asp:Label ID="Label1" runat="server" Text="myaccount-family-title"></asp:Label>
           </h3>
           <hr>    
           <asp:Label ID="SA" runat="server" Text="" Visible="False" ></asp:Label>
@@ -673,7 +673,7 @@
         <tr >
             <td></td>
             <td> 
-                <asp:Button ID="btnSave" runat="server" Text="MyAccount SaveBtn" CommandName="save" CausesValidation="True" CssClass="btn a"/>
+                <asp:Button ID="btnSave" runat="server" Text="myaccount-save" CommandName="save" CausesValidation="True" CssClass="btn a"/>
                 &nbsp;
                 <asp:Button ID="Button1" runat="server" Text="MyAccount CancelBtn" CommandName="cancel" CausesValidation="false"  CssClass="btn a"/>
             </td>

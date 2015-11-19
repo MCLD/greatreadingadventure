@@ -7,13 +7,11 @@ using System.Web.UI.WebControls;
 using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using GRA.Tools;
 
 namespace GRA.SRP.Classes {
     public partial class ChangePassword : System.Web.UI.UserControl {
         protected void Page_Load(object sender, EventArgs e) {
-            uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
-            uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
         }
 
         protected void btnLogin_Click(object sender, EventArgs e) {
@@ -21,8 +19,9 @@ namespace GRA.SRP.Classes {
                 if(!(string.IsNullOrEmpty(NPassword.Text.Trim()))) {
                     var patron = (Patron)Session["Patron"];
                     if(!Patron.VerifyPassword(patron.Username, CPass.Text.Trim())) {
-                        lblError.Text =
-                            "You entered an incorrect password.";
+                        Session[SessionKey.PatronMessage] = "That's not your current password, please try entering your current password again.";
+                        Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
+                        Session[SessionKey.PatronMessageGlyphicon] = "remove";
 
                         CPass.Attributes.Add("Value", CPass.Text);
                         NPassword.Attributes.Add("Value", NPassword.Text);
@@ -31,8 +30,9 @@ namespace GRA.SRP.Classes {
                     }
 
                     if(NPassword.Text.Trim() != NPasswordR.Text.Trim()) {
-                        lblError.Text =
-                            "The new password and new password re-entry do not match.";
+                        Session[SessionKey.PatronMessage] = "New password and new password validation do not match.";
+                        Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
+                        Session[SessionKey.PatronMessageGlyphicon] = "remove";
                         CPass.Attributes.Add("Value", CPass.Text);
                         NPassword.Attributes.Add("Value", NPassword.Text);
                         NPasswordR.Attributes.Add("Value", NPasswordR.Text);
@@ -48,9 +48,9 @@ namespace GRA.SRP.Classes {
                     Session["CurrentProgramID"] = patron.ProgID;
 
 
-                    lblError.Text =
-                        "Your new password has been activated.  <br><br> Next time you need to log in, please use your new password.<br><br> <br><br> <br>";
-                    pnlfields.Visible = false;
+                    Session[SessionKey.PatronMessage] = "Your password has been updated!";
+                    Session[SessionKey.PatronMessageGlyphicon] = "check";
+                    Response.Redirect("~/Account/");
                 }
             }
         }

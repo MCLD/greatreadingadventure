@@ -5,12 +5,19 @@
 <%@ Import Namespace="GRA.SRP.DAL" %>
 <%@ Register Src="~/Controls/MyAccountCtl.ascx" TagName="MyAccountCtl" TagPrefix="uc3" %>
 
-
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
+    <script src="<%=ResolveUrl("~/Scripts/jquery.plugin.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery.datepick.min.js")%>"></script>
 </asp:Content>
+
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="col-sm-12">
         <uc3:MyAccountCtl ID="MyAccountCtl1" runat="server" />
     </div>
-    Tenant: <%=Session["TenantID"].ToString() %>
+</asp:Content>
+
+<asp:Content ID="BottomOfPage" runat="server" ContentPlaceHolderID="BottomOfPage">
+    <script>
+        $().ready(focusFirstField());
+    </script>
 </asp:Content>

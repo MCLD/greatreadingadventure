@@ -42,35 +42,28 @@ namespace GRA.SRP.Controls {
 
         }
 
-        protected void BindCustomDDL(RepeaterItemEventArgs e,
-                                     string ddValues,
-                                     string ddlControlId,
-                                     string tbControlId) {
-            if(!string.IsNullOrWhiteSpace(ddValues)) {
-                var ddlControl = (DropDownList)e.Item.FindControl(ddlControlId);
-                var dataSource = Codes.GetAlByTypeID(int.Parse(ddValues));
-                ddlControl.Items.Clear();
-                ddlControl.Items.Add(new ListItem("[Select a Value]", string.Empty));
-                foreach(DataRow row in dataSource.Tables[0].Rows) {
-                    var listItem = new ListItem(row["Description"].ToString(),
-                                                row["Code"].ToString());
-                    ddlControl.Items.Add(listItem);
-                }
-
-                string tbValue = ((TextBox)e.Item.FindControl(tbControlId)).Text;
-                var selected = ddlControl.Items.FindByValue(tbValue);
-                if(selected != null) {
-                    ddlControl.SelectedValue = tbValue;
-                }
-            }
-        }
-
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e) {
-            BindCustomDDL(e, this.customFields.DDValues1, "Custom1DD", "Custom1DDTXT");
-            BindCustomDDL(e, this.customFields.DDValues2, "Custom2DD", "Custom2DDTXT");
-            BindCustomDDL(e, this.customFields.DDValues3, "Custom3DD", "Custom3DDTXT");
-            BindCustomDDL(e, this.customFields.DDValues4, "Custom4DD", "Custom4DDTXT");
-            BindCustomDDL(e, this.customFields.DDValues5, "Custom5DD", "Custom5DDTXT");
+            var registrationHelper = new RegistrationHelper();
+            if(!string.IsNullOrEmpty(this.customFields.DDValues1)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues1));
+                registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.customFields.DDValues2)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues2));
+                registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.customFields.DDValues3)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues3));
+                registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.customFields.DDValues4)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues4));
+                registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.customFields.DDValues5)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues5));
+                registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
+            }
         }
 
         protected void btnPrev_Click(object sender, EventArgs e) {
@@ -498,7 +491,7 @@ namespace GRA.SRP.Controls {
                 var p = new Patron();
                 DateTime _d;
                 var DOB = rptr.Items[0].FindControl("DOB") as TextBox;
-                if(DOB != null && string.IsNullOrEmpty(DOB.Text)) {
+                if(DOB != null && !string.IsNullOrEmpty(DOB.Text)) {
                     if(DateTime.TryParse(DOB.Text, out _d))
                         p.DOB = _d;
                 }
@@ -540,7 +533,7 @@ namespace GRA.SRP.Controls {
 
                 var lc = LibraryCrosswalk.FetchObjectByLibraryID(p.PrimaryLibrary);
                 if(lc != null) {
-                    p.District = lc.DistrictID == 0 
+                    p.District = lc.DistrictID == 0
                         ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue
                         : lc.DistrictID.ToString();
                 } else {

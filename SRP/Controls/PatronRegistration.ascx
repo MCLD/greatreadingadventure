@@ -655,7 +655,7 @@
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:TextBox ID="Custom1DDTXT" runat="server" Enabled='<%# (bool)Eval("Custom1_Edit") %>' Visible="False"></asp:TextBox>
+                                <asp:TextBox ID="Custom1DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
@@ -681,7 +681,7 @@
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:TextBox ID="Custom2DDTXT" runat="server" Enabled='<%# (bool)Eval("Custom2_Edit") %>' Visible="False"></asp:TextBox>
+                                <asp:TextBox ID="Custom2DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
@@ -707,7 +707,7 @@
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:TextBox ID="Custom3DDTXT" runat="server" Enabled='<%# (bool)Eval("Custom3_Edit") %>' Visible="False"></asp:TextBox>
+                                <asp:TextBox ID="Custom3DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
@@ -733,7 +733,7 @@
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:TextBox ID="Custom4DDTXT" runat="server" Enabled='<%# (bool)Eval("Custom4_Edit") %>' Visible="False"></asp:TextBox>
+                                <asp:TextBox ID="Custom4DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
@@ -760,7 +760,7 @@
                                     CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:TextBox ID="Custom5DDTXT" runat="server" Enabled='<%# (bool)Eval("Custom5_Edit") %>' Visible="False"></asp:TextBox>
+                                <asp:TextBox ID="Custom5DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server"
@@ -1038,7 +1038,7 @@
 <script>
     $(function () {
         $(".datepicker").datepick({
-            changeMonth: false,
+            changeMonth: true,
             showOtherMonths: true,
             selectOtherMonths: true,
             showSpeed: 'fast'

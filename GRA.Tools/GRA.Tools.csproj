@@ -51,6 +51,7 @@
     <Compile Include="PasswordHash.cs" />
     <Compile Include="PointCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationHelper.cs" />
     <Compile Include="SessionKey.cs" />
     <Compile Include="WebTools.cs" />
   </ItemGroup>

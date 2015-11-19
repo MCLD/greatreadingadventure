@@ -67,7 +67,7 @@ namespace GRA.SRP.Handlers {
                         if(e.BranchID > 0) {
                             var codeObject = DAL.Codes.FetchObject(e.BranchID);
                             if(codeObject != null) {
-                                jsonResponse.Where = codeObject.Code;
+                                jsonResponse.Where = codeObject.Description;
                             }
                         }
                         if(!string.IsNullOrWhiteSpace(e.Custom1)
