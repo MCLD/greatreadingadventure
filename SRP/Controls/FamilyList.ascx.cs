@@ -52,7 +52,7 @@ namespace GRA.SRP.Controls
 
             if (e.CommandName.ToLower() == "childadd")
             {
-                Response.Redirect("~/AddChildAccount.aspx");
+                Response.Redirect("~/Account/AddChildAccount.aspx");
             }
 
             if (e.CommandName == "pwd")
@@ -77,7 +77,7 @@ namespace GRA.SRP.Controls
 
         protected void btn_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/AddChildAccount.aspx");
+            Response.Redirect("~/Account/AddChildAccount.aspx");
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e)

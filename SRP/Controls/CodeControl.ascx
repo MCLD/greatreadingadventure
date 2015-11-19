@@ -24,7 +24,8 @@
                             Width="11em"></asp:TextBox>
                     </div>
                     <asp:LinkButton runat="server"
-                        CssClass="btn btn-default btn-sm btn-success"
+                        CssClass="btn btn-default btn-sm btn-success code-submit"
+                        data-loading-text="Submitting..."
                         Text="secret-code-submit"
                         ID="submitButton"
                         OnClientClick="return ValidateCodeEntry();"
@@ -36,6 +37,7 @@
 </asp:Panel>
 <script>
     function ValidateCodeEntry() {
+        $('.code-submit').button('loading');
         var elems = $("input[id$='codeEntryField']");
         var valid = false;
         elems.each(function () {
@@ -57,6 +59,9 @@
             }
             $('#codeControlMessageError').show();
 
+        }
+        if (!valid) {
+            $('.code-submit').button('reset');
         }
         return valid;
     }

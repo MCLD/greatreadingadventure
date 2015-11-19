@@ -2,7 +2,7 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-12 margin-1em-bottom">
         <span class="h1">
             <asp:Label ID="Label1" runat="server" Text="notifications-title"></asp:Label></span>
     </div>
@@ -60,7 +60,7 @@
         <div class="col-sm-12 hidden-print">
             <div class="btn-group" role="group">
                 <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-list margin-halfem-right"></span>
+                    <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                     Go back</button>
                 <button runat="server" onserverclick="btnDelete_Click" class="btn btn-danger">
                     <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
@@ -97,7 +97,7 @@
         <div class="col-sm-12 hidden-print">
             <div class="btn-group" role="group">
                 <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-list margin-halfem-right"></span>
+                    <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                     Go back</button>
                 <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success">
                     <span class="glyphicon glyphicon-send margin-halfem-right"></span>

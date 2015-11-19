@@ -25,7 +25,7 @@
     <div class="container">
         <div class="form-wrapper form-medium">
             <h3 class="title-divider">
-                <asp:Label ID="Label1" runat="server" Text="PwdResetForm Title"></asp:Label>
+                <asp:Label ID="Label1" runat="server" Text="change-password-title"></asp:Label>
             </h3>
             <asp:Label ID="lblError" runat="server" Text="" Font-Bold="True" ForeColor="#CC0000"></asp:Label>
             <asp:Panel ID="pnlfields" runat="server" Visible="true">
@@ -33,7 +33,7 @@
                 <asp:ValidationSummary ID="ValidationSummary1" runat="server" DisplayMode="List"
                     ShowMessageBox="True" ShowSummary="True" ValidationGroup="uxLogin" ForeColor="#CC0000" Font-Bold="True" />
                 <h5>
-                    <asp:Label ID="Label7" runat="server" Text="PwdResetForm newpassword"></asp:Label>
+                    <asp:Label ID="Label7" runat="server" Text="change-password-new"></asp:Label>
                 </h5>
                 <asp:TextBox ID="NPassword" runat="server" CssClass="input-block-level" TextMode="Password"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="NPasswordReq" runat="server"
@@ -44,7 +44,7 @@
                     Display="Dynamic" ValidationGroup="uxLogin" EnableClientScript="false"
                     ErrorMessage="New Password must be at least seven characters in length and contain one alpha and one numeric character.&lt;br&gt;"></asp:RegularExpressionValidator>
                 <h5>
-                    <asp:Label ID="Label18" runat="server" Text="PwdResetForm newpassword repeat"></asp:Label>
+                    <asp:Label ID="Label18" runat="server" Text="change-password-verify"></asp:Label>
                 </h5>
                 <asp:TextBox ID="NPasswordR" runat="server" CssClass="input-block-level" TextMode="Password"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
@@ -57,7 +57,7 @@
                 <br />
                 <br />
                 <asp:Button ID="btnLogin" runat="server" CssClass="btn a"
-                    Text="PwdResetForm button" CausesValidation="true" Width="150px"
+                    Text="change-password-submit" CausesValidation="true" Width="150px"
                     ValidationGroup="uxLogin" OnClick="btnLogin_Click" />
             </asp:Panel>
         </div>

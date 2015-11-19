@@ -28,8 +28,9 @@
                         <asp:Label runat="server" ID="activityTypeSingleLabel" Visible="false"></asp:Label></label>
 
                     <asp:LinkButton runat="server"
-                        CssClass="btn btn-default btn-sm btn-success"
+                        CssClass="btn btn-sm btn-success reading-log-submit"
                         Text="readinglog-submit"
+                        data-loading-text="Logging..."
                         ID="submitButton"
                         OnClientClick="return ValidateLogEntry();"
                         OnClick="submitButton_Click"></asp:LinkButton>
@@ -114,6 +115,7 @@
             }
         });
         function ValidateLogEntry() {
+            $('.reading-log-submit').button('loading');
             var elems = $("input[id$='readingActivityField']");
             var valid = false;
             elems.each(function () {
@@ -136,8 +138,10 @@
                 $('#readingLogControlMessageError').show();
 
             }
+            if (!valid) {
+                $('.code-submit').button('reset');
+            }
             return valid;
-
         }
     </script>
 </asp:Panel>

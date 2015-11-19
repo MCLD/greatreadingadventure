@@ -31,7 +31,7 @@ namespace GRA.SRP.Events {
                     if(evnt.BranchID > 0) {
                         var codeObject = DAL.Codes.FetchObject(evnt.BranchID);
                         if(codeObject != null) {
-                            eventWhere.Text = codeObject.Code;
+                            eventWhere.Text = codeObject.Description;
                         }
                     }
                     if(string.IsNullOrWhiteSpace(eventWhere.Text)) {

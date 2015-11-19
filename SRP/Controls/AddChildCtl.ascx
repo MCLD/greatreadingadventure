@@ -711,7 +711,7 @@
         <tr >
             <td></td>
             <td> 
-                <asp:Button ID="btnSave" runat="server" Text="MyAccount SaveBtn" CommandName="save" CausesValidation="True" CssClass="btn a"/>
+                <asp:Button ID="btnSave" runat="server" Text="myaccount-save" CommandName="save" CausesValidation="True" CssClass="btn a"/>
                 &nbsp;
                 <asp:Button ID="Button1" runat="server" Text="MyAccount CancelBtn" CommandName="cancel" CausesValidation="false"  CssClass="btn a"/>
             </td>

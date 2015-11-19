@@ -41,7 +41,7 @@ namespace GRA.SRP.Controls {
             int total = totalObject as int? ?? 0;
 
             if(total == 0) {
-                return 100;
+                return 0;
             } else {
                 return (int)(amount * 100.0 / total);
             }

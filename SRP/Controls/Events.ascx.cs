@@ -13,7 +13,7 @@ namespace GRA.SRP.Controls {
     public partial class Events : System.Web.UI.UserControl {
         public string FirstAvailableDate { get; set; }
         public string LastAvailableDate { get; set; }
-
+        public string NoneAvailableText { get; set; }
         protected string DisplayEventDateTime(DateTime? eventDate,
                                               string eventTime,
                                               DateTime? endDate,
@@ -34,7 +34,6 @@ namespace GRA.SRP.Controls {
 
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
-
                 GetFilterSessionValues();
                 GetData();
             }
@@ -50,6 +49,9 @@ namespace GRA.SRP.Controls {
 
             this.FirstAvailableDate = program.StartDate.ToShortDateString();
             this.LastAvailableDate = program.EndDate.ToShortDateString();
+
+            var basePage = (BaseSRPPage)Page;
+            this.NoneAvailableText = basePage.GetResourceString("events-none-available");
         }
 
         protected void btnFilter_Click(object sender, EventArgs e) {

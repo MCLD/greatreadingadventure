@@ -8,35 +8,36 @@
                 <asp:Label runat="server" Text="events-title"></asp:Label></span>
         </div>
     </div>
-    <div class="row margin-halfem-top">
-        <div class="col-sm-12">
-            Start Date:
-                <asp:TextBox
-                    ID="StartDate"
-                    runat="server"
-                    Width="6em"
-                    CssClass="datepicker margin-1em-right"></asp:TextBox>
-            End Date:                        
-                <asp:TextBox
-                    ID="EndDate"
-                    runat="server"
-                    Width="6em"
-                    CssClass="datepicker margin-1em-right"></asp:TextBox>
-            Branch/Library:
-                <asp:DropDownList
-                    ID="BranchId"
-                    runat="server"
-                    DataSourceID="odsDDBranch"
-                    DataTextField="Code"
-                    DataValueField="CID"
-                    AppendDataBoundItems="True"
-                    CssClass="margin-1em-right">
-                    <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
-                </asp:DropDownList>
-            <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
-                OnClick="btnFilter_Click" CssClass="btn btn-default btn-xs hidden-print" />
-            &nbsp;
-            <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-xs hidden-print" />
+    <div class="row">
+        <div class="col-sm-12 form-inline margin-halfem-top">
+            <label for="StartDate" class="margin-halfem-bottom">Start Date:</label>
+            <asp:TextBox
+                ID="StartDate"
+                runat="server"
+                Width="7em"
+                CssClass="datepicker margin-halfem-right form-control"></asp:TextBox>
+            <label for="EndDate" class="margin-halfem-bottom">End Date:</label>
+            <asp:TextBox
+                ID="EndDate"
+                runat="server"
+                Width="7em"
+                CssClass="datepicker margin-halfem-right form-control"></asp:TextBox>
+            <label for="BranchId" class="margin-halfem-bottom">Branch/library:</label>
+            <asp:DropDownList
+                ID="BranchId"
+                runat="server"
+                DataSourceID="odsDDBranch"
+                DataTextField="Description"
+                DataValueField="CID"
+                AppendDataBoundItems="True"
+                CssClass="margin-1em-right form-control margin-halfem-right">
+                <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
+            </asp:DropDownList>
+            <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
+                <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
+                    OnClick="btnFilter_Click" CssClass="btn btn-default btn-sm hidden-print margin-halfem-right" />
+                <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-sm hidden-print" />
+            </div>
         </div>
     </div>
     <table class="table table-striped">
@@ -55,8 +56,8 @@
                 <ItemTemplate>
                     <tr>
                         <td><a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
-                               runat="server"
-                               onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
+                            runat="server"
+                            onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
                         </td>
                         <td>
                             <%# DisplayEventDateTime(Eval("EventDate") as DateTime?,
@@ -67,6 +68,13 @@
                         <td><%# Eval("Branch")%></td>
                     </tr>
                 </ItemTemplate>
+                <FooterTemplate>
+                    <tr runat="server" visible="<%#rptr.Items.Count == 0 %>">
+                        <td colspan="3">
+                            <strong><%=this.NoneAvailableText %></strong>
+                        </td>
+                    </tr>
+                </FooterTemplate>
             </asp:Repeater>
         </tbody>
     </table>

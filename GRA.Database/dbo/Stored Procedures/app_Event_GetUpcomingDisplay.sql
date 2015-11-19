@@ -6,7 +6,7 @@ CREATE PROCEDURE [dbo].[app_Event_GetUpcomingDisplay] @startDate DATETIME = NULL
 AS
 SELECT *,
 	(
-		SELECT Code
+		SELECT [Description]
 		FROM dbo.Code
 		WHERE CID = BranchID
 		) AS Branch

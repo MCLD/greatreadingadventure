@@ -8,9 +8,11 @@ using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using System.Text;
 using System.Data;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls {
     public partial class ActivityHistCtl : System.Web.UI.UserControl {
+
         public string FilterButtonText { get; set; }
         protected void Page_Load(object sender, EventArgs e) {
             this.FilterButtonText = allActivitiesFilter.Text;
@@ -40,6 +42,10 @@ namespace GRA.SRP.Controls {
                 //var patron = Patron.FetchObject(int.Parse(lblPID.Text));
 
                 PopulateList();
+                AdventureDropDownItem.Visible = Session[SessionKey.AdventuresActive] as bool? == true;
+                ChallengeDropDownItem.Visible = Session[SessionKey.ChallengesActive] as bool? == true;
+                EventsDropDownItem.Visible = Session[SessionKey.EventsActive] as bool? == true;
+
             }
         }
 

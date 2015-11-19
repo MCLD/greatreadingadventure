@@ -107,7 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ActivityHistory.aspx" />
-    <Content Include="AddChildAccount.aspx" />
+    <Content Include="Account\AddChildAccount.aspx" />
     <Content Include="AddlSurvey.aspx" />
     <Content Include="App_Themes\Default\blue_bg.png" />
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
@@ -1302,11 +1302,11 @@
     <Compile Include="ActivityHistory.aspx.designer.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AddChildAccount.aspx.cs">
+    <Compile Include="Account\AddChildAccount.aspx.cs">
       <DependentUpon>AddChildAccount.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddChildAccount.aspx.designer.cs">
+    <Compile Include="Account\AddChildAccount.aspx.designer.cs">
       <DependentUpon>AddChildAccount.aspx</DependentUpon>
     </Compile>
     <Compile Include="AddlSurvey.aspx.cs">
