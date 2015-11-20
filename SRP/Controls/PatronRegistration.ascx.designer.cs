@@ -103,6 +103,33 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.TextBox age;
         
         /// <summary>
+        /// parentGuardianFirst control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox parentGuardianFirst;
+        
+        /// <summary>
+        /// parentGuardianMiddle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox parentGuardianMiddle;
+        
+        /// <summary>
+        /// parentGuardianLast control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox parentGuardianLast;
+        
+        /// <summary>
         /// Panel0 control.
         /// </summary>
         /// <remarks>

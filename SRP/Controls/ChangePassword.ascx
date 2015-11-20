@@ -20,7 +20,7 @@
     </div>
 </div>
 <div class="form-horizontal margin-1em-top">
-    <div class="form-group">
+    <div class="form-group form-group-lg">
         <label class="col-sm-3 control-label">
             <asp:Label runat="server" Text="change-password-current"></asp:Label>
         </label>
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group form-group-lg">
         <label class="col-sm-3 control-label">
             <asp:Label runat="server" Text="change-password-new"></asp:Label>
         </label>
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group form-group-lg">
         <label class="col-sm-3 control-label">
             <asp:Label runat="server" Text="change-password-verify"></asp:Label>
         </label>

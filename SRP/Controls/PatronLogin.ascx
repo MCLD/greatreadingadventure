@@ -7,7 +7,7 @@
     </div>
     <div class="panel-body form-horizontal">
         <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" runat="server" clientidmode="Static" id="loginErrorMessage"></p>
-        <div class="form-group has-feedback" id="loginLoginGroup">
+        <div class="form-group form-group-lg has-feedback" id="loginLoginGroup">
             <label class="col-sm-3 control-label">
                 <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
             <div class="col-sm-9">
@@ -15,7 +15,7 @@
                 <span id="loginUsernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none;"></span>
             </div>
         </div>
-        <div class="form-group has-feeback" id="loginPasswordGroup">
+        <div class="form-group form-group-lg  has-feeback" id="loginPasswordGroup">
             <label class="col-sm-3 control-label">
                 <asp:Label runat="server" Text="loginform-password"></asp:Label></label>
             <div class="col-sm-9">
@@ -37,7 +37,7 @@
                     <a href="~/Recover.aspx" runat="server" class="btn btn-default" clientidmode="Static"
                         id="recoverButton">
                         <asp:Label runat="server" Text="loginform-recover" /></a>
-                    <a href="~/Register.aspx" runat="server" class="btn btn-default" clientidmode="Static"
+                    <a href="~/Register.aspx" runat="server" class="btn btn-info" clientidmode="Static"
                         id="registerButton">
                         <asp:Label runat="server" Text="loginform-register" /></a>
                     <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static"

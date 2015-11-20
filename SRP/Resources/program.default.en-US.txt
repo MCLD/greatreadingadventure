@@ -63,13 +63,17 @@ family-list-password=Change Password
 family-list-login=Login as
 family-list-log=Enter activity
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family Member Add
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-member-add-title=Add Family Member
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 myaccount-title=My Account Settings
 myaccount-family-title=Family Account Settings
 myaccount-save=Save
 myaccount-family=Family Members
-myaccount-add-child=Add Child
+myaccount-add-family-member=Add Family Member
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -87,7 +91,7 @@ registration-button-done=Done
 registration-form-grade=School grade:
 registration-form-dob=Date of birth:
 registration-form-age=Age:
-registration-form-family-details=A family account is allowed to manage multiple accounts for a single household (e.g. children accounts).
+registration-form-family-details=A family account is allowed to manage multiple accounts for a single household (e.g. accounts for children).
 registration-form-family-account=Would you like to create a family account?
 registration-form-program=Program:
 registration-form-name-first=First name:
