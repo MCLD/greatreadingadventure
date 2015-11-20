@@ -18,6 +18,7 @@ namespace GRA.Tools {
         public const string Patron = "Patron";
         public const string EarnedBadges = "ErnBdg";
         public const string MasterAcctPID = "MasterAcctPID";
+        public const string RefreshBadgeList = "RfrBdgLst";
     }
 
     public static class PatronMessageLevels {

@@ -31,7 +31,7 @@ namespace GRA.SRP.Controls
 
                 basePage.TranslateStrings(rptr);
             }
-            this.SaveButtonText = basePage.GetResourceString("myaccount-save");
+            this.SaveButtonText = basePage.GetResourceString("family-member-add-save");
         }
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)

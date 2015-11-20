@@ -67,7 +67,7 @@ namespace GRA.SRP.Controls {
                                                                    eventID: EID);
 
                 if(!string.IsNullOrWhiteSpace(earnedBadges)) {
-                    Session[SessionKey.EarnedBadges] = earnedBadges;
+                    new SessionTools(Session).EarnedBadges(earnedBadges);
                 }
 
                 // set message and earned badges
@@ -80,7 +80,6 @@ namespace GRA.SRP.Controls {
                 }
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Success;
                 Session[SessionKey.PatronMessageGlyphicon] = "barcode";
-                Session[SessionKey.EarnedBadges] = earnedBadges;
                 this.codeEntryField.Text = string.Empty;
             }
             #endregion

@@ -157,7 +157,7 @@ namespace GRA.SRP.Controls {
             }
             Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Success;
             Session[SessionKey.PatronMessageGlyphicon] = "thumbs-up";
-            Session[SessionKey.EarnedBadges] = earnedBadges;
+            new SessionTools(Session).EarnedBadges(earnedBadges);
         }
 
 

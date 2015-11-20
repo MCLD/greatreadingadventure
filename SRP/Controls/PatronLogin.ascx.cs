@@ -30,7 +30,7 @@ namespace GRA.SRP.Classes {
                         bp.ProgID = progID;
                         bp.Update();
                     }
-                    new PatronSession(Session).Establish(bp);
+                    new SessionTools(Session).EstablishPatron(bp);
 
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();

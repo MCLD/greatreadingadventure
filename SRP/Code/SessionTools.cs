@@ -4,12 +4,12 @@ using System;
 using System.Web.SessionState;
 
 namespace GRA.SRP {
-    public class PatronSession {
+    public class SessionTools {
         private HttpSessionState Session { get; set; }
-        public PatronSession(HttpSessionState session) {
+        public SessionTools(HttpSessionState session) {
             this.Session = session;
         }
-        public bool Establish(Patron patron) {
+        public bool EstablishPatron(Patron patron) {
             try {
                 Session["PatronLoggedIn"] = true;
                 Session["Patron"] = patron;
@@ -32,7 +32,7 @@ namespace GRA.SRP {
             }
         }
 
-        public void Clear() {
+        public void ClearPatron() {
             Session.Remove("PatronLoggedIn");
             Session.Remove("Patron");
             Session.Remove("ProgramID");
@@ -40,6 +40,36 @@ namespace GRA.SRP {
             Session.Remove("CurrentProgramID");
             Session.Remove(SessionKey.IsMasterAccount);
             Session.Remove("MasterAcctPID");
+        }
+
+        public void EarnedBadges(object badgeIds) {
+            Session[SessionKey.EarnedBadges] = badgeIds;
+            Session[SessionKey.RefreshBadgeList] = true;
+        }
+
+        public void ClearEarnedBadges() {
+            Session.Remove(SessionKey.EarnedBadges);
+        }
+
+        public void ClearRefreshBadgeList() {
+            Session.Remove(SessionKey.RefreshBadgeList);
+        }
+
+        public void AlertPatron(string message,
+                                string patronMessageLevel = null,
+                                string glyphicon = null) {
+            Session[SessionKey.PatronMessage] = message;
+            if(patronMessageLevel != null) {
+                Session[SessionKey.PatronMessageLevel] = patronMessageLevel;
+            }
+            if(!string.IsNullOrEmpty(glyphicon)) {
+                Session[SessionKey.PatronMessageGlyphicon] = glyphicon;
+            }
+        }
+        public void ClearPatronAlert() {
+            Session.Remove(SessionKey.PatronMessage);
+            Session.Remove(SessionKey.PatronMessageLevel);
+            Session.Remove(SessionKey.PatronMessageGlyphicon);
         }
     }
 }

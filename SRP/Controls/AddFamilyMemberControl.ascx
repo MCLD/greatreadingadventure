@@ -769,10 +769,17 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12 clearfix">
+                <div class="col-xs-9 clearfix">
                     <div class="pull-right">
-                        <asp:Button runat="server" Text="myaccount-save" CommandName="save" CausesValidation="True" CssClass="btn btn-success" OnClientClick="return saveClick();" />
-                        <asp:HyperLink runat="server" CssClass="btn btn-default" NavigateUrl="~/Account/" Text="myaccount-cancel"></asp:HyperLink>
+                        <asp:HyperLink runat="server" CssClass="btn btn-default" NavigateUrl="~/Account/"><asp:Label runat="server" Text="family-member-add-cancel"></asp:Label></asp:HyperLink>
+                        <asp:LinkButton runat="server"
+                            CommandName="save"
+                            CausesValidation="true"
+                            OnClientClick="return saveButtonClick();"
+                            CssClass="btn btn-success account-save-button">
+                        <span class="glyphicon glyphicon-save margin-halfem-right"></span>
+                        <%=this.SaveButtonText %>
+                        </asp:LinkButton>
                     </div>
                 </div>
             </div>
@@ -906,9 +913,11 @@
         });
     });
 
-    function saveClick() {
-        setTimeout(loadingMessage, 5000);
-        $('#processingAccountCreation').modal({ backdrop: 'static' });
+    function saveButtonClick() {
+        if (Page_ClientValidate()) {
+            setTimeout(loadingMessage, 5000);
+            $('#processingAccountCreation').modal({ backdrop: 'static' });
+        }
         return true;
     }
 

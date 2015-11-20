@@ -610,11 +610,11 @@ namespace GRA.SRP.Controls {
 
                     if(p.IsMasterAccount && earnedBadges.Length > 0) {
                         // if family account and is master, and has badges, rememebr to show them
-                        Session[SessionKey.EarnedBadges] = earnedBadges;
+                        new SessionTools(Session).EarnedBadges(earnedBadges);
                     }
                     if(!p.IsMasterAccount && p.MasterAcctPID == 0 && earnedBadges.Length > 0) {
                         // if not family master or not family at all and badges, rememebr to show ...
-                        Session[SessionKey.EarnedBadges] = earnedBadges;
+                        new SessionTools(Session).EarnedBadges(earnedBadges);
                     }
 
                     if(p.IsMasterAccount) {
@@ -625,7 +625,7 @@ namespace GRA.SRP.Controls {
 
                     if(registeringMasterAccount) {
                         MasterPID.Text = p.PID.ToString();
-                        new PatronSession(Session).Establish(p);
+                        new SessionTools(Session).EstablishPatron(p);
                     }
                 } else {
                     StringBuilder message = new StringBuilder("<strong>");

@@ -10,9 +10,9 @@ using GRA.Tools;
 
 namespace GRA.SRP.Controls {
     public partial class Badges : System.Web.UI.UserControl {
-        protected void Page_Load(object sender, EventArgs e) {
 
-            if(!IsPostBack) {
+        protected void Page_Load(object sender, EventArgs e) {
+            if(!Page.IsPostBack) {
                 var ds = DAL.PatronBadges.GetAll(((Patron)Session["Patron"]).PID);
                 rptr.DataSource = ds;
                 rptr.DataBind();

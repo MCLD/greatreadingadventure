@@ -55,7 +55,7 @@ namespace GRA.SRP.Controls {
                 }
 
                 var newPatron = Patron.FetchObject(newPID);
-                new PatronSession(Session).Establish(newPatron);
+                new SessionTools(Session).EstablishPatron(newPatron);
                 //Session["Patron"] = bp;
                 //Session["ProgramID"] = bp.ProgID;
                 //Session["PatronProgramID"] = bp.ProgID;

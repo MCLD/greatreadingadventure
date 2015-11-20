@@ -169,7 +169,7 @@ namespace GRA.SRP.Controls {
 
             if(sBadges != "") {
                 Session["GoToUrl"] = GoToUrl;
-                Session[SessionKey.EarnedBadges] = sBadges;
+                new SessionTools(Session).EarnedBadges(sBadges);
             }
 
             Session[SessionKey.PatronMessage] = string.Format("<strong>Good job!</strong> Your reading activity has been logged. <strong>You earned {0} point{1}!</strong>",
