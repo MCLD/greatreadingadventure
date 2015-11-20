@@ -66,9 +66,9 @@ namespace GRA.SRP.Challenges {
 
             if(bl == null) {
                 challengeDetails.Visible = false;
-                Session[SessionKey.PatronMessage] = "Could not find details on that Challenge.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                new SessionTools(Session).AlertPatron("Could not find details on that Challenge.",
+                    PatronMessageLevels.Warning,
+                    "exclamation-sign");
             } else {
 
                 challengeTitle.Text = bl.ListName;
@@ -150,13 +150,13 @@ namespace GRA.SRP.Challenges {
                 }
             }
 
-            Session[SessionKey.PatronMessage] = "Your progress has been saved!";
-            Session[SessionKey.PatronMessageGlyphicon] = "check";
+            new SessionTools(Session).AlertPatron("Your progress has been saved!",
+                glyphicon: "check");
 
             // read the entire book list!  Award points and badges 
             if((neeedCount == 0 && onlyCheckedBoxes) || (neeedCount <= readCount)) {
-                Session[SessionKey.PatronMessage] = "Good work, you've completed a Challenge!";
-                Session[SessionKey.PatronMessageGlyphicon] = "star";
+                new SessionTools(Session).AlertPatron("Good work, you've completed a Challenge!",
+                    glyphicon: "star");
 
                 var bl = BookList.FetchObject(selBLI);
 
@@ -165,15 +165,14 @@ namespace GRA.SRP.Challenges {
                 }
 
                 if(bl.AwardBadgeID != 0 || bl.AwardPoints != 0) {
-                    Session[SessionKey.PatronMessage] = "Congratulations, you completed a Challenge and were awarded a badge!";
-                    Session[SessionKey.PatronMessageGlyphicon] = "certificate";
-
+                    new SessionTools(Session).AlertPatron("Congratulations, you completed a Challenge and were awarded a badge!",
+                        glyphicon: "certificate");
 
                     var pa = new AwardPoints(((Patron)Session["Patron"]).PID);
                     var sBadges = pa.AwardPointsToPatron(bl.AwardPoints, PointAwardReason.BookListCompletion,
                                                             bookListID: bl.BLID);
                     if(sBadges.Length > 0) {
-                        Session[SessionKey.EarnedBadges] = sBadges;
+                        new SessionTools(Session).EarnedBadges(sBadges);
                     }
                 }
             }

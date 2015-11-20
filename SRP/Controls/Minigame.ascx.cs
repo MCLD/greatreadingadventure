@@ -374,7 +374,7 @@ namespace GRA.SRP.Controls
             var pa = new AwardPoints(int.Parse(PID.Text));
             var sBadges = pa.AwardPointsToPatron(mg.NumberPoints, PointAwardReason.MiniGameCompletion, mg.MGID);
             if (sBadges.Length > 0) {
-                Session[SessionKey.EarnedBadges] = sBadges;
+                new SessionTools(Session).EarnedBadges(sBadges);
             }
             
 

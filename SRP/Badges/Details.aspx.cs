@@ -101,9 +101,9 @@ namespace GRA.SRP.Badges {
                         Content = "noindex"
                     });
                 }
-                Session[SessionKey.PatronMessage] = "Could not find details on that badge.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                new SessionTools(Session).AlertPatron("Could not find details on that badge.",
+                    PatronMessageLevels.Warning,
+                    "exclamation-sign");
             }
         }
     }

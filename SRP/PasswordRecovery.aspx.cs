@@ -97,7 +97,7 @@ namespace GRA.SRP {
                                        body.ToString().FormatWith(values));
 
 
-                new PatronSession(Session).Establish(user);
+                new SessionTools(Session).EstablishPatron(user);
 
                 Session[SessionKey.PatronMessageGlyphicon] = "ok";
                 Session[SessionKey.PatronMessage] = "Your password has been reset!";

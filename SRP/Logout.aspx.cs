@@ -19,7 +19,7 @@ namespace GRA.SRP {
                 }
             }
 
-            new PatronSession(Session).Clear();
+            new SessionTools(Session).ClearPatron();
             Session.Abandon();
             if(Request.Cookies["ASP.NET_SessionId"] != null) {
                 Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);

@@ -22,8 +22,10 @@ namespace GRA.SRP.Controls {
                 return customFields;
             }
         }
+        protected string SaveButtonText { get; set; }
 
         protected void Page_Load(object sender, EventArgs e) {
+            var basePage = (BaseSRPPage)Page;
             if(!IsPostBack) {
                 if(string.IsNullOrEmpty(Request["SA"])
                    && (Session["SA"] == null || string.IsNullOrEmpty(Session["SA"].ToString()))) {
@@ -66,8 +68,9 @@ namespace GRA.SRP.Controls {
                 rptr.DataSource = ds;
                 rptr.DataBind();
 
-                ((BaseSRPPage)Page).TranslateStrings(rptr);
+                basePage.TranslateStrings(rptr);
             }
+            this.SaveButtonText = basePage.GetResourceString("myaccount-save");
         }
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
@@ -251,10 +254,10 @@ namespace GRA.SRP.Controls {
                     patron.Update();
 
                     // update patron session for things like MasterAcctPID and IsMasterAccount
-                    new PatronSession(Session).Establish(patron);
+                    new SessionTools(Session).EstablishPatron(patron);
 
-                    Session[SessionKey.PatronMessage] = "Your family member has been added!";
-                    Session[SessionKey.PatronMessageGlyphicon] = "check";
+                    new SessionTools(Session).AlertPatron("Your family member has been added!",
+                        glyphicon: "check");
 
                 } else {
                     StringBuilder message = new StringBuilder("<strong>");
@@ -263,18 +266,18 @@ namespace GRA.SRP.Controls {
                         message.AppendFormat("<li>{0}</li>", m.ErrorMessage);
                     }
                     message.Append("</ul></strong>");
-                    Session[SessionKey.PatronMessage] = message.ToString();
-                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                    Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                    new SessionTools(Session).AlertPatron(message.ToString(),
+                        PatronMessageLevels.Warning,
+                        "exclamation-sign");
                     return false;
                 }
             } catch(Exception ex) {
                 this.Log().Error(string.Format("An exception was thrown adding a family member: {0}",
                                                ex.Message));
-                Session[SessionKey.PatronMessage] = string.Format("<strong>{0}</strong>",
-                                                                  ex.Message);
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                new SessionTools(Session).AlertPatron(string.Format("<strong>{0}</strong>",
+                                                      ex.Message),
+                    PatronMessageLevels.Warning,
+                    "exclamation-sign");
                 return false;
             }
             return true;

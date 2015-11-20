@@ -65,7 +65,7 @@ namespace GRA.SRP.Classes {
                     lbMessage.Text = "Processing your password reset request, you should receive an email soon.";
                 }
 
-                new PatronSession(Session).Clear();
+                new SessionTools(Session).ClearPatron();
             }
         }
     }

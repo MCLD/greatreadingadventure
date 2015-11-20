@@ -1383,7 +1383,7 @@
     <Compile Include="Code\ControlRoom\RibbonLink.cs" />
     <Compile Include="Code\ControlRoom\SRPTopMenuItem.cs" />
     <Compile Include="Code\ControlRoom\StandardModuleRibbons.cs" />
-    <Compile Include="Code\PatronSession.cs" />
+    <Compile Include="Code\SessionTools.cs" />
     <Compile Include="ControlRoom\AJAX.master.cs">
       <DependentUpon>AJAX.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

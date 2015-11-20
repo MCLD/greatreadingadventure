@@ -183,7 +183,7 @@ namespace GRA.SRP {
             var earnedBadges = Session[SessionKey.EarnedBadges];
             if(earnedBadges != null) {
                 this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
-                Session.Remove(SessionKey.EarnedBadges);
+                new SessionTools(Session).ClearEarnedBadges();
             }
         }
 
@@ -306,7 +306,7 @@ namespace GRA.SRP {
                         bp.ProgID = progID;
                         bp.Update();
                     }
-                    new PatronSession(Session).Establish(bp);
+                    new SessionTools(Session).EstablishPatron(bp);
 
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();

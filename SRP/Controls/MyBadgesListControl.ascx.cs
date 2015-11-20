@@ -13,13 +13,18 @@ namespace GRA.SRP.Controls {
 
         protected string BadgeClass { get; set; }
 
+        protected void Page_PreRender(object sender, EventArgs e) {
+            if(Session[SessionKey.RefreshBadgeList] != null) {
+                RenderBadges();
+                new SessionTools(Session).ClearRefreshBadgeList();
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e) {
             int badgeCount = 0;
+
             if(!IsPostBack) {
-                var ds = DAL.PatronBadges.GetAll(((Patron)Session["Patron"]).PID);
-                rptr.DataSource = ds;
-                rptr.DataBind();
-                badgeCount = ds.Tables[0].Rows.Count;
+                RenderBadges();
             } else {
                 var badgeCountObj = ViewState["BadgeCount"];
                 if(!(badgeCountObj != null
@@ -27,8 +32,20 @@ namespace GRA.SRP.Controls {
                     // if we don't have a count, format for 3
                     badgeCount = 3;
                 }
+                FixBootstrapClasses(badgeCount);
             }
+        }
 
+        protected void RenderBadges() {
+            var ds = DAL.PatronBadges.GetAll(((Patron)Session["Patron"]).PID);
+            rptr.DataSource = ds;
+            rptr.DataBind();
+            var badgeCount = ds.Tables[0].Rows.Count;
+            FixBootstrapClasses(badgeCount);
+            ViewState["BadgeCount"] = badgeCount;
+        }
+
+        protected void FixBootstrapClasses(int badgeCount) {
             NoBadges.Visible = (badgeCount == 0);
             if(badgeCount == 1) {
                 this.BadgeClass = "col-xs-6 col-xs-offset-3 col-md-4 col-md-offset-4";
@@ -37,7 +54,6 @@ namespace GRA.SRP.Controls {
             } else {
                 this.BadgeClass = "col-xs-6 col-md-4";
             }
-            ViewState["BadgeCount"] = badgeCount;
         }
     }
 }

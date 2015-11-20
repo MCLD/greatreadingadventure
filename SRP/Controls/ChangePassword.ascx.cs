@@ -19,9 +19,8 @@ namespace GRA.SRP.Classes {
                 if(!(string.IsNullOrEmpty(NPassword.Text.Trim()))) {
                     var patron = (Patron)Session["Patron"];
                     if(!Patron.VerifyPassword(patron.Username, CPass.Text.Trim())) {
-                        Session[SessionKey.PatronMessage] = "That's not your current password, please try entering your current password again.";
-                        Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                        Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                        new SessionTools(Session).AlertPatron("That's not your current password, please try entering your current password again.",
+                            PatronMessageLevels.Danger, "remove");
 
                         CPass.Attributes.Add("Value", CPass.Text);
                         NPassword.Attributes.Add("Value", NPassword.Text);
@@ -30,9 +29,8 @@ namespace GRA.SRP.Classes {
                     }
 
                     if(NPassword.Text.Trim() != NPasswordR.Text.Trim()) {
-                        Session[SessionKey.PatronMessage] = "New password and new password validation do not match.";
-                        Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                        Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                        new SessionTools(Session).AlertPatron("New password and new password validation do not match.",
+                            PatronMessageLevels.Danger, "remove");
                         CPass.Attributes.Add("Value", CPass.Text);
                         NPassword.Attributes.Add("Value", NPassword.Text);
                         NPasswordR.Attributes.Add("Value", NPasswordR.Text);
@@ -41,15 +39,16 @@ namespace GRA.SRP.Classes {
                     patron.NewPassword = NPassword.Text.Trim();
                     patron.Update();
 
-                    Session["PatronLoggedIn"] = true;
-                    Session["Patron"] = patron;
-                    Session["ProgramID"] = patron.ProgID;
-                    Session["PatronProgramID"] = patron.ProgID;
-                    Session["CurrentProgramID"] = patron.ProgID;
+                    var st = new SessionTools(Session);
 
+                    st.EstablishPatron(patron);
+                    //Session["PatronLoggedIn"] = true;
+                    //Session["Patron"] = patron;
+                    //Session["ProgramID"] = patron.ProgID;
+                    //Session["PatronProgramID"] = patron.ProgID;
+                    //Session["CurrentProgramID"] = patron.ProgID;
 
-                    Session[SessionKey.PatronMessage] = "Your password has been updated!";
-                    Session[SessionKey.PatronMessageGlyphicon] = "check";
+                    st.AlertPatron("Your password has been updated!", glyphicon: "check");
                     Response.Redirect("~/Account/");
                 }
             }
