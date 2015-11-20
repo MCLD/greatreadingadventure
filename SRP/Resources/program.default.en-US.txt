@@ -56,14 +56,12 @@ FamPwdResetForm button2=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Family List
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-FamAccts Title=Family Members List
-FamAccts List=Family Members
-FamAccts Manage Account=Manage Account
-FamAccts Change Password=Change Password
-FamAccts Log=Enter Activity
-FamAccts Impersonate Instructions=If you are the parent, and have created family accounts for the other members of your family, then you can switch back and forth between the various accounts without logging in separately.  To log into another family account linke to your parent account, select it from the accounts drop down list and click the "Go" button.
-FamAccts Impersonate Go=Go
-FamAccts Impersonate Cancel=Cancel
+family-list-title=Family Members List
+family-list-members=Family Members
+family-list-manage=Manage
+family-list-password=Change Password
+family-list-login=Login as
+family-list-log=Enter activity
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

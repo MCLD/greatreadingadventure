@@ -13,15 +13,6 @@ namespace GRA.SRP {
     public partial class FamilyAccounts {
         
         /// <summary>
-        /// ProgramBanner1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Classes.ProgramBanner ProgramBanner1;
-        
-        /// <summary>
         /// FamilyList1 control.
         /// </summary>
         /// <remarks>

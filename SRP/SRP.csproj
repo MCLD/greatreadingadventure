@@ -118,8 +118,8 @@
     <Content Include="Blank.aspx" />
     <Content Include="Challenges\Default.aspx" />
     <Content Include="Challenges\Details.aspx" />
-    <Content Include="ChangeFamMemberAct.aspx" />
-    <Content Include="ChangeFamMemberPwd.aspx" />
+    <Content Include="Account\ChangeFamMemberAct.aspx" />
+    <Content Include="Account\ChangeFamMemberPwd.aspx" />
     <Content Include="Account\ChangePassword.aspx" />
     <Content Include="ckeditor\adapters\jquery.js" />
     <Content Include="ckeditor\CHANGES.html" />
@@ -800,7 +800,7 @@
     <Content Include="CSS\Program\3.css" />
     <Content Include="CSS\Program\4.css" />
     <Content Include="CSS\Program\Default.css" />
-    <Content Include="EnterFamMemberLog.aspx" />
+    <Content Include="Account\EnterFamMemberLog.aspx" />
     <Content Include="Events\Default.aspx" />
     <Content Include="Account\FamilyAccountList.aspx" />
     <Content Include="Events\Details.aspx" />
@@ -1351,18 +1351,18 @@
     <Compile Include="Challenges\Details.aspx.designer.cs">
       <DependentUpon>Details.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ChangeFamMemberAct.aspx.cs">
+    <Compile Include="Account\ChangeFamMemberAct.aspx.cs">
       <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ChangeFamMemberAct.aspx.designer.cs">
+    <Compile Include="Account\ChangeFamMemberAct.aspx.designer.cs">
       <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ChangeFamMemberPwd.aspx.cs">
+    <Compile Include="Account\ChangeFamMemberPwd.aspx.cs">
       <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ChangeFamMemberPwd.aspx.designer.cs">
+    <Compile Include="Account\ChangeFamMemberPwd.aspx.designer.cs">
       <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\ChangePassword.aspx.cs">
@@ -2813,11 +2813,11 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="EnterFamMemberLog.aspx.cs">
+    <Compile Include="Account\EnterFamMemberLog.aspx.cs">
       <DependentUpon>EnterFamMemberLog.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="EnterFamMemberLog.aspx.designer.cs">
+    <Compile Include="Account\EnterFamMemberLog.aspx.designer.cs">
       <DependentUpon>EnterFamMemberLog.aspx</DependentUpon>
     </Compile>
     <Compile Include="Events\Default.aspx.cs">
