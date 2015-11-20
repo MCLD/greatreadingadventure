@@ -112,20 +112,19 @@ namespace GRA.SRP.Controls
                     p.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("LiteracyLevel1")).Text);
                     p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("LiteracyLevel2")).Text);
 
-                    var cr = this.CustomFields;
-                    p.Custom1 = string.IsNullOrEmpty(cr.DDValues1)
+                    p.Custom1 = string.IsNullOrEmpty(this.CustomFields.DDValues1)
                         ? ((TextBox)(e.Item).FindControl("Custom1")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom1DD")).SelectedValue;
-                    p.Custom2 = string.IsNullOrEmpty(cr.DDValues2)
+                    p.Custom2 = string.IsNullOrEmpty(this.CustomFields.DDValues2)
                         ? ((TextBox)(e.Item).FindControl("Custom2")).Text 
                         : ((DropDownList)(e.Item).FindControl("Custom2DD")).SelectedValue;
-                    p.Custom3 = string.IsNullOrEmpty(cr.DDValues3)
+                    p.Custom3 = string.IsNullOrEmpty(this.CustomFields.DDValues3)
                         ? ((TextBox)(e.Item).FindControl("Custom3")).Text 
                         : ((DropDownList)(e.Item).FindControl("Custom3DD")).SelectedValue;
-                    p.Custom4 = string.IsNullOrEmpty(cr.DDValues4)
+                    p.Custom4 = string.IsNullOrEmpty(this.CustomFields.DDValues4)
                         ? ((TextBox)(e.Item).FindControl("Custom4")).Text 
                         : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
-                    p.Custom5 = string.IsNullOrEmpty(cr.DDValues5)
+                    p.Custom5 = string.IsNullOrEmpty(this.CustomFields.DDValues5)
                         ? ((TextBox)(e.Item).FindControl("Custom5")).Text 
                         : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
                     
@@ -259,29 +258,29 @@ namespace GRA.SRP.Controls
 
 
             var registrationHelper = new RegistrationHelper();
-            if(!string.IsNullOrEmpty(this.customFields.DDValues1)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues1));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues1)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues1));
                 registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues2)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues2));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues2)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues2));
                 registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues3)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues3));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues3)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues3));
                 registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues4)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues4));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues4)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues4));
                 registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues5)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues5));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues5)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
                 registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
             }
         }
 
-        protected bool CanAddChildAccounts(string dob, string age)
+        protected bool CanAddFamilyAccounts(string dob, string age)
         {
             var actualAge = 0;
             int.TryParse(age, out actualAge);

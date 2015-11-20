@@ -22,7 +22,9 @@
 <asp:TextBox ID="sdistrict" runat="server" Visible="false" Text="0"></asp:TextBox>
 <asp:TextBox ID="grade" runat="server" Visible="false" Text="0"></asp:TextBox>
 <asp:TextBox ID="age" runat="server" Visible="false" Text="0"></asp:TextBox>
-
+<asp:TextBox ID="parentGuardianFirst" runat="server" Visible="false" Text=""></asp:TextBox>
+<asp:TextBox ID="parentGuardianMiddle" runat="server" Visible="false" Text=""></asp:TextBox>
+<asp:TextBox ID="parentGuardianLast" runat="server" Visible="false" Text=""></asp:TextBox>
 
 <asp:Panel runat="server" class="panel panel-default" DefaultButton="btnNext">
     <div class="panel-heading">
@@ -60,7 +62,7 @@
 
                             <div class="col-sm-6">
                                 <asp:TextBox ID="SchoolGrade" runat="server" CssClass="form-control"
-                                    OnTextChanged="SchoolGrade_TextChanged"></asp:TextBox>
+></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolGrade_Req") %>'
@@ -177,7 +179,7 @@
                                 <asp:Label runat="server" Text="registration-form-name-middle"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("MiddleName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("MiddleName_Req") %>'
@@ -191,7 +193,7 @@
                                 <asp:Label runat="server" Text="registration-form-name-last"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="LastName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("LastName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="LastName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LastName_Req") %>'
@@ -206,7 +208,6 @@
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="Gender" runat="server" CssClass="form-control"
-                                    Enabled='<%# (bool)Eval("Gender_Prompt") %>'
                                     AppendDataBoundItems="True">
                                     <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                                     <asp:ListItem Value="M" Text="Male"></asp:ListItem>
@@ -226,7 +227,7 @@
                                 <asp:Label runat="server" Text="registration-form-email"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("EmailAddress_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("EmailAddress_Req") %>'
@@ -243,7 +244,7 @@
                                 <asp:Label runat="server" Text="registration-form-phone"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("PhoneNumber_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PhoneNumber_Req") %>'
@@ -261,7 +262,7 @@
                                 <asp:Label runat="server" Text="registration-form-address1"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("StreetAddress1_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress1_Req") %>'
@@ -275,7 +276,7 @@
                                 <asp:Label runat="server" Text="registration-form-address2"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("StreetAddress2_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress2_Req") %>'
@@ -289,7 +290,7 @@
                                 <asp:Label runat="server" Text="registration-form-city"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="City" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("City_Prompt") %>' OnTextChanged="City_TextChanged"></asp:TextBox>
+                                <asp:TextBox ID="City" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("City_Req") %>'
@@ -303,7 +304,7 @@
                                 <asp:Label runat="server" Text="registration-form-state"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="State" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("State_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="State" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("State_Req") %>'
@@ -317,7 +318,7 @@
                                 <asp:Label runat="server" Text="registration-form-zip"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("ZipCode_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ZipCode_Req") %>'
@@ -335,7 +336,7 @@
                                 <asp:Label runat="server" Text="registration-form-country"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="Country" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("Country_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="Country" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Country_Req") %>'
@@ -349,7 +350,7 @@
                                 <asp:Label runat="server" Text="registration-form-county"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="County" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("County_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="County" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("County_Req") %>'
@@ -369,7 +370,7 @@
                                 <asp:Label runat="server" Text="registration-form-guardian-name-first"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("ParentGuardianFirstName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianFirstName_Req") %>'
@@ -383,7 +384,7 @@
                                 <asp:Label runat="server" Text="registration-form-guardian-name-middle"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("ParentGuardianMiddleName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianMiddleName_Req") %>'
@@ -396,7 +397,7 @@
                                 <asp:Label runat="server" Text="registration-form-guardian-name-last"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("ParentGuardianLastName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianLastName_Req") %>'
@@ -440,8 +441,7 @@
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
-                                    AppendDataBoundItems="True" CssClass="form-control"
-                                    Enabled='<%# (bool)Eval("PrimaryLibrary_Prompt") %>'>
+                                    AppendDataBoundItems="True" CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
                             </div>
@@ -460,7 +460,7 @@
                                 <asp:Label runat="server" Text="registration-form-library-card"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("LibraryCard_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LibraryCard_Req") %>'
@@ -497,8 +497,7 @@
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
-                                    AppendDataBoundItems="True"
-                                    Enabled='<%# (bool)Eval("SchoolType_Prompt") %>' CssClass="form-control"
+                                    AppendDataBoundItems="True" CssClass="form-control"
                                     AutoPostBack="true"
                                     OnSelectedIndexChanged="SchoolType_SelectedIndexChanged">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
@@ -540,7 +539,7 @@
                                 <asp:Label runat="server" Text="registration-form-teacher"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="Teacher" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("Teacher_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="Teacher" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Teacher_Req") %>'
@@ -554,7 +553,7 @@
                                 <asp:Label runat="server" Text="registration-form-group"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control" Enabled='<%# (bool)Eval("GroupTeamName_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("GroupTeamName_Req") %>'
@@ -568,8 +567,7 @@
                                 <%# Eval("Literacy1Label")%>:
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="LiteracyLevel1" runat="server" CssClass="form-control"
-                                    Enabled='<%# (bool)Eval("LiteracyLevel1_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="LiteracyLevel1" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel1_Req") %>'
@@ -605,8 +603,7 @@
                                 <%# Eval("Literacy2Label")%>:
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="LiteracyLevel2" runat="server" CssClass="form-control"
-                                    Enabled='<%# (bool)Eval("LiteracyLevel2_Prompt") %>'></asp:TextBox>
+                                <asp:TextBox ID="LiteracyLevel2" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel2_Req") %>'

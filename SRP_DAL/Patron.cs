@@ -621,9 +621,9 @@ namespace GRA.SRP.DAL {
             arrParams[49] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode()));
             arrParams[50] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode()));
             arrParams[51] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, this.FldText1.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, this.FldText2.GetTypeCode()));
-            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, string.Empty.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, string.Empty.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, string.Empty.GetTypeCode()));
 
 
             arrParams[55] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1, this.Score1.GetTypeCode()));
@@ -767,13 +767,11 @@ namespace GRA.SRP.DAL {
         protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
             // Remove any old error Codes
             ClearErrorCodes();
-
-            ClearErrorCodes();
             if(validationMode == BusinessRulesValidationMode.INSERT) {
                 Patron obj = GetObjectByUsername(Username);
                 if(obj != null) {
                     AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "The Username you have chosen is already in use.  Please select a different Username.",
-                                                                    BusinessRulesValidationCode.UNSPECIFIED));
+                      BusinessRulesValidationCode.UNSPECIFIED));
                 }
             }
             return (ErrorCodes.Count == 0);

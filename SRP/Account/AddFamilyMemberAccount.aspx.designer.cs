@@ -10,15 +10,15 @@
 namespace GRA.SRP {
     
     
-    public partial class AddChildAccount {
+    public partial class AddFamilyMemberAccount {
         
         /// <summary>
-        /// AddChildCtl1 control.
+        /// AddFamilyMemberControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.AddChildCtl AddChildCtl1;
+        protected global::GRA.SRP.Controls.AddFamilyMemberControl AddFamilyMemberControl;
     }
 }

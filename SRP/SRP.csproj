@@ -106,8 +106,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Account\AddFamilyMemberAccount.aspx" />
     <Content Include="ActivityHistory.aspx" />
-    <Content Include="Account\AddChildAccount.aspx" />
     <Content Include="AddlSurvey.aspx" />
     <Content Include="App_Themes\Default\blue_bg.png" />
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
@@ -750,7 +750,7 @@
     <Content Include="ControlRoom\Styles\AdminInterfaceNonIE.css" />
     <Content Include="ControlRoom\UnsecuredControl.Master" />
     <Content Include="Controls\ActivityHistCtl.ascx" />
-    <Content Include="Controls\AddChildCtl.ascx" />
+    <Content Include="Controls\AddFamilyMemberControl.ascx" />
     <Content Include="Controls\AudioUploadCtl.ascx" />
     <Content Include="Controls\Avatar.ascx" />
     <Content Include="Controls\BadgeAwardCtl.ascx" />
@@ -1295,19 +1295,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\AddFamilyMemberAccount.aspx.cs">
+      <DependentUpon>AddFamilyMemberAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddFamilyMemberAccount.aspx.designer.cs">
+      <DependentUpon>AddFamilyMemberAccount.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ActivityHistory.aspx.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ActivityHistory.aspx.designer.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Account\AddChildAccount.aspx.cs">
-      <DependentUpon>AddChildAccount.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Account\AddChildAccount.aspx.designer.cs">
-      <DependentUpon>AddChildAccount.aspx</DependentUpon>
     </Compile>
     <Compile Include="AddlSurvey.aspx.cs">
       <DependentUpon>AddlSurvey.aspx</DependentUpon>
@@ -2487,12 +2487,12 @@
     <Compile Include="Controls\ActivityHistCtl.ascx.designer.cs">
       <DependentUpon>ActivityHistCtl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AddChildCtl.ascx.cs">
-      <DependentUpon>AddChildCtl.ascx</DependentUpon>
+    <Compile Include="Controls\AddFamilyMemberControl.ascx.cs">
+      <DependentUpon>AddFamilyMemberControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Controls\AddChildCtl.ascx.designer.cs">
-      <DependentUpon>AddChildCtl.ascx</DependentUpon>
+    <Compile Include="Controls\AddFamilyMemberControl.ascx.designer.cs">
+      <DependentUpon>AddFamilyMemberControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\AudioUploadCtl.ascx.cs">
       <DependentUpon>AudioUploadCtl.ascx</DependentUpon>

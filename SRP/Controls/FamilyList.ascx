@@ -12,9 +12,9 @@
         <asp:HyperLink CausesValidation="false"
             CssClass="btn btn-default"
             runat="server"
-            NavigateUrl="~/Account/AddChildAccount.aspx">
+            NavigateUrl="~/Account/AddFamilyMemberAccount.aspx">
             <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
-            <asp:Label runat="server" Text="myaccount-add-child"></asp:Label>
+            <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
         </asp:HyperLink>
     </div>
 </div>

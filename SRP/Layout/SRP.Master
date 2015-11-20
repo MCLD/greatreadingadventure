@@ -178,7 +178,7 @@
                             <a href="~/Recover.aspx" runat="server" class="btn btn-default"
                                 id="loginPopupRecoverButton">
                                 <asp:Label runat="server" Text="loginform-recover" /></a>
-                            <a href="~/Register.aspx" runat="server" class="btn btn-default"
+                            <a href="~/Register.aspx" runat="server" class="btn btn-info"
                                 id="loginPopupRegisterButton">
                                 <asp:Label runat="server" Text="loginform-register" /></a>
                             <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"

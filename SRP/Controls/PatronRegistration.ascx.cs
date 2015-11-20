@@ -31,37 +31,34 @@ namespace GRA.SRP.Controls {
         }
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
-                rptr.DataSource = RegistrationSettings.GetAll();
+                var dataSource = RegistrationSettings.GetAll();
+                rptr.DataSource = dataSource;
                 rptr.DataBind();
 
                 ((BaseSRPPage)Page).TranslateStrings(rptr);
             }
         }
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
-
-        }
-
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e) {
             var registrationHelper = new RegistrationHelper();
-            if(!string.IsNullOrEmpty(this.customFields.DDValues1)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues1));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues1)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues1));
                 registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues2)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues2));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues2)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues2));
                 registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues3)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues3));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues3)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues3));
                 registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues4)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues4));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues4)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues4));
                 registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.customFields.DDValues5)) {
-                var codes = Codes.GetAlByTypeID(int.Parse(this.customFields.DDValues5));
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues5)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
                 registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
             }
         }
@@ -312,20 +309,25 @@ namespace GRA.SRP.Controls {
                 RegisteringFamily.Text = "1";
                 RegistrationAge.Text = "0";
 
-                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("Age")).Text = string.Empty;
-                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = string.Empty;
-                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianFirstName")).Text = parentGuardianFirst.Text;
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianMiddleName")).Text = parentGuardianMiddle.Text;
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianLastName")).Text = parentGuardianLast.Text;
+
                 ((TextBox)rptr.Items[0].FindControl("Username")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("Password")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("Password")).Attributes.Add("Value", string.Empty);
                 ((TextBox)rptr.Items[0].FindControl("Password2")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("Password2")).Attributes.Add("Value", string.Empty);
+                ((TextBox)rptr.Items[0].FindControl("Age")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LastName")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;
             }
             // Finished Current Step = 9 
 
@@ -615,20 +617,15 @@ namespace GRA.SRP.Controls {
                         Session[SessionKey.EarnedBadges] = earnedBadges;
                     }
 
+                    if(p.IsMasterAccount) {
+                        parentGuardianFirst.Text = p.FirstName;
+                        parentGuardianMiddle.Text = p.MiddleName;
+                        parentGuardianLast.Text = p.LastName;
+                    }
+
                     if(registeringMasterAccount) {
                         MasterPID.Text = p.PID.ToString();
-                        Session["PatronLoggedIn"] = true;
-                        Session["Patron"] = p;
-                        Session["ProgramID"] = p.ProgID;
-                        Session["PatronProgramID"] = p.ProgID;
-                        Session["CurrentProgramID"] = p.ProgID;
-                        Session["TenantID"] = p.TenID;
-                        Session[SessionKey.IsMasterAccount] = p.IsMasterAccount;
-                        if(p.IsMasterAccount) {
-                            Session["MasterAcctPID"] = p.PID;
-                        } else {
-                            Session["MasterAcctPID"] = 0;
-                        }
+                        new PatronSession(Session).Establish(p);
                     }
                 } else {
                     StringBuilder message = new StringBuilder("<strong>");
