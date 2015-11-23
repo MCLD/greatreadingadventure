@@ -47,7 +47,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <%if(!this.CurrentPage.IsLoggedIn) { %>
-                        <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline"> Badges</span></a></li>
+                        <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li class="<%=this.RegisterPageActive %>"><a href="~/Register.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">RegisterMasterBtn</asp:Label></a></li>
@@ -56,15 +56,15 @@
                         <%} else { %>
                         <li class="<%=this.DashboardPageActive %>"><a href="~/Dashboard.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
                             <span class="glyphicon glyphicon-book"></span>
-                            <span class="visible-xs-inline"> My Dashboard</span></a></li>
+                            <span class="visible-xs-inline">My Dashboard</span></a></li>
                         <li class="<%=this.MailSectionActive %>"><a href="~/Mail/" class="menu-item" id="n" runat="server" data-toggle="tooltip" data-placement="bottom" title="Mail">
                             <span class="glyphicon glyphicon-envelope" runat="server" id="nIcon"></span>
-                            <span class="visible-xs-inline"> Notifications</span>
+                            <span class="visible-xs-inline">Notifications</span>
                             <% if(!string.IsNullOrEmpty(this.Unread) && this.Unread != "0") { %>
                             <span id="unreadBadge" runat="server" class="label label-primary label-as-badge text-primary"><% =this.Unread %></span>
                             <% } %>
                         </a></li>
-                        <li id="badgesNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline"> Badges</span></a></li>
+                        <li id="badgesNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
                         <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
                         <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
                         <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
@@ -72,7 +72,7 @@
 
                         <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server" data-toggle="tooltip" data-placement="bottom" title="My Account">
                             <span class="glyphicon glyphicon-user"></span>
-                            <span class="visible-xs-inline"> My Account</span></a></li>
+                            <span class="visible-xs-inline">My Account</span></a></li>
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">
                             <asp:Label ID="Label2" runat="server">LogoutMasterBtn</asp:Label></a></li>
@@ -207,19 +207,8 @@
         <% if(!string.IsNullOrEmpty(this.UpsellText)) { %>
         <div id="content-below" class="container hidden-print">
             <div class="row">
-                <div class="col-sm-8 col-sm-offset-2 upsell">
-                    <div class="row">
-                        <div class="col-sm-1 text-center">
-                            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                        </div>
-                        <div class="col-sm-10 text-center">
-                            <span class="upsell">
-                                <%=this.UpsellText %></span>
-                        </div>
-                        <div class="col-sm-1 text-center" style="vertical-align: middle;">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-                        </div>
-                    </div>
+                <div class="col-sm-8 col-sm-offset-2 upsell text-center">
+                    <%=this.UpsellText %>
                 </div>
             </div>
         </div>

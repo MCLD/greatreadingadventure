@@ -35,11 +35,6 @@ namespace GRA.SRP.Controls {
                 Response.Redirect("~/Account/ChangeFamMemberPwd.aspx");
 
             }
-            if(e.CommandName == "act") {
-                Session["SA"] = e.CommandArgument.ToString();
-                Response.Redirect("~/Account/ChangeFamMemberAct.aspx");
-
-            }
             if(e.CommandName == "log") {
                 Session["SA"] = e.CommandArgument.ToString();
                 Response.Redirect("~/Account/EnterFamMemberLog.aspx");

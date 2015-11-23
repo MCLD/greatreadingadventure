@@ -1,9 +1,12 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CodeControl.ascx.cs" Inherits="GRA.SRP.Controls.CodeControl" %>
-<asp:Panel runat="server" ID="codeControlPanel" DefaultButton="submitButton">
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FamilyCodeControl.ascx.cs" Inherits="GRA.SRP.Controls.FamilyCodeControl" %>
+<asp:Panel runat="server" ID="familyCodeControlPanel" DefaultButton="submitButton">
     <div class="row">
         <div class="col-xs-12 text-center">
             <span class="lead">
-                <asp:Label runat="server" Text="secret-code-header"></asp:Label></span>
+                <asp:Label runat="server" Text="family-secret-code-header"></asp:Label></span>
+            <br />
+            Logging activity for: <strong>
+                <asp:Label runat="server" ID="lblAccount"></asp:Label></strong>
             <hr style="margin-bottom: 5px !important; margin-top: 5px !important;" />
         </div>
     </div>
@@ -15,7 +18,7 @@
             <div class="col-xs-12">
                 <div class="form-group has-feedback" id="codeControlFormGroup">
                     <label for="codeEntryField" runat="server" cssclass="code-spacing">
-                        <asp:Label runat="server" Text="secret-code-prompt"></asp:Label></label>
+                        <asp:Label runat="server" Text="family-secret-code-prompt"></asp:Label></label>
                     <div class="block-center" style="display: inline-block;">
                         <asp:TextBox ID="codeEntryField"
                             runat="server"
@@ -26,7 +29,7 @@
                     <asp:LinkButton runat="server"
                         CssClass="btn btn-default btn-sm btn-success code-submit"
                         data-loading-text="Submitting..."
-                        Text="secret-code-submit"
+                        Text="family-secret-code-submit"
                         ID="submitButton"
                         OnClientClick="return ValidateCodeEntry();"
                         OnClick="submitButton_Click"></asp:LinkButton>

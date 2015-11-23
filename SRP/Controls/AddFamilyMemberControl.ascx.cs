@@ -60,7 +60,6 @@ namespace GRA.SRP.Controls {
                 ds.Tables[0].Rows[0]["ProgID"] = 0;
                 ds.Tables[0].Rows[0]["FirstName"] = string.Empty;
                 ds.Tables[0].Rows[0]["MiddleName"] = string.Empty;
-                ds.Tables[0].Rows[0]["LastName"] = string.Empty;
                 ds.Tables[0].Rows[0]["Gender"] = string.Empty;
                 ds.Tables[0].Rows[0]["LiteracyLevel1"] = 0;
                 ds.Tables[0].Rows[0]["LiteracyLevel2"] = 0;
@@ -160,83 +159,83 @@ namespace GRA.SRP.Controls {
                         p.DOB = _d;
                 }
 
-                p.Age = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("Age")).Text);
+                p.Age = FormatHelper.SafeToInt(((TextBox)rptr.Items[0].FindControl("Age")).Text);
 
-                p.ProgID = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("ProgID")).SelectedValue);
-                p.Username = ((TextBox)(rptr.Items[0]).FindControl("Username")).Text;
-                p.NewPassword = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
+                p.ProgID = FormatHelper.SafeToInt(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
+                p.Username = ((TextBox)rptr.Items[0].FindControl("Username")).Text;
+                p.NewPassword = ((TextBox)rptr.Items[0].FindControl("Password")).Text;
 
                 p.IsMasterAccount = false;
                 p.MasterAcctPID = patron.PID;
 
-                p.SchoolGrade = ((TextBox)(rptr.Items[0]).FindControl("SchoolGrade")).Text;
-                p.FirstName = ((TextBox)(rptr.Items[0]).FindControl("FirstName")).Text;
-                p.MiddleName = ((TextBox)(rptr.Items[0]).FindControl("MiddleName")).Text;
-                p.LastName = ((TextBox)(rptr.Items[0]).FindControl("LastName")).Text;
-                p.Gender = ((DropDownList)(rptr.Items[0]).FindControl("Gender")).SelectedValue;
-                p.EmailAddress = ((TextBox)(rptr.Items[0]).FindControl("EmailAddress")).Text;
-                p.PhoneNumber = ((TextBox)(rptr.Items[0]).FindControl("PhoneNumber")).Text;
+                p.SchoolGrade = ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text;
+                p.FirstName = ((TextBox)rptr.Items[0].FindControl("FirstName")).Text;
+                p.MiddleName = ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text;
+                p.LastName = ((TextBox)rptr.Items[0].FindControl("LastName")).Text;
+                p.Gender = ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue;
+                p.EmailAddress = ((TextBox)rptr.Items[0].FindControl("EmailAddress")).Text;
+                p.PhoneNumber = ((TextBox)rptr.Items[0].FindControl("PhoneNumber")).Text;
                 p.PhoneNumber = FormatHelper.FormatPhoneNumber(p.PhoneNumber);
-                p.StreetAddress1 = ((TextBox)(rptr.Items[0]).FindControl("StreetAddress1")).Text;
-                p.StreetAddress2 = ((TextBox)(rptr.Items[0]).FindControl("StreetAddress2")).Text;
-                p.City = ((TextBox)(rptr.Items[0]).FindControl("City")).Text;
-                p.State = ((TextBox)(rptr.Items[0]).FindControl("State")).Text;
-                p.ZipCode = ((TextBox)(rptr.Items[0]).FindControl("ZipCode")).Text;
+                p.StreetAddress1 = ((TextBox)rptr.Items[0].FindControl("StreetAddress1")).Text;
+                p.StreetAddress2 = ((TextBox)rptr.Items[0].FindControl("StreetAddress2")).Text;
+                p.City = ((TextBox)rptr.Items[0].FindControl("City")).Text;
+                p.State = ((TextBox)rptr.Items[0].FindControl("State")).Text;
+                p.ZipCode = ((TextBox)rptr.Items[0].FindControl("ZipCode")).Text;
                 p.ZipCode = FormatHelper.FormatZipCode(p.ZipCode);
 
-                p.Country = ((TextBox)(rptr.Items[0]).FindControl("Country")).Text;
-                p.County = ((TextBox)(rptr.Items[0]).FindControl("County")).Text;
-                p.ParentGuardianFirstName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianFirstName")).Text;
-                p.ParentGuardianLastName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianLastName")).Text;
-                p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
-                p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
+                p.Country = ((TextBox)rptr.Items[0].FindControl("Country")).Text;
+                p.County = ((TextBox)rptr.Items[0].FindControl("County")).Text;
+                p.ParentGuardianFirstName = ((TextBox)rptr.Items[0].FindControl("ParentGuardianFirstName")).Text;
+                p.ParentGuardianLastName = ((TextBox)rptr.Items[0].FindControl("ParentGuardianLastName")).Text;
+                p.ParentGuardianMiddleName = ((TextBox)rptr.Items[0].FindControl("ParentGuardianMiddleName")).Text;
+                p.LibraryCard = ((TextBox)rptr.Items[0].FindControl("LibraryCard")).Text;
 
-                //p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
-                //p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
+                //p.District = ((DropDownList)rptr.Items[0].FindControl("District")).SelectedValue;
+                //p.SDistrict = ((DropDownList)rptr.Items[0].FindControl("SDistrict")).SelectedValue.SafeToInt();
 
-                p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);
-                p.SchoolName = ((DropDownList)(rptr.Items[0]).FindControl("SchoolName")).SelectedValue;
-                p.SchoolType = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue);
+                p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)rptr.Items[0].FindControl("PrimaryLibrary")).SelectedValue);
+                p.SchoolName = ((DropDownList)rptr.Items[0].FindControl("SchoolName")).SelectedValue;
+                p.SchoolType = FormatHelper.SafeToInt(((DropDownList)rptr.Items[0].FindControl("SchoolType")).SelectedValue);
 
                 var lc = LibraryCrosswalk.FetchObjectByLibraryID(p.PrimaryLibrary);
                 if(lc != null) {
-                    p.District = lc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue : lc.DistrictID.ToString();
+                    p.District = lc.DistrictID == 0 ? ((DropDownList)rptr.Items[0].FindControl("District")).SelectedValue : lc.DistrictID.ToString();
                 } else {
-                    p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
+                    p.District = ((DropDownList)rptr.Items[0].FindControl("District")).SelectedValue;
                 }
                 var sc = SchoolCrosswalk.FetchObjectBySchoolID(p.SchoolName.SafeToInt());
                 if(sc != null) {
-                    p.SDistrict = sc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt() : sc.DistrictID;
-                    p.SchoolType = sc.SchTypeID == 0 ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue) : sc.SchTypeID;
+                    p.SDistrict = sc.DistrictID == 0 ? ((DropDownList)rptr.Items[0].FindControl("SDistrict")).SelectedValue.SafeToInt() : sc.DistrictID;
+                    p.SchoolType = sc.SchTypeID == 0 ? FormatHelper.SafeToInt(((DropDownList)rptr.Items[0].FindControl("SchoolType")).SelectedValue) : sc.SchTypeID;
                 } else {
-                    p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
+                    p.SDistrict = ((DropDownList)rptr.Items[0].FindControl("SDistrict")).SelectedValue.SafeToInt();
                 }
 
-                p.Teacher = ((TextBox)(rptr.Items[0]).FindControl("Teacher")).Text;
-                p.GroupTeamName = ((TextBox)(rptr.Items[0]).FindControl("GroupTeamName")).Text;
-                p.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("LiteracyLevel1")).Text);
-                p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("LiteracyLevel2")).Text);
+                p.Teacher = ((TextBox)rptr.Items[0].FindControl("Teacher")).Text;
+                p.GroupTeamName = ((TextBox)rptr.Items[0].FindControl("GroupTeamName")).Text;
+                p.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text);
+                p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text);
 
                 p.ParentPermFlag = true;
                 p.Over18Flag = p.Age > 17;
-                p.ShareFlag = patron.ShareFlag;
+                p.ShareFlag = ((CheckBox)rptr.Items[0].FindControl("ShareFlag")).Checked;
                 p.TermsOfUseflag = true;
 
                 p.Custom1 = string.IsNullOrEmpty(this.CustomFields.DDValues1)
-                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text
-                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom1DD")).SelectedValue;
+                    ? ((TextBox)rptr.Items[0].FindControl("Custom1")).Text
+                    : ((DropDownList)rptr.Items[0].FindControl("Custom1DD")).SelectedValue;
                 p.Custom2 = string.IsNullOrEmpty(this.CustomFields.DDValues2)
-                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text
-                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom2DD")).SelectedValue;
+                    ? ((TextBox)rptr.Items[0].FindControl("Custom2")).Text
+                    : ((DropDownList)rptr.Items[0].FindControl("Custom2DD")).SelectedValue;
                 p.Custom3 = string.IsNullOrEmpty(this.CustomFields.DDValues3)
-                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text
-                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom3DD")).SelectedValue;
+                    ? ((TextBox)rptr.Items[0].FindControl("Custom3")).Text
+                    : ((DropDownList)rptr.Items[0].FindControl("Custom3DD")).SelectedValue;
                 p.Custom4 = string.IsNullOrEmpty(this.CustomFields.DDValues4)
-                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text
-                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom4DD")).SelectedValue;
+                    ? ((TextBox)rptr.Items[0].FindControl("Custom4")).Text
+                    : ((DropDownList)rptr.Items[0].FindControl("Custom4DD")).SelectedValue;
                 p.Custom5 = string.IsNullOrEmpty(this.CustomFields.DDValues5)
-                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text
-                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
+                    ? ((TextBox)rptr.Items[0].FindControl("Custom5")).Text
+                    : ((DropDownList)rptr.Items[0].FindControl("Custom5DD")).SelectedValue;
 
                 p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)rptr.Items[0].FindControl("AvatarID")).Value);
 
@@ -310,12 +309,12 @@ namespace GRA.SRP.Controls {
 
         protected void ReloadSchoolDistrict() {
             //*
-            var sc = (DropDownList)(rptr.Items[0]).FindControl("SchoolName");
-            var st = (DropDownList)(rptr.Items[0]).FindControl("SchoolType");
-            var sd = (DropDownList)(rptr.Items[0]).FindControl("SDistrict");
-            var ag = (TextBox)(rptr.Items[0]).FindControl("Age");
-            var gr = (TextBox)(rptr.Items[0]).FindControl("SchoolGrade");
-            var city = (TextBox)(rptr.Items[0]).FindControl("City");
+            var sc = (DropDownList)rptr.Items[0].FindControl("SchoolName");
+            var st = (DropDownList)rptr.Items[0].FindControl("SchoolType");
+            var sd = (DropDownList)rptr.Items[0].FindControl("SDistrict");
+            var ag = (TextBox)rptr.Items[0].FindControl("Age");
+            var gr = (TextBox)rptr.Items[0].FindControl("SchoolGrade");
+            var city = (TextBox)rptr.Items[0].FindControl("City");
 
             var scVal = sc.SelectedValue;
             sc.Items.Clear();
@@ -332,9 +331,9 @@ namespace GRA.SRP.Controls {
 
         protected void ReloadLibraryDistrict() {
             //*
-            var pl = (DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary");
-            var dt = (DropDownList)(rptr.Items[0]).FindControl("District");
-            var city = (TextBox)(rptr.Items[0]).FindControl("City");
+            var pl = (DropDownList)rptr.Items[0].FindControl("PrimaryLibrary");
+            var dt = (DropDownList)rptr.Items[0].FindControl("District");
+            var city = (TextBox)rptr.Items[0].FindControl("City");
 
             var plVal = pl.SelectedValue;
             pl.Items.Clear();

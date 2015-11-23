@@ -46,11 +46,6 @@
                                 Text="family-list-log"
                                 CssClass="btn btn-default" />
                             <asp:Button runat="server"
-                                CommandName="act"
-                                CommandArgument='<%# Eval("PID") %>'
-                                Text="family-list-manage"
-                                CssClass="btn btn-default" />
-                            <asp:Button runat="server"
                                 CommandName="pwd"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-password"
