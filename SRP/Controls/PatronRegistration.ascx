@@ -34,9 +34,7 @@
         <div class="form-horizontal">
             <div class="row">
                 <div class="col-xs-12 margin-1em-bottom">
-                    <p>
-                        <asp:Label runat="server" Text="registration-instructions"></asp:Label>
-                    </p>
+                    <asp:Label runat="server" Text="registration-instructions"></asp:Label>
                 </div>
 
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -61,13 +59,13 @@
                             </label>
 
                             <div class="col-sm-6">
-                                <asp:TextBox ID="SchoolGrade" runat="server" CssClass="form-control"
-></asp:TextBox>
+                                <asp:TextBox ID="SchoolGrade" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("SchoolGrade_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolGrade_Req") %>'
                                     ControlToValidate="SchoolGrade" Display="Dynamic" ErrorMessage="School grade is required."
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -82,12 +80,13 @@
                                     Enabled='<%# (bool)Eval("DOB_Prompt") %>'></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("DOB_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     ControlToValidate="DOB" Display="Dynamic" ErrorMessage="Date of Birth is required." Enabled='<%# Eval("DOB_Req") %>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" ControlToValidate="DOB"
                                     ErrorMessage="Date of birth must be a date" Type="Date"
-                                    Operator="DataTypeCheck" Display="Dynamic" Text="* please enter a date"></asp:CompareValidator>
+                                    Operator="DataTypeCheck" Display="Dynamic" Text="please enter a date"></asp:CompareValidator>
                             </div>
                         </div>
 
@@ -100,9 +99,10 @@
                                     Enabled='<%# (bool)Eval("Age_Prompt") %>'></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Age_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Age_Req") %>'
-                                    ControlToValidate="Age" Display="Dynamic" ErrorMessage="Age is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    ControlToValidate="Age" Display="Static" ErrorMessage="Age is required"
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator
                                     ControlToValidate="Age"
                                     ValidationExpression="\d+"
@@ -110,7 +110,7 @@
                                     EnableClientScript="true"
                                     ErrorMessage="Age must be a number."
                                     runat="server"
-                                    Text="* must be a number."
+                                    Text="must be a number."
                                     EnableTheming="True"
                                     SetFocusOnError="True" />
                             </div>
@@ -151,12 +151,13 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='true'
                                     ControlToValidate="ProgID" Display="Dynamic" ErrorMessage="Program is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='true'
                                     ControlToValidate="ProgID" Display="Dynamic" ErrorMessage="Program is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -168,9 +169,10 @@
                                 <asp:TextBox ID="FirstName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("FirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("FirstName_Req") %>'
                                     ControlToValidate="FirstName" Display="Dynamic" ErrorMessage="First name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -182,9 +184,10 @@
                                 <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("MiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("MiddleName_Req") %>'
                                     ControlToValidate="MiddleName" Display="Dynamic" ErrorMessage="Middle name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -196,9 +199,10 @@
                                 <asp:TextBox ID="LastName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("LastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LastName_Req") %>'
                                     ControlToValidate="LastName" Display="Dynamic" ErrorMessage="Last name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -216,9 +220,10 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Gender_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Gender_Req") %>'
                                     ControlToValidate="Gender" Display="Dynamic" ErrorMessage="Gender is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -230,12 +235,13 @@
                                 <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("EmailAddress_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("EmailAddress_Req") %>'
                                     ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email address is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator runat="server" ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email address is not valid"
                                     SetFocusOnError="True"
-                                    ValidationExpression="[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?">* invalid</asp:RegularExpressionValidator>
+                                    ValidationExpression="[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?">invalid</asp:RegularExpressionValidator>
                             </div>
                         </div>
 
@@ -244,16 +250,17 @@
                                 <asp:Label runat="server" Text="registration-form-phone"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control" placeholder="602-555-1212"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("PhoneNumber_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PhoneNumber_Req") %>'
                                     ControlToValidate="PhoneNumber" Display="Dynamic" ErrorMessage="Phone number is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator runat="server" ControlToValidate="PhoneNumber" Display="Dynamic"
                                     ErrorMessage="Phone number is not valid"
                                     SetFocusOnError="True"
-                                    ValidationExpression="\(?\d{3}\)?-? *\d{3}-? *-?\d{4}">* invalid</asp:RegularExpressionValidator>
+                                    ValidationExpression="\(?\d{3}\)?-? *\d{3}-? *-?\d{4}">invalid</asp:RegularExpressionValidator>
                             </div>
                         </div>
 
@@ -265,9 +272,10 @@
                                 <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("StreetAddress1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress1_Req") %>'
                                     ControlToValidate="StreetAddress1" Display="Dynamic" ErrorMessage="Street address is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -279,9 +287,10 @@
                                 <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("StreetAddress2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress2_Req") %>'
                                     ControlToValidate="StreetAddress2" Display="Dynamic" ErrorMessage="Street address 2 is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -293,9 +302,10 @@
                                 <asp:TextBox ID="City" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("City_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("City_Req") %>'
                                     ControlToValidate="City" Display="Dynamic" ErrorMessage="City is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -307,9 +317,10 @@
                                 <asp:TextBox ID="State" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("State_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("State_Req") %>'
                                     ControlToValidate="State" Display="Dynamic" ErrorMessage="State is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -318,16 +329,17 @@
                                 <asp:Label runat="server" Text="registration-form-zip"></asp:Label>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control" placeholder="85004 or 85004-1140"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("ZipCode_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ZipCode_Req") %>'
                                     ControlToValidate="ZipCode" Display="Dynamic" ErrorMessage="ZIP code is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator runat="server" ControlToValidate="ZipCode" Display="Dynamic"
                                     ErrorMessage="ZIP code is not valid"
                                     SetFocusOnError="True"
-                                    ValidationExpression="\d{5}-?(\d{4})?$">* invalid</asp:RegularExpressionValidator>
+                                    ValidationExpression="\d{5}-?(\d{4})?$">invalid</asp:RegularExpressionValidator>
                             </div>
                         </div>
 
@@ -339,9 +351,10 @@
                                 <asp:TextBox ID="Country" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Country_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Country_Req") %>'
                                     ControlToValidate="Country" Display="Dynamic" ErrorMessage="Country is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -353,9 +366,10 @@
                                 <asp:TextBox ID="County" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("County_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("County_Req") %>'
                                     ControlToValidate="County" Display="Dynamic" ErrorMessage="County is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
                     </asp:Panel>
@@ -373,9 +387,10 @@
                                 <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("ParentGuardianFirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianFirstName_Req") %>'
                                     ControlToValidate="ParentGuardianFirstName" Display="Dynamic" ErrorMessage="Parent/guardian first name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -387,9 +402,10 @@
                                 <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("ParentGuardianMiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianMiddleName_Req") %>'
                                     ControlToValidate="ParentGuardianMiddleName" Display="Dynamic" ErrorMessage="Parent/guardian middle name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentGuardianLastName_Prompt")%>'>
@@ -400,9 +416,10 @@
                                 <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("ParentGuardianLastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianLastName_Req") %>'
                                     ControlToValidate="ParentGuardianLastName" Display="Dynamic" ErrorMessage="Parent/guardian last name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
                     </asp:Panel>
@@ -426,12 +443,13 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
                                     ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("District_Req") %>'
                                     ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -446,12 +464,13 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("PrimaryLibrary_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PrimaryLibrary_Req") %>'
                                     ControlToValidate="PrimaryLibrary" Display="Dynamic" ErrorMessage="Primary library is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("PrimaryLibrary_Req") %>'
                                     ControlToValidate="PrimaryLibrary" Display="Dynamic" ErrorMessage="Primary library is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -463,9 +482,10 @@
                                 <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("LibraryCard_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LibraryCard_Req") %>'
                                     ControlToValidate="LibraryCard" Display="Dynamic" ErrorMessage="Library card # is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -482,12 +502,13 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("SDistrict_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
                                     ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
                                     ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -504,13 +525,13 @@
                                 </asp:DropDownList>
                             </div>
                             <div class="col-sm-3 form-control-static">
-
+                                <span runat="server" visible='<%# Eval("SchoolType_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
                                     ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
                                     ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -527,10 +548,10 @@
                             <div class="col-sm-3 form-control-static">
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
                                     ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
                                     ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
 
@@ -542,9 +563,10 @@
                                 <asp:TextBox ID="Teacher" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Teacher_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Teacher_Req") %>'
                                     ControlToValidate="Teacher" Display="Dynamic" ErrorMessage="Teacher is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -556,9 +578,10 @@
                                 <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("GroupTeamName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("GroupTeamName_Req") %>'
                                     ControlToValidate="GroupTeamName" Display="Dynamic" ErrorMessage="Group/team name is required"
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -570,9 +593,10 @@
                                 <asp:TextBox ID="LiteracyLevel1" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("LiteracyLevel1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel1_Req") %>'
                                     ControlToValidate="LiteracyLevel1" Display="Dynamic" ErrorMessage='<%# Eval("Literacy1Label", "{0} is required")%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator
                                     ControlToValidate="LiteracyLevel1"
                                     ValidationExpression="\d+"
@@ -580,7 +604,7 @@
                                     EnableClientScript="true"
                                     ErrorMessage='<%# Eval("Literacy1Label", "{0} must be a number.") %>'
                                     runat="server"
-                                    Text='* must be a number'
+                                    Text='must be a number'
                                     EnableTheming="True"
                                     SetFocusOnError="True" />
                                 <asp:RangeValidator
@@ -592,7 +616,7 @@
                                     EnableClientScript="true"
                                     ErrorMessage='<%# Eval("Literacy1Label", "{0} must be a number between 0 and 99.") %>'
                                     runat="server"
-                                    Text='* must be between 0 and 99'
+                                    Text='must be between 0 and 99'
                                     EnableTheming="True"
                                     SetFocusOnError="True" />
                             </div>
@@ -606,9 +630,10 @@
                                 <asp:TextBox ID="LiteracyLevel2" runat="server" CssClass="form-control"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("LiteracyLevel2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel2_Req") %>'
                                     ControlToValidate="LiteracyLevel2" Display="Dynamic" ErrorMessage='<%# Eval("Literacy2Label", "{0} is required")%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator
                                     ControlToValidate="LiteracyLevel2"
                                     ValidationExpression="\d+"
@@ -616,7 +641,7 @@
                                     EnableClientScript="true"
                                     ErrorMessage='<%# Eval("Literacy2Label", "{0} must be a number.") %>'
                                     runat="server"
-                                    Text='* must be a number'
+                                    Text='must be a number'
                                     EnableTheming="True"
                                     SetFocusOnError="True" />
                                 <asp:RangeValidator
@@ -628,7 +653,7 @@
                                     EnableClientScript="true"
                                     ErrorMessage='<%# Eval("Literacy2Label", "{0} must be a number between 0 and 99.") %>'
                                     runat="server"
-                                    Text='* must be between 0 and 99'
+                                    Text='must be between 0 and 99'
                                     EnableTheming="True"
                                     SetFocusOnError="True" />
                             </div>
@@ -655,14 +680,15 @@
                                 <asp:TextBox ID="Custom1DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Custom1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom1_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'
                                     ControlToValidate="Custom1DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label1 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom1_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues1)%>'
                                     ControlToValidate="Custom1" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label1 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -681,14 +707,15 @@
                                 <asp:TextBox ID="Custom2DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Custom2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom2_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'
                                     ControlToValidate="Custom2DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label2 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom2_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues2)%>'
                                     ControlToValidate="Custom2" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label2 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -707,14 +734,15 @@
                                 <asp:TextBox ID="Custom3DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Custom3_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom3_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'
                                     ControlToValidate="Custom3DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label3 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom3_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues3)%>'
                                     ControlToValidate="Custom3" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label3 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -733,14 +761,15 @@
                                 <asp:TextBox ID="Custom4DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Custom4_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom4_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'
                                     ControlToValidate="Custom4DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label4 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom4_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues4)%>'
                                     ControlToValidate="Custom4" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label4 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -760,14 +789,15 @@
                                 <asp:TextBox ID="Custom5DDTXT" runat="server" Visible="False"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Custom5_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom5_Req") && !string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'
                                     ControlToValidate="Custom5DD" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label5 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RequiredFieldValidator runat="server"
                                     Enabled='<%# (bool)Eval("Custom5_Req") && string.IsNullOrEmpty(this.CustomFields.DDValues5)%>'
                                     ControlToValidate="Custom5" Display="Dynamic" ErrorMessage='<%# this.CustomFields.Label5 + " is required"%>'
-                                    SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
 
@@ -777,7 +807,8 @@
                             </label>
                             <label class="col-sm-9 form-control-static">
                                 <div class="row">
-                                    <asp:CheckBox ID="TermsOfUseflag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-terms-of-use-container"></asp:CheckBox>
+                                    <asp:CheckBox ID="TermsOfUseflag" runat="server" ReadOnly="False" CssClass="col-xs-1 gra-registration-checkbox gra-terms-of-use-container"></asp:CheckBox>
+                                    <span runat="server" visible='<%# Eval("TermsOfUseflag_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                     <asp:Label runat="server" Text="registration-terms-agreement" CssClass="col-xs-10"></asp:Label>
                                 </div>
                             </label>
@@ -785,8 +816,8 @@
                                 <asp:CustomValidator
                                     ClientValidationFunction="TermsOfUseflagValidation"
                                     EnableClientScript="true"
-                                    runat="server" Enabled='<%# Eval("TermsOfUseflag_Prompt") %>'
-                                    ErrorMessage="You must accept the terms of use." SetFocusOnError="True">* you must accept the terms</asp:CustomValidator>
+                                    runat="server" Enabled='<%# Eval("TermsOfUseflag_Req") %>'
+                                    ErrorMessage="You must accept the terms of use." SetFocusOnError="True">you must accept the terms</asp:CustomValidator>
                             </div>
                         </div>
 
@@ -812,17 +843,26 @@
                                     <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
                                 </label>
                                 <div class="col-sm-9 col-sm-offset-3">
+                                    <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                     <asp:CustomValidator
                                         ClientValidationFunction="ParentPermFlagValidation"
                                         EnableClientScript="true"
                                         runat="server" Enabled='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>'
-                                        ErrorMessage="You must have parental consent." SetFocusOnError="True">* must have parental consent</asp:CustomValidator>
+                                        ErrorMessage="You must have parental consent." SetFocusOnError="True">must have parental consent</asp:CustomValidator>
                                 </div>
                             </div>
                         </asp:Panel>
                     </asp:Panel>
 
                     <asp:Panel ID="Panel7" runat="server" Visible="False">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+                                <div class="alert alert-info">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <asp:Label runat="server" Text="registration-form-username-password-details"></asp:Label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
                                 Username:
@@ -836,13 +876,14 @@
                                 <div style="display: inline-block; vertical-align: middle;">
                                     <span class="gra-username-verification text-success gra-reg-available">available</span>
                                     <span class="gra-username-verification text-danger gra-reg-unavailable">not available</span>
+                                    <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                     <asp:RequiredFieldValidator runat="server" Enabled="true"
                                         ControlToValidate="Username" Display="Dynamic" ErrorMessage="Username is required"
-                                        SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                     <asp:RegularExpressionValidator
                                         runat="server" ControlToValidate="Username" ValidationExpression="^[a-zA-Z0-9_-]{5,25}$"
                                         Display="Dynamic"
-                                        ErrorMessage="Username must be between 5 and 25 characters long.">* username must be between 5 and 25 characters long
+                                        ErrorMessage="Username must be between 5 and 25 characters long.">username must be between 5 and 25 characters long
                                     </asp:RegularExpressionValidator>
                                 </div>
                             </div>
@@ -854,13 +895,14 @@
                                 <asp:TextBox ID="Password" runat="server" CssClass="pwd form-control input-lg" TextMode="Password"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Display="Dynamic"
                                     ControlToValidate="Password" ErrorMessage="Password is required"
-                                    ToolTip="Password required" SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    ToolTip="Password required" SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator
                                     runat="server" ControlToValidate="Password" ValidationExpression="(?=^.{7,}$)(?=.*\d)(?=.*[a-zA-Z]+)(?![.\n]).*$"
                                     Display="Dynamic"
-                                    ErrorMessage="Please select a password of at least seven characters with at least one number and at least one letter.">* password not secure
+                                    ErrorMessage="Please select a password of at least seven characters with at least one number and at least one letter.">password not secure
                                 </asp:RegularExpressionValidator>
                             </div>
                         </div>
@@ -871,13 +913,14 @@
                                 <asp:TextBox ID="Password2" runat="server" CssClass="pwd2 form-control input-lg" TextMode="Password"></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
+                                <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                 <asp:RequiredFieldValidator runat="server" Display="Dynamic"
                                     ControlToValidate="Password2" ErrorMessage="Password validation is required"
-                                    ToolTip="Password Re-entry required" SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                                    ToolTip="Password Re-entry required" SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CustomValidator
                                     runat="server" ControlToValidate="Password2"
                                     ErrorMessage="The password and validation do not match."
-                                    ClientValidationFunction="ClientValidate">* password does not match</asp:CustomValidator>
+                                    ClientValidationFunction="ClientValidate">password does not match</asp:CustomValidator>
                             </div>
                         </div>
 
@@ -1079,11 +1122,15 @@
     });
 
     function nextClick() {
-        if ('<%=this.CurrentStep%>' == '7') {
-            setTimeout(loadingMessage, 5000);
-            $('#processingAccountCreation').modal({ backdrop: 'static' });
+        if (Page_ClientValidate()) {
+            if ('<%=this.CurrentStep%>' == '7') {
+                setTimeout(loadingMessage, 5000);
+                $('#processingAccountCreation').modal({ backdrop: 'static' });
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     var loadingMessageCounter = 0;

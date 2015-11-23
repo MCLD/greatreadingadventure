@@ -118,7 +118,6 @@
     <Content Include="Blank.aspx" />
     <Content Include="Challenges\Default.aspx" />
     <Content Include="Challenges\Details.aspx" />
-    <Content Include="Account\ChangeFamMemberAct.aspx" />
     <Content Include="Account\ChangeFamMemberPwd.aspx" />
     <Content Include="Account\ChangePassword.aspx" />
     <Content Include="ckeditor\adapters\jquery.js" />
@@ -757,6 +756,7 @@
     <Content Include="Controls\Badges.ascx" />
     <Content Include="Controls\ChangeFamilyPassword.ascx" />
     <Content Include="Controls\ChangePassword.ascx" />
+    <Content Include="Controls\FamilyCodeControl.ascx" />
     <Content Include="Controls\CodeControl.ascx" />
     <Content Include="Controls\Events.ascx" />
     <Content Include="Controls\FamilyAccountCtl.ascx" />
@@ -790,6 +790,7 @@
     <Content Include="Controls\ProgramTabs.ascx" />
     <Content Include="Controls\PublicProgramView.ascx" />
     <Content Include="Controls\ChallengesCtl.ascx" />
+    <Content Include="Controls\FamilyReadingLogControl.ascx" />
     <Content Include="Controls\ReadingLogControl.ascx" />
     <Content Include="Controls\RecoverPassword.ascx" />
     <Content Include="Controls\SimpleLoggingControl.ascx" />
@@ -1357,13 +1358,6 @@
     <Compile Include="Challenges\Details.aspx.designer.cs">
       <DependentUpon>Details.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Account\ChangeFamMemberAct.aspx.cs">
-      <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Account\ChangeFamMemberAct.aspx.designer.cs">
-      <DependentUpon>ChangeFamMemberAct.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Account\ChangeFamMemberPwd.aspx.cs">
       <DependentUpon>ChangeFamMemberPwd.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1389,6 +1383,8 @@
     <Compile Include="Code\ControlRoom\RibbonLink.cs" />
     <Compile Include="Code\ControlRoom\SRPTopMenuItem.cs" />
     <Compile Include="Code\ControlRoom\StandardModuleRibbons.cs" />
+    <Compile Include="Code\FamilyRelationship.cs" />
+    <Compile Include="Code\FamilyTools.cs" />
     <Compile Include="Code\SessionTools.cs" />
     <Compile Include="ControlRoom\AJAX.master.cs">
       <DependentUpon>AJAX.master</DependentUpon>
@@ -2543,6 +2539,13 @@
     <Compile Include="Controls\ChangePassword.ascx.designer.cs">
       <DependentUpon>ChangePassword.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FamilyCodeControl.ascx.cs">
+      <DependentUpon>FamilyCodeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\FamilyCodeControl.ascx.designer.cs">
+      <DependentUpon>FamilyCodeControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CodeControl.ascx.cs">
       <DependentUpon>CodeControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2773,6 +2776,13 @@
     </Compile>
     <Compile Include="Controls\ChallengesCtl.ascx.designer.cs">
       <DependentUpon>ChallengesCtl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FamilyReadingLogControl.ascx.cs">
+      <DependentUpon>FamilyReadingLogControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\FamilyReadingLogControl.ascx.designer.cs">
+      <DependentUpon>FamilyReadingLogControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ReadingLogControl.ascx.cs">
       <DependentUpon>ReadingLogControl.ascx</DependentUpon>

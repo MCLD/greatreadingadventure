@@ -12,6 +12,20 @@ namespace GRA.Tools {
         /// <param name="points">The number of earned points</param>
         /// <returns>"You earned x point[s] [and y badge[s]]."</returns>
         public string EarnedMessage(string earnedBadges, int points) {
+            return EarnedMessage(earnedBadges, points, null);
+        }
+
+        /// <summary>
+        /// Outputs points and badges earned properly.
+        /// </summary>
+        /// <param name="earnedBadges">A pipe-separated list of badge IDs</param>
+        /// <param name="points">The number of earned points</param>
+        /// <param name="whoEarned">Who earned the points and badges, default (null) is "You"</param>
+        /// <returns>"[whoEarned] earned x point[s] [and y badge[s]]."</returns>
+        public string EarnedMessage(string earnedBadges, int points, string whoEarned) {
+            if(string.IsNullOrEmpty(whoEarned)) {
+                whoEarned = "You";
+            }
             // tabulate earned badges
             int badgesEarnedCount = 0;
             if(!string.IsNullOrEmpty(earnedBadges)) {
@@ -26,7 +40,8 @@ namespace GRA.Tools {
 
             if(points > 0) {
                 // prepare message
-                sb.Append("You earned ");
+                sb.Append(whoEarned);
+                sb.Append(" earned ");
                 sb.Append(points);
                 sb.Append(" point");
                 if(points > 1) {
@@ -38,7 +53,8 @@ namespace GRA.Tools {
                 if(points > 0) {
                     sb.Append(" and ");
                 } else {
-                    sb.Append("You earned ");
+                    sb.Append(whoEarned);
+                    sb.Append(" earned ");
                 }
                 sb.Append(badgesEarnedCount);
                 sb.Append(" badge");
@@ -52,5 +68,6 @@ namespace GRA.Tools {
             }
             return null;
         }
+
     }
 }

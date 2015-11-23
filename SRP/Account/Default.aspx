@@ -15,9 +15,3 @@
         <uc3:MyAccountCtl ID="MyAccountCtl1" runat="server" />
     </div>
 </asp:Content>
-
-<asp:Content ID="BottomOfPage" runat="server" ContentPlaceHolderID="BottomOfPage">
-    <script>
-        $().ready(focusFirstField());
-    </script>
-</asp:Content>

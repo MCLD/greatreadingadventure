@@ -13,12 +13,21 @@ namespace GRA.SRP {
     public partial class EnterFamMemberLog {
         
         /// <summary>
-        /// LogCtl control.
+        /// FamilyReadingLogControl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.Controls.SimpleLoggingFamilyControl LogCtl;
+        protected global::GRA.SRP.Controls.FamilyReadingLogControl FamilyReadingLogControl;
+        
+        /// <summary>
+        /// FamilyCodeControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.FamilyCodeControl FamilyCodeControl;
     }
 }

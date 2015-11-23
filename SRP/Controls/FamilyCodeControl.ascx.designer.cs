@@ -10,33 +10,42 @@
 namespace GRA.SRP.Controls {
     
     
-    public partial class Avatar {
+    public partial class FamilyCodeControl {
         
         /// <summary>
-        /// imgAvatar control.
+        /// familyCodeControlPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatar;
+        protected global::System.Web.UI.WebControls.Panel familyCodeControlPanel;
         
         /// <summary>
-        /// imgAvatarSm control.
+        /// lblAccount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAvatarSm;
+        protected global::System.Web.UI.WebControls.Label lblAccount;
         
         /// <summary>
-        /// patronName control.
+        /// codeEntryField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label patronName;
+        protected global::System.Web.UI.WebControls.TextBox codeEntryField;
+        
+        /// <summary>
+        /// submitButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton submitButton;
     }
 }

@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 system-name=Great Reading Adventure 
 slogan=Reimagining Summer Reading
-upsell=All of what you are seeing can be easily customized to match your library!
+upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
 tenant-selection=Choose your library:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,13 +29,9 @@ loginform-remember-me=Remember my username
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Recover form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RecoverForm Title=Forgot Password
-RecoverForm no account=Don't have an account?  
-RecoverForm register=<b>Register now...</b>
-RecoverForm go login=Did you just remember your password?
-RecoverForm login=<b>Login now...</b>
-RecoverForm email=Username:
-RecoverForm button=Email Password
+password-recovery-title=Forgot Password
+password-recovery-username=Username:
+password-recovery-submit=Recover password
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -44,21 +40,21 @@ change-password-current=Current password:
 change-password-new=New password: 
 change-password-verify=Verify new password:
 change-password-submit=Change my password
+change-password-rules=Please select a new password.<ul><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change family password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-FamPwdResetForm Title=Change Password for Family Member
-FamPwdResetForm current=<font color=red>The PARENT's</font> Current password:  
-FamPwdResetForm newpassword=<font color=red>The CHILD's</font> New password: 
-FamPwdResetForm newpassword repeat=Re-enter the new password:
-FamPwdResetForm button=Submit
-FamPwdResetForm button2=Cancel
+family-password-reset-title=Change Family Member Password
+family-password-reset-current=<span class="text-primary">Your</span> current password:
+family-password-reset-new=New <span class="text-primary">family member</span> password:
+family-password-reset-verify=Verify new <span class="text-primary">family member</span> password:
+family-password-reset-submit=Change password
+family-password-reset-rules=<ul><li>Please enter your password in the top field and the new password for your family member in the lower two fields.</li><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Family List
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 family-list-title=Family Members List
 family-list-members=Family Members
-family-list-manage=Manage
 family-list-password=Change Password
 family-list-login=Login as
 family-list-log=Enter activity
@@ -66,8 +62,25 @@ family-list-log=Enter activity
 ;;  Family Member Add
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 family-member-add-title=Add Family Member
+family-member-add-instructions=<p>Create an additional account for a family member.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
+family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 family-member-add-save=Save
 family-member-add-cancel=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family Reading log
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-readinglog-reading-log=Log family reading
+family-readinglog-reading-prompt=Read
+family-readinglog-submit=Submit
+family-readinglog-read-a-book=Read a book!
+family-readinglog-details-header=Enter book details
+family-readinglog-details-cancel=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family code entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-secret-code-header=Secret code
+family-secret-code-prompt=Code:
+family-secret-code-submit=Submit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -80,13 +93,14 @@ myaccount-add-family-member=Add Family Member
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 registration-title=Register and Create Account
-registration-instructions=Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.
+registration-instructions=<p>Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
 registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members.
 registration-processing=Creating your account...
 registration-success=Your account has been succesfully created!
 registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
 registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
 registration-privacy-details=You may show my username (but not my real name) and achievements (adventures, badges, challenges, etc.) to other participants.
+registration-form-username-password-details=Please select your username and password for the program. Your username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 registration-button-previous=< Previous
 registration-button-next=Next >
 registration-button-done=Done

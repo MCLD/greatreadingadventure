@@ -324,7 +324,6 @@ namespace GRA.SRP.Controls {
                 ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = string.Empty;
-                ((TextBox)rptr.Items[0].FindControl("LastName")).Text = string.Empty;
                 ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;

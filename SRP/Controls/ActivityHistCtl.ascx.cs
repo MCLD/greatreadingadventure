@@ -49,21 +49,8 @@ namespace GRA.SRP.Controls {
             }
         }
 
-        public string FormatName(string first, string last, string username) {
-            if(string.IsNullOrWhiteSpace(first) && string.IsNullOrWhiteSpace(last)
-               || string.IsNullOrWhiteSpace(first)) {
-                return username;
-            }
-
-            StringBuilder formattedName = new StringBuilder(first.Trim());
-
-            if(!string.IsNullOrWhiteSpace(last)) {
-                formattedName.AppendFormat(" {0}", last.Trim());
-            }
-            if(!string.IsNullOrWhiteSpace(username)) {
-                formattedName.AppendFormat(" ({0})", username);
-            }
-            return formattedName.ToString();
+        protected string FormatName(string first, string last, string username) {
+            return DisplayHelper.FormatName(first, last, username);
         }
 
         protected string AwardClass(object awardReasonCd) {

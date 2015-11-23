@@ -1,4 +1,5 @@
 ﻿using GRA.SRP.DAL;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls {
     public partial class Welcome : System.Web.UI.UserControl {
@@ -8,7 +9,8 @@ namespace GRA.SRP.Controls {
                 if(patron == null) {
                     return "Welcome!";
                 } else {
-                    return string.Format("Welcome, {0}!", patron.FirstName);
+                    return string.Format("Welcome, {0}!",
+                        DisplayHelper.FormatFirstName(patron.FirstName, patron.Username));
                 }
             }
         }

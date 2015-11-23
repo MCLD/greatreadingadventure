@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ChangePassword.ascx.cs" Inherits="GRA.SRP.Classes.ChangePassword" %>
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
-<script language="javascript" type="text/javascript">
+<script>
     function ClientValidate(source, arguments) {
         arguments.IsValid = ($(".pwd").val() == $(".pwd2").val());
     }
@@ -13,6 +13,15 @@
             <asp:Label runat="server" Text="change-password-title"></asp:Label></span>
     </div>
 </div>
+<div class="row margin-1em-top">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+        <div class="alert alert-info">
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <asp:Label runat="server" Text="change-password-rules"></asp:Label>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12 col-sm-8 col-sm-offset-2">
         <asp:ValidationSummary runat="server"
@@ -83,7 +92,7 @@
         <div class="col-sm-9">
             <div class="pull-right">
                 <asp:Button
-                    id="ChangePasswordButton"
+                    ID="ChangePasswordButton"
                     data-loading-text="Changing password..."
                     type="button"
                     runat="server"

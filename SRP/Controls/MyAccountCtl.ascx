@@ -236,7 +236,7 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control"
-                        Text='<%# Eval("PhoneNumber") %>'
+                        Text='<%# Eval("PhoneNumber") %>' placeholder="602-555-1212"
                         Enabled='<%# (bool)Eval("PhoneNumber_Edit") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
@@ -317,7 +317,7 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control"
-                        Text='<%# Eval("ZipCode") %>'
+                        Text='<%# Eval("ZipCode") %>' placeholder="85004 or 85004-1140"
                         Enabled='<%# (bool)Eval("ZipCode_Edit") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">

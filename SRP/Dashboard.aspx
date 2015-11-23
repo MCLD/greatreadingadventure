@@ -24,14 +24,14 @@
                 <div class="col-xs-12 text-center">
                     <uc1:MyPointsControl runat="server" ID="MyPointsControl" />
                 </div>
-                <div class="col-xs-12">
+                <div class="col-xs-12 hidden-xs">
                     <uc1:LeaderBoardControl runat="server" ID="LeaderBoardControl" />
                 </div>
             </div>
         </div>
 
         <div class="col-sm-6">
-            <div class="text-center">
+            <div class="text-center hidden-xs">
                 <uc1:Welcome runat="server" ID="Welcome" />
             </div>
             <asp:Label ID="ProgramNotOpenText" runat="server" Text="" Visible="false"></asp:Label>
