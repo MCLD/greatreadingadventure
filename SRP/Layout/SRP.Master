@@ -94,7 +94,6 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <span class="modal-title lead" id="badgePopupTitle"></span>
                     </div>
                     <div class="modal-body">
@@ -123,7 +122,6 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <span class="modal-title lead" id="badgeAwardPopupTitle"></span>
                     </div>
                     <div class="modal-body" id="badgeAwardPopupContent">
@@ -141,7 +139,6 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <span class="modal-title lead">
                             <asp:Label ID="loginPopupTitle" runat="server" Text="loginform-title"></asp:Label></span>
                     </div>

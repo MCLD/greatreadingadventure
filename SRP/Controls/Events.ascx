@@ -84,7 +84,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <span class="lead">
                     <asp:Label runat="server" Text="events-prompt"></asp:Label>
                     <span class="modal-title" id="eventPopupTitle"></span></span>
