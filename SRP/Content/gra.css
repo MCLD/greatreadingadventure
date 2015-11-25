@@ -69,6 +69,7 @@
 .gra-reg-available {
     display: none;
 }
+
 .gra-reg-unavailable {
     display: none;
 }
@@ -241,3 +242,11 @@ input#loginPopupRememberMe {
         margin-left: 0.5em;
         margin-top: 0.25em;
     }
+
+body {
+    padding-right: 0px !important;
+}
+
+.modal-open {
+    overflow-y: auto;
+}
