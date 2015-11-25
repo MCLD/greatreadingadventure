@@ -28,12 +28,12 @@ namespace GRA.SRP.Classes {
                 //if (!patron.IsMasterAccount)
                 if(Session[SessionKey.IsMasterAccount] == null || !(bool)Session[SessionKey.IsMasterAccount]) {
                     // kick them out
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
 
                 if(!Patron.CanManageSubAccount((int)Session["MasterAcctPID"], int.Parse(SA.Text))) {
                     // kick them out
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
                 var sa = Patron.FetchObject(int.Parse(SA.Text));
 

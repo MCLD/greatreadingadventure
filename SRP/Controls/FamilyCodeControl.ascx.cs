@@ -15,7 +15,7 @@ namespace GRA.SRP.Controls {
                 var familyRelationship = new FamilyTools().ValidImpersonation(Request, Session);
 
                 if(familyRelationship == null) {
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
                 ViewState["SubmitAsPatronId"] = familyRelationship.PatronId;
 

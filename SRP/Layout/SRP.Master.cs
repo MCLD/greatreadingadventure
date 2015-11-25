@@ -58,7 +58,7 @@ namespace GRA.SRP {
 
         public string RegisterPageActive {
             get {
-                if(Request.Path.EndsWith("Register.aspx")) {
+                if(Request.Path.EndsWith("Register.aspx", StringComparison.OrdinalIgnoreCase)) {
                     return "active";
                 }
                 return string.Empty;
@@ -67,7 +67,7 @@ namespace GRA.SRP {
 
         public string LoginPageActive {
             get {
-                if(Request.Path.EndsWith("Login.aspx")) {
+                if(Request.Path.EndsWith("Login.aspx", StringComparison.OrdinalIgnoreCase)) {
                     return "active";
                 }
                 return string.Empty;
@@ -76,7 +76,8 @@ namespace GRA.SRP {
 
         public string DashboardPageActive {
             get {
-                if(Request.Path.EndsWith("Dashboard.aspx")) {
+                if(Request.Path.EndsWith("Dashboard.aspx", StringComparison.OrdinalIgnoreCase)
+                   || Request.Path.StartsWith("/Default.aspx", StringComparison.OrdinalIgnoreCase)) {
                     return "active";
                 }
                 return string.Empty;
@@ -85,7 +86,7 @@ namespace GRA.SRP {
 
         public string OffersPageActive {
             get {
-                if(Request.Path.Contains("/Offers/")) {
+                if(Request.Path.IndexOf("/Offers/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -94,7 +95,7 @@ namespace GRA.SRP {
 
         public string MailSectionActive {
             get {
-                if(Request.Path.Contains("/Mail/")) {
+                if(Request.Path.IndexOf("/Mail/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -103,7 +104,7 @@ namespace GRA.SRP {
 
         public string AdventuresSectionActive {
             get {
-                if(Request.Path.Contains("/Adventures/")) {
+                if(Request.Path.IndexOf("/Adventures/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -111,7 +112,7 @@ namespace GRA.SRP {
         }
         public string ChallengesSectionActive {
             get {
-                if(Request.Path.Contains("/Challenges/")) {
+                if(Request.Path.IndexOf("/Challenges/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -119,7 +120,7 @@ namespace GRA.SRP {
         }
         public string EventsSectionActive {
             get {
-                if(Request.Path.Contains("/Events/")) {
+                if(Request.Path.IndexOf("/Events/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -128,7 +129,7 @@ namespace GRA.SRP {
 
         public string BadgesSectionActive {
             get {
-                if(Request.Path.Contains("/Badges/")) {
+                if(Request.Path.IndexOf("/Badges/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -137,7 +138,7 @@ namespace GRA.SRP {
 
         public string AccountSectionActive {
             get {
-                if(Request.Path.Contains("/Account/")) {
+                if(Request.Path.IndexOf("/Account/", StringComparison.OrdinalIgnoreCase) >= 0) {
                     return "active";
                 }
                 return string.Empty;
@@ -265,7 +266,7 @@ namespace GRA.SRP {
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {
-                    homeLink.HRef = "~/Dashboard.aspx";
+                    homeLink.HRef = "~";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if(Session[SessionKey.IsMasterAccount] as bool? == true) {
                         a.Title = "My Account & Family";
@@ -330,12 +331,11 @@ namespace GRA.SRP {
                         string requestedPath = ViewState[SessionKey.RequestedPath].ToString();
                         Response.Redirect(requestedPath);
                     } else {
-                        Response.Redirect("~/Dashboard.aspx");
+                        Response.Redirect("~");
                     }
                 } else {
                     this.LoginPopupErrorMessage = "Invalid username or password.";
-                    Session["PatronLoggedIn"] = false;
-                    Session["Patron"] = null;
+                    new SessionTools(Session).ClearPatron();
                 }
             }
 

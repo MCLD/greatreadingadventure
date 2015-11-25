@@ -16,7 +16,6 @@ namespace GRA.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             IsSecure = true;
-            
 
             Control ctl = null;
             PlaceHolder plc = null;

@@ -5,6 +5,9 @@ using GRA.SRP.DAL;
 namespace SRP {
     public partial class _Default : BaseSRPPage {
         protected void Page_Load(object sender, EventArgs e) {
+            if(((BaseSRPPage)Page).IsLoggedIn) {
+                Server.Transfer("~/Dashboard.aspx");
+            }
             if(!String.IsNullOrEmpty(Request["PID"])) {
                 Session["ProgramID"] = Request["PID"].ToString();
             }
@@ -25,12 +28,6 @@ namespace SRP {
 
             }
             TranslateStrings(this);
-        }
-
-        protected void Button1_Click(object sender, EventArgs e) {
-            //Session["ProgramID"] = pgmID.Text;
-            //TranslateStrings(this);
-            Response.Redirect("/");
         }
     }
 }

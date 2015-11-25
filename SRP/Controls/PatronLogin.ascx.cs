@@ -51,7 +51,7 @@ namespace GRA.SRP.Classes {
                         string requestedPath = ViewState[SessionKey.RequestedPath].ToString();
                         Response.Redirect(requestedPath);
                     } else {
-                        Response.Redirect("~/Dashboard.aspx");
+                        Response.Redirect("~");
                     }
                 } else {
                     Session[SessionKey.PatronMessage] = "Invalid username or password.";

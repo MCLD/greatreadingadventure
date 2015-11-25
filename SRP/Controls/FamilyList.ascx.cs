@@ -16,7 +16,7 @@ namespace GRA.SRP.Controls {
 
                 var patron = (Patron)Session["Patron"];
                 if(Session[SessionKey.IsMasterAccount] as bool? != true) {
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
 
                 // populate screen
@@ -46,7 +46,7 @@ namespace GRA.SRP.Controls {
                 if((int)Session["MasterAcctPID"] != newPID
                    && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID)) {
                     // kick them out
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
 
                 var newPatron = Patron.FetchObject(newPID);
@@ -57,7 +57,7 @@ namespace GRA.SRP.Controls {
                 //Session["CurrentProgramID"] = bp.ProgID;
                 //Session["TenantID"] = bp.TenID;
 
-                Response.Redirect("~/Dashboard.aspx");
+                Response.Redirect("~");
             }
         }
     }

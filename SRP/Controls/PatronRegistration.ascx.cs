@@ -265,9 +265,12 @@ namespace GRA.SRP.Controls {
                     return;
                 } else {
                     // we're done with registration, we can just jump right in
+                    TestingBL.CheckPatronNeedsPreTest();
+                    TestingBL.CheckPatronNeedsPostTest();
+
                     Session[SessionKey.PatronMessage] = ((BaseSRPPage)Page).GetResourceString("registration-success");
                     Session[SessionKey.PatronMessageGlyphicon] = "thumbs-up";
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
 
                 newPanel.Visible = true;
@@ -639,7 +642,7 @@ namespace GRA.SRP.Controls {
                     return false;
                 }
             } catch(Exception ex) {
-                this.Log().Error(string.Format("An exception was thrown during registration: {0}",
+                this.Log().Error(string.Format("A problem occurred during registration: {0}",
                                                ex.Message));
                 Session[SessionKey.PatronMessage] = string.Format("<strong>{0}</strong>",
                                                                   ex.Message);
@@ -727,7 +730,7 @@ namespace GRA.SRP.Controls {
         public string GoToUrl {
             get {
                 if(ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0) {
-                    ViewState["gotourl"] = "~/Dashboard.aspx";
+                    ViewState["gotourl"] = "~";
                 }
                 return ViewState["gotourl"].ToString();
             }

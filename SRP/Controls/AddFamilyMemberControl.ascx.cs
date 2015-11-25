@@ -73,7 +73,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
-            if(Page.IsValid && e.CommandName.Equals("save", StringComparison.CurrentCultureIgnoreCase)) {
+            if(Page.IsValid && e.CommandName.Equals("save", StringComparison.OrdinalIgnoreCase)) {
                 if(SaveAccount()) {
                     Response.Redirect("~/Account/FamilyAccountList.aspx");
                 }

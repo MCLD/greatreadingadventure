@@ -90,7 +90,7 @@ namespace GRA.SRP {
                 st.EstablishPatron(user);
                 st.AlertPatron(GetResourceString("Your password has been reset!"),
                                                  glyphicon: "ok");
-                Response.Redirect("~/Dashboard.aspx");
+                Response.Redirect("~");
             }
         }
     }

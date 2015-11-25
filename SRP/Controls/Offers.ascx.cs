@@ -46,7 +46,7 @@ namespace GRA.SRP.Controls {
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
 
-            if(e.CommandName.Equals("Details", StringComparison.CurrentCultureIgnoreCase)) {
+            if(e.CommandName.Equals("Details", StringComparison.OrdinalIgnoreCase)) {
                 pnlList.Visible = false;
                 var o = new Offer();
                 o.Fetch(int.Parse(e.CommandArgument.ToString()));

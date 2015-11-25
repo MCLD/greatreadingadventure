@@ -81,7 +81,6 @@
 
 /* provide a minimum width on tooltips to reduce wrapping */
 .tooltip-inner {
-    white-space: pre-wrap;
     min-width: 80px;
 }
 
