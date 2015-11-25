@@ -6,7 +6,6 @@
 <%@ Register Src="~/Controls/MyBadgesListControl.ascx" TagPrefix="uc1" TagName="MyBadgesListControl" %>
 <%@ Register Src="~/Controls/MyPointsControl.ascx" TagPrefix="uc1" TagName="MyPointsControl" %>
 <%@ Register Src="~/Controls/LeaderBoardControl.ascx" TagPrefix="uc1" TagName="LeaderBoardControl" %>
-<%@ Register Src="~/Controls/SimpleLoggingControl.ascx" TagName="SimpleLoggingControl" TagPrefix="uc1" %>
 <%@ Register Src="~/Controls/ReadingLogControl.ascx" TagPrefix="rlc" TagName="ReadingLogControl" %>
 <%@ Register Src="~/Controls/CodeControl.ascx" TagPrefix="cc" TagName="CodeControl" %>
 

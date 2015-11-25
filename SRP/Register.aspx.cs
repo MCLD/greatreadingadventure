@@ -8,7 +8,7 @@ namespace GRA.SRP {
         {
             if(!IsPostBack) { 
                 if(IsLoggedIn) {
-                    Response.Redirect("~/Dashboard.aspx");
+                    Response.Redirect("~");
                 }
 
                 TranslateStrings(this);

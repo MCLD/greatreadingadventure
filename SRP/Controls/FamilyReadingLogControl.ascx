@@ -140,7 +140,7 @@
 
             }
             if (!valid) {
-                $('.code-submit').button('reset');
+                $('.reading-log-submit').button('reset');
             }
             return valid;
         }

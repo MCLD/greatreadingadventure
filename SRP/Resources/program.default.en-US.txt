@@ -1,21 +1,16 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Header Text
+;;  Master page and front page text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 system-name=Great Reading Adventure 
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
 tenant-selection=Choose your library:
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Global text
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RegisterMasterBtn=Register
-LoginMasterBtn=Login
-LogoutMasterBtn=Logout
-btnRegister=Register Now
-btnLogin=Login Now
-Program:=Program:
-Button=Press Me!
+navigation-button-register=Register
+navigation-button-login=Login
+navigation-button-logout=Logout
+frontpage-button-register=Register Now
+frontpage-button-login=Login Now
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -142,13 +137,13 @@ registration-form-avatar=Avatar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Minigames text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Minigame Instructions OB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story for loads of fun!</b></h3><br>
-Minigame Instructions HP=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="100%">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Match the word on top with the same word on the square to uncover a hidden picture!</b></h3><br>
-Minigame Instructions MM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the picture that matches the word!</b></h3><br>
-Minigame Instructions CB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Use the key to decode the message!</b></h3><br>
-Minigame Instructions WM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Click the squares to find the matching pairs!</h3></b><br>
-Minigame Instructions MG=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the word that matches the picture!</b></h3><br>
-Minigame Instructions CA=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story and decide which path you want to take!</b></h3><br>
+Minigame Instructions OB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story for loads of fun!</b></h3><br>
+Minigame Instructions HP=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Match the word on top with the same word on the square to uncover a hidden picture!</b></h3><br>
+Minigame Instructions MM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the picture that matches the word!</b></h3><br>
+Minigame Instructions CB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Use the key to decode the message!</b></h3><br>
+Minigame Instructions WM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Click the squares to find the matching pairs!</h3></b><br>
+Minigame Instructions MG=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the word that matches the picture!</b></h3><br>
+Minigame Instructions CA=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story and decide which path you want to take!</b></h3><br>
 Minigame Instructions Difficulty=Choose the difficulty level you would like to play
 Minigame Instructions BtnEasy=Easy
 Minigame Instructions BtnMedium=Medium
@@ -199,7 +194,6 @@ challenges-return=Back to list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoggingForm Title=Family Account Activity Logging
 activity-history-title=Activity History
 activity-history-other-family=View another family member:
 Play Now=Play Now <br /><small>Go to the game map</small>
@@ -235,4 +229,4 @@ secret-code-submit=Submit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 books-read-title=Book List
 books-read-other-family=View another family member:
-books-read-none=No book title and author information logged. If you wish to see a list of books, be sure to enter the title and author when you log your minutes.
+books-read-none=No book title and author information logged. If you wish to see a list of books you've read, be sure to enter the title and author when you log your reading!

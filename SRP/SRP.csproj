@@ -753,7 +753,6 @@
     <Content Include="Controls\AddFamilyMemberControl.ascx" />
     <Content Include="Controls\AudioUploadCtl.ascx" />
     <Content Include="Controls\Avatar.ascx" />
-    <Content Include="Controls\BadgeAwardCtl.ascx" />
     <Content Include="Controls\Badges.ascx" />
     <Content Include="Controls\BooksRead.ascx" />
     <Content Include="Controls\ChangeFamilyPassword.ascx" />
@@ -795,8 +794,6 @@
     <Content Include="Controls\FamilyReadingLogControl.ascx" />
     <Content Include="Controls\ReadingLogControl.ascx" />
     <Content Include="Controls\RecoverPassword.ascx" />
-    <Content Include="Controls\SimpleLoggingControl.ascx" />
-    <Content Include="Controls\SimpleLoggingFamilyControl.ascx" />
     <Content Include="Controls\Welcome.ascx" />
     <Content Include="CSS\Program\1.css" />
     <Content Include="CSS\Program\2.css" />
@@ -1257,10 +1254,8 @@
     <Content Include="Scripts\jquery.plugin.js" />
     <Content Include="Scripts\jquery.plugin.min.js" />
     <Content Include="Select.aspx" />
-    <Content Include="ShareBadge.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="ShareReview.aspx" />
     <Content Include="Thanks.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -2522,13 +2517,6 @@
     <Compile Include="Controls\Avatar.ascx.designer.cs">
       <DependentUpon>Avatar.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BadgeAwardCtl.ascx.cs">
-      <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\BadgeAwardCtl.ascx.designer.cs">
-      <DependentUpon>BadgeAwardCtl.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Badges.ascx.cs">
       <DependentUpon>Badges.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2816,21 +2804,6 @@
     <Compile Include="Controls\RecoverPassword.ascx.designer.cs">
       <DependentUpon>RecoverPassword.ascx</DependentUpon>
     </Compile>
-    <Compile Include="CodeSnipets.cs" />
-    <Compile Include="Controls\SimpleLoggingControl.ascx.cs">
-      <DependentUpon>SimpleLoggingControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\SimpleLoggingControl.ascx.designer.cs">
-      <DependentUpon>SimpleLoggingControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SimpleLoggingFamilyControl.ascx.cs">
-      <DependentUpon>SimpleLoggingFamilyControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\SimpleLoggingFamilyControl.ascx.designer.cs">
-      <DependentUpon>SimpleLoggingFamilyControl.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Code\STGUtilities.cs" />
     <Compile Include="Code\TestingBL.cs" />
     <Compile Include="Controls\Welcome.ascx.cs">
@@ -3017,20 +2990,6 @@
     </Compile>
     <Compile Include="Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ShareBadge.aspx.cs">
-      <DependentUpon>ShareBadge.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ShareBadge.aspx.designer.cs">
-      <DependentUpon>ShareBadge.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ShareReview.aspx.cs">
-      <DependentUpon>ShareReview.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ShareReview.aspx.designer.cs">
-      <DependentUpon>ShareReview.aspx</DependentUpon>
     </Compile>
     <Compile Include="Thanks.aspx.cs">
       <DependentUpon>Thanks.aspx</DependentUpon>

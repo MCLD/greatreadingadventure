@@ -59,10 +59,10 @@ namespace GRA.SRP.Utilities.CoreClasses {
             if(s == "1") {
                 return true;
             }
-            if(s.Equals("yes", StringComparison.CurrentCultureIgnoreCase)) {
+            if(s.Equals("yes", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
-            if(s.Equals("on", StringComparison.CurrentCultureIgnoreCase)) {
+            if(s.Equals("on", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
 
@@ -73,10 +73,10 @@ namespace GRA.SRP.Utilities.CoreClasses {
             if(s == "1") {
                 return true;
             }
-            if(s.Equals("yes", StringComparison.CurrentCultureIgnoreCase)) {
+            if(s.Equals("yes", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
-            if(s.Equals("on", StringComparison.CurrentCultureIgnoreCase)) {
+            if(s.Equals("on", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
             if(string.IsNullOrEmpty(s)) {

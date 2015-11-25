@@ -41,8 +41,11 @@ namespace GRA.SRP.Controls {
 
             lblNextLevel.Text =
                 string.Format(
-                    "I'm on {0}level {1}, {2} points to level up!<br />",
-                    (bonus ? "bonus " : ""), level, points);
+                    "I'm on {0}level: {1}.<br />{2} point{3} to level up.<br />",
+                    bonus ? "bonus " : string.Empty,
+                    level,
+                    points,
+                    points > 1 ? "s" : string.Empty);
 
 
         }

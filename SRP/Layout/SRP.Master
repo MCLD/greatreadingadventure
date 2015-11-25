@@ -50,13 +50,13 @@
                         <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li class="<%=this.RegisterPageActive %>"><a href="~/Register.aspx" runat="server" id="lnkRegister">
-                            <asp:Label runat="server">RegisterMasterBtn</asp:Label></a></li>
+                            <asp:Label runat="server">navigation-button-register</asp:Label></a></li>
                         <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
-                            <asp:Label ID="Label1" runat="server">LoginMasterBtn</asp:Label></a></li>
+                            <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
                         <%} else { %>
-                        <li class="<%=this.DashboardPageActive %>"><a href="~/Dashboard.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
+                        <li class="<%=this.DashboardPageActive %>"><a href="~" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Home">
                             <span class="glyphicon glyphicon-book"></span>
-                            <span class="visible-xs-inline">My Dashboard</span></a></li>
+                            <span class="visible-xs-inline">Home</span></a></li>
                         <li class="<%=this.MailSectionActive %>"><a href="~/Mail/" class="menu-item" id="n" runat="server" data-toggle="tooltip" data-placement="bottom" title="Mail">
                             <span class="glyphicon glyphicon-envelope" runat="server" id="nIcon"></span>
                             <span class="visible-xs-inline">Notifications</span>
@@ -75,7 +75,7 @@
                             <span class="visible-xs-inline">My Account</span></a></li>
 
                         <li><a href="/Logout.aspx" runat="server" id="lnkLogout">
-                            <asp:Label ID="Label2" runat="server">LogoutMasterBtn</asp:Label></a></li>
+                            <asp:Label ID="Label2" runat="server">navigation-button-logout</asp:Label></a></li>
                         <% } %>
                     </ul>
                 </div>
