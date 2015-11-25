@@ -4,8 +4,9 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <asp:Panel runat="server" ID="challengeDetails" CssClass="panel panel-default">
-                <div class="panel-heading"><span class="lead">
-                    Challenge: <asp:Label runat="server" ID="challengeTitle"></asp:Label></span>
+                <div class="panel-heading">
+                    <span class="lead">Challenge:
+                        <asp:Label runat="server" ID="challengeTitle"></asp:Label></span>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -55,11 +56,18 @@
                 </table>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
-                        <a href="~/Challenges/" runat="server" class="btn btn-default"><asp:Label runat="server" Text="challenges-return"></asp:Label></a>
+                        <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
+                        <a href="~/Challenges/" runat="server" class="btn btn-default">
+                            <asp:Label runat="server" Text="challenges-return"></asp:Label></a>
                         <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />
                     </div>
                 </div>
             </asp:Panel>
         </div>
     </div>
+    <script>
+        if(<%=this.PrintPage%> == true) {
+            window.print();
+        }
+    </script>
 </asp:Content>

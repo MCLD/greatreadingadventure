@@ -49,6 +49,15 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.DropDownList LocationID;
         
         /// <summary>
+        /// myBadgesButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink myBadgesButton;
+        
+        /// <summary>
         /// btnFilter control.
         /// </summary>
         /// <remarks>

@@ -21367,8 +21367,8 @@ CREATE TABLE [dbo].[PatronReadingLog](
 	[ReadingAmount] [int] NULL,
 	[ReadingPoints] [int] NULL,
 	[LoggingDate] [varchar](50) NULL,
-	[Author] [varchar](50) NULL,
-	[Title] [varchar](150) NULL,
+	[Author] [nvarchar](50) NULL,
+	[Title] [nvarchar](150) NULL,
 	[HasReview] [bit] NULL,
 	[ReviewID] [int] NULL,
  CONSTRAINT [PK_PatronReadingLog] PRIMARY KEY CLUSTERED 

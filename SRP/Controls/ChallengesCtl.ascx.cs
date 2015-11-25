@@ -103,7 +103,8 @@ namespace GRA.SRP.Controls {
             var ds = BookListBooks.GetForDisplay(bl.BLID, ((Patron)Session["Patron"]).PID);
             rptr2.DataSource = ds;
             rptr2.DataBind();
-
+            printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?blid={0}&print=1",
+                                                  bl.BLID);
             pnlDetail.Visible = true;
             this.ShowModal = true;
         }

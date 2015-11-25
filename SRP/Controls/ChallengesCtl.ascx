@@ -121,6 +121,7 @@
             </div>
             <div class="modal-footer hidden-print">
                 <div class="pull-right clearfix">
+                    <asp:HyperLink runat="server" ID="printLink" CssClass="btn btn-default"><span class="glyphicon glyphicon-print"></span></asp:HyperLink>
                     <asp:Button ID="btnClose" runat="server" Text="challenges-close" OnClick="btnClose_Click" CssClass="btn btn-default" />
                     <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />
                 </div>

@@ -140,7 +140,7 @@ namespace GRA.SRP.Controls
             }
             sr.Update();
 
-            var SurveyEndPage = "MyProgram.aspx";
+            var SurveyEndPage = "Dashboard.aspx";
             if (Session["Page"] != null && Session["Page"].ToString() == "1")
             {
                 SurveyEndPage = "Thanks.aspx";
@@ -153,11 +153,12 @@ namespace GRA.SRP.Controls
             Session.Remove("PreTestMandatory");
             Session.Remove("Page");
 
-            if (Session["TestReturnPage"] != null && Session["TestReturnPage"].ToString() != "")
+            if (Session["TestReturnPage"] != null && 
+                !string.IsNullOrEmpty(Session["TestReturnPage"].ToString()))
             {
                 var gotoStr = Session["TestReturnPage"].ToString();
                 Session.Remove("TestReturnPage");
-                Response.Redirect(gotoStr);
+                Response.Redirect(string.Format("~/{0}", gotoStr));
             }
             else
             {

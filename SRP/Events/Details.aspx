@@ -38,10 +38,16 @@
                 </div>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
+                        <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
                         <asp:HyperLink runat="server" ID="eventBackLink" CssClass="btn btn-default">Back</asp:HyperLink>
                     </div>
                 </div>
             </asp:Panel>
         </div>
     </div>
+    <script>
+        if(<%=this.PrintPage%> == true) {
+            window.print();
+        }
+    </script>
 </asp:Content>
