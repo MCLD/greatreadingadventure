@@ -32,6 +32,7 @@ loginform-remember-me=Remember my username
 password-recovery-title=Forgot Password
 password-recovery-username=Username:
 password-recovery-submit=Recover password
+password-recovery-expired=Your password change request has expired. Please generate a new password change request if you need to reset your password.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

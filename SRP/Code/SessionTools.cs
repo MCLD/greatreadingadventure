@@ -23,8 +23,6 @@ namespace GRA.SRP {
                 } else {
                     Session["MasterAcctPID"] = 0;
                 }
-
-
                 return true;
             } catch(Exception ex) {
                 this.Log().Error(() => "Unable to establish patron session", ex);

@@ -50,9 +50,6 @@ namespace SRPApp.Classes {
                     return;
                 }
 
-                if(this.ViewState["TenantID"] == null) {
-                    this.Log().Debug("ViewState Tenant ID is null");
-                }
                 this.ViewState["TenantID"] = crTenantId;
             };
         }

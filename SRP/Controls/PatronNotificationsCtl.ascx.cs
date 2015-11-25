@@ -102,8 +102,9 @@ namespace GRA.SRP.Controls {
 
                 pnlAsk.Visible = false;
                 pnlList.Visible = true;
-                Session[SessionKey.PatronMessageGlyphicon] = "send";
-                Session[SessionKey.PatronMessage] = ((BaseSRPPage)this.Page).GetResourceString("notifications-message-sent");
+                new SessionTools(Session).AlertPatron(((BaseSRPPage)this.Page).GetResourceString("notifications-message-sent"),
+                                                      glyphicon: "send");
+                Response.Redirect("~/Mail/");
             }
         }
     }
