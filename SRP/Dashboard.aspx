@@ -21,7 +21,7 @@
                 <div class="col-xs-12 text-center">
                     <uc1:Avatar runat="server" ID="Avatar" />
                 </div>
-                <div class="col-xs-12 text-center">
+                <div class="col-xs-12 text-center margin-halfem-top margin-halfem-bottom">
                     <uc1:MyPointsControl runat="server" ID="MyPointsControl" />
                 </div>
                 <div class="col-xs-12 hidden-xs">
@@ -47,11 +47,11 @@
         </div>
 
         <div class="col-sm-3">
-            <div class="row">
-                <div class="col-xs-12 margin-1em-top">
-                    <uc1:MyBadgesListControl runat="server" ID="MyBadgesListControl" />
-                </div>
-            </div>
+            <uc1:MyBadgesListControl runat="server" ID="MyBadgesListControl" />
+        </div>
+
+        <div class="col-xs-12 hidden-sm hidden-md hidden-lg">
+            <uc1:LeaderBoardControl runat="server" ID="LeaderBoardControl1" />
         </div>
 
     </div>

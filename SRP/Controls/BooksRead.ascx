@@ -18,7 +18,7 @@
         <div class="pull-right margin-halfem-bottom">
             <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
 
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/ActivityHistory.aspx" CssClass="btn btn-default">Activity History</asp:HyperLink>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/ActivityHistory.aspx" CssClass="btn btn-default"><span class="glyphicon glyphicon-folder-open margin-halfem-right"></span> Activity History</asp:HyperLink>
         </div>
     </div>
 </div>
