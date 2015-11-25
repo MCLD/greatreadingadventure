@@ -6,8 +6,8 @@
     [ReadingAmount]    INT           NULL,
     [ReadingPoints]    INT           NULL,
     [LoggingDate]      VARCHAR (50)  NULL,
-    [Author]           VARCHAR (50)  NULL,
-    [Title]            VARCHAR (150) NULL,
+    [Author]           NVARCHAR (50)  NULL,
+    [Title]            NVARCHAR (150) NULL,
     [HasReview]        BIT           NULL,
     [ReviewID]         INT           NULL,
     CONSTRAINT [PK_PatronReadingLog] PRIMARY KEY CLUSTERED ([PRLID] ASC)

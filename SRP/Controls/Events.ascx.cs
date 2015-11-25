@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using System.Text;
 
 namespace GRA.SRP.Controls {
     public partial class Events : System.Web.UI.UserControl {
@@ -55,12 +55,40 @@ namespace GRA.SRP.Controls {
         }
 
         protected void btnFilter_Click(object sender, EventArgs e) {
+            StringBuilder sb = new StringBuilder();
+            if(!string.IsNullOrEmpty(StartDate.Text)) {
+                sb.Append("Start Date: ");
+                sb.Append("<strong>");
+                sb.Append(StartDate.Text);
+                sb.Append("</strong>");
+            }
+            if(!string.IsNullOrEmpty(EndDate.Text)) {
+                if(sb.Length > 0) {
+                    sb.Append(" / ");
+                }
+                sb.Append("End date: ");
+                sb.Append("<strong>");
+                sb.Append(EndDate.Text);
+                sb.Append("</strong>");
+            }
+            if(!string.IsNullOrEmpty(BranchId.SelectedItem.Text)) {
+                if(sb.Length > 0) {
+                    sb.Append(" / ");
+                }
+                sb.Append("Branch/library: ");
+                sb.Append("<strong>");
+                sb.Append(BranchId.SelectedItem.Text);
+                sb.Append("</strong>");
+            }
+            whatsShowing.Text = sb.ToString();
+            whatsShowing.Visible = !string.IsNullOrEmpty(whatsShowing.Text);
             SetFilterSessionValues();
             GetData();
         }
 
         protected void btnClear_Click(object sender, EventArgs e) {
-            StartDate.Text = EndDate.Text = "";
+            StartDate.Text = EndDate.Text = whatsShowing.Text = "";
+            whatsShowing.Visible = false;
             BranchId.SelectedValue = "0";
             SetFilterSessionValues();
             GetData();

@@ -212,6 +212,8 @@ badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found.
 badges-filter-button=Filter
 badges-filter-clear-button=Clear
+badges-mybadges-button=My Badges
+badges-badgegallery-button=Badge Gallery
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -227,3 +229,9 @@ readinglog-details-cancel=Cancel
 secret-code-header=Secret code
 secret-code-prompt=Code:
 secret-code-submit=Submit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Books read
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+books-read-title=Book List
+books-read-other-family=View another family member:
+books-read-none=No book title and author information logged. If you wish to see a list of books, be sure to enter the title and author when you log your minutes.

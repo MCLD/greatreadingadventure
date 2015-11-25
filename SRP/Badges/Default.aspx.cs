@@ -23,6 +23,7 @@ namespace GRA.SRP {
             }
             TranslateStrings(this);
             this.NoneAvailableText = GetResourceString("badges-none-available");
+            myBadgesButton.Visible = this.IsLoggedIn;
         }
 
         protected void btnFilter_Click(object sender, EventArgs e) {

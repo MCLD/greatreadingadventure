@@ -1061,6 +1061,16 @@ namespace GRA.SRP.DAL {
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetPatronForEdit", arrParams);
         }
 
+        public static DataSet GetReadingList(int pid) {
+            StringBuilder query = new StringBuilder();
+            query.Append("SELECT DISTINCT [Author], [Title] FROM [PatronReadingLog] ");
+            query.Append("WHERE [PID] = @PID AND (AUTHOR != '' AND TITLE != '') ");
+            query.Append("ORDER BY [Title]");
+
+            var patronParameter = new SqlParameter("@PID", pid);
+
+            return SqlHelper.ExecuteDataset(conn, CommandType.Text, query.ToString(), patronParameter);
+        }
 
         //public bool Logoff()
         //{

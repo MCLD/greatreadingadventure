@@ -187,7 +187,7 @@ namespace GRA.SRP.Controls {
 
         protected void btnHistory_Click(object sender, EventArgs e) {
             Session["ActHistPID"] = lblPID.Text;
-            Response.Redirect("~/ActivityHistory.aspx");
+            Response.Redirect("~/Account/ActivityHistory.aspx");
         }
 
         public string GoToUrl {

@@ -64,7 +64,7 @@
                             <span id="unreadBadge" runat="server" class="label label-primary label-as-badge text-primary"><% =this.Unread %></span>
                             <% } %>
                         </a></li>
-                        <li id="badgesNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
+                        <li id="badgesNav" runat="server"><a href="~/Badges/MyBadges.aspx" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
                         <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" id="m" runat="server">Adventures</a></li>
                         <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" id="r" runat="server">Challenges</a></li>
                         <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" id="v" runat="server">Events</a></li>
@@ -111,6 +111,7 @@
                     </div>
                     <div class="modal-footer">
                         <div class="pull-right clearfix">
+                            <button class="btn btn-default" type="button" id="badgePopupPrint"><span class="glyphicon glyphicon-print"></span></button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -346,6 +347,10 @@
                             $('#badgePopupEarnList').append('<li>' + value + '</li>');
                         });
                     }
+                    $('#badgePopupPrint').click(function () {
+                        location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId + "&Print=1";
+                    });
+
                     $('#badgePopupPanel').modal('show');
                 }
             })
@@ -400,8 +405,8 @@
             .fail(function (jqXHR, textStatus, errorThrown) {
                 alert("Couldn't contact server to get badge details: " + errorThrown);
             });
-            return false;
-        }
+                                return false;
+                            }
     </script>
 </body>
 </html>

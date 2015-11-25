@@ -2,11 +2,12 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <div class="row">
-    <div class="col-sm-12 margin-1em-bottom">
+    <div class="col-sm-12 margin-1em-bottom hidden-print">
         <span class="h1">
             <asp:Label ID="Label1" runat="server" Text="notifications-title"></asp:Label></span>
     </div>
 </div>
+
 <asp:Panel ID="pnlList" runat="server" Visible="true">
     <div class="row">
         <div class="col-sm-12 hidden-print">
@@ -66,6 +67,7 @@
                     <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
                     Delete
                 </button>
+                <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
                 <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
                     <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
                     Write another message</button>

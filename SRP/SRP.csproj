@@ -107,7 +107,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Account\AddFamilyMemberAccount.aspx" />
-    <Content Include="ActivityHistory.aspx" />
+    <Content Include="Account\ActivityHistory.aspx" />
+    <Content Include="Account\BookList.aspx" />
     <Content Include="AddlSurvey.aspx" />
     <Content Include="App_Themes\Default\blue_bg.png" />
     <Content Include="App_Themes\Default\blue_hd_bg.png" />
@@ -754,6 +755,7 @@
     <Content Include="Controls\Avatar.ascx" />
     <Content Include="Controls\BadgeAwardCtl.ascx" />
     <Content Include="Controls\Badges.ascx" />
+    <Content Include="Controls\BooksRead.ascx" />
     <Content Include="Controls\ChangeFamilyPassword.ascx" />
     <Content Include="Controls\ChangePassword.ascx" />
     <Content Include="Controls\FamilyCodeControl.ascx" />
@@ -1309,12 +1311,19 @@
     <Compile Include="Account\AddFamilyMemberAccount.aspx.designer.cs">
       <DependentUpon>AddFamilyMemberAccount.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ActivityHistory.aspx.cs">
+    <Compile Include="Account\ActivityHistory.aspx.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ActivityHistory.aspx.designer.cs">
+    <Compile Include="Account\ActivityHistory.aspx.designer.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\BookList.aspx.cs">
+      <DependentUpon>BookList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\BookList.aspx.designer.cs">
+      <DependentUpon>BookList.aspx</DependentUpon>
     </Compile>
     <Compile Include="AddlSurvey.aspx.cs">
       <DependentUpon>AddlSurvey.aspx</DependentUpon>
@@ -2524,6 +2533,13 @@
     </Compile>
     <Compile Include="Controls\Badges.ascx.designer.cs">
       <DependentUpon>Badges.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BooksRead.ascx.cs">
+      <DependentUpon>BooksRead.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BooksRead.ascx.designer.cs">
+      <DependentUpon>BooksRead.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ChangeFamilyPassword.ascx.cs">
       <DependentUpon>ChangeFamilyPassword.ascx</DependentUpon>

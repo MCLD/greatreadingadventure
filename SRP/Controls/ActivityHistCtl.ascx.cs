@@ -17,7 +17,8 @@ namespace GRA.SRP.Controls {
         protected void Page_Load(object sender, EventArgs e) {
             this.FilterButtonText = allActivitiesFilter.Text;
             if(!IsPostBack) {
-                if(string.IsNullOrEmpty(Request["ActHistPID"]) && (Session["ActHistPID"] == null || Session["ActHistPID"].ToString() == "")) {
+                if(string.IsNullOrEmpty(Request["ActHistPID"])
+                   && (Session["ActHistPID"] == null || string.IsNullOrEmpty(Session["ActHistPID"].ToString()))) {
                     Response.Redirect("~/Account/");
                 }
 
@@ -38,8 +39,6 @@ namespace GRA.SRP.Controls {
                     }
                     PID.SelectedValue = lblPID.Text;
                 }
-
-                //var patron = Patron.FetchObject(int.Parse(lblPID.Text));
 
                 PopulateList();
                 AdventureDropDownItem.Visible = Session[SessionKey.AdventuresActive] as bool? == true;
@@ -131,6 +130,14 @@ namespace GRA.SRP.Controls {
                 activitiesPanel.Visible = true;
                 noActivitiesLabel.Visible = false;
             }
+
+            var patron = Patron.FetchObject(pid);
+            string patronName = DisplayHelper.FormatName(patron.FirstName,
+                                                         patron.LastName,
+                                                         patron.Username);
+            whatShowing.Text = string.Format("{0} for <strong>{1}</strong>",
+                                             this.FilterButtonText,
+                                             patronName);
         }
 
         public string FormatReading(string author, string title, string review, int PRID) {

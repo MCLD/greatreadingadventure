@@ -331,5 +331,15 @@ namespace SRPApp.Classes {
             return null;
         }
 
+        protected string PrintPage {
+            get {
+                if(Request.QueryString["print"] != null) {
+                    return "true";
+                } else {
+                    return "false";
+                }
+            }
+        }
+
     }
 }

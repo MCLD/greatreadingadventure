@@ -10,70 +10,52 @@
 namespace GRA.SRP.Controls {
     
     
-    public partial class Events {
+    public partial class BooksRead {
         
         /// <summary>
-        /// pnlList control.
+        /// familyMemberSelector control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlList;
+        protected global::System.Web.UI.WebControls.Panel familyMemberSelector;
         
         /// <summary>
-        /// StartDate control.
+        /// ActivityHistoryOtherFamily control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox StartDate;
+        protected global::System.Web.UI.WebControls.Label ActivityHistoryOtherFamily;
         
         /// <summary>
-        /// EndDate control.
+        /// PID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EndDate;
+        protected global::System.Web.UI.WebControls.DropDownList PID;
         
         /// <summary>
-        /// BranchId control.
+        /// whoRead control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList BranchId;
+        protected global::System.Web.UI.WebControls.Label whoRead;
         
         /// <summary>
-        /// btnFilter control.
+        /// booksPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFilter;
-        
-        /// <summary>
-        /// btnClear control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnClear;
-        
-        /// <summary>
-        /// whatsShowing control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label whatsShowing;
+        protected global::System.Web.UI.WebControls.Panel booksPanel;
         
         /// <summary>
         /// rptr control.
@@ -85,12 +67,12 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Repeater rptr;
         
         /// <summary>
-        /// odsDDBranch control.
+        /// noBooksLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ObjectDataSource odsDDBranch;
+        protected global::System.Web.UI.WebControls.Label noBooksLabel;
     }
 }

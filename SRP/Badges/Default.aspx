@@ -35,6 +35,8 @@
                 <asp:ListItem Value="0" Text="Location"></asp:ListItem>
             </asp:DropDownList>
             <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
+                <asp:HyperLink runat="server" Id="myBadgesButton" NavigateUrl="~/Badges/MyBadges.aspx"
+                    CssClass="btn btn-default btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click"><asp:Label runat="server" Text="badges-mybadges-button"></asp:Label></asp:HyperLink>
                 <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
                     CssClass="btn btn-default btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click" />
                 <asp:Button ID="btnClear" runat="server" Text="badges-filter-clear-button"

@@ -2,13 +2,13 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Panel ID="pnlList" runat="server" Visible="true">
 
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-sm-12">
             <span class="h1">
                 <asp:Label runat="server" Text="events-title"></asp:Label></span>
         </div>
     </div>
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-sm-12 form-inline margin-halfem-top">
             <label for="StartDate" class="margin-halfem-bottom">Start Date:</label>
             <asp:TextBox
@@ -34,11 +34,19 @@
                 <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
             </asp:DropDownList>
             <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
+                <button class="btn btn-default margin-halfem-right" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
                 <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
-                    OnClick="btnFilter_Click" CssClass="btn btn-default btn-sm hidden-print margin-halfem-right" />
-                <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default btn-sm hidden-print" />
+                    OnClick="btnFilter_Click" CssClass="btn btn-default hidden-print margin-halfem-right" />
+                <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default hidden-print" />
             </div>
         </div>
+    </div>
+    <div class="row visible-print-block margin-1em-top margin-1em-bottom">
+        <div class="col-xs-12">
+            <asp:Label runat="server" Text="events-title" CssClass="lead"></asp:Label>
+        </div>
+
+        <asp:Label ID="whatsShowing" runat="server" CssClass="col-xs-12"></asp:Label>
     </div>
     <table class="table table-striped">
         <thead>
@@ -121,6 +129,7 @@
             </div>
             <div class="modal-footer">
                 <div class="pull-right clearfix">
+                    <button class="btn btn-default" type="button" id="eventPopupPrint"><span class="glyphicon glyphicon-print"></span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -186,12 +195,16 @@
                         $('#eventPopupCustom3Panel').hide();
                     }
 
+                    $('#eventPopupPrint').click(function () {
+                        location.href = "<%=Request.ApplicationPath%>Events/Details.aspx?EventId=" + eventId + "&Print=1";
+                    });
+
                     $('#eventPopupPanel').modal('show');
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
                 alert("Couldn't contact server to get event details: " + errorThrown);
             });
-        return false;
-    }
+            return false;
+        }
 </script>
