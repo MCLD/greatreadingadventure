@@ -8,12 +8,23 @@
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             <uc1:FamilyReadingLogControl runat="server" ID="FamilyReadingLogControl" />
-
         </div>
     </div>
     <div class="row margin-1em-top">
         <div class="col-sm-6 col-sm-offset-3">
             <uc1:FamilyCodeControl runat="server" ID="FamilyCodeControl" />
+        </div>
+    </div>
+    <div class="row margin-1em-top">
+        <div class="col-sm-6 col-sm-offset-3 text-center margin-1em-top">
+            <asp:HyperLink ID="FamilyAccountList"
+                CausesValidation="false"
+                CssClass="btn btn-default"
+                runat="server"
+                NavigateUrl="~/Account/FamilyAccountList.aspx">
+                        <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
+                        <asp:Label runat="server" Text="myaccount-family"></asp:Label>
+            </asp:HyperLink>
         </div>
     </div>
 </asp:Content>

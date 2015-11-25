@@ -688,7 +688,9 @@ namespace GRA.SRP.DAL {
             int pid = 0;
             if(pidObject == null
                || !int.TryParse(pidObject.ToString(), out pid)) {
-                "SRPUser".Log().Error("Unable parse returned PID: {0}", pid);
+                "SRPUser".Log().Error("Unable parse to parse PID {0}, returned value: {0}",
+                                      pidObject,
+                                      pid);
                 return null;
             }
 
