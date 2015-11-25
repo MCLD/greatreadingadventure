@@ -87,7 +87,7 @@ family-secret-code-submit=Submit
 myaccount-title=My Account Settings
 myaccount-family-title=Family Account Settings
 myaccount-save=Save
-myaccount-family=Family Members
+myaccount-family=Manage Family Members
 myaccount-add-family-member=Add Family Member
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen

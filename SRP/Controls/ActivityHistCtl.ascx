@@ -19,7 +19,7 @@
         <div class="pull-right margin-halfem-bottom">
             <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
 
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/BookList.aspx" CssClass="btn btn-default">Book List</asp:HyperLink>
+            <asp:HyperLink runat="server" NavigateUrl="~/Account/BookList.aspx" CssClass="btn btn-default"><span class="glyphicon glyphicon-bookmark margin-halfem-right"></span> Book List</asp:HyperLink>
 
             <div class="btn-group">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" runat="server">

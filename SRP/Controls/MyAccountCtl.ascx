@@ -17,7 +17,7 @@
     </div>
     <asp:Repeater ID="rptr" runat="server" OnItemDataBound="rptr_ItemDataBound" OnItemCommand="rptr_ItemCommand">
         <ItemTemplate>
-            <div class="btn-group margin-1em-top">
+            <div class="margin-1em-top">
                 <asp:HyperLink ID="FamilyAccountList"
                     CausesValidation="false"
                     CommandName="familyAccountList"
@@ -27,17 +27,12 @@
                         <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                         <asp:Label runat="server" Text="myaccount-family"></asp:Label>
                 </asp:HyperLink>
-                <asp:HyperLink CausesValidation="false"
-                    CssClass="btn btn-default"
-                    runat="server"
-                    NavigateUrl="~/Account/AddFamilyMemberAccount.aspx"
-                    Visible='<%# CanAddFamilyAccounts(Eval("DOB").ToString(), Eval("Age").ToString()) %>'>
-                    <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
-                    <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
-                </asp:HyperLink>
                 <a href="ChangePassword.aspx" class="btn btn-default">
                     <span class="glyphicon glyphicon-lock margin-halfem-right"></span>
                     Change Password</a>
+                <a href="ActivityHistory.aspx" class="btn btn-default">
+                    <span class="glyphicon glyphicon-folder-open margin-halfem-right"></span>
+                    Activity History</a>
                 <asp:LinkButton runat="server"
                     CommandName="save"
                     CausesValidation="true"

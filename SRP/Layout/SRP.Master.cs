@@ -268,7 +268,7 @@ namespace GRA.SRP {
                     homeLink.HRef = "~/Dashboard.aspx";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if(Session[SessionKey.IsMasterAccount] as bool? == true) {
-                        a.Title = "My Family";
+                        a.Title = "My Account & Family";
                     }
                     this.Unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
                     if(!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover)) {

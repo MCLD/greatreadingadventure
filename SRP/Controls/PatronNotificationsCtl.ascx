@@ -11,11 +11,9 @@
 <asp:Panel ID="pnlList" runat="server" Visible="true">
     <div class="row">
         <div class="col-sm-12 hidden-print">
-            <div class="btn-group" role="group">
-                <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
-                    Write a message</button>
-            </div>
+            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
+                Write a message</button>
         </div>
 
         <%if(this.UserHasMessages) { %>
@@ -59,19 +57,17 @@
 <asp:Panel ID="pnlDetail" runat="server" Visible="false">
     <div class="row">
         <div class="col-sm-12 hidden-print">
-            <div class="btn-group" role="group">
-                <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
-                    Go back</button>
-                <button runat="server" onserverclick="btnDelete_Click" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
-                    Delete
-                </button>
-                <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
-                <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
-                    Write another message</button>
-            </div>
+            <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
+                Go back</button>
+            <button runat="server" onserverclick="btnDelete_Click" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
+                Delete
+            </button>
+            <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
+            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
+                Write another message</button>
         </div>
         <div class="col-sm-12 margin-1em-top">
             <p>
@@ -97,14 +93,12 @@
 <asp:Panel ID="pnlAsk" runat="server" Visible="false">
     <div class="row">
         <div class="col-sm-12 hidden-print">
-            <div class="btn-group" role="group">
-                <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
-                    Go back</button>
-                <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success">
-                    <span class="glyphicon glyphicon-send margin-halfem-right"></span>
-                    Send message</button>
-            </div>
+            <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
+                Go back</button>
+            <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success">
+                <span class="glyphicon glyphicon-send margin-halfem-right"></span>
+                Send message</button>
         </div>
         <div class="col-sm-12">
             <div class="lead margin-1em-top margin-1em-bottom">
