@@ -37,7 +37,7 @@
                     <a href="~/Recover.aspx" runat="server" class="btn btn-default" clientidmode="Static"
                         id="recoverButton">
                         <asp:Label runat="server" Text="loginform-recover" /></a>
-                    <a href="~/Register.aspx" runat="server" class="btn btn-info" clientidmode="Static"
+                    <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info" clientidmode="Static"
                         id="registerButton">
                         <asp:Label runat="server" Text="loginform-register" /></a>
                     <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static"

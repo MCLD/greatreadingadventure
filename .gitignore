@@ -261,4 +261,5 @@ SRP/CSS/Program/*.css
 
 # configuration transforms
 SRP/Web.Dev.config
+SRP/Web.Dev-ext.config
 SRP/Web.Test.config

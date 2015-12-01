@@ -874,6 +874,7 @@
     <Content Include="PlayMinigame.aspx" />
     <Content Include="Recover.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="RegisterILS.aspx" />
     <Content Include="Resources\program.default.en-US.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1241,7 +1242,8 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\PublishProfiles\Dev-ext.pubxml" />
+    <None Include="Properties\PublishProfiles\Development-external.pubxml" />
+    <None Include="Properties\PublishProfiles\Release.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -1281,8 +1283,7 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
-    <None Include="Properties\PublishProfiles\Dev.pubxml" />
-    <None Include="Properties\PublishProfiles\Test deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Development.pubxml" />
     <Content Include="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2983,6 +2984,13 @@
     </Compile>
     <Compile Include="Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterILS.aspx.cs">
+      <DependentUpon>RegisterILS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterILS.aspx.designer.cs">
+      <DependentUpon>RegisterILS.aspx</DependentUpon>
     </Compile>
     <Compile Include="Select.aspx.cs">
       <DependentUpon>Select.aspx</DependentUpon>
