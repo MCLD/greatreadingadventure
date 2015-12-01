@@ -58,7 +58,8 @@ namespace GRA.SRP {
 
         public string RegisterPageActive {
             get {
-                if(Request.Path.EndsWith("Register.aspx", StringComparison.OrdinalIgnoreCase)) {
+                if(Request.Path.EndsWith("Register.aspx", StringComparison.OrdinalIgnoreCase)
+                   || Request.Path.EndsWith("RegisterILS.aspx", StringComparison.OrdinalIgnoreCase)) {
                     return "active";
                 }
                 return string.Empty;

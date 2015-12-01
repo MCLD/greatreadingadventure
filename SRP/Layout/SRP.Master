@@ -49,7 +49,7 @@
                         <%if(!this.CurrentPage.IsLoggedIn) { %>
                         <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server" data-toggle="tooltip" data-placement="bottom" title="Badges"><span class="glyphicon glyphicon-certificate" runat="server"></span><span class="visible-xs-inline">Badges</span></a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
-                        <li class="<%=this.RegisterPageActive %>"><a href="~/Register.aspx" runat="server" id="lnkRegister">
+                        <li class="<%=this.RegisterPageActive %>"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">navigation-button-register</asp:Label></a></li>
                         <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
                             <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
@@ -176,7 +176,7 @@
                             <a href="~/Recover.aspx" runat="server" class="btn btn-default"
                                 id="loginPopupRecoverButton">
                                 <asp:Label runat="server" Text="loginform-recover" /></a>
-                            <a href="~/Register.aspx" runat="server" class="btn btn-info"
+                            <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info"
                                 id="loginPopupRegisterButton">
                                 <asp:Label runat="server" Text="loginform-register" /></a>
                             <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"

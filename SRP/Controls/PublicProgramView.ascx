@@ -9,7 +9,7 @@
 
         <div class="clearfix margin-1em-top margin-1em-bottom">
             <div class="col-sm-6 margin-halfem-top">
-                <a href="~/Register.aspx" runat="server" class="btn btn-info btn-block btn-lg">
+                <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info btn-block btn-lg">
                     <asp:Label runat="server" Text="frontpage-button-register"></asp:Label></a>
             </div>
             <div class="col-sm-6 margin-halfem-top">
