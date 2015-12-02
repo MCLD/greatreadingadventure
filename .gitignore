@@ -260,6 +260,6 @@ SRP/CSS/Program/*.css
 !SRP/CSS/Program/4.css
 
 # configuration transforms
-SRP/Web.Dev.config
-SRP/Web.Dev-ext.config
-SRP/Web.Test.config
+SRP/Web.*.config
+!SRP/Web.Debug.config
+!SRP/Web.Release.config
