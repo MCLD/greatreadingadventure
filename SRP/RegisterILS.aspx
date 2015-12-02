@@ -15,7 +15,7 @@
                 <div class="panel-body">
                     <div class="form-horizontal">
                         <asp:Panel ID="instructionsPanel" runat="server" CssClass="row">
-                            <div class="col-xs-12 margin-1em-bottom">
+                            <div class="col-xs-12">
                                 <asp:Label runat="server" Text="registration-instructions"></asp:Label>
                             </div>
 
@@ -26,7 +26,7 @@
                         </asp:Panel>
 
                         <asp:Panel ID="familyMemberPanel" runat="server" Visible="False" CssClass="row">
-                            <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+                            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                                 <div class="alert alert-info">
                                     <span class="glyphicon glyphicon-info-sign"></span>
                                     <asp:Label runat="server" Text="registration-create-family-accounts"></asp:Label>
@@ -95,12 +95,12 @@
                                 </label>
                                 <div class="col-sm-6">
                                     <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
-                                        AppendDataBoundItems="True" CssClass="form-control">
+                                        AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="PrimaryLibraryReq">
                                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-sm-3 form-control-static">
-                                    <span runat="server" visible='<%# Eval("PrimaryLibrary_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                                    <span runat="server" visible='<%# Eval("PrimaryLibrary_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm PrimaryLibraryReq"></span>
                                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PrimaryLibrary_Req") %>'
                                         ControlToValidate="PrimaryLibrary" Display="Dynamic" ErrorMessage="Primary library is required"
                                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -204,7 +204,7 @@
 
                         <asp:Panel runat="server" ID="step4" Visible="false" DefaultButton="NavigationNext">
                             <div class="row">
-                                <div class="col-sm-10 col-sm-offset-1">
+                                <div class="col-sm-10 col-sm-offset-1 margin-1em-bottom">
                                     <asp:Label runat="server" Text="registration-form-family-simplified"></asp:Label>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@
         });
 
 
-        $('.required-asterisk').focusout(this, function (whichControl) {
+        $('.required-asterisk').focusout(function () {
             var asteriskClass = $(this).data('asterisk');
             if (asteriskClass) {
                 if ($(this).val().length == 0) {
@@ -308,6 +308,41 @@
                     $('.' + asteriskClass).hide();
                 }
             }
+        });
+
+        $('.required-asterisk-dropdown').change(function () {
+            var asteriskClass = $(this).data('asterisk');
+            if (asteriskClass) {
+                if ($(this).val() == 0) {
+                    $('.' + asteriskClass).show();
+                } else {
+                    $('.' + asteriskClass).hide();
+                }
+            }
+        });
+
+        $().ready(function () {
+            $('.required-asterisk').each(function (index, element) {
+                var asteriskClass = $(element).data('asterisk');
+                if (asteriskClass) {
+                    if ($(element).val().length == 0) {
+                        $('.' + asteriskClass).show();
+                    } else {
+                        $('.' + asteriskClass).hide();
+                    }
+                }
+            });
+
+            $('.required-asterisk-dropdown').each(function (index, element) {
+                var asteriskClass = $(element).data('asterisk');
+                if (asteriskClass) {
+                    if ($(element).val() == 0) {
+                        $('.' + asteriskClass).show();
+                    } else {
+                        $('.' + asteriskClass).hide();
+                    }
+                }
+            });
         });
     </script>
 </asp:Content>

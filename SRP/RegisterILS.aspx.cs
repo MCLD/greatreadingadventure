@@ -57,7 +57,6 @@ namespace GRA.SRP {
                     instructionsPanel.Visible = true;
                     NavigationBack.Enabled = true;
                     if(string.IsNullOrEmpty(FirstName.Text)
-                       && string.IsNullOrEmpty(LastName.Text)
                        && !string.IsNullOrEmpty(LibraryCard.Text)
                        && !string.IsNullOrEmpty(LibraryPin.Text)) {
                         IlsPatronLookup();
@@ -80,16 +79,17 @@ namespace GRA.SRP {
                         step3.Visible = false;
                         step4.Visible = true;
                         instructionsPanel.Visible = false;
+                        NavigationBack.Enabled = false;
                     } else {
                         // couldn't create, back to step 3
                         step3.Visible = true;
                         step4.Visible = false;
                         instructionsPanel.Visible = true;
+                        NavigationBack.Enabled = true;
                         ViewState["CurrentStep"] = --currentStep;
                     }
                     step1.Visible = false;
                     step2.Visible = false;
-                    NavigationBack.Enabled = true;
                     break;
                 case 5:
                     if(!string.IsNullOrEmpty(EarnedBadges.Text)) {
@@ -122,7 +122,6 @@ namespace GRA.SRP {
             LibraryCard.Text = string.Empty;
             LibraryPin.Text = string.Empty;
             FirstName.Text = string.Empty;
-            LastName.Text = string.Empty;
             Username.Text = string.Empty;
             Password.Text = string.Empty;
             Password2.Text = string.Empty;
