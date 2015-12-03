@@ -471,6 +471,7 @@
     <Content Include="Content\gra.css" />
     <Content Include="Content\jquery.datepick.css" />
     <Content Include="ControlRoom\AJAX.master" />
+    <Content Include="ControlRoom\Configure.aspx" />
     <Content Include="ControlRoom\Control.Master" />
     <Content Include="ControlRoom\Controls\CRMenu.ascx" />
     <Content Include="ControlRoom\Controls\CRRibbon.ascx" />
@@ -505,6 +506,7 @@
     <Content Include="ControlRoom\Images\Synchronize.png" />
     <Content Include="ControlRoom\Images\Synchronize_LG.png" />
     <Content Include="ControlRoom\Images\Tenants.png" />
+    <Content Include="ControlRoom\Modules\Install\InsertInitialData-MultiplePrograms.sql" />
     <Content Include="ControlRoom\Modules\Install\InsertInitialData.sql" />
     <Content Include="ControlRoom\Modules\Notifications\BulkNotification.aspx" />
     <Content Include="ControlRoom\Modules\Patrons\PatronSurveyDetails.aspx" />
@@ -1399,6 +1401,13 @@
     </Compile>
     <Compile Include="ControlRoom\AJAX.master.designer.cs">
       <DependentUpon>AJAX.master</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Configure.aspx.cs">
+      <DependentUpon>Configure.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Configure.aspx.designer.cs">
+      <DependentUpon>Configure.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\CRLogout.cs" />
     <Compile Include="ControlRoom\CRSessionKey.cs" />

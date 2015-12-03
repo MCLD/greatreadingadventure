@@ -18,7 +18,7 @@ namespace SRP {
                         int PID = Programs.GetDefaultProgramID();
                         Session["ProgramID"] = PID.ToString();
                     } catch {
-                        Response.Redirect("~/ControlRoom/Setup.aspx");
+                        Response.Redirect("~/ControlRoom/Configure.aspx");
                     }
                     // pgmID.Text = Session["ProgramID"].ToString();
                 } else {
