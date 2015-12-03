@@ -61,9 +61,9 @@ namespace GRA.SRP.Classes {
                     body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                     body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                    EmailService.SendEmail(patron.EmailAddress,
-                                           "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                           body.ToString().FormatWith(values));
+                    new EmailService().SendEmail(patron.EmailAddress,
+                                                 "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                                 body.ToString().FormatWith(values));
                     new SessionTools(Session).AlertPatron("Processing your password reset request, you should receive an email soon.",
                         glyphicon: "ok");
                 }

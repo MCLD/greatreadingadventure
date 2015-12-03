@@ -93,7 +93,7 @@ namespace SRPApp.Classes {
                         try {
                             tenID = Tenant.GetTenantByDomainName(dom);
                         } catch {
-                            Response.Redirect("~/ControlRoom/Setup.aspx");
+                            Response.Redirect("~/ControlRoom/Configure.aspx");
                         }
                         // else go to tenant selection page ..
                         if(tenID < 0) {

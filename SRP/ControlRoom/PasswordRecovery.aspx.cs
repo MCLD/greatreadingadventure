@@ -74,10 +74,10 @@ namespace GRA.SRP.ControlRoom {
             body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
             body.Append("completed from: {RemoteAddress}.</em></p>");
 
-            EmailService.SendEmail(user.EmailAddress,
-                                   "{SystemName} - {PasswordResetSuccessSubject}".FormatWith(values),
-                                   body.ToString().FormatWith(values));
-
+            new EmailService().SendEmail(user.EmailAddress,
+                                         "{SystemName} - {PasswordResetSuccessSubject}".FormatWith(values),
+                                         body.ToString().FormatWith(values));
+        
             Response.Redirect("Login.aspx");
         }
     }

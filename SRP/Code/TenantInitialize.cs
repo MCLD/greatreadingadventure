@@ -49,7 +49,7 @@ namespace GRA.SRP.ControlRoom
                 " at " + SRPSettings.GetSettingValue("ContactEmail") + "." +
                 "<br><br><br><a href='" + baseUrl + "'>" + baseUrl + "</a> <br> ";
 
-            EmailService.SendEmail(u.EmailAddress, Message, EmailBody);
+            new EmailService().SendEmail(u.EmailAddress, Message, EmailBody);
 
         }
 

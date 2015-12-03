@@ -53,9 +53,9 @@ namespace GRA.SRP.ControlRoom {
                 body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                 body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                EmailService.SendEmail(uxEmailaddress.Text,
-                                       "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                       body.ToString().FormatWith(values));
+                new EmailService().SendEmail(uxEmailaddress.Text,
+                                             "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                             body.ToString().FormatWith(values));
 
             } else {
                 SRPUser lookupUser = SRPUser.FetchByUsername(userId);
@@ -96,9 +96,9 @@ namespace GRA.SRP.ControlRoom {
                 body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                 body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                EmailService.SendEmail(uxEmailaddress.Text,
-                                       "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                       body.ToString().FormatWith(values));
+                new EmailService().SendEmail(uxEmailaddress.Text,
+                                             "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                             body.ToString().FormatWith(values));
             }
 
             lblMessage.Text = "Processing your password reset request, you should receive an email soon.";
