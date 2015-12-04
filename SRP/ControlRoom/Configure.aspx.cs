@@ -531,8 +531,8 @@ namespace GRA.SRP.ControlRoom {
                     body.Append("<a href=\"{ControlRoomLink}\">log in</a> using the default ");
                     body.Append("system administrator credentials.</p><p>For more information on ");
                     body.Append("setting up and using the {SystemName} software, feel free to ");
-                    body.Append("visit the ");
-                    body.Append("<a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
+                    body.Append("visit the <a href=\"http://manual.greatreadingadventure.com/\">manual</a>");
+                    body.Append("and <a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
                     body.Append("</p>");
 
                     new EmailService().SendEmail(MailAddress.Text,
