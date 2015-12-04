@@ -1,5 +1,6 @@
 ﻿using GRA.Communications;
 using GRA.SRP.Core.Utilities;
+using GRA.Tools;
 using Microsoft.ApplicationBlocks.Data;
 using System;
 using System.Collections;
@@ -281,7 +282,38 @@ namespace GRA.SRP.ControlRoom {
         }
 
         protected List<string> ValidateLocalDb() {
-            throw new NotImplementedException();
+            var issues = new List<string>();
+
+            var localdbCs = new SqlConnectionStringBuilder();
+            localdbCs.DataSource = DatabaseServer.Text;
+
+            string existsQuery = string.Format("SELECT [database_id] FROM [sys].[databases] "
+                                               + "WHERE [Name] = '{0}'",
+                                               DatabaseCatalog.Text);
+            object result = null;
+            using(var sqlConnection = new SqlConnection(localdbCs.ConnectionString)) {
+                try {
+                    result = SqlHelper.ExecuteScalar(sqlConnection, CommandType.Text, existsQuery);
+                } catch(Exception ex) {
+                    string error = string.Format("Unable to check if the database exists: {0}", ex.Message);
+                    issues.Add(error);
+                    this.Log().Error(error);
+                    return issues;
+                }
+
+                if(result == null) {
+                    string createDb = string.Format("CREATE DATABASE [{0}]", DatabaseCatalog.Text);
+                    try {
+                        SqlHelper.ExecuteNonQuery(sqlConnection, CommandType.Text, createDb);
+                    } catch(Exception ex) {
+                        string error = string.Format("Unable to create exists: {0}", ex.Message);
+                        issues.Add(error);
+                        this.Log().Error(error);
+                        return issues;
+                    }
+                }
+            }
+            return null;
         }
 
         protected List<string> ValidateDatabase() {
@@ -379,8 +411,10 @@ namespace GRA.SRP.ControlRoom {
             var ownerBuilder = new SqlConnectionStringBuilder();
             ownerBuilder.DataSource = DatabaseServer.Text;
             ownerBuilder.InitialCatalog = DatabaseCatalog.Text;
-            ownerBuilder.UserID = DatabaseOwnerUser.Text;
-            ownerBuilder.Password = ViewState[DbOwnerKey].ToString();
+            if(!DatabaseServer.Text.Contains("(localdb)")) {
+                ownerBuilder.UserID = DatabaseOwnerUser.Text;
+                ownerBuilder.Password = ViewState[DbOwnerKey].ToString();
+            }
 
             using(var sqlConnection = new SqlConnection(ownerBuilder.ConnectionString)) {
                 // do database script run
@@ -404,6 +438,32 @@ namespace GRA.SRP.ControlRoom {
                 if(insertIssues.Count > 0) {
                     return insertIssues;
                 }
+
+                // update email address
+                try {
+                    // update the sysadmin user's email
+                    SqlCommand updateEmail = new SqlCommand("UPDATE [SRPUser] SET [EmailAddress] = @emailAddress WHERE [Username] = 'sysadmin';",
+                                                            sqlConnection);
+                    updateEmail.Parameters.AddWithValue("@emailAddress", MailAddress.Text);
+                    updateEmail.ExecuteNonQuery();
+                } catch(Exception ex) {
+                    string error = string.Format("Unable to update administrative email address: {0}",
+                                                 ex);
+                    this.Log().Error(error);
+                }
+                try {
+                    // update the sysadmin contact email and mail from address
+                    // TODO email - provide better setup for email
+                    SqlCommand updateEmail = new SqlCommand("UPDATE [SRPSettings] SET [Value] = @emailAddress WHERE [Name] IN ('ContactEmail', 'FromEmailAddress');",
+                                                            sqlConnection);
+                    updateEmail.Parameters.AddWithValue("@emailAddress", MailAddress.Text);
+                    updateEmail.ExecuteNonQuery();
+                } catch(Exception ex) {
+                    string error = string.Format("Unable to update administrative email address: {0}",
+                                                 ex);
+                    this.Log().Error(error);
+                }
+
             }
 
             // data inserted, update Web.config
@@ -411,8 +471,10 @@ namespace GRA.SRP.ControlRoom {
                 var userBuilder = new SqlConnectionStringBuilder();
                 userBuilder.DataSource = DatabaseServer.Text;
                 userBuilder.InitialCatalog = DatabaseCatalog.Text;
-                userBuilder.UserID = DatabaseUserUser.Text;
-                userBuilder.Password = ViewState[DbUserKey].ToString();
+                if(!DatabaseServer.Text.Contains("(localdb)")) {
+                    userBuilder.UserID = DatabaseUserUser.Text;
+                    userBuilder.Password = ViewState[DbUserKey].ToString();
+                }
 
                 var csSection = (ConnectionStringsSection)webConfig.GetSection("connectionStrings");
                 csSection.ConnectionStrings[GlobalUtilities.SRPDBConnectionStringName].ConnectionString = userBuilder.ConnectionString;
@@ -453,6 +515,36 @@ namespace GRA.SRP.ControlRoom {
 
 
             if(issues.Count == 0) {
+                this.Log().Info(() => "Great Reading Adventure setup complete!");
+                try {
+                    // TODO email - move this template out to the database
+                    var values = new {
+                        SystemName = "The Great Reading Adventure",
+                        ControlRoomLink = string.Format("{0}{1}",
+                                                        WebTools.GetBaseUrl(Request),
+                                                        "/ControlRoom/"),
+                    };
+
+                    StringBuilder body = new StringBuilder();
+                    body.Append("<p>Congratulations! You have successfully configured ");
+                    body.Append("{SystemName}!</p><p>You may now ");
+                    body.Append("<a href=\"{ControlRoomLink}\">log in</a> using the default ");
+                    body.Append("system administrator credentials.</p><p>For more information on ");
+                    body.Append("setting up and using the {SystemName} software, feel free to ");
+                    body.Append("visit the ");
+                    body.Append("<a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
+                    body.Append("</p>");
+
+                    new EmailService().SendEmail(MailAddress.Text,
+                                                 "{SystemName} - Setup complete!"
+                                                 .FormatWith(values),
+                                                 body.ToString().FormatWith(values));
+                    this.Log().Info(() => "Welcome email sent.");
+                } catch(Exception ex) {
+                    this.Log().Error(() => "Welcome email sending failure: {Message}"
+                                           .FormatWith(ex));
+                }
+
                 return null;
             } else {
                 return issues;
