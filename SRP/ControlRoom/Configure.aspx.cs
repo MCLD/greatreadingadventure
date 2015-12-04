@@ -102,7 +102,7 @@ namespace GRA.SRP.ControlRoom {
             return new string('*', BlankPasswordLength);
         }
 
-        protected void ShowStep(int stepNumber, bool fromPreviousButton) {
+        protected void ShowStep(int stepNumber, bool skipValidation) {
             CurrentStep.Text = stepNumber.ToString();
             step1.Visible = false;
             step2.Visible = false;
@@ -125,7 +125,7 @@ namespace GRA.SRP.ControlRoom {
                     break;
                 case 3:
                     // mail
-                    if(!fromPreviousButton) {
+                    if(!skipValidation) {
                         List<string> databaseStatus = null;
                         try {
                             // save passwords
@@ -232,12 +232,12 @@ namespace GRA.SRP.ControlRoom {
             if(currentStep > 1) {
                 currentStep--;
             }
-            SendToStep(currentStep, fromPreviousButton: true);
+            SendToStep(currentStep, skipValidation: true);
         }
 
-        private void SendToStep(int step, bool fromPreviousButton = false) {
+        private void SendToStep(int step, bool skipValidation = false) {
             ViewState[StepKey] = step;
-            ShowStep(step, fromPreviousButton);
+            ShowStep(step, skipValidation);
         }
 
         protected void SendTestMail(object sender, EventArgs e) {
@@ -270,12 +270,13 @@ namespace GRA.SRP.ControlRoom {
                 if(service.SendEmail(MailAddress.Text,
                                      MailAddress.Text,
                                      "Test email during Great Reading Adventure setup",
-                                     "This is an email sent during the setup of the Great Reading Adventure software to ensure your mail settings are correct.")) {
+                                     "This is an email sent during the setup of the Great Reading Adventure software to ensure the mail settings are correct!")) {
                     this.MailSuccessPanel.Visible = true;
                 } else {
                     this.MailIssuePanel.Visible = true;
                     this.MailIssueMessage.Text = string.Format("There was a problem sending the test message: {0}", service.Error);
                 }
+                ShowStep((int)ViewState[StepKey], true);
             }
         }
 
