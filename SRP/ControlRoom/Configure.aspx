@@ -357,7 +357,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <span class="lead">Validation</span>
+                        <span class="lead" id="processingConfigurationTitle">Validation</span>
                     </div>
                     <div class="modal-body text-center">
                         <div class="progress">
@@ -392,6 +392,7 @@
                 if (Page_ClientValidate()) {
                     $('#processingConfigurationMessage').text("Sending test email message...");
                     $('#processingConfiguration').modal({ backdrop: 'static' });
+                    $('#processingConfigurationTitle').text("Validation");
                     return true;
                 } else {
                     return false;
@@ -401,8 +402,9 @@
             function navigationNextShowStatus() {
                 if (typeof Page_ClientValidate == "undefined") {
                     if ($('.current-step').text() == "5") {
-                        $('#processingConfigurationMessage').text("Saving initial configuration to disk and the database...");
+                        $('#processingConfigurationMessage').text("Saving configuration to disk and the database...");
                         $('#processingConfiguration').modal({ backdrop: 'static' });
+                        $('#processingConfigurationTitle').text("Configuration");
                     }
                     return true;
                 }
@@ -410,6 +412,7 @@
                     if ($('.current-step').text() == "2") {
                         $('#processingConfigurationMessage').text("Validating database connection information...");
                         $('#processingConfiguration').modal({ backdrop: 'static' });
+                        $('#processingConfigurationTitle').text("Validation");
                     }
                     return true;
                 } else {
