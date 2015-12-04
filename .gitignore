@@ -263,3 +263,7 @@ SRP/CSS/Program/*.css
 SRP/Web.*.config
 !SRP/Web.Debug.config
 !SRP/Web.Release.config
+
+# Directory for Automatic Certificate Management Environment (ACME)/letsencrypt.org
+SRP/.well-known/acme-challenge/*
+!SRP/.well-known/acme-challenge/Web.config
