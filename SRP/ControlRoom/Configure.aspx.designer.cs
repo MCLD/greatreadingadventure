@@ -157,15 +157,6 @@ namespace GRA.SRP.ControlRoom {
         protected global::System.Web.UI.WebControls.Panel MailSuccessPanel;
         
         /// <summary>
-        /// MailServer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox MailServer;
-        
-        /// <summary>
         /// MailAddress control.
         /// </summary>
         /// <remarks>
@@ -173,6 +164,15 @@ namespace GRA.SRP.ControlRoom {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox MailAddress;
+        
+        /// <summary>
+        /// MailServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox MailServer;
         
         /// <summary>
         /// MailPort control.

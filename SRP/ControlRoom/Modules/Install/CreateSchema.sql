@@ -3362,6 +3362,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -3385,6 +3386,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Insert]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -12465,7 +12467,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
-ORDER BY Code
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Insert]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON

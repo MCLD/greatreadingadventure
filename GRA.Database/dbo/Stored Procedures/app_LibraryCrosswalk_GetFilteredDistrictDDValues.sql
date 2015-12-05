@@ -15,3 +15,4 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY [Description]

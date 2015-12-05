@@ -53,4 +53,4 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
-ORDER BY Code
+ORDER BY [Description]
