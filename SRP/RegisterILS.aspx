@@ -89,6 +89,21 @@
                                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 </div>
                             </div>
+                            <div class="form-group" runat="server" visible='<%# (bool)Eval("EmailAddress_Prompt")%>'>
+                                <label class="col-sm-3 control-label">
+                                    <asp:Label runat="server" Text="registration-form-email"></asp:Label>
+                                </label>
+                                <div class="col-sm-6">
+                                    <asp:TextBox ID="EmailAddress" data-asterisk="EmailReq" runat="server" CssClass="form-control required-asterisk"></asp:TextBox>
+                                </div>
+                                <div class="col-sm-3 form-control-static">
+                                    <span runat="server" visible='<%# Eval("EmailAddress_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm EmailReq"></span>
+                                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("EmailAddress_Req") %>'
+                                        ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email address is required"
+                                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                                </div>
+                            </div>
+
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("PrimaryLibrary_Prompt")%>'>
                                 <label class="col-sm-3 control-label">
                                     <asp:Label runat="server" Text="registration-form-library"></asp:Label>

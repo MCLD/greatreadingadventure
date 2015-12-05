@@ -122,6 +122,7 @@ namespace GRA.SRP {
             LibraryCard.Text = string.Empty;
             LibraryPin.Text = string.Empty;
             FirstName.Text = string.Empty;
+            EmailAddress.Text = string.Empty;
             Username.Text = string.Empty;
             Password.Text = string.Empty;
             Password2.Text = string.Empty;
@@ -136,6 +137,7 @@ namespace GRA.SRP {
             patron.NewPassword = Password.Text;
             patron.FirstName = FirstName.Text;
             patron.LastName = LastName.Text;
+            patron.EmailAddress = EmailAddress.Text;
             patron.LibraryCard = LibraryCard.Text;
             int primaryLibrary = 0;
             if(int.TryParse(PrimaryLibrary.SelectedValue, out primaryLibrary)) {
@@ -239,7 +241,16 @@ namespace GRA.SRP {
                         if((bool)patron["Success"]) {
                             FirstName.Text = patron["FirstName"].ToString();
                             LastName.Text = patron["LastName"].ToString();
-                            PrimaryLibrary.SelectedValue = patron["Library"].ToString();
+                            EmailAddress.Text = patron["Email"].ToString();
+                            try {
+                                if(PrimaryLibrary.Items.Count == 1) {
+                                    PrimaryLibrary.DataBind();
+                                }
+                                PrimaryLibrary.SelectedValue = PrimaryLibrary.Items.FindByText(patron["Library"].ToString()).Value;
+                            } catch (Exception ex) {
+                                this.Log().Info("Couldn't find branch {0} in drop-down",
+                                                patron["Library"].ToString());
+                            }
                         } else {
                             this.Log().Error(string.Format("ILS lookup on {0} was not successful: {1}",
                                              this.LibraryCard.Text,

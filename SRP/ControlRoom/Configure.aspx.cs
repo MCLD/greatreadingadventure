@@ -440,6 +440,7 @@ namespace GRA.SRP.ControlRoom {
                 }
 
                 // update email address
+                sqlConnection.Open();
                 try {
                     // update the sysadmin user's email
                     SqlCommand updateEmail = new SqlCommand("UPDATE [SRPUser] SET [EmailAddress] = @emailAddress WHERE [Username] = 'sysadmin';",
@@ -463,7 +464,7 @@ namespace GRA.SRP.ControlRoom {
                                                  ex);
                     this.Log().Error(error);
                 }
-
+                sqlConnection.Close();
             }
 
             // data inserted, update Web.config
