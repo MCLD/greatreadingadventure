@@ -52,7 +52,7 @@
     </td>
     </tr>
     <tr>
-        <td>On Book Lists replace this Program to the following Program: </td>
+        <td>On Challenges replace this Program to the following Program: </td>
         <td>
             <asp:DropDownList ID="BookListProgram" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID" 
                 AppendDataBoundItems="True"

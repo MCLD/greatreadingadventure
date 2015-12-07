@@ -31,6 +31,15 @@ namespace GRA.SRP.ControlRoom {
                 if(!Page.IsValid) {
                     uxMessageBox.Visible = true;
                 }
+            } else {
+                if(Request.Cookies["ControlRoomUsername"] != null) {
+                    var cookie = Request.Cookies["ControlRoomUsername"];
+                    if(!string.IsNullOrEmpty(cookie.Value)) {
+                        this.uxLogin.UserName = cookie.Value;
+                        this.uxLogin.RememberMeSet = true;
+
+                    }
+                }
             }
         }
 
@@ -55,6 +64,17 @@ namespace GRA.SRP.ControlRoom {
 
 
                 if(e.Authenticated) {
+                    // handle remember me
+                    if(uxLogin.RememberMeSet == true) {
+                        var rememberMe = new HttpCookie("ControlRoomUsername", uxLogin.UserName);
+                        rememberMe.Expires = DateTime.Now.AddDays(14);
+                        Response.Cookies.Set(rememberMe);
+                    } else {
+                        var rememberMe = new HttpCookie("ControlRoomUsername", string.Empty);
+                        rememberMe.Expires = DateTime.Now.AddDays(-1);
+                        Response.Cookies.Set(rememberMe);
+                    }
+
                     // Put User Profile into Session.
                     // Put Security roles into session
                     // = ConfigurationManager.AppSettings["ApplicationName"];

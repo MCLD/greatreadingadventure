@@ -135,6 +135,8 @@ namespace GRA.SRP {
             patron.ProgID = Programs.GetDefaultProgramForAgeAndGrade(0, 0);
             patron.Username = Username.Text;
             patron.NewPassword = Password.Text;
+            // hardcoding over 18 because there's no facility to ask here
+            patron.Over18Flag = true;
             patron.FirstName = FirstName.Text;
             patron.LastName = LastName.Text;
             patron.EmailAddress = EmailAddress.Text;

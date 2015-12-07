@@ -98,7 +98,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.Awa
                         <asp:ListItem Value="-1">[Earned any way possible]</asp:ListItem>
                         <asp:ListItem Value="0">Earned by reading</asp:ListItem>
                         <asp:ListItem Value="1">Earned by attending events</asp:ListItem>
-                        <asp:ListItem Value="2">Earned by completing book lists</asp:ListItem>
+                        <asp:ListItem Value="2">Earned by completing Challenges</asp:ListItem>
                         <asp:ListItem Value="4">Earned by playing games</asp:ListItem>
                     </asp:DropDownList>
                 </td>
