@@ -23,9 +23,10 @@ This manual is split into several main sections:
 
 * :ref:`intro-docs` - What is The Great Reading Adventure? How does it work?
 * :ref:`install-docs` - downloading and installing The Great Reading Adventure software
-* :ref:`setup-docs` - setting up your reading program
+* :ref:`config-docs` - setting up your reading program
 * :ref:`running-docs` - using the GRA day-to-day during your reading program
 * :ref:`howto-docs` - how to perform specific tasks
+* :ref:`technical-docs` - technical documentation
 
 .. _intro-docs:
 
@@ -34,6 +35,7 @@ This manual is split into several main sections:
    :caption: Introduction
 
    introduction/overview
+   introduction/planning
 
 
 .. _install-docs:
@@ -44,18 +46,19 @@ This manual is split into several main sections:
 
    installation/getting-started
    installation/system-requirements
+   installation/requirements-checklist
    installation/download-the-software
    installation/create-the-database
    installation/install-the-software
 
 
-.. _setup-docs:
+.. _config-docs:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Initial Setup
+   :caption: Initial Configuration
 
-   setup/database-setup
+   configuration/initial-configuration
 
 .. _running-docs:
 
@@ -63,7 +66,7 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Running your reading programs
 
-   running/notifications
+   running/mail
    
 .. _howto-docs:
 
@@ -73,10 +76,12 @@ This manual is split into several main sections:
 
    how-to/create-a-badge
 
-Indices and tables
-==================
+.. _technical-docs:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+.. toctree::
+   :maxdepth: 1
+   :caption: Technical Documentation
+   
+   technical/configuration-details
+   technical/about
+   
