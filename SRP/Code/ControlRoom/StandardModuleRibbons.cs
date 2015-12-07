@@ -152,12 +152,12 @@ namespace GRA.SRP.Core.Utilities
             var returnList = new List<RibbonPanel>();
             var pnl = new RibbonPanel
             {
-                Name = "Notifications",
-                ImageAlt = "Notifications",
+                Name = "Mail",
+                ImageAlt = "Mail",
                 ImagePath = "/ControlRoom/Images/Notifications.png"
             };
-            pnl.Add(new RibbonLink { Name = "Notification Queue", Url = "/ControlRoom/Modules/Notifications/NotificationList.aspx" });
-            pnl.Add(new RibbonLink { Name = "Bulk Notification", Url = "/ControlRoom/Modules/Notifications/BulkNotification.aspx" });
+            pnl.Add(new RibbonLink { Name = "Mail Queue", Url = "/ControlRoom/Modules/Notifications/NotificationList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Bulk Mail", Url = "/ControlRoom/Modules/Notifications/BulkNotification.aspx" });
             returnList.Add(pnl);
 
             return returnList;
@@ -220,12 +220,12 @@ namespace GRA.SRP.Core.Utilities
 
             pnl = new RibbonPanel
                       {
-                          Name = "Games",
-                          ImageAlt = "Games",
+                          Name = "Adventures/Games",
+                          ImageAlt = "Adventures/Games",
                           ImagePath = "/ControlRoom/Images/Game_Center.png"
                       };
             pnl.Add(new RibbonLink { Name = "Board Games", Url = "/ControlRoom/Modules/Setup/BoardGameList.aspx" });
-            pnl.Add(new RibbonLink { Name = "Mini Games", Url = "/ControlRoom/Modules/Setup/MiniGameList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Adventures/Mini Games", Url = "/ControlRoom/Modules/Setup/MiniGameList.aspx" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel
@@ -240,11 +240,11 @@ namespace GRA.SRP.Core.Utilities
 
             pnl = new RibbonPanel
             {
-                Name = "Book Lists",
-                ImageAlt = "Book Lists",
+                Name = "Challenges/Book Lists",
+                ImageAlt = "Challenges/Book Lists",
                 ImagePath = "/ControlRoom/Images/Library.png"
             };
-            pnl.Add(new RibbonLink { Name = "Book Lists", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Challenges/Book Lists", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel

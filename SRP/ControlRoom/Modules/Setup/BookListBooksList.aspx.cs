@@ -5,6 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Configuration;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -13,6 +14,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         private String _mStrSortExp;
         private SortDirection _mSortDirection = SortDirection.Ascending;
 
+        protected string IlsLink {
+            get {
+                if(ConfigurationManager.AppSettings["IsbnLinkTemplate"] != null) {
+                    return ConfigurationManager.AppSettings["IsbnLinkTemplate"];
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -138,7 +148,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 obj.BLID = FormatHelper.SafeToInt(lblPK.Text);
                 obj.Author = Author.Text;
                 obj.Title = Title.Text;
-                obj.ISBN = ISBN.Text;
+                obj.ISBN = ISBN.Text.Trim();
                 obj.URL = URL.Text;
 
                 obj.AddedDate = DateTime.Now;

@@ -324,7 +324,7 @@
                                             <div class="col-sm-10 col-sm-offset-1">
                                                 <div class="lead margin-1em-bottom">Click next to proceed to the Control Room where you can continue configuring the Great Reading Adventure.</div>
 
-                                                <p>The default login is: <strong><code>sysadmin</code></strong> and the default password is: <strong><code>changeme05!</code></strong></p>
+                                                <p>The default login is: <strong class="lead"><code>sysadmin</code></strong> and the default password is: <strong class="lead"><code>changeme05!</code></strong></p>
                                             </div>
                                         </div>
                                     </asp:Panel>

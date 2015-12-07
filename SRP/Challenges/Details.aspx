@@ -36,18 +36,28 @@
 
                                 <td>
                                     <div class="row">
-                                        <div class="hidden-xs col-sm-2">
-                                            <%# Eval("ISBN").ToString().Length > 0 ? string.Format("<a href='javascript: Cover({0});'><img class='cover' src='http://covers.openlibrary.org/b/isbn/{0}-S.jpg' style='width: 32px; margin-right: 10px;  ' align=left/></a>", Eval("ISBN")) : ""%>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-10">
-                                            Read
+                                        <asp:Panel runat="server" Visible='<%#Eval("Author").ToString().Length > 0 %>'>
+                                            <div class="hidden-xs col-sm-2">
+                                                <%# Eval("ISBN").ToString().Length > 0 ? string.Format("<img class='cover' src='http://covers.openlibrary.org/b/isbn/{0}-S.jpg' style='width: 32px; margin-right: 10px;  ' align=left/>", Eval("ISBN")) : ""%>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-10">
+                                                Read
                                     <strong>
-                                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%# Eval("URL") %>' Target="_blank"
+                                        <asp:HyperLink runat="server" NavigateUrl='<%# Eval("URL") %>' Target="_blank"
                                             Visible='<%# Eval("URL").ToString().Trim().Length > 0 %>' Font-Underline='<%# Eval("URL").ToString().Trim().Length > 0 %>'><%# Eval("Title") %></asp:HyperLink>
                                         <asp:Label ID="Label3" runat="server" Text='<%# Eval("Title") %>'
                                             Visible='<%# Eval("URL").ToString().Trim().Length == 0 %>'></asp:Label></strong>
-                                            by <strong><%# Eval("Author") %></strong>
-                                        </div>
+                                                by <strong><%# Eval("Author") %></strong>
+                                            </div>
+                                        </asp:Panel>
+                                        <asp:Panel runat="server" Visible='<%#Eval("Author").ToString().Length == 0 %>'>
+                                            <div class="col-xs-12 col-sm-12">
+                                                <asp:HyperLink runat="server" NavigateUrl='<%# Eval("URL") %>' Target="_blank"
+                                                    Visible='<%# Eval("URL").ToString().Trim().Length > 0 %>' Font-Underline='<%# Eval("URL").ToString().Trim().Length > 0 %>'><%# Eval("Title") %></asp:HyperLink>
+                                                <asp:Label ID="Label1" runat="server" Text='<%# Eval("Title") %>'
+                                                    Visible='<%# Eval("URL").ToString().Trim().Length == 0 %>'></asp:Label>
+                                            </div>
+                                        </asp:Panel>
                                     </div>
                                 </td>
                             </tr>

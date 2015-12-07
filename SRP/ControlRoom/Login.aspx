@@ -77,12 +77,12 @@
                                                </td>
                                            </tr>
                                            <tr>
-                                               <td align="center" style="color:Red;">
-                                                   
+                                               <td align="center"><br />
+                                                   <asp:Checkbox id="RememberMe" runat="server" Text="Remember username"></asp:Checkbox>
                                                </td>
                                            </tr>
                                            <tr>
-                                               <td align="center">
+                                               <td align="center"><br />
                                                    <asp:Button ID="LoginButton" runat="server" CommandName="Login" Text='Login' 
                                                        ValidationGroup="uxLogin" CssClass="btn-lg" CausesValidation="true" ></asp:Button>
                                                </td>
@@ -96,7 +96,6 @@
                     <LabelStyle HorizontalAlign="Right"></LabelStyle>
                     </asp:Login>
  
-                    
                     <br />
                     <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/ControlRoom/LoginRecovery.aspx"><%= GRA.SRP.ControlRoom.SRPResources.UserAccountRecovery%></asp:HyperLink>
                     </div>
