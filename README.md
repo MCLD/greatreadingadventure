@@ -16,6 +16,7 @@ There are also some additional [requested features in this document](https://doc
 
 ## Development
 [![Build status](https://ci.appveyor.com/api/projects/status/pk9qomsbk8rp5t3c?svg=true)](https://ci.appveyor.com/project/haraldnagel/greatreadingadventure)
+[![Documentation status](https://readthedocs.org/projects/great-reading-adventure/badge/?version=latest)](https://readthedocs.org/projects/great-reading-adventure/)
 
 If you are a software developer or Web designer interested in contributing to the project, please take a look at the [Development](https://github.com/MCLD/greatreadingadventure/wiki/Development) topic on the project's GitHub Wiki.
 
