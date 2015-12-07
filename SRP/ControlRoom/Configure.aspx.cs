@@ -151,8 +151,8 @@ namespace GRA.SRP.ControlRoom {
                             }
                             sb.Append("</ul>");
                             var ignoreError = ConfigurationManager.AppSettings[AppSettingKeys.IgnoreMissingDatabaseGroups.ToString()];
-                            if(ignoreError == null
-                               || ignoreError.Equals("true", StringComparison.OrdinalIgnoreCase)) {
+                            if(string.IsNullOrEmpty(ignoreError)
+                               || !ignoreError.Equals("true", StringComparison.OrdinalIgnoreCase)) {
                                 DatabaseIssuePanel.Visible = true;
                                 DatabaseIssueMessage.Text = sb.ToString();
                                 SendToStep(2);

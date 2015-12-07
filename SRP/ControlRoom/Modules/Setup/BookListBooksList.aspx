@@ -19,7 +19,7 @@
     </asp:ObjectDataSource>
 
     <ul>
-        <li>Entering an ISBN will trigger a lookup for Title, Author, and Cover from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li>
+        <li>Entering an ISBN and pressing tab will trigger a lookup for title, author, and cover image from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li>
         <li>For entering challenge tasks rather than books, just leave the ISBN and Author fields blank. You may still put a URL in the URL field if you want the task to link to a Web page.</li>
         <li>ISBN is not required.</li>
     </ul>
@@ -190,7 +190,7 @@
                                 }
                                 $('.lookup-message').html("");
                             } else {
-                                $('.lookup-message').html("Book not found.");
+                                $('.lookup-message').html("ISBN not found in openlibrary.org.");
                             }
                         },
                         failure: function () {
