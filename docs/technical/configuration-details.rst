@@ -29,4 +29,4 @@ The following is a list of keys and what the settings represent:
 
 **ILSProxyEndpoint** (URL to ILSProxy endpoint, optional) - URL to an ILS proxy to be used for looking up patrons by library account
 
-**IsbnLinkTemplate** (URL template, optional) - A default URL template for use when adding books to a Challenge/book list. It should be a URL that links to a book in your ILS by ISBN for users who are not logged in. In the URL, you'll replace the actual ISBN with ``{0}``. For example, using Polaris it would be ``http://pac.url/view.aspx?isbn={0}``.
+**IsbnLinkTemplate** (URL template, optional) - default URL template when adding books to a Challenge/book list. It should be a URL linking to your ILS by ISBN for users who are not logged in. In the URL, you'll replace the actual ISBN with ``{0}``. For example, using Polaris it would be ``http://pac.url/view.aspx?isbn={0}``.
