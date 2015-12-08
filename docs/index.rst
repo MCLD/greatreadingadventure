@@ -46,7 +46,6 @@ This manual is split into several main sections:
 
    installation/system-requirements
    installation/requirements-checklist
-   installation/download-the-software
    installation/create-the-database
    installation/install-the-software
 
