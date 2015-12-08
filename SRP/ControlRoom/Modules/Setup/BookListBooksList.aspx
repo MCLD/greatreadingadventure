@@ -18,19 +18,19 @@
         </SelectParameters>
     </asp:ObjectDataSource>
 
-    <ul>
-        <li>Entering an ISBN and pressing tab will trigger a lookup for title, author, and cover image from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li>
-        <li>For entering challenge tasks rather than books, just leave the ISBN and Author fields blank. You may still put a URL in the URL field if you want the task to link to a Web page.</li>
+    <ul style="font-size: larger;">
+        <li>If title and author are blank, entering an ISBN and pressing tab will trigger a lookup for title, author, and cover image from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li><br />
+        <li>For entering challenge tasks rather than books, just leave the ISBN and Author fields blank. You may still put a URL in the URL field to link to a Web page.</li><br />
         <li>ISBN is not required.</li>
     </ul>
 
     <table width="100%" class="datatable">
         <tr>
-            <td colspan="4" style="background-color: #ddd;"><b>Add To Book List</b></td>
+            <td colspan="4" style="background-color: #ddd;"><b>Add To Challenge</b></td>
         </tr>
         <tr>
-            <td valign="top" width="200px"><b>ISBN</b><br />
-                <asp:TextBox ID="ISBN" runat="server" Width="200px" CssClass="book-isbn"></asp:TextBox><br />
+            <td valign="top" width="150px"><b>ISBN</b><br />
+                <asp:TextBox ID="ISBN" runat="server" Width="150px" CssClass="book-isbn"></asp:TextBox><br />
                 <img src="../../Images/spacer.gif" class="book-image" alt="Cover image on Open Library" /><span class="lookup-message"></span>
             </td>
 
@@ -41,9 +41,10 @@
                 <asp:TextBox ID="Author" runat="server" Width="150px" CssClass="book-author"></asp:TextBox>
             </td>
             <td valign="top" width="100%"><b>URL</b><br />
-                <asp:TextBox ID="URL" runat="server" Width="90%" CssClass="ils-link"></asp:TextBox>
+                <asp:TextBox ID="URL" runat="server" Width="85%" CssClass="ils-link"></asp:TextBox>
+                <a href="#" onclick="return testLink();">Test URL</a>
                 <br />
-                (The URL should be available to users NOT LOGGED INTO THE ILS)
+                (The URL should be available to users not logged in to the ILS)
             </td>
         </tr>
         <tr>
@@ -197,6 +198,8 @@
                             $('.lookup-message').html("Openlibrary.org lookup failed.");
                         }
                     });
+                } else {
+                    $('.lookup-message').html("");
                 }
 
                 var ilsLink = '<%=this.IlsLink%>';
@@ -205,6 +208,14 @@
                 }
             }
         });
+        function testLink() {
+            if ($('.ils-link').val().length > 0) {
+                window.open($('.ils-link').val(), "_blank");
+            } else {
+                alert("Please enter a link before testing.");
+            }
+            return false;
+        }
     </script>
 </asp:Content>
 
