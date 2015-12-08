@@ -1,4 +1,4 @@
-# System Requirements
+# System requirements
 
 The GRA requires the following services to run. These services may all be hosted on the same machine
 or may be hosted on separate machines for performance reasons.
