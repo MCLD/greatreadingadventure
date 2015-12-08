@@ -22,7 +22,7 @@
                 onselectedindexchanged="AwardReason_SelectedIndexChanged">
                 <asp:ListItem Value="0">Reading</asp:ListItem>
                 <asp:ListItem Value="1">Attended Event</asp:ListItem>
-                <asp:ListItem Value="2">Completed Book List</asp:ListItem>
+                <asp:ListItem Value="2">Completed Challenge</asp:ListItem>
                 <asp:ListItem Value="4">Won a Mini-Game</asp:ListItem>
             </asp:DropDownList>  
         </td>
@@ -109,7 +109,7 @@
 
     <asp:Panel ID="pnlBook" runat="server" Visible="false">
     <tr>
-        <td style="font-weight: bold;">Book List:  </td>
+        <td style="font-weight: bold;">Challenge:  </td>
         <td>
                   <asp:TextBox ID="lblBookList" runat="server"></asp:TextBox>
         </td>

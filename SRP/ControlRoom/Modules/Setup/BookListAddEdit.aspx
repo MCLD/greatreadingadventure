@@ -41,7 +41,7 @@
                             </td>
                             <td  valign="top">
                                 <asp:Button ID="btnReplace" runat="server" 
-                                    Text="Books on this Book List" CssClass="btn-sm btn-purple"
+                                    Text="Tasks in this Challenge" CssClass="btn-sm btn-purple"
                                     CommandName="Saveandbooks" 
                                 />
                             </td>
@@ -49,11 +49,11 @@
                         </tr>
                     
                         <tr>
-                            <td nowrap valign="top"> <b> List Name (for Patrons): </b> </td>
+                            <td nowrap valign="top"> <b> Challenge Name (for Patrons): </b> </td>
                             <td colspan="6"  valign="top">
                                 <asp:TextBox ID="ListName" runat="server" Text='<%# Eval("ListName") %>' ReadOnly="False" Width="90%"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
-                                    ControlToValidate="ListName" Display="Dynamic" ErrorMessage="List Name is required" 
+                                    ControlToValidate="ListName" Display="Dynamic" ErrorMessage="Challenge Name is required" 
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                             </td>
                     

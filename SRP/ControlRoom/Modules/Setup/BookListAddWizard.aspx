@@ -18,15 +18,15 @@
         HeaderText="There are errors, and no action was taken"  Font-Names="Verdana"  
         />
 
-<asp:Panel ID="pnlBookList" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Book List Details" ScrollBars="Auto"
+<asp:Panel ID="pnlBookList" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Challenge Details" ScrollBars="Auto"
     DefaultButton="btnContinue" CssClass="OrangePanel" width="100%" height="585px">
     <table width="100%" height="550px">
         <tr>
-            <td nowrap valign="top" width="150px"> <b> List Name (for Patrons): </b> </td>
+            <td nowrap valign="top" width="150px"> <b> Challenge Name (for Patrons): </b> </td>
             <td colspan="3"  valign="top">
                 <asp:TextBox ID="ListName" runat="server" Text='' ReadOnly="False" Width="90%"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
-                    ControlToValidate="ListName" Display="Dynamic" ErrorMessage="<font color='red'>List Name is required</font>" 
+                    ControlToValidate="ListName" Display="Dynamic" ErrorMessage="<font color='red'>Challenge Name is required</font>" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
             </td>
             <td nowrap> <b> Admin Name: </b> </td>
@@ -196,7 +196,7 @@
                     
 </asp:Panel>
 
-<asp:Panel ID="pnlReward" runat="server" Visible="False" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Book List Completion " ScrollBars="Auto"
+<asp:Panel ID="pnlReward" runat="server" Visible="False" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Challenge Completion " ScrollBars="Auto"
     DefaultButton="btnContinue2" CssClass="OrangePanel"  width="100%" height="585px">
     <table width="100%" height="550px">    
         <tr>
