@@ -1,4 +1,4 @@
-# Requirements Checklist
+# Requirements checklist
 
 - Ensure you have a Windows server running Windows Server 2008 or newer
 - Ensure your server has the .NET Framework version 4.0 or newer installed

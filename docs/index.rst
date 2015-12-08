@@ -35,8 +35,8 @@ This manual is split into several main sections:
    :caption: Introduction
 
    introduction/overview
-   introduction/planning
-
+   introduction/planning-configuration
+   introduction/planning-content
 
 .. _install-docs:
 
@@ -44,7 +44,6 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Installation
 
-   installation/getting-started
    installation/system-requirements
    installation/requirements-checklist
    installation/download-the-software
@@ -56,7 +55,7 @@ This manual is split into several main sections:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Initial Configuration
+   :caption: Configuration
 
    configuration/initial-configuration
 

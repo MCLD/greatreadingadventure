@@ -1,4 +1,7 @@
 # The Great Reading Adventure
+[![Latest release](https://img.shields.io/github/release/MCLD/greatreadingadventure.svg)](https://github.com/MCLD/greatreadingadventure/releases/latest)
+[![Download](https://img.shields.io/github/downloads/MCLD/greatreadingadventure/total.svg)](https://github.com/MCLD/greatreadingadventure/releases/download/v2.2.1/GreatReadingAdventure-2.2.1.zip)
+
 The Great Reading Adventure is a robust, open source software designed to manage library reading programs. The GRA is free to use, modify, and share. Check out [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) for an overview of its functionality and capabilities.
 
 You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or [download the latest version (2.2.1)](https://github.com/MCLD/greatreadingadventure/releases/download/v2.2.1/GreatReadingAdventure-2.2.1.zip).
@@ -21,6 +24,7 @@ There are also some additional [requested features in this document](https://doc
 If you are a software developer or Web designer interested in contributing to the project, please take a look at the [Development](https://github.com/MCLD/greatreadingadventure/wiki/Development) topic on the project's GitHub Wiki.
 
 ## License
+[![MIT License](https://img.shields.io/github/license/MCLD/greatreadingadventure.svg)](https://github.com/MCLD/greatreadingadventure/blob/master/LICENSE)
 
 The Great Reading Adventure source code is distributed under [The MIT License](http://opensource.org/licenses/MIT). For other included packages, please see the [CREDITS.md](https://github.com/MCLD/greatreadingadventure/blob/master/CREDITS.md) file.
 

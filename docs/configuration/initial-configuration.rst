@@ -1,4 +1,4 @@
-Step-by-step Configuration
+Step-by-step configuration
 ==========================
 
 Once the GRA software is installed and you access the Web site, you should see the initial configuration screen:

@@ -1,7 +1,7 @@
-Technical Configuration Details
+Technical configuration details
 ===============================
 
-Web.config Application Settings
+Web.config application settings
 -------------------------------
 
 These settings are in the ``Web.config`` file in the ``<appSettings>`` section. A typical configuration might look like this:
