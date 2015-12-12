@@ -2,7 +2,7 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <div class="row">
-    <div class="col-sm-12 margin-1em-bottom hidden-print">
+    <div class="col-sm-12 hidden-print">
         <span class="h1">
             <asp:Label ID="Label1" runat="server" Text="notifications-title"></asp:Label></span>
     </div>
@@ -10,8 +10,8 @@
 
 <asp:Panel ID="pnlList" runat="server" Visible="true">
     <div class="row">
-        <div class="col-sm-12 hidden-print">
-            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
+        <div class="col-sm-12 hidden-print margin-halfem-top">
+            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default margin-halfem-bottom">
                 <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
                 Write a message</button>
         </div>
@@ -56,20 +56,21 @@
 
 <asp:Panel ID="pnlDetail" runat="server" Visible="false">
     <div class="row">
-        <div class="col-sm-12 hidden-print">
-            <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
+        <div class="col-sm-12 hidden-print margin-halfem-top">
+            <button runat="server" onserverclick="btnList_Click" class="btn btn-default margin-halfem-bottom">
                 <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                 Go back</button>
-            <button runat="server" onserverclick="btnDelete_Click" class="btn btn-danger">
+            <button runat="server" onserverclick="btnDelete_Click" class="btn btn-danger margin-halfem-bottom">
                 <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
                 Delete
             </button>
-            <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
-            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default">
+            <button class="btn btn-default  margin-halfem-bottom" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
+            <button runat="server" onserverclick="btnAsk_Click" class="btn btn-default  margin-halfem-bottom">
                 <span class="glyphicon glyphicon-pencil margin-halfem-right"></span>
                 Write another message</button>
         </div>
-        <div class="col-sm-12 margin-1em-top">
+        <div class="col-sm-12">
+            <hr class="hidden-print" />
             <p>
                 <strong>From:</strong>
                 <asp:Label ID="lblFrom" runat="server"></asp:Label>
@@ -86,17 +87,18 @@
                 <asp:Label ID="lblBody" runat="server" Text=""></asp:Label>
             </p>
             <asp:Label ID="NID" runat="server" Text="" Visible="false"></asp:Label>
+            <hr class="hidden-print" />
         </div>
     </div>
 </asp:Panel>
 
 <asp:Panel ID="pnlAsk" runat="server" Visible="false">
     <div class="row">
-        <div class="col-sm-12 hidden-print">
-            <button runat="server" onserverclick="btnList_Click" class="btn btn-default">
+        <div class="col-sm-12 hidden-print margin-halfem-top">
+            <button runat="server" onserverclick="btnList_Click" class="btn btn-default margin-halfem-bottom">
                 <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                 Go back</button>
-            <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success">
+            <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success margin-halfem-bottom">
                 <span class="glyphicon glyphicon-send margin-halfem-right"></span>
                 Send message</button>
         </div>

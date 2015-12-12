@@ -19,37 +19,40 @@
     </div>
 </div>
 
-<table class="table table-striped table-hover">
+<table class="table">
     <thead>
         <tr>
-            <th colspan="2">
+            <th colspan="3">
                 <asp:Label runat="server" Text="family-list-members"></asp:Label></th>
         </tr>
     </thead>
     <tbody>
-        <asp:Repeater ID="rptr" runat="server" OnItemCommand="rptr_ItemCommand">
+        <asp:Repeater ID="rptr" runat="server" OnItemCommand="rptr_ItemCommand" OnItemDataBound="rptr_ItemDataBound">
             <ItemTemplate>
                 <tr>
                     <td style="vertical-align: middle;">
+                        <asp:Image runat="server" ID="avatarImage" width="64" Height="64" />
+                    </td>
+                    <td style="vertical-align: middle;">
                         <%# Eval("FirstName") + " " + Eval("LastName")%> (<%# Eval("username") %>)
                     </td>
-                    <td class="clearfix">
-                        <div class="pull-right">
+                    <td class="clearfix" style="vertical-align: middle;">
+                        <div class="pull-right margin-halfem-top">
                             <asp:Button runat="server"
                                 CommandName="login"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-login"
-                                CssClass="btn btn-default" />
+                                CssClass="btn btn-default margin-halfem-bottom" />
                             <asp:Button runat="server"
                                 CommandName="log"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-log"
-                                CssClass="btn btn-default" />
+                                CssClass="btn btn-default margin-halfem-bottom" />
                             <asp:Button runat="server"
                                 CommandName="pwd"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-password"
-                                CssClass="btn btn-default" />
+                                CssClass="btn btn-default margin-halfem-bottom" />
                         </div>
                     </td>
                 </tr>

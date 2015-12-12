@@ -28,7 +28,7 @@
                         <asp:Label runat="server" ID="activityTypeSingleLabel" Visible="false"></asp:Label></label>
 
                     <asp:LinkButton runat="server"
-                        CssClass="btn btn-sm btn-success reading-log-submit"
+                        CssClass="btn btn-info btn-lg reading-log-submit"
                         Text="readinglog-submit"
                         data-loading-text="Logging..."
                         ID="submitButton"
@@ -70,6 +70,9 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-xs-12 margin-1em-bottom">
+                            Enter the details and click Submit. <strong>Your reading won't be logged if you don't click submit!</strong>
+                        </div>
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
                                 <label for="titleField">Title</label>

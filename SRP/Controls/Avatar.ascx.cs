@@ -17,6 +17,7 @@ namespace GRA.SRP.Controls {
             var patron = (Patron)(Session["Patron"]);
             string avatarPath = NoAvatarPath;
             string avatarPathSm = NoAvatarPathSm;
+            string avatarPathMd = null;
             if(patron != null) {
                 string potentialAvatarPath = string.Format("~/images/Avatars/{0}.png",
                                                            patron.AvatarID);
@@ -29,10 +30,22 @@ namespace GRA.SRP.Controls {
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathSm = potentialAvatarPath;
                 }
+
+                potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
+                                                    patron.AvatarID);
+                if(File.Exists(Server.MapPath(potentialAvatarPath))) {
+                    avatarPathMd = potentialAvatarPath;
+                }
             }
 
             imgAvatar.ImageUrl = avatarPath;
             imgAvatarSm.ImageUrl = avatarPathSm;
+            if(!string.IsNullOrEmpty(avatarPathMd)) {
+                string srcSet = string.Format("{0} 1x, {1} 2x",
+                                              VirtualPathUtility.ToAbsolute(avatarPathSm),
+                                              VirtualPathUtility.ToAbsolute(avatarPathMd));
+                imgAvatarSm.Attributes.Add("srcset", srcSet);
+            }
             patronName.Text = DisplayHelper.FormatFirstName(patron.FirstName, patron.Username);
         }
     }

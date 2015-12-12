@@ -137,10 +137,10 @@ namespace GRA.SRP {
             patron.NewPassword = Password.Text;
             // hardcoding over 18 because there's no facility to ask here
             patron.Over18Flag = true;
-            patron.FirstName = FirstName.Text;
-            patron.LastName = LastName.Text;
-            patron.EmailAddress = EmailAddress.Text;
-            patron.LibraryCard = LibraryCard.Text;
+            patron.FirstName = FirstName.Text.Trim();
+            patron.LastName = LastName.Text.Trim();
+            patron.EmailAddress = EmailAddress.Text.Trim();
+            patron.LibraryCard = LibraryCard.Text.Trim();
             int primaryLibrary = 0;
             if(int.TryParse(PrimaryLibrary.SelectedValue, out primaryLibrary)) {
                 patron.PrimaryLibrary = primaryLibrary;
@@ -218,7 +218,7 @@ namespace GRA.SRP {
         protected void IlsPatronLookup() {
             try {
                 var authJson = new {
-                    Id = LibraryCard.Text,
+                    Id = LibraryCard.Text.Trim(),
                     Secret = LibraryPin.Text
                 };
                 string ilsUri = string.Format("{0}patron/get",
@@ -230,7 +230,7 @@ namespace GRA.SRP {
 
                 using(var writer = new StreamWriter(webReq.GetRequestStream())) {
                     string jsonInfo = new JavaScriptSerializer().Serialize(new {
-                        Id = LibraryCard.Text,
+                        Id = LibraryCard.Text.Trim(),
                         Secret = LibraryPin.Text
                     });
                     writer.Write(jsonInfo);

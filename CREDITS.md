@@ -19,6 +19,7 @@ Reading Adventure wouldn't exist!
 - [jQuery Datepicker](#jquery-datepicker)
 - [Microsoft Ajax Minifier](#microsoft-ajax-minifier)
 - [NLog](#nlog)
+- [Odometer](#odometer)
 - [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
 - [this.Log Logging Extension](#thislog-logging-extension)
 - [SRP_DAL](#srp_dal)
@@ -106,6 +107,13 @@ Reading Adventure wouldn't exist!
  - <http://nlog-project.org/>
  - Copyright (c) 2004-2011 Jaroslaw Kowalski <jaak@jkowalski.net>
  - License (BSD 3-clause) <https://github.com/NLog/NLog/blob/master/LICENSE.txt>
+
+* * *
+
+## Odometer
+ - <http://github.hubspot.com/odometer/docs/welcome/>
+ - Copyright (c) 2013 HubSpot, Inc.
+ - License (MIT) <https://github.com/HubSpot/odometer/blob/master/LICENSE>
 
 * * *
 

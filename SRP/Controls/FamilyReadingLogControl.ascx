@@ -29,7 +29,7 @@
                         <asp:Label runat="server" ID="activityTypeSingleLabel" Visible="false"></asp:Label></label>
 
                     <asp:LinkButton runat="server"
-                        CssClass="btn btn-sm btn-success reading-log-submit"
+                        CssClass="btn btn-info btn-lg reading-log-submit"
                         Text="family-readinglog-submit"
                         data-loading-text="Logging..."
                         ID="submitButton"

@@ -31,15 +31,6 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl;
         
         /// <summary>
-        /// LeaderBoardControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl;
-        
-        /// <summary>
         /// Welcome control.
         /// </summary>
         /// <remarks>
@@ -76,6 +67,33 @@ namespace GRA.SRP {
         protected global::GRA.SRP.Controls.CodeControl CodeControl;
         
         /// <summary>
+        /// MyBadgesListControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.MyBadgesListControl MyBadgesListControl;
+        
+        /// <summary>
+        /// Feed control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.Feed Feed;
+        
+        /// <summary>
+        /// Status control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.Status Status;
+        
+        /// <summary>
         /// SponsorText control.
         /// </summary>
         /// <remarks>
@@ -92,23 +110,5 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label FooterText;
-        
-        /// <summary>
-        /// MyBadgesListControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.MyBadgesListControl MyBadgesListControl;
-        
-        /// <summary>
-        /// LeaderBoardControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl1;
     }
 }

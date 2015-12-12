@@ -470,6 +470,11 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\gra.css" />
     <Content Include="Content\jquery.datepick.css" />
+    <Content Include="Content\odometer-theme-default.css" />
+    <Content Include="Controls\Feed.ascx" />
+    <Content Include="Controls\Status.ascx" />
+    <Content Include="Scripts\odometer.js" />
+    <Content Include="Scripts\odometer.min.js" />
     <Content Include="ControlRoom\AJAX.master" />
     <Content Include="ControlRoom\Configure.aspx" />
     <Content Include="ControlRoom\Control.Master" />
@@ -1242,10 +1247,13 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include=".well-known\acme-challenge\Web.config" />
+    <Content Include="Handlers\Status.ashx" />
+    <Content Include="Handlers\Feed.ashx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Development-external.pubxml" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
@@ -1300,8 +1308,13 @@
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Web.Production.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -2591,6 +2604,13 @@
     <Compile Include="Controls\FamilyList.ascx.designer.cs">
       <DependentUpon>FamilyList.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Feed.ascx.cs">
+      <DependentUpon>Feed.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Feed.ascx.designer.cs">
+      <DependentUpon>Feed.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FileUploadCtl.ascx.cs">
       <DependentUpon>FileUploadCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2817,6 +2837,13 @@
     </Compile>
     <Compile Include="Code\STGUtilities.cs" />
     <Compile Include="Code\TestingBL.cs" />
+    <Compile Include="Controls\Status.ascx.cs">
+      <DependentUpon>Status.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Status.ascx.designer.cs">
+      <DependentUpon>Status.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Welcome.ascx.cs">
       <DependentUpon>Welcome.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2876,6 +2903,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\Feed.ashx.cs">
+      <DependentUpon>Feed.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Handlers\GetBadgeInfo.ashx.cs">
       <DependentUpon>GetBadgeInfo.ashx</DependentUpon>
     </Compile>
@@ -2889,6 +2919,9 @@
       <DependentUpon>IsUsernameAvailable.ashx</DependentUpon>
     </Compile>
     <Compile Include="Handlers\JsonBase.cs" />
+    <Compile Include="Handlers\Status.ashx.cs">
+      <DependentUpon>Status.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Layout\SRP.Master.cs">
       <DependentUpon>SRP.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3091,6 +3124,15 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>

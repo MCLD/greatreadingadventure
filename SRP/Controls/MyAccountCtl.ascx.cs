@@ -28,7 +28,7 @@ namespace GRA.SRP.Controls
                 var patron = (Patron)Session["Patron"];
                 rptr.DataSource = Patron.GetPatronForEdit(patron.PID);
                 rptr.DataBind();
-
+   
                 basePage.TranslateStrings(rptr);
             }
             this.SaveButtonText = basePage.GetResourceString("family-member-add-save");
@@ -252,8 +252,16 @@ namespace GRA.SRP.Controls
             //--
 
             var familyListButton = e.Item.FindControl("FamilyAccountList");
+            var familyAddbutton = e.Item.FindControl("FamilyAccountAdd");
+            var showFamilyList = Session[SessionKey.IsMasterAccount] as bool? == true;
             if(familyListButton != null) {
-                familyListButton.Visible = Session[SessionKey.IsMasterAccount] as bool? == true;
+                familyListButton.Visible = showFamilyList;
+            }
+            if(familyAddbutton != null) {
+                var patron = e.Item.DataItem as DataRowView;
+                if(patron != null && patron["Over18Flag"] as bool? == true) {
+                    familyAddbutton.Visible = !showFamilyList;
+                }
             }
 
 

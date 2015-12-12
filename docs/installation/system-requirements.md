@@ -15,13 +15,12 @@ or may be hosted on separate machines for performance reasons.
 [Microsoft SQL Server](http://www.microsoft.com/en-us/server-cloud/products/sql-server/) 2008 or later.
   * The GRA uses its own database with its own database users so it can easily and safely coexist with other SQL Server databases.
   * SQL Server must allow connections via [SQL Server authentication mode](https://msdn.microsoft.com/en-us/library/ms144284.aspx).
-  * The GRA requires an empty database to be created manually or with a script.
+  * The GRA requires an empty database to be created manually or [with a script](https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/CreateDatabase.sql).
   * The GRA also requires two users for initial setup:
     * A database user with owner access (role `db_owner`) for creating the initial database structures and inserting the initial data. This user can be removed once the application is installed.
-    * A database user with read/write access (roles `db_datareader` and `db_datawriter`) to the database for running the GRA software.
-
+    * A database user with read/write access (roles `db_datareader` and `db_datawriter`) to the database for running the GRA software. This user will also need to be able to execute stored procedures, the setup process should grant them that privilege.
 
 ## Mail server
-A mail service accepting mail via SMTP.
+The ability to send Internet email, such as a service which accepts email via SMTP.
   * The GRA sends mail in certain instances (such as helping users recover their lost passwords) and requires the ability to connect to an SMTP server.
   * The SMTP server built-in to IIS can be used, any other on-site mail server can be used (Microsoft Exchange Server, Postfix, etc.), or an external mail service can be used.

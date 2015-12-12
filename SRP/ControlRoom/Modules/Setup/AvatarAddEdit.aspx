@@ -56,7 +56,7 @@
                     FileName='<%# Bind("AID") %>'
                     ImgWidth="200" 
                     CreateSmallThumbnail="True" 
-                    CreateMediumThumbnail="False"
+                    CreateMediumThumbnail="True"
                     SmallThumbnailWidth="64" 
                     MediumThumbnailWidth="128"
                     Folder="~/Images/Avatars/"

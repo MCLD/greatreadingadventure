@@ -38,7 +38,7 @@
                     Username:
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="Username" runat="server" CssClass="form-control gra-register-username" Enabled="true" MaxLength="25"></asp:TextBox>
+                    <asp:TextBox ID="Username" runat="server" CssClass="form-control gra-register-username required-asterisk" data-asterisk="UsernameReq" Enabled="true" MaxLength="25"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
                     <span class="glyphicon glyphicon-ok-sign gra-reg-glyph gra-reg-available text-success"></span>
@@ -46,7 +46,7 @@
                     <div style="display: inline-block; vertical-align: middle;">
                         <span class="gra-username-verification text-success gra-reg-available">available</span>
                         <span class="gra-username-verification text-danger gra-reg-unavailable">not available</span>
-                        <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                        <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm UsernameReq"></span>
                         <asp:RequiredFieldValidator runat="server" Enabled="true"
                             ControlToValidate="Username" Display="Dynamic" ErrorMessage="Username is required"
                             SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -61,10 +61,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Password:</label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="Password" runat="server" CssClass="pwd form-control" TextMode="Password"></asp:TextBox>
+                    <asp:TextBox ID="Password" runat="server" CssClass="pwd form-control required-asterisk" data-asterisk="PasswordReq" TextMode="Password"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm PasswordReq"></span>
                     <asp:RequiredFieldValidator runat="server" Display="Dynamic"
                         ControlToValidate="Password" ErrorMessage="Password is required"
                         ToolTip="Password required" SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -81,10 +81,10 @@
                     <asp:Label runat="server" Text="registration-form-name-first"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="FirstName" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="FirstName" runat="server" CssClass="form-control required-asterisk" data-asterisk="FirstNameReq"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("FirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("FirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm FirstNameReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("FirstName_Req") %>'
                         ControlToValidate="FirstName" Display="Dynamic" ErrorMessage="First name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -96,10 +96,10 @@
                     <asp:Label runat="server" Text="registration-form-name-middle"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control required-asterisk" data-asterisk="MiddleNameReq"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("MiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("MiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm MiddleNameReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("MiddleName_Req") %>'
                         ControlToValidate="MiddleName" Display="Dynamic" ErrorMessage="Middle name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -111,11 +111,11 @@
                     <asp:Label runat="server" Text="registration-form-name-last"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="LastName" runat="server" CssClass="form-control"
+                    <asp:TextBox ID="LastName" runat="server" CssClass="form-control required-asterisk" data-asterisk="LastNameReq"
                         Text='<%#Eval("LastName") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("LastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("LastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm LastNameReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LastName_Req") %>'
                         ControlToValidate="LastName" Display="Dynamic" ErrorMessage="Last name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -129,12 +129,12 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" DataTextField="TabName" DataValueField="PID"
-                        AppendDataBoundItems="True" CssClass="form-control">
+                        AppendDataBoundItems="True" CssClass="form-control required-asterisk program-dropdown" data-asterisk="ProgramReq">
                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm ProgramReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='true'
                         ControlToValidate="ProgID" Display="Dynamic" ErrorMessage="Program is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -173,10 +173,10 @@
                 </label>
 
                 <div class="col-sm-6">
-                    <asp:TextBox ID="SchoolGrade" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="SchoolGrade" runat="server" CssClass="form-control required-asterisk" data-asterisk="SchoolGradeReq"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("SchoolGrade_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("SchoolGrade_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolGradeReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolGrade_Req") %>'
                         ControlToValidate="SchoolGrade" Display="Dynamic" ErrorMessage="School grade is required."
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -189,11 +189,11 @@
                 </label>
 
                 <div class="col-sm-6">
-                    <asp:TextBox ID="DOB" runat="server" CssClass="form-control datepicker"
+                    <asp:TextBox ID="DOB" runat="server" CssClass="form-control datepicker required-asterisk" data-asterisk="DateOfBirthReq"
                         Enabled='<%# (bool)Eval("DOB_Prompt") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("DOB_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("DOB_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DateOfBirthReq"></span>
                     <asp:RequiredFieldValidator runat="server"
                         ControlToValidate="DOB" Display="Dynamic" ErrorMessage="Date of Birth is required." Enabled='<%# Eval("DOB_Req") %>'
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -208,11 +208,11 @@
                     <asp:Label runat="server" Text="registration-form-age"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="Age" runat="server" CssClass="form-control" MaxLength="2"
+                    <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="2"
                         Enabled='<%# (bool)Eval("Age_Prompt") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("Age_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("Age_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm AgeReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Age_Req") %>'
                         ControlToValidate="Age" Display="Dynamic" ErrorMessage="Age is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -234,7 +234,7 @@
                     <asp:Label runat="server" Text="registration-form-gender"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:DropDownList ID="Gender" runat="server" CssClass="form-control"
+                    <asp:DropDownList ID="Gender" runat="server" CssClass="form-control required-asterisk" data-asterisk="GenderReq"
                         AppendDataBoundItems="True">
                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                         <asp:ListItem Value="M" Text="Male"></asp:ListItem>
@@ -243,7 +243,7 @@
                     </asp:DropDownList>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("Gender_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("Gender_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GenderReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Gender_Req") %>'
                         ControlToValidate="Gender" Display="Dynamic" ErrorMessage="Gender is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -255,10 +255,10 @@
                     <asp:Label runat="server" Text="registration-form-email"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control" Text='<%# Eval("EmailAddress") %>'></asp:TextBox>
+                    <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control required-asterisk" data-asterisk="EmailReq" Text='<%# Eval("EmailAddress") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("EmailAddress_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("EmailAddress_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm EmailReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("EmailAddress_Req") %>'
                         ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email address is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -273,10 +273,10 @@
                     <asp:Label runat="server" Text="registration-form-phone"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control" Text='<%# Eval("PhoneNumber") %>'></asp:TextBox>
+                    <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control required-asterisk" data-asterisk="PhoneNumberReq" Text='<%# Eval("PhoneNumber") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("PhoneNumber_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("PhoneNumber_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm PhoneNumberReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PhoneNumber_Req") %>'
                         ControlToValidate="PhoneNumber" Display="Dynamic" ErrorMessage="Phone number is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -292,10 +292,10 @@
                     <asp:Label runat="server" Text="registration-form-address1"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control" Text='<%# Eval("StreetAddress1") %>'></asp:TextBox>
+                    <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control required-asterisk" data-asterisk="Street1Req" Text='<%# Eval("StreetAddress1") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("StreetAddress1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("StreetAddress1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm Street1Req"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress1_Req") %>'
                         ControlToValidate="StreetAddress1" Display="Dynamic" ErrorMessage="Street address is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -307,10 +307,10 @@
                     <asp:Label runat="server" Text="registration-form-address2"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control" Text='<%# Eval("StreetAddress2") %>'></asp:TextBox>
+                    <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control required-asterisk" data-asterisk="Street2Req" Text='<%# Eval("StreetAddress2") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("StreetAddress2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("StreetAddress2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm Street2Req"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("StreetAddress2_Req") %>'
                         ControlToValidate="StreetAddress2" Display="Dynamic" ErrorMessage="Street address 2 is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -322,10 +322,10 @@
                     <asp:Label runat="server" Text="registration-form-city"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="City" runat="server" CssClass="form-control" Text='<%# Eval("City") %>'></asp:TextBox>
+                    <asp:TextBox ID="City" runat="server" CssClass="form-control required-asterisk" data-asterisk="CityReq" Text='<%# Eval("City") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("City_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("City_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm CityReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("City_Req") %>'
                         ControlToValidate="City" Display="Dynamic" ErrorMessage="City is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -337,10 +337,10 @@
                     <asp:Label runat="server" Text="registration-form-state"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="State" runat="server" CssClass="form-control" Text='<%# Eval("State") %>'></asp:TextBox>
+                    <asp:TextBox ID="State" runat="server" CssClass="form-control required-asterisk" data-asterisk="StateReq" Text='<%# Eval("State") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("State_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("State_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm StateReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("State_Req") %>'
                         ControlToValidate="State" Display="Dynamic" ErrorMessage="State is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -352,10 +352,10 @@
                     <asp:Label runat="server" Text="registration-form-zip"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control" Text='<%# Eval("ZipCode") %>'></asp:TextBox>
+                    <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control required-asterisk" data-asterisk="ZipReq" Text='<%# Eval("ZipCode") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("ZipCode_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("ZipCode_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm ZipReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ZipCode_Req") %>'
                         ControlToValidate="ZipCode" Display="Dynamic" ErrorMessage="ZIP code is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -371,10 +371,10 @@
                     <asp:Label runat="server" Text="registration-form-country"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="Country" runat="server" CssClass="form-control" Text='<%# Eval("Country") %>'></asp:TextBox>
+                    <asp:TextBox ID="Country" runat="server" CssClass="form-control required-asterisk" data-asterisk="CountryReq" Text='<%# Eval("Country") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("Country_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("Country_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm CountryReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Country_Req") %>'
                         ControlToValidate="Country" Display="Dynamic" ErrorMessage="Country is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -386,10 +386,10 @@
                     <asp:Label runat="server" Text="registration-form-county"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="County" runat="server" CssClass="form-control" Text='<%# Eval("County") %>'></asp:TextBox>
+                    <asp:TextBox ID="County" runat="server" CssClass="form-control required-asterisk" data-asterisk="CountyReq" Text='<%# Eval("County") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("County_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("County_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm CountyReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("County_Req") %>'
                         ControlToValidate="County" Display="Dynamic" ErrorMessage="County is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -401,10 +401,10 @@
                     <asp:Label runat="server" Text="registration-form-guardian-name-first"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control" Text='<%# Eval("ParentGuardianFirstName") %>'></asp:TextBox>
+                    <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentFirstReq" Text='<%# Eval("ParentGuardianFirstName") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("ParentGuardianFirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("ParentGuardianFirstName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm ParentFirstReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianFirstName_Req") %>'
                         ControlToValidate="ParentGuardianFirstName" Display="Dynamic" ErrorMessage="Parent/guardian first name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -416,10 +416,10 @@
                     <asp:Label runat="server" Text="registration-form-guardian-name-middle"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control" Text='<%# Eval("ParentGuardianMiddleName") %>'></asp:TextBox>
+                    <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentMiddleReq" Text='<%# Eval("ParentGuardianMiddleName") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("ParentGuardianMiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("ParentGuardianMiddleName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm ParentMiddleReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianMiddleName_Req") %>'
                         ControlToValidate="ParentGuardianMiddleName" Display="Dynamic" ErrorMessage="Parent/guardian middle name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -430,10 +430,10 @@
                     <asp:Label runat="server" Text="registration-form-guardian-name-last"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control" Text='<%# Eval("ParentGuardianLastName") %>'></asp:TextBox>
+                    <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentLastReq" Text='<%# Eval("ParentGuardianLastName") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("ParentGuardianLastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("ParentGuardianLastName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm ParentLastReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("ParentGuardianLastName_Req") %>'
                         ControlToValidate="ParentGuardianLastName" Display="Dynamic" ErrorMessage="Parent/guardian last name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -448,7 +448,7 @@
                     <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Description" DataValueField="CID"
                         AppendDataBoundItems="True"
                         AutoPostBack="true"
-                        CssClass="form-control"
+                        CssClass="form-control required-asterisk-dropdown" data-asterisk="DistrictReq"
                         OnSelectedIndexChanged="District_SelectedIndexChanged">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
@@ -456,7 +456,7 @@
                         Visible="false"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DistrictReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
                         ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -472,14 +472,14 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
-                        AppendDataBoundItems="True" CssClass="form-control">
+                        AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="PrimaryLibraryReq">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:TextBox ID="PrimaryLibraryTxt" runat="server" Text='<%# ((int) Eval("PrimaryLibrary") ==0 ? "" : Eval("PrimaryLibrary")) %>'
                         Visible="false"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("PrimaryLibrary_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("PrimaryLibrary_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm PrimaryLibraryReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("PrimaryLibrary_Req") %>'
                         ControlToValidate="PrimaryLibrary" Display="Dynamic" ErrorMessage="Primary library is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -494,10 +494,10 @@
                     <asp:Label runat="server" Text="registration-form-library-card"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control" Text='<%# Eval("LibraryCard") %>'></asp:TextBox>
+                    <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control required-asterisk" data-asterisk="LibraryCardReq" Text='<%# Eval("LibraryCard") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("LibraryCard_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("LibraryCard_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm LibraryCardReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LibraryCard_Req") %>'
                         ControlToValidate="LibraryCard" Display="Dynamic" ErrorMessage="Library card # is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -511,7 +511,7 @@
                 <div class="col-sm-6">
                     <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Description" DataValueField="CID"
                         AppendDataBoundItems="True"
-                        AutoPostBack="true" CssClass="form-control"
+                        AutoPostBack="true" CssClass="form-control required-asterisk-dropdown" data-asterisk="SDistrictReq"
                         OnSelectedIndexChanged="SDistrict_SelectedIndexChanged">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
@@ -519,7 +519,7 @@
                         Visible="False"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("SDistrict_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("SDistrict_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SDistrictReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
                         ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -535,7 +535,7 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
-                        AppendDataBoundItems="True" CssClass="form-control"
+                        AppendDataBoundItems="True" CssClass="form-control required-asterisk" data-asterisk="SchoolTypeReq"
                         AutoPostBack="true"
                         OnSelectedIndexChanged="SchoolType_SelectedIndexChanged">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
@@ -544,7 +544,7 @@
                         Visible="false"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("SchoolType_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("SchoolType_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolTypeReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
                         ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -560,7 +560,7 @@
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Description" DataValueField="CID"
-                        AppendDataBoundItems="True" CssClass="form-control">
+                        AppendDataBoundItems="True" CssClass="form-control required-asterisk" data-asterisk="SchoolNameReq">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:TextBox ID="SchoolNameTxt" runat="server" Text='<%# (FormatHelper.SafeToInt(Eval("SchoolName").ToString()) == 0 ? "" : Eval("SchoolName") ) %>'
@@ -568,7 +568,7 @@
 
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("SchoolName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("SchoolName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolNameReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
                         ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -583,10 +583,10 @@
                     <asp:Label runat="server" Text="registration-form-teacher"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="Teacher" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="Teacher" runat="server" CssClass="form-control required-asterisk" data-asterisk="TeacherReq"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("Teacher_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("Teacher_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm TeacherReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Teacher_Req") %>'
                         ControlToValidate="Teacher" Display="Dynamic" ErrorMessage="Teacher is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -598,10 +598,10 @@
                     <asp:Label runat="server" Text="registration-form-group"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control" Text='<%# Eval("GroupTeamName") %>'></asp:TextBox>
+                    <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control required-asterisk" data-asterisk="GroupTeamNameReq" Text='<%# Eval("GroupTeamName") %>'></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("GroupTeamName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("GroupTeamName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GroupTeamNameReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("GroupTeamName_Req") %>'
                         ControlToValidate="GroupTeamName" Display="Dynamic" ErrorMessage="Group/team name is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -613,10 +613,10 @@
                     <%# Eval("Literacy1Label")%>:
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="LiteracyLevel1" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="LiteracyLevel1" runat="server" CssClass="form-control required-asterisk" data-asterisk="Literacy1Req"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("LiteracyLevel1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("LiteracyLevel1_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm Literacy1Req"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel1_Req") %>'
                         ControlToValidate="LiteracyLevel1" Display="Dynamic" ErrorMessage='<%# Eval("Literacy1Label", "{0} is required")%>'
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -650,10 +650,10 @@
                     <%# Eval("Literacy2Label")%>:
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="LiteracyLevel2" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="LiteracyLevel2" runat="server" CssClass="form-control required-asterisk" data-asterisk="Literacy2Req"></asp:TextBox>
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("LiteracyLevel2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                    <span runat="server" visible='<%# Eval("LiteracyLevel2_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm Literacy2Req"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LiteracyLevel2_Req") %>'
                         ControlToValidate="LiteracyLevel2" Display="Dynamic" ErrorMessage='<%# Eval("Literacy2Label", "{0} is required")%>'
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
@@ -995,4 +995,55 @@
         }
         setTimeout(loadingMessage, 5000);
     }
+
+    $('.required-asterisk').focusout(function () {
+        var asteriskClass = $(this).data('asterisk');
+        if (asteriskClass) {
+            if ($(this).val().length == 0) {
+                $('.' + asteriskClass).show();
+            } else {
+                $('.' + asteriskClass).hide();
+            }
+        }
+    });
+
+    $('.required-asterisk-dropdown').change(function () {
+        var asteriskClass = $(this).data('asterisk');
+        if (asteriskClass) {
+            if ($(this).val() == 0) {
+                $('.' + asteriskClass).show();
+            } else {
+                $('.' + asteriskClass).hide();
+            }
+        }
+    });
+
+    $().ready(function () {
+        if ($('.program-dropdown').children('option').length == 2) {
+            $('.program-dropdown').val($('.program-dropdown option:eq(1)').val())
+        }
+
+        $('.required-asterisk').each(function (index, element) {
+            var asteriskClass = $(element).data('asterisk');
+            if (asteriskClass) {
+                if ($(element).val().length == 0) {
+                    $('.' + asteriskClass).show();
+                } else {
+                    $('.' + asteriskClass).hide();
+                }
+            }
+        });
+
+        $('.required-asterisk-dropdown').each(function (index, element) {
+            var asteriskClass = $(element).data('asterisk');
+            if (asteriskClass) {
+                if ($(element).val() == 0) {
+                    $('.' + asteriskClass).show();
+                } else {
+                    $('.' + asteriskClass).hide();
+                }
+            }
+        });
+    });
+
 </script>

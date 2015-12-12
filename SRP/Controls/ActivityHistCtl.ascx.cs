@@ -17,14 +17,9 @@ namespace GRA.SRP.Controls {
         protected void Page_Load(object sender, EventArgs e) {
             this.FilterButtonText = allActivitiesFilter.Text;
             if(!IsPostBack) {
-                if(string.IsNullOrEmpty(Request["ActHistPID"])
-                   && (Session["ActHistPID"] == null || string.IsNullOrEmpty(Session["ActHistPID"].ToString()))) {
-                    Response.Redirect("~/Account/");
-                }
-
-                lblPID.Text = Session["ActHistPID"].ToString();
-
                 var LoggedInPatron = (Patron)Session["Patron"];
+
+                lblPID.Text = LoggedInPatron.PID.ToString();
 
                 if(LoggedInPatron.IsMasterAccount) {
                     pnlFilter.Visible = true;
@@ -122,7 +117,7 @@ namespace GRA.SRP.Controls {
             }
 
             rptr.DataBind();
-            
+
             if(recordCount == 0) {
                 activitiesPanel.Visible = false;
                 noActivitiesLabel.Visible = true;

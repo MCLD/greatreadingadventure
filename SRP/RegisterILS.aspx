@@ -11,12 +11,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <asp:Label runat="server" CssClass="lead" Text="registration-title"></asp:Label>
+
                 </div>
                 <div class="panel-body">
                     <div class="form-horizontal">
                         <asp:Panel ID="instructionsPanel" runat="server" CssClass="row">
                             <div class="col-xs-12">
                                 <asp:Label runat="server" Text="registration-instructions"></asp:Label>
+                                <p><strong>PIN is optional.</strong></p>
                             </div>
 
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -200,7 +202,7 @@
                                     <select id="ddAvatar" class="form-control"></select>
                                     <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
                                     <script>
-                                        var ddData = [<%# Avatar.GetJSONForSelection(1) %>];
+                                        var ddData = [<% =Avatar.GetJSONForSelection(1) %>];
                                         $('#ddAvatar').ddslick({
                                             width: 230,
                                             background: "transparent",

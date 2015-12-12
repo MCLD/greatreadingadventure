@@ -9,28 +9,37 @@
     </div>
 </div>
 
-
 <div class="form-horizontal">
-    <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-        <asp:ValidationSummary runat="server"
-            HeaderText='<span class="glyphicon glyphicon-exclamation-sign margin-halfem-right"></span>Please correct the following errors:' />
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <asp:ValidationSummary runat="server"
+                HeaderText='<span class="glyphicon glyphicon-exclamation-sign margin-halfem-right"></span>Please correct the following errors:' />
+        </div>
     </div>
     <asp:Repeater ID="rptr" runat="server" OnItemDataBound="rptr_ItemDataBound" OnItemCommand="rptr_ItemCommand">
         <ItemTemplate>
-            <div class="margin-1em-top">
+            <div class="margin-halfem-top row">
                 <asp:HyperLink ID="FamilyAccountList"
                     CausesValidation="false"
                     CommandName="familyAccountList"
-                    CssClass="btn btn-default"
+                    CssClass="btn btn-default margin-halfem-bottom"
                     runat="server"
                     NavigateUrl="~/Account/FamilyAccountList.aspx">
                         <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                         <asp:Label runat="server" Text="myaccount-family"></asp:Label>
                 </asp:HyperLink>
-                <a href="ChangePassword.aspx" class="btn btn-default">
+                <asp:HyperLink CausesValidation="false"
+                    ID="FamilyAccountAdd"
+                    CssClass="btn btn-default margin-halfem-bottom"
+                    runat="server"
+                    NavigateUrl="~/Account/AddFamilyMemberAccount.aspx">
+                    <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
+                    <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
+                </asp:HyperLink>
+                <a href="ChangePassword.aspx" class="btn btn-default margin-halfem-bottom">
                     <span class="glyphicon glyphicon-lock margin-halfem-right"></span>
                     Change Password</a>
-                <a href="ActivityHistory.aspx" class="btn btn-default">
+                <a href="ActivityHistory.aspx" class="btn btn-default margin-halfem-bottom">
                     <span class="glyphicon glyphicon-folder-open margin-halfem-right"></span>
                     Activity History</a>
                 <asp:LinkButton runat="server"
@@ -38,13 +47,13 @@
                     CausesValidation="true"
                     data-loading-text="Saving..."
                     OnClientClick="return saveButtonClick();"
-                    CssClass="btn btn-success account-save-button">
+                    CssClass="btn btn-success account-save-button margin-halfem-bottom">
                         <span class="glyphicon glyphicon-save margin-halfem-right"></span>
                         <%=this.SaveButtonText %>
                 </asp:LinkButton>
             </div>
 
-            <div class="form-group" style="margin-top: 2em;">
+            <div class="form-group margin-1em-top">
                 <label class="col-sm-3 control-label">
                     Username:
                 </label>
