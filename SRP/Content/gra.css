@@ -161,12 +161,17 @@ input#loginPopupRememberMe {
     height: 1.5em;
 }
 
-.login-remember-me > label {
+.login-remember-page > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.login-remember-page > label {
     font-weight: normal;
     display: inline-block;
     margin-left: 0.5em;
     position: absolute;
-    top: 0.25em;
+    top: 0.8em;
 }
 
 /* badge display spacing */
@@ -248,4 +253,27 @@ body {
 
 .modal-open {
     overflow-y: auto;
+}
+
+/* status report */
+#status-what {
+    font-size: larger;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+#status-value {
+    font-size: 4em;
+}
+
+/* feed */
+.feed-table {
+    border-collapse: separate;
+    border-spacing: 0 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.feed-table tr td.feed-avatar {
+    text-align: center;
+    vertical-align: middle;
 }

@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using GRA.SRP.DAL;
 using GRA.Tools;
 using System.Data;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.Controls {
     public partial class MyBadgesListControl : System.Web.UI.UserControl {
@@ -37,7 +38,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected void RenderBadges() {
-            var ds = DAL.PatronBadges.GetAll(((Patron)Session["Patron"]).PID);
+            var ds = DAL.PatronBadges.GetTop(((Patron)Session["Patron"]).PID, 6);
             rptr.DataSource = ds;
             rptr.DataBind();
             var badgeCount = ds.Tables[0].Rows.Count;

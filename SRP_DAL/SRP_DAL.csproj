@@ -57,6 +57,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,6 +92,7 @@
     <Compile Include="CustomRegistrationFields.cs" />
     <Compile Include="EmailLog.cs" />
     <Compile Include="Event.cs" />
+    <Compile Include="ActivityFeed.cs" />
     <Compile Include="GamePlayStats.cs" />
     <Compile Include="IMinigame.cs" />
     <Compile Include="LibraryCrosswalk.cs" />
@@ -128,6 +138,7 @@
     <Compile Include="SRPGroup.cs" />
     <Compile Include="SRPReport.cs" />
     <Compile Include="SRPSettings.cs" />
+    <Compile Include="ProgramStatus.cs" />
     <Compile Include="Survey.cs" />
     <Compile Include="SurveyAnswers.cs" />
     <Compile Include="SurveyQuestion.cs" />

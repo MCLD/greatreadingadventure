@@ -21,7 +21,6 @@ namespace GRA.SRP.Controls {
         public void LoadData() {
 
             var patron = (Patron)Session["Patron"];
-            Session["ActHistPID"] = patron.PID;
 
             int tp = PatronPoints.GetTotalPatronPoints(patron.PID);
             lblPoints.Text = tp.ToInt();

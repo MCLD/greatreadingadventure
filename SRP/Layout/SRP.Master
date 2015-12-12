@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="favicon.png">
     <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
     <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.min.js")%>"></script>
@@ -163,7 +164,7 @@
                         </div>
                     </div>
                     <div class="modal-footer clearfix">
-                        <div class="pull-left">
+                        <div class="pull-left margin-halfem-top">
                             <asp:CheckBox runat="server"
                                 ID="loginPopupRememberMe" CssClass="checkbox-inline" />
                             <label for="loginPopupRememberMe" class="form-control-static">
@@ -173,13 +174,13 @@
                             </label>
                         </div>
                         <div class="pull-right">
-                            <a href="~/Recover.aspx" runat="server" class="btn btn-default"
+                            <a href="~/Recover.aspx" runat="server" class="btn btn-default margin-halfem-bottom margin-halfem-top"
                                 id="loginPopupRecoverButton">
                                 <asp:Label runat="server" Text="loginform-recover" /></a>
-                            <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info"
-                                id="loginPopupRegisterButton">
+                            <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info margin-halfem-bottom"
+                                id="loginPopupRegisterButton" style="display: inline-block;">
                                 <asp:Label runat="server" Text="loginform-register" /></a>
-                            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success"
+                            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success margin-halfem-bottom"
                                 Text="loginform-submit-button" OnClientClick="return passwordPopupValidateLogin();"
                                 OnClick="loginPopupClick" data-loading-text="Verifying..." />
                         </div>

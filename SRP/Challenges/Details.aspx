@@ -67,8 +67,7 @@
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
                         <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
-                        <a href="~/Challenges/" runat="server" class="btn btn-default">
-                            <asp:Label runat="server" Text="challenges-return"></asp:Label></a>
+                        <asp:HyperLink runat="server" ID="challengesBackLink" CssClass="btn btn-default"><asp:Label runat="server" Text="challenges-return"></asp:Label></asp:HyperLink>
                         <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />
                     </div>
                 </div>

@@ -27,20 +27,20 @@
     <div class="panel-footer clearfix">
         <div class="row">
             <div class="col-xs-12 col-sm-5">
-                <div class="pull-left login-remember-me">
+                <div class="pull-left login-remember-page margin-halfem-top">
                     <asp:CheckBox runat="server"
                         ID="loginRememberMe" Text="Remember my username" />
                 </div>
             </div>
             <div class="col-xs-12 col-sm-7">
-                <div class="pull-right">
-                    <a href="~/Recover.aspx" runat="server" class="btn btn-default" clientidmode="Static"
+                <div class="pull-right margin-halfem-top">
+                    <a href="~/Recover.aspx" runat="server" class="btn btn-default margin-halfem-bottom" clientidmode="Static"
                         id="recoverButton">
                         <asp:Label runat="server" Text="loginform-recover" /></a>
-                    <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info" clientidmode="Static"
+                    <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info margin-halfem-bottom" clientidmode="Static"
                         id="registerButton">
                         <asp:Label runat="server" Text="loginform-register" /></a>
-                    <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success" ClientIDMode="Static"
+                    <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success margin-halfem-bottom" ClientIDMode="Static"
                         Text="loginform-submit-button" OnClientClick="return validateLogin();"
                         OnClick="loginClick" data-loading-text="Verifying..." />
                 </div>

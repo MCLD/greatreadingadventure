@@ -57,6 +57,11 @@ namespace GRA.SRP.Challenges {
                     }
 
                 }
+                if(Request.UrlReferrer == null) {
+                    challengesBackLink.NavigateUrl = "~/Challenges/";
+                } else {
+                    challengesBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
+                }
                 TranslateStrings(this);
             }
         }

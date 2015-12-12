@@ -24,7 +24,7 @@
     </div>
     <asp:Repeater runat="server" ID="rptr">
         <ItemTemplate>
-            <div class="col-xs-6 col-sm-3 col-md-2">
+            <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
                 <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?BadgeId={0}") %>'
                     runat="server"
                     onclick='<%# Eval("BadgeId", "return ShowBadgeInfo({0});") %>'

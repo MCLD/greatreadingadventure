@@ -192,7 +192,7 @@ challenges-no-challenges=There are currently no Challenges. Check back soon!
 challenges-prompt=Challenge: 
 challenges-close=Close
 challenges-save=Save
-challenges-return=Back to list
+challenges-return=Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
