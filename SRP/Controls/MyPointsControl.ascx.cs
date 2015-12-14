@@ -24,7 +24,6 @@ namespace GRA.SRP.Controls {
 
             int tp = PatronPoints.GetTotalPatronPoints(patron.PID);
             lblPoints.Text = tp.ToInt();
-
             var pgm = Programs.FetchObject(patron.ProgID);
             if(pgm.ProgramGameID > 0) {
                 if(ProgramGame.FetchObject(pgm.ProgramGameID) != null) {
@@ -40,7 +39,7 @@ namespace GRA.SRP.Controls {
 
             lblNextLevel.Text =
                 string.Format(
-                    "I'm on {0}level: {1}.<br />{2} point{3} to level up.<br />",
+                    "I'm on <strong>{0}level: {1}</strong>.<br />I need <strong>{2} point{3}</strong> to level up.<br />",
                     bonus ? "bonus " : string.Empty,
                     level,
                     points,

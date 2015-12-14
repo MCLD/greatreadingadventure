@@ -89,8 +89,6 @@ namespace GRA.SRP.Controls {
                 new SessionTools(Session).EstablishPatron(newPatron);
                 //Session["Patron"] = bp;
                 //Session["ProgramID"] = bp.ProgID;
-                //Session["PatronProgramID"] = bp.ProgID;
-                //Session["CurrentProgramID"] = bp.ProgID;
                 //Session["TenantID"] = bp.TenID;
 
                 Response.Redirect("~");

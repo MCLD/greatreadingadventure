@@ -13,6 +13,33 @@ namespace GRA.SRP {
     public partial class MyLogEntry {
         
         /// <summary>
+        /// Avatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.Avatar Avatar;
+        
+        /// <summary>
+        /// MyPointsControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl;
+        
+        /// <summary>
+        /// MyGamemapNavControl1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.Controls.MyGamemapNavControl MyGamemapNavControl1;
+        
+        /// <summary>
         /// GameLoggingControl1 control.
         /// </summary>
         /// <remarks>

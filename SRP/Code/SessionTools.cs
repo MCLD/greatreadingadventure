@@ -11,11 +11,8 @@ namespace GRA.SRP {
         }
         public bool EstablishPatron(Patron patron) {
             try {
-                Session["PatronLoggedIn"] = true;
-                Session["Patron"] = patron;
+                Session[SessionKey.Patron] = patron;
                 Session["ProgramID"] = patron.ProgID;
-                Session["PatronProgramID"] = patron.ProgID;
-                Session["CurrentProgramID"] = patron.ProgID;
                 Session["TenantID"] = patron.TenID;
                 Session[SessionKey.IsMasterAccount] = patron.IsMasterAccount;
                 if(patron.IsMasterAccount) {
@@ -31,11 +28,8 @@ namespace GRA.SRP {
         }
 
         public void ClearPatron() {
-            Session.Remove("PatronLoggedIn");
-            Session.Remove("Patron");
+            Session.Remove(SessionKey.Patron);
             Session.Remove("ProgramID");
-            Session.Remove("PatronProgramID");
-            Session.Remove("CurrentProgramID");
             Session.Remove(SessionKey.IsMasterAccount);
             Session.Remove("MasterAcctPID");
         }

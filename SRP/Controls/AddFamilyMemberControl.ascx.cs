@@ -217,7 +217,7 @@ namespace GRA.SRP.Controls {
                 p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text);
 
                 p.ParentPermFlag = true;
-                p.Over18Flag = p.Age > 17;
+                p.Over18Flag = p.Age >= 18;
                 p.ShareFlag = ((CheckBox)rptr.Items[0].FindControl("ShareFlag")).Checked;
                 p.TermsOfUseflag = true;
 
