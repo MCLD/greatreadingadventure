@@ -259,8 +259,12 @@ namespace GRA.SRP.Controls
             }
             if(familyAddbutton != null) {
                 var patron = e.Item.DataItem as DataRowView;
-                if(patron != null && patron["Over18Flag"] as bool? == true) {
+                if(patron != null
+                   && patron["Over18Flag"] as bool? == true
+                   && patron["MasterAcctPID"] as int? == 0) {
                     familyAddbutton.Visible = !showFamilyList;
+                } else {
+                    familyAddbutton.Visible = false;
                 }
             }
 

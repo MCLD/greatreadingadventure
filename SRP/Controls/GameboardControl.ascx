@@ -10,7 +10,7 @@
         <table width="100%" cellspacing="0" cellpadding="0" border="0" id="GameBoard" style="position: relative; z-index: 0; ">
             <tr>
                 <td>
-                    <img src="/GameMap.aspx" id="BoardImg" style="width:100%;" alt="Game Board"/>
+                    <asp:Image runat="server" ImageUrl="~/Adventures/Map.aspx" ID="BoardImg" Width="100%" AlternateText="Game Board" />
                 </td>
             </tr>
         </table>

@@ -16,7 +16,8 @@ namespace GRA.SRP.Controls
             if (Session["Patron"] == null) Response.Redirect("/");
             var patron = (Patron)Session["Patron"];
 
-
+            var gameLogic = new Logic.Game();
+            this.gamemapNav.Visible = !string.IsNullOrEmpty(gameLogic.GetGameboardPath(patron));
         }
 
         public  string Message

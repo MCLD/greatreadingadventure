@@ -42,11 +42,8 @@ namespace GRA.SRP.Classes {
                     var st = new SessionTools(Session);
 
                     st.EstablishPatron(patron);
-                    //Session["PatronLoggedIn"] = true;
                     //Session["Patron"] = patron;
                     //Session["ProgramID"] = patron.ProgID;
-                    //Session["PatronProgramID"] = patron.ProgID;
-                    //Session["CurrentProgramID"] = patron.ProgID;
 
                     st.AlertPatron("Your password has been updated!", glyphicon: "check");
                     Response.Redirect("~/Account/");

@@ -563,7 +563,7 @@ namespace GRA.SRP.Controls {
                 p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("LiteracyLevel2")).Text);
 
                 p.ParentPermFlag = ((CheckBox)(rptr.Items[0]).FindControl("ParentPermFlag")).Checked;
-                p.Over18Flag = int.Parse(RegistrationAge.Text) > 18;
+                p.Over18Flag = int.Parse(RegistrationAge.Text) >= 18;
                 p.ShareFlag = ((CheckBox)(rptr.Items[0]).FindControl("ShareFlag")).Checked;
                 p.TermsOfUseflag = ((CheckBox)(rptr.Items[0]).FindControl("TermsOfUseflag")).Checked;
 

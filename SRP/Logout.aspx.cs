@@ -11,11 +11,14 @@ namespace GRA.SRP {
     public partial class Logout : BaseSRPPage {
         protected void Page_Load(object sender, EventArgs e) {
             IsSecure = false;
-            var navTo = "~/";
+            var navTo = "~";
             if(IsLoggedIn) {
-                var p = Programs.FetchObject((int)Session["PatronProgramID"]);
-                if(p.LogoutURL.Trim().Length > 0) {
-                    navTo = p.LogoutURL;
+                Patron patron = Session["Patron"] as Patron;
+                if(patron != null) {
+                    var p = Programs.FetchObject(patron.ProgID);
+                    if(p.LogoutURL.Trim().Length > 0) {
+                        navTo = p.LogoutURL;
+                    }
                 }
             }
 

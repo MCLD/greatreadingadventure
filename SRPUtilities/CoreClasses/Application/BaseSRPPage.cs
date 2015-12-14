@@ -129,11 +129,9 @@ namespace SRPApp.Classes {
             }
 
             IsLoggedIn = false;
-            if(Session["PatronLoggedIn"] != null && (bool)Session["PatronLoggedIn"]) {
+            object patron = Session[SessionKey.Patron];
+            if(patron != null) {
                 IsLoggedIn = true;
-                // Load the Patron  -- SRPUser = (SRPUser)Session[SessionData.UserProfile.ToString()];
-                // PatronID =  patron.PK
-                // ProgramID = patron.programid
             }
             if(IsSecure && !IsLoggedIn) {
                 if(Session[SessionKey.RequestedPath] == null) {

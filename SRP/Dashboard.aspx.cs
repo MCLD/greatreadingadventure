@@ -9,36 +9,28 @@ using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 
-namespace GRA.SRP
-{
-    public partial class MyProgram : BaseSRPPage
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+namespace GRA.SRP {
+    public partial class MyProgram : BaseSRPPage {
+        protected void Page_Load(object sender, EventArgs e) {
             IsSecure = true;
 
-            Control ctl = null;
-            PlaceHolder plc = null;
+            var patron = Session["Patron"] as Patron;
+            if(patron == null) {
+                Response.Redirect("~");
+            }
 
-            var pgm = DAL.Programs.FetchObject(int.Parse(Session["PatronProgramID"].ToString()));
-            if (pgm == null)
-            {
-                var p = (Patron)Session["Patron"];
-                pgm = Programs.FetchObject(Programs.GetDefaultProgramForAgeAndGrade(p.Age, p.SchoolGrade.SafeToInt()));
-                if (p.ProgID != pgm.PID)
-                {
-                    p.ProgID = pgm.PID;
-                    p.Update();
+            var pgm = DAL.Programs.FetchObject(patron.ProgID);
+            if(pgm == null) {
+                pgm = Programs.FetchObject(Programs.GetDefaultProgramForAgeAndGrade(patron.Age, patron.SchoolGrade.SafeToInt()));
+                if(patron.ProgID != pgm.PID) {
+                    patron.ProgID = pgm.PID;
+                    patron.Update();
                 }
-                Session["PatronProgramID"] = Session["PatronProgramID"] = Session["CurrentProgramID"] = pgm.PID;
+            }
 
-            }
-            if (pgm.IsOpen)
-            {
+            if(pgm.IsOpen) {
                 ProgramNotOpenText.Visible = false;
-            }
-            else
-            {
+            } else {
                 ProgramNotOpenText.Visible = true;
                 ProgramNotOpenText.Text = pgm.HTML6;
             }
@@ -59,7 +51,8 @@ namespace GRA.SRP
                 }
             }
 
-            if (!IsPostBack) TranslateStrings(this);
+            if(!IsPostBack)
+                TranslateStrings(this);
         }
     }
 }

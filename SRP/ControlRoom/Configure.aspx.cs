@@ -402,7 +402,7 @@ namespace GRA.SRP.ControlRoom {
                 return issues;
             }
             try {
-                webConfig.Save();
+                webConfig.Save(ConfigurationSaveMode.Minimal);
             } catch(Exception ex) {
                 issues.Add(string.Format("Could not write to the Web.config file on the disk (this is probably due to permissions): {0}", ex.Message));
                 return issues;
@@ -506,7 +506,7 @@ namespace GRA.SRP.ControlRoom {
                     network.Password = ViewState[MailPwKey].ToString();
                 }
 
-                webConfig.Save();
+                webConfig.Save(ConfigurationSaveMode.Minimal);
             } catch(Exception ex) {
                 string error = string.Format("Couldn't update Web.config with new connection string: {0}", ex.Message);
                 this.Log().Error(error);

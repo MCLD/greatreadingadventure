@@ -57,8 +57,7 @@ namespace GRA.SRP.Classes {
                     Session[SessionKey.PatronMessage] = "Invalid username or password.";
                     Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
                     Session[SessionKey.PatronMessageGlyphicon] = "remove";
-                    Session["PatronLoggedIn"] = false;
-                    Session["Patron"] = null;
+                    Session[SessionKey.Patron] = null;
                 }
             }
 

@@ -817,7 +817,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="font\fontawesome-webfont.svg" />
     <Content Include="FramedSurvey.aspx" />
-    <Content Include="GameMap.aspx" />
+    <Content Include="Adventures\Map.aspx" />
     <Content Include="images\arrow-left.png" />
     <Content Include="images\arrow-right.png" />
     <Content Include="images\arrows.png" />
@@ -872,7 +872,7 @@
     <Content Include="Logout.aspx" />
     <Content Include="Account\Default.aspx" />
     <Content Include="Badges\MyBadges.aspx" />
-    <Content Include="MyGameboard.aspx" />
+    <Content Include="Adventures\Gameboard.aspx" />
     <Content Include="Adventures\Default.aspx" />
     <Content Include="Mail\Default.aspx" />
     <Content Include="Offers\Default.aspx" />
@@ -2893,12 +2893,12 @@
     <Compile Include="FramedSurvey.aspx.designer.cs">
       <DependentUpon>FramedSurvey.aspx</DependentUpon>
     </Compile>
-    <Compile Include="GameMap.aspx.cs">
-      <DependentUpon>GameMap.aspx</DependentUpon>
+    <Compile Include="Adventures\Map.aspx.cs">
+      <DependentUpon>Map.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="GameMap.aspx.designer.cs">
-      <DependentUpon>GameMap.aspx</DependentUpon>
+    <Compile Include="Adventures\Map.aspx.designer.cs">
+      <DependentUpon>Map.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2964,12 +2964,12 @@
     <Compile Include="Badges\MyBadges.aspx.designer.cs">
       <DependentUpon>MyBadges.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MyGameboard.aspx.cs">
-      <DependentUpon>MyGameboard.aspx</DependentUpon>
+    <Compile Include="Adventures\Gameboard.aspx.cs">
+      <DependentUpon>Gameboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MyGameboard.aspx.designer.cs">
-      <DependentUpon>MyGameboard.aspx</DependentUpon>
+    <Compile Include="Adventures\Gameboard.aspx.designer.cs">
+      <DependentUpon>Gameboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Adventures\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -3057,6 +3057,10 @@
     <ProjectReference Include="..\GRA.Communications\GRA.Communications.csproj">
       <Project>{27443946-6ec6-4631-b35c-6cbb7cbf1103}</Project>
       <Name>GRA.Communications</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GRA.Logic\GRA.Logic.csproj">
+      <Project>{3b297209-b4ea-4dca-bf63-bbbc019fb647}</Project>
+      <Name>GRA.Logic</Name>
     </ProjectReference>
     <ProjectReference Include="..\GRA.Tools\GRA.Tools.csproj">
       <Project>{b50b80e5-5996-42a1-bcdb-795ebc93e893}</Project>
