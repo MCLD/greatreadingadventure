@@ -11,6 +11,8 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace GRA.SRP.DAL
 {
@@ -187,26 +189,29 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Avatar_GetAll", arrParams);
         }
 
+        public class DdslickData {
+            public string text { get; set; }
+            public int value { get; set; }
+            public bool selected { get; set; }
+            public string imageSrc { get; set; }
+            public string description { get; set; }
+        }
+
         public static string  GetJSONForSelection(int selected)
         {
-            string JSON = "";
-
             var ds = GetAll();
-            for (int i = 0; i < ds.Tables[0].Rows.Count  ; i++)
-            {
-                bool isSelected = (int) ds.Tables[0].Rows[i]["AID"] == selected;
-                string selectedStr = (isSelected ? "true" : "false");
-                var s = "{" + string.Format("text: \"{0}\",value: {1},selected: {2},imageSrc: \"/images/Avatars/sm_{3}.png\""
-                            , ds.Tables[0].Rows[i]["Name"].ToString()
-                            , ds.Tables[0].Rows[i]["AID"].ToString()
-                            , selectedStr
-                            , ds.Tables[0].Rows[i]["AID"].ToString()
-                            )+ "}";
-                JSON = (JSON.Length == 0 ? s : JSON + "," + s);
+            var avatars = new List<DdslickData>();
+            foreach(DataRow row in ds.Tables[0].Rows) {
+                var avatar = new DdslickData {
+                    text = (string)row["Name"],
+                    value = (int)row["AID"],
+                    selected = (int)row["AID"] == selected,
+                    imageSrc = string.Format("/images/Avatars/sm_{0}.png", row["AID"]),
+                    description = "&nbsp;"
+                };
+                avatars.Add(avatar);
             }
-
-
-            return JSON;
+            return JsonConvert.SerializeObject(avatars.ToArray());
         }
 
         public static Avatar FetchObject(int AID)
