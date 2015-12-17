@@ -19,6 +19,6 @@ namespace GRA.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UserControl GameboardControl1;
+        protected global::GRA.SRP.Controls.GameboardControl GameboardControl1;
     }
 }

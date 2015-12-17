@@ -3,7 +3,7 @@ The Great Reading Adventure is a robust, open source software designed to manage
 
 You can view the latest [release notes](https://github.com/MCLD/greatreadingadventure/releases/latest) or **[download the latest version (2.2.1)](https://github.com/MCLD/greatreadingadventure/releases/download/v2.2.1/GreatReadingAdventure-2.2.1.zip)**.
 
-## Help!
+## Stuck? Need help?
 The [online manual](http://manual.greatreadingadventure.com/) is still incomplete but we're working on it! You can also download a [PDF version](http://readthedocs.org/projects/great-reading-adventure/downloads/pdf/latest/) for offline viewing.
 
 You can visit the [Great Reading Adventure Forum](http://forum.greatreadingadventure.com/) for the following:

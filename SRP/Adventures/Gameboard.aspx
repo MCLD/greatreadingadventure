@@ -4,7 +4,7 @@
 <%@ Import Namespace="GRA.SRP.DAL" %>
 
 
-<%@ Register Src="Controls/GameboardControl.ascx" TagName="GameboardControl" TagPrefix="uc1" %>
+<%@ Register Src="~/Controls/GameboardControl.ascx" TagName="GameboardControl" TagPrefix="uc1" %>
 
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
