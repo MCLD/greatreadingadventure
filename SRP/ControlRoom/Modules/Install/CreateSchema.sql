@@ -629,14 +629,12 @@ SELECT @BID AS BID,
 		ELSE 1
 		END AS Checked
 FROM dbo.BadgeBranch bb
-RIGHT JOIN Code c ON bb.CID = c.CID
-	AND c.TenID = @TenID
-	AND c.CTID = @CTID
-WHERE bb.BID = @BID
-	OR bb.BID IS NULL
-	AND c.TenID = @TenID
+RIGHT OUTER JOIN Code c ON bb.CID = c.CID
+	AND (bb.BID = @BID OR bb.BID IS NULL)
+WHERE c.TenID = @TenID
 	AND c.CTID = @CTID
 ORDER BY c.Code
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeCategories]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON

@@ -21,11 +21,8 @@ SELECT @BID AS BID,
 		ELSE 1
 		END AS Checked
 FROM dbo.BadgeBranch bb
-RIGHT JOIN Code c ON bb.CID = c.CID
-	AND c.TenID = @TenID
-	AND c.CTID = @CTID
-WHERE bb.BID = @BID
-	OR bb.BID IS NULL
-	AND c.TenID = @TenID
+RIGHT OUTER JOIN Code c ON bb.CID = c.CID
+	AND (bb.BID = @BID OR bb.BID IS NULL)
+WHERE c.TenID = @TenID
 	AND c.CTID = @CTID
 ORDER BY c.Code
