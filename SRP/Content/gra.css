@@ -262,7 +262,7 @@ body {
     letter-spacing: 2px;
 }
 #status-value {
-    font-size: 4em;
+    font-size: 3em;
 }
 
 /* feed */
@@ -276,4 +276,12 @@ body {
 .feed-table tr td.feed-avatar {
     text-align: center;
     vertical-align: middle;
+}
+
+.points-display {
+    font-size: 2em;
+}
+
+small.dd-desc {
+    display: none;
 }

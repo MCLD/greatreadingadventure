@@ -356,7 +356,7 @@
                     <asp:ImageButton ID="ImageButton2" runat="server" 
                         CausesValidation="True" 
                         CommandName="Saveandbooks" 
-                        ImageUrl="~/ControlRoom/Images/library.png" 
+                        ImageUrl="~/ControlRoom/RibbonImages/Challenges.png" 
                         Height="25"
                         Text="Save and see books"   Tooltip="Save and see books"
                         AlternateText="Save and return" />    

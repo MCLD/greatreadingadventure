@@ -115,22 +115,17 @@
                     <asp:Label runat="server" Text="registration-form-avatar"></asp:Label>
                 </label>
                 <div class="col-sm-9">
-                    <select id="ddAvatar" class="form-control"></select>
-                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;"
-                        value='<%# Eval("AvatarId") %>' />
+                    <select id="ddAvatar"></select>
+                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
                     <script>
-                        var ddData = [<%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>];
-                        $().ready(function () {
-                            $('#ddAvatar').ddslick({
-                                width: 230,
-                                background: "transparent",
-                                showSelectedHTML: true,
-                                selectText: "Select your Avatar",
-                                data: ddData,
-                                onSelected: function (data) {
-                                    $('.selected-avatar').val(data.selectedData.value);
-                                }
-                            });
+                        var ddData = <%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>;
+                        $('#ddAvatar').ddslick({
+                            data: ddData,
+                            background: "transparent",
+                            selectText: "Select an avatar",
+                            onSelected: function (data) {
+                                $('.selected-avatar').first().val(data.selectedData.value);
+                            }
                         });
                     </script>
                 </div>

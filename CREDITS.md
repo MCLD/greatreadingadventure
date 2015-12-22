@@ -15,6 +15,8 @@ Reading Adventure wouldn't exist!
 - [FormatWith](#formatwith)
 - [FontAwesome](#fontawesome)
 - [Html Agility Pack](#html-agility-pack)
+- [Glitch public domain game art](#glitch-public-domain-game-art)
+- [Google material design icons](#google-material-design-icons)
 - [jQuery](#jquery)
 - [jQuery Datepicker](#jquery-datepicker)
 - [Microsoft Ajax Minifier](#microsoft-ajax-minifier)
@@ -73,6 +75,20 @@ Reading Adventure wouldn't exist!
 - <http://james.newtonking.com/archive/2008/03/29/formatwith-2-0-string-formatting-with-named-variables>
 - Code author: James Newton-King
  
+* * *
+
+## Glitch public domain game art
+- <https://www.glitchthegame.com/>
+- Created by Tiny Speck, Inc.
+- License (CC0 1.0 Universal) <https://creativecommons.org/licenses/by/4.0/>
+
+* * *
+
+## Google material design icons
+- <https://google.github.io/material-design-icons/>
+- Copyright (c) Google
+- License (CC-BY 4.0) <http://creativecommons.org/publicdomain/zero/1.0/legalcode>
+
 * * *
 
 ## Html Agility Pack

@@ -252,6 +252,27 @@ SRP/Images/Games/MixMatch/*.jpg
 SRP/Images/Games/WordMatch/*.jpg
 SRP/Images/Offers/*.jpg
 
+# include default avatars
+!SRP/Images/Avatars/1.png
+!SRP/Images/Avatars/md_1.png
+!SRP/Images/Avatars/sm_1.png
+!SRP/Images/Avatars/2.png
+!SRP/Images/Avatars/md_2.png
+!SRP/Images/Avatars/sm_2.png
+!SRP/Images/Avatars/3.png
+!SRP/Images/Avatars/md_3.png
+!SRP/Images/Avatars/sm_3.png
+!SRP/Images/Avatars/4.png
+!SRP/Images/Avatars/md_4.png
+!SRP/Images/Avatars/sm_4.png
+!SRP/Images/Avatars/5.png
+!SRP/Images/Avatars/md_5.png
+!SRP/Images/Avatars/sm_5.png
+!SRP/Images/Avatars/6.png
+!SRP/Images/Avatars/md_6.png
+!SRP/Images/Avatars/sm_6.png
+
+
 # exclude program css files except for the default four programs
 SRP/CSS/Program/*.css
 !SRP/CSS/Program/1.css

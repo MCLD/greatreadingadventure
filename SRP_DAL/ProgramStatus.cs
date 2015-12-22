@@ -43,9 +43,9 @@ namespace SRP_DAL {
                                                  query.ToString(),
                                                  parameters.ToArray());
             if(result.Read()) {
-                report.PointsEarned = (int)result["PointsEarned"];
-                report.BadgesAwarded = (int)result["BadgesAwarded"];
-                report.ChallengesCompleted = (int)result["ChallengesCompleted"];
+                report.PointsEarned = result["PointsEarned"] as int? ?? 0;
+                report.BadgesAwarded = result["BadgesAwarded"] as int? ?? 0;
+                report.ChallengesCompleted = result["ChallengesCompleted"] as int? ?? 0;
             } else {
                 throw new Exception("No data returned.");
             }

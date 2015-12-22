@@ -18,7 +18,6 @@
                         <asp:Panel ID="instructionsPanel" runat="server" CssClass="row">
                             <div class="col-xs-12">
                                 <asp:Label runat="server" Text="registration-instructions"></asp:Label>
-                                <p><strong>PIN is optional.</strong></p>
                             </div>
 
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -38,6 +37,11 @@
 
 
                         <asp:Panel runat="server" ID="step1" DefaultButton="NavigationNext">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-sm-offset-3 margin-1em-bottom">
+                                    <strong>PIN is optional.</strong>
+                                </div>
+                            </div>
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("LibraryCard_Prompt")%>'>
                                 <label class="col-sm-3 control-label">
                                     <asp:Label runat="server" Text="registration-form-library-card"></asp:Label>

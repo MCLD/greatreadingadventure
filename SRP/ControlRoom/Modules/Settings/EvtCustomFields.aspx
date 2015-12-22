@@ -49,7 +49,7 @@
                             <asp:ImageButton ID="btnCodes" runat="server" 
                                 CausesValidation="false" 
                                 CommandName="codes" 
-                                ImageUrl="~/ControlRoom/Images/install1.png" 
+                                ImageUrl="~/ControlRoom/RibbonImages/CustomFields.png" 
                                 Height="25"
                                 Text="Codes"  Tooltip="Codes"
                                 AlternateText="Codes" ImageAlign="AbsBottom" />
@@ -82,7 +82,7 @@
                             <asp:ImageButton ID="ImageButton1" runat="server" 
                                 CausesValidation="false" 
                                 CommandName="codes" 
-                                ImageUrl="~/ControlRoom/Images/install1.png" 
+                                ImageUrl="~/ControlRoom/RibbonImages/CustomFields.png" 
                                 Height="25"
                                 Text="Codes"  Tooltip="Codes"
                                 AlternateText="Codes" ImageAlign="AbsBottom" />
@@ -117,7 +117,7 @@
                             <asp:ImageButton ID="ImageButton2" runat="server" 
                                 CausesValidation="false" 
                                 CommandName="codes" 
-                                ImageUrl="~/ControlRoom/Images/install1.png" 
+                                ImageUrl="~/ControlRoom/RibbonImages/CustomFields.png" 
                                 Height="25"
                                 Text="Codes"  Tooltip="Codes"
                                 AlternateText="Codes" ImageAlign="AbsBottom" />

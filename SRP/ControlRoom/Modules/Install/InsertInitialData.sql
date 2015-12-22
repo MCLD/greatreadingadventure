@@ -1663,7 +1663,7 @@ FROM SRPGroups
 FULL JOIN SRPPermissionsMaster ON 1 = 1
 GO
 
-SET IDENTITY_INSERT [dbo].[Programs] ON 
+SET IDENTITY_INSERT [dbo].[Programs] ON
 GO
 
 INSERT [dbo].[Programs] (
@@ -1734,7 +1734,7 @@ VALUES (
 	N'',
 	0,
 	N'<p>Welcome to the Great Reading Adventure! Sign up and log your reading to enjoy adventures, take on challenges, earn badges, and attend events!</p>',
-	N'<p>After a quick registration process you will be ready to log your reading.</p>',
+	N'',
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
@@ -1843,4 +1843,250 @@ VALUES (
 GO
 
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[Avatar] ON
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	1,
+	N'Nydar',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	2,
+	N'Claren',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	3,
+	N'Blogdon',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	4,
+	N'Glenday',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	5,
+	N'Caris',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+INSERT [dbo].[Avatar] (
+	[AID],
+	[Name],
+	[Gender],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	6,
+	N'Rittlea',
+	N'O',
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	N'',
+	N'',
+	N''
+	)
+GO
+
+SET IDENTITY_INSERT [dbo].[Avatar] OFF
 GO
