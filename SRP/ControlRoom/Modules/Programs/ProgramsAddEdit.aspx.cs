@@ -151,7 +151,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
                         obj.Insert();
 
                         File.Copy(Server.MapPath("~/css/program/default.css"), Server.MapPath("~/css/program/" + obj.PID.ToString() + ".css"),true);
-                        File.Copy(Server.MapPath("~/images/DefaultBanner.png"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".png"), true);
+                        File.Copy(Server.MapPath("~/images/meadow.jpg"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".jpg"), true);
+                        File.Copy(Server.MapPath("~/images/meadow@2x.jpg"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".jpg"), true);
                         File.Copy(Server.MapPath("~/resources/program.default.en-US.txt"), Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"), true);
                         //CompileResourceFile(Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"));
 

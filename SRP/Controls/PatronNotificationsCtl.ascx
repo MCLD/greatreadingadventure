@@ -16,6 +16,10 @@
                 Write a message</button>
         </div>
 
+        <div class="col-sm-12 margin-1em-top">
+            <p>Do you have questions about the reading program or prizes? Ask here by writing a message!</p>
+        </div>
+
         <%if(this.UserHasMessages) { %>
         <div class="col-sm-12 margin-1em-top">
             <table class="table table-bordered table-striped">
@@ -47,7 +51,7 @@
         </div>
         <% } else { %>
         <div class="col-sm-12 margin-1em-top">
-            <p>You currently have no messages.</p>
+            <p><em>You currently have no messages.</em></p>
         </div>
         <% } %>
     </div>

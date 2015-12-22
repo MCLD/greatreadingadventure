@@ -45,9 +45,23 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
                 );
 
             File.Delete(Server.MapPath("~/css/program/" + lblPK.Text + ".css"));
-            File.Delete(Server.MapPath("~/images/banners/" + lblPK.Text  + ".png"));
             File.Delete(Server.MapPath("~/resources/program." + lblPK.Text + ".en-US.txt"));
-
+            string filename = Server.MapPath("~/images/banners/" + lblPK.Text + ".png");
+            if(File.Exists(filename)) {
+                File.Delete(filename);
+            }
+            filename = Server.MapPath("~/images/banners/" + lblPK.Text + "@2x.png");
+            if(File.Exists(filename)) {
+                File.Delete(filename);
+            }
+            filename = Server.MapPath("~/images/banners/" + lblPK.Text + ".jpg");
+            if(File.Exists(filename)) {
+                File.Delete(filename);
+            }
+            filename = Server.MapPath("~/images/banners/" + lblPK.Text + "@2x.jpg");
+            if(File.Exists(filename)) {
+                File.Delete(filename);
+            }
 
             Session["Active_Program"] = "";
             Session["Active_Program_Filtered"] = "0";

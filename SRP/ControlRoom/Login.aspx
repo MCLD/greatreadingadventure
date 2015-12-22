@@ -55,7 +55,7 @@
                                                </td>
                                                <td rowspan="5" valign="middle">
                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img ID="Img19" runat="server" alt="" 
-                                                       src="~/ControlRoom/Images/Login_Manager.png" style="border-style: none" /></td>
+                                                       src="~/ControlRoom/Images/MaintenanceBot.png" style="border-style: none" /></td>
                                            </tr>
                                            <tr>
                                                <td align=left>

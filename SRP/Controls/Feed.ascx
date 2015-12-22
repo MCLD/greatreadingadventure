@@ -10,6 +10,7 @@
 
 <script>
     var rootPath = '<%=Request.ApplicationPath%>';
+    var firstLoad = true;
     var feedUpdateId = 0;
     var latest = 0;
 
@@ -21,18 +22,18 @@
         var jqxhr = $.ajax(rootPath + 'Handlers/Feed.ashx?after=' + latest)
             .done(function (data, textStatus, jqXHR) {
                 if (data.Success) {
-                    if (data.Latest > latest) {
+                    if (data.Latest == 0 || data.Latest > latest) {
                         var html = [];
                         var newLatest = latest;
                         var addedRows = 0;
                         // new records
-                        if (latest == 0) {
+                        if (latest == 0 && firstLoad) {
                             html.push('<table class="feed-table" id="activity-feed-table">');
                         }
                         $.each(data.Entries, function (index, entry) {
                             if (entry["ID"] > latest) {
                                 addedRows++;
-                                html.push('<tr><td class="feed-avatar">');
+                                html.push('<tr class="animated bounceInLeft"><td class="feed-avatar">');
                                 html.push('<img Width="24" Height="24" src="' + rootPath + 'Images/Avatars/sm_' + entry.AvatarId + '.png" class="margin-1em-right"/></td>');
                                 html.push('<td><strong>' + entry.Username + '</strong>');
                                 switch (entry.AwardReasonId) {
@@ -57,12 +58,19 @@
                                 }
                             }
                         });
-                        if (latest == 0) {
+                        if (data.Latest == 0 && firstLoad) {
+                            html.push('<tr class="animated bounceInLeft"><td colspan="2">');
+                            html.push('Updates are coming soon!');
+                            html.push('</td></tr>');
+                        }
+                        if (latest == 0 && firstLoad) {
                             html.push('</table>');
-                            $("#activity-feed").after(html.join(""));
+                            $("#activity-feed").html(html.join(""));
+                            firstLoad = false;
                         } else {
                             $('#activity-feed-table > tbody > tr:first').before(html.join(""));
-                            for(i = 0; i < addedRows; i++) {
+                            console.log("addedRows: " + addedRows);
+                            for (i = 0; i < addedRows; i++) {
                                 $('#activity-feed-table tr:last').remove();
                             }
                         }

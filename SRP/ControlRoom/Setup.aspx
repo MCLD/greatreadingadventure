@@ -34,7 +34,7 @@
                                             <td rowspan="3" valign="top" align="center">
                                                 <img
                                                     id="Img19" runat="server" alt=""
-                                                    src="/ControlRoom/Images/Install3.png" style="border-style: none" /></td>
+                                                    src="/ControlRoom/RibbonImages/SystemSettings.png" style="border-style: none" /></td>
                                         </tr>
                                         <tr>
                                             <td align="left">Database server name or IP address:<br />

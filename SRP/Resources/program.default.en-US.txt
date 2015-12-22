@@ -90,7 +90,7 @@ myaccount-add-family-member=Add Family Member
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 registration-title=Register and Create Account
 registration-instructions=<p>Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
-registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members.
+registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members. <strong>Please enter their information in the form.</strong>
 registration-processing=Creating your account...
 registration-success=Your account has been succesfully created!
 registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>

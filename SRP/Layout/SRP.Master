@@ -11,11 +11,12 @@
     <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
-    <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
-    <asp:PlaceHolder ID="ProgramCSS" runat="server" />
+    <link href="~/Content/animate.css" rel="stylesheet" runat="server" />
     <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+    <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
+    <asp:PlaceHolder ID="ProgramCSS" runat="server" />
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
