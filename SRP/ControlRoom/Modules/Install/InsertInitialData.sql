@@ -1869,7 +1869,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	1,
-	N'Nydar',
+	N'Percy',
 	N'O',
 	GetDate(),
 	N'sysadmin',
@@ -1909,7 +1909,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	2,
-	N'Claren',
+	N'Katniss',
 	N'O',
 	GetDate(),
 	N'sysadmin',
@@ -1949,7 +1949,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	3,
-	N'Blogdon',
+	N'Othello',
 	N'O',
 	GetDate(),
 	N'sysadmin',
@@ -1989,7 +1989,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	4,
-	N'Glenday',
+	N'Hester',
 	N'O',
 	GetDate(),
 	N'sysadmin',
@@ -2029,7 +2029,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	5,
-	N'Caris',
+	N'Gandalf',
 	N'O',
 	GetDate(),
 	N'sysadmin',
@@ -2069,7 +2069,7 @@ INSERT [dbo].[Avatar] (
 	)
 VALUES (
 	6,
-	N'Rittlea',
+	N'Cersei',
 	N'O',
 	GetDate(),
 	N'sysadmin',
