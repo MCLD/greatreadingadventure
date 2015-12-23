@@ -80,7 +80,20 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        if (e.CommandName.ToLower() == "addandback")
+
+                        try {
+                            var badgePath = string.Format(Server.MapPath("~/images/Avatars/"));
+                            System.IO.File.Copy(string.Format("{0}no_avatar.png", badgePath),
+                                                string.Format("{0}{1}.png", badgePath, obj.AID));
+                            System.IO.File.Copy(string.Format("{0}no_avatar_sm.png", badgePath),
+                                                string.Format("{0}sm_{1}.png", badgePath, obj.AID));
+                        } catch(Exception ex) {
+                            this.Log().Error("Couldn't copy no_avatar images into new avatar: {0}",
+                                             ex.Message);
+                        }
+
+
+                        if(e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
                         }

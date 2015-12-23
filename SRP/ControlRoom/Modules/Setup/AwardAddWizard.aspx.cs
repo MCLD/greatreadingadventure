@@ -6,7 +6,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -249,6 +249,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             var obj = LoadBadgeObject();
             obj.Insert();
+            Cache[CacheKey.BadgesActive] = true;
+
             lblBID.Text = obj.BID.ToString();
             var bl = Award.FetchObject(int.Parse(lblPK.Text));
             bl.BadgeID = obj.BID;

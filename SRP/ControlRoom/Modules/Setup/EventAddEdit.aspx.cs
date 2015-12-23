@@ -6,7 +6,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -135,6 +135,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
+                        Cache[CacheKey.EventsActive] = true;
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);

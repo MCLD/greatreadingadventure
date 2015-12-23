@@ -5,6 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 
 //tod0 - remove <asp:ListItem Value="99" Text="Flash Game"></asp:ListItem>
@@ -90,6 +91,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
+                        Cache[CacheKey.AdventuresActive] = true;
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);

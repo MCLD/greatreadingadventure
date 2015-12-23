@@ -36,9 +36,9 @@ namespace GRA.SRP.Controls {
                 }
 
                 PopulateList();
-                AdventureDropDownItem.Visible = Session[SessionKey.AdventuresActive] as bool? == true;
-                ChallengeDropDownItem.Visible = Session[SessionKey.ChallengesActive] as bool? == true;
-                EventsDropDownItem.Visible = Session[SessionKey.EventsActive] as bool? == true;
+                AdventureDropDownItem.Visible = Cache[CacheKey.AdventuresActive] as bool? == true;
+                ChallengeDropDownItem.Visible = Cache[CacheKey.ChallengesActive] as bool? == true;
+                EventsDropDownItem.Visible = Cache[CacheKey.EventsActive] as bool? == true;
 
             }
         }

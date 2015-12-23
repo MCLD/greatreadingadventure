@@ -205,62 +205,62 @@ namespace GRA.SRP {
                 Response.Redirect("~/Logout.aspx");
             }
 
-            if(Session[SessionKey.AdventuresActive] == null) {
+            if(Cache[CacheKey.AdventuresActive] == null) {
                 var programGames = DAL.ProgramGame.GetAll();
                 if(programGames.Tables.Count > 0 && programGames.Tables[0].Rows.Count > 0) {
-                    Session[SessionKey.AdventuresActive] = true;
+                    Cache[CacheKey.AdventuresActive] = true;
                 } else {
-                    Session[SessionKey.AdventuresActive] = false;
+                    Cache[CacheKey.AdventuresActive] = false;
                 }
             }
-            adventuresNav.Visible = Session[SessionKey.AdventuresActive] as bool? == true;
+            adventuresNav.Visible = Cache[CacheKey.AdventuresActive] as bool? == true;
             adventuresNav.Attributes.Add("class", this.AdventuresSectionActive);
 
-            if(Session[SessionKey.ChallengesActive] == null) {
+            if(Cache[CacheKey.ChallengesActive] == null) {
                 var challenges = DAL.BookList.GetAll();
                 if(challenges.Tables.Count > 0 && challenges.Tables[0].Rows.Count > 0) {
-                    Session[SessionKey.ChallengesActive] = true;
+                    Cache[CacheKey.ChallengesActive] = true;
                 } else {
-                    Session[SessionKey.ChallengesActive] = false;
+                    Cache[CacheKey.ChallengesActive] = false;
                 }
             }
-            challengesNav.Visible = Session[SessionKey.ChallengesActive] as bool? == true;
+            challengesNav.Visible = Cache[CacheKey.ChallengesActive] as bool? == true;
             challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
 
-            if(Session[SessionKey.OffersActive] == null) {
+            if(Cache[CacheKey.OffersActive] == null) {
                 var offers = DAL.Offer.GetAll();
                 if(offers.Tables.Count > 0 && offers.Tables[0].Rows.Count > 0) {
-                    Session[SessionKey.OffersActive] = true;
+                    Cache[CacheKey.OffersActive] = true;
                 } else {
-                    Session[SessionKey.OffersActive] = false;
+                    Cache[CacheKey.OffersActive] = false;
                 }
             }
-            offersNav.Visible = Session[SessionKey.OffersActive] as bool? == true;
+            offersNav.Visible = Cache[CacheKey.OffersActive] as bool? == true;
             offersNav.Attributes.Add("class", this.OffersPageActive);
 
-            if(Session[SessionKey.BadgesActive] == null) {
+            if(Cache[CacheKey.BadgesActive] == null) {
                 var badges = DAL.Badge.GetAll();
                 if(badges.Tables.Count > 0 && badges.Tables[0].Rows.Count > 0) {
-                    Session[SessionKey.BadgesActive] = true;
+                    Cache[CacheKey.BadgesActive] = true;
                 } else {
-                    Session[SessionKey.BadgesActive] = false;
+                    Cache[CacheKey.BadgesActive] = false;
                 }
             }
-            badgesNav.Visible = Session[SessionKey.BadgesActive] as bool? == true;
-            badgesAnonNav.Visible = Session[SessionKey.BadgesActive] as bool? == true;
+            badgesNav.Visible = Cache[CacheKey.BadgesActive] as bool? == true;
+            badgesAnonNav.Visible = Cache[CacheKey.BadgesActive] as bool? == true;
             badgesNav.Attributes.Add("class", this.BadgesSectionActive);
             badgesAnonNav.Attributes.Add("class", this.BadgesSectionActive);
 
-            if(Session[SessionKey.EventsActive] == null) {
+            if(Cache[CacheKey.EventsActive] == null) {
                 var events = DAL.Event.GetAll();
                 if(events.Tables.Count > 0 && events.Tables[0].Rows.Count > 0) {
-                    Session[SessionKey.EventsActive] = true;
+                    Cache[CacheKey.EventsActive] = true;
                 } else {
-                    Session[SessionKey.EventsActive] = false;
+                    Cache[CacheKey.EventsActive] = false;
                 }
             }
-            eventsNav.Visible = Session[SessionKey.EventsActive] as bool? == true;
-            eventsAnonNav.Visible = Session[SessionKey.EventsActive] as bool? == true;
+            eventsNav.Visible = Cache[CacheKey.EventsActive] as bool? == true;
+            eventsAnonNav.Visible = Cache[CacheKey.EventsActive] as bool? == true;
             eventsNav.Attributes.Add("class", this.EventsSectionActive);
             eventsAnonNav.Attributes.Add("class", this.EventsSectionActive);
 
