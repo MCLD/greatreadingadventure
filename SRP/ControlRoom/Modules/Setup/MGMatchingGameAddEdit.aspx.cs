@@ -5,8 +5,8 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
- 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class MGMatchingGameAddEdit : BaseControlRoomPage
@@ -140,7 +140,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     {
                         obj.Update();
                         obj2.Update();
-                        if (e.CommandName.ToLower() == "saveandback")
+                        Cache[CacheKey.AdventuresActive] = true;
+
+                        if(e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);
                         }

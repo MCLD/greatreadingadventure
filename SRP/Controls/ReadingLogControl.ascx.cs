@@ -34,8 +34,18 @@ namespace GRA.SRP.Controls {
 
                 foreach(ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType))) {
                     int activityTypeId = (int)activityTypeValue;
-                    var pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
+                    string lookupString = string.Format("{0}.{1}.{2}",
+                                                        CacheKey.PointGameConversionStub,
+                                                        patron.ProgID,
+                                                        activityTypeId);
+                    var pgc = Cache[lookupString] as ProgramGamePointConversion;
+                    if(pgc == null) {
+                        this.Log().Debug("Cache miss looking up {0}", lookupString);
+                        pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
                                                                                  activityTypeId);
+                        Cache[lookupString] = pgc;
+                    }
+
                     if(pgc != null && pgc.PointCount > 0) {
                         activityTypeSelector.Items.Add(new ListItem(activityTypeValue.ToString(),
                                                                     activityTypeId.ToString()));
@@ -141,7 +151,7 @@ namespace GRA.SRP.Controls {
             var bookButton = activityTypeSelector.Items.Count == 1
                              && int.Parse(activityTypeSelector.Items[0].Value) == (int)ActivityType.Books;
 
-            if(!bookButton) { 
+            if(!bookButton) {
                 readingActivityField.Text = string.Empty;
             }
             authorField.Text = string.Empty;
@@ -173,7 +183,7 @@ namespace GRA.SRP.Controls {
             } else {
                 // log activity
                 if(Request.Cookies[CookieKey.LogBookDetails] != null) {
-                   Response.Cookies[CookieKey.LogBookDetails].Expires = DateTime.Now.AddDays(-1);
+                    Response.Cookies[CookieKey.LogBookDetails].Expires = DateTime.Now.AddDays(-1);
                 }
                 authorField.Text = string.Empty;
                 titleField.Text = string.Empty;

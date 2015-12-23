@@ -44,8 +44,18 @@ namespace GRA.SRP.Controls {
 
                 foreach(ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType))) {
                     int activityTypeId = (int)activityTypeValue;
-                    var pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
+                    string lookupString = string.Format("{0}.{1}.{2}",
+                                                        CacheKey.PointGameConversionStub,
+                                                        patron.ProgID,
+                                                        activityTypeId);
+                    var pgc = Cache[lookupString] as ProgramGamePointConversion;
+                    if(pgc == null) {
+                        this.Log().Debug("Cache miss looking up {0}", lookupString);
+                        pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
                                                                                  activityTypeId);
+                        Cache[lookupString] = pgc;
+                    }
+
                     if(pgc != null && pgc.PointCount > 0) {
                         activityTypeSelector.Items.Add(new ListItem(activityTypeValue.ToString(),
                                                                     activityTypeId.ToString()));

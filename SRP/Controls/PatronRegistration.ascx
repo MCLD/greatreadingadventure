@@ -1133,7 +1133,6 @@
     var loadingMessageCounter = 0;
     var loadingMessageMessages = ["Reserving username...", "Encrypting password...", "Wrangling bits...", "Characterizing bytes...", "Reticulating splines...", "This is taking a while...", "Sorry about that..."];
     function loadingMessage() {
-        console.log(loadingMessageMessages[loadingMessageCounter]);
         $('#processingAccountCreationMessage').text(loadingMessageMessages[loadingMessageCounter]);
         loadingMessageCounter++;
         if (loadingMessageCounter > loadingMessageMessages.length - 1) {

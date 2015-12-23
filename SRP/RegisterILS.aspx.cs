@@ -166,6 +166,10 @@ namespace GRA.SRP {
             try {
                 if(patron.IsValid(BusinessRulesValidationMode.INSERT)) {
                     patron.Insert();
+                    this.Log().Info("New participant: {0} {1} ({2})",
+                                    patron.FirstName,
+                                    patron.LastName,
+                                    patron.LibraryCard);
                 } else {
                     StringBuilder message = new StringBuilder("<strong>");
                     message.AppendFormat(SRPResources.ApplicationError1, "<ul>");

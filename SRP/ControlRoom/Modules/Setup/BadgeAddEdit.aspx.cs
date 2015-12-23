@@ -11,6 +11,8 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 using GRA.SRP.DAL;
+using GRA.Tools;
+using System.IO;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -82,7 +84,20 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        if (e.CommandName.ToLower() == "addandback")
+                        Cache[CacheKey.BadgesActive] = true;
+
+                        try {
+                            var badgePath = string.Format(Server.MapPath("~/images/Badges/"));
+                            System.IO.File.Copy(string.Format("{0}no_badge.png", badgePath),
+                                                string.Format("{0}{1}.png", badgePath, obj.BID));
+                            System.IO.File.Copy(string.Format("{0}no_badge_sm.png", badgePath),
+                                                string.Format("{0}sm_{1}.png", badgePath, obj.BID));
+                        } catch (Exception ex) {
+                            this.Log().Error("Couldn't copy no_badge images into new badge: {0}",
+                                             ex.Message);
+                        }
+
+                        if(e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
                         }

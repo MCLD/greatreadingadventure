@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GRA.Tools;
+using Newtonsoft.Json;
 using SRP_DAL;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,19 @@ namespace GRA.SRP.Handlers {
 
     public class Feed : IHttpHandler, IRequiresSessionState {
         public void ProcessRequest(HttpContext context) {
+            try {
+                if(context.Cache[CacheKey.Feed] != null) {
+                    var cachedJsonResponse = context.Cache[CacheKey.Feed] as JsonFeed;
+                    if(cachedJsonResponse != null) {
+                        context.Response.ContentType = "application/json";
+                        context.Response.Write(JsonConvert.SerializeObject(cachedJsonResponse));
+                        return;
+                    }
+                }
+            } catch (Exception ex) {
+                this.Log().Error("Error looking up feed data in cache: {0}", ex.Message);
+            }
+
             var jsonResponse = new JsonFeed();
             var entries = new List<JsonFeedEntry>();
 
@@ -71,6 +85,26 @@ namespace GRA.SRP.Handlers {
                 this.Log().Error("Error loading feed: {0}", ex.Message);
                 jsonResponse.Success = false;
             }
+
+            if(jsonResponse.Success) {
+                try {
+                    DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
+                    if(context.Cache[CacheKey.Feed] == null) {
+                        this.Log().Debug("Caching feed data until {0}",
+                                         cacheUntil.ToLocalTime().ToLongTimeString());
+                        context.Cache.Insert(CacheKey.Feed,
+                                             jsonResponse,
+                                             null,
+                                             cacheUntil,
+                                             System.Web.Caching.Cache.NoSlidingExpiration,
+                                             System.Web.Caching.CacheItemPriority.Default,
+                                             null);
+                    }
+                } catch (Exception ex) {
+                    this.Log().Error("Error caching feed response: {0}", ex.Message);
+                }
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.Write(JsonConvert.SerializeObject(jsonResponse));
         }

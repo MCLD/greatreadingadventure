@@ -10,11 +10,6 @@ namespace GRA.Tools {
         public const string PatronMessageLevel = "PatMsgLev";
         public const string IsMasterAccount = "IsMasterAcct";
         public const string RequestedPath = "ReqPath";
-        public const string AdventuresActive = "AdvAct";
-        public const string ChallengesActive = "ChalAct";
-        public const string OffersActive = "OffAct";
-        public const string EventsActive = "EvAct";
-        public const string BadgesActive = "BadAct";
         public const string Patron = "Patron";
         public const string EarnedBadges = "ErnBdg";
         public const string MasterAcctPID = "MasterAcctPID";

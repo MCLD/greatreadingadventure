@@ -6,7 +6,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -201,8 +201,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         pnlBadgeMore.Visible = true;
                         pnlReward.Visible = false;
                     }
+                    Cache[CacheKey.EventsActive] = true;
             }
-        
+
         }
 
         protected void rblBadge_SelectedIndexChanged(object sender, EventArgs e)
@@ -261,6 +262,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             var obj = LoadBadgeObject();
             obj.Insert();
+            Cache[CacheKey.BadgesActive] = true;
             lblBID.Text = obj.BID.ToString();
             var evt = Event.GetEvent(int.Parse(lblPK.Text));
             evt.BadgeID = obj.BID;

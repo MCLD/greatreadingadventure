@@ -23,13 +23,24 @@
 </div>
 
 <script>
-    var updateIntervalId;
+    var statusUpdateId;
+    var firstStatusLoad = true;
     var pointsEarned;
     var badgesAwarded;
     var challengesCompleted;
     var dataSince;
+    var statusRefreshCount = 0;
 
     function updateStatus() {
+        statusRefreshCount++;
+        if (statusRefreshCount > 60) {
+            // give up on updates after 30 minutes
+            if (statusUpdateId > 0) {
+                console.log("Giving up on status updates, refresh the page to see new updates.");
+                clearInterval(statusUpdateId);
+            }
+            return;
+        }
         var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/Status.ashx')
             .done(function (data, textStatus, jqXHR) {
                 if (data.Success) {
@@ -37,19 +48,20 @@
                     badgesAwarded = data.BadgesAwarded;
                     challengesCompleted = data.ChallengesCompleted;
                     dataSince = data.Since;
-                    if (typeof updateIntervalId === 'undefined' || updateIntervalId == null) {
+                    if (firstStatusLoad) {
                         changeStatusDisplay("0");
-                        updateIntervalId = setInterval(updateStatus, 30 * 1000);
+                        statusUpdateId = setInterval(updateStatus, 30 * 1000);
+                        firstStatusLoad = false;
                     } else {
                         updateCurrentDisplay();
                     }
                 }
             })
             .fail(function () {
-                clearInterval(updateIntervalId);
+                clearInterval(statusUpdateId);
             });
     }
-    
+
     $("input[name=status-display]").change(updateCurrentDisplay);
 
     function updateCurrentDisplay() {

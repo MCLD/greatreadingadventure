@@ -5,8 +5,8 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
- 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class BookListAddEdit : BaseControlRoomPage
@@ -116,7 +116,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        if (e.CommandName.ToLower() == "addandback")
+                        Cache[CacheKey.ChallengesActive] = true;
+
+                        if(e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
                         }
