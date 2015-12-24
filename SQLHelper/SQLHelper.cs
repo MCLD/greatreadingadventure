@@ -1295,7 +1295,6 @@ namespace Microsoft.ApplicationBlocks.Data {
                     }
 
                     SqlParameter[] discoveredParameters = new SqlParameter[cmd.Parameters.Count];
-                    ;
 
                     cmd.Parameters.CopyTo(discoveredParameters, 0);
 
