@@ -6,6 +6,13 @@
 
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="row">
+        <div class="col-xs-12 text-center text-danger margin-1em-top">
+            <strong style="font-size: larger;">
+                <asp:Label runat="server" ID="NotYet" Visible="false"></asp:Label>
+            </strong>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             <uc1:FamilyReadingLogControl runat="server" ID="FamilyReadingLogControl" />
         </div>

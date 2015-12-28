@@ -7,9 +7,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.DAL;
 using GRA.Tools;
+using GRA.SRP.Utilities.CoreClasses;
 
 namespace GRA.SRP.Controls {
     public partial class ChallengesCtl : System.Web.UI.UserControl {
+        private bool ProgramOpen { get; set; }
         private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
         public bool ShowModal { get; set; }
 
@@ -47,6 +49,30 @@ namespace GRA.SRP.Controls {
             }
         }
 
+        protected void Page_PreRender(object sender, EventArgs e) {
+            var patron = Session["Patron"] as Patron;
+            if(patron == null) {
+                Response.Redirect("~");
+            }
+
+            var pgm = DAL.Programs.FetchObject(patron.ProgID);
+            if(pgm == null) {
+                pgm = Programs.FetchObject(
+                    Programs.GetDefaultProgramForAgeAndGrade(patron.Age,
+                                                             patron.SchoolGrade.SafeToInt()));
+            }
+
+            if(pgm == null || !pgm.IsOpen) {
+                this.ProgramOpen = false;
+                btnSave.Visible = false;
+                lblNotYet.Visible = true;
+            } else {
+                this.ProgramOpen = true;
+                lblNotYet.Visible = false;
+            }
+        }
+
+
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
                 PopulateChallengeList();
@@ -60,6 +86,19 @@ namespace GRA.SRP.Controls {
             rptr.DataBind();
             if(ds.Tables[0].Rows.Count == 0) {
                 lblNoLists.Visible = true;
+            }
+        }
+
+        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e) {
+            if(!this.ProgramOpen) {
+                if(e.Item.ItemType == ListItemType.Item
+                   || e.Item.ItemType == ListItemType.AlternatingItem) {
+                    var checkbox = e.Item.FindControl("chkRead") as CheckBox;
+                    if(checkbox != null) {
+                        checkbox.Enabled = false;
+                    }
+
+                }
             }
         }
 
@@ -115,6 +154,9 @@ namespace GRA.SRP.Controls {
         }
 
         protected void btnSave_Click(object sender, EventArgs e) {
+            if(!this.ProgramOpen) {
+                return;
+            }
 
             var now = DateTime.Now;
             var onlyCheckedBoxes = true;

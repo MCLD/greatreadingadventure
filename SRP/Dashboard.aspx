@@ -32,7 +32,14 @@
             <div class="text-center hidden-xs">
                 <uc1:Welcome runat="server" ID="Welcome" />
             </div>
-            <asp:Label ID="ProgramNotOpenText" runat="server" Text="" Visible="false"></asp:Label>
+
+
+            <div class="text-center text-danger margin-1em-top">
+                <strong style="font-size: larger;">
+                    <asp:Label runat="server" ID="ProgramNotOpenText" Visible="false"></asp:Label>
+                </strong>
+            </div>
+
 
             <rlc:ReadingLogControl runat="server" ID="ReadingLogControl" />
 

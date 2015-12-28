@@ -24,7 +24,7 @@
                         <th class="text-center">Complete</th>
                         <th>Task</th>
                     </tr>
-                    <asp:Repeater runat="server" ID="rptr">
+                    <asp:Repeater runat="server" ID="rptr" OnItemDataBound="rptr_ItemDataBound">
                         <ItemTemplate>
                             <tr>
                                 <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
