@@ -1,5 +1,6 @@
 ﻿using GRA.SRP.Controls;
 using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
 using SRPApp.Classes;
 using System;
@@ -11,6 +12,8 @@ using System.Web.UI.WebControls;
 
 namespace GRA.SRP.Challenges {
     public partial class Details : BaseSRPPage {
+        private bool ProgramOpen { get; set; }
+
         private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
         public bool ShowModal { get; set; }
 
@@ -47,6 +50,27 @@ namespace GRA.SRP.Challenges {
             }
         }
 
+        protected void Page_PreRender(object sender, EventArgs e) {
+            var patron = Session["Patron"] as Patron;
+            if(patron == null) {
+                Response.Redirect("~");
+            }
+
+            var pgm = DAL.Programs.FetchObject(patron.ProgID);
+            if(pgm == null) {
+                pgm = Programs.FetchObject(
+                    Programs.GetDefaultProgramForAgeAndGrade(patron.Age,
+                                                             patron.SchoolGrade.SafeToInt()));
+            }
+
+            if(pgm == null || !pgm.IsOpen) {
+                this.ProgramOpen = false;
+                btnSave.Visible = false;
+            } else {
+                this.ProgramOpen = true;
+            }
+        }
+
         protected void Page_Load(object sender, EventArgs e) {
             IsSecure = true;
             if(!IsPostBack) {
@@ -63,6 +87,19 @@ namespace GRA.SRP.Challenges {
                     challengesBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
                 }
                 TranslateStrings(this);
+            }
+        }
+
+        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e) {
+            if(!this.ProgramOpen) {
+                if(e.Item.ItemType == ListItemType.Item
+                   || e.Item.ItemType == ListItemType.AlternatingItem) {
+                    var checkbox = e.Item.FindControl("chkRead") as CheckBox;
+                    if(checkbox != null) {
+                        checkbox.Enabled = false;
+                    }
+                    
+                }
             }
         }
 
@@ -113,6 +150,9 @@ namespace GRA.SRP.Challenges {
         }
 
         protected void btnSave_Click(object sender, EventArgs e) {
+            if(!this.ProgramOpen) {
+                return;
+            }
 
             var now = DateTime.Now;
             var onlyCheckedBoxes = true;

@@ -73,6 +73,7 @@
                     <div class="col-xs-9 col-sm-10">
                         <asp:Label ID="lblDesc" runat="server" Visible="false"></asp:Label>
                         <asp:Label ID="lblPoints" runat="server" Visible="false"></asp:Label>
+                        <asp:Label ID="lblNotYet" runat="server" Visible="false"><p class="text-danger margin-1em-top"><strong>As soon as this reading program starts you will be able to complete tasks in this challenge!</strong></p></asp:Label>
                     </div>
                     <div class="col-xs-3 col-sm-2" style="min-width: 64px;">
                         <asp:Label ID="BadgeImage" runat="server" CssClass="pull-right"></asp:Label>
@@ -85,7 +86,7 @@
                                 <th class="text-center">Complete</th>
                                 <th>Task</th>
                             </tr>
-                            <asp:Repeater runat="server" ID="rptr2" OnItemCommand="rptr_ItemCommand">
+                            <asp:Repeater runat="server" ID="rptr2" OnItemCommand="rptr_ItemCommand" OnItemDataBound="rptr_ItemDataBound">
                                 <ItemTemplate>
                                     <tr>
                                         <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
