@@ -19,9 +19,11 @@ namespace SRPApp.Classes {
         #region Properties
 
         private bool _isSecure = false;
-        public bool IsSecure {
+        public bool IsSecure
+        {
             get { return _isSecure; }
-            set {
+            set
+            {
                 _isSecure = value;
                 if(IsSecure && !IsLoggedIn) {
                     if(Session[SessionKey.RequestedPath] == null) {
@@ -329,8 +331,10 @@ namespace SRPApp.Classes {
             return null;
         }
 
-        protected string PrintPage {
-            get {
+        protected string PrintPage
+        {
+            get
+            {
                 if(Request.QueryString["print"] != null) {
                     return "true";
                 } else {

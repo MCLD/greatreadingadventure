@@ -31,6 +31,7 @@ namespace SRP_DAL {
                 + " SUM(CASE WHEN[IsBookList] = 1 THEN 1 ELSE 0 END) AS [ChallengesCompleted]"
                 + " FROM [PatronPoints]");
 
+            // re issue #35: WHERE [PID] IN (SELECT [PID] FROM [Patron] WHERE [TenId] = 1)
 
             if(this.StartDate != null && this.StartDate > DateTime.MinValue) {
                 query.Append(" WHERE CAST([AwardDate] AS DATE) >= CAST(@startDate AS DATE)");

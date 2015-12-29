@@ -1,4 +1,5 @@
-﻿using GRA.Tools;
+﻿using GRA.SRP.DAL;
+using GRA.Tools;
 using SRPApp.Classes;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,20 @@ using System.Web.UI.WebControls;
 namespace GRA.SRP.Events {
     public partial class Details : BaseSRPPage {
         protected void Page_Load(object sender, EventArgs e) {
+            if(!String.IsNullOrEmpty(Request["PID"])) {
+                Session["ProgramID"] = Request["PID"].ToString();
+            }
+            if(!IsPostBack) {
+                if(Session["ProgramID"] == null) {
+                    try {
+                        int PID = Programs.GetDefaultProgramID();
+                        Session["ProgramID"] = PID.ToString();
+                    } catch {
+                        Response.Redirect("~/Default.aspx");
+                    }
+                }
+            }
+
             TranslateStrings(this);
 
             if(Request.UrlReferrer == null) {

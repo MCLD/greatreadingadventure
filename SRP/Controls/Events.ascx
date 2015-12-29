@@ -100,9 +100,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         This event takes place on
-                        <strong><span id="eventPopupWhen"></span></strong>
-                        at
-                        <strong><span id="eventPopupWhere"></span></strong>.
+                        <strong><span id="eventPopupWhen"></span><span id="eventPopupWhere"></span></strong>.
                     </div>
                     <div class="col-sm-12 margin-1em-top">
                         <span id="eventPopupShortDescription"></span>
@@ -165,7 +163,9 @@
                 } else {
                     $('#eventPopupTitle').text(data.Title);
                     $('#eventPopupWhen').text(data.When);
-                    $('#eventPopupWhere').text(data.Where);
+                    if (data.Where) {
+                        $('#eventPopupWhere').text(" at " + data.Where);
+                    }
                     $('#eventPopupShortDescription').text(data.ShortDescription);
                     if (data.Description) {
                         $('#eventPopupDetailsPanel').show();

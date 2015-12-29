@@ -7,11 +7,23 @@ using System.Web;
 
 namespace SRPApp.Classes {
     public class StringResources {
-
+        private const string ResourcesPath = "~/Resources/program.{0}.en-US.txt";
         public static void LoadProgramResourceFile(string pid) {
-            var file = HttpContext.Current.Server.MapPath("~/resources/program." + pid.ToString() + ".en-US.txt");
-            var lines = File.ReadAllLines(HttpContext.Current.Server.MapPath("~/resources/program.default.en-US.txt"));
-            try { lines = File.ReadAllLines(file); } catch { }
+            string[] lines = null;
+            string resourcesPath = HttpContext.Current.Server.MapPath(string.Format(ResourcesPath, pid));
+            bool success = true;
+            if(File.Exists(resourcesPath)) {
+                try {
+                    lines = File.ReadAllLines(resourcesPath);
+                } catch(Exception) {
+                    success = false;
+                }
+            }
+
+            if(!success || lines == null || lines.Length == 0) {
+                resourcesPath = HttpContext.Current.Server.MapPath(string.Format(ResourcesPath, "default"));
+                lines = File.ReadAllLines(resourcesPath);
+            }
 
             var strings = new Hashtable();
             foreach(var line in lines) {

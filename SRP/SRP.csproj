@@ -546,6 +546,9 @@
     <Content Include="images\Avatars\sm_6.png" />
     <Content Include="images\meadow%402x.jpg" />
     <Content Include="images\meadow.jpg" />
+    <Content Include="Problem\Error.aspx" />
+    <Content Include="Problem\NotFound.aspx" />
+    <Content Include="robots.txt" />
     <Content Include="Scripts\odometer.js" />
     <Content Include="Scripts\odometer.min.js" />
     <Content Include="ControlRoom\AJAX.master" />
@@ -3019,6 +3022,20 @@
     </Compile>
     <Compile Include="Mail\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Problem\Error.aspx.cs">
+      <DependentUpon>Error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Problem\Error.aspx.designer.cs">
+      <DependentUpon>Error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Problem\NotFound.aspx.cs">
+      <DependentUpon>NotFound.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Problem\NotFound.aspx.designer.cs">
+      <DependentUpon>NotFound.aspx</DependentUpon>
     </Compile>
     <Compile Include="Offers\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
