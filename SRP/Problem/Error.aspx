@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="Error.aspx.cs" Inherits="GRA.SRP.Problem.Error" %>
+﻿<%@ Page Title="A problem occurred!" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="Error.aspx.cs" Inherits="GRA.SRP.Problem.Error" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeaderContent" runat="server">
 </asp:Content>

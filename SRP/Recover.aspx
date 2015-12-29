@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Login" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Password Recovery" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="Recover.aspx.cs" Inherits="GRA.SRP.Recover" %>
 
 <%@ Register Src="~/Controls/RecoverPassword.ascx" TagName="RecoverPassword" TagPrefix="uc3" %>

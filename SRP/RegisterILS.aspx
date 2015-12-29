@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="RegisterILS.aspx.cs" Inherits="GRA.SRP.RegisterILS" %>
+﻿<%@ Page Title="Sign Up!" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="RegisterILS.aspx.cs" Inherits="GRA.SRP.RegisterILS" %>
 
 <%@ Import Namespace="GRA.SRP.DAL" %>
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Game Log" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Adventures" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.MyLogEntry"
     EnableEventValidation="false" %>
 

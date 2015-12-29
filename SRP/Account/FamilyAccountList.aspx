@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Family Accounts" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="My Family Members" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="FamilyAccountList.aspx.cs" Inherits="GRA.SRP.FamilyAccounts" %>
 
 <%@ Register Src="~/Controls/ProgramBanner.ascx" TagName="ProgramBanner" TagPrefix="uc2" %>

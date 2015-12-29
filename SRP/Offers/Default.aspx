@@ -1,4 +1,4 @@
-﻿<%@ Page Title="My Offers" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Offers" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.MyOffers"
     EnableEventValidation="false" %>
 

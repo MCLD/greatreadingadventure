@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Enter Family Member Log Entry" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Log Reading for a Family Member" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="EnterFamMemberLog.aspx.cs" Inherits="GRA.SRP.EnterFamMemberLog" %>
 
 <%@ Register Src="~/Controls/FamilyReadingLogControl.ascx" TagPrefix="uc1" TagName="FamilyReadingLogControl" %>

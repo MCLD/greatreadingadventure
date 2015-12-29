@@ -42,6 +42,11 @@ namespace GRA.SRP.Events {
                 evnt = DAL.Event.GetEvent(eventId);
                 if(evnt != null) {
                     eventTitle.Text = evnt.EventTitle;
+                    this.Title = string.Format("'{0}' Event Details", eventTitle.Text);
+                    this.MetaDescription = string.Format("Details about the event: {0} - {1}",
+                                                         eventTitle.Text,
+                                                         GetResourceString("system-name"));
+
                     eventWhen.Text = DAL.Event.DisplayEventDateTime(evnt);
                     if(evnt.BranchID > 0) {
                         var codeObject = DAL.Codes.FetchObject(evnt.BranchID);

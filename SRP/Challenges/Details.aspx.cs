@@ -114,6 +114,7 @@ namespace GRA.SRP.Challenges {
             } else {
 
                 challengeTitle.Text = bl.ListName;
+                this.Title = string.Format("{0} Challenge", challengeTitle.Text);
                 lblDesc.Text = bl.Description;
 
                 string award = null;

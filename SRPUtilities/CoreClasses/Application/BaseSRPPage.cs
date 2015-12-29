@@ -16,6 +16,8 @@ namespace SRPApp.Classes {
             PreInit += basePagePreInit;
         }
 
+        public string MetaDescription { get; set; }
+
         #region Properties
 
         private bool _isSecure = false;
@@ -177,8 +179,8 @@ namespace SRPApp.Classes {
             LoadRadioButtonLists(ctl);
             LoadDropDownListLists(ctl);
             LoadButtons(ctl);
+            string systemName = GetResourceString("system-name");
             if(string.IsNullOrEmpty(Page.Title) || Page.Title == "Home Page") {
-                string systemName = GetResourceString("system-name");
                 if(systemName != "system-name") {
                     string title = systemName;
                     string slogan = GetResourceString("slogan");
@@ -187,7 +189,13 @@ namespace SRPApp.Classes {
                                               title,
                                               slogan);
                     }
-                    Page.Title = title;
+                    Page.Title = title.Trim();
+                }
+            } else {
+                if(systemName != "system-name") {
+                    Page.Title = string.Format("{0} - {1}",
+                                               Page.Title,
+                                               systemName).Trim();
                 }
             }
         }
