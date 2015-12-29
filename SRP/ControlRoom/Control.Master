@@ -12,9 +12,7 @@
 <head id="Head1" runat="server">
 <link href='/ico_cms.png' rel='icon' type='image/vnd.microsoft.icon'/> 
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
-
-
-
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>

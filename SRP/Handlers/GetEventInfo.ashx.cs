@@ -44,7 +44,7 @@ namespace GRA.SRP.Handlers {
                     jsonResponse.Success = false;
                     jsonResponse.ErrorMessage = "Invalid event id provided.";
                     this.Log().Error(string.Format("Requested event {0} from {1}?{2} - invalid id",
-                                                   context.Request["BadgeId"].ToString(),
+                                                   context.Request["EventId"].ToString(),
                                                    context.Request.Url,
                                                    context.Request.QueryString));
                 } else {

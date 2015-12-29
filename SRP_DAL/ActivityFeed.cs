@@ -20,6 +20,8 @@ namespace SRP_DAL {
             " OR (pp.[AwardReasonCd] = 2)) AND pp.[PPID] > @after" +
             " ORDER BY pp.[PPID] DESC";
 
+        // re issue #35: WHERE [PID] IN (SELECT [PID] FROM [Patron] WHERE [TenId] = 1)
+
         public DataTable Latest(int after) {
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("after", after));

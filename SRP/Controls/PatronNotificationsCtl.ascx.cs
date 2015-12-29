@@ -57,10 +57,11 @@ namespace GRA.SRP.Controls {
         }
 
         protected void btnDelete_Click(object sender, EventArgs e) {
-            var o = Notifications.FetchObject(int.Parse(NID.Text));
-            o.Delete();
+            if(!string.IsNullOrEmpty(NID.Text)) {
+                var o = Notifications.FetchObject(int.Parse(NID.Text));
+                o.Delete();
+            }
             Response.Redirect("~/Mail/");
-
         }
 
         protected void btnAsk_Click(object sender, EventArgs e) {
