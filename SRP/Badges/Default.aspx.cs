@@ -24,6 +24,8 @@ namespace GRA.SRP {
             TranslateStrings(this);
             this.NoneAvailableText = GetResourceString("badges-none-available");
             myBadgesButton.Visible = this.IsLoggedIn;
+            this.MetaDescription = string.Format("See the available badges and how to earn them! - {0}",
+                                                 GetResourceString("system-name"));
         }
 
         protected void btnFilter_Click(object sender, EventArgs e) {

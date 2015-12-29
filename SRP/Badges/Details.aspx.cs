@@ -44,7 +44,10 @@ namespace GRA.SRP.Badges {
                 badge = DAL.Badge.FetchObject(badgeId);
                 if(badge != null) {
                     badgeTitle.Text = badge.UserName;
-
+                    this.Title = string.Format("'{0}' Badge Details", badgeTitle.Text);
+                    this.MetaDescription = string.Format("All about the {0} badge - {1}",
+                                                         badgeTitle.Text,
+                                                         GetResourceString("system-name"));
                     string badgePath = NoBadgePath;
                     string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
                                                               badgeId);

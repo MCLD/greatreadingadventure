@@ -13,6 +13,8 @@ namespace GRA.SRP {
 
                 TranslateStrings(this);
             }
+            this.MetaDescription = string.Format("Register now to join the fun! - {0}",
+                                                 GetResourceString("system-name"));
         }
     }
 }

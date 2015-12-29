@@ -11,6 +11,7 @@ using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.Tools;
 using System.Text;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP {
     public partial class SRPMaster : BaseSRPMaster {
@@ -31,6 +32,23 @@ namespace GRA.SRP {
                 if(SRPPage != null) {
                     return SRPPage.GetResourceString("slogan");
                 } else {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string DefaultMetaDescription
+        {
+            get
+            {
+                if(SRPPage != null) {
+                    var result = SRPPage.GetResourceString("frontpage-description");
+                    if(string.IsNullOrEmpty(result) || result.Equals("frontpage-description")) {
+                        return string.Empty;
+                    } else {
+                        return result.Trim();
+                    }
+                } else { 
                     return string.Empty;
                 }
             }
@@ -191,19 +209,28 @@ namespace GRA.SRP {
 
         protected void Page_Load(object sender, EventArgs e) {
             base.PageLoad(sender, e);
+            this.CurrentPage = (BaseSRPPage)Page;
 
             if(string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(this.SystemNameText)) {
-                Page.Title = this.SystemNameText;
+                Page.Title = this.SystemNameText.Trim();
             }
 
             Control ctl = LoadControl("~/Controls/ProgramCSS.ascx");
             var plc = FindControl("ProgramCSS");
             plc.Controls.Add(ctl);
 
-            this.CurrentPage = (BaseSRPPage)Page;
             if(this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn) {
                 Response.Redirect("~/Logout.aspx");
             }
+
+            if(string.IsNullOrEmpty(this.CurrentPage.MetaDescription)) {
+                this.CurrentPage.MetaDescription = this.DefaultMetaDescription;
+            }
+
+            HtmlMeta meta = new HtmlMeta();
+            meta.Name = "description";
+            meta.Content = this.CurrentPage.MetaDescription;
+            MetaDescriptionPlaceholder.Controls.Add(meta);
 
             if(Cache[CacheKey.AdventuresActive] == null) {
                 var programGames = DAL.ProgramGame.GetAll();

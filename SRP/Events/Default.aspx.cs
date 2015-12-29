@@ -21,6 +21,8 @@ namespace GRA.SRP {
                 }
             }
             TranslateStrings(this);
+            this.MetaDescription = string.Format("Plan to attend exciting upcoming events! - {0}",
+                                                 GetResourceString("system-name"));
         }
     }
 }

@@ -5,6 +5,7 @@ system-name=Great Reading Adventure
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
+frontpage-description=Adventures, secret codes, challenges and badges await! Take your literacy program online with free, open source software developed by libraries, for libraries.
 tenant-selection=Choose your library:
 navigation-button-register=Register
 navigation-button-login=Login

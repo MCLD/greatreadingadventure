@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="BookList.aspx.cs" Inherits="GRA.SRP.ViewBookList" %>
+﻿<%@ Page Title="Book List" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="BookList.aspx.cs" Inherits="GRA.SRP.ViewBookList" %>
 
 <%@ Register Src="~/Controls/BooksRead.ascx" TagPrefix="uc1" TagName="BooksRead" %>
 

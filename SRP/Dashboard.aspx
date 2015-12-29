@@ -1,4 +1,4 @@
-﻿<%@ Page Title="My Program" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Program Home" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
     CodeBehind="Dashboard.aspx.cs" Inherits="GRA.SRP.MyProgram" %>
 
 <%@ Register Src="~/Controls/Welcome.ascx" TagPrefix="uc1" TagName="Welcome" %>
