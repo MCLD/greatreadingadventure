@@ -25,28 +25,28 @@ Select the **Patrons** tab from the top menu, then **Add Patron**. Enter the use
 
 Select the **Patrons** tab from the top menu. The search function allows you to filter results by name, username, email, DOB, program, and gender.
 
-### **Edit User (and Change Password)**
+### Edit User (and Change Password)
 
 After locating the user, click the **Edit** icon to open the **Patron Account Details** screen. You can edit all elements of the user's profile, including changing the password.
 
 
-###**Award Prizes**
+### Award Prizes
 
 Choose a user, select **Patron Prizes** from **More Patron Info** to see if prizes have been earned. Once the prize has been awarded, click the **No** under **Redeemed Flag** to change it to **Yes**.
 
-###**Edit Reading Logs**
+### Edit Reading Logs
 
 Choose a user, select **Patron Logs** from **More Patron Info** to see a complete list of the user’s reading activities.
 
-###**Edit Awarded Badges**
+### Edit Awarded Badges
 
 Choose a user, select **Patron Badges** from **More Patron Info** to see a full list of the user’s achievements.
 
-###**See User Notifications**
+### See User Notifications
 
 Choose a user, select **Patron Notifications** from **More Patron Info** for a list of sent/received messages.
 
 
-###**Find Family Members List**
+### Find Family Members List
 
 Choose a user, select **Sub Account List** from **Patron Info** —a list of associated accounts and a full set of editing options will be visible— **Sub Account** **List** is unavailable if there are no associated accounts.
