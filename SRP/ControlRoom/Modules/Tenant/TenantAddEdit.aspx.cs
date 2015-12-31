@@ -222,7 +222,9 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
 
                         obj.FldInt1 = ((TextBox)((DetailsView)sender).FindControl("FldInt1")).Text.SafeToInt();                        
                     }
-                    catch(Exception exc) {  }
+                    catch(Exception exc) {
+                        this.Log().Error("Error in tenant save: {0}", exc.Message);
+                    }
 
                     /*
 

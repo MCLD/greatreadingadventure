@@ -430,16 +430,10 @@ namespace GRA.SRP.DAL
         {
             switch (Status)
             {
-                case 0:
-                    return "N/A";break;
                 case 1:
-                    return "Work In Progress"; break;
+                    return "Work In Progress";
                 case 2:
-                    return "Locked / Active"; break;
-                case 3:
-                    return "N/A"; break;
-                case 4:
-                    return "N/A"; break;
+                    return "Locked / Active";
                 default:
                     return "N/A";
             }

@@ -3,11 +3,8 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
-using GRA.SRP.DAL;
-using GRA.SRP.Core.Utilities;
 
-namespace GRA.SRP.ControlRoom.Modules.Tenant
-{
+namespace GRA.SRP.ControlRoom.Modules.Tenant {
     public partial class TenantList : BaseControlRoomPage
     {
         private String _mStrSortExp;

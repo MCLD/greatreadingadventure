@@ -18,7 +18,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4400;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Add Book List");
+            MasterPage.PageTitle = string.Format("{0}", "Add Challenge");
             
             if (!IsPostBack)
             {

@@ -216,8 +216,6 @@ namespace GRA.SRP.DAL
 
                 int _int;
 
-                decimal _decimal;
-
                 if (int.TryParse(dr["SAID"].ToString(), out _int)) result.SAID = _int;
                 if (int.TryParse(dr["SRID"].ToString(), out _int)) result.SRID = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
@@ -276,8 +274,6 @@ namespace GRA.SRP.DAL
                 DateTime _datetime;
 
                 int _int;
-
-                decimal _decimal;
 
                 if (int.TryParse(dr["SAID"].ToString(), out _int)) this.SAID = _int;
                 if (int.TryParse(dr["SRID"].ToString(), out _int)) this.SRID = _int;

@@ -551,7 +551,7 @@ namespace GRA.SRP.DAL {
 
         private int Update(bool clearTokens = false) {
 
-            int iReturn = -1; //assume the worst
+            //int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[61];
 
