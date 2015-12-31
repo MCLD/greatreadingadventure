@@ -35,7 +35,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                 lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"] = "";
                 var bl = BookList.FetchObject(int.Parse(lblPK.Text));
-                MasterPage.PageTitle = string.Format("Books on \"{0}\" Book List", bl.AdminName);
+                MasterPage.PageTitle = string.Format("Tasks in the \"{0}\" Challenge", bl.AdminName);
              }
 
             

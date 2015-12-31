@@ -17,7 +17,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4400;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Book List Edit");
+            MasterPage.PageTitle = string.Format("{0}", "Challenge Edit");
             
             if (!IsPostBack)
             {
@@ -30,7 +30,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 if (Request["M"] == "K")
                 {
                     MasterPage.DisplayMessageOnLoad = true;
-                    MasterPage.PageMessage = "Book List was saved successfully! Now click the 'Books on this Book List' button and start adding book titles to the list!'";
+                    MasterPage.PageMessage = "Challenge was saved successfully! Now click the 'Tasks in this Challenge' button and start adding book titles to the list!'";
                 }
             }
         }

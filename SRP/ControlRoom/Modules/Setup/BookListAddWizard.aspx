@@ -232,7 +232,7 @@
             </td>
             <td colspan="4"> 
             <asp:Label ID="lblDups" runat="server" Text=""></asp:Label>
-                This is the number of books the patron must indicate as read to complete this list. Empty means all the books on the list.</td>
+                This is the number of tasks the patron must complete in order to finish this challenge. Empty means all tasks must be completed.</td>
         </tr>
         <tr>
             <td  nowrap> <b> Number Points: </b> </td>

@@ -10,7 +10,6 @@ using System.Web.SessionState;
 
 namespace GRA.SRP.Handlers {
     public class JsonEvent : JsonBase {
-        private DateTime startDate;
         public string Title { get; set; }
         public string When { get; set; }
         public string Where { get; set; }

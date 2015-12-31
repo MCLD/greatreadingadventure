@@ -139,7 +139,7 @@ namespace GRA.SRP.ControlRoom.Controls
                     med = med + getGraph("_m", QID, SQMLID, grData);
                 }
 
-                var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
+                //var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
                 var data2 = "<tr><td valigh=top>{0}</td><td align=right valigh=top>{1}</td></tr>";
                 var data3 = "<tr><td valigh=top colspan=2 style='padding-left:20px;'>{0}</td></tr>";
                 var max = "";
@@ -233,7 +233,7 @@ namespace GRA.SRP.ControlRoom.Controls
                     med = med + getGraph("_m", QID, SQMLID, grData);
                 }
 
-                var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
+                //var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
                 var data2 = "<tr><td valigh=top>{0}</td><td align=right valigh=top>{1}</td></tr>";
                 var data3 = "<tr><td valigh=top colspan=2 style='padding-left:20px;'>{0}</td></tr>";
                 var max = "";

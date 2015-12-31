@@ -140,6 +140,7 @@ namespace GRA.SRP.ControlRoom
                     }
                 } catch (Exception ex)
                 {
+                    this.Log().Error("Error checking permissions: {0}", ex.Message);
                     Response.Redirect("~/ControlRoom/Login.aspx");
                 }
             }

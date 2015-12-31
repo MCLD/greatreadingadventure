@@ -841,8 +841,6 @@
     <Content Include="Controls\MyGameLoggingNavControl.ascx" />
     <Content Include="Controls\MyGamemapNavControl.ascx" />
     <Content Include="Controls\MyPointsControl.ascx" />
-    <Content Include="Controls\MyProgramLeftColumn.ascx" />
-    <Content Include="Controls\MyProgramRightColumn.ascx" />
     <Content Include="Controls\PatronNotificationsCtl.ascx" />
     <Content Include="Controls\Offers.ascx" />
     <Content Include="Controls\PatronLogin.ascx" />
@@ -1291,6 +1289,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Development-external.pubxml" />
+    <None Include="Properties\PublishProfiles\Documentation.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -1343,6 +1342,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Web.Dev.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.Docs.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
     </None>
@@ -2768,20 +2771,6 @@
     <Compile Include="Controls\MyPointsControl.ascx.designer.cs">
       <DependentUpon>MyPointsControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MyProgramLeftColumn.ascx.cs">
-      <DependentUpon>MyProgramLeftColumn.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\MyProgramLeftColumn.ascx.designer.cs">
-      <DependentUpon>MyProgramLeftColumn.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\MyProgramRightColumn.ascx.cs">
-      <DependentUpon>MyProgramRightColumn.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controls\MyProgramRightColumn.ascx.designer.cs">
-      <DependentUpon>MyProgramRightColumn.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PatronNotificationsCtl.ascx.cs">
       <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3189,6 +3178,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Docs|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>

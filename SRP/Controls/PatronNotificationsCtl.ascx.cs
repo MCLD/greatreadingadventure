@@ -58,8 +58,14 @@ namespace GRA.SRP.Controls {
 
         protected void btnDelete_Click(object sender, EventArgs e) {
             if(!string.IsNullOrEmpty(NID.Text)) {
-                var o = Notifications.FetchObject(int.Parse(NID.Text));
-                o.Delete();
+                this.Log().Debug("Deleting message: {0}", NID.Text);
+                int nid;
+                if(int.TryParse(NID.Text, out nid)) {
+                    var o = Notifications.FetchObject(nid);
+                    o.Delete();
+                } else {
+                    this.Log().Error("Unable to convert message ID to number: {0}", NID.Text);
+                }
             }
             Response.Redirect("~/Mail/");
         }

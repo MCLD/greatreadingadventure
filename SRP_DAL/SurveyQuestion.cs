@@ -441,20 +441,18 @@ namespace GRA.SRP.DAL
         {
             switch (d)
             {
-                case 0:
-                    return "N/A"; break;
                 case 1:
-                    return "Instructions/Text/Description"; break;
+                    return "Instructions/Text/Description";
                 case 2:
-                    return "Multiple Choice"; break;
+                    return "Multiple Choice";
                 case 3:
-                    return "Free Form Text"; break;
+                    return "Free Form Text";
                 case 4:
-                    return "Matrix of Questions"; break;                
+                    return "Matrix of Questions";                
                 case 5:
-                    return "Page Break"; break;
+                    return "Page Break";
                 case 6:
-                    return "Survey/Test END"; break;
+                    return "Survey/Test END";
                 default:
                     return "N/A";
             }

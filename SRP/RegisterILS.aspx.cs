@@ -257,8 +257,9 @@ namespace GRA.SRP {
                                 }
                                 PrimaryLibrary.SelectedValue = PrimaryLibrary.Items.FindByText(patron["Library"].ToString()).Value;
                             } catch (Exception ex) {
-                                this.Log().Info("Couldn't find branch {0} in drop-down",
-                                                patron["Library"].ToString());
+                                this.Log().Info("Couldn't find branch {0} in drop-down: {1}",
+                                                patron["Library"].ToString(),
+                                                ex.Message);
                             }
                         } else {
                             this.Log().Error(string.Format("ILS lookup on {0} was not successful: {1}",

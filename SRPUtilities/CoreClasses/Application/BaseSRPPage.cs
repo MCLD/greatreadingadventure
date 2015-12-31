@@ -16,8 +16,6 @@ namespace SRPApp.Classes {
             PreInit += basePagePreInit;
         }
 
-        public string MetaDescription { get; set; }
-
         #region Properties
 
         private bool _isSecure = false;
