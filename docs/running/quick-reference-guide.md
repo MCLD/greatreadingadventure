@@ -1,20 +1,20 @@
 # Quick Reference Guide #
 
-Here is a handy guide for staff and volunteers to use as a reference. 
+Here is a handy guide for staff and volunteers to use as a reference.
 
-![](_static/guide-add2.png) = Add new
+![](../_images/guide-add2.png) = Add new
 
-![](_static/guide-back2.png) = Back to previous page
+![](../_images/guide-back2.png) = Back to previous page
 
-![](_static/guide-delete.png) = Delete record
+![](../_images/guide-delete.png) = Delete record
 
-![](_static/guide-edit.png) = Edit record
+![](../_images/guide-edit.png) = Edit record
 
-![](_static/guide-refresh.png) = Refresh page
+![](../_images/guide-refresh.png) = Refresh page
 
-![](_static/guide-save2.png) = Save data on page
+![](../_images/guide-save2.png) = Save data on page
 
-![](_static/guide-saveback.png) = Save data and return to previous page
+![](../_images/guide-saveback.png) = Save data and return to previous page
 
 
 ### Add a New User
@@ -30,7 +30,7 @@ Select the **Patrons** tab from the top menu. The search function allows you to 
 After locating the user, click the **Edit** icon to open the **Patron Account Details** screen. You can edit all elements of the user's profile, including changing the password.
 
 
-###**Award Prizes** 
+###**Award Prizes**
 
 Choose a user, select **Patron Prizes** from **More Patron Info** to see if prizes have been earned. Once the prize has been awarded, click the **No** under **Redeemed Flag** to change it to **Yes**.
 
@@ -49,4 +49,4 @@ Choose a user, select **Patron Notifications** from **More Patron Info** for a l
 
 ###**Find Family Members List**
 
-Choose a user, select **Sub Account List** from **Patron Info** —a list of associated accounts and a full set of editing options will be visible— **Sub Account** **List** is unavailable if there are no associated accounts. 
+Choose a user, select **Sub Account List** from **Patron Info** —a list of associated accounts and a full set of editing options will be visible— **Sub Account** **List** is unavailable if there are no associated accounts.
