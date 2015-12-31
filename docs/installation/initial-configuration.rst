@@ -3,7 +3,7 @@ Step-by-step configuration
 
 Once the GRA software is installed and you access the Web site, you should see the initial configuration screen:
 
-.. image:: _static/configuration.png
+.. image:: ../_images/configuration.png
    :alt: initial configuration screen
 
 As you use the progress through configuration, you'll need to provide the information collected from the `requirements checklist`_.
@@ -18,7 +18,7 @@ As you use the progress through configuration, you'll need to provide the inform
       <add key="IgnoreMissingDatabaseGroups" value="true" />
 
    For more information on ``Web.config`` settings see the `technical configuration details`_ section.
-   
+
 .. _technical configuration details: ../../technical/configuration-details
 
 
