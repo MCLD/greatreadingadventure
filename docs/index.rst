@@ -48,7 +48,7 @@ This manual is split into several main sections:
    installation/requirements-checklist
    installation/create-the-database
    installation/install-the-software
-   configuration/initial-configuration
+   installation/initial-configuration
 
 .. _setup-docs:
 
@@ -58,6 +58,7 @@ This manual is split into several main sections:
 
    setup/badge-awards
    setup/challenges
+   setup/events
    setup/offers
 
 .. _running-docs:
@@ -67,7 +68,9 @@ This manual is split into several main sections:
    :caption: Running your reading programs
 
    running/mail
-   
+   running/prize-drawings
+   running/quick-reference-guide
+
 .. _howto-docs:
 
 .. toctree::
@@ -81,7 +84,6 @@ This manual is split into several main sections:
 .. toctree::
    :maxdepth: 1
    :caption: Technical Documentation
-   
+
    technical/configuration-details
    technical/about
-   

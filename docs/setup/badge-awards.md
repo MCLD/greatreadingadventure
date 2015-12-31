@@ -4,7 +4,7 @@ Badge Awards are special badges that can be awarded when a target is reached. Th
 
 From the Control Room, click on the **Management** tab. Then click **Badge Awards**.
 
-![](_static/badge-awards-management-tab.png)
+![Badge Awards Management Tab](_static/badge-awards-management-tab.png)
 
 Click on the green **+** at the top of the page to create a new Badge Award.
 
@@ -38,4 +38,3 @@ Upload an existing badge image by clicking **Browse** and then **Upload**. Click
 When you have successfully created and saved your Badge Award, you should see this message:
 
 ![](_static/badge-awards-done.png)
-
