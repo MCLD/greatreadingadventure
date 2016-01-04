@@ -27,7 +27,7 @@ namespace SRP_DAL {
 
             var parameters = new List<SqlParameter>();
             StringBuilder query = new StringBuilder("SELECT SUM([NumPoints]) AS [PointsEarned],"
-                + " SUM(CASE WHEN[BadgeAwardedFlag] = 1 THEN 1 ELSE 0 END) AS [BadgesAwarded],"
+                //+ " SUM(CASE WHEN[BadgeAwardedFlag] = 1 THEN 1 ELSE 0 END) AS [BadgesAwarded],"
                 + " SUM(CASE WHEN[IsBookList] = 1 THEN 1 ELSE 0 END) AS [ChallengesCompleted]"
                 + " FROM [PatronPoints]");
 
@@ -45,11 +45,30 @@ namespace SRP_DAL {
                                                  parameters.ToArray());
             if(result.Read()) {
                 report.PointsEarned = result["PointsEarned"] as int? ?? 0;
-                report.BadgesAwarded = result["BadgesAwarded"] as int? ?? 0;
+                //report.BadgesAwarded = result["BadgesAwarded"] as int? ?? 0;
                 report.ChallengesCompleted = result["ChallengesCompleted"] as int? ?? 0;
             } else {
                 throw new Exception("No data returned.");
             }
+            query = new StringBuilder("SELECT COUNT([PBID]) AS [BadgesAwarded] FROM [PatronBadges]");
+
+            parameters.Clear();
+            if(this.StartDate != null && this.StartDate > DateTime.MinValue) {
+                query.Append(" WHERE CAST([DateEarned] AS DATE) >= CAST(@startDate AS DATE)");
+                parameters.Add(new SqlParameter("startDate", report.Since));
+            }
+
+            result = SqlHelper.ExecuteReader(conn,
+                                             System.Data.CommandType.Text,
+                                             query.ToString(),
+                                             parameters.ToArray());
+
+            if(result.Read()) {
+                report.BadgesAwarded = result["BadgesAwarded"] as int? ?? 0;
+            } else {
+                throw new Exception("No badge data returned.");
+            }
+
             return report;
         }
     }

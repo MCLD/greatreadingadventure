@@ -575,7 +575,15 @@ namespace GRA.SRP.DAL {
             arrParams[4] = new SqlParameter("@Password", passwordHash);
             arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode()));
             arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Age, this.Age.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
+            try {
+                arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
+            } catch (Exception ex) {
+                this.Log().Error("Unable to set SchoolGrade to: {0}: {1} - {2}",
+                                 this.SchoolGrade,
+                                 ex.Message,
+                                 ex.StackTrace);
+                arrParams[7] = new SqlParameter("@SchoolGrade", string.Empty);
+            }
             arrParams[8] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ProgID, this.ProgID.GetTypeCode()));
             arrParams[9] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FirstName, this.FirstName.GetTypeCode()));
             arrParams[10] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.MiddleName, this.MiddleName.GetTypeCode()));

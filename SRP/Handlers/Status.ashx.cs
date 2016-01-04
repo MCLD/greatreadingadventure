@@ -63,8 +63,8 @@ namespace GRA.SRP.Handlers {
                 try {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
                     if(context.Cache[CacheKey.Status] == null) {
-                        this.Log().Debug("Caching status data until {0}",
-                                         cacheUntil.ToLocalTime().ToLongTimeString());
+                        //this.Log().Debug("Caching status data until {0}",
+                        //                 cacheUntil.ToLocalTime().ToLongTimeString());
                         context.Cache.Insert(CacheKey.Status,
                                              jsonResponse,
                                              null,

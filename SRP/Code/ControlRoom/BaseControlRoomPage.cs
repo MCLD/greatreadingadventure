@@ -25,25 +25,26 @@ namespace SRPApp.Classes {
                 var tenantIdSession = Session["TenantID"];
                 int? tenantId = tenantIdSession as int?;
                 int? crTenantId = CRTenantID;
-                if(tenantIdSession == null
-                   || tenantId == null
-                   || crTenantId == null
-                   || tenantId != crTenantId) {
+
+                if(tenantId != crTenantId) {
                     // tenant mismatch between user's TenantID and CR login tenant id
                     // log out user
                     try {
                         SRPUser user = Session[SessionData.UserProfile.ToString()] as SRPUser;
-                        if(user == null) {
-                            this.Log()
-                                .Debug("Unknown user has mismatched tenants, clearing any login");
-                        } else {
-                            this.Log()
-                                .Debug("User {0} has mismatched tenants, clearing any login",
-                                       user.Username);
+                        string who = "Unknown user";
+                        if(user != null) {
+                            who = user.Username;
                         }
+
+                        this.Log().Debug("{0} has mismatched tenants ({1} public and {2} CR) - performing logout",
+                                         who,
+                                         tenantId,
+                                         crTenantId);
                     } catch(Exception ex) {
                         this.Log()
-                            .Debug("Unknown user, mismatched tenants, error occurred, clearing: {0}",
+                            .Debug("Unknown user has mismatched tenants ({0} public and {1} CR) - error occurred: {2} - performing logout",
+                                   tenantId,
+                                   crTenantId,
                                    ex.Message);
                     }
                     GRA.SRP.ControlRoom.CRLogout.Logout(this);

@@ -90,8 +90,8 @@ namespace GRA.SRP.Handlers {
                 try {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
                     if(context.Cache[CacheKey.Feed] == null) {
-                        this.Log().Debug("Caching feed data until {0}",
-                                         cacheUntil.ToLocalTime().ToLongTimeString());
+                        //this.Log().Debug("Caching feed data until {0}",
+                        //                 cacheUntil.ToLocalTime().ToLongTimeString());
                         context.Cache.Insert(CacheKey.Feed,
                                              jsonResponse,
                                              null,

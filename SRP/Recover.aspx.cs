@@ -13,6 +13,9 @@ namespace GRA.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack) TranslateStrings(this);
+
+            this.MetaDescription = string.Format("Reset your password - {0}",
+                                                 GetResourceString("system-name"));
         }
     }
 }

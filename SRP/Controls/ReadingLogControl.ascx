@@ -8,6 +8,11 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 text-center margin-1em-bottom">
+            <em><asp:Label runat="server" Text="readinglog-description"></asp:Label></em>
+        </div>
+    </div>
+    <div class="row">
         <div class="form-inline text-center">
             <div class="col-xs-12" style="display: none;" id="readingLogControlMessageError">
                 <p class="text-danger" style="font-weight: bold;">Please enter how much you've read.</p>

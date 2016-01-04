@@ -159,11 +159,11 @@ CodeBehind="PatronActivityReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.
                 <td align="right"><%# Eval("# Points For Reading")%></td> 
                 <td align="right"><%# Eval("# Points For Events")%></td> 
                 <td align="right"><%# Eval("# Points For Games")%></td> 
-                <td align="right"><%# Eval("# Points For Challenges")%></td> 
+                <td align="right"><%# Eval("# Points For Book Lists")%></td> 
                 <td align="right"><%# Eval("# Times Logged Reading")%></td> 
                 <td align="right"><%# Eval("# Events Attended")%></td> 
                 <td align="right"><%# Eval("# Times Logged Games")%></td> 
-                <td align="right"><%# Eval("# Challenges Completed")%></td> 
+                <td align="right"><%# Eval("# Book Lists Completed")%></td> 
                 <td align="right"><%# Eval("# Badges Earned")%></td> 
                 <td align="right"><%# Eval("# Minigames Played")%></td> 
                            
