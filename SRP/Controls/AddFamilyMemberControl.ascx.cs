@@ -247,14 +247,24 @@ namespace GRA.SRP.Controls {
                     if(prog.RegistrationBadgeID != 0) {
                         AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref list);
                     }
-                    AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                    try {
+                        this.Log().Debug("Running AwardBadgeToPatronViaMatchingAwards on patron ", p.PID);
+                    } catch(Exception) { }
+
+                    try {
+                        AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                    } catch (Exception ex) {
+                        this.Log().Error("Unable to run AwardBadgeToPatronViaMatchingAwards: {0} - {1}",
+                                         ex.Message,
+                                         ex.StackTrace);
+                    }
 
                     patron.IsMasterAccount = true;
                     patron.Update();
 
                     // update patron session for things like MasterAcctPID and IsMasterAccount
                     new SessionTools(Session).EstablishPatron(patron);
-
+                   
                     new SessionTools(Session).AlertPatron("Your family member has been added!",
                         glyphicon: "check");
 
@@ -273,6 +283,7 @@ namespace GRA.SRP.Controls {
             } catch(Exception ex) {
                 this.Log().Error(string.Format("An exception was thrown adding a family member: {0}",
                                                ex.Message));
+                this.Log().Error(string.Format("Stack trace: {0}", ex.StackTrace));
                 new SessionTools(Session).AlertPatron(string.Format("<strong>{0}</strong>",
                                                       ex.Message),
                     PatronMessageLevels.Warning,

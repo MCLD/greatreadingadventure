@@ -143,7 +143,7 @@ namespace GRA.SRP {
             patron.FirstName = FirstName.Text.Trim();
             patron.LastName = LastName.Text.Trim();
             patron.EmailAddress = EmailAddress.Text.Trim();
-            patron.LibraryCard = LibraryCard.Text.Trim();
+            patron.LibraryCard = LibraryCard.Text.Replace(" ", "");
             int primaryLibrary = 0;
             if(int.TryParse(PrimaryLibrary.SelectedValue, out primaryLibrary)) {
                 patron.PrimaryLibrary = primaryLibrary;
@@ -225,7 +225,7 @@ namespace GRA.SRP {
         protected void IlsPatronLookup() {
             try {
                 var authJson = new {
-                    Id = LibraryCard.Text.Trim(),
+                    Id = LibraryCard.Text.Replace(" ", ""),
                     Secret = LibraryPin.Text
                 };
                 string ilsUri = string.Format("{0}patron/get",
@@ -270,7 +270,7 @@ namespace GRA.SRP {
                 }
             } catch(Exception ex) {
                 this.Log().Error(string.Format("Couldn't perform ILS lookup on {0}: {1}",
-                                 this.LibraryCard.Text,
+                                 this.LibraryCard.Text.Replace(" ", ""),
                                  ex.Message));
             }
         }

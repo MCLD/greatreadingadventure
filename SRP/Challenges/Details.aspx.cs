@@ -50,7 +50,7 @@ namespace GRA.SRP.Challenges {
             }
         }
 
-        protected void Page_PreRender(object sender, EventArgs e) {
+        protected void Page_Init(object sender, EventArgs e) {
             var patron = Session["Patron"] as Patron;
             if(patron == null) {
                 Response.Redirect("~");

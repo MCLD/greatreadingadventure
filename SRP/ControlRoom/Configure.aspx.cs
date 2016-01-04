@@ -33,9 +33,9 @@ namespace GRA.SRP.ControlRoom {
 
         protected void Page_Load(object sender, EventArgs e) {
             try {
-                //var programs = DAL.Programs.GetAll();
+                var programs = DAL.Programs.GetAll();
                 // if this worked then we have a database and shouldn't be in configuration
-                //Response.Redirect("~/ControlRoom/");
+                Response.Redirect("~/ControlRoom/");
             } catch(Exception ex) {
                 // got an error querying the database, need to do configuration
                 this.Log().Info("Error {0} selecting programs, proceeding with configuration.",

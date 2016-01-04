@@ -49,7 +49,7 @@ namespace GRA.SRP.Controls {
             }
         }
 
-        protected void Page_PreRender(object sender, EventArgs e) {
+        protected void Page_Init(object sender, EventArgs e) {
             var patron = Session["Patron"] as Patron;
             if(patron == null) {
                 Response.Redirect("~");
@@ -65,13 +65,10 @@ namespace GRA.SRP.Controls {
             if(pgm == null || !pgm.IsOpen) {
                 this.ProgramOpen = false;
                 btnSave.Visible = false;
-                lblNotYet.Visible = true;
             } else {
                 this.ProgramOpen = true;
-                lblNotYet.Visible = false;
             }
         }
-
 
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {

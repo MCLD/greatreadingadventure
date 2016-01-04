@@ -216,6 +216,7 @@ badges-badgegallery-button=Badge Gallery
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 readinglog-reading-log=Reading log
+readinglog-description=Log your reading below. If you want to enter book details, check the "I want to enter book details" checkbox first!
 readinglog-reading-prompt=I read
 readinglog-submit=Submit
 readinglog-read-a-book=I read a book!
@@ -225,6 +226,7 @@ readinglog-details-cancel=Cancel
 ;;  Code entry
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 secret-code-header=Secret code
+secret-code-description=Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!
 secret-code-prompt=Code:
 secret-code-submit=Submit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
