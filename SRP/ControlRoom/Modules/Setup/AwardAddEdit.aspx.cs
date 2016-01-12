@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
                 //lblPK.Text = Request["PK"];
-                lblPK.Text = Session["AWD"] == null ? "" : Session["AWD"].ToString(); //Session["AWD"] = "";
+                lblPK.Text = Session["AWD"] == null ? "" : Session["AWD"].ToString(); //Session["AWD"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
 
@@ -192,7 +192,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
 
         protected string CoalesceBadges(DetailsView dv) {
             var gv = (GridView)dv.FindControl("gvBadgeMembership");
-            string badgesList = "";
+            string badgesList= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     badgesList = string.Format("{0},{1}", badgesList, ((Label)row.FindControl("BID")).Text);

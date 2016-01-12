@@ -8,7 +8,8 @@ Inherits="GRA.SRP.ControlRoom.Modules.Security.Default"
     <asp:GridView ID="gv" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" Width ="100%" PageSize="15"  
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
-        onrowcommand="GvRowCommand"      
+        onrowcommand="GvRowCommand"  
+        OnPageIndexChanging="GvPageIndexChanging"    
         >
         <Columns>
            <asp:TemplateField>

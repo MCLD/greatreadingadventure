@@ -86,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant {
             string editpage = "~/ControlRoom/Modules/Tenant/TenantAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["TeMID"] = ""; Response.Redirect(editpage);
+                Session["TeMID"]= string.Empty; Response.Redirect(editpage);
             }
 
             if (e.CommandName.ToLower() == "reinit")

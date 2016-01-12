@@ -86,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/OfferAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["OFF"] = ""; Response.Redirect(editpage);
+                Session["OFF"]= string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

@@ -113,7 +113,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             
             
             ds.Tables.Add(dt);
-            if (_mStrSortExp != "")
+            if (!string.IsNullOrEmpty(_mStrSortExp))
             {
                 dt.DefaultView.Sort = _mStrSortExp + (_mSortDirection == SortDirection.Descending ? " DESC" : "");
                 var ds2 = new DataSet();
@@ -129,7 +129,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             string editpage = "~/ControlRoom/Modules/Tenant/TenantGroupsAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["GID"] = ""; 
+                Session["GID"]= string.Empty; 
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

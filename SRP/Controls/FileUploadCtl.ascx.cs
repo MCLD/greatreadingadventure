@@ -215,7 +215,7 @@ namespace GRA.SRP.Classes
 
         public void ProcessRender()
         {
-            lblUplderr.Text = lblUplderr1.Text = "";
+            lblUplderr.Text = lblUplderr1.Text= string.Empty;
             if (FileExists())
             {
                 pnlExists.Visible = true;

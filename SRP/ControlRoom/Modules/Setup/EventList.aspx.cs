@@ -77,7 +77,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
         protected void btnClear_Click(object sender, EventArgs e)
         {
-            StartDate.Text = EndDate.Text = "";
+            StartDate.Text = EndDate.Text= string.Empty;
             BranchId.SelectedValue = "0";
             SetFilterSessionValues();
             odsData.DataBind();
@@ -127,7 +127,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addpage = "~/ControlRoom/Modules/Setup/EventAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["EID"] = ""; Response.Redirect(addpage);
+                Session["EID"]= string.Empty; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

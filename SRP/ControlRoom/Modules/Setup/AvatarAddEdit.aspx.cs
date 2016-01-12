@@ -29,7 +29,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
                 //lblPK.Text = Request["PK"]; 
-                lblPK.Text = Session["AID"] == null ? "" : Session["AID"].ToString(); //Session["AID"] = "";
+                lblPK.Text = Session["AID"] == null ? "" : Session["AID"].ToString(); //Session["AID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }

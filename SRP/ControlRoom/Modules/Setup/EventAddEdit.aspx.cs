@@ -25,7 +25,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["EID"] == null ? "" : Session["EID"].ToString(); //Session["EID"] = "";
+                lblPK.Text = Session["EID"] == null ? "" : Session["EID"].ToString(); //Session["EID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
 
@@ -39,7 +39,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
         public string CheckDups(string Code, int EID)
         {
-            string retVal = "";
+            string retVal= string.Empty;
 
             if (Event.GetEventCountByEventCode(EID, Code) != 0)
             {

@@ -230,7 +230,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     obj.HTML5 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML5")).InnerHtml;
                     obj.HTML6 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML6")).InnerHtml;
 
-                    obj.BannerImage = "";//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
+                    obj.BannerImage= string.Empty;//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
 
                     obj.PreTestEndDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestEndDate")).Text.SafeToDateTime();
                     obj.PostTestStartDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestStartDate")).Text.SafeToDateTime();

@@ -109,7 +109,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
         protected void GvRowCommand(object sender, GridViewCommandEventArgs e) {
             string editpage = "~/ControlRoom/Modules/Patrons/NotificationsAddEdit.aspx";
             if(e.CommandName.ToLower() == "addrecord") {
-                Session["NID"] = "";
+                Session["NID"]= string.Empty;
                 Response.Redirect(editpage);
             }
             if(e.CommandName.ToLower() == "editrecord") {

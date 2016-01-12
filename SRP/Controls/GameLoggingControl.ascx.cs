@@ -75,7 +75,7 @@ namespace GRA.SRP.Controls
                 var rp = StartingPoints;   //remaining points
                 if (bonus)
                 {
-                    prefixBonus = "";   // first do all non bonus levels
+                    prefixBonus= string.Empty;   // first do all non bonus levels
                     // if we are on the bonus, we have access to all of them
                     for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
                     {
@@ -121,7 +121,7 @@ namespace GRA.SRP.Controls
             //var level = 0;
             //var points = 0;
             var bonus = false;
-            string ret = "";
+            string ret= string.Empty;
 
             if (pgm.ProgramGameID > 0)
             {

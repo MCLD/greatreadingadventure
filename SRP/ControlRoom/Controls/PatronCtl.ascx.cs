@@ -47,25 +47,25 @@ namespace GRA.SRP.ControlRoom.Controls
                 var p1 = Patron.FetchObject(PID1);
                 //if (p1.IsMasterAccount)
                 //{
-                //    PatronID = "";
+                //    PatronID= string.Empty;
                 //    MasterPatronID = PID1.ToString();
                 //}
                 //else
                 //{
                 //    var p2 = Patron.FetchObject(p1.MasterAcctPID);
-                //    PatronID = "";
+                //    PatronID= string.Empty;
                 //    MasterPatronID = p2.PID.ToString();
                 //}
 
                 if (!p1.IsMasterAccount && p1.MasterAcctPID > 0)
                 {
                     var p2 = Patron.FetchObject(p1.MasterAcctPID);
-                    PatronID = "";
+                    PatronID= string.Empty;
                     MasterPatronID = p2.PID.ToString();
                 }
                 else
                 {
-                    PatronID = "";
+                    PatronID= string.Empty;
                     MasterPatronID = PID1.ToString();                    
                 }
 
@@ -117,7 +117,7 @@ namespace GRA.SRP.ControlRoom.Controls
                 return;
             }
 
-            lblError.Text = "";
+            lblError.Text= string.Empty;
             Page.Validate();
             if (Page.IsValid)
             {

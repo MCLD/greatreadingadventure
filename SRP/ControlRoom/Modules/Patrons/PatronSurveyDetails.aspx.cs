@@ -63,7 +63,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
 
         public string DisplayAnswers(int QType, int QID, int SQMLID, string ChoiceAnswerIDs, string ChoiceAnswerText, string ClarificationText, bool MXShowChoices)
         {
-            var displayString = "";
+            var displayString= string.Empty;
 
             if (QType == 2) // Multiple Choice
             {

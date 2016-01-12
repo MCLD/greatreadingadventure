@@ -80,7 +80,7 @@
         AllowSorting="True"
         AllowPaging="True"
         PageSize="5"
-        DataSourceID = ""
+        DataSourceID= string.Empty
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
         OnRowCommand="GvRowCommand"

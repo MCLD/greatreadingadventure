@@ -87,7 +87,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
             string editpage = "~/ControlRoom/Modules/Drawings/PrizeDrawingAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["DID"] = ""; Response.Redirect(editpage);
+                Session["DID"]= string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

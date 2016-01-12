@@ -84,7 +84,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         protected void btnFilter0_Click(object sender, EventArgs e)
         {
             pnlResults.Visible = false;
-            lblInfo.Text = txtResults.Text = "";
+            lblInfo.Text = txtResults.Text= string.Empty;
             IWidth.Text = "700";
             IHeight.Text = "800";
             DDSourceID.Items.Clear();

@@ -85,7 +85,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addpage = "~/ControlRoom/Modules/Setup/BookListAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BLL"] = ""; Response.Redirect(addpage);
+                Session["BLL"]= string.Empty; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

@@ -53,7 +53,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                 //int PGID = Convert.ToInt32(row["ProgID"]);
 
                 var pa = new AwardPoints(PID);
-                var sBadges = "";
+                var sBadges= string.Empty;
                 var points = numPoints;
                 
                 if (!PatronPoints.HasRedeemedKeywordPoints(PID, code))

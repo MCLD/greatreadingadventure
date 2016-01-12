@@ -68,7 +68,7 @@ namespace GRA.SRP.Controls
                 Response.Redirect("~/FamilyAccountList.aspx");
             }
 
-            lblError.Text = "";
+            lblError.Text= string.Empty;
             if (Page.IsValid)
             {
                 if(e.CommandName == "save")

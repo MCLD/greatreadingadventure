@@ -913,7 +913,7 @@ namespace GRA.SRP.ControlRoom {
 
                     if(srcObj.BadgeList.Length > 0) {
                         var b = srcObj.BadgeList.Split(',');
-                        srcObj.BadgeList = "";
+                        srcObj.BadgeList= string.Empty;
                         foreach(var i in b) {
                             var lBid = 0;
                             int.TryParse(i, out lBid);

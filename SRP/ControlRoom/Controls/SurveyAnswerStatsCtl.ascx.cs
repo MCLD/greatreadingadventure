@@ -28,7 +28,7 @@ namespace GRA.SRP.ControlRoom.Controls
             {
                 if (value=="0")
                 {
-                    SourceType = "";
+                    SourceType= string.Empty;
                     SourceID = 0;
                 }
                 else
@@ -103,7 +103,7 @@ namespace GRA.SRP.ControlRoom.Controls
             var line4 = "<tr><td colspan=3><hr></td></tr>";
 
             var line5 = "<tr><td style='padding-left: 10px;' valign=top align=left colspan=3>{0}</td></tr>";
-            var ret = "";
+            var ret= string.Empty;
             
             if (QType == 2) // multiple choice
             {
@@ -111,9 +111,9 @@ namespace GRA.SRP.ControlRoom.Controls
                 var ds = SurveyResults.GetQStatsSimple(SID, QID, SQMLID, SourceType, SourceID);
                 var header = "<tr><td ><b>Answer</b></td><td width='100px' align=right><b>Count</td></tr>";
                 var data = "<tr><td>{0}</td><td align=right>{1}</td></tr>";
-                var min = "";
+                var min= string.Empty;
                 var grDataTmplt = "['{0}', {1}],";
-                var grData = "";
+                var grData= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     min = string.Format("{0}{1}{2}", min, "\n", string.Format(data, row["ChoiceText"], row["Count"]));
@@ -126,8 +126,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 }
 
                 ds = SurveyResults.GetQStatsMedium(SID, QID, SQMLID, SourceType, SourceID);
-                var med = "";
-                grData = "";
+                var med= string.Empty;
+                grData= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     med = string.Format("{0}{1}{2}", med, "\n", string.Format(data, row["ChoiceText"], row["Count"]));
@@ -142,13 +142,13 @@ namespace GRA.SRP.ControlRoom.Controls
                 //var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
                 var data2 = "<tr><td valigh=top>{0}</td><td align=right valigh=top>{1}</td></tr>";
                 var data3 = "<tr><td valigh=top colspan=2 style='padding-left:20px;'>{0}</td></tr>";
-                var max = "";
-                grData = "";
+                var max= string.Empty;
+                grData= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     var ds2 = SurveyResults.GetQClarifications(SID, QID, SQMLID, SourceType, SourceID, row["ChoiceTextORIGINAL"].ToString());
 
-                    var clText = "";
+                    var clText= string.Empty;
                     foreach (DataRow cl in ds2.Tables[0].Rows)
                     {
                         clText = clText + (clText.Length == 0 ? "" : "<br>") + cl["ClarificationText"].ToString();
@@ -179,7 +179,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
                 var ds2 = SurveyResults.GetQFreeForm(SID, QID, SQMLID, SourceType, SourceID);
 
-                var clText = "";
+                var clText= string.Empty;
                 foreach (DataRow cl in ds2.Tables[0].Rows)
                 {
                     clText = clText + (clText.Length == 0 ? "" : "<br>") + cl["FreeFormAnswer"].ToString();
@@ -202,12 +202,12 @@ namespace GRA.SRP.ControlRoom.Controls
                 var ln = SQMatrixLines.FetchObject(SQMLID);
                 ret = ret + string.Format(line5,ln.LineText);
                 var grDataTmplt = "['{0}', {1}],";
-                var grData = "";
+                var grData= string.Empty;
 
                 var ds = SurveyResults.GetQStatsSimple(SID, QID, SQMLID, SourceType, SourceID);
                 var header = "<tr><td ><b>Answer</b></td><td width='100px' align=right><b>Count</td></tr>";
                 var data = "<tr><td>{0}</td><td align=right>{1}</td></tr>";
-                var min = "";
+                var min= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     min = string.Format("{0}{1}{2}", min, "\n", string.Format(data, row["ChoiceText"], row["Count"]));
@@ -220,8 +220,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 }
 
                 ds = SurveyResults.GetQStatsMedium(SID, QID, SQMLID, SourceType, SourceID);
-                var med = "";
-                grData = "";
+                var med= string.Empty;
+                grData= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     med = string.Format("{0}{1}{2}", med, "\n", string.Format(data, row["ChoiceText"], row["Count"]));
@@ -236,13 +236,13 @@ namespace GRA.SRP.ControlRoom.Controls
                 //var header2 = "<tr><td><b>Answer AND Clarifications</b></td><td  width='100px' align=right><b>Count</td>";
                 var data2 = "<tr><td valigh=top>{0}</td><td align=right valigh=top>{1}</td></tr>";
                 var data3 = "<tr><td valigh=top colspan=2 style='padding-left:20px;'>{0}</td></tr>";
-                var max = "";
-                grData = "";
+                var max= string.Empty;
+                grData= string.Empty;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     var ds2 = SurveyResults.GetQClarifications(SID, QID, SQMLID, SourceType, SourceID, row["ChoiceTextORIGINAL"].ToString());
 
-                    var clText = "";
+                    var clText= string.Empty;
                     foreach (DataRow cl in ds2.Tables[0].Rows)
                     {
                         clText = clText + (clText.Length == 0 ? "" : "<br>") + cl["ClarificationText"].ToString();
@@ -311,7 +311,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
                         ";
 
-            var js = "";
+            var js= string.Empty;
             js = js + func.Replace("{lvl}", lvl).Replace("{qid}", QID.ToString())
                                     .Replace("{sqmlid}", SQMLID.ToString())
                                     .Replace("{data}", data);

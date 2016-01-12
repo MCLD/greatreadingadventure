@@ -122,8 +122,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                             break;
                         case 5:
                         case 6:
-                            obj.QText = "";
-                            obj.QName = "";
+                            obj.QText= string.Empty;
+                            obj.QName= string.Empty;
                             break;
                         case 3:
                             obj.QText = QText3.InnerHtml;
@@ -332,8 +332,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             rptrAnswers2.DataSource = ds;
             rptrAnswers2.DataBind();
 
-            ChoiceText2.Text = "";
-            Score2.Text = "";
+            ChoiceText2.Text= string.Empty;
+            Score2.Text= string.Empty;
             JumpToQuestion2.SelectedValue = "0";
             AskClarification2.Checked = false;
             ClarificationRequired2.Checked = false;
@@ -395,8 +395,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             rptrAnswers4.DataSource = ds;
             rptrAnswers4.DataBind();
 
-            ChoiceText4.Text = "";
-            Score4.Text = "";
+            ChoiceText4.Text= string.Empty;
+            Score4.Text= string.Empty;
             JumpToQuestion4.SelectedValue = "0";
         }
 
@@ -454,7 +454,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             rptrLines4.DataSource = ds;
             rptrLines4.DataBind();
 
-            LineText4.Text = "";
+            LineText4.Text= string.Empty;
         }
 
         protected void rptrLines4_ItemCommand(object source, RepeaterCommandEventArgs e)

@@ -24,7 +24,7 @@ namespace GRA.SRP.ControlRoom.Controls
             //// Load Agency Dropdown;
             //DataSet dsAgency = DAL.Filters.SelectAllAgencies();
             //dsAgency.Tables[0].Rows.InsertAt(dsAgency.Tables[0].NewRow(), 0);
-            //dsAgency.Tables[0].Rows[0]["Name"] = "";
+            //dsAgency.Tables[0].Rows[0]["Name"]= string.Empty;
             //ddlAgencies.DataSource = dsAgency;
             //ddlAgencies.DataTextField = "Name";
             //ddlAgencies.DataValueField = "UID";
@@ -34,7 +34,7 @@ namespace GRA.SRP.ControlRoom.Controls
             //// Load Program
             //DataSet dsPrograms = DAL.Filters.SelectAllPrograms();
             //dsPrograms.Tables[0].Rows.InsertAt(dsPrograms.Tables[0].NewRow(), 0);
-            //dsPrograms.Tables[0].Rows[0]["Name"] = "";
+            //dsPrograms.Tables[0].Rows[0]["Name"]= string.Empty;
             //ddlPrograms.DataSource = dsPrograms;
             //ddlPrograms.DataTextField = "Name";
             //ddlPrograms.DataValueField = "UID";
@@ -44,7 +44,7 @@ namespace GRA.SRP.ControlRoom.Controls
             //// Load Year
             //DataSet dsYears = DAL.Filters.SelectAllRecordFiscalYears();
             //dsYears.Tables[0].Rows.InsertAt(dsYears.Tables[0].NewRow(), 0);
-            //dsYears.Tables[0].Rows[0]["Name"] = "";
+            //dsYears.Tables[0].Rows[0]["Name"]= string.Empty;
             //ddlYears.DataSource = dsYears;
             //ddlYears.DataTextField = "Name";
             //ddlYears.DataValueField = "Value";

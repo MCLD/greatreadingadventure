@@ -54,7 +54,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
             pnlCodes.Visible = false;
             pnlSelect.Visible = false;
 
-            CTID.Text = CodeTypeValue.Text = CodeTypeDesc.Text = "";
+            CTID.Text = CodeTypeValue.Text = CodeTypeDesc.Text= string.Empty;
             CodeTypeValue.ReadOnly = false;
             CodeTypeValue.Enabled = true;
             lblAE.Text = "Add";
@@ -171,7 +171,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                 //LoadCodesPanel();
             }
 
-            CodeAdd.Text = DescriptionAdd.Text = "";
+            CodeAdd.Text = DescriptionAdd.Text= string.Empty;
 
             var ds = DAL.Codes.GetAlByTypeID(int.Parse(ddlCodeTypes.SelectedValue));
             rptrCodes.DataSource = ds;

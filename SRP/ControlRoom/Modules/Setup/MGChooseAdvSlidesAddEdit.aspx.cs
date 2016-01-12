@@ -39,7 +39,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.CAID = int.Parse(lblCAID.Text);
                     obj.MGID = int.Parse(lblMGID.Text);
                     obj.SecondImageGoToStep = obj.FirstImageGoToStep = 0;
-                    obj.SlideText = "";
+                    obj.SlideText= string.Empty;
                     obj.Difficulty = int.Parse(lblDiff.Text);
                     obj.StepNumber = -1;
                     obj.AddedDate = DateTime.Now;

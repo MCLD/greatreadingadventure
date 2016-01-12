@@ -86,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/SurveyAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["SID"] = ""; Response.Redirect(editpage);
+                Session["SID"]= string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

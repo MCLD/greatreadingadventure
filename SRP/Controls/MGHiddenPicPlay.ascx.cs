@@ -31,7 +31,7 @@ namespace GRA.SRP.Controls
         {
             get 
             { 
-                var g = "";
+                var g= string.Empty;
                 int idx = 0;
                 for (int i = 1 ; i <= BoardSize ; i++ )
                 {
@@ -74,7 +74,7 @@ namespace GRA.SRP.Controls
                 int iDiff = int.Parse(Difficulty.Text);
 
                 var gm = DAL.MGHiddenPic.FetchObject(iHPID);
-                var dict = "";
+                var dict= string.Empty;
                 if (iDiff == 1) dict = gm.EasyDictionary;
                 if (iDiff == 2) dict = gm.MediumDictionary;
                 if (iDiff == 3) dict = gm.HardDictionary;

@@ -63,7 +63,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
             if (Session["Active_Program"] == null || Session["Active_Program"].ToString() == "0")
             {
                 pnlEdit.Visible = false;
-                txtCSS.Text = "";
+                txtCSS.Text= string.Empty;
             }
             else
             {

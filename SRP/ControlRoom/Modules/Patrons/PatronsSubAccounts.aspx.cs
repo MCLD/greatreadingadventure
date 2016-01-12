@@ -97,7 +97,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             string editpage = "~/ControlRoom/Modules/Patrons/PatronDetails.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                //Session["CURR_PATRON_ID"] = "";
+                //Session["CURR_PATRON_ID"]= string.Empty;
                 //Session["CURR_PATRON"] = null;
                 //Response.Redirect(editpage);
                 Response.Redirect("~/ControlRoom/Modules/Patrons/PatronsAddSubAccount.aspx");

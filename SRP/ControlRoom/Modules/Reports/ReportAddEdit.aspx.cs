@@ -984,12 +984,12 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 try
                 {
                     SqlParameter[] arrParams = null;
-                    var retColumns = "";
-                    var whereClause = "";
+                    var retColumns= string.Empty;
+                    var whereClause= string.Empty;
                     var fromClause = "Patron p ";
 
-                    var filterStr = "";
-                    //var tmpFilter = "";
+                    var filterStr= string.Empty;
+                    //var tmpFilter= string.Empty;
                     var minorSep = "~";
                     var majorSep = "|";
 
@@ -1878,7 +1878,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         //    }
         //}
 
-        private string Coalesce (string startingString, string additionalString, string separator = "")
+        private string Coalesce (string startingString, string additionalString, string separator= "")
         {
             if (startingString.Length == 0) return additionalString;
             return string.Format("{0} {1} {2}", startingString, separator, additionalString);

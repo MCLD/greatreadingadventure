@@ -32,7 +32,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                 if (Session["PLID"] == null || Session["PLID"].ToString() == "" )
                 {
                     PatronLogEntryCtl1.PatronID = Session["CURR_PATRON_ID"].ToString();
-                    PatronLogEntryCtl1.PatronPointsID = "";
+                    PatronLogEntryCtl1.PatronPointsID= string.Empty;
                     PatronLogEntryCtl1.LoadControl();
                 }
                 else

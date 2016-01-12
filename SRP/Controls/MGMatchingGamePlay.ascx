@@ -49,12 +49,12 @@
 
 
     var ClickCount = 0;
-    var Click1ID = "";
-    var Click2ID = "";
-    var Click1TDID = "";
-    var Click2TDID = "";
-    var Cell1 = "";
-    var Cell2 = "";
+    var Click1ID= string.Empty;
+    var Click2ID= string.Empty;
+    var Click1TDID= string.Empty;
+    var Click2TDID= string.Empty;
+    var Cell1= string.Empty;
+    var Cell2= string.Empty;
     var ClickCompleteWithNoMatch = false;
 
     $(document).ready(function () {

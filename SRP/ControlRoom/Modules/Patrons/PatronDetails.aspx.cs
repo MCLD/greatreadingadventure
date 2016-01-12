@@ -39,8 +39,8 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             {
                 if (Session["Curr_Patron"] == null)
                 {
-                    PatronCtl1.PatronID = "";
-                    PatronCtl1.MasterPatronID = "";
+                    PatronCtl1.PatronID= string.Empty;
+                    PatronCtl1.MasterPatronID= string.Empty;
                     PatronCtl1.LoadControl();
                 }
                 else
@@ -55,7 +55,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                         }
                         else
                         {
-                            PatronCtl1.MasterPatronID = "";
+                            PatronCtl1.MasterPatronID= string.Empty;
                         }
                     }
                     

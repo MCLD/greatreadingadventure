@@ -30,7 +30,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
 
             if (!IsPostBack)
             {
-                lblPK.Text = "";
+                lblPK.Text= string.Empty;
                 dv.ChangeMode(DetailsViewMode.Insert);
                 Page.DataBind();
             }

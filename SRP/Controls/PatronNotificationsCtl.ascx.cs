@@ -117,7 +117,7 @@ namespace GRA.SRP.Controls {
                 o.AddedDate = o.LastModDate = DateTime.Now;
                 o.LastModUser = o.AddedUser = ((Patron)Session["Patron"]).Username;
                 o.Insert();
-                txtSubject.Text = txtBody.Text = "";
+                txtSubject.Text = txtBody.Text= string.Empty;
 
                 pnlAsk.Visible = false;
                 pnlList.Visible = true;

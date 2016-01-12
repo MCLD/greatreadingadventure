@@ -24,7 +24,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["PK"] = "";
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["PK"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length != 0 ? DetailsViewMode.Edit : DetailsViewMode.Insert);
                 Page.DataBind();
             }
@@ -33,9 +33,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public string GetCodedString(string s, int CBID)
         {
 
-            string codedString = "";
+            string codedString= string.Empty;
 
-            string prefix = "";
+            string prefix= string.Empty;
             foreach (char c in s.ToCharArray())
             {
                 if (c != ' ')
@@ -58,9 +58,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public string GetCodedStringNew(string s, int CBID, int easyMediumHard)
         {
 
-            string codedString = "";
+            string codedString= string.Empty;
 
-            string prefix = "";
+            string prefix= string.Empty;
             if (easyMediumHard == 2) prefix = "m_";
             if (easyMediumHard == 3) prefix = "h_";
 

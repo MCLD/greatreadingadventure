@@ -53,7 +53,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e) {
             string returnURL = "~/ControlRoom/Modules/Notifications/NotificationList.aspx";
             if(e.CommandName.ToLower() == "back") {
-                Session["Curr_Notification_ID"] = "";
+                Session["Curr_Notification_ID"]= string.Empty;
                 Response.Redirect(returnURL);
             }
             if(e.CommandName.ToLower() == "refresh") {
@@ -96,10 +96,10 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
                             originalMessage.isUnread = false;
                             originalMessage.Update();
 
-                            Session["CURR_PATRON_ID"] = "";
+                            Session["CURR_PATRON_ID"]= string.Empty;
                             Session["CURR_PATRON"] = null;
-                            Session["CURR_PATRON_MODE"] = "";
-                            Session["Curr_Notification_ID"] = "";
+                            Session["CURR_PATRON_MODE"]= string.Empty;
+                            Session["Curr_Notification_ID"]= string.Empty;
 
                             Response.Redirect(returnURL);
                         }
