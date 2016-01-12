@@ -21,7 +21,7 @@ namespace GRA.SRP.Controls {
 
                 var s = DAL.Survey.FetchObject(int.Parse(SID.Text));
                 lblSurvey.Text = s.LongName;
-                lblPreamble.Text = s.Preamble;
+                lblPreamble.Text = Server.HtmlDecode(s.Preamble);
 
                 GetNextTestPage();
             }

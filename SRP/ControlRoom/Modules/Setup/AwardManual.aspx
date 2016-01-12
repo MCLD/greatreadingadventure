@@ -188,8 +188,6 @@ CodeBehind="AwardManual.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.Awa
     </asp:Panel>
     <br />
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script language='javascript' type='text/javascript'>
     $(function () {

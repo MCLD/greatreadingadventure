@@ -105,12 +105,14 @@ namespace GRA.SRP.Controls {
             var bl = BookList.FetchObject(BLID);
 
             lblTitle.Text = bl.ListName;
-            lblDesc.Text = bl.Description;
+            lblDesc.Text = Server.HtmlDecode(bl.Description);
 
             string award = null;
 
             if(bl.AwardPoints > 0) {
-                award = string.Format("Completing this challenge will earn: <strong>{0} points</strong>", bl.AwardPoints);
+                award = string.Format("Completing this challenge will earn: <strong>{0} point{1}</strong>",
+                                      bl.AwardPoints,
+                                      bl.AwardPoints > 1 ? "s" : string.Empty);
             }
 
             if(bl.AwardBadgeID > 0) {

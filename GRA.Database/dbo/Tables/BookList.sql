@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[BookList] (
     [BLID]               INT          IDENTITY (1, 1) NOT NULL,
-    [AdminName]          VARCHAR (50) NULL,
-    [ListName]           VARCHAR (50) NULL,
+    [AdminName]          NVARCHAR(255) NULL,
+    [ListName]           NVARCHAR(255) NULL,
     [AdminDescription]   TEXT         NULL,
     [Description]        TEXT         NULL,
     [LiteracyLevel1]     INT          NULL,

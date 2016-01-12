@@ -67,7 +67,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
         protected void btnClear_Click(object sender, EventArgs e) {
             ProgID.SelectedValue = BranchID.SelectedValue = "0";
             School.SelectedValue = LibSys.SelectedValue = "";
-            txtSubject.Text = Body.Text = lblSent.Text = "";
+            txtSubject.Text = Body.InnerHtml = lblSent.Text = "";
             pnlResults.Visible = false;
         }
 
@@ -81,7 +81,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
                 obj.PID_From = 0;
                 obj.isQuestion = false;
                 obj.Subject = txtSubject.Text;
-                obj.Body = Body.Text;
+                obj.Body = Body.InnerHtml;
                 obj.isUnread = true;
 
                 obj.AddedDate = DateTime.Now;

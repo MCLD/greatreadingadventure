@@ -41,8 +41,6 @@
                     <asp:ListItem Value="5" Text="Matching Game"></asp:ListItem>
                     <asp:ListItem Value="6" Text="Hidden Picture"></asp:ListItem>
                     <asp:ListItem Value="7" Text="Choose Your Adventure"></asp:ListItem>
-                    <asp:ListItem Value="99" Text="Flash Game"></asp:ListItem>
-                    <asp:ListItem Value="100" Text="Literacy Media"></asp:ListItem>
                 </asp:DropDownList>
 
                 <asp:RequiredFieldValidator ID="rfvMiniGameType" runat="server" 

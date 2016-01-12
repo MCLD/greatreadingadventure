@@ -40,7 +40,7 @@ namespace GRA.SRP.Controls
 
                 var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));
                 MGName.Text = mg.GameName;
-                Acknowledgements.Text = mg.Acknowledgements; 
+                Acknowledgements.Text = Server.HtmlDecode(mg.Acknowledgements);
                 if (Acknowledgements.Text.Length==0)
                 {
                     Acknowledgements.Visible = false;

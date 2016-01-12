@@ -5,7 +5,6 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {

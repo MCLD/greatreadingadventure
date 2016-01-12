@@ -91,7 +91,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl QText;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea QText;
         
         /// <summary>
         /// btnCancel1 control.
@@ -145,7 +145,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl QText3;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea QText3;
         
         /// <summary>
         /// btnCancel3 control.
@@ -217,7 +217,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl QText2;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea QText2;
         
         /// <summary>
         /// ImageButton1 control.
@@ -280,7 +280,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl QText4;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea QText4;
         
         /// <summary>
         /// ImageButton3 control.

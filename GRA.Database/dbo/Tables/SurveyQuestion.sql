@@ -3,7 +3,7 @@
     [SID]              INT           NULL,
     [QNumber]          INT           NULL,
     [QType]            INT           NULL,
-    [QName]            VARCHAR (150) NULL,
+    [QName]            NVARCHAR(255) NULL,
     [QText]            TEXT          NULL,
     [DisplayControl]   INT           NULL,
     [DisplayDirection] INT           NULL,

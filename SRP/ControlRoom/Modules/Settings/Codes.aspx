@@ -62,14 +62,14 @@
                 </td>
                 <td width="250px">
                     &nbsp;<b>Code Type Value:</b><br />
-                    <asp:TextBox ID="CodeTypeValue" runat="server" Text='' MaxLength="50" Width="200px"></asp:TextBox>
+                    <asp:TextBox ID="CodeTypeValue" runat="server" Text='' MaxLength="255" Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvCodeTypeValue" runat="server" 
                     ControlToValidate="CodeTypeValue" Display="Dynamic" ErrorMessage="Code Type is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 </td>
                 <td width="450px">
                     &nbsp;<b>Code Type Description:</b><br />
-                   <asp:TextBox ID="CodeTypeDesc" runat="server" Text='' MaxLength="250"  Width="400px"></asp:TextBox>
+                   <asp:TextBox ID="CodeTypeDesc" runat="server" Text='' MaxLength="255"  Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvCodeTypeDesc" runat="server" 
                         ControlToValidate="CodeTypeDesc" Display="Dynamic" ErrorMessage="Description is required" 
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font>
@@ -96,7 +96,7 @@
                 </td>
                 <td width="250px">
                     &nbsp;<b>Code Value:</b><br />
-                    <asp:TextBox ID="CodeAdd" runat="server" Text='' MaxLength="25" Width="200px"></asp:TextBox>
+                    <asp:TextBox ID="CodeAdd" runat="server" Text='' MaxLength="255" Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvCodeAdd" runat="server" 
                     ControlToValidate="CodeAdd" Display="Dynamic" ErrorMessage="Code is required" 
                     SetFocusOnError="True" Font-Bold="True"
@@ -106,7 +106,7 @@
                 </td>
                 <td width="450px">
                     &nbsp;<b>Code Description:</b><br />
-                    <asp:TextBox ID="DescriptionAdd" runat="server" Text='' MaxLength="80"  Width="400px"></asp:TextBox>
+                    <asp:TextBox ID="DescriptionAdd" runat="server" Text='' MaxLength="255"  Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvDescriptionAdd" runat="server" 
                         ControlToValidate="DescriptionAdd" Display="Dynamic" ErrorMessage="Description is required" 
                         SetFocusOnError="True" Font-Bold="True"
@@ -152,13 +152,13 @@
 
                         </td>
                         <td width="250px">
-                            <asp:TextBox ID="Code" runat="server" Text='<%# Eval("Code") %>'  MaxLength="25" Width="200px"></asp:TextBox>
+                            <asp:TextBox ID="Code" runat="server" Text='<%# Eval("Code") %>'  MaxLength="255" Width="400px"></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvCode" runat="server" 
                             ControlToValidate="Code" Display="Dynamic" ErrorMessage="Code is required" 
                             SetFocusOnError="True" Font-Bold="True" ValidationGroup="Edit"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                         </td>
                         <td width="450px" >
-                            <asp:TextBox ID="Description" runat="server" Text='<%# Eval("Description") %>'  MaxLength="80"  Width="400px"></asp:TextBox>
+                            <asp:TextBox ID="Description" runat="server" Text='<%# Eval("Description") %>'  MaxLength="255"  Width="400px"></asp:TextBox>
                             <asp:RequiredFieldValidator ID="rfvDescription" runat="server" 
                                 ControlToValidate="Description" Display="Dynamic" ErrorMessage="Description is required" 
                                 SetFocusOnError="True" Font-Bold="True" ValidationGroup="Edit"><font color='red'> * Required </font>

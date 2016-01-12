@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 
-namespace GRA.SRP.ControlRoom.Controls
-{
-    public partial class SettingEditor : System.Web.UI.UserControl
-    {
+namespace GRA.SRP.ControlRoom.Controls {
+    public partial class SettingEditor : System.Web.UI.UserControl {
         public string Type
         {
             get
             {
-                if (null != ViewState["_StorageType_"])
-                {
+                if(null != ViewState["_StorageType_"]) {
                     return ViewState["_StorageType_"] as string;
                 }
                 return "";
@@ -25,8 +22,7 @@ namespace GRA.SRP.ControlRoom.Controls
         {
             get
             {
-                if (null != ViewState["_EditType_"])
-                {
+                if(null != ViewState["_EditType_"]) {
                     return ViewState["_EditType_"] as string;
                 }
                 return "";
@@ -34,24 +30,31 @@ namespace GRA.SRP.ControlRoom.Controls
             set
             {
                 ViewState["_EditType_"] = value;
-                switch (value.ToLower())
-                {
+                switch(value.ToLower()) {
                     case "textbox":
-                        uxTextBox.Visible = true; break;
+                        uxTextBox.Visible = true;
+                        break;
                     case "multilinetextbox":
-                        uxMultitext.Visible = true; break;
+                        uxMultitext.Visible = true;
+                        break;
                     case "html":
-                        uxEditor.Visible = true; break;
+                        uxEditor.Visible = true;
+                        break;
                     case "checkbox":
-                        uxCheckBox.Visible = true; break;
+                        uxCheckBox.Visible = true;
+                        break;
                     case "radio":
-                        uxRadio.Visible = true; break;
+                        uxRadio.Visible = true;
+                        break;
                     case "dropdown":
-                        uxDrop.Visible = true; break;
+                        uxDrop.Visible = true;
+                        break;
                     case "date":
-                        uxDate.Visible = true; break;
+                        uxDate.Visible = true;
+                        break;
                     default:
-                        uxTextBox.Visible = true; break;
+                        uxTextBox.Visible = true;
+                        break;
                 }
             }
         }
@@ -60,8 +63,7 @@ namespace GRA.SRP.ControlRoom.Controls
         {
             get
             {
-                if (null != ViewState["_ValueList_"])
-                {
+                if(null != ViewState["_ValueList_"]) {
                     return ViewState["_ValueList_"] as string;
                 }
                 return "";
@@ -76,8 +78,7 @@ namespace GRA.SRP.ControlRoom.Controls
         {
             get
             {
-                if (null != ViewState["_Default_"])
-                {
+                if(null != ViewState["_Default_"]) {
                     return ViewState["_Default_"] as string;
                 }
                 return "";
@@ -92,8 +93,7 @@ namespace GRA.SRP.ControlRoom.Controls
         {
             get
             {
-                if (null != ViewState["_SID_"])
-                {
+                if(null != ViewState["_SID_"]) {
                     return ViewState["_SID_"] as string;
                 }
                 return "";
@@ -108,14 +108,13 @@ namespace GRA.SRP.ControlRoom.Controls
         {
             get
             {
-                switch (EditType.ToLower())
-                {
+                switch(EditType.ToLower()) {
                     case "textbox":
                         return uxTextBox.Text;
                     case "multilinetextbox":
                         return uxMultitext.Text;
                     case "html":
-                        return uxEditor.Text;
+                        return uxEditor.InnerHtml;
                     case "checkbox":
                         return uxCheckBox.Checked.ToString();
                     case "radio":
@@ -131,75 +130,59 @@ namespace GRA.SRP.ControlRoom.Controls
             }
             set
             {
-                switch (EditType.ToLower())
-                {
+                switch(EditType.ToLower()) {
                     case "textbox":
-                        uxTextBox.Text = value; break;
+                        uxTextBox.Text = value;
+                        break;
                     case "multilinetextbox":
-                        uxMultitext.Text = value; break;
+                        uxMultitext.Text = value;
+                        break;
                     case "html":
-                        uxEditor.Text = value; break;
+                        uxEditor.InnerHtml = value;
+                        break;
                     case "checkbox":
-                        try
-                        {
+                        try {
                             uxCheckBox.Checked = (bool.Parse(value));
-                        } catch
-                        {
+                        } catch {
                         }
                         break;
                     case "radio":
                         string[] items = ValueList.Split(';');
-                        foreach (var item in items)
-                        {
+                        foreach(var item in items) {
                             string[] oneItem = item.Split(',');
                             uxRadio.Items.Add(new ListItem(oneItem[1], oneItem[0]));
-                            if (value == oneItem[0]) uxRadio.SelectedValue = value;
+                            if(value == oneItem[0])
+                                uxRadio.SelectedValue = value;
                         }
-                        
+
                         uxRadio.Visible = true;
                         break;
                     case "dropdown":
                         string[] ddItems = ValueList.Split(';');
-                        foreach (var dItem in ddItems)
-                        {
+                        foreach(var dItem in ddItems) {
                             string[] oneDItem = dItem.Split(',');
                             uxDrop.Items.Add(new ListItem(oneDItem[1], oneDItem[0]));
-                            if (value == oneDItem[0]) uxDrop.SelectedValue = value;
+                            if(value == oneDItem[0])
+                                uxDrop.SelectedValue = value;
                         }
                         uxDrop.Visible = true;
                         break;
                     case "date":
-                        try
-                        {
+                        try {
                             uxDate.Text = DateTime.Parse(value).ToString("MM/dd/yyyy");
-                        }
-                        catch (Exception)
-                        {
+                        } catch(Exception) {
                             uxDate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                         }
                         //uxDate.VisibleDate = uxDate.SelectedDate;
                         uxDate.Visible = true;
                         break;
                     default:
-                        uxTextBox.Text = value; break;
+                        uxTextBox.Text = value;
+                        break;
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
+        protected void Page_Load(object sender, EventArgs e) {
 
         }
     }

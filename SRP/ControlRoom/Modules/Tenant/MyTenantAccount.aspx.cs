@@ -5,7 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Tenant
 {
@@ -82,7 +82,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.isActiveFlag = ((CheckBox)((DetailsView)sender).FindControl("isActiveFlag")).Checked;
                     obj.isMasterFlag = ((CheckBox)((DetailsView)sender).FindControl("isMasterFlag")).Checked;
-                    obj.Description = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Description")).Text;
+                    obj.Description = ((HtmlTextArea)((DetailsView)sender).FindControl("Description")).InnerHtml;
                     obj.DomainName = ((TextBox)((DetailsView)sender).FindControl("DomainName")).Text;
 
                     try
@@ -109,9 +109,9 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                     obj.FldBit1 = ((CheckBox)((DetailsView)sender).FindControl("FldBit1")).Checked;
                     obj.FldBit2 = ((CheckBox)((DetailsView)sender).FindControl("FldBit2")).Checked;
                     obj.FldBit3 = ((CheckBox)((DetailsView)sender).FindControl("FldBit3")).Checked;
-                    obj.FldText1 = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("FldText1")).Text;
-                    obj.FldText2 = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("FldText2")).Text;
-                    obj.FldText3 = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("FldText3")).Text;
+                    obj.FldText1 = ((HtmlTextArea)((DetailsView)sender).FindControl("FldText1")).Text;
+                    obj.FldText2 = ((HtmlTextArea)((DetailsView)sender).FindControl("FldText2")).Text;
+                    obj.FldText3 = ((HtmlTextArea)((DetailsView)sender).FindControl("FldText3")).Text;
                     */
 
                     obj.LastModDate = DateTime.Now;

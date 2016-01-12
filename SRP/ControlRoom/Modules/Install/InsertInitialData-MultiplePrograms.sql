@@ -1663,7 +1663,7 @@ FROM SRPGroups
 FULL JOIN SRPPermissionsMaster ON 1 = 1
 GO
 
-SET IDENTITY_INSERT [dbo].[Programs] ON 
+SET IDENTITY_INSERT [dbo].[Programs] ON
 GO
 
 INSERT [dbo].[Programs] (
@@ -2351,6 +2351,7 @@ VALUES (
 	N'sysadmin'
 	)
 GO
+
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
 GO
 
@@ -2599,3 +2600,32 @@ GO
 
 SET IDENTITY_INSERT [dbo].[Avatar] OFF
 GO
+
+IF (
+		EXISTS (
+			SELECT *
+			FROM [INFORMATION_SCHEMA].[TABLES]
+			WHERE [TABLE_SCHEMA] = 'dbo'
+				AND [TABLE_NAME] = 'SRPHistory'
+			)
+		)
+BEGIN
+	INSERT [dbo].[SRPHistory] (
+		[When],
+		[Who],
+		[Event],
+		[VersionMajor],
+		[VersionMinor],
+		[VersionPatch],
+		[Description]
+		)
+	VALUES (
+		GETDATE(),
+		N'sysadmin',
+		'Initial configuration',
+		2,
+		2,
+		1,
+		'Performed initial configuration of multiple programs'
+		)
+END

@@ -13,6 +13,7 @@ using GRA.SRP.Utilities;
 using GRA.SRP.DAL;
 using GRA.Tools;
 using System.IO;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -74,7 +75,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var obj = new Badge();
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("UserName")).Text;
-                    obj.CustomEarnedMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("CustomEarnedMessage")).Text;
+                    obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("CustomEarnedMessage")).InnerHtml;
 
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -142,18 +143,18 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text;
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("UserName")).Text;
-                    obj.CustomEarnedMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).Text;
+                    obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).InnerHtml;
                     obj.IncludesPhysicalPrizeFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("IncludesPhysicalPrizeFlag")).Checked;
                     obj.PhysicalPrizeName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("PhysicalPrizeName")).Text;
 
                     obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("GenNotificationFlag")).Checked;
                     obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationSubject")).Text;
-                    obj.NotificationBody = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationBody")).Text;
+                    obj.NotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationBody")).InnerHtml;
 
 
                     obj.AssignProgramPrizeCode = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("AssignProgramPrizeCode")).Checked;
                     obj.PCNotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationSubject")).Text;
-                    obj.PCNotificationBody = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationBody")).Text;
+                    obj.PCNotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationBody")).InnerHtml;
 
 
                     obj.LastModDate = DateTime.Now;

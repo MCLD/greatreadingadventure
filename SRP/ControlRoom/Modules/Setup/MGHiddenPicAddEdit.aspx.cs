@@ -9,6 +9,7 @@ using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -136,7 +137,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj2.isActive = ((CheckBox)((DetailsView)sender).FindControl("isActive")).Checked;
                     obj2.NumberPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
                     obj2.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardedBadgeID")).SelectedValue);
-                    obj2.Acknowledgements = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Acknowledgements")).Text;
+                    obj2.Acknowledgements = ((HtmlTextArea)((DetailsView)sender).FindControl("Acknowledgements")).InnerHtml;
 
                     obj.EasyDictionary = CleanTextSpaces(((TextBox)((DetailsView)sender).FindControl("EasyDictionary")).Text);
                     obj.MediumDictionary = CleanTextSpaces(((TextBox)((DetailsView)sender).FindControl("MediumDictionary")).Text);

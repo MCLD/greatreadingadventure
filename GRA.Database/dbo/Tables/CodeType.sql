@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[CodeType] (
     [CTID]         INT          IDENTITY (1, 1) NOT NULL,
     [isSystem]     BIT          CONSTRAINT [DF_CodeType_isSystem] DEFAULT ((0)) NULL,
-    [CodeTypeName] VARCHAR (50) NULL,
+    [CodeTypeName] NVARCHAR(255) NULL,
     [Description]  TEXT         NULL,
     [TenID]        INT          NULL,
     [FldInt1]      INT          NULL,

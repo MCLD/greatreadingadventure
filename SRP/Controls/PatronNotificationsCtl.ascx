@@ -81,16 +81,14 @@
             </p>
             <p>
                 <strong>Subject:</strong>
-                <asp:Label ID="lblTitle" runat="server" Text=""></asp:Label>
+                <asp:Label ID="lblTitle" runat="server"></asp:Label>
             </p>
             <p>
                 <strong>Received:</strong>
-                <asp:Label ID="lblReceived" runat="server" Text=""></asp:Label>
+                <asp:Label ID="lblReceived" runat="server"></asp:Label>
             </p>
-            <p>
-                <asp:Label ID="lblBody" runat="server" Text=""></asp:Label>
-            </p>
-            <asp:Label ID="NID" runat="server" Text="" Visible="false"></asp:Label>
+            <asp:Label ID="lblBody" runat="server"></asp:Label>
+            <asp:Label ID="NID" runat="server" Visible="false"></asp:Label>
             <hr class="hidden-print" />
         </div>
     </div>

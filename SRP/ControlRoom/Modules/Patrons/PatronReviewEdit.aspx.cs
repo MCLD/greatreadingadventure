@@ -81,65 +81,6 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            //if (e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback")
-            //{
-            //    try
-            //    {
-            //        var obj = new PatronReview();
-            //        //obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("GenNotificationFlag")).Checked;
-
-            //        //obj.PID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("PID")).SelectedValue);
-            //        obj.PID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PID")).Text);
-            //        //obj.PRLID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("PRLID")).SelectedValue);
-            //        obj.PRLID = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PRLID")).Text);
-            //        obj.Author = ((TextBox)((DetailsView)sender).FindControl("Author")).Text;
-            //        obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
-            //        obj.Review = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Review")).Text;
-            //        obj.isApproved = ((CheckBox)((DetailsView)sender).FindControl("isApproved")).Checked;
-            //        obj.ReviewDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ReviewDate")).Text);
-            //        obj.ApprovalDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ApprovalDate")).Text);
-            //        obj.ApprovedBy = ((TextBox)((DetailsView)sender).FindControl("ApprovedBy")).Text;
-
-            //        obj.AddedDate = DateTime.Now;
-            //        obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
-            //        obj.LastModDate = obj.AddedDate;
-            //        obj.LastModUser = obj.AddedUser;
-
-            //        if (obj.IsValid(BusinessRulesValidationMode.INSERT))
-            //        {
-            //            obj.Insert();
-            //            if (e.CommandName.ToLower() == "addandback")
-            //            {
-            //                Response.Redirect(returnURL);
-            //            }
-
-            //            lblPK.Text = obj.PRID.ToString();
-
-            //            odsData.DataBind();
-            //            dv.DataBind();
-            //            dv.ChangeMode(DetailsViewMode.Edit);
-
-            //            var masterPage = (IControlRoomMaster)Master;
-            //            masterPage.PageMessage = SRPResources.AddedOK;
-            //        }
-            //        else
-            //        {
-            //            var masterPage = (IControlRoomMaster)Master;
-            //            string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-            //            foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
-            //            {
-            //                message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
-            //            }
-            //            message = string.Format("{0}</ul>", message);
-            //            masterPage.PageError = message;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        var masterPage = (IControlRoomMaster)Master;
-            //        masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
-            //    }
-            //}
             if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
             {
                 try

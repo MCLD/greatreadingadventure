@@ -285,3 +285,8 @@ body {
 small.dd-desc {
     display: none;
 }
+
+.cr-administrator {
+    color: red;
+    font-weight: bold;
+}

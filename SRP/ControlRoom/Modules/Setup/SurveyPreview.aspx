@@ -6,7 +6,6 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../../Controls/QuestionPreview.ascx" tagname="QuestionPreview" tagprefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Label ID="SRID" runat="server" Text="0" Visible="False"></asp:Label>

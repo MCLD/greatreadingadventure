@@ -27,7 +27,7 @@
                 QID = '<%# Eval("QID") %>'
                 QNumber = '<%# Eval("QNumber") %>'
                 QType = '<%# Eval("QType") %>'
-                QText = '<%# Eval("QText") %>'
+                QText = '<%# Server.HtmlDecode(Eval("QText").ToString()) %>'
                 DisplayControl = '<%# Eval("DisplayControl") %>'
                 DisplayDirection = '<%# Eval("DisplayDirection") %>'
                 IsRequired = '<%# ((bool)Eval("IsRequired")).ToYesNo().ToLower() %>'

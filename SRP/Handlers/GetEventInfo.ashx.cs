@@ -60,7 +60,7 @@ namespace GRA.SRP.Handlers {
                         jsonResponse.Success = true;
                         jsonResponse.Title = e.EventTitle;
                         jsonResponse.ShortDescription = e.ShortDescription;
-                        jsonResponse.Description = e.HTML;
+                        jsonResponse.Description = context.Server.HtmlDecode(e.HTML);
                         jsonResponse.When = Event.DisplayEventDateTime(e);
 
                         if(e.BranchID > 0) {
