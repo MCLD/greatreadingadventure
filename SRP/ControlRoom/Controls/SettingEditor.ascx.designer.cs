@@ -37,7 +37,7 @@ namespace GRA.SRP.ControlRoom.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl uxEditor;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea uxEditor;
         
         /// <summary>
         /// uxMultitext control.

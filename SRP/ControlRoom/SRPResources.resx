@@ -172,7 +172,7 @@
     <value>Record saved successfully.</value>
   </data>
   <data name="UserAccountRecovery" xml:space="preserve">
-    <value>User Account Recovery</value>
+    <value>Forgot your password? Click here!</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>User Name</value>

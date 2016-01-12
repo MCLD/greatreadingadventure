@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Event] (
     [EID]              INT           IDENTITY (1, 1) NOT NULL,
-    [EventTitle]       VARCHAR (150) NULL,
+    [EventTitle]       NVARCHAR(255) NULL,
     [EventDate]        DATETIME      NULL,
     [EventTime]        VARCHAR (15)  NULL,
     [HTML]             TEXT          NULL,
@@ -28,6 +28,7 @@
     [EndDate]          DATETIME      NULL,
     [EndTime]          VARCHAR (50)  NULL,
     [ShortDescription] TEXT          NULL,
+    [HiddenFromPublic] BIT NULL, 
     CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED ([EID] ASC)
 );
 

@@ -24,12 +24,12 @@ namespace GRA.SRP.ControlRoom {
                 // if account doesn't exist, send an email saying so
 
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", 1),
                     ControlRoomLink = string.Format("{0}{1}",
                                                     BaseUrl,
                                                     "/ControlRoom/LoginRecovery.aspx"),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", 1),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", 1),
                     RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject
@@ -66,13 +66,13 @@ namespace GRA.SRP.ControlRoom {
                 }
 
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", lookupUser.TenID),
                     PasswordResetLink = string.Format("{0}{1}?token={2}",
                                                       BaseUrl,
                                                       "/ControlRoom/PasswordRecovery.aspx",
                                                       passwordResetToken),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", lookupUser.TenID),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", lookupUser.TenID),
                     RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject,

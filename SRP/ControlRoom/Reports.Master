@@ -39,17 +39,6 @@
         </asp:ContentPlaceHolder>
     </div>       
 </div>     
-
-    <div id="cdfooter">
-	    <div id="cdline"></div>
-	    <div style="padding: 6px 0 3px 0; border: 1px solid #C9DEFD;" align="center">
-    	
-            <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
-
-	    </div> 
-    </div> 
-
-
 </form>
 </body>
 </html>

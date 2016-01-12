@@ -42,7 +42,7 @@ namespace GRA.SRP.Controls {
             o.Fetch(int.Parse(e.CommandArgument.ToString()));
 
             lblTitle.Text = o.Subject;
-            lblBody.Text = o.Body;
+            lblBody.Text = Server.HtmlDecode(o.Body);
             NID.Text = o.NID.ToString();
             lblReceived.Text = o.AddedDate.ToString();
 
@@ -61,8 +61,20 @@ namespace GRA.SRP.Controls {
                 this.Log().Debug("Deleting message: {0}", NID.Text);
                 int nid;
                 if(int.TryParse(NID.Text, out nid)) {
-                    var o = Notifications.FetchObject(nid);
-                    o.Delete();
+                    Notifications notification = null;
+                    try {
+                        notification = Notifications.FetchObject(nid);
+                        if(notification != null) {
+                            notification.Delete();
+                        }
+                    } catch (Exception ex) {
+                        this.Log().Error("Unable to delete message, nid text = {0}, nid = {1}, notification = {2}: {3} - {4}",
+                                         NID.Text,
+                                         nid,
+                                         notification,
+                                         ex.Message,
+                                         ex.StackTrace);
+                    }
                 } else {
                     this.Log().Error("Unable to convert message ID to number: {0}", NID.Text);
                 }

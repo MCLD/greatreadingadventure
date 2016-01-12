@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[Minigame] (
     [MGID]             INT          IDENTITY (1, 1) NOT NULL,
     [MiniGameType]     INT          NULL,
-    [MiniGameTypeName] VARCHAR (50) NULL,
-    [AdminName]        VARCHAR (50) NULL,
+    [MiniGameTypeName] NVARCHAR(255) NULL,
+    [AdminName]        NVARCHAR(255) NULL,
     [GameName]         VARCHAR (50) NULL,
     [isActive]         BIT          NULL,
     [NumberPoints]     INT          NULL,

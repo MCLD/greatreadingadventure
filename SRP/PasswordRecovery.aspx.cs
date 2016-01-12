@@ -52,12 +52,10 @@ namespace GRA.SRP {
                     return;
                 }
 
-                // user requested a password for an email address that is not in the database
-                // if account doesn't exist, send an email saying so
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", user.TenID),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", user.TenID),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", user.TenID),
                     RemoteAddress = Request.UserHostAddress,
                     UserEmail = user.EmailAddress,
                     Username = user.Username,

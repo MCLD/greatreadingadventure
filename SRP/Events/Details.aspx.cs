@@ -59,7 +59,7 @@ namespace GRA.SRP.Events {
                         atLabel.Visible = true;
                     }
                     eventShortDescription.Text = evnt.ShortDescription;
-                    eventDescription.Text = evnt.HTML;
+                    eventDescription.Text = Server.HtmlDecode(evnt.HTML);
                     var cf = DAL.CustomEventFields.FetchObject();
                     if(!string.IsNullOrWhiteSpace(evnt.Custom1)
                        && !string.IsNullOrWhiteSpace(cf.Label1)) {

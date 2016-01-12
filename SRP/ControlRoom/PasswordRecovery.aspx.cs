@@ -1,16 +1,10 @@
 ﻿using GRA.Communications;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
-using GRA.Tools;
 using SRPApp.Classes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace GRA.SRP.ControlRoom {
     public partial class PasswordRecovery : BaseControlRoomPage {
@@ -48,9 +42,9 @@ namespace GRA.SRP.ControlRoom {
             // user requested a password for an email address that is not in the database
             // if account doesn't exist, send an email saying so
             var values = new {
-                SystemName = SRPSettings.GetSettingValue("SysName"),
-                ContactName = SRPSettings.GetSettingValue("ContactName"),
-                ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                SystemName = SRPSettings.GetSettingValue("SysName", user.TenID),
+                ContactName = SRPSettings.GetSettingValue("ContactName", user.TenID),
+                ContactEmail = SRPSettings.GetSettingValue("ContactEmail", user.TenID),
                 RemoteAddress = Request.UserHostAddress,
                 UserEmail = user.EmailAddress,
                 ControlRoomLink = string.Format("{0}{1}",

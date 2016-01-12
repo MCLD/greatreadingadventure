@@ -32,19 +32,19 @@ namespace GRA.SRP {
                 ProgramNotOpenText.Visible = false;
             } else {
                 ProgramNotOpenText.Visible = true;
-                ProgramNotOpenText.Text = pgm.HTML6;
+                ProgramNotOpenText.Text = Server.HtmlDecode(pgm.HTML6);
             }
 
             if(pgm != null) {
                 if(!string.IsNullOrWhiteSpace(pgm.HTML2)) {
-                    SponsorText.Text = pgm.HTML2;
+                    SponsorText.Text = Server.HtmlDecode(pgm.HTML2);
                     SponsorText.Visible = true;
                 } else {
                     SponsorText.Visible = false;
                 }
 
                 if(!string.IsNullOrWhiteSpace(pgm.HTML5)) {
-                    FooterText.Text = string.Format("<hr>{0}", pgm.HTML5);
+                    FooterText.Text = string.Format("<hr>{0}", Server.HtmlDecode(pgm.HTML5));
                     FooterText.Visible = true;
                 } else {
                     FooterText.Visible = false;

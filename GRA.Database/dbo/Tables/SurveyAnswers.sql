@@ -10,7 +10,7 @@
     [QType]             INT            NULL,
     [FreeFormAnswer]    TEXT           NULL,
     [ClarificationText] TEXT           NULL,
-    [ChoiceAnswerIDs]   VARCHAR (2000) NULL,
+    [ChoiceAnswerIDs]   NVARCHAR(MAX) NULL,
     [ChoiceAnswerText]  TEXT           NULL,
     [FldInt1]           INT            NULL,
     [FldInt2]           INT            NULL,

@@ -71,7 +71,7 @@ namespace GRA.SRP.Handlers {
                                 UserName = badge.UserName,
                                 BadgeId = badge.BID,
                                 ImageUrl = VirtualPathUtility.ToAbsolute(badgePath),
-                                EarnedMessage = badge.CustomEarnedMessage
+                                EarnedMessage = context.Server.HtmlDecode(badge.CustomEarnedMessage)
                             });
                         }
                     }

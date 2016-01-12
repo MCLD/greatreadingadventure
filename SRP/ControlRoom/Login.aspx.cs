@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
+using SRPApp.Classes;
 
 namespace GRA.SRP.ControlRoom {
     public partial class Login : Page {
@@ -40,6 +41,7 @@ namespace GRA.SRP.ControlRoom {
 
                     }
                 }
+                this.SystemName.Text = StringResources.getString("system-name");
             }
         }
 

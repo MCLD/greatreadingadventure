@@ -3,7 +3,6 @@
     
 %>
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl_1" Src="~/Controls/FileUploadCtl.ascx" %>
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <%@ Register TagPrefix="uc2" TagName="AudioUploadCtl1" Src="~/Controls/AudioUploadCtl.ascx"  %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -58,27 +57,8 @@
 
         <asp:TemplateField HeaderText="SlideText: " SortExpression="SlideText" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
-                <CKEditor:CKEditorControl ID="SlideText" 
-                        BasePath="/ckeditor/" 
-                        runat="server" 
-                        Skin="office2003" 
-                        BodyId="wrapper" 
-                        ContentsCss="/css/EditorStyles.css"
-                        DisableNativeSpellChecker="False" 
-                        DisableNativeTableHandles="False" 
-                        DocType="&lt;!DOCTYPE html&gt;" 
-                        ForcePasteAsPlainText="True" 
-                        Height="150px" UIColor="#D3D3D3" 
-                        Visible="True" 
-                        Width="98%"
-                        Toolbar="Source|-|Preview|-|Cut|Copy|Paste|PasteText|PasteFromWord|-|Undo|Redo|-|Find|Replace|-|SelectAll|RemoveFormat| 
-                        / |Bold|Italic|Underline|Strike|-|Subscript|Superscript|-|NumberedList|BulletedList|-|Outdent|Indent|Blockquote|CreateDiv|-|JustifyLeft|JustifyCenter|JustifyRight|JustifyBlock| 
-                        / |Link|Unlink|Anchor|-|Image|Flash|Table|HorizontalRule|SpecialChar|PageBreak|Iframe|
-                        / |Styles|Format|Font|FontSize|-|TextColor|BGColor|-|ShowBlocks|Maximize|
-                        "
-                        AutoGrowOnStartup="True" 
-					     Text='<%# Eval("SlideText") %>' 
-                        ></CKEditor:CKEditorControl>
+                <textarea id="SlideText" runat="server" class="gra-editor"><%# Eval("SlideText") %></textarea>                      
+
                 <br />
                 <uc2:AudioUploadCtl1 ID="AudioUploadCtlE" runat="server" 
                     FileName='<%# Eval("CASID") + "_" +  Eval("Difficulty") %>'

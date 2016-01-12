@@ -117,7 +117,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     switch (obj.QType)
                     {
                         case 1:
-                            obj.QText = QText.Text;
+                            obj.QText = QText.InnerHtml;
                             obj.QName = "Instructions/Text/Description";
                             break;
                         case 5:
@@ -126,19 +126,19 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                             obj.QName = "";
                             break;
                         case 3:
-                            obj.QText = QText3.Text;
+                            obj.QText = QText3.InnerHtml;
                             obj.QName = QName3.Text;
                             obj.IsRequired = IsRequired3.Checked;
                             break;
                         case 2:
-                            obj.QText = QText2.Text;
+                            obj.QText = QText2.InnerHtml;
                             obj.QName = QName2.Text;
                             obj.IsRequired = IsRequired2.Checked;
                             obj.DisplayControl = DisplayControl2.SelectedValue.SafeToInt();
                             obj.DisplayDirection = DisplayDirection2.SelectedValue.SafeToInt();
                             break;
                         case 4:
-                            obj.QText = QText4.Text;
+                            obj.QText = QText4.InnerHtml;
                             obj.QName = QName4.Text;
                             obj.IsRequired = IsRequired4.Checked;
                             obj.DisplayControl = DisplayControl4.SelectedValue.SafeToInt();

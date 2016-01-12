@@ -241,7 +241,7 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Account Recovery.
+        ///   Looks up a localized string similar to Forgot your password? Click here!.
         /// </summary>
         public static string UserAccountRecovery {
             get {

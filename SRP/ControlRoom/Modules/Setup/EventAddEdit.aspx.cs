@@ -7,6 +7,7 @@ using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -114,7 +115,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.EventTitle = ((TextBox)((DetailsView)sender).FindControl("EventTitle")).Text;
                     obj.EventDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("EventDate")).Text);
                     obj.EventTime = ((TextBox)((DetailsView)sender).FindControl("EventTime")).Text;
-                    obj.HTML = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("HTML")).Text;
+                    obj.HTML = ((HtmlTextArea)((DetailsView)sender).FindControl("HTML")).InnerHtml;
                     obj.SecretCode = ((TextBox)((DetailsView)sender).FindControl("SecretCode")).Text;
                     obj.NumberPoints =  FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
@@ -179,7 +180,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.EventTitle = ((TextBox)((DetailsView)sender).FindControl("EventTitle")).Text;
                     obj.EventDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("EventDate")).Text);
                     obj.EventTime = ((TextBox)((DetailsView)sender).FindControl("EventTime")).Text;
-                    obj.HTML = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("HTML")).Text;
+                    obj.HTML = ((HtmlTextArea)((DetailsView)sender).FindControl("HTML")).InnerHtml;
                     obj.SecretCode = ((TextBox)((DetailsView)sender).FindControl("SecretCode")).Text;
                     obj.NumberPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);

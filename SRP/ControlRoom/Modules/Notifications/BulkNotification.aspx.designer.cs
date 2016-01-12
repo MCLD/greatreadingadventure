@@ -145,7 +145,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl Body;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea Body;
         
         /// <summary>
         /// btnSend control.

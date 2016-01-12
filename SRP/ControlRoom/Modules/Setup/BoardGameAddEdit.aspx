@@ -438,7 +438,7 @@
                     <asp:ImageButton ID="ImageButton1" runat="server" 
                         CausesValidation="True" 
                         CommandName="levels" 
-                        ImageUrl="~/ControlRoom/Images/game_level.png" 
+                        ImageUrl="~/ControlRoom/RibbonImages/Adventures.png" 
                         Height="25"
                         Text="Game Levels"   Tooltip="Game Levels"
                         AlternateText="Game Levels" /> 

@@ -9,7 +9,6 @@ Reading Adventure wouldn't exist!
 
 - [ASP.NET AJAX Control Toolkit](#aspnet-ajax-control-toolkit)
 - [Bootstrap](#bootstrap)
-- [CKEditor](#ckeditor)
 - [DocumentFormat.OpenXML](#documentformat.-openxml)
 - [ELMAH](#elmah)
 - [FormatWith](#formatwith)
@@ -24,6 +23,7 @@ Reading Adventure wouldn't exist!
 - [Odometer](#odometer)
 - [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
 - [this.Log Logging Extension](#thislog-logging-extension)
+- [Trumbowyg](#trumbowyg)
 - [SRP_DAL](#srp_dal)
 
 * * *
@@ -39,13 +39,6 @@ Reading Adventure wouldn't exist!
 - <http://getbootstrap.com/>
 - Copyright (c) 2011-2015 Twitter, Inc
 - License (MIT) <https://github.com/twbs/bootstrap/blob/master/LICENSE>
-
-* * *
-
-## CKEditor
-- <http://ckeditor.com/>
-- Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
-- License (MPL) <http://ckeditor.com/about/license>
 
 * * *
 
@@ -145,6 +138,13 @@ Reading Adventure wouldn't exist!
 - <https://github.com/ferventcoder/this.Log>
 - RealDimensions Software, LLC - Copyright © 2012
 - License (Apache) <https://github.com/ferventcoder/this.Log/blob/master/LICENSE>
+
+* * *
+
+## Trumbowyg
+- <http://alex-d.github.io/Trumbowyg/>
+- Copyright (c) 2012-2015 Alexandre Demode (Alex-D)
+- License (MIT) <http://opensource.org/licenses/MIT>
 
 * * *
 

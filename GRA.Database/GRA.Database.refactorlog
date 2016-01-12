@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="7db41d23-646b-46fb-9977-cd876db5a480" ChangeDateTime="01/07/2016 22:35:06">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[Url]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LinkToBranch" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc8c806a-29fa-4231-be7f-3fda3b8f72e5" ChangeDateTime="01/07/2016 22:35:44">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[LinkToBranch]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BranchLink" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1541420b-11fe-45f9-9cd0-a01fdb163d74" ChangeDateTime="01/08/2016 18:47:12">
+    <Property Name="ElementName" Value="[dbo].[SRPHistory].[Version]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SRPHistory]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VersionMajor" />
+  </Operation>
+</Operations>

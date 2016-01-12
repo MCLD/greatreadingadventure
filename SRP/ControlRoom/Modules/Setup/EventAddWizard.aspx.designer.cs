@@ -154,7 +154,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl HTML;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea HTML;
         
         /// <summary>
         /// BranchId control.
@@ -334,7 +334,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl CustomEarnedMessage;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea CustomEarnedMessage;
         
         /// <summary>
         /// btnCancel2 control.
@@ -415,7 +415,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl NotificationBody;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea NotificationBody;
         
         /// <summary>
         /// AssignProgramPrizeCode control.
@@ -442,7 +442,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CKEditor.NET.CKEditorControl PCNotificationBody;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea PCNotificationBody;
         
         /// <summary>
         /// btnCancel3 control.

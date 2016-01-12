@@ -3,7 +3,7 @@
     [PID_To]      INT           CONSTRAINT [DF_Notifications_PID_To] DEFAULT ((0)) NULL,
     [PID_From]    INT           CONSTRAINT [DF_Notifications_PID_From] DEFAULT ((0)) NULL,
     [isQuestion]  BIT           CONSTRAINT [DF_Notifications_isQuestion] DEFAULT ((0)) NULL,
-    [Subject]     VARCHAR (150) CONSTRAINT [DF_Notifications_Subject] DEFAULT ('') NULL,
+    [Subject]     NVARCHAR(255) CONSTRAINT [DF_Notifications_Subject] DEFAULT ('') NULL,
     [Body]        TEXT          NULL,
     [AddedDate]   DATETIME      CONSTRAINT [DF_Notifications_AddedDate] DEFAULT (getdate()) NULL,
     [AddedUser]   VARCHAR (50)  CONSTRAINT [DF_Notifications_AddedUser] DEFAULT ('N/A') NULL,

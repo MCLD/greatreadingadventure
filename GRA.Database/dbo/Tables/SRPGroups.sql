@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[SRPGroups] (
     [GID]              INT           IDENTITY (1000, 1) NOT NULL,
-    [GroupName]        VARCHAR (50)  NULL,
+    [GroupName]        NVARCHAR(255)  NULL,
     [GroupDescription] VARCHAR (255) NULL,
     [LastModDate]      DATETIME      CONSTRAINT [DF_SRPGroups_LastModDate] DEFAULT (getdate()) NULL,
     [LastModUser]      VARCHAR (50)  CONSTRAINT [DF_SRPGroups_LastModUser] DEFAULT ('N/A') NULL,

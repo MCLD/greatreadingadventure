@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ProgramGame] (
     [PGID]                      INT          IDENTITY (1, 1) NOT NULL,
-    [GameName]                  VARCHAR (50) NULL,
+    [GameName]                  NVARCHAR(255) NULL,
     [MapImage]                  VARCHAR (50) NULL,
     [BonusMapImage]             VARCHAR (50) NULL,
     [BoardWidth]                INT          NULL,

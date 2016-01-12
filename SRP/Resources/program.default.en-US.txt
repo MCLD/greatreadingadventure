@@ -140,13 +140,13 @@ registration-form-avatar=Avatar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Minigames text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Minigame Instructions OB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story for loads of fun!</b></h3><br>
-Minigame Instructions HP=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Match the word on top with the same word on the square to uncover a hidden picture!</b></h3><br>
-Minigame Instructions MM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the picture that matches the word!</b></h3><br>
-Minigame Instructions CB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Use the key to decode the message!</b></h3><br>
-Minigame Instructions WM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Click the squares to find the matching pairs!</h3></b><br>
-Minigame Instructions MG=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the word that matches the picture!</b></h3><br>
-Minigame Instructions CA=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="500">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story and decide which path you want to take!</b></h3><br>
+Minigame Instructions OB=<h2>Read this online story!</h2>
+Minigame Instructions HP=<h2>Match the word on top with the same word on the square to uncover a hidden picture!</h2>
+Minigame Instructions MM=<h2>Choose the picture that matches the word!</h2>
+Minigame Instructions CB=<h2>Use the key to decode the message!</h2>
+Minigame Instructions WM=<h2>Click the squares to find the matching pairs!</h2>
+Minigame Instructions MG=<h2>Choose the word that matches the picture!</h2>
+Minigame Instructions CA=<h2>Read the story and decide which path you want to take!</h2>
 Minigame Instructions Difficulty=Choose the difficulty level you would like to play
 Minigame Instructions BtnEasy=Easy
 Minigame Instructions BtnMedium=Medium
@@ -155,7 +155,7 @@ Minigame Instructions BtnPrev=Previous Page
 Minigame Instructions BtnNext=Next Page
 Minigame Instructions BtnContinue=Continue
 Minigame BtnContinue=Continue
-Minigame label Enter Decoded=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive ...
+Minigame label Enter Decoded=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive...
 Minigame btnScore=Verify Decoding
 Minigame Key=Message Key
 Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.

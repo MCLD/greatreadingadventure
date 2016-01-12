@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[Offer] (
     [OID]                  INT           IDENTITY (100000, 1) NOT NULL,
     [isEnabled]            BIT           NULL,
-    [AdminName]            VARCHAR (50)  NULL,
-    [Title]                VARCHAR (150) NULL,
+    [AdminName]            NVARCHAR(255)  NULL,
+    [Title]                NVARCHAR(255) NULL,
     [ExternalRedirectFlag] BIT           NULL,
-    [RedirectURL]          VARCHAR (150) CONSTRAINT [DF_Offer_RedirectURL] DEFAULT ('') NULL,
+    [RedirectURL]          NVARCHAR(255) CONSTRAINT [DF_Offer_RedirectURL] DEFAULT ('') NULL,
     [MaxImpressions]       INT           CONSTRAINT [DF_Offer_MaxImpressions] DEFAULT ((0)) NULL,
     [TotalImpressions]     INT           CONSTRAINT [DF_Offer_TotalImpressions] DEFAULT ((0)) NULL,
     [SerialPrefix]         VARCHAR (50)  NULL,
