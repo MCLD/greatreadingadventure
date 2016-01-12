@@ -15,7 +15,7 @@ namespace GRA.SRP
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Session["TenantID"] = "";
+            Session["TenantID"]= string.Empty;
             // Get master tenant
             // get dafault program for master tenant
             if (!IsPostBack)
@@ -62,7 +62,7 @@ namespace GRA.SRP
             var TenID = ddTenants.SelectedValue;
             if (TenID == "")
             {
-                txtTenDesc.Text = "";
+                txtTenDesc.Text= string.Empty;
                 btnSelProgram.Enabled = false;
             }
             else
@@ -75,7 +75,7 @@ namespace GRA.SRP
                 }
                 else
                 {
-                    txtTenDesc.Text = "";
+                    txtTenDesc.Text= string.Empty;
                     btnSelProgram.Enabled = false;
                 }
             }

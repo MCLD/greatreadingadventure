@@ -86,7 +86,7 @@ namespace GRA.SRP.ControlRoom {
 
                     List<SRPPermission> perms = user.EffectiveUserPermissions();
                     //Session[SessionData.PermissionList.ToString()] = perms;
-                    string permList = "";
+                    string permList= string.Empty;
                     foreach(SRPPermission perm in perms)
                         permList += String.Format("#{0}", perm.Permission);
                     Session[SessionData.StringPermissionList.ToString()] = permList;
@@ -104,7 +104,7 @@ namespace GRA.SRP.ControlRoom {
                     }
                     //List<CMSFolder> folders = user.EffectiveUserFolders();
                     //Session[SessionData.FoldersList.ToString()] = folders;
-                    //string foldersList = "";
+                    //string foldersList= string.Empty;
                     //foreach (CMSFolder folder in folders)
                     //    foldersList += string.Format("#{0}", folder.Folder);
                     //Session[SessionData.StringFoldersList.ToString()] = foldersList;
@@ -184,7 +184,7 @@ namespace GRA.SRP.ControlRoom {
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e) {
-            uxLogin.PasswordRequiredErrorMessage = "";
+            uxLogin.PasswordRequiredErrorMessage= string.Empty;
             Page.Validate("uxLogin");
 
             if(Page.IsValid || (uxLogin.UserName.Length > 0 && !Page.IsValid)) {

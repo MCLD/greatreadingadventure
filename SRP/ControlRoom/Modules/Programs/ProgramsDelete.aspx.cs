@@ -63,7 +63,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
                 File.Delete(filename);
             }
 
-            Session["Active_Program"] = "";
+            Session["Active_Program"]= string.Empty;
             Session["Active_Program_Filtered"] = "0";
             Response.Redirect("ProgramList.aspx");
         }

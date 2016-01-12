@@ -25,7 +25,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["PK"] == null ? "" : Session["PK"].ToString(); Session["PK"] = "";
+                lblPK.Text = Session["PK"] == null ? "" : Session["PK"].ToString(); Session["PK"]= string.Empty;
                 dv.ChangeMode(DetailsViewMode.Insert);
                 Page.DataBind();
             }

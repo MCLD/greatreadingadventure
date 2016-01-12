@@ -130,7 +130,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
                     sysadmin.LastName = ((TextBox)((DetailsView)sender).FindControl("lname")).Text;
                     sysadmin.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("email")).Text;
                     sysadmin.Division = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
-                    sysadmin.Department = sysadmin.Title = "";
+                    sysadmin.Department = sysadmin.Title= string.Empty;
                     sysadmin.AddedDate = DateTime.Now;
                     sysadmin.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
                     sysadmin.LastModDate = sysadmin.AddedDate;

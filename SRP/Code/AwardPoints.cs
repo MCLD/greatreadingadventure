@@ -36,9 +36,9 @@ namespace GRA.SRP.Controls {
                 // Minigame
                 int MGID = 0,
                 // reading
-                ActivityType readingActivity = ActivityType.Pages, int readingAmount = 0, string author = "", string title = "", string review = "",
+                ActivityType readingActivity = ActivityType.Pages, int readingAmount = 0, string author= "", string title= "", string review= "",
                 // event
-                string eventCode = "", int eventID = 0,
+                string eventCode= "", int eventID = 0,
                 // book List
                 int bookListID = 0,
 
@@ -47,7 +47,7 @@ namespace GRA.SRP.Controls {
             if(forceDate != null)
                 now = (DateTime)forceDate;
 
-            string retValue = "";
+            string retValue= string.Empty;
 
             #region Reading - Log to PatronReadingLog
             PatronReadingLog rl = null;
@@ -324,7 +324,7 @@ namespace GRA.SRP.Controls {
 
                     // if badge generates award code, then generate the code
                     if(earnedBadge.AssignProgramPrizeCode) {
-                        var rewardCode = "";
+                        var rewardCode= string.Empty;
                         // get the Code value
                         // save the code value for the patron
                         rewardCode = ProgramCodes.AssignCodeForPatron(patron.ProgID, patron.ProgID);

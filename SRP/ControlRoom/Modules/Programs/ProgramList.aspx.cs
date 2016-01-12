@@ -88,7 +88,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
             string deletepage = "~/ControlRoom/Modules/Programs/ProgramsDelete.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["PGM"] = ""; Response.Redirect(editpage);
+                Session["PGM"]= string.Empty; Response.Redirect(editpage);
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

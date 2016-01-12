@@ -76,7 +76,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         protected void btnClear_Click(object sender, EventArgs e)
         {
             ProgID.SelectedValue = "0";
-            StartDate.Text = EndDate.Text = "";
+            StartDate.Text = EndDate.Text= string.Empty;
             rptr.DataSource = null;
             rptr.DataBind();
         }

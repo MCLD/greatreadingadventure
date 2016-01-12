@@ -65,7 +65,7 @@ namespace GRA.SRP.Controls
 
         protected void btnContinue_Click(object sender, EventArgs e)
         {
-            lblMessage2.Text = lblMessage.Text = "";
+            lblMessage2.Text = lblMessage.Text= string.Empty;
 
             try { ((Minigame)Parent.Parent.Parent.Parent).CompleteGamePlay(); return; }
             catch { }

@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             if(!IsPostBack) {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"] = "";
+                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
 

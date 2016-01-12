@@ -51,7 +51,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             string editpage = "~/ControlRoom/Modules/Patrons/PatronLogAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["PLID"] = ""; Response.Redirect(editpage);
+                Session["PLID"]= string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

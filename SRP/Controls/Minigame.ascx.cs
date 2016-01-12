@@ -33,7 +33,7 @@ namespace GRA.SRP.Controls
                 if (Session["GoToUrl"] != null && Session["GoToUrl"].ToString() == "")
                 {
                     GoToUrl = Session["GoToUrl"].ToString();
-                    Session["GoToUrl"] = "";
+                    Session["GoToUrl"]= string.Empty;
                 }
 
 

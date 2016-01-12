@@ -79,7 +79,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         protected void btnClear_Click(object sender, EventArgs e)
         {
             ProgID.SelectedValue = BranchID.SelectedValue = "0";
-            School.SelectedValue = LibSys.SelectedValue = "";
+            School.SelectedValue = LibSys.SelectedValue= string.Empty;
             rptr.DataSource = null;
             rptr.DataBind();
         }

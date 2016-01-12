@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             if(!IsPostBack) {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                Session["BLL"] = "";
+                Session["BLL"]= string.Empty;
                 lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString();
                 Page.DataBind();
             }
@@ -245,7 +245,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
 
         public void SaveBadgeExtendedAttributes(Badge obj, GridView gv1, GridView gv2, GridView gv3, GridView gv4) {
             var gv = gv1;
-            string checkedMembers = "";
+            string checkedMembers= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
@@ -256,7 +256,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             obj.UpdateBadgeCategories(checkedMembers);
 
             gv = gv2;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
@@ -268,7 +268,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
 
 
             gv = gv3;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
@@ -279,7 +279,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             obj.UpdateBadgeBranches(checkedMembers);
 
             gv = gv4;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);

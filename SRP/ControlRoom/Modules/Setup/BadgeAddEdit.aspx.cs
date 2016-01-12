@@ -31,7 +31,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                lblPK.Text = Session["BDD"] == null ? "" : Session["BDD"].ToString(); //Session["BDD"] = "";
+                lblPK.Text = Session["BDD"] == null ? "" : Session["BDD"].ToString(); //Session["BDD"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -180,7 +180,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                         /*
                         GridView gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvCat");
-                        string checkedMembers = "";
+                        string checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -192,7 +192,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.UpdateBadgeBranches(checkedMembers);
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvAge");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -205,7 +205,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvBranch");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -217,7 +217,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.UpdateBadgeBranches(checkedMembers);
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvLoc");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -267,7 +267,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public void SaveBadgeExtendedAttributes(Badge obj, GridView gv1, GridView gv2, GridView gv3, GridView gv4)
         {
             var gv = gv1;
-            string checkedMembers = "";
+            string checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -279,7 +279,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeCategories(checkedMembers);
 
             gv = gv2;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -292,7 +292,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
 
             gv = gv3;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -304,7 +304,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeBranches(checkedMembers);
 
             gv = gv4;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)

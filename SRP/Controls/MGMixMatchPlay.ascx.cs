@@ -184,7 +184,7 @@ namespace GRA.SRP.Controls
 
         protected void btnContinue_Click(object sender, EventArgs e)
         {
-            lblMessage.Text = "";
+            lblMessage.Text= string.Empty;
             pnlContinue.Visible = false;
 
             var mmg = DAL.MGMixAndMatch.FetchObject(int.Parse(MMID.Text));

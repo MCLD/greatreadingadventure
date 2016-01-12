@@ -26,7 +26,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
  
             if (!IsPostBack)
             {
-                lblPK.Text = Session["DTD"] == null ? "" : Session["DTD"].ToString(); //Session["DTD"] = "";
+                lblPK.Text = Session["DTD"] == null ? "" : Session["DTD"].ToString(); //Session["DTD"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }

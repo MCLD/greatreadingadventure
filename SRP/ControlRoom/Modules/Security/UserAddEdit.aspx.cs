@@ -29,7 +29,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
             if(!IsPostBack) {
                 //lblUID.Text = Request["PK"];
                 if(Request.QueryString["type"] != "new") {
-                    lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"] = "";
+                    lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"]= string.Empty;
                 }
                 dv.ChangeMode(lblUID.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
             }
@@ -182,7 +182,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
 
         protected void SaveGroups(DetailsView dv, SRPUser obj) {
             GridView gv = (GridView)dv.FindControl("gvUserGroups");
-            string memberGroups = "";
+            string memberGroups= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isMember")).Checked) {
                     memberGroups = string.Format("{0},{1}", memberGroups, ((Label)row.FindControl("GID")).Text);
@@ -196,7 +196,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
 
         protected void SavePermissions(DetailsView dv, SRPUser obj) {
             GridView gv = (GridView)dv.FindControl("gvUserPermissions");
-            string groupPermissions = "";
+            string groupPermissions= string.Empty;
             foreach(GridViewRow row in gv.Rows) {
                 if(((CheckBox)row.FindControl("isChecked")).Checked) {
                     groupPermissions = string.Format("{0},{1}", groupPermissions, ((Label)row.FindControl("PermissionID")).Text);

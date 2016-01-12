@@ -12,7 +12,7 @@ namespace SRPApp.Classes
         public int UID = 1;
         public string PageTitle { get; set; }
 
-        public string SRPPageName = "";
+        public string SRPPageName= string.Empty;
         public int SRPPageID = -1;
 
         //public DataSet Template ;

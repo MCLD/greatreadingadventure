@@ -31,7 +31,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
                     AdminName.Text = o.AdminName;
 
-                    lblPK.Text = "";
+                    lblPK.Text= string.Empty;
                     dv.ChangeMode(DetailsViewMode.Insert);
 
                 }

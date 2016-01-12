@@ -90,7 +90,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BadgeAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BDD"] = "";
+                Session["BDD"]= string.Empty;
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

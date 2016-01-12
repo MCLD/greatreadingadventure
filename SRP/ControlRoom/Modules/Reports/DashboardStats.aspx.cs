@@ -43,7 +43,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetRegByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i<dt.Rows.Count; i++)
@@ -57,7 +57,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetFinisherByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -71,7 +71,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetRegAgeByProgLabels(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -86,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
          public void GetFinisherAgeByProgLabels(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -101,7 +101,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetRegAgeByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -128,7 +128,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetFinisherAgeByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -155,7 +155,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetRegGenderByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -176,7 +176,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         public void GetFinisherGenderByProg(DataTable dt)
         {
-            var retStr = "";
+            var retStr= string.Empty;
             if (dt != null)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -195,7 +195,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             ViewState["Stacked2"] = retStr;
         }
 
-        private string Coalesce(string startingString, string additionalString, string separator = "")
+        private string Coalesce(string startingString, string additionalString, string separator= "")
         {
             if (startingString.Length == 0) return additionalString;
             return string.Format("{0} {1} {2}", startingString, separator, additionalString);
@@ -289,7 +289,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         protected void btnClear_Click(object sender, EventArgs e)
         {
             ProgID.SelectedValue = BranchID.SelectedValue = "0";
-            School.SelectedValue = LibSys.SelectedValue = "";
+            School.SelectedValue = LibSys.SelectedValue= string.Empty;
 
             btnFilter_Click(sender, e);
         }

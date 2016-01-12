@@ -59,7 +59,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                 }
                 else
                 {
-                    gv1.DataSourceID = "";
+                    gv1.DataSourceID= string.Empty;
                     gv1.DataBind();
                 }
             }
@@ -139,7 +139,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             string editpage = "~/ControlRoom/Modules/Patrons/PatronDetails.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["CURR_PATRON_ID"] = "";
+                Session["CURR_PATRON_ID"]= string.Empty;
                 Session["CURR_PATRON"] = null;
                 Session["CURR_PATRON_MODE"] = "ADDNEW";
                 Response.Redirect(editpage);
@@ -196,12 +196,12 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
 
         protected void btnClear_Click(object sender, EventArgs e)
         {
-            Session["PS_First"] = Session["PS_Last"] = Session["PS_User"] = Session["PS_Email"] = Session["PS_DOB"] = Session["PS_Gender"] = "";
-            Session["PS_Prog"] = "";
+            Session["PS_First"] = Session["PS_Last"] = Session["PS_User"] = Session["PS_Email"] = Session["PS_DOB"] = Session["PS_Gender"]= string.Empty;
+            Session["PS_Prog"]= string.Empty;
             Session["PS_Filtered"] = null;
 
             GetFilterSessionValues();
-            gv1.DataSourceID = "";
+            gv1.DataSourceID= string.Empty;
         }
 
 

@@ -87,7 +87,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected void btnClear_Click(object sender, EventArgs e) {
-            StartDate.Text = EndDate.Text = whatsShowing.Text = "";
+            StartDate.Text = EndDate.Text = whatsShowing.Text= string.Empty;
             whatsShowing.Visible = false;
             BranchId.SelectedValue = "0";
             SetFilterSessionValues();
@@ -112,12 +112,12 @@ namespace GRA.SRP.Controls {
             if(Session["UEL_Start"] != null) {
                 StartDate.Text = Session["UEL_Start"].ToString();
             } else {
-                Session["UEL_Start"] = "";
+                Session["UEL_Start"]= string.Empty;
             }
             if(Session["UEL_End"] != null) {
                 EndDate.Text = Session["UEL_End"].ToString();
             } else {
-                Session["UEL_End"] = "";
+                Session["UEL_End"]= string.Empty;
             }
             if(Session["UEL_Branch"] != null) {
                 try { BranchId.SelectedValue = Session["UEL_Branch"].ToString(); } catch(Exception) { }

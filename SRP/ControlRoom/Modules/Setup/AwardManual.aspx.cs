@@ -114,10 +114,10 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         protected void btnClear_Click(object sender, EventArgs e)
         {
             ProgID.SelectedValue = BranchID.SelectedValue = "0";
-            School.SelectedValue = LibSys.SelectedValue = "";
+            School.SelectedValue = LibSys.SelectedValue= string.Empty;
             BadgeID.SelectedValue = "0";
-            NumPoints.Text = "";
-            StartDate.Text = EndDate.Text = "";
+            NumPoints.Text= string.Empty;
+            StartDate.Text = EndDate.Text= string.Empty;
             DDPointAwardReason.SelectedValue = "-1";
             pnlResults.Visible = false;
         }

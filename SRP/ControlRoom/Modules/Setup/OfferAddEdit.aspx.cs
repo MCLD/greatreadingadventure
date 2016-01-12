@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"] = "";
+                lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
