@@ -53,6 +53,9 @@ namespace GRA.SRP.Controls
 
         public List<string> SplitWords(string input)
         {
+            // this splits on spaces and honors quote delineation
+            // e.g. 1: test1 test2 "lions and tigers", "oh my"
+            // splits to: test1, test2, lions and tigers, oh my
             var csvSplit = new Regex("(?:^| *)(\"(?:[^\"]+|\"\")*\"|[^ *]*)", RegexOptions.Compiled);
 
             var ret = new List<string>();

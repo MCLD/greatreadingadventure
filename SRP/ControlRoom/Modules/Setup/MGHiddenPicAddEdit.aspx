@@ -183,7 +183,7 @@
                 <table width="100%">
                     <tr>
                         <td width="75%">
-                            <textarea id="Textarea1" runat="server" class="gra-editor"><%# Eval("Acknowledgements") %></textarea>                      
+                            <textarea id="Acknowledgements" runat="server" class="gra-editor"><%# Eval("Acknowledgements") %></textarea>                      
                         </td>
 
                         <td>
@@ -211,17 +211,12 @@
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>
 
-
-
-
-
-
-
-
-
-
-
-
+        <asp:TemplateField HeaderText="Note: " SortExpression="Note" HeaderStyle-Wrap="False">
+		    <EditItemTemplate>
+                Ten terms are required for this to function properly - if you enter less than ten terms it will use letters instead of the terms you enter. Terms should be separated by a space and enclosed in quotes if the term itself contains a space. For example: airplane baseball "cellar door"
+            </EditItemTemplate>
+            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+        </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Easy Dictionary: " SortExpression="EasyDictionary" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
