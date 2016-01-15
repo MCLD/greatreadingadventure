@@ -41,9 +41,9 @@
     <br /><br />
 
     <asp:Button ID="btnPrevious" runat="server" Enabled="False" CssClass="btn c"
-        Text="Minigame Instructions BtnPrev" onclick="btnPrevious_Click" />
+        Text="adventures-instructions-button-previous" onclick="btnPrevious_Click" />
     &nbsp;&nbsp;
-    <asp:Button ID="btnNext" runat="server" Text="Minigame Instructions BtnNext" CssClass="btn c"
+    <asp:Button ID="btnNext" runat="server" Text="adventures-instructions-button-next" CssClass="btn c"
         onclick="btnNext_Click" />
 
 </center>

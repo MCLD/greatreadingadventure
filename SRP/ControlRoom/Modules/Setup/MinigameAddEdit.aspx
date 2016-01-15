@@ -27,7 +27,7 @@
         </asp:BoundField>
 
 
-        <asp:TemplateField HeaderText="Mini Game Type: " SortExpression="MiniGameType" HeaderStyle-Wrap="False">
+        <asp:TemplateField HeaderText="Adventure Type: " SortExpression="MiniGameType" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>
             </EditItemTemplate>
             <InsertItemTemplate>
@@ -44,7 +44,7 @@
                 </asp:DropDownList>
 
                 <asp:RequiredFieldValidator ID="rfvMiniGameType" runat="server" 
-                    ControlToValidate="MiniGameType" Display="Dynamic" ErrorMessage="Mini Game Type is required" 
+                    ControlToValidate="MiniGameType" Display="Dynamic" ErrorMessage="Adventure Type is required" 
                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
             </InsertItemTemplate>
             <ItemTemplate>

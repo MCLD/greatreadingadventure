@@ -596,7 +596,7 @@
     <Content Include="Offers\Default.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="PasswordRecovery.aspx" />
-    <Content Include="PlayMinigame.aspx" />
+    <Content Include="Adventures\BeginAdventure.aspx" />
     <Content Include="Recover.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="RegisterILS.aspx" />
@@ -2460,12 +2460,12 @@
     <Compile Include="PasswordRecovery.aspx.designer.cs">
       <DependentUpon>PasswordRecovery.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PlayMinigame.aspx.cs">
-      <DependentUpon>PlayMinigame.aspx</DependentUpon>
+    <Compile Include="Adventures\BeginAdventure.aspx.cs">
+      <DependentUpon>BeginAdventure.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PlayMinigame.aspx.designer.cs">
-      <DependentUpon>PlayMinigame.aspx</DependentUpon>
+    <Compile Include="Adventures\BeginAdventure.aspx.designer.cs">
+      <DependentUpon>BeginAdventure.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recover.aspx.cs">

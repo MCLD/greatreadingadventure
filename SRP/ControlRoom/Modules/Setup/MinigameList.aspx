@@ -60,7 +60,7 @@
                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
             </asp:TemplateField>	 			 
 
-			<asp:BoundField ReadOnly="True" HeaderText="Mini Game Type" 
+			<asp:BoundField ReadOnly="True" HeaderText="Adventure Type" 
                 DataField="MiniGameTypeName" SortExpression="MiniGameTypeName" Visible="True" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />

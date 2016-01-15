@@ -138,27 +138,28 @@ registration-form-information-sharing=Information sharing:
 registration-form-consent=Parental consent:
 registration-form-avatar=Avatar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Minigames text
+;;  Adventures text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Minigame Instructions OB=<h2>Read this online story!</h2>
-Minigame Instructions HP=<h2>Match the word on top with the same word on the square to uncover a hidden picture!</h2>
-Minigame Instructions MM=<h2>Choose the picture that matches the word!</h2>
-Minigame Instructions CB=<h2>Use the key to decode the message!</h2>
-Minigame Instructions WM=<h2>Click the squares to find the matching pairs!</h2>
-Minigame Instructions MG=<h2>Choose the word that matches the picture!</h2>
-Minigame Instructions CA=<h2>Read the story and decide which path you want to take!</h2>
-Minigame Instructions Difficulty=Choose the difficulty level you would like to play
-Minigame Instructions BtnEasy=Easy
-Minigame Instructions BtnMedium=Medium
-Minigame Instructions BtnHard=Hard
-Minigame Instructions BtnPrev=Previous Page
-Minigame Instructions BtnNext=Next Page
-Minigame Instructions BtnContinue=Continue
-Minigame BtnContinue=Continue
-Minigame label Enter Decoded=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive...
-Minigame btnScore=Verify Decoding
-Minigame Key=Message Key
-Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.
+adventures-instructions-onlinebook=Read this online story.
+adventures-instructions-hiddenpicture=Match the word on top with the same word on the square to uncover a hidden picture.
+adventures-instructions-mixandmatch=Choose the picture that matches the word.
+adventures-instructions-codebreaker=Use the key to decode the message.
+adventures-instructions-wordmatch=Click the squares to find the matching pairs.
+adventures-instructions-matchinggame=Choose the word that matches the picture.
+adventures-instructions-cyoa=Read the story and decide which path you want to take.
+adventures-instructions-difficulty=Choose the difficulty level you would like to play:
+adventures-instructions-button-easy=Easy
+adventures-instructions-button-medium=Medium
+adventures-instructions-button-hard=Hard
+adventures-instructions-button-previous=Previous Page
+adventures-instructions-button-next=Next Page
+adventures-instructions-button-continue=Next
+adventures-codebreaker-enter=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive...
+adventures-codebreaker-verify=Verify Decoding
+adventures-codebreaker-key=Message Key
+adventures-cyoa-end=You have reached the end of your adventure.
+adventures-success=<strong>Great job</strong>, you've finished an Adventure!
+adventures-success-badge=<strong>Congratulations</strong>, you finished an Adventure and were awarded a badge!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Offers text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -194,6 +195,9 @@ challenges-prompt=Challenge:
 challenges-close=Close
 challenges-save=Save
 challenges-return=Back
+challenges-progress-saved=Your progress has been saved!
+challenges-completed=<strong>Good work</strong>, you've completed a Challenge!
+challenges-completed-badge=<strong>Congratulations</strong>, you completed a Challenge and were awarded a badge!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

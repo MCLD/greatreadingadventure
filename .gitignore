@@ -137,7 +137,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# TODO: Comment the next line if you want to checkin your web deploy settings 
+# TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
@@ -223,6 +223,7 @@ _Pvt_Extensions
 SRP/Images/Avatars/*.png
 SRP/Images/Badges/*.png
 SRP/Images/Banners/*.png
+SRP/Images/Games/*.png
 SRP/Images/Games/Board/*.png
 SRP/Images/Games/Books/*.png
 SRP/Images/Games/ChooseAdv/*.png

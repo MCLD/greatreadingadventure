@@ -34,7 +34,7 @@ namespace GRA.SRP.Controls
             var gm = DAL.MGChooseAdv.FetchObject(iCAID);
 
             var step = DAL.MGChooseAdvSlides.FetchPlaySlide(iCAID, iStep, iDiff);
-            lblSlideText.Text = step.SlideText;
+            lblSlideText.Text = Server.HtmlDecode(step.SlideText);
             var audioFile = "/images/Games/ChooseAdv/" + step.CASID.ToString() + "_" + Difficulty.Text + ".mp3";
             lblSound.Text =
                 string.Format(

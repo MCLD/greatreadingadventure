@@ -210,7 +210,7 @@ namespace GRA.SRP.Core.Utilities {
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Adventures@2x.png")
             };
             pnl.Add(new RibbonLink { Name = "Board Games", Url = "/ControlRoom/Modules/Setup/BoardGameList.aspx" });
-            pnl.Add(new RibbonLink { Name = "Adventures/Mini Games", Url = "/ControlRoom/Modules/Setup/MiniGameList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Adventures", Url = "/ControlRoom/Modules/Setup/MiniGameList.aspx" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel {
