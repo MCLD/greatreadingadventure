@@ -27,13 +27,13 @@
          <h2 class="title-divider">
               <asp:Label ID="MGName" runat="server" Text=""></asp:Label>
          </h2>
-         <asp:Label ID="lbl_mg1" runat="server" Text="Minigame Instructions OB" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg2" runat="server" Text="Minigame Instructions MM" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg3" runat="server" Text="Minigame Instructions CB" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg4" runat="server" Text="Minigame Instructions WM" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg5" runat="server" Text="Minigame Instructions MG" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg6" runat="server" Text="Minigame Instructions HP" Visible="False"></asp:Label>
-         <asp:Label ID="lbl_mg7" runat="server" Text="Minigame Instructions CA" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg1" runat="server" Text="adventures-instructions-onlinebook" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg2" runat="server" Text="adventures-instructions-mixandmatch" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg3" runat="server" Text="adventures-instructions-codebreaker" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg4" runat="server" Text="adventures-instructions-wordmatch" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg5" runat="server" Text="adventures-instructions-matchinggame" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg6" runat="server" Text="adventures-instructions-hiddenpicture" Visible="False"></asp:Label>
+         <asp:Label ID="lbl_mg7" runat="server" Text="adventures-instructions-cyoa" Visible="False"></asp:Label>
     </div>
 	<div class="span1">
 	</div>   
@@ -45,16 +45,16 @@
     <div class="span10">
 
         <center>
-        <asp:Label ID="lblDiff" runat="server" Text="Minigame Instructions Difficulty" Visible="true"></asp:Label>
+        <asp:Label ID="lblDiff" runat="server" Text="adventures-instructions-difficulty" Visible="true"></asp:Label>
         <br /><br />
 
-        <asp:Button ID="BtnEasy" runat="server" Text="Minigame Instructions BtnEasy" 
+        <asp:Button ID="BtnEasy" runat="server" Text="adventures-instructions-button-easy" 
                 CssClass="btn b" Width="150px" onclick="BtnEasy_Click"/>
         &nbsp;
-        <asp:Button ID="BtnMedium" runat="server" Text="Minigame Instructions BtnMedium" 
+        <asp:Button ID="BtnMedium" runat="server" Text="adventures-instructions-button-medium" 
                 CssClass="btn b" Width="150px" onclick="BtnMedium_Click"/>
         &nbsp;
-        <asp:Button ID="BtnHard" runat="server" Text="Minigame Instructions BtnHard" 
+        <asp:Button ID="BtnHard" runat="server" Text="adventures-instructions-button-hard" 
                 CssClass="btn b" Width="150px" onclick="BtnHard_Click"/>
         </center>
 	</div> 

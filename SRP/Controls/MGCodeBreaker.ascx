@@ -26,20 +26,20 @@
             <asp:Label ID="lblEncoded" runat="server" ></asp:Label>
 
             <br/><br />
-            <asp:Label ID="lblAnswer" runat="server" Text="Minigame label Enter Decoded" Visible="True"></asp:Label>
+            <asp:Label ID="lblAnswer" runat="server" Text="adventures-codebreaker-enter" Visible="True"></asp:Label>
             <br/><br />
             <asp:Label ID="lblMessage2" runat="server" Text="" Visible="True"></asp:Label>
             <asp:TextBox ID="txtAnswer" runat="server" Text="" Visible="True" Width="100%"></asp:TextBox>
             <br /><br />
-            <asp:Button ID="btnScore" runat="server" Text="Minigame btnScore" 
+            <asp:Button ID="btnScore" runat="server" Text="adventures-codebreaker-verify" 
                 onclick="btnScore_Click" CssClass="btn c"/>
 
             <asp:Button ID="btnContinue" runat="server" 
-            Text="Minigame BtnContinue" CssClass="btn c" onclick="btnContinue_Click" Visible="false" />
+            Text="adventures-instructions-button-continue" CssClass="btn c" onclick="btnContinue_Click" Visible="false" />
 
         </td>
         <td style="padding-left: 15px;"  valign="top" align="center" >
-            <H3><asp:Label ID="lblMsgKey" runat="server" Text-="Minigame Key"></asp:Label></H3>
+            <H3><asp:Label ID="lblMsgKey" runat="server" Text-="adventures-codebreaker-key"></asp:Label></H3>
             <hr />
             <asp:Label ID="lblKey" runat="server" ></asp:Label>
         </td>

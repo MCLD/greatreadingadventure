@@ -70,7 +70,7 @@
     <asp:Panel ID="pnlContinue" runat="server" Visible="False">
         <br />
             <asp:Button ID="btnContinue" runat="server" 
-            Text="Minigame Instructions BtnContinue" CssClass="btn c" onclick="btnContinue_Click"
+            Text="adventures-instructions-button-continue" CssClass="btn c" onclick="btnContinue_Click"
         />
     </asp:Panel>
 

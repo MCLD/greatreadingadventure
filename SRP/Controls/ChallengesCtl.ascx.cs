@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using GRA.SRP.DAL;
 using GRA.Tools;
 using GRA.SRP.Utilities.CoreClasses;
+using SRPApp.Classes;
 
 namespace GRA.SRP.Controls {
     public partial class ChallengesCtl : System.Web.UI.UserControl {
@@ -198,13 +199,15 @@ namespace GRA.SRP.Controls {
                 }
             }
 
-            new SessionTools(Session).AlertPatron("Your progress has been saved!",
+            string success = StringResources.getString("challenges-progress-saved");
+            new SessionTools(Session).AlertPatron(success,
                 glyphicon: "check");
 
             // read the entire book list!  Award points and badges 
             if((neeedCount == 0 && onlyCheckedBoxes) || (neeedCount <= readCount)) {
-                new SessionTools(Session).AlertPatron("Good work, you've completed a Challenge!",
-                    glyphicon: "star");
+                success = StringResources.getString("challenges-completed");
+
+                new SessionTools(Session).AlertPatron(success, glyphicon: "star");
 
                 var bl = BookList.FetchObject(selBLI);
 
@@ -214,7 +217,8 @@ namespace GRA.SRP.Controls {
                 }
 
                 if(bl.AwardBadgeID != 0 || bl.AwardPoints != 0) {
-                    new SessionTools(Session).AlertPatron("Congratulations, you completed a Challenge and were awarded a badge!",
+                    success = StringResources.getString("challenges-completed-badge");
+                    new SessionTools(Session).AlertPatron(success,
                         glyphicon: "certificate");
 
                     var pa = new AwardPoints(((Patron)Session["Patron"]).PID);

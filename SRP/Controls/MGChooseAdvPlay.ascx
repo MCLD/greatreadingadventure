@@ -50,11 +50,11 @@
 
 
     <asp:Panel ID="pnlContinue" runat="server" Visible="False">
-            <h3><asp:Label ID="lblEnd" runat="server" Text="Minigame Instructions ReachedtheEnd" Visible="True"></asp:Label></h3>
+            <h3><asp:Label ID="lblEnd" runat="server" Text="adventures-cyoa-end" Visible="True"></asp:Label></h3>
 
         <br /><br /><br /><br />
             <asp:Button ID="btnContinue" runat="server" 
-            Text="Minigame Instructions BtnContinue" CssClass="btn c" onclick="btnContinue_Click"
+            Text="adventures-instructions-button-continue" CssClass="btn c" onclick="btnContinue_Click"
         />
     </asp:Panel>
 
