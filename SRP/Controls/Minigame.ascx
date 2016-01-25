@@ -21,7 +21,7 @@
                 <h2>
                     <asp:Label ID="MGName" runat="server" Text=""></asp:Label>
                 </h2>
-                <p class="lead">
+                <p>
                     <asp:Label ID="lbl_mg1" runat="server" Text="adventures-instructions-onlinebook" Visible="False"></asp:Label>
                     <asp:Label ID="lbl_mg2" runat="server" Text="adventures-instructions-mixandmatch" Visible="False"></asp:Label>
                     <asp:Label ID="lbl_mg3" runat="server" Text="adventures-instructions-codebreaker" Visible="False"></asp:Label>
@@ -50,19 +50,21 @@
         </asp:Panel>
 
         <asp:Panel ID="pnlGame" runat="server" Visible="false">
+            <uc1:MGBook ID="MGBook1" runat="server" Visible="false" />
+            <uc2:MGMixMatchPlay ID="MGMixMatchPlay1" runat="server" Visible="false" />
+            <uc3:MGCodeBreaker ID="MGCodeBreaker1" runat="server" Visible="false" />
+            <uc4:MGWordMatch ID="MGWordMatch1" runat="server" Visible="false" />
+            <uc5:MGChooseAdvPlay ID="MGChooseAdvPlay1" runat="server" Visible="false" />
+            <uc6:MGHiddenPicPlay ID="MGHiddenPicPlay1" runat="server" Visible="false" />
+            <uc7:MGMatchingGamePlay ID="MGMatchingGamePlay1" runat="server" Visible="false" />
             <div class="row">
-                <div class="col-xs-12">
-                    <uc1:MGBook ID="MGBook1" runat="server" Visible="false" />
-                    <uc2:MGMixMatchPlay ID="MGMixMatchPlay1" runat="server" Visible="false" />
-                    <uc3:MGCodeBreaker ID="MGCodeBreaker1" runat="server" Visible="false" />
-                    <uc4:MGWordMatch ID="MGWordMatch1" runat="server" Visible="false" />
-                    <uc5:MGChooseAdvPlay ID="MGChooseAdvPlay1" runat="server" Visible="false" />
-                    <uc6:MGHiddenPicPlay ID="MGHiddenPicPlay1" runat="server" Visible="false" />
-                    <uc7:MGMatchingGamePlay ID="MGMatchingGamePlay1" runat="server" Visible="false" />
-
-                    <asp:Button ID="Button1" runat="server" Text="Done"
-                        CssClass="" Width="200px" OnClick="Button1_Click" Visible="false" />
-
+                <div class="col-sm-12">
+                    <asp:Button ID="CompleteButton"
+                                runat="server"
+                                Text="Done"
+                                CssClass="btn btn-success btn-lg"
+                                OnClick="CompleteButton_Click"
+                                Visible="false" />
                 </div>
             </div>
         </asp:Panel>

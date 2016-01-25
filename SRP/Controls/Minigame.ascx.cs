@@ -14,7 +14,7 @@ namespace GRA.SRP.Controls {
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
                 if(string.IsNullOrEmpty(Request["MGID"]) && (Session["MGID"] == null || Session["MGID"].ToString() == "")) {
-                    Response.Redirect("~/Account/");
+                    Response.Redirect("~");
                 }
                 if(!string.IsNullOrEmpty(Request["MGID"])) {
                     MGID.Text = Request["MGID"];
@@ -63,7 +63,7 @@ namespace GRA.SRP.Controls {
         protected override void OnInit(EventArgs e) {
             // Turn Off AJAX so we can use the JQuery for game boad manipulation on Hidden Picture AND Matching Game
             if(string.IsNullOrEmpty(Request["MGID"]) && (Session["MGID"] == null || Session["MGID"].ToString() == "")) {
-                Response.Redirect("~/Account/");
+                Response.Redirect("~");
             }
             if(!string.IsNullOrEmpty(Request["MGID"])) {
                 MGID.Text = Request["MGID"];
@@ -282,7 +282,7 @@ namespace GRA.SRP.Controls {
             }
         }
 
-        protected void Button1_Click(object sender, EventArgs e) {
+        protected void CompleteButton_Click(object sender, EventArgs e) {
             CompleteGamePlay();
         }
 
@@ -298,20 +298,25 @@ namespace GRA.SRP.Controls {
                 earnedBadge = ProcessTheWin();
             }
 
+            string message = StringResources.getString("adventures-success");
+            string glyphicon = "flag";
             if(earnedBadge) {
-                string success = StringResources.getString("adventures-success");
-                new SessionTools(Session).AlertPatron(success,
-                                                      glyphicon: "certificate");
+                message = StringResources.getString("adventures-success-badge");
+                glyphicon = "certificate";
 
-            } else {
-                string success = StringResources.getString("adventures-success-badge");
-                new SessionTools(Session).AlertPatron(success,
-                                                      glyphicon: "flag");
             }
 
-            new SessionTools(Session).AlertPatron(StringResources.getString("adventures-success"),
-                                                  PatronMessageLevels.Success,
-                                                  "flag");
+            if(message.Contains("{0}")) {
+                new SessionTools(Session).AlertPatron(string.Format(message, MGName.Text),
+                    PatronMessageLevels.Success,
+                    glyphicon);
+            } else {
+                new SessionTools(Session).AlertPatron(message,
+                    PatronMessageLevels.Success,
+                    glyphicon);
+            }
+
+
 
             Response.Redirect("~/Adventures/");
         }

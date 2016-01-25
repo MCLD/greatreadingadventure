@@ -5,7 +5,7 @@ system-name=Great Reading Adventure
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
-frontpage-description=Adventures, secret codes, challenges and badges await! Take your literacy program online with free, open source software developed by libraries, for libraries.
+frontpage-description=Adventures, secret codes, challenges, and badges await! Take your literacy program online with free, open source software developed by libraries, for libraries.
 tenant-selection=Choose your library:
 navigation-button-register=Register
 navigation-button-login=Login
@@ -140,26 +140,27 @@ registration-form-avatar=Avatar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Adventures text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventures-instructions-onlinebook=Read this online story.
-adventures-instructions-hiddenpicture=Match the word on top with the same word on the square to uncover a hidden picture.
-adventures-instructions-mixandmatch=Choose the picture that matches the word.
-adventures-instructions-codebreaker=Use the key to decode the message.
-adventures-instructions-wordmatch=Click the squares to find the matching pairs.
-adventures-instructions-matchinggame=Choose the word that matches the picture.
-adventures-instructions-cyoa=Read the story and decide which path you want to take.
-adventures-instructions-difficulty=Choose the difficulty level you would like to play:
+adventures-instructions-onlinebook=Read an exciting story.
+adventures-instructions-mixandmatch=Choose the correct picture.
+adventures-instructions-codebreaker=Decode the secret message using the code key.
+adventures-instructions-cyoa=Read a story and decide which path you want to take.
+adventures-instructions-difficulty=Choose your difficulty:
 adventures-instructions-button-easy=Easy
 adventures-instructions-button-medium=Medium
 adventures-instructions-button-hard=Hard
 adventures-instructions-button-previous=Previous Page
 adventures-instructions-button-next=Next Page
 adventures-instructions-button-continue=Next
-adventures-codebreaker-enter=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive...
-adventures-codebreaker-verify=Verify Decoding
-adventures-codebreaker-key=Message Key
-adventures-cyoa-end=You have reached the end of your adventure.
-adventures-success=<strong>Great job</strong>, you've finished an Adventure!
-adventures-success-badge=<strong>Congratulations</strong>, you finished an Adventure and were awarded a badge!
+adventures-codebreaker-verify=Decode message
+adventures-codebreaker-key=Code Key
+adventures-codebreaker-message=Secret message
+adventures-codebreaker-failure=Are you sure? That doesn't look right. <strong>Try decoding the message again!</strong>
+adventures-mixmatch-success=<strong>Good job</strong>, that is right!
+adventures-mixmatch-failure=That is not the right answer. <strong>Click the button to try again.</strong>
+adventures-mixmatch-button-success=Next
+adventures-mixmatch-button-failure=Try again!
+adventures-success=<strong>Great job</strong>, you've finished the <strong><em>{0}</em></strong> Adventure!
+adventures-success-badge=<strong>Congratulations</strong>, you finished the <strong><em>{0}</em></strong> Adventure and were awarded a badge!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Offers text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

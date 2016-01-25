@@ -28,6 +28,7 @@
     [EndDate]          DATETIME      NULL,
     [EndTime]          VARCHAR (50)  NULL,
     [ShortDescription] TEXT          NULL,
+	[ExternalLinkToEvent]      NVARCHAR(255) NULL,
     [HiddenFromPublic] BIT NULL, 
     CONSTRAINT [PK_Event] PRIMARY KEY CLUSTERED ([EID] ASC)
 );

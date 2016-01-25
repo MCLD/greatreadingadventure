@@ -5,13 +5,10 @@ The Great Reading Adventure software provides for a rich reading program experie
 ## Adventures
 Adventures were formerly called "mini-games" and represent activities that patrons can participate in online by using the Great Reading Adventure software.
 
-- **"Choose Your Adventure"** shows the patron a text story and allows them to decide how the story progresses by selecting one of two images to progress.
+- **"Choose Your Adventure"** shows the patron a text story and allows them to decide how the story progresses by selecting one of two images.
 - **"Code Breaker"** provides a code key mapping letters to images and then asks the patron to decode a sequence of images into a word.
-- **"Hidden Picture"** challenges the patron to match a provided word with a word covering part of a picture - once they get nine matches the picture is revealed.
-- **"Matching Game"** is a memory game where the patron reveals hidden images and tries to match them.
-- **"Mix-And-Match"** allows the patron to select one of three images which best matches the provided word.
+- **"Mix-And-Match"** allows the patron to select one of three images which best matches the provided word or phrase.
 - **"Online Book"** shows the patron a story constructed of text and images.
-- **"Word Match"** shows an image and encourages the patron to select from a list of words describing the image.
 
 ## Avatars
 Each patron selects an Avatar as their digital representation in the program. The Great Reading Adventure comes with default Avatar options but you may customize them to fit the theme of your program.

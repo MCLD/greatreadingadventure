@@ -86,8 +86,8 @@ namespace GRA.SRP.ControlRoom {
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
                 body.Append("address.</p>");
-                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> in the ");
-                body.Append("next hour to create a new password for your account.</p>");
+                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> ");
+                body.Append("to create a new password for your account.</p>");
                 body.Append("<p>If you did not initiate this request, take no action and your ");
                 body.Append("password will not be changed.</p>");
                 body.Append("<p>If you have any comments or questions, please contact ");
