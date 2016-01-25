@@ -13,12 +13,10 @@ using System.Collections;
 using SRP_DAL;
 using GRA.SRP.Core.Utilities;
 
-namespace GRA.SRP.DAL
-{
+namespace GRA.SRP.DAL {
 
-    [Serializable]    
-    public class MGCodeBreaker : EntityBase, IMinigame
-    {
+    [Serializable]
+    public class MGCodeBreaker : EntityBase, IMinigame {
 
         #region Private Variables
 
@@ -100,21 +98,18 @@ namespace GRA.SRP.DAL
 
         #region Constructors
 
-        public MGCodeBreaker()
-        {
+        public MGCodeBreaker() {
         }
 
         #endregion
 
         #region stored procedure wrappers
 
-        public static DataSet GetAll()
-        {
+        public static DataSet GetAll() {
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_GetAll");
         }
 
-        public static DataSet FetchWithParent(int MGID)
-        {
+        public static DataSet FetchWithParent(int MGID) {
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
@@ -123,8 +118,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_GetByIDWithParent", arrParams);
         }
 
-        public static MGCodeBreaker FetchObjectByParent(int MGID)
-        {
+        public static MGCodeBreaker FetchObjectByParent(int MGID) {
 
             // declare reader
 
@@ -136,8 +130,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_GetByMGID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -149,16 +142,20 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["CBID"].ToString(), out _int)) result.CBID = _int;
-                if (int.TryParse(dr["MGID"].ToString(), out _int)) result.MGID = _int;
+                if(int.TryParse(dr["CBID"].ToString(), out _int))
+                    result.CBID = _int;
+                if(int.TryParse(dr["MGID"].ToString(), out _int))
+                    result.MGID = _int;
                 result.EasyString = dr["EasyString"].ToString();
                 result.EnableMediumDifficulty = bool.Parse(dr["EnableMediumDifficulty"].ToString());
                 result.EnableHardDifficulty = bool.Parse(dr["EnableHardDifficulty"].ToString());
                 result.MediumString = dr["MediumString"].ToString();
                 result.HardString = dr["HardString"].ToString();
-                if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) result.LastModDate = _datetime;
+                if(DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
+                    result.LastModDate = _datetime;
                 result.LastModUser = dr["LastModUser"].ToString();
-                if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) result.AddedDate = _datetime;
+                if(DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime))
+                    result.AddedDate = _datetime;
                 result.AddedUser = dr["AddedUser"].ToString();
 
                 dr.Close();
@@ -174,8 +171,7 @@ namespace GRA.SRP.DAL
 
 
 
-        public static MGCodeBreaker FetchObject(int CBID)
-        {
+        public static MGCodeBreaker FetchObject(int CBID) {
 
             // declare reader
 
@@ -187,8 +183,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -200,16 +195,20 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["CBID"].ToString(), out _int)) result.CBID = _int;
-                if (int.TryParse(dr["MGID"].ToString(), out _int)) result.MGID = _int;
+                if(int.TryParse(dr["CBID"].ToString(), out _int))
+                    result.CBID = _int;
+                if(int.TryParse(dr["MGID"].ToString(), out _int))
+                    result.MGID = _int;
                 result.EasyString = dr["EasyString"].ToString();
                 result.EnableMediumDifficulty = bool.Parse(dr["EnableMediumDifficulty"].ToString());
                 result.EnableHardDifficulty = bool.Parse(dr["EnableHardDifficulty"].ToString());
                 result.MediumString = dr["MediumString"].ToString();
                 result.HardString = dr["HardString"].ToString();
-                if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) result.LastModDate = _datetime;
+                if(DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
+                    result.LastModDate = _datetime;
                 result.LastModUser = dr["LastModUser"].ToString();
-                if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) result.AddedDate = _datetime;
+                if(DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime))
+                    result.AddedDate = _datetime;
                 result.AddedUser = dr["AddedUser"].ToString();
 
                 dr.Close();
@@ -224,8 +223,7 @@ namespace GRA.SRP.DAL
 
         }
 
-        public bool Fetch(int CBID)
-        {
+        public bool Fetch(int CBID) {
 
             // declare reader
 
@@ -237,8 +235,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -250,16 +247,20 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["CBID"].ToString(), out _int)) this.CBID = _int;
-                if (int.TryParse(dr["MGID"].ToString(), out _int)) this.MGID = _int;
+                if(int.TryParse(dr["CBID"].ToString(), out _int))
+                    this.CBID = _int;
+                if(int.TryParse(dr["MGID"].ToString(), out _int))
+                    this.MGID = _int;
                 this.EasyString = dr["EasyString"].ToString();
                 this.EnableMediumDifficulty = bool.Parse(dr["EnableMediumDifficulty"].ToString());
                 this.EnableHardDifficulty = bool.Parse(dr["EnableHardDifficulty"].ToString());
                 this.MediumString = dr["MediumString"].ToString();
                 this.HardString = dr["HardString"].ToString();
-                if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) this.LastModDate = _datetime;
+                if(DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
+                    this.LastModDate = _datetime;
                 this.LastModUser = dr["LastModUser"].ToString();
-                if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) this.AddedDate = _datetime;
+                if(DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime))
+                    this.AddedDate = _datetime;
                 this.AddedUser = dr["AddedUser"].ToString();
 
                 dr.Close();
@@ -274,15 +275,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Insert()
-        {
+        public int Insert() {
 
             return Insert(this);
 
         }
 
-        public static int Insert(MGCodeBreaker o)
-        {
+        public static int Insert(MGCodeBreaker o) {
 
             SqlParameter[] arrParams = new SqlParameter[11];
 
@@ -307,15 +306,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Update()
-        {
+        public int Update() {
 
             return Update(this);
 
         }
 
-        public static int Update(MGCodeBreaker o)
-        {
+        public static int Update(MGCodeBreaker o) {
 
             int iReturn = -1; //assume the worst
 
@@ -333,15 +330,11 @@ namespace GRA.SRP.DAL
             arrParams[9] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
             arrParams[10] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
 
-            try
-            {
+            try {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_Update", arrParams);
 
-            }
-
-            catch (SqlException exx)
-            {
+            } catch(SqlException exx) {
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -351,15 +344,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Delete()
-        {
+        public int Delete() {
 
             return Delete(this);
 
         }
 
-        public static int Delete(MGCodeBreaker o)
-        {
+        public static int Delete(MGCodeBreaker o) {
 
             int iReturn = -1; //assume the worst
 
@@ -367,15 +358,11 @@ namespace GRA.SRP.DAL
 
             arrParams[0] = new SqlParameter("@CBID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CBID, o.CBID.GetTypeCode()));
 
-            try
-            {
+            try {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_MGCodeBreaker_Delete", arrParams);
 
-            }
-
-            catch (SqlException exx)
-            {
+            } catch(SqlException exx) {
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -387,141 +374,73 @@ namespace GRA.SRP.DAL
 
         #endregion
 
-        public string GetEncoded(string s)
-        {
-            string codedString = "";
+        public IEnumerable<string> GetEncoded(string s, int difficulty) {
+            var encodedMessage = new List<string>();
+            string prefix = string.Empty;
+            if(difficulty == 2) {
+                prefix = "m_";
+            }
+            if(difficulty == 3) {
+                prefix = "h_";
+            }
 
-            foreach (char c in s.ToCharArray())
-            {
-                if (c != ' ')
-                {
-                    codedString = codedString + "<img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
-                                  ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1' width='24px'/> ";
-                }
-                else
-                {
-                    codedString = codedString + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            foreach(char c in s.ToCharArray()) {
+                if(c != ' ') {
+                    encodedMessage.Add(string.Format("{0}{1}_{2}.png",
+                                                     prefix,
+                                                     CBID,
+                                                     (int)c));
+                } else {
+                    encodedMessage.Add(null);
                 }
             }
 
-            return codedString;
+            return encodedMessage;
         }
 
-        public string GetKey(string s)
-        {
-            string keyString = "";
-            Hashtable h = new Hashtable();
-            foreach (char c in s.ToCharArray())
-            {
-                if (c != ' ' && !h.ContainsKey(c))
-                {
-                    keyString = keyString + c + " = <img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
-                                  ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1' width='24px '/><br/>";
-                    h.Add(c,c);
-                }
+        public SortedDictionary<char, string> GetKey(string s, int difficulty) {
+            var key = new SortedDictionary<char, string>();
+            string prefix = string.Empty;
+            if(difficulty == 2) {
+                prefix = "m_";
+            }
+            if(difficulty == 3) {
+                prefix = "h_";
             }
 
-            return keyString;
-        }
-
-        public string GetEncoded(string s, int difficulty)
-        {
-            string codedString = "";
-            string prefix = "";
-            if (difficulty == 2) prefix = "m_";
-            if (difficulty == 3) prefix = "h_";
-
-            foreach (char c in s.ToCharArray())
-            {
-                if (c != ' ')
-                {
-                    codedString =
-                        string.Format(
-                            "{4}<img src='/Images/Games/CodeBreaker/{0}{1}_{2}.png?{3}' border='1'  width='24px'/> ",
-                            prefix, CBID, ((int)c).ToString(), DateTime.Now, codedString);
-
-
-                    //codedString = codedString + "<img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
-                    //              ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1' width='24px'/> ";
-                }
-                else
-                {
-                    codedString = codedString + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                }
-            }
-
-            return codedString;
-        }
-
-        public string GetKey(string s, int difficulty)
-        {
-            string keyString = "";
-            string prefix = "";
-            if (difficulty == 2) prefix = "m_";
-            if (difficulty == 3) prefix = "h_";
-
-
-            var h = new Hashtable();
             char[] chars = s.ToCharArray();
-            Array.Sort<char>(chars);
 
-            foreach (char c in chars)
-            {
-                if (c != ' ' && !h.ContainsKey(c))
-                {
-                    keyString =
-                        string.Format(
-                            "{4}<tr><td nowrap=nowrap>{5} = </td><td><img src='/Images/Games/CodeBreaker/{0}{1}_{2}.png?{3}' border='1'  width='24px'/></td></tr>",
-                            prefix, CBID, ((int)c).ToString(), DateTime.Now, keyString, c);
-
-                    //keyString = keyString + c + " = <img src='/Images/Games/CodeBreaker/" + CBID.ToString() + "_" +
-                    //              ((int)c).ToString() + ".png?" + DateTime.Now + "' border='1' width='24px '/><br/>";
-                    h.Add(c, c);
+            foreach(char c in chars) {
+                if(c != ' ' && !key.ContainsKey(c)) {
+                    key.Add(c, string.Format("{0}{1}_{2}.png", prefix, CBID, (int)c));
                 }
             }
 
-            return "<table>" + keyString + "</table>";
+            return key;
         }
 
-        public static List<KeyItem> GetKeyCharacters(int CBID)
-        {
-            List<KeyItem> lst = new List<KeyItem>();
-
-            int currItem = 0;
-            for (var i = 65; i <= 90; i++)
-            {
-                var item = new KeyItem { Character_Num = i, Character = Convert.ToChar(i).ToString(), CBID = CBID };
-                lst.Add(item);
-                currItem = currItem + 1;
-            }
-            for (var i = 97; i <= 122; i++)
-            {
-                var item = new KeyItem { Character_Num = i, Character = Convert.ToChar(i).ToString(), CBID = CBID };
-                //lst[currItem] = item;
-                lst.Add(item);
-                currItem = currItem + 1;
-            }
-
+        public static IEnumerable<KeyItem> GetKeyCharacters(int CBID) {
             //33 46 44 63 (, . ! ? )
-            var j = 33;
-            var newItem = new KeyItem { Character_Num = j, Character = Convert.ToChar(j).ToString(), CBID = CBID };
-            //lst[currItem] = newItem;
-            lst.Add(newItem);
+            var punctuationAscii = new int[] { 33, 46, 44, 63 };
+            var lst = new List<KeyItem>();
 
-            j = 46;
-            newItem = new KeyItem { Character_Num = j, Character = Convert.ToChar(j).ToString(), CBID = CBID };
-            //lst[currItem] = newItem;
-            lst.Add(newItem);
+            // 65 = A, 90 = Z
+            // lowercase (79 - a to 122 - z) removed to reduce complexity
+            for(var asciiValue = 65; asciiValue <= 90; asciiValue++) {
+                lst.Add(new KeyItem {
+                    Character_Num = asciiValue,
+                    Character = Convert.ToChar(asciiValue).ToString(),
+                    CBID = CBID
+                });
+            }
 
-            j = 44;
-            newItem = new KeyItem { Character_Num = j, Character = Convert.ToChar(j).ToString(), CBID = CBID };
-            //lst[currItem] = newItem;
-            lst.Add(newItem);
-
-            j = 63;
-            newItem = new KeyItem { Character_Num = j, Character = Convert.ToChar(j).ToString(), CBID = CBID };
-            //lst[currItem] = newItem;
-            lst.Add(newItem);
+            foreach(var asciiValue in punctuationAscii) {
+                lst.Add(new KeyItem {
+                    Character_Num = asciiValue,
+                    Character = Convert.ToChar(asciiValue).ToString(),
+                    CBID = CBID
+                });
+            }
 
             return lst;
         }
@@ -529,8 +448,7 @@ namespace GRA.SRP.DAL
     }//end class
 
     [Serializable]
-    public class KeyItem
-    {
+    public class KeyItem {
         public int CBID { get; set; }
         public int Character_Num { get; set; }
         public string Character { get; set; }

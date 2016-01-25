@@ -47,7 +47,6 @@
             border: solid 1px black;
             padding: 5px 5px 5px 5px;
             text-align: center;
-            background-image: url(/ControlRoom/Images/Waiting.jpg);
         }
 
         .gra-editor-container-small > .trumbowyg-box {

@@ -261,6 +261,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
 }
+
 #status-value {
     font-size: 3em;
 }
@@ -273,10 +274,10 @@ body {
     margin-right: 0.5em;
 }
 
-.feed-table tr td.feed-avatar {
-    text-align: center;
-    vertical-align: middle;
-}
+    .feed-table tr td.feed-avatar {
+        text-align: center;
+        vertical-align: middle;
+    }
 
 .points-display {
     font-size: 2em;
@@ -289,4 +290,25 @@ small.dd-desc {
 .cr-administrator {
     color: red;
     font-weight: bold;
+}
+
+.codebreaker-glyph {
+    width: 36px;
+    height: 36px;
+}
+
+.codebreaker-space {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+}
+
+.codebreaker-key-container {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.codebreaker-key-glyph {
+    width: 36px;
+    height: 36px;
 }

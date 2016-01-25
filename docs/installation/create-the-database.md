@@ -25,23 +25,30 @@ There are two options when creating the database: you can execute a script or ma
 
 #### Create the logins and users
 
-9. Right-click the **Security** folder and select **New** **->** **Login...**.
-10. Enter the **Login name** for the database owner user, for example: `srp_owner`.
-11. Select `SQL Server authentication`.
-12. Enter a secure password for this user in the **Password** and **Confirm password** fields. Make a note of this password.
-13. You can uncheck `Enforce password policy` so that the password for this account will not expire.
-14. Select `User mapping` from the **Select a page** list on the left.
-15. Locate the name of the database (this tutorial used `SRP` in step 4 above) in the **Users mapped to this login** list on the left.
-16. Check the appropriate box in the `Map` column to map this login to a user in the database.
-17. In the **Database role membership for:** list, select `db_owner`.
-18. Select **OK** to create the login and user.
-19. Right-click the **Security** folder and select **New** **->** **Login...**.
-10. Enter the **Login name** for the database user, for example: `srp_user`.
-11. Select `SQL Server authentication`.
-12. Enter a secure password for this user in the **Password** and **Confirm password** fields. Use a different password than you used in step 12 above but make a note of this password as well.
-13. You can uncheck `Enforce password policy` so that the password for this account will not expire.
-14. Select `User mapping` from the **Select a page** list on the left.
-15. Locate the name of the database (this tutorial used `SRP` in step 4 above) in the **Users mapped to this login** list on the left.
-16. Check the appropriate box in the `Map` column to map this login to a user in the database.
-17. In the **Database role membership for:** list, select `db_datareader` and `db_datawriter`.
-18. Select **OK** to create the login and user.
+1. Right-click the **Security** folder and select **New** **->** **Login...**.
+2. Enter the **Login name** for the database owner user, for example: `srp_owner`.
+3. Select `SQL Server authentication`.
+4. Enter a secure password for this user in the **Password** and **Confirm password** fields. Make a note of this password.
+5. You can uncheck `Enforce password policy` so that the password for this account will not expire.
+6. Select `User mapping` from the **Select a page** list on the left.
+7. Locate the name of the database (this tutorial used `SRP` in *Create the database* step 4 above) in the **Users mapped to this login** list on the left.
+8. Check the appropriate box in the `Map` column to map this login to a user in the database.
+9. In the **Database role membership for:** list, select `db_owner`.
+10. Select **OK** to create the login and user.
+11. Right-click the **Security** folder and select **New** **->** **Login...**.
+12. Enter the **Login name** for the database user, for example: `srp_user`.
+13. Select `SQL Server authentication`.
+14. Enter a secure password for this user in the **Password** and **Confirm password** fields. Use a different password than you used in *Create the logins and users* step 4 above but make a note of this password as well.
+15. You can uncheck `Enforce password policy` so that the password for this account will not expire.
+16. Select `User mapping` from the **Select a page** list on the left.
+17. Locate the name of the database (this tutorial used `SRP` in *Create the database* step 4 above) in the **Users mapped to this login** list on the left.
+18. Check the appropriate box in the `Map` column to map this login to a user in the database.
+19. In the **Database role membership for:** list, select `db_datareader` and `db_datawriter`.
+20. Select **OK** to create the login and user.
+
+#### Grant execute permissions to the database user
+
+1. Right-click on the database you created (this tutorial used `SRP` in *Create the database* step 4 above).
+2. Select **New Query**.
+3. In the query window, enter `GRANT EXECUTE ON SCHEMA::dbo TO [srp_user] WITH GRANT OPTION;` (if you used a different database user name in step 10 above you'll need to put that user in the braces `[]` of the query).
+4. Click the **Execute** button (or press `F5`).

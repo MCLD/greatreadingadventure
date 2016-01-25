@@ -177,7 +177,7 @@ namespace GRA.SRP {
                     StringBuilder message = new StringBuilder("<strong>");
                     message.AppendFormat(SRPResources.ApplicationError1, "<ul>");
                     foreach(BusinessRulesValidationMessage m in patron.ErrorCodes) {
-                        this.Log().Error("Business rule error creating patron: {0}", m.ErrorMessage);
+                        this.Log().Warn("Business rule error creating patron: {0}", m.ErrorMessage);
                         message.AppendFormat("<li>{0}</li>", m.ErrorMessage);
                     }
                     message.Append("</ul></strong>");

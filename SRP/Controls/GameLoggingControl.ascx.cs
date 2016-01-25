@@ -192,7 +192,7 @@ namespace GRA.SRP.Controls
             var MGID = e.CommandArgument.ToString();
             Session["MGID"] = MGID;
             Session["GoToUrl"] = "~/Adventures/";
-            Response.Redirect("~/Adventures/BeginAdventure.aspx");
+            Response.Redirect("~/Adventures/Adventure.aspx");
         }
 
         protected void rptrx1_ItemDataBound(object sender, RepeaterItemEventArgs e)

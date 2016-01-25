@@ -671,10 +671,10 @@ namespace GRA.SRP.DAL {
             }
         }
 
-        public static Patron GetUserByToken(string token, int hoursWindow = 2) {
+        public static Patron GetUserByToken(string token, int hoursWindow = 24) {
             StringBuilder sql = new StringBuilder();
             sql.Append("SELECT [PID] FROM [PatronRecovery] WHERE [Token] = @token ");
-            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) < @hourswindow");
+            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) <= @hourswindow");
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("token", token));
@@ -712,8 +712,8 @@ namespace GRA.SRP.DAL {
 
         public static Patron UpdatePasswordByToken(string token,
                                                    string newPassword,
-                                                   int hoursWindow = 2) {
-            Patron user = GetUserByToken(token);
+                                                   int hoursWindow = 24) {
+            Patron user = GetUserByToken(token, hoursWindow);
             user.NewPassword = newPassword;
             user.Update(true);
 

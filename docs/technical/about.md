@@ -23,5 +23,6 @@ If you'd like to contribute, see the [Manual wiki page](https://github.com/MCLD/
 * Brianna King
 * [Caris O'Malley](http://carisomalley.com/)
 * [Harald Nagel](https://haraldnagel.com/)
+* Tammy Gross
 * [Tara Carpenter](http://www.taracarpenter.com/)
 * [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)

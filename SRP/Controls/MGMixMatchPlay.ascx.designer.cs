@@ -85,67 +85,31 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.ImageButton btn3;
         
         /// <summary>
-        /// lblEasy control.
+        /// lblMixMatch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEasy;
+        protected global::System.Web.UI.WebControls.Label lblMixMatch;
         
         /// <summary>
-        /// lblMedium control.
+        /// pnlAudio control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMedium;
+        protected global::System.Web.UI.WebControls.Panel pnlAudio;
         
         /// <summary>
-        /// lblHard control.
+        /// lblSound control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblHard;
-        
-        /// <summary>
-        /// lblMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
-        
-        /// <summary>
-        /// pnlAudioEasy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAudioEasy;
-        
-        /// <summary>
-        /// pnlAudioMedium control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAudioMedium;
-        
-        /// <summary>
-        /// pnlAudioHard control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAudioHard;
+        protected global::System.Web.UI.WebControls.Label lblSound;
         
         /// <summary>
         /// pnlContinue control.

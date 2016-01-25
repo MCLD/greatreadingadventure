@@ -288,7 +288,6 @@ namespace GRA.SRP {
 
             if(!IsPostBack) {
                 if(this.CurrentPage.IsLoggedIn) {
-                    homeLink.HRef = "~";
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if(Session[SessionKey.IsMasterAccount] as bool? == true) {
                         a.Title = "My Account & Family";

@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Begin an adventure!" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
-    CodeBehind="BeginAdventure.aspx.cs" Inherits="GRA.SRP.PlayMinigame"
+﻿<%@ Page Title="Go on an adventure" Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true"
+    CodeBehind="Adventure.aspx.cs" Inherits="GRA.SRP.PlayMinigame"
     MaintainScrollPositionOnPostback="true" %>
 
 <%@ Import Namespace="GRA.SRP.DAL" %>
