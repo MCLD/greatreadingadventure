@@ -14,7 +14,7 @@ SELECT BID,
 FROM Badge b
 WHERE TenID = @TenID
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeAgeGrp A
 			WHERE b.BID = A.BID
@@ -23,7 +23,7 @@ WHERE TenID = @TenID
 		OR @A = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeBranch B
 			WHERE b.BID = B.BID
@@ -32,7 +32,7 @@ WHERE TenID = @TenID
 		OR @B = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeCategory C
 			WHERE b.BID = C.BID
@@ -41,7 +41,7 @@ WHERE TenID = @TenID
 		OR @C = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeLocation L
 			WHERE b.BID = L.BID
