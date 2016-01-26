@@ -17,24 +17,29 @@ namespace SRP_DAL {
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private DateTime StartDate { get; set; }
-        public ProgramStatus() { }
-        public ProgramStatus(DateTime startDate) {
+        private int TenantId { get; set; }
+
+        public ProgramStatus(int tenantId = 0) {
+            this.TenantId = tenantId;
+        }
+        public ProgramStatus(DateTime startDate, int tenantId = 0) {
             this.StartDate = startDate;
+            this.TenantId = tenantId;
         }
 
         public ProgramStatusReport CurrentStatus() {
             var report = new ProgramStatusReport();
 
             var parameters = new List<SqlParameter>();
-            StringBuilder query = new StringBuilder("SELECT SUM([NumPoints]) AS [PointsEarned],"
-                //+ " SUM(CASE WHEN[BadgeAwardedFlag] = 1 THEN 1 ELSE 0 END) AS [BadgesAwarded],"
-                + " SUM(CASE WHEN[IsBookList] = 1 THEN 1 ELSE 0 END) AS [ChallengesCompleted]"
-                + " FROM [PatronPoints]");
+            StringBuilder query = new StringBuilder("SELECT SUM(pp.[NumPoints]) AS [PointsEarned],"
+                + " SUM(CASE WHEN pp.[IsBookList] = 1 THEN 1 ELSE 0 END) AS [ChallengesCompleted]"
+                + " FROM [PatronPoints] pp"
+                + " INNER JOIN [Patron] p on pp.[PID] = p.[PID] AND p.[TenID] = @TenId");
 
-            // re issue #35: WHERE [PID] IN (SELECT [PID] FROM [Patron] WHERE [TenId] = 1)
+            parameters.Add(new SqlParameter("TenId", this.TenantId));
 
             if(this.StartDate != null && this.StartDate > DateTime.MinValue) {
-                query.Append(" WHERE CAST([AwardDate] AS DATE) >= CAST(@startDate AS DATE)");
+                query.Append(" WHERE CAST(pp.[AwardDate] AS DATE) >= CAST(@startDate AS DATE)");
                 report.Since = this.StartDate.ToShortDateString();
                 parameters.Add(new SqlParameter("startDate", report.Since));
             }
@@ -50,11 +55,15 @@ namespace SRP_DAL {
             } else {
                 throw new Exception("No data returned.");
             }
-            query = new StringBuilder("SELECT COUNT([PBID]) AS [BadgesAwarded] FROM [PatronBadges]");
+            query = new StringBuilder("SELECT COUNT(ba.[PBID]) AS [BadgesAwarded] "
+               + " FROM [PatronBadges] ba"
+               + " INNER JOIN [Patron] p on ba.[PID] = p.[PID] AND p.[TenID] = @TenId");
 
             parameters.Clear();
+            parameters.Add(new SqlParameter("TenId", this.TenantId));
+
             if(this.StartDate != null && this.StartDate > DateTime.MinValue) {
-                query.Append(" WHERE CAST([DateEarned] AS DATE) >= CAST(@startDate AS DATE)");
+                query.Append(" WHERE CAST(ba.[DateEarned] AS DATE) >= CAST(@startDate AS DATE)");
                 parameters.Add(new SqlParameter("startDate", report.Since));
             }
 

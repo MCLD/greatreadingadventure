@@ -29,9 +29,17 @@ namespace GRA.SRP.Handlers {
 
     public class Feed : IHttpHandler, IRequiresSessionState {
         public void ProcessRequest(HttpContext context) {
+            var tenant = context.Session["TenantID"];
+            int tenantId = tenant as int? ?? -1;
+            if(tenantId == -1) {
+                tenantId = Core.Utilities.Tenant.GetMasterID();
+            }
+
+            string cacheKey = string.Format("{0}.{1}", CacheKey.Feed, tenantId);
+
             try {
-                if(context.Cache[CacheKey.Feed] != null) {
-                    var cachedJsonResponse = context.Cache[CacheKey.Feed] as JsonFeed;
+                if(context.Cache[cacheKey] != null) {
+                    var cachedJsonResponse = context.Cache[cacheKey] as JsonFeed;
                     if(cachedJsonResponse != null) {
                         context.Response.ContentType = "application/json";
                         context.Response.Write(JsonConvert.SerializeObject(cachedJsonResponse));
@@ -50,7 +58,7 @@ namespace GRA.SRP.Handlers {
 
             //p.[AvatarID], p.[Username], bl.ListName, b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId]
             try {
-                var feed = new ActivityFeed().Latest(after);
+                var feed = new ActivityFeed().Latest(after, tenantId);
                 foreach(DataRow dataRow in feed.Rows) {
                     var entry = new JsonFeedEntry {
                         ID = (int)dataRow["PPID"],
@@ -89,10 +97,10 @@ namespace GRA.SRP.Handlers {
             if(jsonResponse.Success) {
                 try {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
-                    if(context.Cache[CacheKey.Feed] == null) {
+                    if(context.Cache[cacheKey] == null) {
                         //this.Log().Debug("Caching feed data until {0}",
                         //                 cacheUntil.ToLocalTime().ToLongTimeString());
-                        context.Cache.Insert(CacheKey.Feed,
+                        context.Cache.Insert(cacheKey,
                                              jsonResponse,
                                              null,
                                              cacheUntil,
