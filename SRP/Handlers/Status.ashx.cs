@@ -19,9 +19,17 @@ namespace GRA.SRP.Handlers {
 
     public class Status : IHttpHandler, IRequiresSessionState {
         public void ProcessRequest(HttpContext context) {
+            var tenant = context.Session["TenantID"];
+            int tenantId = tenant as int? ?? -1;
+            if(tenantId == -1) {
+                tenantId = Core.Utilities.Tenant.GetMasterID();
+            }
+
+            string cacheKey = string.Format("{0}.{1}", CacheKey.Status, tenantId);
+
             try {
-                if(context.Cache[CacheKey.Status] != null) {
-                    var cachedJsonResponse = context.Cache[CacheKey.Status] as JsonStatus;
+                if(context.Cache[cacheKey] != null) {
+                    var cachedJsonResponse = context.Cache[cacheKey] as JsonStatus;
                     if(cachedJsonResponse != null) {
                         context.Response.ContentType = "application/json";
                         context.Response.Write(JsonConvert.SerializeObject(cachedJsonResponse));
@@ -38,11 +46,12 @@ namespace GRA.SRP.Handlers {
                 if(!string.IsNullOrEmpty(context.Request.QueryString["StartingOn"])) {
                     DateTime.TryParse(context.Request.QueryString["StartingOn"], out startingOn);
                 }
+                
                 ProgramStatusReport result = null;
                 if(startingOn == DateTime.MinValue) {
-                    result = new ProgramStatus().CurrentStatus();
+                    result = new ProgramStatus(tenantId).CurrentStatus();
                 } else {
-                    result = new ProgramStatus(startingOn).CurrentStatus();
+                    result = new ProgramStatus(startingOn, tenantId).CurrentStatus();
                 }
 
                 jsonResponse.PointsEarned = result.PointsEarned;
@@ -62,10 +71,10 @@ namespace GRA.SRP.Handlers {
             if(jsonResponse.Success) {
                 try {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
-                    if(context.Cache[CacheKey.Status] == null) {
+                    if(context.Cache[cacheKey] == null) {
                         //this.Log().Debug("Caching status data until {0}",
                         //                 cacheUntil.ToLocalTime().ToLongTimeString());
-                        context.Cache.Insert(CacheKey.Status,
+                        context.Cache.Insert(cacheKey,
                                              jsonResponse,
                                              null,
                                              cacheUntil,
