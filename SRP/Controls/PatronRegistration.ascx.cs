@@ -16,16 +16,20 @@ using System.Text;
 namespace GRA.SRP.Controls {
     public partial class PatronRegistration : System.Web.UI.UserControl {
         private CustomRegistrationFields customFields;
-        protected CustomRegistrationFields CustomFields {
-            get {
+        protected CustomRegistrationFields CustomFields
+        {
+            get
+            {
                 if(customFields == null) {
                     customFields = CustomRegistrationFields.FetchObject();
                 }
                 return customFields;
             }
         }
-        protected string CurrentStep {
-            get {
+        protected string CurrentStep
+        {
+            get
+            {
                 return Step.Text;
             }
         }
@@ -120,8 +124,14 @@ namespace GRA.SRP.Controls {
                     int.TryParse(sGrade, out grade);
 
                 var pgmDD = (DropDownList)rptr.Items[0].FindControl("ProgID");
-                if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
-                    pgmDD.SelectedValue = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
+                if(pgmDD.Items.Count == 2) {
+                    // single program - just select the program
+                    pgmDD.SelectedIndex = 1;
+                } else if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
+                    var defaultProgram = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
+                    if(pgmDD.Items.FindByValue(defaultProgram) != null) {
+                        pgmDD.SelectedValue = defaultProgram;
+                    }
                 }
 
 
@@ -727,8 +737,10 @@ namespace GRA.SRP.Controls {
             args.IsValid = ((CheckBox)(rptr.Items[0]).FindControl("TermsOfUseflag")).Checked;
         }
 
-        public string GoToUrl {
-            get {
+        public string GoToUrl
+        {
+            get
+            {
                 if(ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0) {
                     ViewState["gotourl"] = "~";
                 }
