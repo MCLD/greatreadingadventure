@@ -292,7 +292,7 @@
 
 
                         <tr>
-                            <td><b>'Adventure' Mini-Game: </b></td>
+                            <td><b>'Primary' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -301,7 +301,7 @@
                                 <asp:Label ID="Minigame1IDLbl" runat="server" Text='<%# Eval("Minigame1ID") %>' Visible="False"></asp:Label>
                             </td>
 
-                            <td><b>'Adventure' Mini-Game: </b></td>
+                            <td><b>'Primary' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame1IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -311,7 +311,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><b>'Literacy' Mini-Game: </b></td>
+                            <td><b>'Regular' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -319,7 +319,7 @@
                                 </asp:DropDownList>
                                 <asp:Label ID="Minigame2IDLbl" runat="server" Text='<%# Eval("Minigame2ID") %>' Visible="False"></asp:Label>
                             </td>
-                            <td><b>'Literacy' Mini-Game: </b></td>
+                            <td><b>'Regular' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame2IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -602,7 +602,7 @@
 
 
                         <tr>
-                            <td><b>'Adventure' Mini-Game: </b></td>
+                            <td><b>'Primary' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -610,7 +610,7 @@
                                 </asp:DropDownList>
                             </td>
 
-                            <td><b>'Adventure' Mini-Game: </b></td>
+                            <td><b>'Primary' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame1IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
@@ -619,14 +619,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><b>'Literacy' Mini-Game: </b></td>
+                            <td><b>'Regular' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
                             </td>
-                            <td><b>'Literacy' Mini-Game: </b></td>
+                            <td><b>'Regular' Adventure: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="Minigame2IDBonus" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID"
                                     AppendDataBoundItems="True" Width="90%">

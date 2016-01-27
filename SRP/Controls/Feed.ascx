@@ -61,6 +61,10 @@
                                             html.push('onClick="return HideTooltipShowBadgeInfo(this.parentElement, ' + entry.BadgeId + ');">earned a badge</a>.');
                                         }
                                         break;
+                                    case 4:
+                                        // adventure
+                                        html.push(' finished the ' + entry.AchievementName + ' <a href="' + feedRootPath + 'Adventures/">Adventure</a>.');
+                                        break;
                                 }
                                 html.push('</td></tr>');
                                 if (entry["ID"] > newLatest) {

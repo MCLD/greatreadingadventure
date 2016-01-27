@@ -132,11 +132,6 @@
                     <asp:Label ForeColor="red" ID="errorLabel" runat="server" EnableViewState="False"></asp:Label>
                 </div>
                 <br />
-                <div style="text-align: center">
-                    <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%>
-                    <br />
-                    All Rights Reserved
-                </div>
             </div>
         </div>
     </form>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace GRA.Tools {
     public class DisplayHelper {
@@ -26,6 +27,26 @@ namespace GRA.Tools {
             return string.IsNullOrWhiteSpace(first)
                 ? username.Trim()
                 : first.Trim();
+        }
+
+        public static string RemoveHtml(string htmlText) {
+            return RemoveHtml(htmlText, 0);
+        }
+
+        public static string RemoveHtml(string htmlText, int maxLength) {
+            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.LoadHtml(htmlText);
+            string text = HttpUtility.HtmlDecode(htmlDoc.DocumentNode.InnerText)
+                .Replace("<p>", string.Empty)
+                .Replace("</p>", string.Empty);
+
+            if(maxLength > 0) {
+                return text.Length <= maxLength
+                    ? text
+                    : string.Format("{0}...", text.Substring(0, maxLength - 3));
+            } else {
+                return text;
+            }
         }
     }
 }

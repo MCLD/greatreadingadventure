@@ -2623,9 +2623,9 @@ BEGIN
 		GETDATE(),
 		N'sysadmin',
 		'Initial configuration',
-		2,
-		2,
-		1,
+		3,
+		0,
+		0,
 		'Performed initial configuration of multiple programs'
 		)
 END

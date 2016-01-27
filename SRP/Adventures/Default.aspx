@@ -20,9 +20,6 @@
                     <points:MyPointsControl runat="server" ID="MyPointsControl" />
                 </div>
             </div>
-            <div class="row margin-1em-bottom">
-                <uc3:MyGamemapNavControl ID="MyGamemapNavControl1" runat="server" />
-            </div>
         </div>
         <div class="col-sm-9">
             <uc1:GameLoggingControl ID="GameLoggingControl1" runat="server" />

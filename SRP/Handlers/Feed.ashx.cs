@@ -20,7 +20,6 @@ namespace GRA.SRP.Handlers {
         public int BadgeId { get; set; }
         public int ChallengeId { get; set; }
         public string AchievementName { get; set; }
-
     }
     public class JsonFeed : JsonBase {
         public JsonFeedEntry[] Entries { get; set; }
@@ -82,6 +81,9 @@ namespace GRA.SRP.Handlers {
                         case 2:
                             // completed challenge
                             entry.AchievementName = (string)dataRow["ListName"];
+                            break;
+                        case 4:
+                            entry.AchievementName = (string)dataRow["GameName"];
                             break;
                     }
                     entries.Add(entry);

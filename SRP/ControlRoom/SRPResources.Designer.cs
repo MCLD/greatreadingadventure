@@ -88,24 +88,6 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  - Built by Systems Technology Group, Inc.&lt;br&gt;The Great Reading Adventure is licensed under &lt;a href=&quot;https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/LICENSE&quot; target=&quot;_blank&quot;&gt;The MIT License&lt;/a&gt;..
-        /// </summary>
-        public static string CopyrightEntity {
-            get {
-                return ResourceManager.GetString("CopyrightEntity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 2013-2014.
-        /// </summary>
-        public static string CopyrightYear {
-            get {
-                return ResourceManager.GetString("CopyrightYear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Great Reading Adventure - Control Room.
         /// </summary>
         public static string CRTitle {
@@ -192,15 +174,6 @@ namespace GRA.SRP.ControlRoom {
         public static string ProductName {
             get {
                 return ResourceManager.GetString("ProductName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 2.2.1.
-        /// </summary>
-        public static string ProductVersion {
-            get {
-                return ResourceManager.GetString("ProductVersion", resourceCulture);
             }
         }
         

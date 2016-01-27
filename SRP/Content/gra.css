@@ -292,6 +292,27 @@ small.dd-desc {
     font-weight: bold;
 }
 
+/* adventures */
+
+.adventure-card {
+    display: block;
+    min-height: 11em;
+    width: 100%;
+    background-color: #eee;
+    margin-bottom: 1.5em;
+    color: black !important;
+}
+
+.adventure-card:hover {
+    text-decoration: none;
+}
+
+.adventure-caption-container {
+    padding-top: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
 .codebreaker-glyph {
     width: 36px;
     height: 36px;
