@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Board Games List");
+            MasterPage.PageTitle = string.Format("{0}", "Levels List");
 
             _mStrSortExp = String.Empty; 
             

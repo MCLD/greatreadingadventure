@@ -11,13 +11,14 @@ namespace SRP_DAL {
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private const string query = "SELECT TOP 5" +
-            " p.[AvatarID], p.[Username], bl.ListName, bl.[BLID], b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId]" +
+            " p.[AvatarID], p.[Username], bl.ListName, bl.[BLID], b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId], mg.[GameName]" +
             " FROM [PatronPoints] pp" +
             " INNER JOIN [Patron] p ON pp.[PID] = p.[PID] AND p.[TenID] = @TenId" +
             " LEFT OUTER JOIN [Badge] b on pp.[BadgeId] = b.[BID]" +
             " LEFT OUTER JOIN [BookList] bl on pp.[BookListId] = bl.[BLID]" +
+            " LEFT OUTER JOIN [Minigame] mg on pp.[GameLevelActivityId] = mg.[MGID]" +
             " WHERE ((pp.[AwardReasonCD] = 1 AND pp.[BadgeId] > 0)" +
-            " OR (pp.[AwardReasonCd] = 2)) AND pp.[PPID] > @after" +
+            " OR (pp.[AwardReasonCd] IN (2, 4))) AND pp.[PPID] > @after" +
             " ORDER BY pp.[PPID] DESC";
 
         public DataTable Latest(int after, int tenantId) { //, int tenId

@@ -1259,8 +1259,17 @@ div.btn-bnr-mustard
 :root .btn-mustard,:root .btn-mustard:after{filter:none 0/IE9}
 /* ********************************************************** */
 
+.controlroom-small-preview img {
+    max-width: 32px;
+    max-height: 32px;
+}
 
+.controlroom-medium-preview img {
+    max-width: 64px;
+    max-height: 64px;
+}
 
-
-
-
+.controlroom-large-preview img {
+    max-width: 96px;
+    max-height: 96px;
+}

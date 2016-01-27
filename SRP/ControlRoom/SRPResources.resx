@@ -126,12 +126,6 @@
   <data name="BadUserPass" xml:space="preserve">
     <value>Invalid User Name or Password</value>
   </data>
-  <data name="CopyrightEntity" xml:space="preserve">
-    <value> - Built by Systems Technology Group, Inc.&lt;br&gt;The Great Reading Adventure is licensed under &lt;a href="https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/LICENSE" target="_blank"&gt;The MIT License&lt;/a&gt;.</value>
-  </data>
-  <data name="CopyrightYear" xml:space="preserve">
-    <value>2013-2014</value>
-  </data>
   <data name="CRTitle" xml:space="preserve">
     <value>Great Reading Adventure - Control Room</value>
   </data>
@@ -152,12 +146,6 @@
   </data>
   <data name="PasswordRequired" xml:space="preserve">
     <value>Password is required;</value>
-  </data>
-  <data name="ProductName" xml:space="preserve">
-    <value>Great Reading Adventure Control Room</value>
-  </data>
-  <data name="ProductVersion" xml:space="preserve">
-    <value>2.2.1</value>
   </data>
   <data name="RefreshAllOK" xml:space="preserve">
     <value>Records refreshed from database successfully.</value>
@@ -182,5 +170,8 @@
   </data>
   <data name="PasswordEmailSuccessSubject" xml:space="preserve">
     <value>Your password has been reset!</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Great Reading Adventure Control Room</value>
   </data>
 </root>

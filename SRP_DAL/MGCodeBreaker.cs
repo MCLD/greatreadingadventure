@@ -384,7 +384,7 @@ namespace GRA.SRP.DAL {
                 prefix = "h_";
             }
 
-            foreach(char c in s.ToCharArray()) {
+            foreach(char c in s.ToUpper().ToCharArray()) {
                 if(c != ' ') {
                     encodedMessage.Add(string.Format("{0}{1}_{2}.png",
                                                      prefix,
@@ -408,7 +408,7 @@ namespace GRA.SRP.DAL {
                 prefix = "h_";
             }
 
-            char[] chars = s.ToCharArray();
+            char[] chars = s.ToUpper().ToCharArray();
 
             foreach(char c in chars) {
                 if(c != ' ' && !key.ContainsKey(c)) {
