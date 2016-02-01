@@ -43,7 +43,7 @@
         if ($(this).hasClass('fadeIn')) {
             $(this).removeClass('fadeIn');
         }
-        $(this).addClass('animated jello');
+        $(this).addClass('animated pulse');
         return true;
     });
 </script>
