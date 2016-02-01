@@ -53,7 +53,7 @@
                         <asp:RegularExpressionValidator
                             runat="server" ControlToValidate="Username" ValidationExpression="^[a-zA-Z0-9_-]{5,25}$"
                             Display="Dynamic"
-                            ErrorMessage="Username must be between 5 and 25 characters long.">username must be between 5 and 25 characters long
+                            ErrorMessage="Username must be between 5 and 25 characters and contain no spaces.">username must be between 5 and 25 characters and contain no spaces
                         </asp:RegularExpressionValidator>
                     </div>
                 </div>
