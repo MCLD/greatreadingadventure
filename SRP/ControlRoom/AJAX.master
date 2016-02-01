@@ -18,7 +18,7 @@
     <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.js")%>"></script>
     </asp:PlaceHolder>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
     <style type="text/css">

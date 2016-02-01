@@ -377,7 +377,7 @@
         </div>
 
         <asp:Label runat="server" Style="display: none;" ID="CurrentStep" CssClass="current-step"></asp:Label>
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
         <script>
             $(function () {
