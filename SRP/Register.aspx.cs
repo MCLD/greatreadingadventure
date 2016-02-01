@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using SRPApp.Classes;
-using GRA.SRP.DAL;
 
-namespace GRA.SRP
-{
+namespace GRA.SRP {
     public partial class Register : BaseSRPPage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) TranslateStrings(this);
+            if(!IsPostBack) { 
+                if(IsLoggedIn) {
+                    Response.Redirect("~");
+                }
+
+                TranslateStrings(this);
+            }
+            this.MetaDescription = string.Format("Register now to join the fun! - {0}",
+                                                 GetResourceString("system-name"));
         }
     }
 }

@@ -84,7 +84,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/MinigameAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["MGID"] = "";
+                Session["MGID"]= string.Empty;
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

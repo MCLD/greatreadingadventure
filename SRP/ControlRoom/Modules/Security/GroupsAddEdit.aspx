@@ -2,8 +2,6 @@
 	CodeBehind="GroupsAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Security.GroupsAddEdit" 
 %>
 
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="cpAddEdit" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

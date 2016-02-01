@@ -70,7 +70,7 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There has been an application error.&lt;br/&gt;{0}.
+        ///   Looks up a localized string similar to An error has occurred. {0}.
         /// </summary>
         public static string ApplicationError1 {
             get {
@@ -84,24 +84,6 @@ namespace GRA.SRP.ControlRoom {
         public static string BadUserPass {
             get {
                 return ResourceManager.GetString("BadUserPass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  - Built by Systems Technology Group, Inc.&lt;br&gt;The Great Reading Adventure is licensed under &lt;a href=&quot;https://raw.githubusercontent.com/MCLD/greatreadingadventure/master/LICENSE&quot; target=&quot;_blank&quot;&gt;The MIT License&lt;/a&gt;..
-        /// </summary>
-        public static string CopyrightEntity {
-            get {
-                return ResourceManager.GetString("CopyrightEntity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 2013-2014.
-        /// </summary>
-        public static string CopyrightYear {
-            get {
-                return ResourceManager.GetString("CopyrightYear", resourceCulture);
             }
         }
         
@@ -196,15 +178,6 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2.2.1.
-        /// </summary>
-        public static string ProductVersion {
-            get {
-                return ResourceManager.GetString("ProductVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Records refreshed from database successfully..
         /// </summary>
         public static string RefreshAllOK {
@@ -241,7 +214,7 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Account Recovery.
+        ///   Looks up a localized string similar to Forgot your password? Click here!.
         /// </summary>
         public static string UserAccountRecovery {
             get {

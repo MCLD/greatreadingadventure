@@ -30,6 +30,7 @@
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
         onrowcommand="GvRowCommand"      
+        OnRowDataBound="GvRowDataBound"
         >
         <Columns>
             <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
@@ -100,12 +101,12 @@
                 DataField="SlideText" SortExpression="SlideText" Visible="False" 
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="true"></ItemStyle>
+                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="true"></ItemStyle>
             </asp:BoundField> 
 
             <asp:TemplateField HeaderText="Slide Text"   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">             
                 <ItemTemplate>
-                    <%# Eval("SlideText").ToString().Length > 200 ? Eval("SlideText").ToString().Substring(0, 200) + " [...]" : Eval("SlideText").ToString() %>
+                    <asp:Literal ID="SlideTextDisplay" runat="server"></asp:Literal>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Top" Wrap="True" HorizontalAlign="Left"></ItemStyle>
                 <HeaderStyle  Wrap="True" HorizontalAlign="Left" width="800px"/>

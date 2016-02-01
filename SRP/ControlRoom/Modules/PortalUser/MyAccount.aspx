@@ -189,7 +189,7 @@ Inherits="GRA.SRP.ControlRoom.Modules.PortalUser.MyAccount"
                     <asp:ImageButton ID="ImageButton1" runat="server" 
                         CausesValidation="False" 
                         CommandName="Password" 
-                        ImageUrl="~/ControlRoom/Images/User-password.png" 
+                        ImageUrl="~/ControlRoom/RibbonImages/UserSecurity.png" 
                         Height="25"
                         Tooltip="Change Password" 
                         AlternateText="Change Password" />                                              

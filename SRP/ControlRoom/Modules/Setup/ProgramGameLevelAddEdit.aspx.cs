@@ -13,9 +13,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
         //public string ShowBoardWGrid(int PGID, int Board = 0)
         //{
-        //    var tbl = "";
+        //    var tbl= string.Empty;
         //    var pg = ProgramGame.FetchObject(PGID);
-        //    var rows = "";
+        //    var rows= string.Empty;
         //    var size = 800;
         //    var cellSize = (int)(800/pg.BoardWidth);
         //    size = cellSize*pg.BoardWidth;

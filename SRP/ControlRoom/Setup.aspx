@@ -34,7 +34,7 @@
                                             <td rowspan="3" valign="top" align="center">
                                                 <img
                                                     id="Img19" runat="server" alt=""
-                                                    src="/ControlRoom/Images/Install3.png" style="border-style: none" /></td>
+                                                    src="/ControlRoom/RibbonImages/SystemSettings.png" style="border-style: none" /></td>
                                         </tr>
                                         <tr>
                                             <td align="left">Database server name or IP address:<br />
@@ -132,11 +132,6 @@
                     <asp:Label ForeColor="red" ID="errorLabel" runat="server" EnableViewState="False"></asp:Label>
                 </div>
                 <br />
-                <div style="text-align: center">
-                    <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%>
-                    <br />
-                    All Rights Reserved
-                </div>
             </div>
         </div>
     </form>

@@ -46,7 +46,7 @@
             >
             <asp:ListItem Value="0" Text="[Select a 'Source']"></asp:ListItem>
             <asp:ListItem Value="3" Text="Game" ></asp:ListItem>
-            <asp:ListItem Value="4" Text="Book List"></asp:ListItem>
+            <asp:ListItem Value="4" Text="Challenge"></asp:ListItem>
             <asp:ListItem Value="5" Text="Event"></asp:ListItem>
         </asp:DropDownList>        
     </td>

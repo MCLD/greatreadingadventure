@@ -11,6 +11,8 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using GRA.Tools;
+using System.Web.Caching;
 
 namespace GRA.SRP.DAL
 {
@@ -843,9 +845,23 @@ namespace GRA.SRP.DAL
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_Delete", arrParams);
                 var fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".png");
-                File.Delete(fileName);
+                if(File.Exists(fileName)) {
+                    File.Delete(fileName);
+                }
+                fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.png");
+                if(File.Exists(fileName)) {
+                    File.Delete(fileName);
+                }
+                fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".jpg");
+                if(File.Exists(fileName)) {
+                    File.Delete(fileName);
+                }
+                fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.jpg");
+                if(File.Exists(fileName)) {
+                    File.Delete(fileName);
+                }
 
-                 fileName = (HttpContext.Current.Server.MapPath("~/css/program/") + "\\" + PID.ToString() + ".css");
+                fileName = (HttpContext.Current.Server.MapPath("~/css/program/") + "\\" + PID.ToString() + ".css");
                 File.Delete(fileName);
                  fileName = (HttpContext.Current.Server.MapPath("~/resources/") + "\\program." + PID.ToString() + "en-US.txt");
                 File.Delete(fileName);

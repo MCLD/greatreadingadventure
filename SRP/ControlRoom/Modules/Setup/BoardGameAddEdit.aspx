@@ -121,7 +121,7 @@
     </tr>
     <tr>
         <td>
-            <strong>Default 'Adventure' <br />Mini-Game:</strong>
+            <strong>Default 'Primary' <br />Adventure:</strong>
         </td>
         <td colspan="2">
                 <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
@@ -133,7 +133,7 @@
         </td>
 
         <td style="padding-left:40px;">
-            <strong>Default 'Literacy' <br />Mini-Game:</strong>
+            <strong>Default 'Regular' <br />Adventure:</strong>
         </td>
         <td colspan="2">
                 <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
@@ -297,7 +297,7 @@
     </tr>
     <tr>
         <td>
-            <strong>Default 'Adventure'<br />Mini-Game:</strong>
+            <strong>Default 'Primary'<br />Adventure:</strong>
         </td>
         <td colspan="2">
                 <asp:DropDownList ID="Minigame1ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
@@ -308,7 +308,7 @@
         </td>
 
         <td style="padding-left:40px;">
-            <strong>Default 'Literacy' <br />Mini-Game:</strong>
+            <strong>Default 'Regular' <br />Adventure:</strong>
         </td>
         <td colspan="2">
                 <asp:DropDownList ID="Minigame2ID" runat="server" DataSourceID="odsDDMiniGame" DataTextField="AdminName" DataValueField="MGID" 
@@ -438,7 +438,7 @@
                     <asp:ImageButton ID="ImageButton1" runat="server" 
                         CausesValidation="True" 
                         CommandName="levels" 
-                        ImageUrl="~/ControlRoom/Images/game_level.png" 
+                        ImageUrl="~/ControlRoom/RibbonImages/Adventures.png" 
                         Height="25"
                         Text="Game Levels"   Tooltip="Game Levels"
                         AlternateText="Game Levels" /> 

@@ -13,6 +13,9 @@
     [FldText1]   TEXT         NULL,
     [FldText2]   TEXT         NULL,
     [FldText3]   TEXT         NULL,
+    [BranchLink] NVARCHAR(255) NULL, 
+    [BranchAddress] NVARCHAR(255) NULL, 
+    [BranchTelephone] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_LibraryCrosswalk] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 

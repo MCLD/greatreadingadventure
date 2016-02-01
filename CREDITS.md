@@ -9,17 +9,21 @@ Reading Adventure wouldn't exist!
 
 - [ASP.NET AJAX Control Toolkit](#aspnet-ajax-control-toolkit)
 - [Bootstrap](#bootstrap)
-- [CKEditor](#ckeditor)
 - [DocumentFormat.OpenXML](#documentformat.-openxml)
 - [ELMAH](#elmah)
 - [FormatWith](#formatwith)
 - [FontAwesome](#fontawesome)
 - [Html Agility Pack](#html-agility-pack)
+- [Glitch public domain game art](#glitch-public-domain-game-art)
+- [Google material design icons](#google-material-design-icons)
 - [jQuery](#jquery)
+- [jQuery Datepicker](#jquery-datepicker)
 - [Microsoft Ajax Minifier](#microsoft-ajax-minifier)
 - [NLog](#nlog)
+- [Odometer](#odometer)
 - [Password Hashing With PBKDF2](#password-hashing-with-pbkdf2)
 - [this.Log Logging Extension](#thislog-logging-extension)
+- [Trumbowyg](#trumbowyg)
 - [SRP_DAL](#srp_dal)
 
 * * *
@@ -35,13 +39,6 @@ Reading Adventure wouldn't exist!
 - <http://getbootstrap.com/>
 - Copyright (c) 2011-2015 Twitter, Inc
 - License (MIT) <https://github.com/twbs/bootstrap/blob/master/LICENSE>
-
-* * *
-
-## CKEditor
-- <http://ckeditor.com/>
-- Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
-- License (MPL) <http://ckeditor.com/about/license>
 
 * * *
 
@@ -73,6 +70,20 @@ Reading Adventure wouldn't exist!
  
 * * *
 
+## Glitch public domain game art
+- <https://www.glitchthegame.com/>
+- Created by Tiny Speck, Inc.
+- License (CC0 1.0 Universal) <https://creativecommons.org/licenses/by/4.0/>
+
+* * *
+
+## Google material design icons
+- <https://google.github.io/material-design-icons/>
+- Copyright (c) Google
+- License (CC-BY 4.0) <http://creativecommons.org/publicdomain/zero/1.0/legalcode>
+
+* * *
+
 ## Html Agility Pack
 - <https://htmlagilitypack.codeplex.com/>
 - Copyright (C) 2003-2012 Simon Mourier. All rights reserved.
@@ -84,6 +95,13 @@ Reading Adventure wouldn't exist!
 - <https://jquery.com/>
 - Copyright 2015 The jQuery Foundation.
 - License (MIT) <https://jquery.org/license/>
+
+* * *
+
+## jQuery Datepicker
+- <http://keith-wood.name/datepick.HTML>
+- Copyright 2007 - 2015 Keith Wood.
+- License (MIT) <http://keith-wood.name/licence.html>
 
 * * *
 
@@ -101,6 +119,13 @@ Reading Adventure wouldn't exist!
 
 * * *
 
+## Odometer
+ - <http://github.hubspot.com/odometer/docs/welcome/>
+ - Copyright (c) 2013 HubSpot, Inc.
+ - License (MIT) <https://github.com/HubSpot/odometer/blob/master/LICENSE>
+
+* * *
+
 ## Password Hashing With PBKDF2
 - <http://crackstation.net/hashing-security.htm>
 - Copyright (c) 2013, Taylor Hornby. All rights reserved.
@@ -113,6 +138,13 @@ Reading Adventure wouldn't exist!
 - <https://github.com/ferventcoder/this.Log>
 - RealDimensions Software, LLC - Copyright © 2012
 - License (Apache) <https://github.com/ferventcoder/this.Log/blob/master/LICENSE>
+
+* * *
+
+## Trumbowyg
+- <http://alex-d.github.io/Trumbowyg/>
+- Copyright (c) 2012-2015 Alexandre Demode (Alex-D)
+- License (MIT) <http://opensource.org/licenses/MIT>
 
 * * *
 

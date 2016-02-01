@@ -1,143 +1,155 @@
-﻿<%@ Master 
-    Language="C#" 
-    AutoEventWireup="true" 
-    CodeBehind="AJAX.master.cs" 
-    Inherits="GRA.SRP.ControlRoom.AJAX" 
-%>
-<%@ Register src="~/ControlRoom/Controls/CRRibbon.ascx" tagname="CRRibbon" tagprefix="uc2" %>
-<%@ Register src="~/ControlRoom/Controls/CRTopMenu.ascx" tagname="CRTopMenu" tagprefix="uc3" %>
-<%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit"%>
-<!DOCTYPE HTML>
+﻿<%@ Master
+    Language="C#"
+    AutoEventWireup="true"
+    CodeBehind="AJAX.master.cs"
+    Inherits="GRA.SRP.ControlRoom.AJAX" %>
+
+<%@ Register Src="~/ControlRoom/Controls/CRRibbon.ascx" TagName="CRRibbon" TagPrefix="uc2" %>
+<%@ Register Src="~/ControlRoom/Controls/CRTopMenu.ascx" TagName="CRTopMenu" TagPrefix="uc3" %>
+<%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit" %>
+<!DOCTYPE html>
 <html>
 <head id="Head1" runat="server">
-<link href='/ico_cms.png' rel='icon' type='image/vnd.microsoft.icon'/> 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
-
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-<style type="text/css">
-    #blur
-    {
-        width: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        /*background-color: black;
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
+    <asp:PlaceHolder runat="server">
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.1.4.js")%>"></script>
+    </asp:PlaceHolder>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <style type="text/css">
+        #blur {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            /*background-color: black;
         moz-opacity: 0.75;
         khtml-opacity: .75;
         opacity: .75;
         filter: alpha(opacity=75);*/
-        z-index: 120;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    #progress
-    {
-      
-        z-index: 200;
-        background-color: White;
-        background: rgba(255, 255, 255, 1);
-        position: absolute;
-        top: 0pt;
-        left: 0pt;
-        border: solid 1px black;
-        padding: 5px 5px 5px 5px;
-        text-align: center;
-        background-image: url(/ControlRoom/Images/Waiting.jpg)
-    }
-</style>
+            z-index: 120;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
 
+        #progress {
+            z-index: 200;
+            background-color: White;
+            background: rgba(255, 255, 255, 1);
+            position: absolute;
+            top: 0pt;
+            left: 0pt;
+            border: solid 1px black;
+            padding: 5px 5px 5px 5px;
+            text-align: center;
+        }
+
+        .gra-editor-container-small > .trumbowyg-box {
+            min-height: 200px;
+            max-height: 200px;
+            height: 200px;
+        }
+
+        .gra-editor-container-tiny > .trumbowyg-box {
+            min-height: 150px;
+            max-height: 150px;
+            height: 150px;
+        }
+    </style>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
 <body>
 
-<form id="form1" runat="server">
-<center>
-    <div id="cdBodyDiv">
+    <form id="form1" runat="server">
+        <center>
+        <div id="cdBodyDiv">
 
-        <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
-        </asp:ToolkitScriptManager>
-        <div class="cdTop">
-            <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
-            <div style="text-align: left; ">				
-                <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
+            <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
+            </asp:ToolkitScriptManager>
+            <div class="cdTop">
+                <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
+                <div style="text-align: left; ">				
+                    <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
             
-                <div class="TitleContainer">
-                    <asp:Label  CssClass="PageTitle" ID="lblPageTitle" runat="server" Text="" Visible="false"></asp:Label> 
+                    <div class="TitleContainer">
+                        <asp:Label  CssClass="PageTitle" ID="lblPageTitle" runat="server" Text="" Visible="false"></asp:Label> 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="cdSeparator"></div>
-        <div class="cdMessage">
-            <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC" 
-                BorderStyle="Solid" BorderWidth="0px" style="padding: 10px;" Visible="false">
-                <table width="100%" cellpadding ="10" cellspacing="0" style="border: solid 1px black;">
-                    <tr>
-                        <td align="left" valign="top"><asp:Image ID="imgMessage" runat="server" /></td>
-                        <td align="left" width="100%"><asp:Label ID="lblMessage" runat="server" Text="" Font-Bold="true" Font-Size="11px" Font-Names="Verdana"></asp:Label></td>
-                    </tr>
-                </table>
-            </asp:Panel>
-        </div>
-        <div class="cdBody">
-            <div style="text-align: left; padding: 10px; min-height: 600px">
-                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-                </asp:ContentPlaceHolder>
-                <asp:UpdateProgress ID="pageUpdateProgress" runat="server">
-                    <ProgressTemplate>
-                        <div id="blur" />
-                            <div id="progress">
-                                <img src="/ControlRoom/Images/CircularProgressAnimation2.gif"  border="0" style="padding-top: 175px; padding-left: 300px; " /><br /><!--Update in progress. Please wait ...-->
-                            </div>
-                    </ProgressTemplate>
-                </asp:UpdateProgress>
+            <div id="cdSeparator"></div>
+            <div class="cdMessage">
+                <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC" 
+                    BorderStyle="Solid" BorderWidth="0px" style="padding: 10px;" Visible="false">
+                    <table width="100%" cellpadding ="10" cellspacing="0" style="border: solid 1px black;">
+                        <tr>
+                            <td align="left" valign="top"><asp:Image ID="imgMessage" runat="server" /></td>
+                            <td align="left" width="100%"><asp:Label ID="lblMessage" runat="server" Text="" Font-Bold="true" Font-Size="11px" Font-Names="Verdana"></asp:Label></td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+            </div>
+            <div class="cdBody">
+                <div style="text-align: left; padding: 10px; min-height: 600px">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                    <asp:UpdateProgress ID="pageUpdateProgress" runat="server">
+                        <ProgressTemplate>
+                            <div id="blur" />
+                                <div id="progress">
+                                    <img src="/ControlRoom/Images/CircularProgressAnimation2.gif"  border="0" style="padding-top: 175px; padding-left: 300px; " /><br /><!--Update in progress. Please wait ...-->
+                                </div>
+                        </ProgressTemplate>
+                    </asp:UpdateProgress>
+                </div>     
             </div>     
-        </div>     
-    </div>
-    <!-- This script must be placed after the form declaration -->
-    <script type="text/javascript">
-        Sys.Application.add_load(AppLoad);
+        </div>
+        <div id="modal_dialog"></div>
+        </center>
+        <!-- This script must be placed after the form declaration -->
+        <script type="text/javascript">
+            Sys.Application.add_load(AppLoad);
 
-        function AppLoad() {
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequest);
-        }
-
-        function EndRequest(sender, args) {
-            // Check to see if there's an error on this request.
-            if (args.get_error() != undefined) {
-
-                var msg = args.get_error().message.replace("Sys.WebForms.PageRequestManagerServerErrorException: ", "");
-                args.set_errorHandled(true);
-                $("#modal_dialog").html(msg)
-                $("#modal_dialog").dialog({
-                    title: "There has been an Error!",
-                    buttons: {
-                        Close: function () {
-                            $(this).dialog('close');
-                        }
-                    },
-                    modal: true
-                });
-
-
+            function AppLoad() {
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequest);
             }
-        }
-    </script>
 
-    <div id="modal_dialog"></div>
+            function EndRequest(sender, args) {
+                // Check to see if there's an error on this request.
+                if (args.get_error() != undefined) {
+
+                    var msg = args.get_error().message.replace("Sys.WebForms.PageRequestManagerServerErrorException: ", "");
+                    args.set_errorHandled(true);
+                    $("#modal_dialog").html(msg)
+                    $("#modal_dialog").dialog({
+                        title: "There has been an Error!",
+                        buttons: {
+                            Close: function () {
+                                $(this).dialog('close');
+                            }
+                        },
+                        modal: true
+                    });
 
 
-    <div id="cdfooter">
-	    <div id="cdline"></div>
-	    <div style="padding: 6px 0 3px 0;" align="center">
-    	
-            <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
-
-	    </div> 
-    </div> 
-
-    </center>
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-</form>
+                }
+            }
+        </script>
+        <asp:ContentPlaceHolder ID="scripts" runat="server">
+        </asp:ContentPlaceHolder>
+        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.js")%>"></script>
+        <script>
+            $().ready(function () {
+                $(".gra-editor").each(function () {
+                    $(this).trumbowyg();
+                });
+            });
+        </script>
+    </form>
 </body>
 </html>

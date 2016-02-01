@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[ReportTemplate] (
     [RTID]                   INT           IDENTITY (1, 1) NOT NULL,
     [ProgId]                 INT           CONSTRAINT [DF_ReportTemplate_ProgId] DEFAULT ((0)) NULL,
-    [ReportName]             VARCHAR (150) NULL,
+    [ReportName]             NVARCHAR(255) NULL,
     [DisplayFilters]         BIT           NULL,
     [DOBFrom]                DATETIME      NULL,
     [DOBTo]                  DATETIME      NULL,

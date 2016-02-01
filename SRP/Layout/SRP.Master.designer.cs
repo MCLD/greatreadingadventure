@@ -22,13 +22,13 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
         
         /// <summary>
-        /// TopOfHeader control.
+        /// MetaDescriptionPlaceholder control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder TopOfHeader;
+        protected global::System.Web.UI.WebControls.PlaceHolder MetaDescriptionPlaceholder;
         
         /// <summary>
         /// ProgramCSS control.
@@ -40,6 +40,15 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.PlaceHolder ProgramCSS;
         
         /// <summary>
+        /// HeaderContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeaderContent;
+        
+        /// <summary>
         /// mainForm control.
         /// </summary>
         /// <remarks>
@@ -49,13 +58,22 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlForm mainForm;
         
         /// <summary>
-        /// Phone control.
+        /// badgesAnonNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Phone;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl badgesAnonNav;
+        
+        /// <summary>
+        /// eventsAnonNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl eventsAnonNav;
         
         /// <summary>
         /// lnkRegister control.
@@ -85,103 +103,49 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// lnkLogout control.
+        /// badgesNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkLogout;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl badgesNav;
         
         /// <summary>
-        /// Label2 control.
+        /// adventuresNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl adventuresNav;
         
         /// <summary>
-        /// A1 control.
+        /// challengesNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor A1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl challengesNav;
         
         /// <summary>
-        /// home1 control.
+        /// eventsNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor home1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl eventsNav;
         
         /// <summary>
-        /// home2 control.
+        /// offersNav control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor home2;
-        
-        /// <summary>
-        /// n control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor n;
-        
-        /// <summary>
-        /// b control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor b;
-        
-        /// <summary>
-        /// v control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor v;
-        
-        /// <summary>
-        /// o control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor o;
-        
-        /// <summary>
-        /// r control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor r;
-        
-        /// <summary>
-        /// f control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor f;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl offersNav;
         
         /// <summary>
         /// a control.
@@ -193,13 +157,85 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor a;
         
         /// <summary>
-        /// p control.
+        /// lnkLogout control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor p;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkLogout;
+        
+        /// <summary>
+        /// loginPopupPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel loginPopupPanel;
+        
+        /// <summary>
+        /// loginPopupTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label loginPopupTitle;
+        
+        /// <summary>
+        /// loginPopupUsername control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox loginPopupUsername;
+        
+        /// <summary>
+        /// loginPopupPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox loginPopupPassword;
+        
+        /// <summary>
+        /// loginPopupRememberMe control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox loginPopupRememberMe;
+        
+        /// <summary>
+        /// loginPopupRecoverButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor loginPopupRecoverButton;
+        
+        /// <summary>
+        /// loginPopupRegisterButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor loginPopupRegisterButton;
+        
+        /// <summary>
+        /// btnLogin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnLogin;
         
         /// <summary>
         /// alertContainer control.
@@ -209,6 +245,15 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel alertContainer;
+        
+        /// <summary>
+        /// alertGlyphicon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label alertGlyphicon;
         
         /// <summary>
         /// alertMessage control.
@@ -238,30 +283,12 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
         
         /// <summary>
-        /// Upsell control.
+        /// BottomOfPage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Upsell;
-        
-        /// <summary>
-        /// BackToTop control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label BackToTop;
-        
-        /// <summary>
-        /// Copyright control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Copyright;
+        protected global::System.Web.UI.WebControls.ContentPlaceHolder BottomOfPage;
     }
 }

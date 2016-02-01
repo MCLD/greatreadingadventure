@@ -49,8 +49,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 {
                     Lbl.Text = string.Format("Custom Field {0} not enabled", FieldNumber);
                     Txt.Visible = DD.Visible = false;
-                    Txt.Text = "";
-                    DD.SelectedValue = "";
+                    Txt.Text= string.Empty;
+                    DD.SelectedValue= string.Empty;
                 }
                 else
                 {
@@ -60,11 +60,11 @@ namespace GRA.SRP.ControlRoom.Controls
                         Txt.Visible = true;
                         DD.Visible = false;
                         Txt.Text = InputVal.Text;
-                        DD.SelectedValue = "";
+                        DD.SelectedValue= string.Empty;
                     }
                     else
                     {
-                        Txt.Text = "";
+                        Txt.Text= string.Empty;
                         Txt.Visible = false;
 
                         DD.Visible = true;
@@ -89,8 +89,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 {
                     Lbl.Text = string.Format("Custom Field {0} not enabled", FieldNumber);
                     Txt.Visible = DD.Visible = false;
-                    Txt.Text = "";
-                    DD.SelectedValue = "";
+                    Txt.Text= string.Empty;
+                    DD.SelectedValue= string.Empty;
                 }
                 else
                 {
@@ -100,11 +100,11 @@ namespace GRA.SRP.ControlRoom.Controls
                         Txt.Visible = true;
                         DD.Visible = false;
                         Txt.Text = InputVal.Text;
-                        DD.SelectedValue = "";
+                        DD.SelectedValue= string.Empty;
                     }
                     else
                     {
-                        Txt.Text = "";
+                        Txt.Text= string.Empty;
                         Txt.Visible = false;
 
                         DD.Visible = true;
@@ -128,8 +128,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 {
                     Lbl.Text = string.Format("Custom Field {0} not enabled", FieldNumber);
                     Txt.Visible = DD.Visible = false;
-                    Txt.Text = "";
-                    DD.SelectedValue = "";
+                    Txt.Text= string.Empty;
+                    DD.SelectedValue= string.Empty;
                 }
                 else
                 {
@@ -139,11 +139,11 @@ namespace GRA.SRP.ControlRoom.Controls
                         Txt.Visible = true;
                         DD.Visible = false;
                         Txt.Text = InputVal.Text;
-                        DD.SelectedValue = "";
+                        DD.SelectedValue= string.Empty;
                     }
                     else
                     {
-                        Txt.Text = "";
+                        Txt.Text= string.Empty;
                         Txt.Visible = false;
 
                         DD.Visible = true;

@@ -13,13 +13,13 @@ namespace GRA.SRP.Controls {
     public partial class ActivityHistCtl {
         
         /// <summary>
-        /// Label1 control.
+        /// Label2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label Label2;
         
         /// <summary>
         /// pnlFilter control.
@@ -31,6 +31,15 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Panel pnlFilter;
         
         /// <summary>
+        /// ActivityHistoryOtherFamily control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ActivityHistoryOtherFamily;
+        
+        /// <summary>
         /// PID control.
         /// </summary>
         /// <remarks>
@@ -40,13 +49,67 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.DropDownList PID;
         
         /// <summary>
-        /// btnFilter control.
+        /// allActivitiesFilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFilter;
+        protected global::System.Web.UI.WebControls.LinkButton allActivitiesFilter;
+        
+        /// <summary>
+        /// AdventureDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AdventureDropDownItem;
+        
+        /// <summary>
+        /// ChallengeDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ChallengeDropDownItem;
+        
+        /// <summary>
+        /// EventsDropDownItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl EventsDropDownItem;
+        
+        /// <summary>
+        /// whatShowing control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label whatShowing;
+        
+        /// <summary>
+        /// noActivitiesLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl noActivitiesLabel;
+        
+        /// <summary>
+        /// activitiesPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel activitiesPanel;
         
         /// <summary>
         /// rptr control.

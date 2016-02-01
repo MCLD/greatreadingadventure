@@ -178,12 +178,7 @@ namespace GRA.SRP.DAL
             ClearErrorCodes();
             if (validationMode == BusinessRulesValidationMode.INSERT)
             {
-                if (Author =="")
-                {
-                    AddErrorCode(new BusinessRulesValidationMessage("Author", "Author", "You must enter an Author.",
-                                                                    BusinessRulesValidationCode.UNSPECIFIED));
-                }
-                if (Title == "")
+                if (string.IsNullOrEmpty(Title))
                 {
                     AddErrorCode(new BusinessRulesValidationMessage("Title", "Title", "You must enter a Title.",
                                                                     BusinessRulesValidationCode.UNSPECIFIED));

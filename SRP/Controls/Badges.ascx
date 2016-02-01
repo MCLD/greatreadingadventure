@@ -1,121 +1,41 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Badges.ascx.cs" Inherits="GRA.SRP.Controls.Badges" %>
 
-<asp:ScriptManager ID="ScriptManager1" runat="server" EnablePartialRendering="true">
-</asp:ScriptManager>
-<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-<ContentTemplate>
-
-<script language="javascript" type="text/javascript">
-
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-
-        document.location.href = "MyBadges.aspx";
-
-        window.print();
-
-        //document.body.innerHTML = originalContents;
-
-    }
-</script>
-<div id="fb-root"></div>
-<script>    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<%=(ConfigurationManager.AppSettings["FBAPPID"] ?? "121002584737306") %>";
-        fjs.parentNode.insertBefore(js, fjs);
-    } (document, 'script', 'facebook-jssdk'));</script>
-
-
-
-<asp:Panel ID="pnlList" runat="server" Visible="true">
-
-<div class="row" style="min-height: 400px;">
-	<div class="span12">
-        <h1><asp:Label ID="Label1" runat="server" Text="Badges Title"></asp:Label></h1>
-        
-        <table width="100%" cellpadding="5" cellspacing="0">
-            
-            <asp:Repeater runat="server" ID="rptr" onitemcommand="rptr_ItemCommand" >
-                <ItemTemplate>
-            
-            <%# (((long)Eval("Rank")) % 4 == 1 ? "<tr>" : "") %>
-            
-                <td width="25%" valign="bottom" align="center" style="padding-left:20px; padding-right: 20px; border-bottom: 1px solid gray">
-                    <h4><%# Eval("Title") %></h4>
-
-                    <div class="fb-share-button" data-href='<%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/ShareBadge.aspx?BID=" + Eval("BadgeID") %>' data-type="button"></div>
-                    <!--
-                    <div class="fb-share-button" data-href='<%# "http://srp.stglink.com/ShareBadge.aspx?BID=" + Eval("BadgeID") %>' data-type="button"></div>
-                    
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/ShareBadge.aspx?BID=" + Eval("BadgeID") %>" target="_blank">
-                      Share on Facebook
-                    </a>
-                    -->
-
-                    <br /><br />
-
-                    <img src='/images/badges/sm_<%# Eval("BadgeID") %>.png' />
-                    <br /><br />
-
-                    <asp:Button ID="btnView" runat="server" Text="View" CommandArgument='<%# Eval("PBID") %>' CssClass="btn e" />
-                    <br />&nbsp;
-                </td>
-            
-            <%# (((long)Eval("Rank")) % 4 == 0 ? "</tr>" : "") %>                
-                
-                
-                </ItemTemplate>
-            </asp:Repeater>
-            <asp:Label ID="NoBadges" runat="server" Text="You have not earned any badges yet." Visible="false"></asp:Label>
-        
-        
-        </table>
-	</div> 
-</div> 
-
-</asp:Panel>
-
-
-
-<asp:Panel ID="pnlDetail" runat="server" Visible="false">
-
-
-
-<div class="row" style="min-height: 400px;" >
-
-	<div class="span12">
-        
-        <div id="printarea">         
-            <center>
-            <h2><asp:Label ID="lblTitle" runat="server" Text=""></asp:Label></h2>
-            
-            <br />
-            <asp:Image ID="Badge" runat="server" />
-            <br /><br />
-            </center>
+<div class="row">
+    <div class="col-sm-12">
+        <span class="h1">
+            <asp:Label runat="server" Text="badges-my-badges"></asp:Label></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 margin-halfem-top form-inline">
+        <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
+            <asp:HyperLink runat="server" NavigateUrl="~/Badges/"
+                CssClass="btn btn-default btn-sm hidden-print margin-1em-right"><asp:Label runat="server" Text="badges-badgegallery-button"></asp:Label></asp:HyperLink>
         </div>
-              
-        <center>
-        <br /><br /><br /><br />
+    </div>
+</div>
 
-
-        <asp:Button ID="Button1" runat="server" Text="Offers btn Print"  CssClass="btn e" Width="150px" OnClientClick="printDiv('printarea')"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <asp:Button ID="btnList" runat="server" Text="Go Back" onclick="btnList_Click" CssClass="btn e"  Width="150px"/>
-        </center>
-
-	</div> 
-
-</div> 
-
-</asp:Panel>
-
-
-
-
-</ContentTemplate>
-</asp:UpdatePanel>
+<div class="row margin-1em-top">
+    <div class="col-xs-12">
+        <asp:Label ID="NoBadges"
+            runat="server" Text="badges-none-earned"
+            Visible="false"
+            CssClass="margin-1em-bottom"></asp:Label>
+    </div>
+    <asp:Repeater runat="server" ID="rptr">
+        <ItemTemplate>
+            <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+                <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?BadgeId={0}") %>'
+                    runat="server"
+                    onclick='<%# Eval("BadgeId", "return ShowBadgeInfo({0});") %>'
+                    class="thumbnail no-underline badge-with-info-height">
+                    <div class="thumbnail-side-padding text-center caption"><small><%#Eval("Title") %></small></div>
+                    <asp:Image runat="server"
+                        ImageUrl='<%# Eval("BadgeId", "~/images/badges/sm_{0}.png")%>'
+                        CssClass="center-block" />
+                    <div class="thumbnail-side-padding text-center caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
+                </a>
+            </div>
+        </ItemTemplate>
+    </asp:Repeater>
+</div>

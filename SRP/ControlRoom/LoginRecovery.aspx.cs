@@ -24,12 +24,12 @@ namespace GRA.SRP.ControlRoom {
                 // if account doesn't exist, send an email saying so
 
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", 1),
                     ControlRoomLink = string.Format("{0}{1}",
                                                     BaseUrl,
                                                     "/ControlRoom/LoginRecovery.aspx"),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", 1),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", 1),
                     RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject
@@ -53,9 +53,9 @@ namespace GRA.SRP.ControlRoom {
                 body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                 body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                EmailService.SendEmail(uxEmailaddress.Text,
-                                       "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                       body.ToString().FormatWith(values));
+                new EmailService().SendEmail(uxEmailaddress.Text,
+                                             "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                             body.ToString().FormatWith(values));
 
             } else {
                 SRPUser lookupUser = SRPUser.FetchByUsername(userId);
@@ -66,13 +66,13 @@ namespace GRA.SRP.ControlRoom {
                 }
 
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", lookupUser.TenID),
                     PasswordResetLink = string.Format("{0}{1}?token={2}",
                                                       BaseUrl,
                                                       "/ControlRoom/PasswordRecovery.aspx",
                                                       passwordResetToken),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", lookupUser.TenID),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", lookupUser.TenID),
                     RemoteAddress = remoteAddress,
                     UserEmail = uxEmailaddress.Text,
                     PasswordResetSubject = SRPResources.PasswordEmailSubject,
@@ -86,8 +86,8 @@ namespace GRA.SRP.ControlRoom {
                 StringBuilder body = new StringBuilder();
                 body.Append("<p>A password reset request was received by {SystemName} for your ");
                 body.Append("address.</p>");
-                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> in the ");
-                body.Append("next hour to create a new password for your account.</p>");
+                body.Append("<p>Please <a href=\"{PasswordResetLink}\">click here</a> ");
+                body.Append("to create a new password for your account.</p>");
                 body.Append("<p>If you did not initiate this request, take no action and your ");
                 body.Append("password will not be changed.</p>");
                 body.Append("<p>If you have any comments or questions, please contact ");
@@ -96,9 +96,9 @@ namespace GRA.SRP.ControlRoom {
                 body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                 body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                EmailService.SendEmail(uxEmailaddress.Text,
-                                       "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                       body.ToString().FormatWith(values));
+                new EmailService().SendEmail(uxEmailaddress.Text,
+                                             "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                             body.ToString().FormatWith(values));
             }
 
             lblMessage.Text = "Processing your password reset request, you should receive an email soon.";

@@ -574,10 +574,10 @@ namespace GRA.SRP.Core.Utilities {
             return true;
         }
 
-        public static SRPUser GetUserByToken(string token, int hoursWindow = 2) {
+        public static SRPUser GetUserByToken(string token, int hoursWindow = 24) {
             StringBuilder sql = new StringBuilder();
             sql.Append("SELECT [UID] FROM [SRPRecovery] WHERE [Token] = @token ");
-            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) < @hourswindow");
+            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) <= @hourswindow");
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("token", token));
@@ -611,8 +611,8 @@ namespace GRA.SRP.Core.Utilities {
 
         public static SRPUser UpdatePasswordByToken(string token,
                                                     string newPassword,
-                                                    int hoursWindow = 2) {
-            SRPUser user = GetUserByToken(token);
+                                                    int hoursWindow = 24) {
+            SRPUser user = GetUserByToken(token, hoursWindow);
             user.NewPassword = newPassword;
             user.MustResetPassword = false;
             user.LastPasswordReset = DateTime.Now;

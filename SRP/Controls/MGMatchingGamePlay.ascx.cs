@@ -58,7 +58,7 @@ namespace GRA.SRP.Controls
 
                 var imageList = ViewState["imageList"].ToString().Split('|');
                 
-                var g = "";
+                var g= string.Empty;
                 int idx = 0;
                 for (int i = 1; i <= BoardSize; i++)
                 {
@@ -97,7 +97,7 @@ namespace GRA.SRP.Controls
         {
             get
             {
-                var g = "";
+                var g= string.Empty;
                 int idx = 0;
                 for (int i = 1; i <= BoardSize; i++)
                 {
@@ -162,7 +162,7 @@ namespace GRA.SRP.Controls
 
             DataSet ds = DAL.MGMatchingGame.GetRandomPlayItems(iMAGID, (int)BoardSize * BoardSize / 2, iDiff);
 
-            var imageList = "";
+            var imageList= string.Empty;
             var matchList = "[";
 
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)

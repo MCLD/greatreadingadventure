@@ -8,6 +8,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -43,7 +44,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 if (Request["M"] == "K")
                 {
                     MasterPage.DisplayMessageOnLoad = true;
-                    MasterPage.PageMessage = "Queation was saved successfully! ";
+                    MasterPage.PageMessage = "Item was saved successfully! ";
                 }
             }
         }
@@ -387,11 +388,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 switch (obj.QType)
                 {
                     case 1:
-                        obj.QText = ((CKEditor.NET.CKEditorControl)((Panel)tab1.FindControl("pnlType1")).FindControl("QText")).Text;
+                        obj.QText = ((HtmlTextArea)((Panel)tab1.FindControl("pnlType1")).FindControl("QText")).InnerHtml;
                         break;
                     case 2:
                         var p2 = (Panel)tab1.FindControl("pnlType2");
-                        obj.QText = ((TextBox)p2.FindControl("QText2")).Text;
+                        obj.QText = ((HtmlTextArea)p2.FindControl("QText2")).InnerHtml;
                         obj.QName = ((TextBox)p2.FindControl("QName2")).Text;
                         obj.IsRequired = ((CheckBox)p2.FindControl("IsRequired2")).Checked;
                         obj.DisplayControl = ((DropDownList)p2.FindControl("DisplayControl2")).SelectedValue.SafeToInt();
@@ -399,13 +400,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         break;
                     case 3:
                         var p3 = (Panel) tab1.FindControl("pnlType3");
-                        obj.QText = ((TextBox)p3.FindControl("QText3")).Text;
+                        obj.QText = ((HtmlTextArea)p3.FindControl("QText3")).InnerHtml;
                         obj.QName = ((TextBox)p3.FindControl("QName3")).Text; 
                         obj.IsRequired = ((CheckBox)p3.FindControl("IsRequired3")).Checked;
                         break;
                     case 4:
                         var p4 = (Panel) tab1.FindControl("pnlType4");
-                        obj.QText = ((TextBox)p4.FindControl("QText4")).Text;
+                        obj.QText = ((HtmlTextArea)p4.FindControl("QText4")).InnerHtml;
                         obj.QName = ((TextBox)p4.FindControl("QName4")).Text; 
                         obj.IsRequired = ((CheckBox)p4.FindControl("IsRequired4")).Checked;
                         obj.DisplayControl = ((DropDownList)p4.FindControl("DisplayControl4")).SelectedValue.SafeToInt();

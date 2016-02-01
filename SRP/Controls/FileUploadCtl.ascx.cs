@@ -3,16 +3,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Web.UI;
 
-namespace GRA.SRP.Classes
-{
-    public partial class FileDownloadCtl : System.Web.UI.UserControl
-    {
+namespace GRA.SRP.Classes {
+    public partial class FileDownloadCtl : System.Web.UI.UserControl {
         public int ImgWidth
         {
             get
             {
-                if (null != ViewState["_ImgWidth_"+ this.ID +"_"])
-                {
+                if(null != ViewState["_ImgWidth_" + this.ID + "_"]) {
                     return ViewState["_ImgWidth_" + this.ID + "_"] as dynamic;
                 }
                 return 0;
@@ -27,8 +24,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_ImgHeight_" + this.ID + "_"])
-                {
+                if(null != ViewState["_ImgHeight_" + this.ID + "_"]) {
                     return ViewState["_ImgWidth_" + this.ID + "_"] as dynamic;
                 }
                 return 0;
@@ -43,8 +39,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_SmallThumbnailWidth_" + this.ID + "_"])
-                {
+                if(null != ViewState["_SmallThumbnailWidth_" + this.ID + "_"]) {
                     return ViewState["_SmallThumbnailWidth_" + this.ID + "_"] as dynamic;
                 }
                 return 0;
@@ -58,8 +53,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_MediumThumbnailWidth_" + this.ID + "_"])
-                {
+                if(null != ViewState["_MediumThumbnailWidth_" + this.ID + "_"]) {
                     return ViewState["_MediumThumbnailWidth_" + this.ID + "_"] as dynamic;
                 }
                 return 0;
@@ -73,8 +67,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_CreateSmallThumbnail_" + this.ID + "_"])
-                {
+                if(null != ViewState["_CreateSmallThumbnail_" + this.ID + "_"]) {
                     return ViewState["_CreateSmallThumbnail_" + this.ID + "_"] as dynamic;
                 }
                 return false;
@@ -88,8 +81,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_CreateMediumThumbnail_" + this.ID + "_"])
-                {
+                if(null != ViewState["_CreateMediumThumbnail_" + this.ID + "_"]) {
                     return ViewState["_CreateMediumThumbnail_" + this.ID + "_"] as dynamic;
                 }
                 return false;
@@ -103,8 +95,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_SmallThumbnailPrefix_" + this.ID + "_"])
-                {
+                if(null != ViewState["_SmallThumbnailPrefix_" + this.ID + "_"]) {
                     return ViewState["_SmallThumbnailPrefix_" + this.ID + "_"] as string;
                 }
                 return "sm_";
@@ -118,8 +109,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_MediumThumbnailPrefix_" + this.ID + "_"])
-                {
+                if(null != ViewState["_MediumThumbnailPrefix_" + this.ID + "_"]) {
                     return ViewState["_MediumThumbnailPrefix_" + this.ID + "_"] as string;
                 }
                 return "md_";
@@ -133,8 +123,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_Folder_" + this.ID + "_"])
-                {
+                if(null != ViewState["_Folder_" + this.ID + "_"]) {
                     return ViewState["_Folder_" + this.ID + "_"] as string;
                 }
                 return "";
@@ -153,8 +142,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_FileName_" + this.ID + "_"])
-                {
+                if(null != ViewState["_FileName_" + this.ID + "_"]) {
                     return ViewState["_FileName_" + this.ID + "_"] as string;
                 }
                 return "";
@@ -168,8 +156,7 @@ namespace GRA.SRP.Classes
         {
             get
             {
-                if (null != ViewState["_Extension_" + this.ID + "_"])
-                {
+                if(null != ViewState["_Extension_" + this.ID + "_"]) {
                     return ViewState["_Extension_" + this.ID + "_"] as string;
                 }
                 return "png";
@@ -179,90 +166,76 @@ namespace GRA.SRP.Classes
                 ViewState["_Extension_" + this.ID + "_"] = value;
             }
         }
-        public bool FileExists()
-        {
-            try
-            {
+        public bool FileExists() {
+            try {
                 return File.Exists(Server.MapPath(Folder) + "\\" + FileName + "." + Extension);
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
-        public bool SmallThumbnailExists()
-        {
-            try
-            {
+        public bool SmallThumbnailExists() {
+            try {
                 return File.Exists(Server.MapPath(Folder) + "\\" + SmallThumbnailPrefix + FileName + "." + Extension);
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
-        public bool MediumThumbnailExists()
-        {
-            try
-            {
+        public bool MediumThumbnailExists() {
+            try {
                 return File.Exists(Server.MapPath(Folder) + "\\" + MediumThumbnailPrefix + FileName + "." + Extension);
-            }
-            catch
-            {
+            } catch {
                 return false;
             }
         }
 
-        public void ProcessRender()
-        {
-            lblUplderr.Text = lblUplderr1.Text = "";
-            if (FileExists())
-            {
+        public void ProcessRender() {
+            lblUplderr.Text = lblUplderr1.Text = string.Empty;
+            if(FileExists()) {
                 pnlExists.Visible = true;
                 pnlNew.Visible = false;
                 pnlReplace.Visible = false;
 
-                if (CreateSmallThumbnail && SmallThumbnailExists())
-                {
-                    PreviewImage1.NavigateUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now;
+                if(CreateSmallThumbnail && SmallThumbnailExists()) {
+                    PreviewImage1.NavigateUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                    if(File.Exists(Server.MapPath(Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension))) {
+                        PreviewImage1.ImageUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                    }
                     lblSm.Text = "<b>Thumbnail</b><br />Width=" + SmallThumbnailWidth.ToString() + "px";
                     lblSm.Visible = true;
-                    Image1.ImageUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now;
-                }
-                else
-                {
+                    Image1.ImageUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                } else {
                     PreviewImage1.Visible = false;
                     lblSm.Visible = false;
                 }
 
-                if (CreateMediumThumbnail && MediumThumbnailExists())
-                {
-                    PreviewImage2.NavigateUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now;
+                if(CreateMediumThumbnail && MediumThumbnailExists()) {
+                    PreviewImage2.NavigateUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                    if(File.Exists(Server.MapPath(Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension))) {
+                        PreviewImage2.ImageUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                    }
                     lblMd.Text = "<b>Medium Size</b><br />Width=" + MediumThumbnailWidth.ToString() + "px";
                     lblMd.Visible = true;
-                    Image2.ImageUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now;
-                }
-                else
-                {
+                    Image2.ImageUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                } else {
                     PreviewImage2.Visible = false;
                     lblMd.Visible = false;
                 }
 
-                PreviewImage3.NavigateUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now;
+                PreviewImage3.NavigateUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                if(File.Exists(Server.MapPath(Folder + "\\" + FileName + "." + Extension))) {
+                    PreviewImage3.ImageUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
+                }
                 lblLg.Text = "<b>Image</b><br />Width=" + ImgWidth.ToString() + "px";
-                Image3.ImageUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now;
+                Image3.ImageUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
 
-            }
-            else
-            {
+            } else {
                 pnlNew.Visible = true;
                 pnlExists.Visible = false;
                 pnlReplace.Visible = false;
             }
         }
 
-        protected void Page_Load(object sender, EventArgs e)
-        {
+        protected void Page_Load(object sender, EventArgs e) {
             //if (!IsPostBack)
             //{
             //    ProcessRender();
@@ -271,27 +244,22 @@ namespace GRA.SRP.Classes
             ProcessRender();
         }
 
-        protected void btnReplace_Click(object sender, EventArgs e)
-        {
+        protected void btnReplace_Click(object sender, EventArgs e) {
             pnlExists.Visible = false;
             pnlReplace.Visible = true;
             pnlNew.Visible = false;
         }
 
-        protected void btnCancel1_Click(object sender, EventArgs e)
-        {
+        protected void btnCancel1_Click(object sender, EventArgs e) {
             pnlExists.Visible = true;
             pnlReplace.Visible = false;
             pnlNew.Visible = false;
         }
 
-        protected void btnUpload0_Click(object sender, EventArgs e)
-        {
-            if (flUpload.HasFile)
-            {
-                try
-                {
-                    Extension = flUpload.FileName.Substring(flUpload.FileName.LastIndexOf(".")+1);
+        protected void btnUpload0_Click(object sender, EventArgs e) {
+            if(flUpload.HasFile) {
+                try {
+                    Extension = flUpload.FileName.Substring(flUpload.FileName.LastIndexOf(".") + 1);
                     Extension = "png";
                     var fileName = (Server.MapPath(Folder) + FileName + "." + Extension);
 
@@ -309,35 +277,36 @@ namespace GRA.SRP.Classes
                     Int32 newWidth = ImgWidth;
                     float ratio = 0;
                     Int32 newHeight = 0;
-                        ratio = (float)currWidth / (float)newWidth;
-                        newHeight = (int)(currHeight / ratio);
+                    ratio = (float)currWidth / (float)newWidth;
+                    newHeight = (int)(currHeight / ratio);
 
 
-                        var newBmp = new System.Drawing.Bitmap(newWidth, newHeight,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                        newBmp.SetResolution(72, 72); newBmp.MakeTransparent();
-                        var newGraphic = System.Drawing.Graphics.FromImage(newBmp);
+                    var newBmp = new System.Drawing.Bitmap(newWidth, newHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    newBmp.SetResolution(72, 72);
+                    newBmp.MakeTransparent();
+                    var newGraphic = System.Drawing.Graphics.FromImage(newBmp);
 
-                        //newGraphic.Clear(Color.DarkRed);
-                        newGraphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                        newGraphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        newGraphic.DrawImage(upImage, 0, 0, newWidth, newHeight);
-                        newBmp.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                    //newGraphic.Clear(Color.DarkRed);
+                    newGraphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    newGraphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    newGraphic.DrawImage(upImage, 0, 0, newWidth, newHeight);
+                    newBmp.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
 
-                        newBmp.Dispose();
-                        newGraphic.Dispose();
-
-
+                    newBmp.Dispose();
+                    newGraphic.Dispose();
 
 
-                    if (CreateSmallThumbnail)
-                    {
+
+
+                    if(CreateSmallThumbnail) {
                         fileName = Server.MapPath(Folder) + "\\" + SmallThumbnailPrefix + FileName + "." + Extension;
                         newWidth = SmallThumbnailWidth;
                         ratio = (float)currWidth / (float)newWidth;
                         newHeight = (int)(currHeight / ratio);
 
                         newBmp = new System.Drawing.Bitmap(newWidth, newHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                        newBmp.SetResolution(72, 72); newBmp.MakeTransparent();
+                        newBmp.SetResolution(72, 72);
+                        newBmp.MakeTransparent();
                         newGraphic = System.Drawing.Graphics.FromImage(newBmp);
 
                         //newGraphic.Clear(Color.DarkRed);
@@ -351,15 +320,15 @@ namespace GRA.SRP.Classes
 
                     }
 
-                    if (CreateMediumThumbnail)
-                    {
+                    if(CreateMediumThumbnail) {
                         fileName = Server.MapPath(Folder) + "\\" + MediumThumbnailPrefix + FileName + "." + Extension;
                         newWidth = MediumThumbnailWidth;
                         ratio = (float)currWidth / (float)newWidth;
                         newHeight = (int)(currHeight / ratio);
 
                         newBmp = new System.Drawing.Bitmap(newWidth, newHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                        newBmp.SetResolution(72, 72); newBmp.MakeTransparent();
+                        newBmp.SetResolution(72, 72);
+                        newBmp.MakeTransparent();
                         newGraphic = System.Drawing.Graphics.FromImage(newBmp);
 
                         //newGraphic.Clear(Color.DarkRed);
@@ -380,28 +349,21 @@ namespace GRA.SRP.Classes
                     // thumb
                     // medium
 
-                    
+
                     ProcessRender();
 
-                }
-                catch (Exception ex)
-                {
+                } catch(Exception ex) {
                     lblUplderr.Text = "<br><font color=red>ERROR: " + ex.Message.ToString() + "</font>";
                 }
-            }
-            else
-            {
+            } else {
                 lblUplderr.Text = "<br><font color=red>ERROR: You have not specified a file.</font>";
             }
 
         }
 
-        protected void btnUpload_Click(object sender, EventArgs e)
-        {
-            if (flUploadReplace.HasFile)
-            {
-                try
-                {
+        protected void btnUpload_Click(object sender, EventArgs e) {
+            if(flUploadReplace.HasFile) {
+                try {
                     Extension = flUploadReplace.FileName.Substring(flUpload.FileName.LastIndexOf(".") + 1);
                     Extension = "png";
                     var fileName = (Server.MapPath(Folder) + FileName + "." + Extension);
@@ -442,8 +404,7 @@ namespace GRA.SRP.Classes
 
 
 
-                    if (CreateSmallThumbnail)
-                    {
+                    if(CreateSmallThumbnail) {
                         fileName = Server.MapPath(Folder) + "\\" + SmallThumbnailPrefix + FileName + "." + Extension;
                         newWidth = SmallThumbnailWidth;
                         ratio = (float)currWidth / (float)newWidth;
@@ -465,8 +426,7 @@ namespace GRA.SRP.Classes
 
                     }
 
-                    if (CreateMediumThumbnail)
-                    {
+                    if(CreateMediumThumbnail) {
                         fileName = Server.MapPath(Folder) + "\\" + MediumThumbnailPrefix + FileName + "." + Extension;
                         newWidth = MediumThumbnailWidth;
                         ratio = (float)currWidth / (float)newWidth;
@@ -498,29 +458,22 @@ namespace GRA.SRP.Classes
 
                     ProcessRender();
 
-                }
-                catch (Exception ex)
-                {
+                } catch(Exception ex) {
                     lblUplderr1.Text = "<br><font color=red>ERROR: " + ex.Message.ToString() + "</font>";
                 }
-            }
-            else
-            {
+            } else {
                 lblUplderr1.Text = "<br><font color=red>ERROR: You have not specified a file.</font>";
             }
         }
 
-        protected void btnDelete_Click(object sender, EventArgs e)
-        {
+        protected void btnDelete_Click(object sender, EventArgs e) {
             var fileName = (Server.MapPath(Folder) + "\\" + FileName + "." + Extension);
             File.Delete(fileName);
-            if (CreateSmallThumbnail)
-            {
+            if(CreateSmallThumbnail) {
                 fileName = (Server.MapPath(Folder) + "\\" + SmallThumbnailPrefix + FileName + "." + Extension);
                 File.Delete(fileName);
             }
-            if (CreateMediumThumbnail)
-            {
+            if(CreateMediumThumbnail) {
                 fileName = (Server.MapPath(Folder) + "\\" + MediumThumbnailPrefix + FileName + "." + Extension);
                 File.Delete(fileName);
             }

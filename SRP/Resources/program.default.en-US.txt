@@ -1,195 +1,242 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Header Text
+;;  Master page and front page text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-About_Us_hidden_header=About Us
-About_Us_Short_Text=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> is a robust, open-source software designed to manage library reading programs.
-Contact_Us_hidden_header=Contact Us
-Contact_Us_hidden_header_Phone= (602) 652-3000
-Contact_Us_hidden_header_Email= <a href="mailto:info@greatreadingadventure.com">info@greatreadingadventure.com</a>
-Contact_Us_hidden_header_Address= 2700 N. Central Ave, Ste 700, Phoenix, AZ 85004
-Info_hidden_header=More Information
-Info_hidden_header_Short_Text=Run a reading program for any-size library district with literacy testing, digital badges, and comprehensive reporting using this free software package. <a href="http://www.greatreadingadventure.com/" target="_blank">See the Web site</a> for more details.
-System_Name=Great Reading Adventure 
-Slogan=Reimagining Summer Reading
-Upsell=All of what you are seeing can be easily customized to match your library!
-Back To Top=Back To Top
-Copyright_Statement=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Global text
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RegisterMasterBtn=Register
-LoginMasterBtn=Login
-LogoutMasterBtn=Logout
-btnRegister=Register Now
-btnLogin=Login Now
-Program:=Program:
-Button=Press Me!
+system-name=Great Reading Adventure 
+slogan=Reimagining Summer Reading
+upsell=All of what you are seeing can be easily customized for your library!
+footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
+frontpage-description=Adventures, secret codes, challenges, and badges await! Take your literacy program online with free, open source software developed by libraries, for libraries.
+tenant-selection=Choose your library:
+navigation-button-register=Register
+navigation-button-login=Login
+navigation-button-logout=Logout
+frontpage-button-register=Register Now
+frontpage-button-login=Login Now
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoginForm Title=Login
-LoginForm no account=Don't have an account?  
-LoginForm register=<b>Register now...</b>
-LoginForm forgot pass=Did you forget your password?
-LoginForm recover=<b>Get it by email...</b>
-LoginForm username=Username:
-LoginForm password=Password:
-LoginForm terms=I accept the terms and conditions
-LoginForm button=Login
+loginform-title=Login
+loginform-register=Register
+loginform-recover=Lost password
+loginform-username=Username:
+loginform-password=Password:
+loginform-submit-button=Login
+loginform-remember-me=Remember my username
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Recover form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RecoverForm Title=Forgot Password
-RecoverForm no account=Don't have an account?  
-RecoverForm register=<b>Register now...</b>
-RecoverForm go login=Did you just remember your password?
-RecoverForm login=<b>Login now...</b>
-RecoverForm email=Username:
-RecoverForm button=Email Password
+password-recovery-title=Forgot Password
+password-recovery-username=Username:
+password-recovery-submit=Recover password
+password-recovery-expired=Your password change request has expired. Please generate a new password change request if you need to reset your password.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-PwdResetForm Title=Change Password
-PwdResetForm current=Current password:  
-PwdResetForm newpassword=New password: 
-PwdResetForm newpassword repeat=Re-enter the new password:
-PwdResetForm button=Submit
+change-password-title=Change Password
+change-password-current=Current password:  
+change-password-new=New password: 
+change-password-verify=Verify new password:
+change-password-submit=Change my password
+change-password-rules=Please select a new password.<ul><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Change family password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-FamPwdResetForm Title=Change Password for Family Member
-FamPwdResetForm current=<font color=red>The PARENT's</font> Current password:  
-FamPwdResetForm newpassword=<font color=red>The CHILD's</font> New password: 
-FamPwdResetForm newpassword repeat=Re-enter the new password:
-FamPwdResetForm button=Submit
-FamPwdResetForm button2=Cancel
+family-password-reset-title=Change Family Member Password
+family-password-reset-current=<span class="text-primary">Your</span> current password:
+family-password-reset-new=New <span class="text-primary">family member</span> password:
+family-password-reset-verify=Verify new <span class="text-primary">family member</span> password:
+family-password-reset-submit=Change password
+family-password-reset-rules=<ul><li>Please enter your password in the top field and the new password for your family member in the lower two fields.</li><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Family List
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-FamAccts Title=Family Members List
-FamAccts List=Family Members
-FamAccts Manage Account=Manage Account
-FamAccts Change Password=Change Password
-FamAccts Log=Enter Activity
-FamAccts Impersonate Instructions=If you are the parent, and have created family accounts for the other members of your family, then you can switch back and forth between the various accounts without logging in separately.  To log into another family account linke to your parent account, select it from the accounts drop down list and click the "Go" button.
-FamAccts Impersonate Go=Go
-FamAccts Impersonate Cancel=Cancel
+family-list-title=Family Members List
+family-list-members=Family Members
+family-list-password=Change Password
+family-list-login=Login as
+family-list-log=Enter activity
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family Member Add
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-member-add-title=Add Family Member
+family-member-add-instructions=<p>Create an additional account for a family member.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
+family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
+family-member-add-save=Save
+family-member-add-cancel=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family Reading log
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-readinglog-reading-log=Log family reading
+family-readinglog-reading-prompt=Read
+family-readinglog-submit=Submit
+family-readinglog-read-a-book=Read a book!
+family-readinglog-details-header=Enter book details
+family-readinglog-details-cancel=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Family code entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+family-secret-code-header=Secret code
+family-secret-code-prompt=Code:
+family-secret-code-submit=Submit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Account Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-MyAccount Title=My Account Setup
-FamilyAccount Title=Family Account Setup
-MyAccount SaveBtn=Submit
-MyAccount CancelBtn=Cancel
+myaccount-title=My Account Settings
+myaccount-family-title=Family Account Settings
+myaccount-save=Save
+myaccount-family=Manage Family Members
+myaccount-add-family-member=Add Family Member
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Registration Title=Register and Create Account
-Registration Message=You can create an account for yourself and add additional accounts for your family members.
-Registration Family Member Message=You have completed your account registration and are now creating accounts for your family members.
-Registration Account Success=Your Account has been succesfully created.
-Registration FamilyAccount Success=Your Account has been succesfully created. <br />You also indicated you want to create accounts for family members. <br /><br />Click "Next" to add a family member account, or click "Done" if you are done adding family member accounts.
-Registration TermsOfUseflag=You acknowledge and accept the terms of use.<br>
-Registration ShareFlag=This site will never share your information ... <br>
-Registration btnPrev=< Go Back
-Registration btnNext=Continue >
-Registration btnDone=Done
-Registration label School Grade=School Grade:
-Registration label DOB=Date of Birth:
-Registration label Age=Age:
-Registration label Family Account=Are you a parent and want to create a Family Account and register multiple family members?
-Registration label Program=Program:
-Registration label FirstName=First Name:
-Registration label LastName=Last Name:
-Registration label MiddleName=Middle Name:
-Registration label Gender=Gender:
-Registration label Email=Email Address:
-Registration label Phone=Phone Number:
-Registration label Addr1=Street Address 1:
-Registration label Addr2=Street Address 2:
-Registration label City=City:
-Registration label State=State:
-Registration label Zip=Zip Code:
-Registration label Country=Country:
-Registration label County=County:
-Registration label PGFN=Parent or Guardian First Name:
-Registration label PGMN=Parent or Guardian Middle Name:
-Registration label PGLN=Parent or Guardian Last Name:
-Registration label Library=Primary Library:
-Registration label LibraryCard=Library Card #:
-Registration label School=School Name:
-Registration label District=District:
-Registration label Teacher=Teacher:
-Registration label Group=Group/Team Name:
-Registration label SchoolType=School Type:
-Registration label Terms=Terms of Use:
-Registration label InfoShare=Information Sharing:
-Registration label Consent=Parental Consent:
-Registration label Avatar=Avatar:
-Registration label School District=School District:
+registration-title=Register and Create Account
+registration-instructions=<p>Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
+registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members. <strong>Please enter their information in the form.</strong>
+registration-processing=Creating your account...
+registration-success=Your account has been succesfully created!
+registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
+registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
+registration-privacy-details=You may show my username (but not my real name) and achievements (adventures, badges, challenges, etc.) to other participants.
+registration-form-username-password-details=Please select your username and password for the program. Your username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
+registration-button-previous=< Previous
+registration-button-next=Next >
+registration-button-done=Done
+registration-button-family=Add Family Member
+registration-form-grade=School grade:
+registration-form-dob=Date of birth:
+registration-form-age=Age:
+registration-form-family-details=A family account is allowed to manage multiple accounts for a single household (e.g. accounts for children).
+registration-form-family-account=Would you like to create a family account?
+registration-form-family-simplified=Your account has been created! If you'd like to create an additional account for a family member (e.g. for a child), click the Add Family Member button below. Otherwise, select Next to begin your reading adventure!
+registration-form-program=Program:
+registration-form-name-first=First name:
+registration-form-name-last=Last name:
+registration-form-name-middle=Middle name:
+registration-form-gender=Gender:
+registration-form-email=Email address:
+registration-form-phone=Phone number:
+registration-form-address1=Street address:
+registration-form-address2=Street address 2:
+registration-form-city=City:
+registration-form-state=State:
+registration-form-zip=ZIP code:
+registration-form-country=Country:
+registration-form-county=County:
+registration-form-guardian-name-first=Parent/guardian first name:
+registration-form-guardian-name-middle=Parent/guardian middle name:
+registration-form-guardian-name-last=Parent/guardian last name:
+registration-form-library-district=Library district:
+registration-form-library=Library:
+registration-form-library-card=Library card #:
+registration-form-school-district=School district:
+registration-form-school-type=School type:
+registration-form-school=School name:
+registration-form-teacher=Teacher:
+registration-form-group=Group/team name:
+registration-form-terms=Terms of use:
+registration-form-information-sharing=Information sharing:
+registration-form-consent=Parental consent:
+registration-form-avatar=Avatar:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Minigames text
+;;  Adventures text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Minigame Instructions OB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story for loads of fun!</b></h3><br>
-Minigame Instructions HP=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg" width="100%">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Match the word on top with the same word on the square to uncover a hidden picture!</b></h3><br>
-Minigame Instructions MM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the picture that matches the word!</b></h3><br>
-Minigame Instructions CB=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Use the key to decode the message!</b></h3><br>
-Minigame Instructions WM=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Click the squares to find the matching pairs!</h3></b><br>
-Minigame Instructions MG=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Choose the word that matches the picture!</b></h3><br>
-Minigame Instructions CA=<img src="http://mcldconnect.org/mcreads/wp-content/uploads/2014/05/MCESALogo_Seal_Right.jpg">    Content created in collaboration with the Maricopa County Education Service Agency.<p><p><br> <h3><b>Read the story and decide which path you want to take!</b></h3><br>
-Minigame Instructions Difficulty=Choose the difficulty level you would like to play
-Minigame Instructions BtnEasy=Easy
-Minigame Instructions BtnMedium=Medium
-Minigame Instructions BtnHard=Hard
-Minigame Instructions BtnPrev=Previous Page
-Minigame Instructions BtnNext=Next Page
-Minigame Instructions BtnContinue=Continue
-Minigame BtnContinue=Continue
-Minigame label Enter Decoded=Use the Key and type the decoded message in the text box below. Be careful, the message is case sensitive ...
-Minigame btnScore=Verify Decoding
-Minigame Key=Message Key
-Minigame Instructions ReachedtheEnd=You have reached the end of your adventure.
+adventures-instructions-onlinebook=Read an exciting story.
+adventures-instructions-mixandmatch=Choose the correct picture.
+adventures-instructions-codebreaker=Decode the secret message using the code key.
+adventures-instructions-cyoa=Read a story and decide which path you want to take.
+adventures-instructions-difficulty=Choose your difficulty:
+adventures-instructions-button-easy=Easy
+adventures-instructions-button-medium=Medium
+adventures-instructions-button-hard=Hard
+adventures-instructions-button-previous=Previous Page
+adventures-instructions-button-next=Next Page
+adventures-instructions-button-continue=Next
+adventures-codebreaker-verify=Decode message
+adventures-codebreaker-key=Code Key
+adventures-codebreaker-message=Secret message
+adventures-codebreaker-failure=Are you sure? That doesn't look right. <strong>Try decoding the message again!</strong>
+adventures-mixmatch-success=<strong>Good job</strong>, that is right!
+adventures-mixmatch-failure=That is not the right answer. <strong>Click the button to try again.</strong>
+adventures-mixmatch-button-success=Next
+adventures-mixmatch-button-failure=Try again!
+adventures-success=<strong>Great job</strong>, you've finished the <strong><em>{0}</em></strong> Adventure!
+adventures-success-badge=<strong>Congratulations</strong>, you finished the <strong><em>{0}</em></strong> Adventure and were awarded a badge!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Offers text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Offers Title=Promotional Offers
-Offers btn Print=Print
-Offers btn Back=Go Back
-Offers Serial=Serial #
+offers-title=Offers
+offers-back=Back
+offers-serial=Offer Serial #
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Events Title=Upcoming Events
-Events btn Filter=Filter
-Events btn Clear=Clear
-Events Label When=When: 
-Events Label What=What: 
-Events Label Where=Where: 
-Events Btn Details=More Details ... 
-Events btn Print=Print
-Events btn Back=Go Back
+events-title=Events
+events-header-when=When
+events-header-where=Where
+events-header-what=What
+events-header-summary=Summary
+events-filter-button=Filter
+events-filter-clear-button=Clear
+events-prompt=Event: 
+events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Notifications Title=Notifications
-Ask A Question=Ask A Question
-Notifications btn Print=Print
-Notifications Ask Question Title=Ask Question
-Submit Question=Submit Question
-Notifications Ask Question Submitted Done=We have received your question and will get back to you soon.
+notifications-title=Mail
+notifications-from=The Great Reading Adventure Team
+notifications-send-message=Send a mail message
+notifications-message-sent=Your message has been sent!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Reading Lists Title=Book Lists Recommended By Our Librarians
-Reading Lists Instructions=Our librarians have put together several reading lists, for a variety of reading interests and levels.  Select the list name to see the books on the list, and then let us know which of the books you have read.  Complete the reading list and you might just earn a prize, cool badges and even reading points!
-Reading Lists No Lists=No reading lists are available at this time.
-Reading Lists btn Print=Print
-Reading Lists btn Save=Save
+challenges-title=Challenges
+challenges-instructions=Complete Challenges to earn points and win badges!
+challenges-no-challenges=There are currently no Challenges. Check back soon!
+challenges-prompt=Challenge: 
+challenges-close=Close
+challenges-save=Save
+challenges-return=Back
+challenges-progress-saved=Your progress has been saved!
+challenges-completed=<strong>Good work</strong>, you've completed a Challenge!
+challenges-completed-badge=<strong>Congratulations</strong>, you completed a Challenge and were awarded a badge!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Logging Form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LoggingForm Title=Family Account Activity Logging
-Activity History Title=Activity History
-Activity History btn Filter=Filter
+activity-history-title=Activity History
+activity-history-other-family=View another family member:
 Play Now=Play Now <br /><small>Go to the game map</small>
 Reading Log=Play Now:<br /><small>Log my reading, enter a secret code, and play mini-games</small>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Badges
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+badges-my-badges=My Badges
+badges-gallery=Badge Gallery
+badges-none-earned=You have not earned any badges yet.
+badges-none-available=No badges found.
+badges-filter-button=Filter
+badges-filter-clear-button=Clear
+badges-mybadges-button=My Badges
+badges-badgegallery-button=Badge Gallery
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Reading log
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+readinglog-reading-log=Reading log
+readinglog-description=Log your reading below. If you want to enter book details, check the "I want to enter book details" checkbox first!
+readinglog-reading-prompt=I read
+readinglog-submit=Submit
+readinglog-read-a-book=I read a book!
+readinglog-details-header=Enter book details
+readinglog-details-cancel=Cancel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Code entry
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+secret-code-header=Secret code
+secret-code-description=Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!
+secret-code-prompt=Code:
+secret-code-submit=Submit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Books read
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+books-read-title=Book List
+books-read-other-family=View another family member:
+books-read-none=No book title and author information logged. If you wish to see a list of books you've read, be sure to enter the title and author when you log your reading!

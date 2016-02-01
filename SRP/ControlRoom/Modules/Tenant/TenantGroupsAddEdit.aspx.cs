@@ -33,7 +33,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
 
             if (!IsPostBack )
             {
-                lblGID.Text = Session["GID"] == null ? "" : Session["GID"].ToString(); //Session["GID"] = "";
+                lblGID.Text = Session["GID"] == null ? "" : Session["GID"].ToString(); //Session["GID"]= string.Empty;
                 //lblGID.Text = Request["PK"];
                 dv.ChangeMode(lblGID.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
 
@@ -179,7 +179,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
         protected void SaveUsers(DetailsView dv, SRPGroup obj)
         {
             GridView gv = (GridView)dv.FindControl("gvGroupUsers");
-            string memberUsers = "";
+            string memberUsers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -195,7 +195,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
         protected void SavePermissions(DetailsView dv, SRPGroup obj)
         {
             GridView gv = (GridView)dv.FindControl("gvGroupPermissions");
-            string groupPermissions = "";
+            string groupPermissions= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isChecked")).Checked)

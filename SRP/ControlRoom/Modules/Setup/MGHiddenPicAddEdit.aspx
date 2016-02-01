@@ -1,10 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ControlRoom/Control.Master" 
     AutoEventWireup="true" CodeBehind="MGHiddenPicAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.MGHiddenPicAddEdit" 
-    
 %>
 
 <%@ Register src="~/Controls/FileUploadCtl.ascx" tagname="FileUploadCtl" tagprefix="uc1" %>
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -185,28 +183,7 @@
                 <table width="100%">
                     <tr>
                         <td width="75%">
-                            <CKEditor:CKEditorControl ID="Acknowledgements" 
-                                BasePath="/ckeditor/" 
-                                runat="server" 
-                                Skin="office2003" 
-         
-                                BodyId="wrapper" 
-                                ContentsCss="/css/EditorStyles.css" 
-                                DisableNativeSpellChecker="False" 
-                                DisableNativeTableHandles="False" 
-                                DocType="&lt;!DOCTYPE html&gt;" 
-                                ForcePasteAsPlainText="True" 
-                                Height="70px" UIColor="#D3D3D3" 
-                                Visible="True" 
-                                Width="98%"
-                                Toolbar="Source|-|Preview|-|Cut|Copy|Paste|PasteText|PasteFromWord|-|Undo|Redo|-|Find|Replace|-|SelectAll|RemoveFormat| 
-                                / |Bold|Italic|Underline|Strike|-|Subscript|Superscript|-|NumberedList|BulletedList|-|Outdent|Indent|Blockquote|CreateDiv|-|JustifyLeft|JustifyCenter|JustifyRight|JustifyBlock| 
-                                / |Link|Unlink|Anchor|-|Image|Flash|Table|HorizontalRule|SpecialChar|PageBreak|Iframe|
-                                / |Styles|Format|Font|FontSize|-|TextColor|BGColor|-|ShowBlocks|Maximize|
-                                "
-                                AutoGrowOnStartup="True" 
-                                Text='<%# Eval("Acknowledgements") %>'
-                            ></CKEditor:CKEditorControl>                        
+                            <textarea id="Acknowledgements" runat="server" class="gra-editor"><%# Eval("Acknowledgements") %></textarea>                      
                         </td>
 
                         <td>
@@ -234,17 +211,12 @@
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
         </asp:TemplateField>
 
-
-
-
-
-
-
-
-
-
-
-
+        <asp:TemplateField HeaderText="Note: " SortExpression="Note" HeaderStyle-Wrap="False">
+		    <EditItemTemplate>
+                Ten terms are required for this to function properly - if you enter less than ten terms it will use letters instead of the terms you enter. Terms should be separated by a space and enclosed in quotes if the term itself contains a space. For example: airplane baseball "cellar door"
+            </EditItemTemplate>
+            <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />    
+        </asp:TemplateField>
 
         <asp:TemplateField HeaderText="Easy Dictionary: " SortExpression="EasyDictionary" HeaderStyle-Wrap="False">
 		    <EditItemTemplate>

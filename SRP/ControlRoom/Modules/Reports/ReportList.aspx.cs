@@ -83,7 +83,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             string editpage = "~/ControlRoom/Modules/Reports/ReportAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["RID"] = ""; Response.Redirect(editpage);
+                Session["RID"]= string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

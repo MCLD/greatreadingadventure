@@ -10,12 +10,12 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
 
-namespace GRA.SRP.DAL
-{
+namespace GRA.SRP.DAL {
 
-[Serializable]    public class Notifications : EntityBase
-    {
+    [Serializable]
+    public class Notifications : EntityBase {
         // Note: PID = 0 is a system notification (to the admins or from the admins)
         public static new string Version { get { return "2.0"; } }
 
@@ -170,8 +170,7 @@ namespace GRA.SRP.DAL
 
         #region Constructors
 
-        public Notifications()
-        {
+        public Notifications() {
             TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
         }
 
@@ -179,8 +178,7 @@ namespace GRA.SRP.DAL
 
         #region stored procedure wrappers
 
-        public static DataSet GetAll()
-        {
+        public static DataSet GetAll() {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
@@ -191,8 +189,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Notifications_GetAll", arrParams);
         }
 
-        public static DataSet GetAllToPatron(int PID)
-        {
+        public static DataSet GetAllToPatron(int PID) {
             //SqlDataReader dr;
             SqlParameter[] arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
@@ -205,8 +202,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Notifications_GetAllToPatron", arrParams);
         }
 
-        public static DataSet GetAllUnreadToPatron(int PID)
-        {
+        public static DataSet GetAllUnreadToPatron(int PID) {
             //SqlDataReader dr;
             SqlParameter[] arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
@@ -219,8 +215,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Notifications_GetAllUnreadToPatron", arrParams);
         }
 
-        public static DataSet GetAllQuestions()
-        {
+        public static DataSet GetAllQuestions() {
             //SqlDataReader dr;
             SqlParameter[] arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", 0);
@@ -233,16 +228,21 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static DataSet GetAllFromPatron(int PID)
-        {
+        public static DataSet GetAllFromPatron(int PID) {
             //SqlDataReader dr;
             SqlParameter[] arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@PID", PID);
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Notifications_GetAllFromPatron", arrParams);
         }
 
-        public static Notifications FetchObject(int NID)
-        {
+        public static DataSet GetAllToOrFromPatron(int PID) {
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@PID", PID));
+            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Notifications_GetAllToOrFromPatron", arrParams.ToArray());
+        }
+
+
+        public static Notifications FetchObject(int NID) {
 
             // declare reader
 
@@ -254,8 +254,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Notifications_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -267,21 +266,30 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["NID"].ToString(), out _int)) result.NID = _int;
-                if (int.TryParse(dr["PID_To"].ToString(), out _int)) result.PID_To = _int;
-                if (int.TryParse(dr["PID_From"].ToString(), out _int)) result.PID_From = _int;
+                if(int.TryParse(dr["NID"].ToString(), out _int))
+                    result.NID = _int;
+                if(int.TryParse(dr["PID_To"].ToString(), out _int))
+                    result.PID_To = _int;
+                if(int.TryParse(dr["PID_From"].ToString(), out _int))
+                    result.PID_From = _int;
                 result.isQuestion = bool.Parse(dr["isQuestion"].ToString());
                 result.Subject = dr["Subject"].ToString();
                 result.Body = dr["Body"].ToString();
-                if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) result.AddedDate = _datetime;
+                if(DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime))
+                    result.AddedDate = _datetime;
                 result.AddedUser = dr["AddedUser"].ToString();
-                if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) result.LastModDate = _datetime;
+                if(DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
+                    result.LastModDate = _datetime;
                 result.LastModUser = dr["LastModUser"].ToString();
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) result.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    result.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    result.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    result.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 result.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -303,8 +311,7 @@ namespace GRA.SRP.DAL
 
         }
 
-        public bool Fetch(int NID)
-        {
+        public bool Fetch(int NID) {
 
             // declare reader
 
@@ -316,8 +323,7 @@ namespace GRA.SRP.DAL
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Notifications_GetByID", arrParams);
 
-            if (dr.Read())
-            {
+            if(dr.Read()) {
 
                 // declare return value
 
@@ -329,21 +335,30 @@ namespace GRA.SRP.DAL
 
                 //decimal _decimal;
 
-                if (int.TryParse(dr["NID"].ToString(), out _int)) this.NID = _int;
-                if (int.TryParse(dr["PID_To"].ToString(), out _int)) this.PID_To = _int;
-                if (int.TryParse(dr["PID_From"].ToString(), out _int)) this.PID_From = _int;
+                if(int.TryParse(dr["NID"].ToString(), out _int))
+                    this.NID = _int;
+                if(int.TryParse(dr["PID_To"].ToString(), out _int))
+                    this.PID_To = _int;
+                if(int.TryParse(dr["PID_From"].ToString(), out _int))
+                    this.PID_From = _int;
                 this.isQuestion = bool.Parse(dr["isQuestion"].ToString());
                 this.Subject = dr["Subject"].ToString();
                 this.Body = dr["Body"].ToString();
-                if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) this.AddedDate = _datetime;
+                if(DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime))
+                    this.AddedDate = _datetime;
                 this.AddedUser = dr["AddedUser"].ToString();
-                if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) this.LastModDate = _datetime;
+                if(DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
+                    this.LastModDate = _datetime;
                 this.LastModUser = dr["LastModUser"].ToString();
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) this.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) this.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) this.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) this.FldInt3 = _int;
+                if(int.TryParse(dr["TenID"].ToString(), out _int))
+                    this.TenID = _int;
+                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                    this.FldInt1 = _int;
+                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                    this.FldInt2 = _int;
+                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                    this.FldInt3 = _int;
                 this.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 this.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
                 this.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
@@ -365,15 +380,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Insert()
-        {
+        public int Insert() {
 
             return Insert(this);
 
         }
 
-        public static int Insert(Notifications o)
-        {
+        public static int Insert(Notifications o) {
 
             SqlParameter[] arrParams = new SqlParameter[21];
 
@@ -411,15 +424,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Update()
-        {
+        public int Update() {
 
             return Update(this);
 
         }
 
-        public static int Update(Notifications o)
-        {
+        public static int Update(Notifications o) {
 
             int iReturn = -1; //assume the worst
 
@@ -449,15 +460,11 @@ namespace GRA.SRP.DAL
 
             arrParams[20] = new SqlParameter("@isUnread", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.isUnread, o.isUnread.GetTypeCode()));
 
-            try
-            {
+            try {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Notifications_Update", arrParams);
 
-            }
-
-            catch (SqlException exx)
-            {
+            } catch(SqlException exx) {
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -467,15 +474,13 @@ namespace GRA.SRP.DAL
 
         }
 
-        public int Delete()
-        {
+        public int Delete() {
 
             return Delete(this);
 
         }
 
-        public static int Delete(Notifications o)
-        {
+        public static int Delete(Notifications o) {
 
             int iReturn = -1; //assume the worst
 
@@ -483,16 +488,15 @@ namespace GRA.SRP.DAL
 
             arrParams[0] = new SqlParameter("@NID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NID, o.NID.GetTypeCode()));
 
-            try
-            {
+            try {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Notifications_Delete", arrParams);
 
-            }
-
-            catch (SqlException exx)
-            {
-
+            } catch(SqlException exx) {
+                "GRA.SRP.DAL.Notifications".Log().Error("SQL error deleting notification {0}: {1} - {2}",
+                                                        o.NID,
+                                                        exx.Message,
+                                                        exx.StackTrace);
                 System.Diagnostics.Debug.Write(exx.Message);
 
             }

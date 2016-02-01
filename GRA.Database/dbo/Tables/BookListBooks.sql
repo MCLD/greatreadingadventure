@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[BookListBooks] (
     [BLBID]       INT           IDENTITY (1, 1) NOT NULL,
     [BLID]        INT           NULL,
-    [Author]      VARCHAR (50)  NULL,
-    [Title]       VARCHAR (150) NULL,
+    [Author]      NVARCHAR(255)  NULL,
+    [Title]       NVARCHAR(MAX) NULL,
     [ISBN]        VARCHAR (50)  NULL,
-    [URL]         VARCHAR (150) NULL,
+    [URL]         NVARCHAR(255) NULL,
     [LastModDate] DATETIME      CONSTRAINT [DF_BookListBooks_LastModDate] DEFAULT (getdate()) NULL,
     [LastModUser] VARCHAR (50)  CONSTRAINT [DF_BookListBooks_LastModUser] DEFAULT ('N/A') NULL,
     [AddedDate]   DATETIME      CONSTRAINT [DF_BookListBooks_AddedDate] DEFAULT (getdate()) NULL,

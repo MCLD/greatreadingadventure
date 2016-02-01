@@ -5,6 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Configuration;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -13,6 +14,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         private String _mStrSortExp;
         private SortDirection _mSortDirection = SortDirection.Ascending;
 
+        protected string IlsLink {
+            get {
+                if(ConfigurationManager.AppSettings["IsbnLinkTemplate"] != null) {
+                    return ConfigurationManager.AppSettings["IsbnLinkTemplate"];
+                } else {
+                    return string.Empty;
+                }
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,9 +33,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"] = "";
+                lblPK.Text = Session["BLL"] == null ? "" : Session["BLL"].ToString(); //Session["BLL"]= string.Empty;
                 var bl = BookList.FetchObject(int.Parse(lblPK.Text));
-                MasterPage.PageTitle = string.Format("Books on \"{0}\" Book List", bl.AdminName);
+                MasterPage.PageTitle = string.Format("Tasks in the \"{0}\" Challenge", bl.AdminName);
              }
 
             
@@ -90,7 +100,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BookListBooksAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BLL"] = ""; Response.Redirect(editpage);
+                Session["BLL"]= string.Empty; Response.Redirect(editpage);
             }
             
             if (e.CommandName.ToLower() == "deleterecord")
@@ -138,7 +148,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 obj.BLID = FormatHelper.SafeToInt(lblPK.Text);
                 obj.Author = Author.Text;
                 obj.Title = Title.Text;
-                obj.ISBN = ISBN.Text;
+                obj.ISBN = ISBN.Text.Trim();
                 obj.URL = URL.Text;
 
                 obj.AddedDate = DateTime.Now;
@@ -149,7 +159,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                 {
                     obj.Insert();
-                    Author.Text = Title.Text = ISBN.Text = URL.Text = "";
+                    Author.Text = Title.Text = ISBN.Text = URL.Text= string.Empty;
 
                     odsData.DataBind();
                     gv.DataBind();

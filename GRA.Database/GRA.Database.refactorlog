@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="7db41d23-646b-46fb-9977-cd876db5a480" ChangeDateTime="01/07/2016 22:35:06">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[Url]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LinkToBranch" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc8c806a-29fa-4231-be7f-3fda3b8f72e5" ChangeDateTime="01/07/2016 22:35:44">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[LinkToBranch]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BranchLink" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1541420b-11fe-45f9-9cd0-a01fdb163d74" ChangeDateTime="01/08/2016 18:47:12">
+    <Property Name="ElementName" Value="[dbo].[SRPHistory].[Version]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SRPHistory]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VersionMajor" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="791f345f-2f92-40ea-93f7-2c888b34449d" ChangeDateTime="01/19/2016 23:24:42">
+    <Property Name="ElementName" Value="[dbo].[Event].[LinkToEvent]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Event]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ExternalLinkToEvent" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e0ab93b7-ff5e-429d-9bc8-4ae13bfff833" ChangeDateTime="01/19/2016 23:31:42">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[BranchLink]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LocationLink" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9da23137-7445-412e-859d-f1a2eaea41e9" ChangeDateTime="01/19/2016 23:31:51">
+    <Property Name="ElementName" Value="[dbo].[LibraryCrosswalk].[LocationLink]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LibraryCrosswalk]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BranchLink" />
+  </Operation>
+</Operations>

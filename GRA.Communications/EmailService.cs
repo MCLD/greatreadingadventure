@@ -6,6 +6,7 @@ using System.Web;
 using GRA.SRP.DAL;
 using GRA.SRP.Core.Utilities;
 using GRA;
+using System.Net;
 
 namespace GRA.Communications {
     public class EmailService {
@@ -17,8 +18,19 @@ namespace GRA.Communications {
 
         // To figure Out -- "mail merging"
 
-        private static bool _logEmails = bool.Parse(ConfigurationManager.AppSettings[AppSettings.LogEmails.ToString()] ?? "false");
-        private static bool _useTemplates = bool.Parse(ConfigurationManager.AppSettings[AppSettings.UseEmailTemplates.ToString()] ?? "false");
+        public string Server { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public int Port { get; set; }
+        public string Error { get; set; }
+        public bool TestEmailDuringSetup { get; set; }
+        public EmailService() {
+            // default port for SmtpClient (https://msdn.microsoft.com/en-us/library/system.net.mail.smtpclient.port%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396)
+            this.Port = 25;
+        }
+
+        private static bool _logEmails = bool.Parse(ConfigurationManager.AppSettings[AppSettingKeys.LogEmails.ToString()] ?? "false");
+        private static bool _useTemplates = bool.Parse(ConfigurationManager.AppSettings[AppSettingKeys.UseEmailTemplates.ToString()] ?? "false");
         public static bool UseTemplates {
             get {
                 return _useTemplates;
@@ -29,7 +41,7 @@ namespace GRA.Communications {
         }
 
         private static string _emailFrom
-            = ConfigurationManager.AppSettings[AppSettings.DefaultEmailFrom.ToString()];
+            = ConfigurationManager.AppSettings[AppSettingKeys.DefaultEmailFrom.ToString()];
         public static string EmailFrom {
             get {
                 var em1 = _emailFrom;  // webconfig
@@ -49,7 +61,7 @@ namespace GRA.Communications {
         }
 
         private static string _defaultTemplate
-            = ConfigurationManager.AppSettings[AppSettings.DefaultEmailTemplate.ToString()] ?? "";
+            = ConfigurationManager.AppSettings[AppSettingKeys.DefaultEmailTemplate.ToString()] ?? "";
 
         public static string EmailTemplate {
             get {
@@ -70,10 +82,15 @@ namespace GRA.Communications {
         }
 
 
-        public static bool SendEmail(string fromAddress,
-                                     string toAddress,
-                                     string subject,
-                                     string body) {
+        public bool SendEmail(string fromAddress,
+                              string toAddress,
+                              string subject,
+                              string body) {
+            this.Error = null;
+            if(this.TestEmailDuringSetup) {
+                UseTemplates = false;
+                _logEmails = false;
+            }
             try {
                 string mailBody;
                 using(var mm = new MailMessage(fromAddress, toAddress)) {
@@ -90,8 +107,28 @@ namespace GRA.Communications {
                     mm.Body = mailBody;
                     mm.IsBodyHtml = true;
 
-                    using(var smtp = new SmtpClient()) {
-                        smtp.Send(mm);
+                    NetworkCredential credentials = null;
+                    if(!string.IsNullOrEmpty(this.Login)
+                       && !string.IsNullOrEmpty(this.Password)) {
+                        //smtp.Credentials
+                        credentials = new NetworkCredential(this.Login, this.Password);
+                    }
+
+
+                    if(string.IsNullOrEmpty(this.Server)) {
+                        using(var smtp = new SmtpClient()) {
+                            if(credentials != null) {
+                                smtp.Credentials = credentials;
+                            }
+                            smtp.Send(mm);
+                        }
+                    } else {
+                        using(var smtp = new SmtpClient(this.Server, this.Port)) {
+                            if(credentials != null) {
+                                smtp.Credentials = credentials;
+                            }
+                            smtp.Send(mm);
+                        }
                     }
                 }
                 if(_logEmails) {
@@ -105,17 +142,19 @@ namespace GRA.Communications {
                     };
                     l.Insert();
                 }
-            } catch(Exception) {
+            } catch(Exception ex) {
+                this.Log().Error("Unable to send email: {0}", ex.Message);
+                this.Error = ex.Message;
                 return false;
             }
             return true;
         }
 
-        public static bool SendEmail(string toAddress, string subject, string body) {
+        public bool SendEmail(string toAddress, string subject, string body) {
             return SendEmail(EmailFrom, toAddress, subject, body);
         }
 
-        public static bool SendEmail(string fromAddress,
+        public bool SendEmail(string fromAddress,
                                       List<string> toAddress,
                                       string subject,
                                       string body) {
@@ -125,7 +164,7 @@ namespace GRA.Communications {
             return true;
         }
 
-        public static bool SendEmail(List<string> toAddress,
+        public bool SendEmail(List<string> toAddress,
                                       string subject,
                                       string body) {
             foreach(string address in toAddress) {

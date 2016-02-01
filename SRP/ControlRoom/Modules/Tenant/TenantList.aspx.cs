@@ -3,11 +3,8 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
-using GRA.SRP.DAL;
-using GRA.SRP.Core.Utilities;
 
-namespace GRA.SRP.ControlRoom.Modules.Tenant
-{
+namespace GRA.SRP.ControlRoom.Modules.Tenant {
     public partial class TenantList : BaseControlRoomPage
     {
         private String _mStrSortExp;
@@ -89,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Tenant
             string editpage = "~/ControlRoom/Modules/Tenant/TenantAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["TeMID"] = ""; Response.Redirect(editpage);
+                Session["TeMID"]= string.Empty; Response.Redirect(editpage);
             }
 
             if (e.CommandName.ToLower() == "reinit")

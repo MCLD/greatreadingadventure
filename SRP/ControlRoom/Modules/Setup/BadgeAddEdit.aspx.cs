@@ -11,6 +11,9 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 using GRA.SRP.DAL;
+using GRA.Tools;
+using System.IO;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -28,7 +31,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                lblPK.Text = Session["BDD"] == null ? "" : Session["BDD"].ToString(); //Session["BDD"] = "";
+                lblPK.Text = Session["BDD"] == null ? "" : Session["BDD"].ToString(); //Session["BDD"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -72,7 +75,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var obj = new Badge();
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("UserName")).Text;
-                    obj.CustomEarnedMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("CustomEarnedMessage")).Text;
+                    obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("CustomEarnedMessage")).InnerHtml;
 
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -82,7 +85,20 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        if (e.CommandName.ToLower() == "addandback")
+                        Cache[CacheKey.BadgesActive] = true;
+
+                        try {
+                            var badgePath = string.Format(Server.MapPath("~/images/Badges/"));
+                            System.IO.File.Copy(string.Format("{0}no_badge.png", badgePath),
+                                                string.Format("{0}{1}.png", badgePath, obj.BID));
+                            System.IO.File.Copy(string.Format("{0}no_badge_sm.png", badgePath),
+                                                string.Format("{0}sm_{1}.png", badgePath, obj.BID));
+                        } catch (Exception ex) {
+                            this.Log().Error("Couldn't copy no_badge images into new badge: {0}",
+                                             ex.Message);
+                        }
+
+                        if(e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
                         }
@@ -127,18 +143,18 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text;
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("UserName")).Text;
-                    obj.CustomEarnedMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).Text;
+                    obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).InnerHtml;
                     obj.IncludesPhysicalPrizeFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("IncludesPhysicalPrizeFlag")).Checked;
                     obj.PhysicalPrizeName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("PhysicalPrizeName")).Text;
 
                     obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("GenNotificationFlag")).Checked;
                     obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationSubject")).Text;
-                    obj.NotificationBody = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationBody")).Text;
+                    obj.NotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationBody")).InnerHtml;
 
 
                     obj.AssignProgramPrizeCode = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("AssignProgramPrizeCode")).Checked;
                     obj.PCNotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationSubject")).Text;
-                    obj.PCNotificationBody = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationBody")).Text;
+                    obj.PCNotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationBody")).InnerHtml;
 
 
                     obj.LastModDate = DateTime.Now;
@@ -164,7 +180,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                         /*
                         GridView gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvCat");
-                        string checkedMembers = "";
+                        string checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -176,7 +192,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.UpdateBadgeBranches(checkedMembers);
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvAge");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -189,7 +205,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvBranch");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -201,7 +217,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.UpdateBadgeBranches(checkedMembers);
 
                         gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvLoc");
-                        checkedMembers = "";
+                        checkedMembers= string.Empty;
                         foreach (GridViewRow row in gv.Rows)
                         {
                             if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -251,7 +267,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public void SaveBadgeExtendedAttributes(Badge obj, GridView gv1, GridView gv2, GridView gv3, GridView gv4)
         {
             var gv = gv1;
-            string checkedMembers = "";
+            string checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -263,7 +279,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeCategories(checkedMembers);
 
             gv = gv2;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -276,7 +292,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
 
             gv = gv3;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -288,7 +304,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeBranches(checkedMembers);
 
             gv = gv4;
-            checkedMembers = "";
+            checkedMembers= string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)

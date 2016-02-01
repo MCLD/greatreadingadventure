@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
+using SRPApp.Classes;
 
 namespace GRA.SRP.ControlRoom {
     public partial class Login : Page {
@@ -31,6 +32,16 @@ namespace GRA.SRP.ControlRoom {
                 if(!Page.IsValid) {
                     uxMessageBox.Visible = true;
                 }
+            } else {
+                if(Request.Cookies["ControlRoomUsername"] != null) {
+                    var cookie = Request.Cookies["ControlRoomUsername"];
+                    if(!string.IsNullOrEmpty(cookie.Value)) {
+                        this.uxLogin.UserName = cookie.Value;
+                        this.uxLogin.RememberMeSet = true;
+
+                    }
+                }
+                this.SystemName.Text = StringResources.getString("system-name");
             }
         }
 
@@ -55,6 +66,17 @@ namespace GRA.SRP.ControlRoom {
 
 
                 if(e.Authenticated) {
+                    // handle remember me
+                    if(uxLogin.RememberMeSet == true) {
+                        var rememberMe = new HttpCookie("ControlRoomUsername", uxLogin.UserName);
+                        rememberMe.Expires = DateTime.Now.AddDays(14);
+                        Response.Cookies.Set(rememberMe);
+                    } else {
+                        var rememberMe = new HttpCookie("ControlRoomUsername", string.Empty);
+                        rememberMe.Expires = DateTime.Now.AddDays(-1);
+                        Response.Cookies.Set(rememberMe);
+                    }
+
                     // Put User Profile into Session.
                     // Put Security roles into session
                     // = ConfigurationManager.AppSettings["ApplicationName"];
@@ -64,7 +86,7 @@ namespace GRA.SRP.ControlRoom {
 
                     List<SRPPermission> perms = user.EffectiveUserPermissions();
                     //Session[SessionData.PermissionList.ToString()] = perms;
-                    string permList = "";
+                    string permList= string.Empty;
                     foreach(SRPPermission perm in perms)
                         permList += String.Format("#{0}", perm.Permission);
                     Session[SessionData.StringPermissionList.ToString()] = permList;
@@ -82,7 +104,7 @@ namespace GRA.SRP.ControlRoom {
                     }
                     //List<CMSFolder> folders = user.EffectiveUserFolders();
                     //Session[SessionData.FoldersList.ToString()] = folders;
-                    //string foldersList = "";
+                    //string foldersList= string.Empty;
                     //foreach (CMSFolder folder in folders)
                     //    foldersList += string.Format("#{0}", folder.Folder);
                     //Session[SessionData.StringFoldersList.ToString()] = foldersList;
@@ -162,7 +184,7 @@ namespace GRA.SRP.ControlRoom {
         }
 
         protected void LinkButton1_Click(object sender, EventArgs e) {
-            uxLogin.PasswordRequiredErrorMessage = "";
+            uxLogin.PasswordRequiredErrorMessage= string.Empty;
             Page.Validate("uxLogin");
 
             if(Page.IsValid || (uxLogin.UserName.Length > 0 && !Page.IsValid)) {

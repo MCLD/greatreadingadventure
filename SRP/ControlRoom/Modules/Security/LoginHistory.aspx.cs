@@ -18,7 +18,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = "User Login History";
 
-            lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"] = "";
+            lblUID.Text = Session["UID"] == null ? "" : Session["UID"].ToString(); //Session["UID"]= string.Empty;
             if (lblUID.Text == "") Response.Redirect("~/ControlRoom/");
             if (!IsPostBack)
             {
@@ -69,7 +69,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
             var ds = new DataSet();
             var dt = SRPUser.GetLoginHistory(int.Parse(lblUID.Text));
             ds.Tables.Add(dt);
-            if (_mStrSortExp != "")
+            if (!string.IsNullOrEmpty(_mStrSortExp))
             {
                 dt.DefaultView.Sort = _mStrSortExp + (_mSortDirection == SortDirection.Descending ? " DESC" : "");
                 var ds2 = new DataSet();

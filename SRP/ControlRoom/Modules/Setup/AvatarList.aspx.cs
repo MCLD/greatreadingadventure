@@ -92,7 +92,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/AvatarAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["AID"] = "";
+                Session["AID"]= string.Empty;
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

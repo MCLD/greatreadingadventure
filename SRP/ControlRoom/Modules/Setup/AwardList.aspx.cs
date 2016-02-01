@@ -88,7 +88,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addtpage = "~/ControlRoom/Modules/Setup/AwardAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["AWD"] = "";
+                Session["AWD"]= string.Empty;
                 Response.Redirect(addtpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

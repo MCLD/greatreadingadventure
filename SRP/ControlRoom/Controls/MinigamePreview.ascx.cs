@@ -32,12 +32,12 @@ namespace GRA.SRP.ControlRoom.Controls
                 if (Session["CRGoToUrl"] != null && Session["CRGoToUrl"].ToString() != "")
                 {
                     GoToUrl = Session["CRGoToUrl"].ToString();
-                    Session["CRGoToUrl"] = "";
+                    Session["CRGoToUrl"]= string.Empty;
                 }
 
                 var mg = DAL.Minigame.FetchObject(int.Parse(MGID.Text));
                 MGName.Text = mg.GameName;
-                Acknowledgements.Text = mg.Acknowledgements;
+                Acknowledgements.Text = Server.HtmlDecode(mg.Acknowledgements);
                 if (Acknowledgements.Text.Length == 0)
                 {
                     Acknowledgements.Visible = false;

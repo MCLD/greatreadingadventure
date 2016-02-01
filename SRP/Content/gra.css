@@ -1,0 +1,335 @@
+﻿/* general formatting */
+.margin-1em-top {
+    margin-top: 1em;
+}
+
+.margin-1em-left {
+    margin-left: 1em;
+}
+
+.margin-1em-right {
+    margin-right: 1em;
+}
+
+.margin-1em-bottom {
+    margin-bottom: 1em;
+}
+
+.margin-halfem-top {
+    margin-top: 0.5em;
+}
+
+.margin-halfem-left {
+    margin-left: 0.5em;
+}
+
+.margin-halfem-right {
+    margin-right: 0.5em;
+}
+
+.margin-halfem-bottom {
+    margin-bottom: 0.5em;
+}
+
+.no-underline {
+    text-decoration: none !important;
+}
+
+.thumbnail-side-padding {
+    padding-left: 0.2em !important;
+    padding-right: 0.2em !important;
+}
+
+.gra-validation {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.gra-validation-summary {
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+.gra-registration-checkbox > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.gra-reg-glyph {
+    font-size: 1.1em;
+    margin-right: 0.5em;
+}
+
+.gra-username-verification {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.gra-reg-available {
+    display: none;
+}
+
+.gra-reg-unavailable {
+    display: none;
+}
+
+/* badges in the top nav bar are actually labels */
+.label-as-badge {
+    border-radius: 1em;
+}
+
+/* provide a minimum width on tooltips to reduce wrapping */
+.tooltip-inner {
+    min-width: 80px;
+}
+
+/* master page formatting */
+.upsell {
+    background: repeating-linear-gradient( -55deg, #222, #222 10px, #333 10px, #333 20px );
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    border-radius: 1em;
+    margin-top: 2em;
+    color: white;
+}
+
+.upselltext {
+    margin-left: 2em;
+    margin-right: 2em;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.footer {
+    font-style: italic;
+    padding-top: 0.8em;
+    width: 100%;
+    margin-top: 2em;
+    background-color: #eee;
+}
+
+.print-header {
+    border-bottom: 2px solid #ccc !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+}
+
+@media print {
+    a[href]:after {
+        content: "";
+    }
+}
+
+/* background colors for rows in the activity history screen */
+.award-reading {
+    background-color: #ddffdd;
+}
+
+.award-event {
+    background-color: #ddddff;
+}
+
+.award-challenge {
+    background-color: #ffffdd;
+}
+
+.award-adventure {
+    background-color: #ffddff;
+}
+
+/* login popup and panel spacing */
+
+.loginPopupRememberMe {
+    display: block;
+}
+
+input#loginPopupRememberMe {
+    width: 1.5em;
+    height: 1.5em;
+    margin-top: -0.8em;
+}
+
+.remember-me-label {
+    margin-left: 0.25em;
+    font-weight: normal;
+    display: inline-block;
+}
+
+.login-remember-me > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.login-remember-page > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.login-remember-page > label {
+    font-weight: normal;
+    display: inline-block;
+    margin-left: 0.5em;
+    position: absolute;
+    top: 0.8em;
+}
+
+/* badge display spacing */
+.badge-with-info-height {
+    min-height: 12em;
+    display: block;
+}
+
+.badge-without-info-height {
+    min-height: 11em;
+    display: block;
+}
+
+/* challenge display */
+.challenge-checkbox-container > input {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.challenge-detailpage-header {
+    font-weight: bold;
+    font-size: larger;
+}
+
+/* date picker hide navigation to invalid months */
+.noPrevNext .datepick-cmd.datepick-disabled {
+    visibility: hidden;
+}
+
+/* offer page */
+.offer-height {
+    min-height: 12em;
+    display: block;
+}
+
+/* code control */
+.code-spacing {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.5em;
+}
+
+/* readinglogcontrol */
+.readinglog-spacing {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.5em;
+}
+
+.readinglog-spacing-extra {
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+    margin-top: 0.8em;
+}
+
+.readinglog-inline {
+    display: inline;
+}
+
+.readinglog-checkbox {
+    display: block;
+    margin-top: 0.5em;
+}
+
+    .readinglog-checkbox > input {
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    .readinglog-checkbox > label {
+        font-weight: normal;
+        margin-left: 0.5em;
+        margin-top: 0.25em;
+    }
+
+body {
+    padding-right: 0px !important;
+}
+
+.modal-open {
+    overflow-y: auto;
+}
+
+/* status report */
+#status-what {
+    font-size: larger;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#status-value {
+    font-size: 3em;
+}
+
+/* feed */
+.feed-table {
+    border-collapse: separate;
+    border-spacing: 0 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+    .feed-table tr td.feed-avatar {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+.points-display {
+    font-size: 2em;
+}
+
+small.dd-desc {
+    display: none;
+}
+
+.cr-administrator {
+    color: red;
+    font-weight: bold;
+}
+
+/* adventures */
+
+.adventure-card {
+    display: block;
+    min-height: 11em;
+    width: 100%;
+    background-color: #eee;
+    margin-bottom: 1.5em;
+    color: black !important;
+}
+
+.adventure-card:hover {
+    text-decoration: none;
+}
+
+.adventure-caption-container {
+    padding-top: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.codebreaker-glyph {
+    width: 36px;
+    height: 36px;
+}
+
+.codebreaker-space {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+}
+
+.codebreaker-key-container {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.codebreaker-key-glyph {
+    width: 36px;
+    height: 36px;
+}

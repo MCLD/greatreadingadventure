@@ -10,6 +10,7 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
 
 namespace GRA.SRP.DAL
 {
@@ -70,6 +71,14 @@ namespace GRA.SRP.DAL
             arrParams[0] = new SqlParameter("@PID", PID);
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_PatronBadges_GetAll", arrParams);
+        }
+
+        public static DataSet GetTop(int PID, int count) {
+            string query = string.Format("SELECT TOP {0} pb.*, b.UserName as [Title] FROM [PatronBadges] pb INNER JOIN [Badge] b ON pb.[BadgeID] = b.[BID] WHERE [PID] = @PID ORDER BY [PBID] DESC",
+                                         count.ToString());
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("PID", PID.ToString()));
+            return SqlHelper.ExecuteDataset(conn, CommandType.Text, query, parameters.ToArray());
         }
 
         public static PatronBadges FetchObject(int PBID)

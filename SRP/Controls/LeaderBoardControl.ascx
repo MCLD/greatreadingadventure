@@ -1,24 +1,27 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="LeaderBoardControl.ascx.cs" Inherits="GRA.SRP.Controls.LeaderBoardControl" %>
 
-
-<div class="pill">
-    
-    <table width="100%" style="font-size: smaller;">
-    <tr>
-        <td colspan=4 align="center"><h4>Leaderboard</h4></td>
-    </tr>
-        <asp:Repeater runat="server" ID="rptr" >
-            <ItemTemplate>
-                <tr style="border-top: 1px dotted silver; height: 48px;">
-                    <td align="right" valign="middle" style="padding-right: 5px;  "><%# Eval("Rank") %>.</td>
-                    <td align="left" valign="middle"><img src='<%# string.Format("/images/avatars/sm_{0}.png", Eval("AvatarID")) %>' width="24px" height="24px"/></td>
-                    <td align="left" valign="middle"><%# Eval("Username") %></td>
-                    <td align="right" valign="middle" nowrap><%# String.Format("{0:#,##0}", (int)Eval("TotalPoints"))%></td>
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-striped table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="4">
+                        <h4>Leaderboard</h4>
+                    </th>
                 </tr>
-
-            </ItemTemplate>
-        </asp:Repeater>
-        
-                                           
-    </table>
+            </thead>
+            <tbody>
+                <asp:Repeater runat="server" ID="rptr" OnItemDataBound="rptr_ItemDataBound">
+                    <ItemTemplate>
+                        <tr>
+                            <td><%# Eval("Rank") %></td>
+                            <td><asp:Image runat="server" Width="24" Height="24" ImageUrl='<%#Eval("AvatarId", "~/Images/Avatars/sm_{0}.png") %>' id="SmallAvatar"/></td>
+                            <td><%# Eval("Username") %></td>
+                            <td><%# String.Format("{0:#,##0}", (int)Eval("TotalPoints"))%></td>
+                        </tr>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </tbody>
+        </table>
+    </div>
 </div>

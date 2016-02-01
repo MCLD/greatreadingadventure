@@ -1,56 +1,78 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MGBook.ascx.cs" Inherits="GRA.SRP.Controls.MGBook" %>
 
-<div class="row" style="min-height: 400px;">
-	<div class="span2">
-	</div>
-	<div class="span8">
+<asp:Label ID="OBID" runat="server" Text="" Visible="false"></asp:Label>
+<asp:Label ID="CurrPage" runat="server" Text="1" Visible="false"></asp:Label>
+<asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label>
 
+<script>
+    $('.animated').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function (eventObject) {
+        $(this).removeClass('animated');
+        if ($(this).hasClass('fadeOutLeftBig')) {
+            $(this).hide();
+            $(this).removeClass('fadeOutLeftBig');
+        }
+        if ($(this).hasClass('fadeOutRightBig')) {
+            $(this).hide();
+            $(this).removeClass('fadeOutRightBig');
+        }
+        if ($(this).hasClass('fadeIn')) {
+            $(this).removeClass('fadeIn');
+        }
+    });
+</script>
 
-
-<center>
-    <asp:Label ID="OBID" runat="server" Text=""  Visible="false"></asp:Label>
-    <asp:Label ID="CurrPage" runat="server" Text="1" Visible="false"></asp:Label>
-    <asp:Label ID="Difficulty" runat="server" Text="1" Visible="false"></asp:Label>
-    <asp:Image ID="imgSlide" runat="server" Width="500px" /> <!--Height="500px"-->
-    <br /><br />
-    <div style="text-align: left; width: 500px;">
-    <asp:Label ID="lblEasy" runat="server" Text="" Visible="True"></asp:Label>
-    <asp:Label ID="lblMedium" runat="server" Text="" Visible="False"></asp:Label>
-    <asp:Label ID="lblHard" runat="server" Text="" Visible="False"></asp:Label>
+<div class="bookPageContent">
+    <div class="row">
+        <div class="col-sm-12">
+            <asp:Image ID="imgSlide" 
+                runat="server" 
+                Width="500px" 
+                CssClass="img img-responsive center-block animated fadeIn" />
+        </div>
     </div>
-    <br />
-    <asp:Panel ID="pnlAudioEasy" runat="server" Visible="False">
-        <audio controls>
-            <source src="<%=AudioEasy%>" type="audio/mpeg">
-            Your browser does not support this audio format.
-        </audio>
-    </asp:Panel>
-    <asp:Panel ID="pnlAudioMedium" runat="server" Visible="False">
-        <audio controls>
-            <source src="<%=AudioMedium%>" type="audio/mpeg">
-            Your browser does not support this audio format.
-        </audio>
-    </asp:Panel>
-    <asp:Panel ID="pnlAudioHard" runat="server" Visible="False">
-        <audio controls>
-            <source src="<%=AudioHard%>" type="audio/mpeg">
-            Your browser does not support this audio format.
-        </audio>
-    </asp:Panel>
+    <div class="row margin-1em-top">
+        <div class="col-sm-12 text-center">
+            <asp:Label ID="lblText" 
+                runat="server" 
+                Visible="True"
+                CssClass="animated fadeIn"></asp:Label>
+        </div>
+    </div>
+</div>
 
-    <br /><br />
+<asp:Panel ID="pnlAudio" runat="server" Visible="False" CssClass="row margin-1em-top">
+    <div class="col-sm-12">
+        <asp:Label ID="lblSound" runat="server"></asp:Label>
+    </div>
+</asp:Panel>
 
-    <asp:Button ID="btnPrevious" runat="server" Enabled="False" CssClass="btn c"
-        Text="Minigame Instructions BtnPrev" onclick="btnPrevious_Click" />
-    &nbsp;&nbsp;
-    <asp:Button ID="btnNext" runat="server" Text="Minigame Instructions BtnNext" CssClass="btn c"
-        onclick="btnNext_Click" />
+<div class="row margin-1em-top">
+    <div class="col-sm-3 col-sm-offset-2 col-xs-6 text-center">
+        <asp:Button
+            ID="btnPrevious"
+            runat="server"
+            Enabled="False"
+            CssClass="btn btn-default"
+            Text="adventures-instructions-button-previous"
+            OnClick="btnPrevious_Click"
+            OnClientClick="bookPrev(); return true;" />
 
-</center>
+    </div>
+    <div class="col-sm-3 col-sm-offset-2 col-xs-6 text-center">
+        <asp:Button ID="btnNext"
+            runat="server"
+            Text="adventures-instructions-button-next"
+            CssClass="btn btn-default"
+            OnClick="btnNext_Click"
+            OnClientClick="bookNext(); return true;" />
+    </div>
+</div>
+<script>
+    function bookNext() {
+        $('.bookPageContent').addClass('animated fadeOutLeftBig');
+    }
 
-
-
-	</div> 
-	<div class="span2">
-	</div>
-</div> 
+    function bookPrev() {
+        $('.bookPageContent').addClass('animated fadeOutRightBig');
+    }
+</script>

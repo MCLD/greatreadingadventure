@@ -18,7 +18,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4400;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Book Lists");
+            MasterPage.PageTitle = string.Format("{0}", "Challenges");
 
             _mStrSortExp = String.Empty;
             
@@ -85,7 +85,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addpage = "~/ControlRoom/Modules/Setup/BookListAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BLL"] = ""; Response.Redirect(addpage);
+                Session["BLL"]= string.Empty; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {

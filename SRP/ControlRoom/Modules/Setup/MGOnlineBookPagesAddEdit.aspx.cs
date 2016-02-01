@@ -31,7 +31,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var o = Minigame.FetchObject(int.Parse(lblMGID.Text));
                     AdminName.Text = o.AdminName;
 
-                    lblPK.Text = "";
+                    lblPK.Text= string.Empty;
                     dv.ChangeMode(DetailsViewMode.Insert);
 
                 }
@@ -116,9 +116,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.TextEasy = ((TextBox)((DetailsView)sender).FindControl("TextEasy")).Text;
                     obj.TextMedium = ((TextBox)((DetailsView)sender).FindControl("TextMedium")).Text;
                     obj.TextHard = ((TextBox)((DetailsView)sender).FindControl("TextHard")).Text;
-                    obj.AudioEasy = "";// ((TextBox)((DetailsView)sender).FindControl("AudioEasy")).Text;
-                    obj.AudioMedium = "";//"((TextBox)((DetailsView)sender).FindControl("AudioMedium")).Text;
-                    obj.AudioHard = "";//"((TextBox)((DetailsView)sender).FindControl("AudioHard")).Text;
+                    obj.AudioEasy= string.Empty;// ((TextBox)((DetailsView)sender).FindControl("AudioEasy")).Text;
+                    obj.AudioMedium= string.Empty;//"((TextBox)((DetailsView)sender).FindControl("AudioMedium")).Text;
+                    obj.AudioHard= string.Empty;//"((TextBox)((DetailsView)sender).FindControl("AudioHard")).Text;
 
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -173,9 +173,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.TextEasy = ((TextBox)((DetailsView)sender).FindControl("TextEasy")).Text;
                     obj.TextMedium = ((TextBox)((DetailsView)sender).FindControl("TextMedium")).Text;
                     obj.TextHard = ((TextBox)((DetailsView)sender).FindControl("TextHard")).Text;
-                    obj.AudioEasy = "";// ((TextBox)((DetailsView)sender).FindControl("AudioEasy")).Text;
-                    obj.AudioMedium = "";//"((TextBox)((DetailsView)sender).FindControl("AudioMedium")).Text;
-                    obj.AudioHard = "";//"((TextBox)((DetailsView)sender).FindControl("AudioHard")).Text;
+                    obj.AudioEasy= string.Empty;// ((TextBox)((DetailsView)sender).FindControl("AudioEasy")).Text;
+                    obj.AudioMedium= string.Empty;//"((TextBox)((DetailsView)sender).FindControl("AudioMedium")).Text;
+                    obj.AudioHard= string.Empty;//"((TextBox)((DetailsView)sender).FindControl("AudioHard")).Text;
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

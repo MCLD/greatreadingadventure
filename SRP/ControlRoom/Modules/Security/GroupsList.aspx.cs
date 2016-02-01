@@ -98,7 +98,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
             var ds = new DataSet();
             var dt = SRPGroup.FetchAllAsDataTable();
             ds.Tables.Add(dt);
-            if (_mStrSortExp != "")
+            if (!string.IsNullOrEmpty(_mStrSortExp))
             {
                 dt.DefaultView.Sort = _mStrSortExp + (_mSortDirection == SortDirection.Descending ? " DESC" : "");
                 var ds2 = new DataSet();
@@ -114,7 +114,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
             string editpage = "~/ControlRoom/Modules/Security/GroupsAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["GID"] = ""; 
+                Session["GID"]= string.Empty; 
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")

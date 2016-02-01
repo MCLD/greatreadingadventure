@@ -48,7 +48,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             SID.SelectedValue = "0";
             pnlResults.Visible = false;
-            lblInfo.Text = "";
+            lblInfo.Text= string.Empty;
             ddSource.Items.Clear();
             ddSource.Items.Add(new ListItem("[Select a Source for Additional Filtering]", "0"));
         }
@@ -69,13 +69,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         protected void LoadData()
         {
             var sid = int.Parse(SID.SelectedValue);
-            string SourceType = "";
+            string SourceType= string.Empty;
             int SourceID = 0;
             int SchoolID = 0;
 
             if (ddSource.SelectedValue == "0")
             {
-                SourceType = "";
+                SourceType= string.Empty;
                 SourceID = 0;
             }
             else
@@ -115,13 +115,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public void ExportData()
         {
             var sid = int.Parse(SID.SelectedValue);
-            string SourceType = "";
+            string SourceType= string.Empty;
             int SourceID = 0;
             int SchoolID = 0;
 
             if (ddSource.SelectedValue == "0")
             {
-                SourceType = "";
+                SourceType= string.Empty;
                 SourceID = 0;
             }
             else

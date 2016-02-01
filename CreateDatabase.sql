@@ -12,7 +12,7 @@
 	* Database owner login will be created with this password (line 51): ystMPQGurKMmqjHDRkz810sx
 	* Database user login will be created with this password (line 67): H4gWdCicQMzasDTU6jICB9CK
 
-	Optionally, you may change these items throught the script if you wish (note that if you use a
+	Optionally, you may change these items throughout the script if you wish (note that if you use a
 	global search and replace on 'SRP' you will also be changing the first part of the logins and
 	users):
 	

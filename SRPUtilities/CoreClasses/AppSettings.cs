@@ -3,7 +3,7 @@
 
 namespace GRA.SRP.Core.Utilities
 {
-    public enum AppSettings
+    public enum AppSettingKeys
     {
         [DescriptionAttribute("LogEmails")]
         LogEmails,
@@ -12,6 +12,8 @@ namespace GRA.SRP.Core.Utilities
         [DescriptionAttribute("DefaultEmailTemplate")]
         DefaultEmailTemplate,
         [DescriptionAttribute("DefaultEmailFrom")]
-        DefaultEmailFrom
+        DefaultEmailFrom,
+        [DescriptionAttribute("IgnoreMissingDatabaseGroups")]
+        IgnoreMissingDatabaseGroups
     }
 }

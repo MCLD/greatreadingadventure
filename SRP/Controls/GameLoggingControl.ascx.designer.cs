@@ -13,31 +13,13 @@ namespace GRA.SRP.Controls {
     public partial class GameLoggingControl {
         
         /// <summary>
-        /// ScriptManager1 control.
+        /// NoAdventures control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
-        
-        /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
-        /// <summary>
-        /// SimpleLoggingControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.SimpleLoggingControl SimpleLoggingControl1;
+        protected global::System.Web.UI.WebControls.Panel NoAdventures;
         
         /// <summary>
         /// rptrx1 control.
@@ -56,32 +38,5 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptrx2;
-        
-        /// <summary>
-        /// MyPointsControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.MyPointsControl MyPointsControl1;
-        
-        /// <summary>
-        /// LeaderBoardControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.LeaderBoardControl LeaderBoardControl1;
-        
-        /// <summary>
-        /// MyGamemapNavControl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::GRA.SRP.Controls.MyGamemapNavControl MyGamemapNavControl1;
     }
 }

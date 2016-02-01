@@ -9,7 +9,8 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using GRA.Tools;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -27,7 +28,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["MGID"] = "";
+                lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["MGID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -113,7 +114,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj2.isActive = ((CheckBox)((DetailsView)sender).FindControl("isActive")).Checked;
                     obj2.NumberPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
                     obj2.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardedBadgeID")).SelectedValue);
-                    obj2.Acknowledgements = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("Acknowledgements")).Text;
+                    obj2.Acknowledgements = ((HtmlTextArea)((DetailsView)sender).FindControl("Acknowledgements")).InnerHtml;
 
                     obj.CorrectRoundsToWinCount = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("CorrectRoundsToWinCount")).Text);
                     obj.EnableMediumDifficulty = ((CheckBox)((DetailsView)sender).FindControl("EnableMediumDifficulty")).Checked;
@@ -126,7 +127,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     {
                         obj.Update();
                         obj2.Update();
-                        if (e.CommandName.ToLower() == "saveandback")
+                        Cache[CacheKey.AdventuresActive] = true;
+
+                        if(e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);
                         }

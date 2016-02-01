@@ -3,28 +3,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Microsoft.ApplicationBlocks.Data;
-using SRPApp.Classes;
 using GRA.SRP.Core.Utilities;
-using GRA.SRP.Utilities;
 using System.Web.Configuration;
 using System.Configuration;
 using System.Net.Configuration;
-using System.Net.Mail;
 using GRA.Communications;
-using GRA.SRP.DAL;
 using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom {
     public partial class DBCreate : System.Web.UI.Page {
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
+                if(string.IsNullOrEmpty(Request.QueryString["setup"])) {
+                    Response.Redirect("~/ControlRoom/Configure.aspx");
+                }
                 try {
                     var p = DAL.Programs.GetAll();
                     Response.Redirect("~/ControlRoom/");
@@ -334,14 +328,14 @@ namespace GRA.SRP.ControlRoom {
                     body.Append("<a href=\"{ControlRoomLink}\">log in</a> using the default ");
                     body.Append("system administrator credentials.</p><p>For more information on ");
                     body.Append("setting up and using the {SystemName} software, feel free to ");
-                    body.Append("visit the ");
-                    body.Append("<a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
+                    body.Append("visit the <a href=\"http://manual.greatreadingadventure.com/\">manual</a>");
+                    body.Append("and <a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
                     body.Append("</p>");
 
-                    EmailService.SendEmail(Mailaddress.Text,
-                                           "{SystemName} - Setup complete!"
-                                           .FormatWith(values),
-                                           body.ToString().FormatWith(values));
+                    new EmailService().SendEmail(Mailaddress.Text,
+                                                 "{SystemName} - Setup complete!"
+                                                 .FormatWith(values),
+                                                 body.ToString().FormatWith(values));
                     this.Log().Info(() => "Welcome email sent.");
                 } catch(Exception ex) {
                     this.Log().Error(() => "Welcome email sending failure: {Message}"

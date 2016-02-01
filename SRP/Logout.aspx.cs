@@ -11,18 +11,22 @@ namespace GRA.SRP {
     public partial class Logout : BaseSRPPage {
         protected void Page_Load(object sender, EventArgs e) {
             IsSecure = false;
-            var navTo = "~/";
+            var navTo = "~";
             if(IsLoggedIn) {
-                var p = Programs.FetchObject((int)Session["PatronProgramID"]);
-                if(p.LogoutURL.Trim().Length > 0) {
-                    navTo = p.LogoutURL;
+                Patron patron = Session["Patron"] as Patron;
+                if(patron != null) {
+                    var p = Programs.FetchObject(patron.ProgID);
+                    if(p.LogoutURL.Trim().Length > 0) {
+                        navTo = p.LogoutURL;
+                    }
                 }
             }
 
-            new PatronSession(Session).Clear();
-
+            new SessionTools(Session).ClearPatron();
             Session.Abandon();
-            Response.Cookies.Add(new HttpCookie("ASP.NET_SessionId", ""));
+            if(Request.Cookies["ASP.NET_SessionId"] != null) {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);
+            }
             Response.Redirect(navTo);
         }
     }

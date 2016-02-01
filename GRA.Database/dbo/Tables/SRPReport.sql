@@ -2,7 +2,7 @@
     [RID]                    INT           IDENTITY (1, 1) NOT NULL,
     [RTID]                   INT           NOT NULL,
     [ProgId]                 INT           CONSTRAINT [DF_SRPReport_ProgId] DEFAULT ((0)) NULL,
-    [ReportName]             VARCHAR (150) NULL,
+    [ReportName]             NVARCHAR(255) NULL,
     [DisplayFilters]         BIT           NULL,
     [ReportFormat]           INT           NULL,
     [DOBFrom]                DATETIME      NULL,

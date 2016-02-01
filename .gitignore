@@ -137,7 +137,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# TODO: Comment the next line if you want to checkin your web deploy settings 
+# TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
@@ -223,6 +223,7 @@ _Pvt_Extensions
 SRP/Images/Avatars/*.png
 SRP/Images/Badges/*.png
 SRP/Images/Banners/*.png
+SRP/Images/Games/*.png
 SRP/Images/Games/Board/*.png
 SRP/Images/Games/Books/*.png
 SRP/Images/Games/ChooseAdv/*.png
@@ -232,6 +233,12 @@ SRP/Images/Games/MatchingGame/*.png
 SRP/Images/Games/MixMatch/*.png
 SRP/Images/Games/WordMatch/*.png
 SRP/Images/Offers/*.png
+
+# exclusions for missing image images
+!SRP/Images/Avatars/no_avatar.png
+!SRP/Images/Avatars/no_avatar_sm.png
+!SRP/Images/Badges/no_badge.png
+!SRP/Images/Badges/no_badge_sm.png
 
 SRP/Images/Avatars/*.jpg
 SRP/Images/Badges/*.jpg
@@ -246,6 +253,27 @@ SRP/Images/Games/MixMatch/*.jpg
 SRP/Images/Games/WordMatch/*.jpg
 SRP/Images/Offers/*.jpg
 
+# include default avatars
+!SRP/Images/Avatars/1.png
+!SRP/Images/Avatars/md_1.png
+!SRP/Images/Avatars/sm_1.png
+!SRP/Images/Avatars/2.png
+!SRP/Images/Avatars/md_2.png
+!SRP/Images/Avatars/sm_2.png
+!SRP/Images/Avatars/3.png
+!SRP/Images/Avatars/md_3.png
+!SRP/Images/Avatars/sm_3.png
+!SRP/Images/Avatars/4.png
+!SRP/Images/Avatars/md_4.png
+!SRP/Images/Avatars/sm_4.png
+!SRP/Images/Avatars/5.png
+!SRP/Images/Avatars/md_5.png
+!SRP/Images/Avatars/sm_5.png
+!SRP/Images/Avatars/6.png
+!SRP/Images/Avatars/md_6.png
+!SRP/Images/Avatars/sm_6.png
+
+
 # exclude program css files except for the default four programs
 SRP/CSS/Program/*.css
 !SRP/CSS/Program/1.css
@@ -254,5 +282,10 @@ SRP/CSS/Program/*.css
 !SRP/CSS/Program/4.css
 
 # configuration transforms
-SRP/Web.Dev.config
-SRP/Web.Test.config
+SRP/Web.*.config
+!SRP/Web.Debug.config
+!SRP/Web.Release.config
+
+# Directory for Automatic Certificate Management Environment (ACME)/letsencrypt.org
+SRP/.well-known/acme-challenge/*
+!SRP/.well-known/acme-challenge/Web.config

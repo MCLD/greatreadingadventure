@@ -6,9 +6,9 @@ Inherits="GRA.SRP.ControlRoom.Modules.PortalUser.PasswordReset"
     function flipHelp(id) {
         var tr = document.getElementById("help_" + id)
         if (tr != null) {
-            if (tr.style.visibility == "hidden") tr.style.visibility = ""
+            if (tr.style.visibility == "hidden") tr.style.visibility= string.Empty
             else tr.style.visibility = "hidden"
-            if (tr.style.display == "none") tr.style.display = ""
+            if (tr.style.display == "none") tr.style.display= string.Empty
             else tr.style.display = "none"
         }
     }

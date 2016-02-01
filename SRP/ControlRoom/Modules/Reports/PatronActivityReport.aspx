@@ -130,11 +130,11 @@ CodeBehind="PatronActivityReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.
             <td align="left" ># Points For Reading</td>  
             <td align="left" ># Points For Events</td>  
             <td align="left" ># Points For Games</td>  
-            <td align="left" ># Points For Book Lists</td>  
+            <td align="left" ># Points For Challenges</td>  
             <td align="left" ># Times Logged Reading</td>  
             <td align="left" ># Events Attended</td>  
             <td align="left" ># Times Logged Games</td>  
-            <td align="left" ># Book Lists Completed</td>  
+            <td align="left" ># Challenges Completed</td>  
             <td align="left" ># Badges Earned</td>  
             <td align="left" ># Minigames Played</td>  
         </tr>    

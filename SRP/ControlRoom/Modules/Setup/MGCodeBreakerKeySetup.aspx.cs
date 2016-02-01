@@ -15,7 +15,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
         
 
-        public List<KeyItem> GetKeyCharacters()
+        public IEnumerable<KeyItem> GetKeyCharacters()
         {
             var CBID = int.Parse(lblCBID.Text);
             return MGCodeBreaker.GetKeyCharacters(CBID);
@@ -36,7 +36,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                 lblSDifficulty.Text = sDifficulty;
                 lblDifficulty.Text = difficulty.ToString();
-                lblPrefix.Text = "";
+                lblPrefix.Text= string.Empty;
                 if (difficulty == 2) lblPrefix.Text = "m_";
                 if (difficulty == 3) lblPrefix.Text = "h_";
             }

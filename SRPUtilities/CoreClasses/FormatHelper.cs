@@ -4,120 +4,133 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace GRA.SRP.Utilities.CoreClasses
-{
-    public static class FormatHelper
-    {
-
-        public static string ToNormalDate(this DateTime dt)
-        {
-            if (dt != null) {
-                if (dt.ToString().StartsWith("1/1/0001")) return "N/A";
-                return dt.ToString("MM/dd/yyyy");
+namespace GRA.SRP.Utilities.CoreClasses {
+    public static class FormatHelper {
+        public static string ToNormalDate(this DateTime dt) {
+            if(dt != null) {
+                if(dt.ToString().StartsWith("1/1/0001")) {
+                    return "N/A";
+                }
+                return dt.ToShortDateString();
             }
             return "N/A";
         }
 
-        public static string ToWidgetDisplayDate(this DateTime dt)
-        {
-            if (dt != null)
-            {
-                if (dt.ToString().StartsWith("1/1/0001")) return "";
-                return dt.ToString("MM/dd/yyyy");
+        public static string ToWidgetDisplayDate(this DateTime dt) {
+            if(dt != null) {
+                if(dt.ToString().StartsWith("1/1/0001")) {
+                    return string.Empty;
+                }
+                return dt.ToShortDateString();
             }
-            return "";
+            return string.Empty;
         }
 
-        public static string ToYesNo(this bool b)
-        {
-            if (b)
-                return "Yes";
-            return "No";
+        public static string ToYesNo(this bool b) {
+            return b ? "Yes" : "No";
         }
 
-        public static string ToInt(this int i)
-        {
+        public static string ToInt(this int i) {
             return String.Format("{0:#,##0}", i);
         }
 
-        public static string ToWidgetDisplayInt(this int i)
-        {
-            if (i == 0) return "";
+        public static string ToWidgetDisplayInt(this int i) {
+            if(i == 0) {
+                return "";
+            }
             return String.Format("{0:#,##0}", i);
         }
 
-        public static string ToDecimal(this decimal i)
-        {
+        public static string ToDecimal(this decimal i) {
             return String.Format("{0:#,##0.00}", i);
         }
-        public static string ToMoney(this decimal d)
-        {
+        public static string ToMoney(this decimal d) {
             return String.Format("{0:C}", d);
         }
 
-        public static int SafeToInt(this string s)
-        {
+        public static int SafeToInt(this string s) {
             int _int = 0;
             int.TryParse(s, out _int);
             return _int;
         }
 
 
-        public static bool SafeToBool(this string s)
-        {
-            if (s == "1") return true;
-            if (s.ToLower() == "yes") return true;
-            if (s.ToLower() == "on") return true;
+        public static bool SafeToBool(this string s) {
+            if(s == "1") {
+                return true;
+            }
+            if(s.Equals("yes", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
+            if(s.Equals("on", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
 
             return false;
         }
 
-        public static bool SafeToBoolYes(this string s)
-        {
-            if (s == "1") return true;
-            if (s.ToLower() == "yes") return true;
-            if (s.ToLower() == "on") return true;
-            if (s == "") return true;
+        public static bool SafeToBoolYes(this string s) {
+            if(s == "1") {
+                return true;
+            }
+            if(s.Equals("yes", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
+            if(s.Equals("on", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
+            if(string.IsNullOrEmpty(s)) {
+                return true;
+            }
 
             return false;
         }
 
-        public static decimal SafeToDecimal(this string s)
-        {
-            decimal _dec = (decimal) 0.00;
+        public static decimal SafeToDecimal(this string s) {
+            decimal _dec = (decimal)0.00;
             decimal.TryParse(s, out _dec);
             return _dec;
         }
 
-        public static DateTime SafeToDateTime(this string s)
-        {
+        public static DateTime SafeToDateTime(this string s) {
             DateTime _date = DateTime.MinValue;
             DateTime.TryParse(s, out _date);
             return _date;
         }
 
-        public static string FormatPhoneNumber(this string s)
-        {
-            var s1 = "";
-            if (s.Length == 0) return "";
-            s1 = s.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "").Replace("_", "");
-            return string.Format("({0}) {1}-{2}", s1.Substring(0, 3), s1.Substring(3, 3), s1.Substring(6));
+        public static string FormatPhoneNumber(this string s) {
+            var phoneFixed = string.Empty;
+            if(s.Length == 0) {
+                return phoneFixed;
+            }
+            phoneFixed = s.Replace(" ", string.Empty)
+                .Replace("(", string.Empty)
+                .Replace(")", string.Empty)
+                .Replace("-", string.Empty)
+                .Replace("_", string.Empty);
+            return string.Format("({0}) {1}-{2}", phoneFixed.Substring(0, 3), phoneFixed.Substring(3, 3), phoneFixed.Substring(6));
         }
 
-        public static string FormatZipCode(string s)
-        {
-            var s1 = "";
-            if (s.Length == 0) return "";
-            s1 = s.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "").Replace("_", "");
-            if (s1.Length == 5) return s1;
-            return string.Format("{0}-{1}", s1.Substring(0, 5), s1.Substring(5));
+        public static string FormatZipCode(string s) {
+            var zipFixed = string.Empty;
+            if(s.Length == 0) {
+                return zipFixed;
+            }
+            zipFixed = s.Replace(" ", string.Empty)
+                .Replace("(", string.Empty)
+                .Replace(")", string.Empty)
+                .Replace("-", string.Empty)
+                .Replace("_", string.Empty);
+            if(zipFixed.Length == 5) {
+                return zipFixed;
+            }
+            return string.Format("{0}-{1}", zipFixed.Substring(0, 5), zipFixed.Substring(5));
         }
 
-        public static string HtmlStrip(this string input)
-        {
+        public static string HtmlStrip(this string input) {
             input = Regex.Replace(input, "<style>(.|\n)*?</style>", string.Empty);
             input = Regex.Replace(input, @"<xml>(.|\n)*?</xml>", string.Empty); // remove all <xml></xml> tags and anything inbetween.  
-            return Regex.Replace(input, @"<(.|\n)*?>", string.Empty); // remove any tags but not there content "<p>bob<span> johnson</span></p>" becomes "bob johnson"
+            return Regex.Replace(input, @"<(.|\n)*?>", string.Empty); // remove any tags but not there content "<p>test<span> drive</span></p>" becomes "test drive"
         }
     }
 }

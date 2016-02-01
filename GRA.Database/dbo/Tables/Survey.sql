@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Survey] (
     [SID]         INT           IDENTITY (1, 1) NOT NULL,
-    [Name]        VARCHAR (50)  NULL,
-    [LongName]    VARCHAR (150) NULL,
+    [Name]        NVARCHAR(255)  NULL,
+    [LongName]    NVARCHAR(255) NULL,
     [Description] TEXT          NULL,
     [Preamble]    TEXT          NULL,
     [Status]      INT           NULL,

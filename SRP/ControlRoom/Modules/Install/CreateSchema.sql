@@ -629,14 +629,12 @@ SELECT @BID AS BID,
 		ELSE 1
 		END AS Checked
 FROM dbo.BadgeBranch bb
-RIGHT JOIN Code c ON bb.CID = c.CID
-	AND c.TenID = @TenID
-	AND c.CTID = @CTID
-WHERE bb.BID = @BID
-	OR bb.BID IS NULL
-	AND c.TenID = @TenID
+RIGHT OUTER JOIN Code c ON bb.CID = c.CID
+	AND (bb.BID = @BID OR bb.BID IS NULL)
+WHERE c.TenID = @TenID
 	AND c.CTID = @CTID
 ORDER BY c.Code
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeCategories]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -751,7 +749,7 @@ SELECT BID,
 FROM Badge b
 WHERE TenID = @TenID
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeAgeGrp A
 			WHERE b.BID = A.BID
@@ -760,7 +758,7 @@ WHERE TenID = @TenID
 		OR @A = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeBranch B
 			WHERE b.BID = B.BID
@@ -769,7 +767,7 @@ WHERE TenID = @TenID
 		OR @B = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeCategory C
 			WHERE b.BID = C.BID
@@ -778,7 +776,7 @@ WHERE TenID = @TenID
 		OR @C = 0
 		)
 	AND (
-		b.BID = (
+		b.BID IN (
 			SELECT BID
 			FROM BadgeLocation L
 			WHERE b.BID = L.BID
@@ -1402,7 +1400,8 @@ DROP TABLE #temp
 SELECT ROW_NUMBER() OVER (
 		ORDER BY bl.BLID
 		) AS Rank,
-	bl.*
+	bl.*,
+	(select count(*) from [PatronBookLists] pbl WHERE pbl.[blid] = bl.[blid] AND pbl.[pid] = @pid AND pbl.[HasReadFlag] = 1) as NumBooksCompleted
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
 GO
@@ -2840,7 +2839,7 @@ CREATE PROCEDURE [dbo].[app_Event_GetUpcomingDisplay] @startDate DATETIME = NULL
 AS
 SELECT *,
 	(
-		SELECT Code
+		SELECT [Description]
 		FROM dbo.Code
 		WHERE CID = BranchID
 		) AS Branch
@@ -3344,7 +3343,7 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_GetFilteredBranchDDValues] @Distric
 	@TenID INT = NULL
 AS
 SELECT DISTINCT BranchID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM LibraryCrosswalk w
 INNER JOIN Code c ON w.BranchID = c.CID
 WHERE (
@@ -3361,6 +3360,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -3372,7 +3372,7 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_GetFilteredDistrictDDValues] @City 
 	@TenID INT = NULL
 AS
 SELECT DISTINCT DistrictID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM LibraryCrosswalk w
 INNER JOIN Code c ON w.DistrictID = c.CID
 WHERE (
@@ -3384,6 +3384,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Insert]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -7354,9 +7355,9 @@ SELECT ROW_NUMBER() OVER (
 FROM [PatronBadges] pb
 LEFT JOIN Badge b ON pb.BadgeID = b.BID
 WHERE PID = @PID
-ORDER BY DateEarned,
-	PBID
+ORDER BY Rank DESC
 GO
+
 /****** Object:  StoredProcedure [dbo].[app_PatronBadges_GetByID]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -10221,7 +10222,6 @@ BEGIN
 	WHERE MaxAge >= @Age
 	ORDER BY MaxAge ASC,
 		POrder ASC
-		--select @ID
 END
 ELSE IF (
 		@Grade > 0
@@ -10233,7 +10233,6 @@ BEGIN
 	WHERE MaxGrade >= @Grade
 	ORDER BY MaxGrade ASC,
 		POrder ASC
-		--select @ID
 END
 ELSE
 BEGIN
@@ -10242,8 +10241,6 @@ BEGIN
 	WHERE IsActive = 1
 		AND IsHidden = 0
 	ORDER BY POrder ASC
-
-	--SELECT @ID
 END
 
 IF (@ID IS NULL)
@@ -10253,15 +10250,7 @@ IF (@ID IS NULL)
 		AND IsHidden = 0
 	ORDER BY POrder ASC
 
---select @ID
---SELECT @ID
-
-SELECT *
-FROM #temp
-ORDER BY MaxAge ASC,
-	POrder ASC
-
-RETURN 0
+select @ID
 GO
 /****** Object:  StoredProcedure [dbo].[app_Programs_GetDefaultProgramID]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -12430,7 +12419,7 @@ CREATE PROCEDURE [dbo].[app_SchoolCrosswalk_GetFilteredSchoolDDValues] @SchTypeI
 	@TenID INT = NULL
 AS
 SELECT DISTINCT SchoolID AS CID,
-	c.Code AS Code
+	c.Code AS Code, c.[Description] as [Description]
 FROM SchoolCrosswalk w
 INNER JOIN Code c ON w.SchoolID = c.CID
 WHERE (
@@ -12476,7 +12465,7 @@ WHERE (
 		w.TenID = @TenID
 		OR @TenID IS NULL
 		)
-ORDER BY Code
+ORDER BY [Description]
 GO
 /****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Insert]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
@@ -21378,8 +21367,8 @@ CREATE TABLE [dbo].[PatronReadingLog](
 	[ReadingAmount] [int] NULL,
 	[ReadingPoints] [int] NULL,
 	[LoggingDate] [varchar](50) NULL,
-	[Author] [varchar](50) NULL,
-	[Title] [varchar](150) NULL,
+	[Author] [nvarchar](50) NULL,
+	[Title] [nvarchar](150) NULL,
 	[HasReview] [bit] NULL,
 	[ReviewID] [int] NULL,
  CONSTRAINT [PK_PatronReadingLog] PRIMARY KEY CLUSTERED 

@@ -21,19 +21,21 @@ namespace GRA.SRP.Classes {
                 var patron = Patron.GetObjectByUsername(PUsername.Text.Trim());
                 // Show message no matter what, even if we can't do it, because of hacking concerns
 
-                if(patron == null || patron.EmailAddress == "") {
-                    lbMessage.Text = "Your account does not have an email address associated with it or your email address is invalid.<br><br>Please visit your local library branch to reset your password.";
+                if(patron == null || string.IsNullOrEmpty(patron.EmailAddress)) {
+                    new SessionTools(Session).AlertPatron("Your account could not be located or is not associated with an email address. Please visit your local library branch to reset your password.", PatronMessageLevels.Warning, "exclamation-sign");
                 } else {
                     string remoteAddress = Request.UserHostAddress;
 
                     string passwordResetToken = patron.GeneratePasswordResetToken();
                     if(string.IsNullOrEmpty(passwordResetToken)) {
-                        lbMessage.Text = "Unable to initiate password reset process.";
+                        new SessionTools(Session).AlertPatron("Unable to reset your password. Please visit your local library branch.", PatronMessageLevels.Warning, "exclamation-sign");
                         return;
                     }
 
+                    string systemName = SRPSettings.GetSettingValue("SysName");
+
                     var values = new {
-                        SystemName = SRPSettings.GetSettingValue("SysName"),
+                        SystemName = systemName,
                         PasswordResetLink = string.Format("{0}{1}?token={2}",
                                                           WebTools.GetBaseUrl(Request),
                                                           "/PasswordRecovery.aspx",
@@ -43,29 +45,31 @@ namespace GRA.SRP.Classes {
                         RemoteAddress = remoteAddress,
                         UserEmail = patron.EmailAddress,
                         Username = patron.Username,
-                        PasswordResetSubject = "Password reset request"
+                        PasswordResetSubject = string.Format("{0} password reset request", systemName)
                     };
 
                     StringBuilder body = new StringBuilder();
                     body.Append("<p>A password reset request was received by {SystemName} for ");
                     body.Append("your account: {Username}.</p><p>Please ");
-                    body.Append("<a href=\"{PasswordResetLink}\">click here</a> in the next hour ");
+                    body.Append("<a href=\"{PasswordResetLink}\">click here</a> ");
                     body.Append("to create a new password for your account.</p>");
                     body.Append("<p>If you did not initiate this request, take no action and your ");
                     body.Append("password will not be changed.</p>");
                     body.Append("<p>If you have any comments or questions, please contact ");
-                    body.Append("{ContactName} at <a href=\"mailto:{ContactEmail}\">{ContactEmail}");
-                    body.Append("</a>.</p>");
+                    body.Append("{ContactName} at ");
+                    body.Append("<a href=\"mailto:{ContactEmail}\">{ContactEmail}</a>.</p>");
                     body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                     body.Append("submitted from: {RemoteAddress}.</em></p>");
 
-                    EmailService.SendEmail(patron.EmailAddress,
-                                           "{SystemName} - {PasswordResetSubject}".FormatWith(values),
-                                           body.ToString().FormatWith(values));
-                    lbMessage.Text = "Processing your password reset request, you should receive an email soon.";
+                    new EmailService().SendEmail(patron.EmailAddress,
+                                                 "{SystemName} - {PasswordResetSubject}".FormatWith(values),
+                                                 body.ToString().FormatWith(values));
+                    new SessionTools(Session).AlertPatron("Processing your password reset request, you should receive an email soon.",
+                        glyphicon: "ok");
                 }
 
-                new PatronSession(Session).Clear();
+                new SessionTools(Session).ClearPatron();
+                Response.Redirect("~");
             }
         }
     }

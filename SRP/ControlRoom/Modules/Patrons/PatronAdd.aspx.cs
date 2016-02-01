@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             {
                 string editpage = "~/ControlRoom/Modules/Patrons/PatronDetails.aspx";
 
-                    Session["CURR_PATRON_ID"] = "";
+                    Session["CURR_PATRON_ID"]= string.Empty;
                     Session["CURR_PATRON"] = null;
                     Session["CURR_PATRON_MODE"] = "ADDNEW";
                     Response.Redirect(editpage);

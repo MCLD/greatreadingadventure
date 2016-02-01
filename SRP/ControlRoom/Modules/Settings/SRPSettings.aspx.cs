@@ -127,7 +127,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
         private void DoSave()
         {
             //bool hasErrors = false;
-            string message = "";
+            string message= string.Empty;
                 foreach (GridViewRow row in gv.Rows)
                 {
                     SettingEditor e = (SettingEditor)row.FindControl("uxSettingEditor");

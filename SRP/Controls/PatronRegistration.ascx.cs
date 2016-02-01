@@ -10,198 +10,108 @@ using GRA.SRP.ControlRoom;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
+using System.Text;
 
-namespace GRA.SRP.Controls
-{
-    public partial class PatronRegistration : System.Web.UI.UserControl
-    {
-        protected void Page_Load(object sender, EventArgs e)
+namespace GRA.SRP.Controls {
+    public partial class PatronRegistration : System.Web.UI.UserControl {
+        private CustomRegistrationFields customFields;
+        protected CustomRegistrationFields CustomFields
         {
-            if (!IsPostBack)
+            get
             {
-                
-                rptr.DataSource = RegistrationSettings.GetAll();
+                if(customFields == null) {
+                    customFields = CustomRegistrationFields.FetchObject();
+                }
+                return customFields;
+            }
+        }
+        protected string CurrentStep
+        {
+            get
+            {
+                return Step.Text;
+            }
+        }
+        protected void Page_Load(object sender, EventArgs e) {
+            if(!IsPostBack) {
+                var dataSource = RegistrationSettings.GetAll();
+                rptr.DataSource = dataSource;
                 rptr.DataBind();
 
                 ((BaseSRPPage)Page).TranslateStrings(rptr);
-
             }
-
-
         }
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-
+        protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e) {
+            var registrationHelper = new RegistrationHelper();
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues1)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues1));
+                registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues2)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues2));
+                registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues3)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues3));
+                registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues4)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues4));
+                registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
+            }
+            if(!string.IsNullOrEmpty(this.CustomFields.DDValues5)) {
+                var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
+                registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
+            }
         }
 
-        protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            //var ctl = (DropDownList)rptr.Items[0].FindControl("Gender");
-            //var txt = (TextBox)rptr.Items[0].FindControl("GenderTxt");
-            //var i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-
-            //ctl = (DropDownList)rptr.Items[0].FindControl("PrimaryLibrary");
-            //txt = (TextBox)rptr.Items[0].FindControl("PrimaryLibraryTxt");
-            //i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-
-            //ctl = (DropDownList)rptr.Items[0].FindControl("SchoolType");
-            //txt = (TextBox)rptr.Items[0].FindControl("SchoolTypeTxt");
-            //i = ctl.Items.FindByValue(txt.Text);
-            //if (i != null) ctl.SelectedValue = txt.Text;
-
-            var uxNewPasswordStrengthValidator = (RegularExpressionValidator)e.Item.FindControl("uxNewPasswordStrengthValidator");
-            uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
-            uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
-            uxNewPasswordStrengthValidator.Text = string.Format("<font color='red'>{0} </font>",
-                                                                uxNewPasswordStrengthValidator.ErrorMessage);
-
-
-            var ctl = (DropDownList)e.Item.FindControl("Custom1DD");
-            var txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
-            var i = ctl.Items.FindByValue("");
-            var cr = CustomRegistrationFields.FetchObject();
-            if (cr.DDValues1 != "")
-            {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues1));
-                ctl = (DropDownList)e.Item.FindControl("Custom1DD");
-                txt = (TextBox)e.Item.FindControl("Custom1DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
-                {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if (i != null) ctl.SelectedValue = txt.Text;
-            }
-            if (cr.DDValues2 != "")
-            {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues2));
-                ctl = (DropDownList)e.Item.FindControl("Custom2DD");
-                txt = (TextBox)e.Item.FindControl("Custom2DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
-                {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if (i != null) ctl.SelectedValue = txt.Text;
-            }
-            if (cr.DDValues3 != "")
-            {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues3));
-                ctl = (DropDownList)e.Item.FindControl("Custom3DD");
-                txt = (TextBox)e.Item.FindControl("Custom3DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
-                {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if (i != null) ctl.SelectedValue = txt.Text;
-            }
-            if (cr.DDValues4 != "")
-            {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues4));
-                ctl = (DropDownList)e.Item.FindControl("Custom4DD");
-                txt = (TextBox)e.Item.FindControl("Custom4DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
-                {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if (i != null) ctl.SelectedValue = txt.Text;
-            }
-            if (cr.DDValues5 != "")
-            {
-                var ds = Codes.GetAlByTypeID(int.Parse(cr.DDValues5));
-                ctl = (DropDownList)e.Item.FindControl("Custom5DD");
-                txt = (TextBox)e.Item.FindControl("Custom5DDTXT");
-                ctl.Items.Clear();
-                ctl.Items.Add(new ListItem("[Select a Value]", ""));
-                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
-                {
-                    ctl.Items.Add(new ListItem(ds.Tables[0].Rows[j]["Code"].ToString()));
-                }
-
-                i = ctl.Items.FindByValue(txt.Text);
-                if (i != null) ctl.SelectedValue = txt.Text;
-            }
-
-        }
-
-        protected void btnPrev_Click(object sender, EventArgs e)
-        {
+        protected void btnPrev_Click(object sender, EventArgs e) {
             var step = int.Parse(Step.Text);
-            //var curPanel = rptr.Items[0].FindControl("Panel" + step.ToString());
-            //var newPanel = rptr.Items[0].FindControl("Panel" + (step - 1).ToString());
 
-            //curPanel.Visible = false;
-            //newPanel.Visible = true;
-
-            //Step.Text = (step - 1).ToString();
-            //btnPrev.Enabled = (step != 2);
-
-            if (Page.IsValid) DoBusinessRulesPrev(step);
+            if(Page.IsValid)
+                DoBusinessRulesPrev(step);
             btnPrev.Enabled = true;
-            if (int.Parse(Step.Text) == 1 || int.Parse(Step.Text) >= 7) btnPrev.Enabled = false; 
+            if(int.Parse(Step.Text) == 1 || int.Parse(Step.Text) >= 7)
+                btnPrev.Enabled = false;
 
             var p = (TextBox)rptr.Items[0].FindControl("Password");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"]: p.Text));
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
             p = (TextBox)rptr.Items[0].FindControl("Password2");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));            
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
         }
 
-        protected void btnNext_Click(object sender, EventArgs e)
-        {
+        protected void btnNext_Click(object sender, EventArgs e) {
             var step = int.Parse(Step.Text);
-            //var curPanel = rptr.Items[0].FindControl("Panel" + step.ToString());
-            //var newPanel = rptr.Items[0].FindControl("Panel" + (step + 1).ToString());
 
-            if (Page.IsValid) DoBusinessRulesNext(step);
+            if(Page.IsValid)
+                DoBusinessRulesNext(step);
             btnPrev.Enabled = true;
-            if (int.Parse(Step.Text) == 1 || int.Parse(Step.Text) >= 7 ) btnPrev.Enabled = false; 
+            if(int.Parse(Step.Text) == 1 || int.Parse(Step.Text) >= 7)
+                btnPrev.Enabled = false;
 
             var p = (TextBox)rptr.Items[0].FindControl("Password");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text)); 
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
             p = (TextBox)rptr.Items[0].FindControl("Password2");
-            p.Attributes.Add("Value", (p.Text == "" ? p.Attributes["Value"] : p.Text));            
+            p.Attributes.Add("Value", (string.IsNullOrEmpty(p.Text) ? p.Attributes["Value"] : p.Text));
         }
 
-
-        public void DoBusinessRulesNext(int curStep)
-        {
+        public void DoBusinessRulesNext(int curStep) {
             // code needs to have the steps in order for the ifs to flow properly on panels with now fields showing
 
-            if (curStep == 1)
-            {
+            if(curStep == 1) {
                 //get Age
 
-                var sDOB = ((TextBox) rptr.Items[0].FindControl("DOB")).Text;
+                var sDOB = ((TextBox)rptr.Items[0].FindControl("DOB")).Text;
                 var sAge = ((TextBox)rptr.Items[0].FindControl("Age")).Text;
                 var sGrade = ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text;
 
                 var age = -1;
-                if (sDOB != "")
-                {
+                if(!string.IsNullOrEmpty(sDOB)) {
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
-                }
-                else
-                {
+                } else {
                     int.TryParse(sAge, out age);
                 }
 
@@ -210,16 +120,22 @@ namespace GRA.SRP.Controls
                 // Get Default Program for the Age
                 // Set Program to that
                 var grade = -1;
-                if (sGrade.Length > 0) int.TryParse(sGrade, out grade);
+                if(sGrade.Length > 0)
+                    int.TryParse(sGrade, out grade);
 
                 var pgmDD = (DropDownList)rptr.Items[0].FindControl("ProgID");
-                if (pgmDD.SelectedValue == "0" || pgmDD.SelectedValue == "")
-                {
-                    pgmDD.SelectedValue = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
+                if(pgmDD.Items.Count == 2) {
+                    // single program - just select the program
+                    pgmDD.SelectedIndex = 1;
+                } else if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
+                    var defaultProgram = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
+                    if(pgmDD.Items.FindByValue(defaultProgram) != null) {
+                        pgmDD.SelectedValue = defaultProgram;
+                    }
                 }
 
 
-                if (MasterPID.Text.Length>0)    // Already registered the master account and now looping for family accounts
+                if(MasterPID.Text.Length > 0)    // Already registered the master account and now looping for family accounts
                 {
                     var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                     var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 2).ToString());
@@ -227,12 +143,9 @@ namespace GRA.SRP.Controls
                     curPanel.Visible = false;
                     newPanel.Visible = true;
 
-                    Step.Text = (curStep + 2).ToString();                    
-                }
-                else
-                {
-                    if (age > 17 && SRPSettings.GetSettingValue("AllowFamilyAccounts").SafeToBoolYes())
-                    {
+                    Step.Text = (curStep + 2).ToString();
+                } else {
+                    if(age > 17 && SRPSettings.GetSettingValue("AllowFamilyAccounts").SafeToBoolYes()) {
                         // Ask about adult
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
@@ -241,9 +154,7 @@ namespace GRA.SRP.Controls
                         newPanel.Visible = true;
 
                         Step.Text = (curStep + 1).ToString();
-                    }
-                    else
-                    {
+                    } else {
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 2).ToString());
 
@@ -253,13 +164,12 @@ namespace GRA.SRP.Controls
                         Step.Text = (curStep + 2).ToString();
                     }
                 }
-                
+
 
             }
             // Finished Current Step = 1
 
-            if (curStep == 2)
-            {
+            if(curStep == 2) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -271,8 +181,7 @@ namespace GRA.SRP.Controls
             }
             // Finished Current Step = 2 
 
-            if (curStep == 3)
-            {
+            if(curStep == 3) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -283,12 +192,12 @@ namespace GRA.SRP.Controls
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0") curStep = curStep + 1;  // If not, move to the next panel
+                if(newPanelVisibility == "0")
+                    curStep = curStep + 1;  // If not, move to the next panel
             }
             // Finished Current Step = 3 
 
-            if (curStep == 4)
-            {
+            if(curStep == 4) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -299,13 +208,13 @@ namespace GRA.SRP.Controls
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0") curStep = curStep + 1;  // If not, move to the next panel
+                if(newPanelVisibility == "0")
+                    curStep = curStep + 1;  // If not, move to the next panel
 
             }
             // Finished Current Step = 4 
 
-            if (curStep == 5)
-            {
+            if(curStep == 5) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -315,23 +224,23 @@ namespace GRA.SRP.Controls
                 Step.Text = (curStep + 1).ToString();
 
                 // deal with parental consent, by program
-                var PID = int.Parse(((DropDownList) rptr.Items[0].FindControl("ProgID")).SelectedValue);
+                var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
                 var prog = new Programs();
                 prog.Fetch(PID);
-                ((Label) rptr.Items[0].FindControl("lblConsent")).Text = prog.ParentalConsentText;
+                ((Label)rptr.Items[0].FindControl("lblConsent")).Text = prog.ParentalConsentText;
 
                 ((Panel)rptr.Items[0].FindControl("pnlConsent")).Visible = prog.ParentalConsentFlag;
                 //
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0" && !prog.ParentalConsentFlag) curStep = curStep + 1;  // If not, move to the next panel
+                if(newPanelVisibility == "0" && !prog.ParentalConsentFlag)
+                    curStep = curStep + 1;  // If not, move to the next panel
 
             }
             // Finished Current Step = 5 
 
-            if (curStep == 6)
-            {
+            if(curStep == 6) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -339,18 +248,14 @@ namespace GRA.SRP.Controls
                 newPanel.Visible = true;
 
                 Step.Text = (curStep + 1).ToString();
-                lblError.Text = "";
             }
             // Finished Current Step = 6 
 
+            if(curStep == 7) {
+                if(!SaveAccount()) {
+                    return;
+                }
 
-            if (curStep == 7)
-            {
-
-                lblError.Text = "";
-
-                if (!SaveAccount()) return;
-                
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = FindControl("Panel" + (curStep + 1).ToString());
 
@@ -359,10 +264,8 @@ namespace GRA.SRP.Controls
 
                 Step.Text = (curStep + 1).ToString();
 
-
-                var famAcct = (RadioButtonList)rptr.Items[0].FindControl("FamilyAccount");
-                if (famAcct.SelectedValue == "Yes")
-                {
+                var famAcct = (DropDownList)rptr.Items[0].FindControl("FamilyAccount");
+                if(famAcct.SelectedValue == "Yes") {
                     curStep = 9;  // Move to the next panel
                     Step.Text = "9";
                     curPanel = FindControl("Panel" + curStep.ToString());
@@ -370,8 +273,16 @@ namespace GRA.SRP.Controls
                     btnPrev.Enabled = false;
                     btnDone.Visible = true;
                     return;
+                } else {
+                    // we're done with registration, we can just jump right in
+                    TestingBL.CheckPatronNeedsPreTest();
+                    TestingBL.CheckPatronNeedsPostTest();
+
+                    Session[SessionKey.PatronMessage] = ((BaseSRPPage)Page).GetResourceString("registration-success");
+                    Session[SessionKey.PatronMessageGlyphicon] = "thumbs-up";
+                    Response.Redirect("~");
                 }
-                
+
                 newPanel.Visible = true;
                 btnPrev.Enabled = false;
 
@@ -379,8 +290,7 @@ namespace GRA.SRP.Controls
             }
             // Finished Current Step = 7 
 
-            if (curStep == 8)
-            {
+            if(curStep == 8) {
                 var curPanel = FindControl("Panel" + curStep.ToString());
                 var newPanel = FindControl("Panel" + (curStep + 1).ToString());
 
@@ -389,15 +299,14 @@ namespace GRA.SRP.Controls
 
                 Step.Text = (curStep + 1).ToString();
                 btnPrev.Enabled = false;
-                
+
                 // log them in and take them home
 
                 Response.Redirect(GoToUrl);
             }
             // Finished Current Step = 8 
 
-            if (curStep == 9)
-            {
+            if(curStep == 9) {
                 // Reset Steps, flag as family members, restart the wizard
 
                 var curPanel = FindControl("Panel" + curStep.ToString());
@@ -413,36 +322,33 @@ namespace GRA.SRP.Controls
                 RegisteringFamily.Text = "1";
                 RegistrationAge.Text = "0";
 
-                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Age")).Text = "";
-                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = "";
-                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = "";
-                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = "";
-                //((TextBox)rptr.Items[0].FindControl("SchoolName")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("District")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("Teacher")).Text = "";
-                //((TextBox)rptr.Items[0].FindControl("GroupTeamName")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Username")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Password")).Text = "";
-                ((TextBox) rptr.Items[0].FindControl("Password")).Attributes.Add("Value", "");
-                ((TextBox)rptr.Items[0].FindControl("Password2")).Text = "";
-                ((TextBox)rptr.Items[0].FindControl("Password2")).Attributes.Add("Value", "");
-                //((TextBox)rptr.Items[0].FindControl("AvatarID")).Text = "1";
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianFirstName")).Text = parentGuardianFirst.Text;
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianMiddleName")).Text = parentGuardianMiddle.Text;
+                ((TextBox)rptr.Items[0].FindControl("ParentGuardianLastName")).Text = parentGuardianLast.Text;
+
+                ((TextBox)rptr.Items[0].FindControl("Username")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password")).Attributes.Add("Value", string.Empty);
+                ((TextBox)rptr.Items[0].FindControl("Password2")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("Password2")).Attributes.Add("Value", string.Empty);
+                ((TextBox)rptr.Items[0].FindControl("Age")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("DOB")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("FirstName")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("MiddleName")).Text = string.Empty;
+                ((DropDownList)rptr.Items[0].FindControl("Gender")).SelectedValue = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
+                ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;
             }
             // Finished Current Step = 9 
 
         }
 
 
-        public void DoBusinessRulesPrev(int curStep)
-        {
+        public void DoBusinessRulesPrev(int curStep) {
             // code needs to have the steps in reverse order for the ifs to flow properly on panels with now fields showing
-            if (curStep == 7)
-            {
+            if(curStep == 7) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString());
 
@@ -462,13 +368,13 @@ namespace GRA.SRP.Controls
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0") curStep = curStep - 1;  // If not, move to the prev panel
+                if(newPanelVisibility == "0")
+                    curStep = curStep - 1;  // If not, move to the prev panel
 
             }
             // Finished Current Step = 7
-            
-            if (curStep == 6)
-            {
+
+            if(curStep == 6) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString());
 
@@ -479,14 +385,14 @@ namespace GRA.SRP.Controls
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0") curStep = curStep - 1;  // If not, move to the prev panel
+                if(newPanelVisibility == "0")
+                    curStep = curStep - 1;  // If not, move to the prev panel
 
             }
             // Finished Current Step = 6
 
-            
-            if (curStep == 5)
-            {
+
+            if(curStep == 5) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString());
 
@@ -494,16 +400,16 @@ namespace GRA.SRP.Controls
                 newPanel.Visible = true;
 
                 Step.Text = (curStep - 1).ToString();
-            
+
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString() + "Visibility")).Text;
-                if (newPanelVisibility == "0") curStep = curStep - 1;  // If not, move to the prev panel
+                if(newPanelVisibility == "0")
+                    curStep = curStep - 1;  // If not, move to the prev panel
             }
             // Finished Current Step = 5
 
-            
-            if (curStep == 4)
-            {
+
+            if(curStep == 4) {
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString());
 
@@ -515,14 +421,13 @@ namespace GRA.SRP.Controls
             }
             // Finished Current Step = 4
 
-            
-            if (curStep == 3)
-            {
+
+            if(curStep == 3) {
                 //get Age
 
                 var Age = int.Parse(RegistrationAge.Text);
 
-                if (MasterPID.Text.Length > 0)    // Already registered the master account and now looping for family accounts
+                if(MasterPID.Text.Length > 0)    // Already registered the master account and now looping for family accounts
                 {
                     var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                     var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 2).ToString());
@@ -531,11 +436,8 @@ namespace GRA.SRP.Controls
                     newPanel.Visible = true;
 
                     Step.Text = (curStep - 2).ToString();
-                }
-                else
-                {
-                    if (Age > 17)
-                    {
+                } else {
+                    if(Age > 17) {
                         // Ask about adult
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 1).ToString());
@@ -544,9 +446,7 @@ namespace GRA.SRP.Controls
                         newPanel.Visible = true;
 
                         Step.Text = (curStep - 1).ToString();
-                    }
-                    else
-                    {
+                    } else {
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 2).ToString());
 
@@ -554,29 +454,24 @@ namespace GRA.SRP.Controls
                         newPanel.Visible = true;
 
                         Step.Text = (curStep - 2).ToString();
-                    }   
+                    }
                 }
 
 
             }
             // Finished Current Step = 3
 
-            
-            if (curStep == 2)
-            {
 
+            if(curStep == 2) {
                 var sDOB = ((TextBox)rptr.Items[0].FindControl("DOB")).Text;
                 var sAge = ((TextBox)rptr.Items[0].FindControl("Age")).Text;
                 var sGrade = ((TextBox)rptr.Items[0].FindControl("SchoolGrade")).Text;
 
                 var age = -1;
-                if (sDOB != "")
-                {
+                if(!string.IsNullOrEmpty(sDOB)) {
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
-                }
-                else
-                {
+                } else {
                     int.TryParse(sAge, out age);
                 }
 
@@ -585,11 +480,11 @@ namespace GRA.SRP.Controls
                 // Get Default Program for the Age
                 // Set Program to that
                 var grade = -1;
-                if (sGrade.Length > 0) int.TryParse(sGrade, out grade);
+                if(sGrade.Length > 0)
+                    int.TryParse(sGrade, out grade);
 
                 var pgmDD = (DropDownList)rptr.Items[0].FindControl("ProgID");
-                if (pgmDD.SelectedValue == "0" || pgmDD.SelectedValue == "")
-                {
+                if(pgmDD.SelectedValue == "0" || string.IsNullOrEmpty(pgmDD.SelectedValue)) {
                     pgmDD.SelectedValue = Programs.GetDefaultProgramForAgeAndGrade(age, grade).ToString();
                 }
 
@@ -603,20 +498,16 @@ namespace GRA.SRP.Controls
                 Step.Text = (curStep - 1).ToString();
             }
             // Finished Current Step = 2
-
-
         }
 
-        public bool SaveAccount()
-        {        
-            try
-            {
+        public bool SaveAccount() {
+            try {
                 var p = new Patron();
                 DateTime _d;
                 var DOB = rptr.Items[0].FindControl("DOB") as TextBox;
-                if (DOB != null && DOB.Text != "")
-                {
-                    if (DateTime.TryParse(DOB.Text, out _d)) p.DOB = _d;
+                if(DOB != null && !string.IsNullOrEmpty(DOB.Text)) {
+                    if(DateTime.TryParse(DOB.Text, out _d))
+                        p.DOB = _d;
                 }
 
                 p.Age = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("Age")).Text);
@@ -625,8 +516,8 @@ namespace GRA.SRP.Controls
                 p.Username = ((TextBox)(rptr.Items[0]).FindControl("Username")).Text;
                 p.NewPassword = ((TextBox)(rptr.Items[0]).FindControl("Password")).Text;
 
-                var famAcct = (RadioButtonList)rptr.Items[0].FindControl("FamilyAccount");
-                p.IsMasterAccount = (famAcct.SelectedValue == "Yes" && MasterPID.Text.Length==0);
+                var famAcct = (DropDownList)rptr.Items[0].FindControl("FamilyAccount");
+                p.IsMasterAccount = (famAcct.SelectedValue == "Yes" && MasterPID.Text.Length == 0);
 
                 p.SchoolGrade = ((TextBox)(rptr.Items[0]).FindControl("SchoolGrade")).Text;
                 p.FirstName = ((TextBox)(rptr.Items[0]).FindControl("FirstName")).Text;
@@ -650,30 +541,28 @@ namespace GRA.SRP.Controls
                 p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
 
-                //p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
-                //p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
-
                 p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);
                 p.SchoolName = ((DropDownList)(rptr.Items[0]).FindControl("SchoolName")).SelectedValue;
                 p.SchoolType = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue);
 
                 var lc = LibraryCrosswalk.FetchObjectByLibraryID(p.PrimaryLibrary);
-                if (lc != null)
-                {
-                    p.District = lc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue : lc.DistrictID.ToString();
-                }
-                else
-                {
+                if(lc != null) {
+                    p.District = lc.DistrictID == 0
+                        ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue
+                        : lc.DistrictID.ToString();
+                } else {
                     p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
                 }
                 var sc = SchoolCrosswalk.FetchObjectBySchoolID(p.SchoolName.SafeToInt());
-                if (sc != null)
-                {
-                    p.SDistrict = sc.DistrictID == 0 ? ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt() : sc.DistrictID;
-                    p.SchoolType = sc.SchTypeID == 0 ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue) : sc.SchTypeID;
-                }
-                else
-                {
+                if(sc != null) {
+                    p.SDistrict = sc.DistrictID == 0
+                        ? ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt()
+                        : sc.DistrictID;
+
+                    p.SchoolType = sc.SchTypeID == 0
+                        ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue)
+                        : sc.SchTypeID;
+                } else {
                     p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
                 }
 
@@ -682,200 +571,124 @@ namespace GRA.SRP.Controls
                 p.GroupTeamName = ((TextBox)(rptr.Items[0]).FindControl("GroupTeamName")).Text;
                 p.LiteracyLevel1 = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("LiteracyLevel1")).Text);
                 p.LiteracyLevel2 = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("LiteracyLevel2")).Text);
- 
+
                 p.ParentPermFlag = ((CheckBox)(rptr.Items[0]).FindControl("ParentPermFlag")).Checked;
-                p.Over18Flag = int.Parse(RegistrationAge.Text) > 18;
+                p.Over18Flag = int.Parse(RegistrationAge.Text) >= 18;
                 p.ShareFlag = ((CheckBox)(rptr.Items[0]).FindControl("ShareFlag")).Checked;
                 p.TermsOfUseflag = ((CheckBox)(rptr.Items[0]).FindControl("TermsOfUseflag")).Checked;
 
-                var cr = CustomRegistrationFields.FetchObject();
-                p.Custom1 = cr.DDValues1 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom1DD")).SelectedValue;
-                p.Custom2 = cr.DDValues2 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom2DD")).SelectedValue;
-                p.Custom3 = cr.DDValues3 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom3DD")).SelectedValue;
-                p.Custom4 = cr.DDValues4 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom4DD")).SelectedValue;
-                p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
-                    
-                //p.Custom1 = ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text;
-                //p.Custom2 = ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text;
-                //p.Custom3 = ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text;
-                //p.Custom4 = ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text;
-                //p.Custom5 = ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text;
-                    
+                var cr = this.CustomFields;
+                p.Custom1 = string.IsNullOrEmpty(cr.DDValues1)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom1")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom1DD")).SelectedValue;
+
+                p.Custom2 = string.IsNullOrEmpty(cr.DDValues2)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom2")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom2DD")).SelectedValue;
+
+                p.Custom3 = string.IsNullOrEmpty(cr.DDValues3)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom3")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom3DD")).SelectedValue;
+
+                p.Custom4 = string.IsNullOrEmpty(cr.DDValues4)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom4")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom4DD")).SelectedValue;
+
+                p.Custom5 = string.IsNullOrEmpty(cr.DDValues5)
+                    ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text
+                    : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
+
                 p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)rptr.Items[0].FindControl("AvatarID")).Value);
 
                 var registeringMasterAccount = true;
-                if (RegisteringFamily.Text != "0")
-                {
+                if(!RegisteringFamily.Text.Equals("0")) {
                     registeringMasterAccount = false;
                     p.MasterAcctPID = int.Parse(MasterPID.Text);
                 }
-                if (p.IsValid(BusinessRulesValidationMode.INSERT))
-                {
+
+                if(p.IsValid(BusinessRulesValidationMode.INSERT)) {
                     p.Insert();
 
                     var prog = Programs.FetchObject(p.ProgID);
-                    var list = new List<Badge>();
-                    if (prog.RegistrationBadgeID !=0)
-                    {
-                        
-                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref list);
-
-                        #region replaced by call above
-
-                        //    var now = DateTime.Now;
-                        //    var pb = new PatronBadges { BadgeID = prog.RegistrationBadgeID, DateEarned = now, PID = p.PID };
-                        //    pb.Insert();
-
-                        //    var EarnedBadge = Badge.GetBadge(prog.RegistrationBadgeID);
-
-                        //    //if badge generates notification, then generate the notification
-                        //    if (EarnedBadge.GenNotificationFlag)
-                        //    {
-                        //        var not = new Notifications
-                        //        {
-                        //            PID_To = p.PID,
-                        //            PID_From = 0,  //0 == System Notification
-                        //            Subject = EarnedBadge.NotificationSubject,
-                        //            Body = EarnedBadge.NotificationBody,
-                        //            isQuestion = false,
-                        //            AddedDate = now,
-                        //            LastModDate = now,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A"
-                        //        };
-                        //        not.Insert();
-                        //    }
-
-                        //    //if badge generates prize, then generate the prize
-                        //    if (EarnedBadge.IncludesPhysicalPrizeFlag)
-                        //    {
-                        //        var ppp = new DAL.PatronPrizes
-                        //        {
-                        //            PID = p.PID,
-                        //            PrizeSource = 1,
-                        //            PrizeName = EarnedBadge.PhysicalPrizeName,
-                        //            RedeemedFlag = false,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A",
-                        //            AddedDate = now,
-                        //            LastModDate = now
-                        //        };
-
-                        //        ppp.Insert();
-                        //    }
-
-
-
-                        //    // if badge generates award code, then generate the code
-                        //    if (EarnedBadge.AssignProgramPrizeCode)
-                        //    {
-                        //        var RewardCode = "";
-                        //        // get the Code value
-                        //        // save the code value for the patron
-                        //        RewardCode = ProgramCodes.AssignCodeForPatron(p.ProgID, p.ProgID);
-
-                        //        // generate the notification
-                        //        var not = new Notifications
-                        //        {
-                        //            PID_To = p.PID,
-                        //            PID_From = 0,  //0 == System Notification
-                        //            Subject = EarnedBadge.PCNotificationSubject,
-                        //            Body = EarnedBadge.PCNotificationBody.Replace("{ProgramRewardCode}", RewardCode),
-                        //            isQuestion = false,
-                        //            AddedDate = now,
-                        //            LastModDate = now,
-                        //            AddedUser = p.Username,
-                        //            LastModUser = "N/A"
-                        //        };
-                        //        not.Insert();
-                        //    }
-
-                        #endregion
+                    var earnedBadgesList = new List<Badge>();
+                    if(prog.RegistrationBadgeID != 0) {
+                        AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID,
+                                                       p,
+                                                       ref earnedBadgesList);
                     }
-                    AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
+                    AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref earnedBadgesList);
 
-                    var sBadges = "";
-                    sBadges = list.Aggregate(sBadges, (current, b) => current + "|" + b.BID.ToString());
-                    if (p.IsMasterAccount && sBadges.Length > 0) GoToUrl = ("~/BadgeAward.aspx?b=" + sBadges);  // if family account and is master, and has badges, rememebr to show them
-                    if (!p.IsMasterAccount && p.MasterAcctPID == 0 && sBadges.Length > 0) GoToUrl = ("~/BadgeAward.aspx?b=" + sBadges); // if not family master or not family at all and badges, rememebr to show ...
+                    var earnedBadges = string.Join("|", earnedBadgesList.Select(b => b.BID).Distinct());
 
+                    if(p.IsMasterAccount && earnedBadges.Length > 0) {
+                        // if family account and is master, and has badges, rememebr to show them
+                        new SessionTools(Session).EarnedBadges(earnedBadges);
+                    }
+                    if(!p.IsMasterAccount && p.MasterAcctPID == 0 && earnedBadges.Length > 0) {
+                        // if not family master or not family at all and badges, rememebr to show ...
+                        new SessionTools(Session).EarnedBadges(earnedBadges);
+                    }
 
-                    if (registeringMasterAccount)
-                    {
+                    if(p.IsMasterAccount) {
+                        parentGuardianFirst.Text = p.FirstName;
+                        parentGuardianMiddle.Text = p.MiddleName;
+                        parentGuardianLast.Text = p.LastName;
+                    }
+
+                    if(registeringMasterAccount) {
                         MasterPID.Text = p.PID.ToString();
-                        Session["PatronLoggedIn"] = true;
-                        Session["Patron"] = p;
-                        Session["ProgramID"] = p.ProgID;
-                        Session["PatronProgramID"] = p.ProgID;
-                        Session["CurrentProgramID"] = p.ProgID;
-                        Session["TenantID"] = p.TenID;
-                        Session["IsMasterAcct"] = p.IsMasterAccount;
-                        if (p.IsMasterAccount)
-                        {
-                            Session["MasterAcctPID"] = p.PID;
-                        }
-                        else
-                        {
-                            Session["MasterAcctPID"] = 0;
-                        }
+                        new SessionTools(Session).EstablishPatron(p);
                     }
-                }
-                else
-                {
-                    string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                    foreach (BusinessRulesValidationMessage m in p.ErrorCodes)
-                    {
-                        message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
+                } else {
+                    StringBuilder message = new StringBuilder("<strong>");
+                    message.AppendFormat(SRPResources.ApplicationError1, "<ul>");
+                    foreach(BusinessRulesValidationMessage m in p.ErrorCodes) {
+                        message.AppendFormat("<li>{0}</li>", m.ErrorMessage);
                     }
-                    message = string.Format("{0}</ul>", message);
-                    lblError.Text = message;
+                    message.Append("</ul></strong>");
+                    Session[SessionKey.PatronMessage] = message.ToString();
+                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                    Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                     return false;
                 }
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = String.Format(SRPResources.ApplicationError1, ex.Message);
-
+            } catch(Exception ex) {
+                this.Log().Error(string.Format("A problem occurred during registration: {0}",
+                                               ex.Message));
+                Session[SessionKey.PatronMessage] = string.Format("<strong>{0}</strong>",
+                                                                  ex.Message);
+                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
+                Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                 return false;
             }
             return true;
         }
 
-
-        protected void City_TextChanged(object sender, EventArgs e)
-        {
+        protected void City_TextChanged(object sender, EventArgs e) {
             ReloadLibraryDistrict();
             ReloadSchoolDistrict();
         }
 
-        protected void District_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        protected void District_SelectedIndexChanged(object sender, EventArgs e) {
             ReloadLibraryDistrict();
         }
 
-        protected void SchoolType_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        protected void SchoolType_SelectedIndexChanged(object sender, EventArgs e) {
             ReloadSchoolDistrict();
         }
 
-        protected void SDistrict_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        protected void SDistrict_SelectedIndexChanged(object sender, EventArgs e) {
             ReloadSchoolDistrict();
         }
 
-        protected void Age_TextChanged(object sender, EventArgs e)
-        {
+        protected void Age_TextChanged(object sender, EventArgs e) {
             ReloadSchoolDistrict();
         }
 
-        protected void SchoolGrade_TextChanged(object sender, EventArgs e)
-        {
+        protected void SchoolGrade_TextChanged(object sender, EventArgs e) {
             ReloadSchoolDistrict();
         }
 
-        protected void ReloadSchoolDistrict()
-        {
-            //*
+        protected void ReloadSchoolDistrict() {
             var sc = (DropDownList)(rptr.Items[0]).FindControl("SchoolName");
             var st = (DropDownList)(rptr.Items[0]).FindControl("SchoolType");
             var sd = (DropDownList)(rptr.Items[0]).FindControl("SDistrict");
@@ -885,29 +698,30 @@ namespace GRA.SRP.Controls
             var scVal = sc.SelectedValue;
             sc.Items.Clear();
             sc.Items.Add(new ListItem("[Select a Value]", "0"));
-            var ds = SchoolCrosswalk.GetFilteredSchoolDDValues(st.SelectedValue.SafeToInt(), sd.SelectedValue.SafeToInt(), city.Text, ag.Text.SafeToInt(), gr.Text.SafeToInt());
-            foreach (DataRow r in ds.Tables[0].Rows)
-            {
-                sc.Items.Add(new ListItem(r["Code"].ToString(), r["CID"].ToString()));
+            var ds = SchoolCrosswalk.GetFilteredSchoolDDValues(st.SelectedValue.SafeToInt(),
+                                                               sd.SelectedValue.SafeToInt(),
+                                                               city.Text,
+                                                               ag.Text.SafeToInt(),
+                                                               gr.Text.SafeToInt());
+            foreach(DataRow r in ds.Tables[0].Rows) {
+                sc.Items.Add(new ListItem(r["Description"].ToString(), r["CID"].ToString()));
             }
 
             var si = sc.Items.FindByValue(scVal);
             sc.SelectedValue = si != null ? scVal : "0";
-            //*            
         }
 
-        protected void ReloadLibraryDistrict()
-        {
+        protected void ReloadLibraryDistrict() {
             //*
             var pl = (DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary");
             var dt = (DropDownList)(rptr.Items[0]).FindControl("District");
             var plVal = pl.SelectedValue;
             pl.Items.Clear();
             pl.Items.Add(new ListItem("[Select a Value]", "0"));
-            var ds = LibraryCrosswalk.GetFilteredBranchDDValues(int.Parse(dt.SelectedValue), city.Text);
-            foreach (DataRow r in ds.Tables[0].Rows)
-            {
-                pl.Items.Add(new ListItem(r["Code"].ToString(), r["CID"].ToString()));
+            var ds = LibraryCrosswalk.GetFilteredBranchDDValues(int.Parse(dt.SelectedValue),
+                                                                city.Text);
+            foreach(DataRow r in ds.Tables[0].Rows) {
+                pl.Items.Add(new ListItem(r["Description"].ToString(), r["CID"].ToString()));
             }
             var il = pl.Items.FindByValue(plVal);
             pl.SelectedValue = il != null ? plVal : "0";
@@ -915,13 +729,11 @@ namespace GRA.SRP.Controls
         }
 
 
-        protected void btnDone_Click(object sender, EventArgs e)
-        {
+        protected void btnDone_Click(object sender, EventArgs e) {
             Response.Redirect(GoToUrl);
         }
 
-        protected void TermsOfUseflag_ServerValidate(object source, ServerValidateEventArgs args)
-        {
+        protected void TermsOfUseflag_ServerValidate(object source, ServerValidateEventArgs args) {
             args.IsValid = ((CheckBox)(rptr.Items[0]).FindControl("TermsOfUseflag")).Checked;
         }
 
@@ -929,17 +741,12 @@ namespace GRA.SRP.Controls
         {
             get
             {
-                if (ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0)
-                {
-                    ViewState["gotourl"] = "~/MyProgram.aspx";
+                if(ViewState["gotourl"] == null || ViewState["gotourl"].ToString().Length == 0) {
+                    ViewState["gotourl"] = "~";
                 }
                 return ViewState["gotourl"].ToString();
             }
             set { ViewState["gotourl"] = value; }
         }
-
-
-
-
     }
 }

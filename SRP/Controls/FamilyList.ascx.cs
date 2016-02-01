@@ -7,20 +7,19 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
+using GRA.Tools;
+using System.IO;
 
-namespace GRA.SRP.Controls
-{
-    public partial class FamilyList : System.Web.UI.UserControl
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
+namespace GRA.SRP.Controls {
+    public partial class FamilyList : System.Web.UI.UserControl {
+        private const string NoAvatarPathSm = "~/images/Avatars/no_avatar_sm.png";
+
+        protected void Page_Load(object sender, EventArgs e) {
+            if(!IsPostBack) {
 
                 var patron = (Patron)Session["Patron"];
-                if (Session["IsMasterAcct"] == null || !(bool)Session["IsMasterAcct"])
-                {
-                    Response.Redirect("~/Logout.aspx");
+                if(Session[SessionKey.IsMasterAccount] as bool? != true) {
+                    Response.Redirect("~");
                 }
 
                 // populate screen
@@ -28,87 +27,72 @@ namespace GRA.SRP.Controls
                 rptr.DataSource = ds;
                 rptr.DataBind();
 
-                var parent = Patron.FetchObject((int)Session["MasterAcctPID"]);
-                ddAccounts.Items.Add(new ListItem(string.Format("{0} {1} ({2})", parent.FirstName, parent.LastName, parent.Username),parent.PID.ToString()));
+                ((BaseSRPPage)Page).TranslateStrings(rptr);
+            }
+        }
 
-                foreach (DataRow row in ds.Tables[0].Rows)
-                {
-                    var value = Convert.ToString(row["PID"]);
-                    var text = string.Format("{0} {1} ({2})", Convert.ToString(row["FirstName"]), Convert.ToString(row["LastName"]), Convert.ToString(row["Username"]));
+        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e) {
+            if(e.Item.ItemType == ListItemType.Item
+               || e.Item.ItemType == ListItemType.AlternatingItem) {
+                var patronRecord = (DataRowView)e.Item.DataItem;
+                var avatarId = patronRecord["AvatarID"].ToString();
 
-                    ddAccounts.Items.Add(new ListItem(text, value));
+                string potentialAvatarPath = null;
+                string avatarPathSm = NoAvatarPathSm;
+                string avatarPathMd = null;
+
+                potentialAvatarPath = string.Format("~/images/Avatars/sm_{0}.png",
+                                                    avatarId);
+                if(File.Exists(Server.MapPath(potentialAvatarPath))) {
+                    avatarPathSm = potentialAvatarPath;
                 }
 
+                potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
+                                                    avatarId);
+                if(File.Exists(Server.MapPath(potentialAvatarPath))) {
+                    avatarPathMd = potentialAvatarPath;
+                }
 
-                ((BaseSRPPage)Page).TranslateStrings(rptr);
-
+                var image = (Image)e.Item.FindControl("avatarImage");
+                image.ImageUrl = avatarPathSm;
+                if(!string.IsNullOrEmpty(avatarPathMd)) {
+                    string srcSet = string.Format("{0} 1x, {1} 2x",
+                                                  VirtualPathUtility.ToAbsolute(avatarPathSm),
+                                                  VirtualPathUtility.ToAbsolute(avatarPathMd));
+                    image.Attributes.Add("srcset", srcSet);
+                }
             }
         }
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
+        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
             Session["SA"] = "0";
-
-            if (e.CommandName.ToLower() == "childadd")
-            {
-                Response.Redirect("~/AddChildAccount.aspx");
-            }
-
-            if (e.CommandName == "pwd")
-            {
+            if(e.CommandName == "pwd") {
                 Session["SA"] = e.CommandArgument.ToString();
-                Response.Redirect("~/ChangeFamMemberPwd.aspx");
+                Response.Redirect("~/Account/ChangeFamMemberPwd.aspx");
 
             }
-            if (e.CommandName == "act")
-            {
+            if(e.CommandName == "log") {
                 Session["SA"] = e.CommandArgument.ToString();
-                Response.Redirect("~/ChangeFamMemberAct.aspx");
+                Response.Redirect("~/Account/EnterFamMemberLog.aspx");
 
             }
-            if (e.CommandName == "log")
-            {
-                Session["SA"] = e.CommandArgument.ToString();
-                Response.Redirect("~/EnterFamMemberLog.aspx");
+            if(e.CommandName == "login") {
+                var newPID = int.Parse(e.CommandArgument.ToString());
 
+                if((int)Session["MasterAcctPID"] != newPID
+                   && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID)) {
+                    // kick them out
+                    Response.Redirect("~");
+                }
+
+                var newPatron = Patron.FetchObject(newPID);
+                new SessionTools(Session).EstablishPatron(newPatron);
+                //Session["Patron"] = bp;
+                //Session["ProgramID"] = bp.ProgID;
+                //Session["TenantID"] = bp.TenID;
+
+                Response.Redirect("~");
             }
-        }
-
-        protected void btn_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/AddChildAccount.aspx");
-        }
-
-        protected void LinkButton1_Click(object sender, EventArgs e)
-        {
-            pnlList.Visible = false;
-            pnlChange.Visible = true;
-        }
-
-        protected void btncancel_Click(object sender, EventArgs e)
-        {
-            pnlList.Visible = true;
-            pnlChange.Visible = false;
-        }
-
-        protected void btnGo_Click(object sender, EventArgs e)
-        {
-            var newPID = int.Parse(ddAccounts.SelectedValue);
-
-            if ((int)Session["MasterAcctPID"] != newPID && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID))
-            {
-                // kick them out
-                Response.Redirect("~/Logout.aspx");
-            }
-
-            var bp = Patron.FetchObject(newPID);
-            Session["Patron"] = bp;
-            Session["ProgramID"] = bp.ProgID;
-            Session["PatronProgramID"] = bp.ProgID;
-            Session["CurrentProgramID"] = bp.ProgID;
-            Session["TenantID"] = bp.TenID;
-
-            Response.Redirect("~/MyProgram.aspx");
         }
     }
 }

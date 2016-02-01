@@ -249,7 +249,7 @@
                 );
 
         }
-        //Else only display text as selection
+            //Else only display text as selection
         else ddSelected.html(selectedData.text);
 
         //Updating selected option value

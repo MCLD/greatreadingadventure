@@ -10,7 +10,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="rptHead" runat="server">
-<link href='/ico_cms.png' rel='icon' type='image/vnd.microsoft.icon'/> 
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -39,17 +38,6 @@
         </asp:ContentPlaceHolder>
     </div>       
 </div>     
-
-    <div id="cdfooter">
-	    <div id="cdline"></div>
-	    <div style="padding: 6px 0 3px 0; border: 1px solid #C9DEFD;" align="center">
-    	
-            <%= GRA.SRP.ControlRoom.SRPResources.ProductName%> (v  <%= GRA.SRP.ControlRoom.SRPResources.ProductVersion%>) - Copyright (c)  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightYear%>  <%= GRA.SRP.ControlRoom.SRPResources.CopyrightEntity%> <br /> All Rights Reserved
-
-	    </div> 
-    </div> 
-
-
 </form>
 </body>
 </html>

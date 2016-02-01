@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/ControlRoom/Control.Master" 
     CodeBehind="BulkNotification.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Notifications.BulkNotification" %>
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
-<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -110,26 +109,7 @@
             <tr>
                 <td colspan="2" height="350px">
                     <b>Message: </b><br />
-                    <CKEditor:CKEditorControl ID="Body" 
-                            BasePath="/ckeditor/" 
-                            runat="server" 
-                            Skin="office2003" 
-                            BodyId="wrapper" 
-                            ContentsCss="/css/EditorStyles.css"
-                            DisableNativeSpellChecker="False" 
-                            DisableNativeTableHandles="False" 
-                            DocType="&lt;!DOCTYPE html&gt;" 
-                            ForcePasteAsPlainText="True" 
-                            Height="250px" UIColor="#D3D3D3" 
-                            Visible="True" 
-                            Width="99%"
-                            Toolbar="Source|-|Preview|-|Cut|Copy|Paste|PasteText|PasteFromWord|-|Undo|Redo|-|Find|Replace|-|SelectAll|RemoveFormat| 
-                            / |Bold|Italic|Underline|Strike|-|Subscript|Superscript|-|NumberedList|BulletedList|-|Outdent|Indent|Blockquote|CreateDiv|-|JustifyLeft|JustifyCenter|JustifyRight|JustifyBlock| 
-                            / |Link|Unlink|Anchor|-|Image|Flash|Table|HorizontalRule|SpecialChar|PageBreak|Iframe|
-                            / |Styles|Format|Font|FontSize|-|TextColor|BGColor|-|ShowBlocks|Maximize|
-                            "
-                            AutoGrowOnStartup="True" 
-                            ></CKEditor:CKEditorControl>
+                    <textarea id="Body" runat="server" class="gra-editor"></textarea>
                 </td>
             </tr>
         </table>
@@ -143,8 +123,4 @@
         
     </asp:Panel>
     <br />
-
-
-
-
 </asp:Content>

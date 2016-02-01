@@ -22,10 +22,11 @@ The code is open source, and is `available on GitHub`_.
 This manual is split into several main sections:
 
 * :ref:`intro-docs` - What is The Great Reading Adventure? How does it work?
-* :ref:`install-docs` - downloading and installing The Great Reading Adventure software
-* :ref:`setup-docs` - setting up your reading program
+* :ref:`install-docs` - installing and configuring The Great Reading Adventure software
+* :ref:`setup-docs` - setting up your reading programs
 * :ref:`running-docs` - using the GRA day-to-day during your reading program
 * :ref:`howto-docs` - how to perform specific tasks
+* :ref:`technical-docs` - technical documentation
 
 .. _intro-docs:
 
@@ -34,7 +35,8 @@ This manual is split into several main sections:
    :caption: Introduction
 
    introduction/overview
-
+   introduction/planning-configuration
+   introduction/planning-content
 
 .. _install-docs:
 
@@ -42,20 +44,22 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Installation
 
-   installation/getting-started
    installation/system-requirements
-   installation/download-the-software
+   installation/requirements-checklist
    installation/create-the-database
    installation/install-the-software
-
+   installation/initial-configuration
 
 .. _setup-docs:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Initial Setup
+   :caption: Setting up your reading programs
 
-   setup/database-setup
+   setup/badge-awards
+   setup/challenges
+   setup/events
+   setup/offers
 
 .. _running-docs:
 
@@ -63,8 +67,10 @@ This manual is split into several main sections:
    :maxdepth: 1
    :caption: Running your reading programs
 
-   running/notifications
-   
+   running/mail
+   running/prize-drawings
+   running/quick-reference-guide
+
 .. _howto-docs:
 
 .. toctree::
@@ -73,10 +79,11 @@ This manual is split into several main sections:
 
    how-to/create-a-badge
 
-Indices and tables
-==================
+.. _technical-docs:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+   :caption: Technical Documentation
 
+   technical/configuration-details
+   technical/about

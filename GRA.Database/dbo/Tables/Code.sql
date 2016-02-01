@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[Code] (
     [CID]         INT          IDENTITY (1, 1) NOT NULL,
     [CTID]        INT          NULL,
-    [Code]        VARCHAR (25) NULL,
-    [Description] VARCHAR (80) NULL,
+    [Code]        NVARCHAR(255) NULL,
+    [Description] NVARCHAR(255) NULL,
     [TenID]       INT          NULL,
     [FldInt1]     INT          NULL,
     [FldInt2]     INT          NULL,

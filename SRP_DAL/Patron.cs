@@ -459,30 +459,30 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("@Password", passwordHash));
             parameters.Add(new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode())));
             parameters.Add(new SqlParameter("@Age", this.Age));
-            parameters.Add(new SqlParameter("@SchoolGrade", this.SchoolGrade));
+            parameters.Add(new SqlParameter("@SchoolGrade", this.SchoolGrade ?? string.Empty));
             parameters.Add(new SqlParameter("@ProgID", this.ProgID));
-            parameters.Add(new SqlParameter("@FirstName", this.FirstName));
-            parameters.Add(new SqlParameter("@MiddleName", this.MiddleName));
-            parameters.Add(new SqlParameter("@LastName", this.LastName));
-            parameters.Add(new SqlParameter("@Gender", this.Gender));
-            parameters.Add(new SqlParameter("@EmailAddress", this.EmailAddress));
-            parameters.Add(new SqlParameter("@PhoneNumber", this.PhoneNumber));
-            parameters.Add(new SqlParameter("@StreetAddress1", this.StreetAddress1));
-            parameters.Add(new SqlParameter("@StreetAddress2", this.StreetAddress2));
-            parameters.Add(new SqlParameter("@City", this.City));
-            parameters.Add(new SqlParameter("@State", this.State));
-            parameters.Add(new SqlParameter("@ZipCode", this.ZipCode));
-            parameters.Add(new SqlParameter("@Country", this.Country));
-            parameters.Add(new SqlParameter("@County", this.County));
-            parameters.Add(new SqlParameter("@ParentGuardianFirstName", this.ParentGuardianFirstName));
-            parameters.Add(new SqlParameter("@ParentGuardianLastName", this.ParentGuardianLastName));
-            parameters.Add(new SqlParameter("@ParentGuardianMiddleName", this.ParentGuardianMiddleName));
+            parameters.Add(new SqlParameter("@FirstName", this.FirstName ?? string.Empty));
+            parameters.Add(new SqlParameter("@MiddleName", this.MiddleName ?? string.Empty));
+            parameters.Add(new SqlParameter("@LastName", this.LastName ?? string.Empty));
+            parameters.Add(new SqlParameter("@Gender", this.Gender ?? string.Empty));
+            parameters.Add(new SqlParameter("@EmailAddress", this.EmailAddress ?? string.Empty));
+            parameters.Add(new SqlParameter("@PhoneNumber", this.PhoneNumber ?? string.Empty));
+            parameters.Add(new SqlParameter("@StreetAddress1", this.StreetAddress1 ?? string.Empty));
+            parameters.Add(new SqlParameter("@StreetAddress2", this.StreetAddress2 ?? string.Empty));
+            parameters.Add(new SqlParameter("@City", this.City ?? string.Empty));
+            parameters.Add(new SqlParameter("@State", this.State ?? string.Empty));
+            parameters.Add(new SqlParameter("@ZipCode", this.ZipCode ?? string.Empty));
+            parameters.Add(new SqlParameter("@Country", this.Country ?? string.Empty));
+            parameters.Add(new SqlParameter("@County", this.County ?? string.Empty));
+            parameters.Add(new SqlParameter("@ParentGuardianFirstName", this.ParentGuardianFirstName ?? string.Empty));
+            parameters.Add(new SqlParameter("@ParentGuardianLastName", this.ParentGuardianLastName ?? string.Empty));
+            parameters.Add(new SqlParameter("@ParentGuardianMiddleName", this.ParentGuardianMiddleName ?? string.Empty));
             parameters.Add(new SqlParameter("@PrimaryLibrary", this.PrimaryLibrary));
-            parameters.Add(new SqlParameter("@LibraryCard", this.LibraryCard));
-            parameters.Add(new SqlParameter("@SchoolName", this.SchoolName));
-            parameters.Add(new SqlParameter("@District", this.District));
-            parameters.Add(new SqlParameter("@Teacher", this.Teacher));
-            parameters.Add(new SqlParameter("@GroupTeamName", this.GroupTeamName));
+            parameters.Add(new SqlParameter("@LibraryCard", this.LibraryCard ?? string.Empty));
+            parameters.Add(new SqlParameter("@SchoolName", this.SchoolName ?? string.Empty));
+            parameters.Add(new SqlParameter("@District", this.District ?? string.Empty));
+            parameters.Add(new SqlParameter("@Teacher", this.Teacher ?? string.Empty));
+            parameters.Add(new SqlParameter("@GroupTeamName", this.GroupTeamName ?? string.Empty));
             parameters.Add(new SqlParameter("@SchoolType", this.SchoolType));
             parameters.Add(new SqlParameter("@LiteracyLevel1", this.LiteracyLevel1));
             parameters.Add(new SqlParameter("@LiteracyLevel2", this.LiteracyLevel2));
@@ -490,11 +490,11 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("@Over18Flag", this.Over18Flag));
             parameters.Add(new SqlParameter("@ShareFlag", this.ShareFlag));
             parameters.Add(new SqlParameter("@TermsOfUseflag", this.TermsOfUseflag));
-            parameters.Add(new SqlParameter("@Custom1", this.Custom1));
-            parameters.Add(new SqlParameter("@Custom2", this.Custom2));
-            parameters.Add(new SqlParameter("@Custom3", this.Custom3));
-            parameters.Add(new SqlParameter("@Custom4", this.Custom4));
-            parameters.Add(new SqlParameter("@Custom5", this.Custom5));
+            parameters.Add(new SqlParameter("@Custom1", this.Custom1 ?? string.Empty));
+            parameters.Add(new SqlParameter("@Custom2", this.Custom2 ?? string.Empty));
+            parameters.Add(new SqlParameter("@Custom3", this.Custom3 ?? string.Empty));
+            parameters.Add(new SqlParameter("@Custom4", this.Custom4 ?? string.Empty));
+            parameters.Add(new SqlParameter("@Custom5", this.Custom5 ?? string.Empty));
             parameters.Add(new SqlParameter("@AvatarID", this.AvatarID));
             parameters.Add(new SqlParameter("@SDistrict", this.SDistrict));
 
@@ -505,9 +505,9 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("@FldBit1", this.FldBit1));
             parameters.Add(new SqlParameter("@FldBit2", this.FldBit2));
             parameters.Add(new SqlParameter("@FldBit3", this.FldBit3));
-            parameters.Add(new SqlParameter("@FldText1", this.FldText1));
-            parameters.Add(new SqlParameter("@FldText2", this.FldText2));
-            parameters.Add(new SqlParameter("@FldText3", this.FldText3));
+            parameters.Add(new SqlParameter("@FldText1", this.FldText1 ?? string.Empty));
+            parameters.Add(new SqlParameter("@FldText2", this.FldText2 ?? string.Empty));
+            parameters.Add(new SqlParameter("@FldText3", this.FldText3 ?? string.Empty));
 
             parameters.Add(new SqlParameter("@Score1", this.Score1));
             parameters.Add(new SqlParameter("@Score2", this.Score2));
@@ -551,7 +551,7 @@ namespace GRA.SRP.DAL {
 
         private int Update(bool clearTokens = false) {
 
-            int iReturn = -1; //assume the worst
+            //int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[61];
 
@@ -575,7 +575,15 @@ namespace GRA.SRP.DAL {
             arrParams[4] = new SqlParameter("@Password", passwordHash);
             arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode()));
             arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Age, this.Age.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
+            try {
+                arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
+            } catch (Exception ex) {
+                this.Log().Error("Unable to set SchoolGrade to: {0}: {1} - {2}",
+                                 this.SchoolGrade,
+                                 ex.Message,
+                                 ex.StackTrace);
+                arrParams[7] = new SqlParameter("@SchoolGrade", string.Empty);
+            }
             arrParams[8] = new SqlParameter("@ProgID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.ProgID, this.ProgID.GetTypeCode()));
             arrParams[9] = new SqlParameter("@FirstName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FirstName, this.FirstName.GetTypeCode()));
             arrParams[10] = new SqlParameter("@MiddleName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.MiddleName, this.MiddleName.GetTypeCode()));
@@ -621,9 +629,9 @@ namespace GRA.SRP.DAL {
             arrParams[49] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode()));
             arrParams[50] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode()));
             arrParams[51] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, this.FldText1.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, this.FldText2.GetTypeCode()));
-            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, string.Empty.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, string.Empty.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, string.Empty.GetTypeCode()));
 
 
             arrParams[55] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1, this.Score1.GetTypeCode()));
@@ -663,10 +671,10 @@ namespace GRA.SRP.DAL {
             }
         }
 
-        public static Patron GetUserByToken(string token, int hoursWindow = 2) {
+        public static Patron GetUserByToken(string token, int hoursWindow = 24) {
             StringBuilder sql = new StringBuilder();
             sql.Append("SELECT [PID] FROM [PatronRecovery] WHERE [Token] = @token ");
-            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) < @hourswindow");
+            sql.Append("AND DateDiff(hh, [Generated], GETDATE()) <= @hourswindow");
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("token", token));
@@ -688,7 +696,9 @@ namespace GRA.SRP.DAL {
             int pid = 0;
             if(pidObject == null
                || !int.TryParse(pidObject.ToString(), out pid)) {
-                "SRPUser".Log().Error("Unable parse returned PID: {0}", pid);
+                "SRPUser".Log().Error("Unable parse to parse PID {0}, returned value: {0}",
+                                      pidObject,
+                                      pid);
                 return null;
             }
 
@@ -702,8 +712,8 @@ namespace GRA.SRP.DAL {
 
         public static Patron UpdatePasswordByToken(string token,
                                                    string newPassword,
-                                                   int hoursWindow = 2) {
-            Patron user = GetUserByToken(token);
+                                                   int hoursWindow = 24) {
+            Patron user = GetUserByToken(token, hoursWindow);
             user.NewPassword = newPassword;
             user.Update(true);
 
@@ -767,13 +777,11 @@ namespace GRA.SRP.DAL {
         protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
             // Remove any old error Codes
             ClearErrorCodes();
-
-            ClearErrorCodes();
             if(validationMode == BusinessRulesValidationMode.INSERT) {
                 Patron obj = GetObjectByUsername(Username);
                 if(obj != null) {
                     AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "The Username you have chosen is already in use.  Please select a different Username.",
-                                                                    BusinessRulesValidationCode.UNSPECIFIED));
+                      BusinessRulesValidationCode.UNSPECIFIED));
                 }
             }
             return (ErrorCodes.Count == 0);
@@ -1063,6 +1071,16 @@ namespace GRA.SRP.DAL {
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetPatronForEdit", arrParams);
         }
 
+        public static DataSet GetReadingList(int pid) {
+            StringBuilder query = new StringBuilder();
+            query.Append("SELECT DISTINCT [Author], [Title] FROM [PatronReadingLog] ");
+            query.Append("WHERE [PID] = @PID AND (AUTHOR != '' AND TITLE != '') ");
+            query.Append("ORDER BY [Title]");
+
+            var patronParameter = new SqlParameter("@PID", pid);
+
+            return SqlHelper.ExecuteDataset(conn, CommandType.Text, query.ToString(), patronParameter);
+        }
 
         //public bool Logoff()
         //{

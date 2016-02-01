@@ -9,9 +9,6 @@ using System.Web.UI;
 namespace GRA.SRP {
     public partial class PasswordRecovery : BaseSRPPage {
         protected void Page_Load(object sender, EventArgs e) {
-            uxNewPasswordStrengthValidator.ValidationExpression = STGOnlyUtilities.PasswordStrengthRE();
-            uxNewPasswordStrengthValidator.ErrorMessage = STGOnlyUtilities.PasswordStrengthError();
-
             if(!Page.IsPostBack) {
                 string token = Request.QueryString["token"];
                 this.ViewState["token"] = token;
@@ -20,9 +17,11 @@ namespace GRA.SRP {
                 } else {
                     Patron p = Patron.GetUserByToken(token);
                     if(Patron.GetUserByToken(token) == null) {
-                        pnlfields.Visible = false;
-                        lblError.Visible = true;
-                        lblError.Text = "The provided password token is invalid. Please <a href=\"Recovery.aspx\">generate a new one</a> if you wish to change your password.";
+                        new SessionTools(Session).AlertPatron(GetResourceString("password-recovery-expired"),
+                                                              PatronMessageLevels.Warning,
+                                                              "exclamation-sign");
+                        Response.Redirect("~/Recover.aspx");
+                        return;
                     } else {
                         Session["ProgramID"] = p.ProgID;
                     }
@@ -35,18 +34,10 @@ namespace GRA.SRP {
             if(Page.IsValid) {
                 object tokenObject = this.ViewState["token"];
                 if(tokenObject == null) {
-                    pnlfields.Visible = false;
-                    lblError.Visible = true;
-                    lblError.Text = "The provided password token is invalid. Please <a href=\"Recovery.aspx\">generate a new one</a> if you wish to change your password.";
-                    return;
-                }
-
-                if(NPassword.Text.Trim() != NPasswordR.Text.Trim()) {
-                    lblError.Visible = true;
-                    lblError.Text =
-                        "The new password and new password re-entry do not match.";
-                    NPassword.Attributes.Add("Value", NPassword.Text);
-                    NPasswordR.Attributes.Add("Value", NPasswordR.Text);
+                    new SessionTools(Session).AlertPatron(GetResourceString("password-recovery-expired"),
+                                                          PatronMessageLevels.Warning,
+                                                          "exclamation-sign");
+                    Response.Redirect("~/Recover.aspx");
                     return;
                 }
 
@@ -54,18 +45,17 @@ namespace GRA.SRP {
                                                         NPassword.Text);
 
                 if(user == null) {
-                    pnlfields.Visible = false;
-                    lblError.Visible = true;
-                    lblError.Text = "The provided password token is invalid. Please <a href=\"Recovery.aspx\">generate a new one</a> if you wish to change your password.";
+                    new SessionTools(Session).AlertPatron(GetResourceString("password-recovery-expired"),
+                                                          PatronMessageLevels.Warning,
+                                                          "exclamation-sign");
+                    Response.Redirect("~/Recovery.aspx");
                     return;
                 }
 
-                // user requested a password for an email address that is not in the database
-                // if account doesn't exist, send an email saying so
                 var values = new {
-                    SystemName = SRPSettings.GetSettingValue("SysName"),
-                    ContactName = SRPSettings.GetSettingValue("ContactName"),
-                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail"),
+                    SystemName = SRPSettings.GetSettingValue("SysName", user.TenID),
+                    ContactName = SRPSettings.GetSettingValue("ContactName", user.TenID),
+                    ContactEmail = SRPSettings.GetSettingValue("ContactEmail", user.TenID),
                     RemoteAddress = Request.UserHostAddress,
                     UserEmail = user.EmailAddress,
                     Username = user.Username,
@@ -82,25 +72,23 @@ namespace GRA.SRP {
 
                 // TODO email - move this template out to the database
                 StringBuilder body = new StringBuilder();
-                body.Append("<p>The password reset for your {SystemName} account {Username} is now");
-                body.Append("complete.</p>");
-                body.Append("<p>You may now <a href=\"{LoginLink}\">log in</a> using your new ");
-                body.Append("password.</p>");
+                body.Append("<p>The password change has been successful for the {SystemName} account: {Username}.</p>");
+                body.Append("<p>You may now <a href=\"{LoginLink}\">log in</a> using your new password.</p>");
                 body.Append("<p>If you have any comments or questions, please contact ");
-                body.Append("{ContactName} at <a href=\"mailto:{ContactEmail}\">{ContactEmail}");
-                body.Append("</a>.</p>");
+                body.Append("{ContactName} at <a href=\"mailto:{ContactEmail}\">{ContactEmail}</a>.</p>");
                 body.Append("<p style=\"font-size: smaller;\"><em>This password request was ");
                 body.Append("completed from: {RemoteAddress}.</em></p>");
 
-                EmailService.SendEmail(user.EmailAddress,
-                                       "{SystemName} - {PasswordResetSuccessSubject}".FormatWith(values),
-                                       body.ToString().FormatWith(values));
+                new EmailService().SendEmail(user.EmailAddress,
+                                             "{SystemName} - {PasswordResetSuccessSubject}".FormatWith(values),
+                                             body.ToString().FormatWith(values));
 
 
-                new PatronSession(Session).Establish(user);
-
-                Session["PatronMessage"] = "Your password has been reset!";
-                Response.Redirect("~/MyProgram.aspx");
+                var st = new SessionTools(Session);
+                st.EstablishPatron(user);
+                st.AlertPatron(GetResourceString("Your password has been reset!"),
+                                                 glyphicon: "ok");
+                Response.Redirect("~");
             }
         }
     }

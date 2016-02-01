@@ -277,7 +277,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                 try
                 {
                     var obj = new RegistrationSettings();
-                    int pk = 0;// int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
+                    //int pk = 0;// int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
                     obj.Fetch();
 
                     obj.Literacy1Label = ((TextBox)((DetailsView)sender).FindControl("Literacy1Label")).Text;

@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CRMenu.ascx.cs" Inherits="GRA.SRP.ControlRoom.ControlRoomMenu" %>
-        <div style="text-align: left; padding-top: 5px; padding-bottom:5px; padding-left: 5px; font-size: 30px;">Systems Technology Group - Content Management System</div>
+        <div style="text-align: left; padding-top: 5px; padding-bottom:5px; padding-left: 5px; font-size: 30px;">The Great Reading Adventure</div>
     <div id="cdnavcont">
 	    <div id="cdnavheader">
             <ul>

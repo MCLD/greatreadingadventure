@@ -101,7 +101,7 @@ namespace GRA.SRP.ControlRoom.Controls
         protected void ImageButton1_Command(object sender, CommandEventArgs e)
         {
             var masterPage = (IControlRoomMaster)((BaseControlRoomPage)Page).Master;
-            lblError.Text = "";
+            lblError.Text= string.Empty;
             Page.Validate();
             if (Page.IsValid)
             {
@@ -113,7 +113,7 @@ namespace GRA.SRP.ControlRoom.Controls
                 {
                     //var p = new Patron();
                     var o = new PatronPoints();
-                    var sBadges = "";
+                    var sBadges= string.Empty;
                     var pa = new AwardPoints(patron.PID);
                     var points = int.Parse(NumPoints.Text);
 
@@ -192,8 +192,6 @@ namespace GRA.SRP.ControlRoom.Controls
                     LoadControl();
                     masterPage.PageMessage = SRPResources.AddedOK;
 
-                       
-
                     if (e.CommandName.ToLower() == "saveandback")
                     {
                         Response.Redirect("PatronLog.aspx");
@@ -208,7 +206,7 @@ namespace GRA.SRP.ControlRoom.Controls
         //protected void ImageButton1_Command(object sender, CommandEventArgs e)
         //{
         //    var masterPage = (IControlRoomMaster)((BaseControlRoomPage)Page).Master; 
-        //    lblError.Text = "";
+        //    lblError.Text= string.Empty;
         //    Page.Validate();
         //    if (Page.IsValid)
         //    {

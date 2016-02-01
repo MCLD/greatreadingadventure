@@ -34,10 +34,10 @@
                     <asp:ImageButton ID="ImageButton2" runat="server" 
                         CausesValidation="True" 
                         CommandName="Saveandbooks" 
-                        ImageUrl="~/ControlRoom/Images/library.png" 
+                        ImageUrl="~/ControlRoom/RibbonImages/Challenges.png" 
                         Height="20"
-                        Text="Books"   Tooltip="Books" CommandArgument='<%# Bind("BLID") %>'
-                        AlternateText="Books" />   
+                        Text="Steps"   Tooltip="Tasks" CommandArgument='<%# Bind("BLID") %>'
+                        AlternateText="Steps" />   
                                             &nbsp;
                     <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" Tooltip="Edit Record" 
                         CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("BLID") %>'  

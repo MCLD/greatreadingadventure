@@ -589,7 +589,7 @@ namespace GRA.SRP.DAL
                 
                 if (MiniGameType == 0)
                 {
-                    AddErrorCode(new BusinessRulesValidationMessage("MiniGameType", "Mini Game Type", "You must choose a Mini Game Type.",
+                    AddErrorCode(new BusinessRulesValidationMessage("MiniGameType", "Adventure Type", "You must choose an Adventure Type.",
                                                                     BusinessRulesValidationCode.UNSPECIFIED));
                 }
             }

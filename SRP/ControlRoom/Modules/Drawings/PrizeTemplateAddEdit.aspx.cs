@@ -5,7 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
-
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.ControlRoom.Modules.Drawings
 {
@@ -26,7 +26,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
  
             if (!IsPostBack)
             {
-                lblPK.Text = Session["DTD"] == null ? "" : Session["DTD"].ToString(); //Session["DTD"] = "";
+                lblPK.Text = Session["DTD"] == null ? "" : Session["DTD"].ToString(); //Session["DTD"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -91,22 +91,6 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     //obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("GenNotificationFlag")).Checked;
 
                     obj.TName = ((TextBox)((DetailsView)sender).FindControl("TName")).Text;
-                    //obj.NumPrizes = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("NumPrizes")).SelectedValue);
-                    //obj.IncPrevWinnersFlag = ((CheckBox)((DetailsView)sender).FindControl("IncPrevWinnersFlag")).Checked;
-                    //obj.SendNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("SendNotificationFlag")).Checked;
-                    //obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("NotificationSubject")).Text;
-                    //obj.NotificationMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("NotificationMessage")).Text;
-                    //obj.ProgID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ProgID")).SelectedValue);
-                    //obj.Gender = ((TextBox)((DetailsView)sender).FindControl("Gender")).Text;
-                    //obj.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("PrimaryLibrary")).SelectedValue);
-                    //obj.MinPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MinPoints")).Text);
-                    //obj.MaxPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MaxPoints")).Text);
-                    //obj.LogDateStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LogDateStart")).Text);
-                    //obj.LogDateEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LogDateEnd")).Text);
-                    //obj.MinReviews = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MinReviews")).Text);
-                    //obj.MaxReviews = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MaxReviews")).Text);
-                    //obj.ReviewDateStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ReviewDateStart")).Text);
-                    //obj.ReviewDateEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ReviewDateEnd")).Text);
 
 					obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -161,7 +145,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     obj.IncPrevWinnersFlag = ((CheckBox)((DetailsView)sender).FindControl("IncPrevWinnersFlag")).Checked;
                     obj.SendNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("SendNotificationFlag")).Checked;
                     obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("NotificationSubject")).Text;
-                    obj.NotificationMessage = ((CKEditor.NET.CKEditorControl)((DetailsView)sender).FindControl("NotificationMessage")).Text;
+                    obj.NotificationMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("NotificationMessage")).InnerHtml;
                     obj.ProgID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ProgID")).SelectedValue);
                     obj.Gender = ((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
                     obj.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("PrimaryLibrary")).SelectedValue);

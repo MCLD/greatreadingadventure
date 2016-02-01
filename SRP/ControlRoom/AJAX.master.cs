@@ -129,7 +129,7 @@ namespace GRA.SRP.ControlRoom
         {
             if (_requiredPermission != 0)
             {
-                string permList = "";
+                string permList= string.Empty;
                 try { permList = Session[SessionData.StringPermissionList.ToString()].ToString(); } catch{}
                 if (!permList.Contains(_requiredPermission.ToString()))
                 {

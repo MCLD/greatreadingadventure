@@ -9,15 +9,15 @@
     <tr>
         <td align="center" valign="middle">
             <asp:HyperLink ID="PreviewImage1" runat="server" rel='lightbox[Image 90% 90%]'
-                ImageUrl="~/images/preview-file-sm.png" >HyperLink</asp:HyperLink>
+                ImageUrl="~/images/incorrect.png" CssClass="controlroom-small-preview">HyperLink</asp:HyperLink>
         </td>
         <td align="center" valign="middle">
             <asp:HyperLink ID="PreviewImage2" runat="server" rel='lightbox[Image 90% 90%]'
-                ImageUrl="~/images/preview-file-md.png" >HyperLink</asp:HyperLink>
+                ImageUrl="~/images/incorrect.png"  CssClass="controlroom-medium-preview">HyperLink</asp:HyperLink>
         </td>
         <td align="center" valign="middle">
             <asp:HyperLink ID="PreviewImage3" runat="server" rel='lightbox[Image 90% 90%]'
-                ImageUrl="~/images/preview-file.png" >HyperLink</asp:HyperLink>
+                ImageUrl="~/images/incorrect.png"  CssClass="controlroom-large-preview">HyperLink</asp:HyperLink>
             
                 <div id='element_to_pop_up1<%# PreviewImage1.ClientID %>'>
                     <asp:Image ID="Image1" runat="server" />

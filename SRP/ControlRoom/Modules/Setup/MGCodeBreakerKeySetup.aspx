@@ -38,7 +38,7 @@
                         <hr />
     <asp:Repeater ID="rptr" runat="server">
         <ItemTemplate>
-            <span style="padding-right: 30px; padding-left: 30px; border: 1px solid black; display:inline-block; height: 400px;  ">
+            <span style="padding-right: 30px; padding-left: 30px; border: 1px solid black; display:inline-block; ">
                 <table width="230px">
                     <tr>
                         <td align="center">
@@ -47,7 +47,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Key: <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/CodeBreaker/{0}.png?{1}", lblPrefix.Text + Eval("CBID") + "_" + Eval("Character_Num"), DateTime.Now.ToString()) %>' Width="24px" BorderColor="Black" BorderWidth="1px" BorderStyle="Solid"/>
+                            Key: <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/Games/CodeBreaker/{0}.png?{1}", lblPrefix.Text + Eval("CBID") + "_" + Eval("Character_Num"), DateTime.Now.Ticks) %>' Width="24px" BorderColor="Black" BorderWidth="1px" BorderStyle="Solid"/>
                         </td>
                     </tr>
                     <tr>

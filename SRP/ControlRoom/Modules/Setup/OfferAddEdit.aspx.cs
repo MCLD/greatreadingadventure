@@ -5,6 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -22,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
             
-                lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"] = "";
+                lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -105,6 +106,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
+                        Cache[CacheKey.OffersActive] = true;
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);

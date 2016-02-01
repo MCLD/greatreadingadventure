@@ -3,7 +3,7 @@
     [IsMasterAccount]          BIT             CONSTRAINT [DF_Patron_IsMasterAccount] DEFAULT ((0)) NULL,
     [MasterAcctPID]            INT             NULL,
     [Username]                 VARCHAR (50)    NULL,
-    [Password]                 VARCHAR (255)    NULL,
+    [Password]                 NVARCHAR(255)    NULL,
     [DOB]                      DATETIME        NULL,
     [Age]                      INT             NULL,
     [SchoolGrade]              VARCHAR (5)     NULL,

@@ -169,7 +169,7 @@ namespace GRA.SRP.ControlRoom.Controls
             if (!chk.Checked)
             {
                 rfv.Enabled = false;
-                txt.Text = "";
+                txt.Text= string.Empty;
             } else if (a.AskClarification && a.ClarificationRequired)
             {
                 rfv.Enabled = true;
@@ -177,7 +177,7 @@ namespace GRA.SRP.ControlRoom.Controls
             else
             {
                 rfv.Enabled = false;
-                txt.Text = "";
+                txt.Text= string.Empty;
             }
 
             CheckBoxScripts();
@@ -202,7 +202,7 @@ namespace GRA.SRP.ControlRoom.Controls
                 if (tmpSQCID != SQCID)
                 {
                     rfv.Enabled = false;
-                    txt.Text = "";
+                    txt.Text= string.Empty;
                 }
                 else
                 {
@@ -219,7 +219,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
         public void CheckBoxScripts()
         {
-            var script = "";
+            var script= string.Empty;
 
             if (DisplayDirection != "1") 
             {
@@ -245,7 +245,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
         public void RadioBoxScripts()
         {
-            var script = "";
+            var script= string.Empty;
             var csm = this.Page.ClientScript;
 
             script = string.Format("$( document ).ready(function() {1}\n           $( \".mcdiv{0}\" ).css('display', 'inline');\n{2});", QID, "{", "}");

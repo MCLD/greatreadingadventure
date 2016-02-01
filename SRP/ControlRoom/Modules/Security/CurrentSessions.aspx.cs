@@ -68,7 +68,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security
             }
             
             ds.Tables.Add(dt);
-            if (_mStrSortExp != "")
+            if (!string.IsNullOrEmpty(_mStrSortExp))
             {
                 dt.DefaultView.Sort = _mStrSortExp + (_mSortDirection == SortDirection.Descending ? " DESC" : "");
                 var ds2 = new DataSet();

@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Badge] (
     [BID]                       INT           IDENTITY (1000, 1) NOT NULL,
-    [AdminName]                 VARCHAR (50)  NULL,
-    [UserName]                  VARCHAR (50)  NULL,
+    [AdminName]                 NVARCHAR(255)  NULL,
+    [UserName]                  NVARCHAR(255)  NULL,
     [GenNotificationFlag]       BIT           NULL,
     [NotificationSubject]       VARCHAR (150) NULL,
     [NotificationBody]          TEXT          NULL,
@@ -25,6 +25,7 @@
     [FldText1]                  TEXT          NULL,
     [FldText2]                  TEXT          NULL,
     [FldText3]                  TEXT          NULL,
+    [HiddenFromPublic] BIT NULL, 
     CONSTRAINT [PK_Badge] PRIMARY KEY CLUSTERED ([BID] ASC)
 );
 
