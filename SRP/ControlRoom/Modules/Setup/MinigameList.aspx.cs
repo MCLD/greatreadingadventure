@@ -18,7 +18,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4300;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Minigames List");
+            MasterPage.PageTitle = string.Format("{0}", "Adventures List");
 
             _mStrSortExp = String.Empty;
             
