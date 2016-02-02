@@ -214,6 +214,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     obj.ParentalConsentFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentFlag")).Checked;
                     obj.ParentalConsentText = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentText")).InnerHtml;
                     obj.PatronReviewFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("PatronReviewFlag")).Checked;
+                    obj.RequireBookDetails = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("RequireBookDetails")).Checked;
                     obj.LogoutURL = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LogoutURL")).Text;
 
                     obj.CompletionPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("CompletionPoints")).Text);
