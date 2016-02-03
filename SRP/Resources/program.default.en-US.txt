@@ -128,6 +128,7 @@ registration-form-guardian-name-last=Parent/guardian last name:
 registration-form-library-district=Library district:
 registration-form-library=Library:
 registration-form-library-card=Library card #:
+registration-form-daily-goal=Daily reading goal (minutes):
 registration-form-school-district=School district:
 registration-form-school-type=School type:
 registration-form-school=School name:

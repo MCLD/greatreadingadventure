@@ -80,6 +80,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             obj.AwardName = AwardName.Text;
             obj.BadgeID = BadgeID.SelectedValue.SafeToInt();
             obj.NumPoints = NumPoints.Text.SafeToInt();
+            obj.GoalPercent = GoalPercent.Text.SafeToInt();
+
             obj.BranchID = BranchID.SelectedValue.SafeToInt();
             obj.ProgramID = ProgramID.SelectedValue.SafeToInt();
 

@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 text-center margin-1em-bottom">
             <em>
-             <% if (!requireBookDetails) { %>
+             <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
                 <asp:Label runat="server" Text="readinglog-description"></asp:Label>
              <% } else { %>
                  <asp:Label runat="server" Text="readinglog-description-required-details"></asp:Label>
@@ -51,7 +51,7 @@
             </div>
 
 
-            <% if (!requireBookDetails) { %>
+            <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
                 <div class="col-xs-12">
                     <div class="form-group">
                         <asp:CheckBox runat="server"
@@ -61,8 +61,6 @@
                     </div>
                 </div>
             <% } %>
-
-
 
         </div>
     </div>

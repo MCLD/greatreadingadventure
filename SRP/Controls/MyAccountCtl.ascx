@@ -600,6 +600,25 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
+            <div class="form-group" runat="server" visible='<%# (bool)Eval("DailyGoal_Show")%>'>
+                <label class="col-sm-3 control-label">
+                    <asp:Label runat="server" Text="registration-form-daily-goal"></asp:Label>
+                </label>
+                <div class="col-sm-6">
+                    <asp:TextBox ID="DailyGoal" runat="server" CssClass="form-control"
+                        Text='<%# Eval("DailyGoal") %>'
+                        Enabled='<%# (bool)Eval("DailyGoal_Edit") %>'></asp:TextBox>
+                </div>
+                <div class="col-sm-3 form-control-static">
+                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
+                        ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
+                        SetFocusOnError="True">* required</asp:RequiredFieldValidator>
+                    <asp:CompareValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
+                        ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
+                        SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                </div>
+            </div>
+
             <div class="form-group" runat="server" visible='<%# (bool)Eval("LiteracyLevel1_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <%# Eval("Literacy1Label")%>:

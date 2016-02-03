@@ -586,6 +586,21 @@
                             </div>
                         </div>
 
+                        <div class="form-group" runat="server" visible='<%# (bool)Eval("DailyGoal_Prompt")%>'>
+                            <label class="col-sm-3 control-label">
+                                <asp:Label runat="server" Text="registration-form-daily-goal"></asp:Label>
+                            </label>
+                            <div class="col-sm-6">
+                                <asp:TextBox ID="DailyGoal" runat="server" CssClass="form-control required-asterisk" data-asterisk="DailyGoalReq"></asp:TextBox>
+                            </div>
+                            <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("DailyGoal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DailyGoalReq"></span>
+                                <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
+                                    ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                            </div>
+                        </div>
+
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("LiteracyLevel1_Prompt")%>'>
                             <label class="col-sm-3 control-label">
                                 <%# Eval("Literacy1Label")%>:

@@ -540,6 +540,8 @@ namespace GRA.SRP.Controls {
                 p.ParentGuardianLastName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianLastName")).Text;
                 p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
+                p.DailyGoal = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
+
 
                 p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);
                 p.SchoolName = ((DropDownList)(rptr.Items[0]).FindControl("SchoolName")).SelectedValue;
