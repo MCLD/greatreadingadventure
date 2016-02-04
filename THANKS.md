@@ -16,6 +16,7 @@ In addition to the [open source components](CREDITS.md) used to develop The Grea
 - Danette Barton
 - [Daniel Messer](http://cyberpunklibrarian.com/)
 - [Harald Nagel](https://haraldnagel.com/)
+- [Justin Meiners](https://justinmeiners.github.io/)
 - [Lucas Gonzalez](http://diffracted.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
