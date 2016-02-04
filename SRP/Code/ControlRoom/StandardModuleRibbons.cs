@@ -199,7 +199,7 @@ namespace GRA.SRP.Core.Utilities {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Awards.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Awards@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Badge Awards", Url = "/ControlRoom/Modules/Setup/AwardList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Award Triggers", Url = "/ControlRoom/Modules/Setup/AwardList.aspx" });
             pnl.Add(new RibbonLink { Name = "Manual Awards", Url = "/ControlRoom/Modules/Setup/AwardManual.aspx" });
             returnList.Add(pnl);
 
