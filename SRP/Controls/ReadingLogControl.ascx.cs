@@ -12,16 +12,22 @@ using System.Web.UI.WebControls;
 
 namespace GRA.SRP.Controls {
     public partial class ReadingLogControl : System.Web.UI.UserControl {
+        protected const string RequireBookDetailsKey = "RequireBookDetails";
+
         protected bool ShowModal { get; set; }
         protected void Page_Load(object sender, EventArgs e) {
-            if(!IsPostBack) {
-                if(Session["Patron"] == null) {
+
+            if (!IsPostBack) {
+                if (Session["Patron"] == null)
+                {
                     Response.Redirect("~");
                 }
                 var patron = (Patron)Session[SessionKey.Patron];
                 var program = Programs.FetchObject(patron.ProgID);
 
-                if(program == null || !program.IsOpen) {
+                ViewState[RequireBookDetailsKey] = program.RequireBookDetails;
+
+                if (program == null || !program.IsOpen) {
                     readingLogControlPanel.Visible = false;
                     return;
                 }
@@ -172,7 +178,7 @@ namespace GRA.SRP.Controls {
 
 
         protected void submitButton_Click(object sender, EventArgs e) {
-            if(enterBookDetails.Checked) {
+            if(enterBookDetails.Checked || ViewState[RequireBookDetailsKey] as bool? == true) {
                 // show pop-up
                 HttpCookie logDetailsCookie = new HttpCookie(CookieKey.LogBookDetails);
                 logDetailsCookie.Expires = DateTime.Now.AddDays(14);

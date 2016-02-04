@@ -222,6 +222,7 @@ badges-badgegallery-button=Badge Gallery
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 readinglog-reading-log=Reading log
 readinglog-description=Log your reading below. If you want to enter book details, check the "I want to enter book details" checkbox first!
+readinglog-description-required-details=Log your reading below.
 readinglog-reading-prompt=I read
 readinglog-submit=Submit
 readinglog-read-a-book=I read a book!

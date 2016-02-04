@@ -15,6 +15,7 @@
     [ParentalConsentFlag] BIT           CONSTRAINT [DF_Programs_ParentalConsentFlag] DEFAULT ((0)) NULL,
     [ParentalConsentText] TEXT          NULL,
     [PatronReviewFlag]    BIT           NULL,
+	[RequireBookDetails]    BIT           NULL,
     [LogoutURL]           NVARCHAR(255) NULL,
     [ProgramGameID]       INT           NULL,
     [HTML1]               TEXT          NULL,

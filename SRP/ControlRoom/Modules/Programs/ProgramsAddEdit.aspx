@@ -411,6 +411,16 @@
                                         <td align="right"></td>
                                         <td></td>
                                     </tr>
+                                                                        <tr>
+                                        <td align="right">
+                                            <b>Require user to enter book details: </b>
+                                        </td>
+                                        <td>
+                                            <asp:CheckBox ID="RequireBookDetails" runat="server" Checked='<%# (bool)Eval("RequireBookDetails") %>' ReadOnly="False"></asp:CheckBox>
+                                        </td>
+                                        <td align="right"></td>
+                                        <td></td>
+                                    </tr>
                                     <tr>
                                         <td align="right">
                                             <b>Logout URL: </b>
