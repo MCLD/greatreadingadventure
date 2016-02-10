@@ -2625,7 +2625,7 @@ BEGIN
 		'Initial configuration',
 		3,
 		0,
-		0,
+		2,
 		'Performed initial configuration of multiple programs'
 		)
 END
