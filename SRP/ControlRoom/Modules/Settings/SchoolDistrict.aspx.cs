@@ -176,6 +176,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
         protected void btnSave_Click(object sender, ImageClickEventArgs e)
         {
             SaveData();
+            Response.Redirect("~/ControlRoom/Modules/Settings/SchoolDistrict.aspx");
             //LoadData();
         }
 
