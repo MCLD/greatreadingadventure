@@ -112,7 +112,7 @@ CodeBehind="LevelStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.Le
         <tr style="font-weight: bold; border: 0px solid silver; ">
             <th align="left" width="50%">Program</th>        
             <td align="right" width="25%">Level</td>
-            <td align="right" >FinisherCount</td>  
+            <td align="right" >AchieverCount</td>  
         </tr>    
 
         <asp:Repeater runat="server" ID="rptr" >
