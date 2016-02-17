@@ -2,6 +2,7 @@
     Inherits="GRA.SRP.ControlRoom.Modules.Setup.BadgeAddEdit" %>
 
 <%@ Register Src="~/Controls/FileUploadCtl.ascx" TagName="FileUploadCtl" TagPrefix="uc1" %>
+<%@ Register Src="~/ControlRoom/Controls/OpenBadgesBadgeMaker.ascx" TagName="OpenBadgesBadgeMaker" TagPrefix="obbm1" %>
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <meta http-equiv="Cache-Control" content="no-cache">
@@ -95,7 +96,6 @@
                                                 SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
                                         </td>
                                         <td rowspan="4" align="center">
-
                                             <uc1:FileUploadCtl ID="FileUploadCtl" runat="server"
                                                 FileName='<%# Eval("BID") %>'
                                                 ImgWidth="200"
@@ -105,6 +105,11 @@
                                                 MediumThumbnailWidth="128"
                                                 Folder="~/Images/Badges/"
                                                 Extension="png" />
+                                            <obbm1:OpenBadgesBadgeMaker
+                                                ID="badgeMaker"
+                                                runat="server"
+                                                FileName='<%# Eval("BID") %>'
+                                                SmallThumbnailWidth="64" />
                                         </td>
                                         </td>                                 
                                     </tr>
@@ -125,11 +130,16 @@
                                         <td nowrap valign="top">
                                             <b>Awards Physical Prize? </b>
                                         </td>
-                                        <td width="50%">
+                                        <td valign="top">
                                             <asp:CheckBox ID="IncludesPhysicalPrizeFlag" runat="server" Checked='<%# (bool)Eval("IncludesPhysicalPrizeFlag") %>'></asp:CheckBox>
-                                            <br />
-                                            &nbsp;&nbsp;&nbsp;&nbsp;<b>Physical Prize Name:</b><br />
-                                            &nbsp;&nbsp;&nbsp;<asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td nowrap valign="top">
+                                            <b>Physical Prize Name:</b><br />
+                                        </td>
+                                        <td valign="top">
+                                            <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px"></asp:TextBox>
                                         </td>
                                     </tr>
 
