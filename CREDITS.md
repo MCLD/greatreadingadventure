@@ -11,6 +11,7 @@ Reading Adventure wouldn't exist!
 - [Bootstrap](#bootstrap)
 - [DocumentFormat.OpenXML](#documentformat.-openxml)
 - [ELMAH](#elmah)
+- [fancyBox](#fancybox)
 - [FormatWith](#formatwith)
 - [FontAwesome](#fontawesome)
 - [Html Agility Pack](#html-agility-pack)
@@ -54,6 +55,13 @@ Reading Adventure wouldn't exist!
 - <https://elmah.github.io/>
 - Copyright (c) 2004-2009 Atif Aziz. All Rights Reserved.
 - License (Apache) <http://elmah.googlecode.com/svn/trunk/COPYING.txt>
+
+* * *
+
+## fancyBox
+- <http://fancyapps.com/fancybox/>
+- Copyright (c) 2012 Janis Skarnelis - janis@fancyapps.com
+- License (CC BY-NC 3.0) <http://www.fancyapps.com/fancybox/#license>
 
 * * *
 

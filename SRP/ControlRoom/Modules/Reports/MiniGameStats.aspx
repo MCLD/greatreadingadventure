@@ -7,7 +7,6 @@ CodeBehind="MiniGameStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
       google.load("visualization", "1", {

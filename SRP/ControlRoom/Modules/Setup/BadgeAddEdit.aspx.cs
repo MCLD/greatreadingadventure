@@ -87,18 +87,21 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.Insert();
                         Cache[CacheKey.BadgesActive] = true;
 
-                        try {
+                        try
+                        {
                             var badgePath = string.Format(Server.MapPath("~/images/Badges/"));
                             System.IO.File.Copy(string.Format("{0}no_badge.png", badgePath),
                                                 string.Format("{0}{1}.png", badgePath, obj.BID));
                             System.IO.File.Copy(string.Format("{0}no_badge_sm.png", badgePath),
                                                 string.Format("{0}sm_{1}.png", badgePath, obj.BID));
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             this.Log().Error("Couldn't copy no_badge images into new badge: {0}",
                                              ex.Message);
                         }
 
-                        if(e.CommandName.ToLower() == "addandback")
+                        if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
                         }
@@ -166,16 +169,16 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                         SaveBadgeExtendedAttributes(obj,
                                                     (GridView)
-                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                    ((DetailsView)sender).FindControl("TabContainer1").FindControl(
                                                         "TabPanel4").FindControl("gvCat"),
                                                     (GridView)
-                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                    ((DetailsView)sender).FindControl("TabContainer1").FindControl(
                                                         "TabPanel4").FindControl("gvAge"),
                                                     (GridView)
-                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                    ((DetailsView)sender).FindControl("TabContainer1").FindControl(
                                                         "TabPanel4").FindControl("gvBranch"),
                                                     (GridView)
-                                                    ((DetailsView) sender).FindControl("TabContainer1").FindControl(
+                                                    ((DetailsView)sender).FindControl("TabContainer1").FindControl(
                                                         "TabPanel4").FindControl("gvLoc"));
 
                         /*
@@ -267,7 +270,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         public void SaveBadgeExtendedAttributes(Badge obj, GridView gv1, GridView gv2, GridView gv3, GridView gv4)
         {
             var gv = gv1;
-            string checkedMembers= string.Empty;
+            string checkedMembers = string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -279,7 +282,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeCategories(checkedMembers);
 
             gv = gv2;
-            checkedMembers= string.Empty;
+            checkedMembers = string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -292,7 +295,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
 
             gv = gv3;
-            checkedMembers= string.Empty;
+            checkedMembers = string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -304,7 +307,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             obj.UpdateBadgeBranches(checkedMembers);
 
             gv = gv4;
-            checkedMembers= string.Empty;
+            checkedMembers = string.Empty;
             foreach (GridViewRow row in gv.Rows)
             {
                 if (((CheckBox)row.FindControl("isMember")).Checked)
@@ -313,7 +316,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 }
             }
             if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
-            obj.UpdateBadgeLocations(checkedMembers);            
+            obj.UpdateBadgeLocations(checkedMembers);
         }
 
         protected void dv_DataBinding(object sender, EventArgs e)

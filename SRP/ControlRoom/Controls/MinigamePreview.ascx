@@ -8,7 +8,6 @@
 <%@ Register src="~/Controls/MGChooseAdvPlay.ascx" tagname="MGChooseAdvPlay" tagprefix="uc5" %>
 
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 <div style="max-width: 1190px; text-align:center; >
 

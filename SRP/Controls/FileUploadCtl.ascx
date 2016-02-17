@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FileUploadCtl.ascx.cs" Inherits="GRA.SRP.Classes.FileDownloadCtl" %>
-   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
    <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
 <asp:Panel ID="pnlExists" runat="server" Visible="False">
 <table cellspacing="0" cellpadding="5">
@@ -93,7 +92,12 @@
 <tr>
     <td width="100%">
          
-        <asp:FileUpload ID="flUploadReplace" runat="server" Width="100%" />
+        <asp:FileUpload ID="flUploadReplace" runat="server" Width="100%" OnChange='doReplaceButtonClick()' />
+        <script>
+            function doReplaceButtonClick() {
+                $('#<%=btnUpload.ClientID%>').click();
+            }
+        </script>
     </td>
     <td nowrap=nowrap>
         &nbsp;&nbsp;
@@ -117,7 +121,13 @@
 <tr>
     <td width="100%">
          
-        <asp:FileUpload ID="flUpload" runat="server" Width="100%" />
+        <asp:FileUpload ID="flUpload" runat="server" Width="100%" OnChange="doUploadButtonClick()" />
+                <script>
+                    function doUploadButtonClick() {
+                $('#<%=btnUpload0.ClientID%>').click();
+            }
+        </script>
+
     </td>
     <td nowrap=nowrap>
         &nbsp;&nbsp;
