@@ -46,7 +46,7 @@ CodeBehind="TenantSummaryReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.T
             <th align="left" >Organization</th>        
             <td align="left" ># Programs</td>
             <td align="left" ># Patrons</td>
-            <td align="left" ># Finishers</td>  
+            <td align="left" ># Achievers</td>  
             <td align="left" ># Badges</td>  
             <td align="left" >Male Participation</td>  
             <td align="left" >Female Participation</td>  
