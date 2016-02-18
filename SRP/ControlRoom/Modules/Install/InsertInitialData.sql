@@ -2115,7 +2115,7 @@ BEGIN
 		'Initial configuration',
 		3,
 		0,
-		2,
+		3,
 		'Performed initial configuration with a single program'
 		)
 END

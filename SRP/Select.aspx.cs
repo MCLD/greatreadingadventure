@@ -27,7 +27,7 @@ namespace GRA.SRP
                 DefPID = PID.ToString();
 
                 var t = Tenant.FetchObject(TenID);
-                txtMasterDesc.Text = t.Description;
+                txtMasterDesc.Text = HttpUtility.HtmlDecode(t.Description);
 
                 btnSelProgram.Enabled = false;
 
@@ -70,7 +70,7 @@ namespace GRA.SRP
                 var t = Tenant.FetchObject(TenID.SafeToInt());
                 if (t != null)
                 {
-                    txtTenDesc.Text = t.Description;
+                    txtTenDesc.Text = HttpUtility.HtmlDecode(t.Description);
                     btnSelProgram.Enabled = true;
                 }
                 else
