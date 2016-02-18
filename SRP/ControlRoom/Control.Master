@@ -15,12 +15,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
-    <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server"/>
+    <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
+    <style>
+        .cdBody td, .cdBody th {
+            padding: 0.2em;
+        }
+
+        .cdBody th {
+            padding-left: 0.8em;
+            padding-right: 0.8em;
+        }
+    </style>
     <asp:PlaceHolder runat="server">
         <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/moment.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
     </asp:PlaceHolder>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -62,10 +78,13 @@
         </center>
         <asp:ContentPlaceHolder ID="scripts" runat="server">
         </asp:ContentPlaceHolder>
-        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
         <script>
-            $(".gra-editor").each(function () {
-                $(this).trumbowyg();
+            $().ready(function () {
+                $(".gra-editor").each(function () {
+                    $(this).trumbowyg({
+                        fullscreenable: false
+                    });
+                });
             });
         </script>
     </form>

@@ -333,3 +333,22 @@ small.dd-desc {
     width: 36px;
     height: 36px;
 }
+
+.glyphicon-refresh-animate {
+    -animation: gra-spin .7s infinite linear;
+    -webkit-animation: gra-spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes gra-spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes gra-spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+.gra-search-active {
+    border-color: forestgreen !important;
+}

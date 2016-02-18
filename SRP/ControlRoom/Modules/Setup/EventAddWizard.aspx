@@ -7,6 +7,8 @@
 <%@ Register Src="../../Controls/EvtCustFldCtl.ascx" TagName="EvtCustFldCtl" TagPrefix="uc1" %>
 
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl" Src="~/Controls/FileUploadCtl.ascx" %>
+<%@ Register Src="~/ControlRoom/Controls/OpenBadgesBadgeMaker.ascx" TagPrefix="uc1" TagName="OpenBadgesBadgeMaker" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -19,11 +21,11 @@
 
     <asp:Panel ID="pnlEvent" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Details" ScrollBars="Auto"
         CssClass="OrangePanel" Width="100%" Height="585px">
-        <table width="100%" height="550px">
+        <table width="100%">
             <tr>
                 <td nowrap><b>Event Title: </b></td>
                 <td colspan="7">
-                    <asp:TextBox ID="EventTitle" runat="server" Width="99%"></asp:TextBox>
+                    <asp:TextBox ID="EventTitle" runat="server" Width="99%" CssClass="form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvEventTitle" runat="server"
                         ControlToValidate="EventTitle" Display="Dynamic" ErrorMessage="<font color=red>Event Title is required</font>"
                         SetFocusOnError="True" Font-Bold="True"><font color=red>* Required</font></asp:RequiredFieldValidator>
@@ -31,52 +33,36 @@
             </tr>
 
             <tr>
-                <td nowrap><b>Start Date: </b></td>
-                <td>
-                    <asp:TextBox ID="EventDate" runat="server" Width="75px"
-                        Text=''></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="ceEventDate" runat="server" TargetControlID="EventDate">
-                    </ajaxToolkit:CalendarExtender>
-                    <ajaxToolkit:MaskedEditExtender ID="meEventDate" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="EventDate" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
+                <td nowrap><b>Event starts at: </b></td>
+                <td width="20%">
+                    <div class="input-group date gra-datetime">
+                        <asp:TextBox ID="EventDate" runat="server" CssClass="form-control"></asp:TextBox>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                     <asp:RequiredFieldValidator ID="rfvEventDate" runat="server"
                         ControlToValidate="EventDate" Display="Dynamic" ErrorMessage="<font color=red>Event Date is required</font>"
                         SetFocusOnError="True" Font-Bold="True"><font color=red>* Required</font></asp:RequiredFieldValidator>
                 </td>
-                <td nowrap><b>Start Time: </b></td>
+                <td nowrap style="text-align: right;"><b>Event visibility : </b></td>
                 <td>
-                    <asp:TextBox ID="EventTime" runat="server"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="rfvEventTime" runat="server"
-                        ControlToValidate="EventTime" Display="Dynamic" ErrorMessage="<font color=red>Start Time is required"
-                        SetFocusOnError="True" Font-Bold="True"><font color=red>* Required</font></asp:RequiredFieldValidator>
-                </td>
-
-                <td nowrap><b>End Date: </b></td>
-                <td>
-                    <asp:TextBox ID="EndDate" runat="server" Width="75px"
-                        Text=''></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="EndDate">
-                    </ajaxToolkit:CalendarExtender>
-                    <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender1" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
-                </td>
-                <td nowrap><b>End Time: </b></td>
-                <td>
-                    <asp:TextBox ID="EndTime" runat="server"></asp:TextBox>
+                    <asp:DropDownList ID="HiddenFromPublic" runat="server" CssClass="form-control" Width="98%">
+                        <asp:ListItem Value="0" Text="Show this event in the event list"></asp:ListItem>
+                        <asp:ListItem Value="1" Text="Hide this event from the event list"></asp:ListItem>
+                    </asp:DropDownList>
                 </td>
             </tr>
             <tr>
-                <td nowrap><b>Short Description: </b></td>
+                <td nowrap><b>Link to more information: </b></td>
                 <td colspan="7">
-                    <asp:TextBox ID="ShortDescription" runat="server" Width="99%"></asp:TextBox>
+                    <asp:TextBox ID="ExternalLinkToEvent" runat="server" Width="99%" CssClass="form-control"></asp:TextBox>
                 </td>
             </tr>
             <tr>
                 <td nowrap valign="top"><b>Event Description: </b></td>
-                <td colspan="7" style="height: 350px;">
-                    <textarea id="HTML" runat="server" class="gra-editor"></textarea>
+                <td colspan="7">
+                    <textarea id="HTML" runat="server" class="gra-editor" style="height: 200px;"></textarea>
                 </td>
             </tr>
 
@@ -86,7 +72,7 @@
                 <td nowrap><b>Branch/Library: </b></td>
                 <td>
                     <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID" Width="254"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                 </td>
@@ -94,21 +80,26 @@
             </tr>
 
             <tr>
-                <td nowrap><b>Custom 1: </b></td>
-                <td>
-                    <uc1:EvtCustFldCtl ID="Custom1" runat="server" Value='' FieldNumber="1" />
-                </td>
+                <td colspan="8">
+                    <table width="99%" style="margin-top: 0.5em; margin-bottom: 0.5em;">
+                        <tr>
+                            <td nowrap><b>Custom 1: </b></td>
+                            <td>
+                                <uc1:EvtCustFldCtl ID="Custom1" runat="server" Value='' FieldNumber="1" />
+                            </td>
 
-                <td nowrap><b>Custom 2: </b></td>
-                <td>
-                    <uc1:EvtCustFldCtl ID="Custom2" runat="server" Value='' FieldNumber="2" />
-                </td>
+                            <td nowrap><b>Custom 2: </b></td>
+                            <td>
+                                <uc1:EvtCustFldCtl ID="Custom2" runat="server" Value='' FieldNumber="2" />
+                            </td>
 
-                <td nowrap><b>Custom 3: </b></td>
-                <td>
-                    <uc1:EvtCustFldCtl ID="Custom3" runat="server" Value='' FieldNumber="3" />
+                            <td nowrap><b>Custom 3: </b></td>
+                            <td>
+                                <uc1:EvtCustFldCtl ID="Custom3" runat="server" Value='' FieldNumber="3" />
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-
             </tr>
 
             <tr>
@@ -141,23 +132,30 @@
     </asp:Panel>
 
     <asp:Panel ID="pnlReward" runat="server" Visible="False" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Attendance Rewards" ScrollBars="Auto"
-        CssClass="OrangePanel" Width="100%" Height="585px">
-        <table width="100%" height="550px">
+        CssClass="OrangePanel" Width="100%">
+        <table width="100%">
+            <tr>
+                <td colspan="6">Entering a secret code is optional. If you enter a secret code:
+                    <ul>
+                        <li>It must be 50 characters or less</li>
+                        <li>It can only contain letters and numbers</li>
+                    </ul>
+                </td>
+            </tr>
+
             <tr>
                 <td nowrap><b>Secret Code: </b></td>
                 <td>
-                    <asp:TextBox ID="SecretCode" runat="server" Width="250" AutoPostBack="true"
-                        OnTextChanged="SecretCode_TextChanged"></asp:TextBox>
+                    <asp:TextBox ID="SecretCode" runat="server" Width="350" MaxLength="50" CssClass="gra-secret-code gra-code-unique form-control"></asp:TextBox>
                 </td>
-                <td colspan="4">
-                    <asp:Label ID="lblDups" runat="server" Text=""></asp:Label>
-                    This is the code patrons will log as proof of attendance.</td>
+                <td colspan="4"><span id="gra-code-available"></span>
+                    <asp:Label ID="lblDups" runat="server" CssClass="gra-code-error text-danger"></asp:Label>
             </tr>
             <tr>
-                <td nowrap><b>Number Points: </b></td>
+                <td nowrap><b>Points the patron will earn: </b></td>
                 <td valign="top">
                     <asp:TextBox ID="NumberPoints" runat="server"
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                 </td>
                 <td colspan="4">
                     <asp:RegularExpressionValidator ID="revNumberPoints"
@@ -184,7 +182,6 @@
                         Text="<font color=red> * Number Points must be from 0 to 9999! </font>"
                         EnableTheming="True"
                         SetFocusOnError="True" />
-                    This is the points the patrons will receive when they log/report the secret code.
                 </td>
             </tr>
             <tr>
@@ -203,12 +200,11 @@
                         <asp:ListItem Selected="true" Value="1" Text="  &nbsp; Choose An Existing Badge"></asp:ListItem>
                         <asp:ListItem Selected="false" Value="2" Text="  &nbsp; Create A New Badge"></asp:ListItem>
                     </asp:RadioButtonList>
-                    *Note: If you choose to create a new badge, you need to have the badge image ready for upload on the next step.
                 </td>
                 <td colspan="4" valign="top" width="900px">
                     <img src="/controlroom/images/spacer.gif" height="23px" /><br />
                     <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID" Width="500" Visible="true"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control">
                         <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
                     </asp:DropDownList>
                 </td>
@@ -221,19 +217,19 @@
                         <table width="100%">
                             <tr>
                                 <td nowrap valign="top">
-                                    <b>Control Room Name: </b>
+                                    <b>Control Room Name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="AdminName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="AdminName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvAdminName" runat="server" Enabled="False"
                                         ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Control Room Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</asp:RequiredFieldValidator>
                                 </td>
                                 <td nowrap valign="top">
-                                    <b>Patron Web Name: </b>
+                                    <b>Public name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="UserName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="UserName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvUserName" runat="server" Enabled="False"
                                         ControlToValidate="UserName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Patron Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</font></asp:RequiredFieldValidator>
@@ -245,9 +241,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" height="160px">
-                                    <b>Message to Patron when badge is earned:</b>
-                                    <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                <td colspan="4">
+                                    <b>Pop-up message when badge is earned:</b>
+                                    <div class="gra-editor-container-tiny">
+                                        <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -291,7 +289,7 @@
     </asp:Panel>
 
     <asp:Panel ID="pnlBadgeMore" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Details" ScrollBars="Auto"
-        CssClass="OrangePanel" Width="100%" Height="585px" Visible="false">
+        CssClass="OrangePanel" Width="100%" Visible="false">
         <table width="100%" height="550px">
             <tr>
                 <td nowrap><b>Awards Physical Prize?: </b></td>
@@ -316,9 +314,11 @@
                 </td>
             </tr>
             <tr>
-                <td nowrap colspan="4" height="125px">
+                <td nowrap colspan="4">
                     <b>Notification Message Text: </b>
-                    <textarea id="NotificationBody" runat="server" class="gra-editor"></textarea>
+                    <div class="gra-editor-container-tiny">
+                        <textarea id="NotificationBody" runat="server" class="gra-editor"></textarea>
+                    </div>
                 </td>
             </tr>
 
@@ -335,9 +335,11 @@
                 </td>
             </tr>
             <tr>
-                <td nowrap colspan="4" height="125px">
+                <td nowrap colspan="4">
                     <b>Notification Message Text: </b>
-                    <textarea id="PCNotificationBody" runat="server" class="gra-editor"></textarea>
+                    <div class="gra-editor-container-tiny">
+                        <textarea id="PCNotificationBody" runat="server" class="gra-editor"></textarea>
+                    </div>
                 </td>
             </tr>
 
@@ -370,16 +372,11 @@
                 </td>
             </tr>
         </table>
-
-
-
-
-
     </asp:Panel>
 
     <asp:Panel ID="pnlLast" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Details" ScrollBars="Auto"
         CssClass="OrangePanel" Width="100%" Height="585px" Visible="false">
-        <table width="100%" height="550px">
+        <table width="100%">
 
             <tr>
                 <td nowrap width="25%" align="center">
@@ -463,12 +460,18 @@
             </tr>
 
             <tr>
-                <td colspan="4"><b>Badge Image:
+                <td colspan="2" valign="top"><b>Badge Image:</b><br />
                     <br />
+                    <uc1:OpenBadgesBadgeMaker runat="server" ID="OpenBadgesBadgeMaker"
+                        FileName="0" SmallThumbnailWidth="64" />
+                </td>
+                <td colspan="2" valign="top">
                     <uc1:FileUploadCtl ID="FileUploadCtl" runat="server"
                         CreateMediumThumbnail="False" CreateSmallThumbnail="True" Extension="png"
                         FileName="0" Folder="~/Images/Badges/" ImgWidth="200"
-                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" /></td>
+                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" />
+
+                </td>
             </tr>
 
             <tr>

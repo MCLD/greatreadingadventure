@@ -30,18 +30,18 @@
         </tr>
         <tr>
             <td valign="top" width="150px"><b>ISBN</b><br />
-                <asp:TextBox ID="ISBN" runat="server" Width="150px" CssClass="book-isbn"></asp:TextBox><br />
+                <asp:TextBox ID="ISBN" runat="server" Width="150px" CssClass="book-isbn form-control"></asp:TextBox><br />
                 <img src="../../Images/spacer.gif" class="book-image" alt="Cover image on Open Library" /><span class="lookup-message"></span>
             </td>
 
             <td valign="top" width="300px"><b>Title/Task</b><br />
-                <asp:TextBox ID="Title" runat="server" Width="300px" CssClass="book-title"></asp:TextBox>
+                <asp:TextBox ID="Title" runat="server" Width="300px" CssClass="book-title form-control"></asp:TextBox>
             </td>
             <td valign="top" width="150px"><b>Author</b><br />
-                <asp:TextBox ID="Author" runat="server" Width="150px" CssClass="book-author"></asp:TextBox>
+                <asp:TextBox ID="Author" runat="server" Width="150px" CssClass="book-author form-control"></asp:TextBox>
             </td>
             <td valign="top" width="100%"><b>URL</b><br />
-                <asp:TextBox ID="URL" runat="server" Width="85%" CssClass="ils-link"></asp:TextBox>
+                <asp:TextBox ID="URL" runat="server" Width="85%" CssClass="ils-link form-control"></asp:TextBox>
                 <a href="#" onclick="return testLink();">Test URL</a>
                 <br />
                 (The URL should be available to users not logged in to the ILS)

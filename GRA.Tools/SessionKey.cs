@@ -15,6 +15,7 @@ namespace GRA.Tools {
         public const string MasterAcctPID = "MasterAcctPID";
         public const string RefreshBadgeList = "RfrBdgLst";
         public const string SA = "SA";
+        public const string TenantID = "TenantID";
     }
 
     public static class PatronMessageLevels {

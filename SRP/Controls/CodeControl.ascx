@@ -26,7 +26,7 @@
                             runat="server"
                             CssClass="form-control"
                             MaxLength="50"
-                            Width="10em"></asp:TextBox>
+                            ></asp:TextBox>
                     </div>
                     <asp:LinkButton runat="server"
                         CssClass="btn btn-default btn-sm btn-success code-submit"

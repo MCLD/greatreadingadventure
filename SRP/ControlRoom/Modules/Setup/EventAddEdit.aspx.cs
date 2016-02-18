@@ -136,7 +136,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        Cache[CacheKey.EventsActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);
@@ -177,11 +177,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     int pk = int.Parse(lblPK.Text);//int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text));
                     obj.Fetch(pk);
 
-                    obj.EventTitle = ((TextBox)((DetailsView)sender).FindControl("EventTitle")).Text;
+                    obj.EventTitle = ((TextBox)((DetailsView)sender).FindControl("EventTitle")).Text.Trim();
                     obj.EventDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("EventDate")).Text);
-                    obj.EventTime = ((TextBox)((DetailsView)sender).FindControl("EventTime")).Text;
-                    obj.HTML = ((HtmlTextArea)((DetailsView)sender).FindControl("HTML")).InnerHtml;
-                    obj.SecretCode = ((TextBox)((DetailsView)sender).FindControl("SecretCode")).Text;
+                    //obj.EventTime = ((TextBox)((DetailsView)sender).FindControl("EventTime")).Text;
+                    obj.HTML = ((HtmlTextArea)((DetailsView)sender).FindControl("HTML")).InnerHtml.Trim();
+                    obj.SecretCode = ((TextBox)((DetailsView)sender).FindControl("SecretCode")).Text.Trim().ToLower();
                     obj.NumberPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.BranchID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BranchID")).SelectedValue);
@@ -193,9 +193,12 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     //obj.Custom3 = ((TextBox)((DetailsView)sender).FindControl("Custom3")).Text;
 
 
-                    obj.ShortDescription = ((TextBox)((DetailsView)sender).FindControl("ShortDescription")).Text;
-                    obj.EndDate = ((TextBox)((DetailsView)sender).FindControl("EndDate")).Text.SafeToDateTime();
-                    obj.EndTime = ((TextBox)((DetailsView)sender).FindControl("EndTime")).Text;
+                    //obj.ShortDescription = ((TextBox)((DetailsView)sender).FindControl("ShortDescription")).Text;
+                    //obj.EndDate = ((TextBox)((DetailsView)sender).FindControl("EndDate")).Text.SafeToDateTime();
+                    //obj.EndTime = ((TextBox)((DetailsView)sender).FindControl("EndTime")).Text;
+
+                    obj.ExternalLinkToEvent = ((TextBox)((DetailsView)sender).FindControl("ExternalLinkToEvent")).Text.Trim();
+                    obj.HiddenFromPublic = ((DropDownList)((DetailsView)sender).FindControl("HiddenFromPublic")).SelectedIndex > 0;
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -203,6 +206,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
                         obj.Update();
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
                         if (e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);

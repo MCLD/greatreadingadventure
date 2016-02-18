@@ -37,6 +37,10 @@ namespace GRA.SRP.Events {
             if(!string.IsNullOrEmpty(displayEvent)
                && int.TryParse(displayEvent.ToString(), out eventId)) {
                 evnt = DAL.Event.GetEvent(eventId);
+                if(evnt != null && evnt.HiddenFromPublic)
+                {
+                    evnt = null;
+                }
                 if(evnt != null) {
                     eventTitle.Text = evnt.EventTitle;
                     this.Title = string.Format("'{0}' Event Details", eventTitle.Text);
@@ -58,7 +62,16 @@ namespace GRA.SRP.Events {
                         eventWhere.Visible = true;
                         atLabel.Visible = true;
                     }
-                    eventShortDescription.Text = evnt.ShortDescription;
+                    if(!string.IsNullOrWhiteSpace(evnt.ExternalLinkToEvent))
+                    {
+                        eventLinkPanel.Visible = true;
+                        ExternalLink.NavigateUrl = evnt.ExternalLinkToEvent;
+                        ExternalLink.Text = string.Format(eventTitle.Text);
+                        ExternalLinkPrint.Text = evnt.ExternalLinkToEvent;
+                    } else
+                    {
+                        eventLinkPanel.Visible = false;
+                    }
                     eventDescription.Text = Server.HtmlDecode(evnt.HTML);
                     var cf = DAL.CustomEventFields.FetchObject();
                     if(!string.IsNullOrWhiteSpace(evnt.Custom1)

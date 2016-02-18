@@ -5,6 +5,8 @@
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit" %>
 
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl" Src="~/Controls/FileUploadCtl.ascx" %>
+<%@ Register Src="~/ControlRoom/Controls/OpenBadgesBadgeMaker.ascx" TagPrefix="uc1" TagName="OpenBadgesBadgeMaker" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -21,7 +23,7 @@
             <tr>
                 <td nowrap height="20px"><b>Award Name: </b></td>
                 <td colspan="3">
-                    <asp:TextBox ID="AwardName" runat="server" Text='' Width="500px"></asp:TextBox>
+                    <asp:TextBox ID="AwardName" runat="server" Text='' Width="500px" CssClass="form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvAwardName" runat="server"
                         ControlToValidate="AwardName" Display="Dynamic" ErrorMessage="<font color='red'>AwardName is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -38,11 +40,13 @@
                 <td colspan="8" height="200px">
                     <asp:Panel ID="Panel1" runat="server" GroupingText=" Award Triggers " ScrollBars="Auto" Visible="True">
                         <table width="100%" height="200px">
-
                             <tr>
-                                <td nowrap valign="top"><b># Points: </b></td>
+                                <td colspan="4"><p class="lead" style="margin-top: 0;">Choose what a patron must achieve in order to receive this award:</p></td>
+                            </tr>
+                            <tr>
+                                <td nowrap valign="top"><b>Must have earned this many points: </b></td>
                                 <td colspan="3" valign="top">
-                                    <asp:TextBox ID="NumPoints" runat="server" Text='' Width="50px"></asp:TextBox>
+                                    <asp:TextBox ID="NumPoints" runat="server" Text='' Width="50px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvNumPoints" runat="server"
                                         ControlToValidate="NumPoints" Display="Dynamic" ErrorMessage="<font color='red'>Num Points is required"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -73,13 +77,13 @@
                                 </td>
 
                                 <td colspan="4" rowspan="6">
-                                    <b>Earned Badges :</b>
+                                    <b>Must have earned the checked badges:</b>
                                     <br />
 
 
 
                                     <div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;">
-                                        <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false"></asp:TextBox>
+                                        <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false" CssClass="form-control"></asp:TextBox>
                                         <asp:GridView ID="gvBadgeMembership" ShowHeader="false" runat="server" DataSourceID="odsBadgeMembership" AutoGenerateColumns="false" Width="100%">
                                             <Columns>
                                                 <asp:TemplateField ShowHeader="false">
@@ -97,10 +101,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td nowrap valign="top"><b>Branch/Library: </b></td>
+                                <td nowrap valign="top"><b>Must be associated with branch/library: </b></td>
                                 <td colspan="3" valign="top">
                                     <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
-                                        AppendDataBoundItems="True" Width="97%">
+                                        CssClass="form-control" AppendDataBoundItems="True" Width="97%">
                                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
@@ -108,10 +112,10 @@
                             </tr>
 
                             <tr>
-                                <td nowrap valign="top"><b>Program: </b></td>
+                                <td nowrap valign="top"><b>Must be enrolled in program: </b></td>
                                 <td colspan="3" valign="top">
                                     <asp:DropDownList ID="ProgramID" runat="server" DataSourceID="odsProg"
-                                        DataTextField="AdminName" DataValueField="PID"
+                                        CssClass="form-control" DataTextField="AdminName" DataValueField="PID"
                                         AppendDataBoundItems="True" Width="97%">
                                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
@@ -119,20 +123,20 @@
                             </tr>
 
                             <tr>
-                                <td nowrap valign="top"><b>District: </b></td>
+                                <td nowrap valign="top"><b>Must be associated with district: </b></td>
                                 <td colspan="3" valign="top">
                                     <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDLibSys"
-                                        DataTextField="Code" DataValueField="CID"
+                                        CssClass="form-control" DataTextField="Code" DataValueField="CID"
                                         AppendDataBoundItems="True" Width="97%">
                                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
                             </tr>
                             <tr>
-                                <td nowrap valign="top"><b>School: </b></td>
+                                <td nowrap valign="top"><b>Must be associated with school: </b></td>
                                 <td colspan="3" valign="top">
                                     <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool"
-                                        DataTextField="Code" DataValueField="CID"
+                                        CssClass="form-control" DataTextField="Code" DataValueField="CID"
                                         AppendDataBoundItems="True" Width="97%">
                                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
@@ -202,16 +206,15 @@
                 <td valign="top" align="left" width="250px;">
                     <asp:RadioButtonList ID="rblBadge" runat="server" AutoPostBack="true"
                         OnSelectedIndexChanged="rblBadge_SelectedIndexChanged" Font-Size="14px">
-                        <asp:ListItem Selected="false" Value="0" Text="  &nbsp; No Badge Awarded" Enabled="false"></asp:ListItem>
+                        <asp:ListItem Selected="false" Value="0" Text="  &nbsp; No Badge Awarded"></asp:ListItem>
                         <asp:ListItem Selected="true" Value="1" Text="  &nbsp; Choose An Existing Badge"></asp:ListItem>
                         <asp:ListItem Selected="false" Value="2" Text="  &nbsp; Create A New Badge"></asp:ListItem>
                     </asp:RadioButtonList>
-                    *Note: If you choose to create a new badge, you need to have the badge image ready for upload on the next step.
                 </td>
                 <td colspan="4" valign="top" width="900px">
                     <img src="/controlroom/images/spacer.gif" height="23px" /><br />
                     <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID" Width="500" Visible="true"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control">
                         <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
                     </asp:DropDownList>
                 </td>
@@ -224,19 +227,19 @@
                         <table width="100%">
                             <tr>
                                 <td nowrap valign="top">
-                                    <b>Control Room Name: </b>
+                                    <b>Control Room Name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="AdminName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="AdminName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvAdminName" runat="server" Enabled="False"
                                         ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Control Room Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</asp:RequiredFieldValidator>
                                 </td>
                                 <td nowrap valign="top">
-                                    <b>Patron Web Name: </b>
+                                    <b>Public name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="UserName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="UserName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvUserName" runat="server" Enabled="False"
                                         ControlToValidate="UserName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Patron Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</font></asp:RequiredFieldValidator>
@@ -248,9 +251,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" height="160px">
-                                    <b>Message to Patron when badge is earned:</b>
-                                    <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                <td colspan="4">
+                                    <b>Pop-up message when badge is earned:</b>
+                                    <div class="gra-editor-container-tiny">
+                                        <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -384,8 +389,8 @@
     </asp:Panel>
 
     <asp:Panel ID="pnlLast" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Details" ScrollBars="Auto"
-        DefaultButton="btnContinue" CssClass="OrangePanel" Width="100%" Height="585px" Visible="false">
-        <table width="100%" height="550px">
+        CssClass="OrangePanel" Width="100%" Height="585px" Visible="false">
+        <table width="100%">
 
             <tr>
                 <td nowrap width="25%" align="center">
@@ -469,12 +474,18 @@
             </tr>
 
             <tr>
-                <td colspan="4"><b>Badge Image:
+                <td colspan="2" valign="top"><b>Badge Image:</b><br />
                     <br />
+                    <uc1:OpenBadgesBadgeMaker runat="server" ID="OpenBadgesBadgeMaker"
+                        FileName="0" SmallThumbnailWidth="64" />
+                </td>
+                <td colspan="2" valign="top">
                     <uc1:FileUploadCtl ID="FileUploadCtl" runat="server"
                         CreateMediumThumbnail="False" CreateSmallThumbnail="True" Extension="png"
                         FileName="0" Folder="~/Images/Badges/" ImgWidth="200"
-                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" /></td>
+                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" />
+
+                </td>
             </tr>
 
             <tr>

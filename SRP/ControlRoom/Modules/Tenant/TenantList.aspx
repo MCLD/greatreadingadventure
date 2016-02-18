@@ -25,7 +25,7 @@
         onrowcommand="GvRowCommand"      
         >
         <Columns>
-            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
                 <HeaderTemplate>
                     &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
@@ -46,91 +46,91 @@
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to deactivate this record?');"/>
                    &nbsp;
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
 			<asp:BoundField ReadOnly="True" HeaderText="TenID" DataField="TenID" 
                 SortExpression="TenID" Visible="False" ItemStyle-Wrap="False" 
-                ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>          
 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Name" 
                 DataField="Name" SortExpression="Name" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="True"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="True"></ItemStyle>
             </asp:BoundField> 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Landing Name" 
                 DataField="LandingName" SortExpression="LandingName" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="True"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="True"></ItemStyle>
             </asp:BoundField> 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Admin Name" 
                 DataField="AdminName" SortExpression="AdminName" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="True"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="True"></ItemStyle>
             </asp:BoundField> 
 
             <asp:TemplateField   SortExpression="isActiveFlag" Visible="True"  
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
                 HeaderText="Active">              
                 <ItemTemplate> 
                     <%# ((bool)Eval("isActiveFlag")).ToYesNo()%> 
                 </ItemTemplate> 
 				 <ControlStyle Width="250px" /> 
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle> 
             </asp:TemplateField>	 			 
 
             <asp:TemplateField   SortExpression="isMasterFlag" Visible="True"  
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
                 HeaderText="Master">              
                 <ItemTemplate> 
                     <%# ((bool)Eval("isMasterFlag")).ToYesNo()%> 
                 </ItemTemplate> 
 				 <ControlStyle Width="250px" /> 
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle> 
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle> 
             </asp:TemplateField>	 			 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Description" 
                 DataField="Description" SortExpression="Description" Visible="False" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Domain Name" 
                 DataField="DomainName" SortExpression="DomainName" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Modified On" 
                 DataField="LastModDate" SortExpression="LastModDate" Visible="False" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 			<asp:BoundField ReadOnly="True" HeaderText="Modified By" 
                 DataField="LastModUser" SortExpression="LastModUser" Visible="False" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 			<asp:BoundField ReadOnly="True" HeaderText="Added On" 
                 DataField="AddedDate" SortExpression="AddedDate" Visible="False" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 			<asp:BoundField ReadOnly="True" HeaderText="Added By" 
                 DataField="AddedUser" SortExpression="AddedUser" Visible="False" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>			
 
 

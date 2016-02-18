@@ -102,9 +102,6 @@
                         This event takes place on
                         <strong><span id="eventPopupWhen"></span><span id="eventPopupWhere"></span></strong>.
                     </div>
-                    <div class="col-sm-12 margin-1em-top">
-                        <span id="eventPopupShortDescription"></span>
-                    </div>
                 </div>
                 <div class="row" id="eventPopupDetailsPanel">
                     <div class="col-sm-12 margin-1em-top">Event details:</div>
@@ -123,6 +120,11 @@
                 <div class="row margin-1em-top" id="eventPopupCustom3Panel">
                     <span id="eventPopupCustomLabel3"></span>: 
                     <span id="eventPopupCustomValue3"></span>
+                </div>
+                <div class="row" id="eventPopupLinkPanel">
+                    <div class="col-sm-12 margin-1em-top">
+                        See more details: <a id="eventPopupLink" href="#" target="_blank"></a>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -165,6 +167,13 @@
                     $('#eventPopupWhen').text(data.When);
                     if (data.Where) {
                         $('#eventPopupWhere').text(" at " + data.Where);
+                    }
+                    if (data.ExternalLink) {
+                        $('#eventPopupLinkPanel').show();
+                        $('#eventPopupLink').attr("href", data.ExternalLink);
+                        $('#eventPopupLink').html(data.Title);
+                    } else {
+                        $('#eventPopupLinkPanel').hide();
                     }
                     $('#eventPopupShortDescription').text(data.ShortDescription);
                     if (data.Description) {

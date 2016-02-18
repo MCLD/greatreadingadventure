@@ -13,58 +13,22 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
     public partial class EventList {
         
         /// <summary>
-        /// StartDate control.
+        /// SearchPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox StartDate;
+        protected global::System.Web.UI.WebControls.Panel SearchPanel;
         
         /// <summary>
-        /// ceStartDate control.
+        /// SearchText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender ceStartDate;
-        
-        /// <summary>
-        /// meStartDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.MaskedEditExtender meStartDate;
-        
-        /// <summary>
-        /// EndDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EndDate;
-        
-        /// <summary>
-        /// ceEndDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender ceEndDate;
-        
-        /// <summary>
-        /// meEndDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.MaskedEditExtender meEndDate;
+        protected global::System.Web.UI.WebControls.TextBox SearchText;
         
         /// <summary>
         /// BranchId control.
@@ -76,22 +40,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.DropDownList BranchId;
         
         /// <summary>
-        /// btnFilter control.
+        /// SearchButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFilter;
-        
-        /// <summary>
-        /// btnClear control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnClear;
+        protected global::System.Web.UI.WebControls.LinkButton SearchButton;
         
         /// <summary>
         /// gv control.

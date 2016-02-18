@@ -15,13 +15,9 @@
                         <strong>
                             <asp:Label runat="server" ID="eventWhen"></asp:Label></strong><asp:Label runat="server" ID="atLabel"> at </asp:Label><strong><asp:Label runat="server" ID="eventWhere"></asp:Label></strong>.
                     </p>
-                    <p>
-                        <asp:Label runat="server" ID="eventShortDescription"></asp:Label>
-                    </p>
-
                     <p>Event details:</p>
                     <blockquote>
-                        <asp:Label runat="server" ID="eventDescription"></asp:Label>
+                        <asp:Label runat="server" ID="eventDescription" ></asp:Label>
                     </blockquote>
                     <asp:Panel runat="server" CssClass="margin-1em-top" ID="eventCustom1Panel">
                         <asp:Label runat="server" ID="eventCustomLabel1"></asp:Label>:
@@ -34,6 +30,14 @@
                     <asp:Panel runat="server" CssClass="margin-1em-top" ID="eventCustom3Panel">
                         <asp:Label runat="server" ID="eventCustomLabel3"></asp:Label>: 
                     <asp:Label runat="server" ID="eventCustomValue3"></asp:Label>
+                    </asp:Panel>
+                    <asp:Panel runat="server" CssClass="row margin-1em-top" ID="eventLinkPanel">
+                        <div class="col-xs-12">
+                            <span class="hidden-print">See more details:
+                                <asp:HyperLink runat="server" ID="ExternalLink" Target="_blank"></asp:HyperLink></span>
+                            <span class="visible-print">See more details: <small>
+                                <asp:Literal runat="server" ID="ExternalLinkPrint"></asp:Literal></small></span>
+                        </div>
                     </asp:Panel>
                 </div>
                 <div class="panel-footer clearfix hidden-print">

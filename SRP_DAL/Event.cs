@@ -12,211 +12,56 @@ using System.Collections;
 using GRA.SRP.Core.Utilities;
 using System.Text;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class Event : EntityBase
+    [Serializable]
+    public class Event : EntityBase
     {
         public static new string Version { get { return "2.0"; } }
 
         #region Private Variables
 
-        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
-
-        private int myEID;
-        private string myEventTitle = "";
-        private DateTime myEventDate;
-        private string myEventTime = "";
-        private string myHTML = "";
-        private string mySecretCode = "";
-        private int myNumberPoints=0;
-        private int myBadgeID=0;
-        private int myBranchID=0;
-        private string myCustom1 = "";
-        private string myCustom2 = "";
-        private string myCustom3 = "";
-        private DateTime myLastModDate;
-        private string myLastModUser = "";
-        private DateTime myAddedDate;
-        private string myAddedUser = "";
-
-        private int myTenID = 0;
-        private int myFldInt1 = 0;
-        private int myFldInt2 = 0;
-        private int myFldInt3 = 0;
-        private bool myFldBit1 = false;
-        private bool myFldBit2 = false;
-        private bool myFldBit3 = false;
-        private string myFldText1 = "";
-        private string myFldText2 = "";
-        private string myFldText3 = "";
-
-        private string myShortDescription = "";
-        private DateTime myEndDate;
-        private string myEndTime = "";
-
+        private static string conn = GlobalUtilities.SRPDB;
 
         #endregion
 
         #region Accessors
 
-        public int EID
-        {
-            get { return myEID; }
-            set { myEID = value; }
-        }
-        public string EventTitle
-        {
-            get { return myEventTitle; }
-            set { myEventTitle = value; }
-        }
-        public DateTime EventDate
-        {
-            get { return myEventDate; }
-            set { myEventDate = value; }
-        }
-        public string EventTime
-        {
-            get { return myEventTime; }
-            set { myEventTime = value; }
-        }
-        public string HTML
-        {
-            get { return myHTML; }
-            set { myHTML = value; }
-        }
-        public string SecretCode
-        {
-            get { return mySecretCode; }
-            set { mySecretCode = value; }
-        }
-        public int NumberPoints
-        {
-            get { return myNumberPoints; }
-            set { myNumberPoints = value; }
-        }
-        public int BadgeID
-        {
-            get { return myBadgeID; }
-            set { myBadgeID = value; }
-        }
-        public int BranchID
-        {
-            get { return myBranchID; }
-            set { myBranchID = value; }
-        }
-        public string Custom1
-        {
-            get { return myCustom1; }
-            set { myCustom1 = value; }
-        }
-        public string Custom2
-        {
-            get { return myCustom2; }
-            set { myCustom2 = value; }
-        }
-        public string Custom3
-        {
-            get { return myCustom3; }
-            set { myCustom3 = value; }
-        }
-        public DateTime LastModDate
-        {
-            get { return myLastModDate; }
-            set { myLastModDate = value; }
-        }
-        public string LastModUser
-        {
-            get { return myLastModUser; }
-            set { myLastModUser = value; }
-        }
-        public DateTime AddedDate
-        {
-            get { return myAddedDate; }
-            set { myAddedDate = value; }
-        }
-        public string AddedUser
-        {
-            get { return myAddedUser; }
-            set { myAddedUser = value; }
-        }
-
-        public int TenID
-        {
-            get { return myTenID; }
-            set { myTenID = value; }
-        }
-
-        public int FldInt1
-        {
-            get { return myFldInt1; }
-            set { myFldInt1 = value; }
-        }
-
-        public int FldInt2
-        {
-            get { return myFldInt2; }
-            set { myFldInt2 = value; }
-        }
-
-        public int FldInt3
-        {
-            get { return myFldInt3; }
-            set { myFldInt3 = value; }
-        }
-
-        public bool FldBit1
-        {
-            get { return myFldBit1; }
-            set { myFldBit1 = value; }
-        }
-
-        public bool FldBit2
-        {
-            get { return myFldBit2; }
-            set { myFldBit2 = value; }
-        }
-
-        public bool FldBit3
-        {
-            get { return myFldBit3; }
-            set { myFldBit3 = value; }
-        }
-
-        public string FldText1
-        {
-            get { return myFldText1; }
-            set { myFldText1 = value; }
-        }
-
-        public string FldText2
-        {
-            get { return myFldText2; }
-            set { myFldText2 = value; }
-        }
-
-        public string FldText3
-        {
-            get { return myFldText3; }
-            set { myFldText3 = value; }
-        }
-
-        public string ShortDescription
-        {
-            get { return myShortDescription; }
-            set { myShortDescription = value; }
-        }
-        public DateTime EndDate
-        {
-            get { return myEndDate; }
-            set { myEndDate = value; }
-        }
-        public string EndTime
-        {
-            get { return myEndTime; }
-            set { myEndTime = value; }
-        }
+        public int EID { get; set; }
+        public string EventTitle { get; set; }
+        public DateTime EventDate { get; set; }
+        public string EventTime { get; set; }
+        public string HTML { get; set; }
+        public string SecretCode { get; set; }
+        public int NumberPoints { get; set; }
+        public int BadgeID { get; set; }
+        public int BranchID { get; set; }
+        public string Custom1 { get; set; }
+        public string Custom2 { get; set; }
+        public string Custom3 { get; set; }
+        public DateTime LastModDate { get; set; }
+        public string LastModUser { get; set; }
+        public DateTime AddedDate { get; set; }
+        public string AddedUser { get; set; }
+        public int TenID { get; set; }
+        public int FldInt1 { get; set; }
+        public int FldInt2 { get; set; }
+        public int FldInt3 { get; set; }
+        public bool FldBit1 { get; set; }
+        public bool FldBit2 { get; set; }
+        public bool FldBit3 { get; set; }
+        public string FldText1 { get; set; }
+        public string FldText2 { get; set; }
+        public string FldText3 { get; set; }
+        public string ShortDescription { get; set; }
+        public DateTime EndDate { get; set; }
+        public string EndTime { get; set; }
+        public string ExternalLinkToEvent { get; set; }
+        public bool HiddenFromPublic { get; set; }
 
         #endregion
 
@@ -226,26 +71,44 @@ namespace GRA.SRP.DAL
             ClearErrorCodes();
 
             ClearErrorCodes();
-            if (validationMode == BusinessRulesValidationMode.INSERT)
+            if (validationMode == BusinessRulesValidationMode.INSERT
+                || validationMode == BusinessRulesValidationMode.UPDATE)
             {
-                var allowdups = SRPSettings.GetSettingValue("DupEvtCodes").ToUpper() == "TRUE";
-                if (!allowdups && GetEventCountByEventCode(SecretCode) != 0)
+                SecretCode = SecretCode.ToLower();
+                if (!string.IsNullOrEmpty(SecretCode))
                 {
-                    AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code you have chosen is already in use.  Please select a different Secret Code.",
-                                                                    BusinessRulesValidationCode.UNSPECIFIED));
+                    var allowdups = SRPSettings.GetSettingValue("DupEvtCodes").ToUpper() == "TRUE";
+
+                    if (SecretCode.Length > 50)
+                    {
+                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code must be 50 characters or less.",
+                                                                        BusinessRulesValidationCode.UNSPECIFIED));
+                    }
+                    else if (!Regex.IsMatch(SecretCode, @"^[a-z0-9]+$"))
+                    {
+                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code can only contain letters and numbers.",
+                                                                        BusinessRulesValidationCode.UNSPECIFIED));
+                    }
+                    else if (!allowdups)
+                    {
+                        int eventsWithCode = 0;
+                        switch (validationMode)
+                        {
+                            case BusinessRulesValidationMode.UPDATE:
+                                eventsWithCode = GetEventCountByEventCode(EID, SecretCode);
+                                break;
+                            case BusinessRulesValidationMode.INSERT:
+                                eventsWithCode = GetEventCountByEventCode(SecretCode);
+                                break;
+                        }
+                        if (eventsWithCode != 0)
+                        {
+                            AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code you have chosen is already in use.  Please select a different Secret Code.",
+                                                                            BusinessRulesValidationCode.UNSPECIFIED));
+                        }
+                    }
                 }
             }
-
-            if (validationMode == BusinessRulesValidationMode.UPDATE)
-            {
-                var allowdups = SRPSettings.GetSettingValue("DupEvtCodes").ToUpper() == "TRUE";
-                if (!allowdups && GetEventCountByEventCode(EID, SecretCode) != 0)
-                {
-                    AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code you have chosen is already in use.  Please select a different Secret Code.",
-                                                                    BusinessRulesValidationCode.UNSPECIFIED));
-                }
-            }
-
 
             return (ErrorCodes.Count == 0);
             //return true;
@@ -259,6 +122,21 @@ namespace GRA.SRP.DAL
         public Event()
         {
             TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
+            EventTitle = string.Empty;
+            EventTime = string.Empty;
+            HTML = string.Empty;
+            SecretCode = string.Empty;
+            Custom1 = string.Empty;
+            Custom2 = string.Empty;
+            Custom3 = string.Empty;
+            LastModUser = string.Empty;
+            AddedUser = string.Empty;
+            FldText1 = string.Empty;
+            FldText2 = string.Empty;
+            FldText3 = string.Empty;
+            ShortDescription = string.Empty;
+            EndTime = string.Empty;
+            ExternalLinkToEvent = string.Empty;
         }
 
         #endregion
@@ -298,20 +176,18 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static DataSet GetEventByEventCode(string startDate, string endDate, string key)
+        public static DataSet GetEventByEventCode(string key)
         {
-            SqlParameter[] arrParams = new SqlParameter[4];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@startDate", GlobalUtilities.DBSafeDate(startDate));
-            arrParams[1] = new SqlParameter("@endDate", GlobalUtilities.DBSafeDate(endDate)); // (string.IsNullOrEmpty(endDate) ? (object)DBNull.Value : DateTime.Parse(endDate)));
-            arrParams[2] = new SqlParameter("@Key", key);
-            arrParams[3] = new SqlParameter("@TenID",
-                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
-                                        -1 :
-                                        (int)HttpContext.Current.Session["TenantID"])
-                            );
+            arrParams.Add(new SqlParameter("@Key", key));
+            arrParams.Add(new SqlParameter("@TenID",
+                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                         -1 :
+                                         (int)HttpContext.Current.Session["TenantID"]))
+                             );
 
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetEventsByEventCode", arrParams);            
+            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetEventsByEventCode", arrParams.ToArray());
         }
 
 
@@ -330,24 +206,6 @@ namespace GRA.SRP.DAL
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetUpcomingDisplay", arrParams);
         }
-
-
-        public static DataSet GetAdminSearch(string startDate, string endDate, int branchID)
-        {
-            SqlParameter[] arrParams = new SqlParameter[4];
-
-            arrParams[0] = new SqlParameter("@startDate", GlobalUtilities.DBSafeDate(startDate));
-            arrParams[1] = new SqlParameter("@endDate", GlobalUtilities.DBSafeDate(endDate)); // (string.IsNullOrEmpty(endDate) ? (object)DBNull.Value : DateTime.Parse(endDate)));
-            arrParams[2] = new SqlParameter("@branchID", branchID);
-            arrParams[3] = new SqlParameter("@TenID",
-                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
-                                        -1 :
-                                        (int)HttpContext.Current.Session["TenantID"])
-                            );
-
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetAdminSearch", arrParams);
-        }
-
 
         public static DataSet GetAll()
         {
@@ -371,8 +229,8 @@ namespace GRA.SRP.DAL
         {
             SqlParameter[] arrParams = new SqlParameter[2];
 
-            arrParams[0] = new SqlParameter("@src", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(src, src.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@dst", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(dst, dst.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@src", GlobalUtilities.DBSafeValue(src, src.GetTypeCode()));
+            arrParams[1] = new SqlParameter("@dst", GlobalUtilities.DBSafeValue(dst, dst.GetTypeCode()));
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_InitTenant", arrParams);
         }
 
@@ -433,6 +291,9 @@ namespace GRA.SRP.DAL
                 result.ShortDescription = dr["ShortDescription"].ToString();
                 if (DateTime.TryParse(dr["EndDate"].ToString(), out _datetime)) result.EndDate = _datetime;
                 result.EndTime = dr["EndTime"].ToString();
+
+                result.HiddenFromPublic = (bool)dr["HiddenFromPublic"];
+                result.ExternalLinkToEvent = dr["ExternalLinkToEvent"].ToString();
 
                 dr.Close();
 
@@ -504,6 +365,9 @@ namespace GRA.SRP.DAL
                 result.ShortDescription = dr["ShortDescription"].ToString();
                 if (DateTime.TryParse(dr["EndDate"].ToString(), out _datetime)) result.EndDate = _datetime;
                 result.EndTime = dr["EndTime"].ToString();
+
+                result.HiddenFromPublic = (bool)dr["HiddenFromPublic"];
+                result.ExternalLinkToEvent = dr["ExternalLinkToEvent"].ToString();
 
                 dr.Close();
 
@@ -577,6 +441,9 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["EndDate"].ToString(), out _datetime)) this.EndDate = _datetime;
                 this.EndTime = dr["EndTime"].ToString();
 
+                this.HiddenFromPublic = (bool)dr["HiddenFromPublic"];
+                this.ExternalLinkToEvent = dr["ExternalLinkToEvent"].ToString();
+
                 dr.Close();
 
                 return true;
@@ -591,117 +458,116 @@ namespace GRA.SRP.DAL
 
         public int Insert()
         {
-
             return Insert(this);
-
         }
 
         public static int Insert(Event o)
         {
+            var arrParams = new List<SqlParameter>();
 
-            SqlParameter[] arrParams = new SqlParameter[29];
+            arrParams.Add(new SqlParameter("@EventTitle", GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EventDate", GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EventTime", GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@SecretCode", GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NumberPoints", GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BadgeID", GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchID", GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom1", GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom2", GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom3", GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
 
-            arrParams[0] = new SqlParameter("@EventTitle", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@EventDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@EventTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@HTML", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@SecretCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@NumberPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@BranchID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            arrParams[15] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@ShortDescription", GlobalUtilities.DBSafeValue(o.ShortDescription, o.ShortDescription.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndDate", GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndTime", GlobalUtilities.DBSafeValue(o.EndTime, o.EndTime.GetTypeCode())));
 
-            arrParams[25] = new SqlParameter("@ShortDescription", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortDescription, o.ShortDescription.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@EndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@EndTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndTime, o.EndTime.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@ExternalLinkToEvent", GlobalUtilities.DBSafeValue(o.ExternalLinkToEvent, o.ExternalLinkToEvent.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HiddenFromPublic", GlobalUtilities.DBSafeValue(o.HiddenFromPublic, o.HiddenFromPublic.GetTypeCode())));
 
-            arrParams[28] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
-            arrParams[28].Direction = ParameterDirection.Output;
+            var param = new SqlParameter("@EID", GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
+            param.Direction = ParameterDirection.Output;
+            arrParams.Add(param);
 
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_Insert", arrParams);
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_Insert", arrParams.ToArray());
 
-            o.EID = int.Parse(arrParams[28].Value.ToString());
+            o.EID = int.Parse(param.Value.ToString());
 
             return o.EID;
-
         }
 
         public int Update()
         {
-
             return Update(this);
-
         }
 
         public static int Update(Event o)
         {
-
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[29];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@EventTitle", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@EventDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@EventTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@HTML", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@SecretCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@NumberPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@BadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@BranchID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@Custom1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@Custom2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@EID", GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EventTitle", GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EventDate", GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EventTime", GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@SecretCode", GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NumberPoints", GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BadgeID", GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchID", GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom1", GlobalUtilities.DBSafeValue(o.Custom1, o.Custom1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom2", GlobalUtilities.DBSafeValue(o.Custom2, o.Custom2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Custom3", GlobalUtilities.DBSafeValue(o.Custom3, o.Custom3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
 
-            arrParams[16] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            arrParams[26] = new SqlParameter("@ShortDescription", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ShortDescription, o.ShortDescription.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@EndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@EndTime", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndTime, o.EndTime.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@ShortDescription", GlobalUtilities.DBSafeValue(o.ShortDescription, o.ShortDescription.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndDate", GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndTime", GlobalUtilities.DBSafeValue(o.EndTime, o.EndTime.GetTypeCode())));
 
+            arrParams.Add(new SqlParameter("@ExternalLinkToEvent", GlobalUtilities.DBSafeValue(o.ExternalLinkToEvent, o.ExternalLinkToEvent.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HiddenFromPublic", GlobalUtilities.DBSafeValue(o.HiddenFromPublic, o.HiddenFromPublic.GetTypeCode())));
 
             try
             {
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_Update", arrParams);
+                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_Update", arrParams.ToArray());
 
             }
-
             catch (SqlException exx)
             {
-
+                "GRA.SRP.DAL.Event".Log().Error("Error updating Event: {0} - {1}",
+                    exx.Message,
+                    exx.StackTrace);
                 System.Diagnostics.Debug.Write(exx.Message);
-
             }
 
             return iReturn;
@@ -710,38 +576,30 @@ namespace GRA.SRP.DAL
 
         public int Delete()
         {
-
             return Delete(this);
-
         }
 
         public static int Delete(Event o)
         {
-
             int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[1];
-
-            arrParams[0] = new SqlParameter("@EID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@EID", GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode()));
 
             try
             {
-
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Event_Delete", arrParams);
-
             }
-
             catch (SqlException exx)
             {
-
+                "GRA.SRP.DAL.Event".Log().Error("Error deleting Event: {0} - {1}",
+                    exx.Message,
+                    exx.StackTrace);
                 System.Diagnostics.Debug.Write(exx.Message);
-
             }
 
             return iReturn;
-
         }
-
 
         public static DataSet GetEventList(string list)
         {
@@ -756,7 +614,6 @@ namespace GRA.SRP.DAL
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetEventList", arrParams);
         }
-
         #endregion
 
         /// <summary>
@@ -767,20 +624,42 @@ namespace GRA.SRP.DAL
         /// </summary>
         /// <param name="e">The Event object</param>
         /// <returns>A nice string describing start and end times.</returns>
-        public static string DisplayEventDateTime(Event e) {
-            StringBuilder sb = new StringBuilder(e.EventDate.ToNormalDate());
-            if(!string.IsNullOrWhiteSpace(e.EventTime)) {
-                sb.AppendFormat(" {0}", e.EventTime);
-            }
-            if(e.EndDate != null && e.EndDate > e.EventDate) {
-                sb.AppendFormat(" until {0}",
-                                e.EndDate.ToNormalDate().Replace("01/01/1900",
-                                                                 string.Empty));
-                if(!string.IsNullOrWhiteSpace(e.EndTime)) {
-                    sb.AppendFormat(" {0}", e.EndTime);
+        public static string DisplayEventDateTime(Event e)
+        {
+            return string.Format("{0} {1}",
+                e.EventDate.ToShortDateString(),
+                e.EventDate.ToShortTimeString());
+        }
+
+        public static DataSet GetFiltered(string searchText, int branchId)
+        {
+            var arrParams = new List<SqlParameter>();
+            var tenantId = HttpContext.Current.Session["TenantID"];
+            arrParams.Add(new SqlParameter("@TenID",
+                            tenantId == null || string.IsNullOrEmpty(tenantId.ToString())
+                                ? -1
+                                : (int)tenantId));
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (!searchText.StartsWith("%"))
+                {
+                    searchText = string.Format("%{0}", searchText);
                 }
+                if (!searchText.EndsWith("%"))
+                {
+                    searchText = string.Format("{0}%", searchText);
+                }
+                arrParams.Add(new SqlParameter("@SearchText", searchText));
             }
-            return sb.ToString();
+            if (branchId > 0)
+            {
+                arrParams.Add(new SqlParameter("@BranchId", branchId));
+            }
+
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_Event_Filter",
+                arrParams.ToArray());
         }
     }//end class
 

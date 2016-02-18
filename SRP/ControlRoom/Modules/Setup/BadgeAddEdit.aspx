@@ -34,22 +34,31 @@
                     <table width="100%">
                         <tr>
                             <td nowrap>
-                                <b>Badge Control Room Name: </b>
+                                <b>Control Room badge name: </b>
                             </td>
                             <td width="100%">
-                                <asp:TextBox ID="AdminName" runat="server" Text='<%# Bind("AdminName") %>'></asp:TextBox>
+                                <asp:TextBox ID="AdminName" runat="server" CssClass="controlRoomValue form-control" Text='<%# Bind("AdminName") %>' onblur="copyCrBadge()"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvAdminName" runat="server"
                                     ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="Badge Control Room Name is required"
                                     SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+                                <script>
+                                    function copyCrBadge() {
+                                        if ($('.publicValue').val() == '') {
+                                            $('.publicValue').val($('.controlRoomValue').val());
+                                        }
+                                    }
+
+                                </script>
+
                             </td>
                         </tr>
 
                         <tr>
                             <td>
-                                <b>Badge Patron Name: </b>
+                                <b>Public badge name: </b>
                             </td>
                             <td>
-                                <asp:TextBox ID="UserName" runat="server" Text='<%# Bind("UserName") %>'></asp:TextBox>
+                                <asp:TextBox ID="UserName" runat="server" CssClass="publicValue form-control" Text='<%# Bind("UserName") %>'></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvUserName" runat="server"
                                     ControlToValidate="UserName" Display="Dynamic" ErrorMessage="Badge Patron Name is required"
                                     SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
@@ -57,9 +66,22 @@
                         </tr>
 
                         <tr>
-                            <td colspan="2">
-                                <b>Message to Patron when badge is earned:</b>
-                                <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                            <td>
+                                <b>Badge visibility: </b>
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="HiddenFromPublic" runat="server" CssClass="form-control"
+                                    SelectedValue='<%# Eval("HiddenFromPublic") as bool? == true ? 1 : 0 %>'>
+                                    <asp:ListItem Value="0" Text="Show this badge in the gallery"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Hide this badge from the gallery"></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" style="padding-top: 1em;">
+                                <b>Pop-up message when badge is earned:</b><br />
+                                <textarea id="CustomEarnedMessage" runat="server" class="gra-editor" rows="5" style="height: 150px;"></textarea>
                             </td>
                         </tr>
 
@@ -69,7 +91,6 @@
 
                 <EditItemTemplate>
                     <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" ActiveTabIndex="0"
-                        Height="600px"
                         Width="100%"
                         AutoPostBack="false"
                         TabStripPlacement="Top"
@@ -90,7 +111,7 @@
                                             <b>Control Room Name: </b>
                                         </td>
                                         <td width="50%">
-                                            <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' Width="300px"></asp:TextBox>
+                                            <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' Width="300px" CssClass="form-control"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="rfvAdminName" runat="server"
                                                 ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="Badge Control Room Name is required"
                                                 SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
@@ -116,10 +137,10 @@
 
                                     <tr>
                                         <td>
-                                            <b>Patron Web Name: </b>
+                                            <b>Public name: </b>
                                         </td>
                                         <td>
-                                            <asp:TextBox ID="UserName" runat="server" Text='<%# Eval("UserName") %>' Width="300px"></asp:TextBox>
+                                            <asp:TextBox ID="UserName" runat="server" Text='<%# Eval("UserName") %>' Width="300px" CssClass="form-control"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="rfvUserName" runat="server"
                                                 ControlToValidate="UserName" Display="Dynamic" ErrorMessage="Badge Patron Name is required"
                                                 SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
@@ -127,36 +148,50 @@
                                     </tr>
 
                                     <tr>
+                                        <td>
+                                            <b>Badge visibility: </b>
+                                        </td>
+                                        <td>
+                                            <asp:DropDownList ID="HiddenFromPublic" runat="server" CssClass="form-control"
+                                                SelectedValue='<%# Eval("HiddenFromPublic") as bool? == true ? 1 : 0 %>'>
+                                                <asp:ListItem Value="0" Text="Show this badge in the gallery"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Hide this badge from the gallery"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </td>
+                                    </tr>
+
+                                    <tr style="border-top: 1px dashed #ccc">
                                         <td nowrap valign="top">
-                                            <b>Awards Physical Prize? </b>
+                                            <b>Physical Prize </b>
+                                        </td>
+                                        <td valign="top">Marking physical prizes as received happens in the <a href="~/ControlRoom/Modules/Patrons/" runat="server">Patron area</a>.
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td nowrap valign="top">
+                                            <b>Awards Physical Prize?</b>
                                         </td>
                                         <td valign="top">
                                             <asp:CheckBox ID="IncludesPhysicalPrizeFlag" runat="server" Checked='<%# (bool)Eval("IncludesPhysicalPrizeFlag") %>'></asp:CheckBox>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="border-bottom: 1px dashed #ccc">
                                         <td nowrap valign="top">
                                             <b>Physical Prize Name:</b><br />
                                         </td>
                                         <td valign="top">
-                                            <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px"></asp:TextBox>
+                                            <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px" CssClass="form-control"></asp:TextBox>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td colspan="2">
-
-                                            <br />
-                                            <br />
-                                            <br />
-                                            <br />
-
-                                    </tr>
-
-                                    <tr>
-                                        <td colspan="3">
-                                            <b>Message to Patron when badge is earned:</b>
-                                            <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"><%# Eval("CustomEarnedMessage") %></textarea>
+                                        <td colspan="3" style="padding-top: 1em;">
+                                            <b>Pop-up message when badge is earned:</b>
+                                            <div class="gra-editor-container-tiny">
+                                                <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"><%# Eval("CustomEarnedMessage") %></textarea>
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -165,7 +200,7 @@
                             </ContentTemplate>
                         </ajaxToolkit:TabPanel>
                         <ajaxToolkit:TabPanel runat="server"
-                            HeaderText="Alert Notification"
+                            HeaderText="Badge Mail"
                             ID="TabPanel2"
                             Enabled="true"
                             ScrollBars="Auto">
@@ -173,7 +208,7 @@
                                 <table width="100%">
                                     <tr>
                                         <td nowrap>
-                                            <b>Send Notification: </b>
+                                            <b>Send mail when badge is earned:</b>
                                         </td>
                                         <td width="100%">
                                             <asp:CheckBox ID="GenNotificationFlag" runat="server" Checked='<%# (bool)Eval("GenNotificationFlag") %>'></asp:CheckBox>
@@ -182,10 +217,10 @@
 
                                     <tr>
                                         <td>
-                                            <b>Notification Subject: </b>
+                                            <b>Mail subject:</b>
                                         </td>
                                         <td>
-                                            <asp:TextBox ID="NotificationSubject" runat="server" Text='<%# Eval("NotificationSubject") %>' Width="70%"></asp:TextBox>
+                                            <asp:TextBox ID="NotificationSubject" runat="server" Text='<%# Eval("NotificationSubject") %>' Width="70%" CssClass="form-control"></asp:TextBox>
                                         </td>
                                     </tr>
 
@@ -193,8 +228,10 @@
 
                                     <tr>
                                         <td colspan="2">
-                                            <b>Notification Message :</b>
-                                            <textarea id="NotificationBody" runat="server" class="gra-editor"><%# Eval("NotificationBody") %></textarea>
+                                            <b>Mail message:</b>
+                                            <div class="gra-editor-container-tiny">
+                                                <textarea id="NotificationBody" runat="server" class="gra-editor"><%# Eval("NotificationBody") %></textarea>
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -205,12 +242,22 @@
 
 
                         <ajaxToolkit:TabPanel runat="server"
-                            HeaderText="Program Reward Code Assignment"
+                            HeaderText="Program Reward Code"
                             ID="TabPanel3"
                             Enabled="true"
                             ScrollBars="Auto">
                             <ContentTemplate>
                                 <table width="100%">
+                                    <tr>
+                                        <td nowrap colspan="2" style="padding-bottom: 1em;">
+                                            <p>
+                                                <b>Reward codes</b> are generated by the GRA software to award a prize when a user reaches a certain
+                                            score.
+                                            </p>
+                                            <p>Codes are generated in the <b>Program Reward Codes</b> tab of the program configuration.</p>
+                                        </td>
+                                    </tr>
+
                                     <tr>
                                         <td nowrap>
                                             <b>Assign Reward Code: </b>
@@ -222,10 +269,12 @@
 
                                     <tr>
                                         <td>
-                                            <b>Notification Subject: </b>
+                                            <b>Reward Code Mail Subject: </b>
                                         </td>
                                         <td>
-                                            <asp:TextBox ID="PCNotificationSubject" runat="server" Text='<%# Eval("PCNotificationSubject") %>' Width="70%"></asp:TextBox>
+                                            <div>
+                                                <asp:TextBox ID="PCNotificationSubject" runat="server" Text='<%# Eval("PCNotificationSubject") %>' Width="70%" CssClass="form-control"></asp:TextBox>
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -233,8 +282,11 @@
 
                                     <tr>
                                         <td colspan="2">
-                                            <b>Notification Message Content:</b>
-                                            <textarea id="PCNotificationBody" runat="server" class="gra-editor"><%# Eval("PCNotificationBody") %></textarea>
+                                            <p><b>Reward Code Mail Message Content:</b></p>
+                                            <p style="margin-left: 1em;">This text will be replaced in the mail message with the reward code: <code>{ProgramRewardCode}</code></p>
+                                            <div class="gra-editor-container-tiny">
+                                                <textarea id="PCNotificationBody" runat="server" class="gra-editor"><%# Eval("PCNotificationBody") %></textarea>
+                                            </div>
                                         </td>
                                     </tr>
 

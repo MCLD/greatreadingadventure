@@ -10,6 +10,7 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
 
 namespace GRA.SRP.DAL
 {
@@ -532,6 +533,37 @@ namespace GRA.SRP.DAL
         }
 
         #endregion
+
+        public static DataSet GetFiltered(string searchText, int branchId)
+        {
+            var arrParams = new List<SqlParameter>();
+            var tenantId = HttpContext.Current.Session["TenantID"];
+            arrParams.Add(new SqlParameter("@TenID",
+                            tenantId == null || string.IsNullOrEmpty(tenantId.ToString())
+                                ? -1
+                                : (int)tenantId));
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (!searchText.StartsWith("%"))
+                {
+                    searchText = string.Format("%{0}", searchText);
+                }
+                if (!searchText.EndsWith("%"))
+                {
+                    searchText = string.Format("{0}%", searchText);
+                }
+                arrParams.Add(new SqlParameter("@SearchText", searchText));
+            }
+            if (branchId > 0)
+            {
+                arrParams.Add(new SqlParameter("@BranchId", branchId));
+            }
+
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_BookList_Filter",
+                arrParams.ToArray());
+        }
 
     }//end class
 

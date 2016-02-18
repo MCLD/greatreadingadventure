@@ -162,7 +162,6 @@
                 </InsertItemTemplate>
                 <EditItemTemplate>
                     <ajaxToolkit:TabContainer ID="tc1" runat="server" ActiveTabIndex="0"
-                        Height="600px"
                         Width="100%"
                         AutoPostBack="false"
                         TabStripPlacement="Top"

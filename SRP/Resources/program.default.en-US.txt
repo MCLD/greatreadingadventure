@@ -90,11 +90,11 @@ myaccount-add-family-member=Add Family Member
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 registration-title=Register and Create Account
-registration-instructions=<p>Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
+registration-instructions=<p>Please sign up to participate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
 registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members. <strong>Please enter their information in the form.</strong>
 registration-processing=Creating your account...
-registration-success=Your account has been succesfully created!
-registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
+registration-success=Your account has been successfully created!
+registration-success-family-account=<p>Your Account has been successfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
 registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
 registration-privacy-details=You may show my username (but not my real name) and achievements (adventures, badges, challenges, etc.) to other participants.
 registration-form-username-password-details=Please select your username and password for the program. Your username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>

@@ -5,6 +5,7 @@
 <%@ Register TagPrefix="asp" Namespace="AjaxControlToolkit" Assembly="AjaxControlToolkit" %>
 
 <%@ Register TagPrefix="uc1" TagName="FileUploadCtl" Src="~/Controls/FileUploadCtl.ascx" %>
+<%@ Register Src="~/ControlRoom/Controls/OpenBadgesBadgeMaker.ascx" TagPrefix="uc1" TagName="OpenBadgesBadgeMaker" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -19,26 +20,33 @@
         CssClass="OrangePanel" Width="100%" Height="585px">
         <table width="100%" height="550px">
             <tr>
-                <td nowrap valign="top" width="150px"><b>Challenge Name (for Patrons): </b></td>
-                <td colspan="3" valign="top">
-                    <asp:TextBox ID="ListName" runat="server" Text='' ReadOnly="False" Width="90%"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server"
-                        ControlToValidate="ListName" Display="Dynamic" ErrorMessage="<font color='red'>Challenge Name is required</font>"
-                        SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
-                </td>
-                <td nowrap><b>Admin Name: </b></td>
+                <td nowrap><b>Control Room name: </b></td>
                 <td colspan="3">
-                    <asp:TextBox ID="BLAdminName" runat="server" Text='' ReadOnly="False" Width="90%"></asp:TextBox>
+                    <asp:TextBox ID="BLAdminName" runat="server" Text='' ReadOnly="False" Width="90%" CssClass="form-control controlRoomValue" onblur="copyCrChallenge()"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
                         ControlToValidate="BLAdminName" Display="Dynamic" ErrorMessage="<font color=red>Admin Name is required</font>"
                         SetFocusOnError="True" Font-Bold="True"><font color=red> * Required </font></asp:RequiredFieldValidator>
+                    <script>
+                        function copyCrChallenge() {
+                            if ($('.publicValue').val() == '') {
+                                $('.publicValue').val($('.controlRoomValue').val());
+                            }
+                        }
+                    </script>
+                </td>
+                <td nowrap valign="top" width="150px"><b>Public name: </b></td>
+                <td colspan="3" valign="top">
+                    <asp:TextBox ID="ListName" runat="server" Text='' ReadOnly="False" Width="90%" CssClass="form-control publicValue"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server"
+                        ControlToValidate="ListName" Display="Dynamic" ErrorMessage="<font color='red'>Challenge Name is required</font>"
+                        SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 </td>
             </tr>
 
             <tr>
                 <td nowrap><b>Admin Description: </b></td>
                 <td colspan="7" valign="top">
-                    <asp:TextBox ID="AdminDescription" runat="server" Text='' ReadOnly="False" Width="98%" Rows="3" TextMode="MultiLine"></asp:TextBox>
+                    <asp:TextBox ID="AdminDescription" runat="server" CssClass="form-control" ReadOnly="False" Width="98%" Rows="3" TextMode="MultiLine" onblur="copyCrDescChallenge()"></asp:TextBox>
                 </td>
             </tr>
             <tr>
@@ -178,7 +186,7 @@
                 <td nowrap><b>Tasks to complete: </b></td>
                 <td>
                     <asp:TextBox ID="NumBooksToComplete" runat="server" Text=''
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
 
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1"
                         ControlToValidate="NumBooksToComplete"
@@ -213,7 +221,7 @@
                 <td nowrap><b>Number Points: </b></td>
                 <td valign="top">
                     <asp:TextBox ID="AwardPoints" runat="server"
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                 </td>
                 <td colspan="4">
                     <asp:RegularExpressionValidator ID="revNumberPoints"
@@ -264,7 +272,7 @@
                 <td colspan="4" valign="top" width="900px">
                     <img src="/controlroom/images/spacer.gif" height="23px" /><br />
                     <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID" Width="500" Visible="true"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control">
                         <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
                     </asp:DropDownList>
                 </td>
@@ -277,19 +285,19 @@
                         <table width="100%">
                             <tr>
                                 <td nowrap valign="top">
-                                    <b>Control Room Name: </b>
+                                    <b>Control Room Name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="AdminName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="AdminName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvAdminName" runat="server" Enabled="False"
                                         ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Control Room Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</asp:RequiredFieldValidator>
                                 </td>
                                 <td nowrap valign="top">
-                                    <b>Patron Web Name: </b>
+                                    <b>Public name:</b>
                                 </td>
                                 <td width="40%">
-                                    <asp:TextBox ID="UserName" runat="server" Text='' Width="300px"></asp:TextBox>
+                                    <asp:TextBox ID="UserName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvUserName" runat="server" Enabled="False"
                                         ControlToValidate="UserName" Display="Dynamic" ErrorMessage="<font color='red'>Badge Patron Name is required</font>"
                                         SetFocusOnError="True" Font-Bold="True"><font color='red'>* Required</font></asp:RequiredFieldValidator>
@@ -301,9 +309,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" height="160px">
-                                    <b>Message to Patron when badge is earned:</b>
-                                    <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                <td colspan="4">
+                                    <b>Pop-up message when badge is earned:</b>
+                                    <div class="gra-editor-container-tiny">
+                                        <textarea id="CustomEarnedMessage" runat="server" class="gra-editor"></textarea>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -435,7 +445,7 @@
 
     <asp:Panel ID="pnlLast" runat="server" BorderColor="#3399FF" BorderStyle="Solid" BorderWidth="0px" GroupingText=" Event Details" ScrollBars="Auto"
         CssClass="OrangePanel" Width="100%" Height="585px" Visible="false">
-        <table width="100%" height="550px">
+        <table width="100%">
 
             <tr>
                 <td nowrap width="25%" align="center">
@@ -519,12 +529,18 @@
             </tr>
 
             <tr>
-                <td colspan="4"><b>Badge Image:
+                <td colspan="2" valign="top"><b>Badge Image:</b><br />
                     <br />
+                    <uc1:OpenBadgesBadgeMaker runat="server" ID="OpenBadgesBadgeMaker"
+                        FileName="0" SmallThumbnailWidth="64" />
+                </td>
+                <td colspan="2" valign="top">
                     <uc1:FileUploadCtl ID="FileUploadCtl" runat="server"
                         CreateMediumThumbnail="False" CreateSmallThumbnail="True" Extension="png"
                         FileName="0" Folder="~/Images/Badges/" ImgWidth="200"
-                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" /></td>
+                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" />
+
+                </td>
             </tr>
 
             <tr>

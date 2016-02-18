@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            
+
                 lblPK.Text = Session["MGID"] == null ? "" : Session["MGID"].ToString(); //Session["MGID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
@@ -42,7 +42,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                 var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 if (control != null) control.ProcessRender();
- 
+
             }
         }
 
@@ -75,8 +75,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 var obj = Minigame.FetchObject(key);
                 Session["CRGoToUrl"] = Minigame.GetEditPage(obj.MiniGameType) + "?PK=" + e.CommandArgument;
                 Response.Redirect("~/ControlRoom/Modules/Setup/MinigamePreview.aspx?MGID=" + e.CommandArgument);
-            } 
-            
+            }
+
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect(returnURL);
@@ -104,9 +104,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 try
                 {
-                   var obj = new MGChooseAdv();
+                    var obj = new MGChooseAdv();
                     //int pk = int.Parse(((DetailsView)sender).Rows[0].Cells[1].Text);
-                    int pk = int.Parse(((TextBox) ((DetailsView) sender).FindControl("CAID")).Text);
+                    int pk = int.Parse(((TextBox)((DetailsView)sender).FindControl("CAID")).Text);
                     obj.Fetch(pk);
 
                     var obj2 = Minigame.FetchObject(obj.MGID);
@@ -129,9 +129,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     {
                         obj.Update();
                         obj2.Update();
-                        Cache[CacheKey.AdventuresActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.AdventuresActive);
 
-                        if(e.CommandName.ToLower() == "saveandback")
+                        if (e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);
                         }

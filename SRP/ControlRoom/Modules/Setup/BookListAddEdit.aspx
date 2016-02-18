@@ -31,7 +31,7 @@
                         <tr>
                             <td nowrap valign="top"><b>Admin Name: </b></td>
                             <td colspan="6" valign="top">
-                                <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' ReadOnly="False" Width="90%"></asp:TextBox>
+                                <asp:TextBox ID="AdminName" runat="server" Text='<%# Eval("AdminName") %>' ReadOnly="False" Width="90%" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvAdminName" runat="server"
                                     ControlToValidate="AdminName" Display="Dynamic" ErrorMessage="AdminName is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -47,7 +47,7 @@
                         <tr>
                             <td nowrap valign="top"><b>Challenge Name (for Patrons): </b></td>
                             <td colspan="6" valign="top">
-                                <asp:TextBox ID="ListName" runat="server" Text='<%# Eval("ListName") %>' ReadOnly="False" Width="90%"></asp:TextBox>
+                                <asp:TextBox ID="ListName" runat="server" Text='<%# Eval("ListName") %>' ReadOnly="False" Width="90%" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
                                     ControlToValidate="ListName" Display="Dynamic" ErrorMessage="Challenge Name is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -58,7 +58,7 @@
                         <tr>
                             <td nowrap valign="top"><b>Admin Description: </b></td>
                             <td colspan="6" valign="top">
-                                <asp:TextBox ID="AdminDescription" runat="server" Text='<%# Eval("AdminDescription") %>' ReadOnly="False" Width="90%" Rows="3" TextMode="MultiLine"></asp:TextBox>
+                                <asp:TextBox ID="AdminDescription" runat="server" Text='<%# Eval("AdminDescription") %>' ReadOnly="False" Width="90%" Rows="3" TextMode="MultiLine" CssClass="form-control"></asp:TextBox>
                             </td>
                             <td valign="top"></td>
                         </tr>
@@ -74,7 +74,7 @@
                             <td nowrap valign="top"><b>Program: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID"
-                                    AppendDataBoundItems="True">
+                                    AppendDataBoundItems="True" CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
                                 <asp:Label ID="ProgIDLbl" runat="server" Text='<%# Eval("ProgID") %>' Visible="False"></asp:Label>
@@ -83,7 +83,7 @@
                             <td nowrap valign="top"><b>Branch/Library: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:DropDownList ID="LibraryID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
-                                    AppendDataBoundItems="True">
+                                    AppendDataBoundItems="True" CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
                                 <asp:Label ID="LibraryIDLbl" runat="server" Text='<%# Eval("LibraryID") %>' Visible="false"></asp:Label>
@@ -92,7 +92,7 @@
                             <td nowrap valign="top"><b>Literacy Level 1: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="LiteracyLevel1" runat="server" Text='<%# ((int) Eval("LiteracyLevel1") ==0 ? "" : Eval("LiteracyLevel1")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
                                 <asp:RegularExpressionValidator ID="revLiteracyLevel1"
                                     ControlToValidate="LiteracyLevel1"
                                     ValidationExpression="\d+"
@@ -122,7 +122,7 @@
                             <td nowrap valign="top"><b>Literacy Level 2: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="LiteracyLevel2" runat="server" Text='<%# ((int) Eval("LiteracyLevel2") ==0 ? "" : Eval("LiteracyLevel2")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="revLiteracyLevel2"
                                     ControlToValidate="LiteracyLevel2"
@@ -155,7 +155,7 @@
                             <td nowrap valign="top"><b>Tasks to complete: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="NumBooksToComplete" runat="server" Text='<%# ((int) Eval("NumBooksToComplete") ==0 ? "" : Eval("NumBooksToComplete")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="RegularExpressionValidator1"
                                     ControlToValidate="NumBooksToComplete"
@@ -186,7 +186,7 @@
                             <td nowrap valign="top"><b># Points Awarded: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="AwardPoints" runat="server" Text='<%# ((int) Eval("AwardPoints") ==0 ? "" : Eval("AwardPoints")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="revAwardPoints"
                                     ControlToValidate="AwardPoints"
@@ -217,7 +217,7 @@
                             <td nowrap valign="top"><b>Badge Awarded: </b></td>
                             <td colspan="3" valign="top">
                                 <asp:DropDownList ID="AwardBadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID"
-                                    AppendDataBoundItems="True">
+                                    AppendDataBoundItems="True" CssClass="form-control">
                                     <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                 </asp:DropDownList>
                                 <asp:Label ID="AwardBadgeIDLbl" runat="server" Text='<%# Eval("AwardBadgeID") %>' Visible="false"></asp:Label>

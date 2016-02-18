@@ -5,9 +5,9 @@ using System.Text;
 
 namespace GRA.Tools {
     public static class CacheKey {
-        public const string Feed = "GRA.Feed";
-        public const string Status = "GRA.Status";
-        public const string PointGameConversionStub = "GRA.PointGameConversion";
+        public const string Feed = "Feed";
+        public const string Status = "Stat";
+        public const string PointGameConversionStub = "PGC";
 
         public const string AdventuresActive = "AdvAct";
         public const string ChallengesActive = "ChalAct";

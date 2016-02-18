@@ -22,7 +22,7 @@ namespace GRA.Communications {
         public string Login { get; set; }
         public string Password { get; set; }
         public int Port { get; set; }
-        public string Error { get; set; }
+        public Exception ErrorException { get; set; }
         public bool TestEmailDuringSetup { get; set; }
         public EmailService() {
             // default port for SmtpClient (https://msdn.microsoft.com/en-us/library/system.net.mail.smtpclient.port%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396)
@@ -86,7 +86,7 @@ namespace GRA.Communications {
                               string toAddress,
                               string subject,
                               string body) {
-            this.Error = null;
+            this.ErrorException = null;
             if(this.TestEmailDuringSetup) {
                 UseTemplates = false;
                 _logEmails = false;
@@ -144,7 +144,7 @@ namespace GRA.Communications {
                 }
             } catch(Exception ex) {
                 this.Log().Error("Unable to send email: {0}", ex.Message);
-                this.Error = ex.Message;
+                this.ErrorException = ex;
                 return false;
             }
             return true;

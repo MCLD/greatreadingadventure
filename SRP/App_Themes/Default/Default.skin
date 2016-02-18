@@ -24,9 +24,7 @@ Default skin template. The following skins are provided as examples only.
     GridLines="Horizontal" 
     RowStyle-BorderStyle="Solid" 
     RowStyle-BorderColor="#A3C0E8" 
-    RowStyle-BorderWidth="1"
-    
->
+    RowStyle-BorderWidth="1">
   <HeaderStyle BackColor="#C1DBFA" HorizontalAlign="Left"/>
   <AlternatingRowStyle BackColor="#ECF4FE" />
   <RowStyle />
@@ -46,10 +44,7 @@ Default skin template. The following skins are provided as examples only.
     GridLines="None" 
     RowStyle-BorderStyle="Solid" 
     RowStyle-BorderColor="#A3C0E8" 
-    RowStyle-BorderWidth="0"    
->
+    RowStyle-BorderWidth="0">
     <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Middle" Wrap="False" />    
       
 </asp:DetailsView>
-
-
