@@ -985,7 +985,7 @@
             <asp:Button ID="btnPrev"
                 runat="server"
                 Text="registration-button-previous"
-                CausesValidation="True"
+                CausesValidation="False"
                 CssClass="btn btn-default"
                 Enabled="False"
                 OnClick="btnPrev_Click" />

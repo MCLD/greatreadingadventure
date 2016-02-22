@@ -70,8 +70,8 @@ namespace GRA.SRP.Controls {
         protected void btnPrev_Click(object sender, EventArgs e) {
             var step = int.Parse(Step.Text);
 
-            if(Page.IsValid)
-                DoBusinessRulesPrev(step);
+            DoBusinessRulesPrev(step);
+
             btnPrev.Enabled = true;
             if(int.Parse(Step.Text) == 1 || int.Parse(Step.Text) >= 7)
                 btnPrev.Enabled = false;
