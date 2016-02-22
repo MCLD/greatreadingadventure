@@ -3,7 +3,9 @@
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <%@ Register src="../ControlRoom/Controls/QuestionPreview.ascx" tagname="QuestionPreview" tagprefix="uc1" %>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    <asp:PlaceHolder runat="server">
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+    </asp:PlaceHolder>
 
 <asp:Label ID="SRID" runat="server" Text="0" Visible="False"></asp:Label>
 <asp:Label ID="SID" runat="server" Text="0" Visible="False"></asp:Label>

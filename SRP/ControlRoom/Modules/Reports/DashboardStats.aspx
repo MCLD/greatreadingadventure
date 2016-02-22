@@ -203,7 +203,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
                             ]);
 
                             var options = {
-                                title: 'Game Finisher Count by Program',
+                                title: 'Game Achiever Count by Program',
                                 width: 'auto',
                                 height: '300',
                                 backgroundColor: 'transparent',
@@ -324,7 +324,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
                             ]);
 
                             var options = {
-                                title: 'Program Game Finishers by Age',
+                                title: 'Program Game Achivers by Age',
                                 hAxis: {title: 'Age', titleTextStyle: {color: 'black'}},
                                 width: 'auto',
                                 height: '300',
@@ -451,7 +451,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
                             ]);
 
                             var options = {
-                                title: 'Program Game Finishers by Gender',
+                                title: 'Program Game Achievers by Gender',
                                 hAxis: {title: 'Program', titleTextStyle: {color: 'black'}},
                                 width: 'auto',
                                 height: '300',

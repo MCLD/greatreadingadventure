@@ -5,7 +5,6 @@ CodeBehind="TenantSummaryReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.T
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {
@@ -46,7 +45,7 @@ CodeBehind="TenantSummaryReport.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.T
             <th align="left" >Organization</th>        
             <td align="left" ># Programs</td>
             <td align="left" ># Patrons</td>
-            <td align="left" ># Finishers</td>  
+            <td align="left" ># Achievers</td>  
             <td align="left" ># Badges</td>  
             <td align="left" >Male Participation</td>  
             <td align="left" >Female Participation</td>  

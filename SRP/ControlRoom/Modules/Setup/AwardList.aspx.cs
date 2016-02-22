@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4900;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Badge Awards List");
+            MasterPage.PageTitle = string.Format("{0}", "Award Triggers List");
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)

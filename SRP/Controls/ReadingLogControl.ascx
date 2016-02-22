@@ -50,7 +50,6 @@
                 </div>
             </div>
 
-
             <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
                 <div class="col-xs-12">
                     <div class="form-group">

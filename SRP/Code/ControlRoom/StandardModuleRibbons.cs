@@ -26,32 +26,32 @@ namespace GRA.SRP.Core.Utilities {
             };
             pnl.Add(new RibbonLink { Name = "Stats Dashboard", Url = "/ControlRoom/Modules/Reports/DashboardStats.aspx" });
             pnl.Add(new RibbonLink { Name = "Registration Stats", Url = "/ControlRoom/Modules/Reports/RegStats.aspx" });
-            pnl.Add(new RibbonLink { Name = "Finisher Stats", Url = "/ControlRoom/Modules/Reports/FinishStats.aspx" });
+            pnl.Add(new RibbonLink { Name = "Achiever Stats", Url = "/ControlRoom/Modules/Reports/FinishStats.aspx" });
             returnList.Add(pnl);
 
 
 
-            pnl = new RibbonPanel {
-                Name = "Special Reports",
-                ImageAlt = "Special Reports",
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
-            };
-            pnl.Add(new RibbonLink { Name = "Game Level Stats", Url = "/ControlRoom/Modules/Reports/LevelStats.aspx" });
-            pnl.Add(new RibbonLink { Name = "Prizes Stats", Url = "/ControlRoom/Modules/Reports/PrizesStats.aspx" });
-            pnl.Add(new RibbonLink { Name = "MiniGame Play Stats", Url = "/ControlRoom/Modules/Reports/MiniGameStats.aspx" });
-            returnList.Add(pnl);
+            //pnl = new RibbonPanel {
+            //    Name = "Special Reports",
+            //    ImageAlt = "Special Reports",
+            //    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
+            //    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
+            //};
+            //pnl.Add(new RibbonLink { Name = "Game Level Stats", Url = "/ControlRoom/Modules/Reports/LevelStats.aspx" });
+            //pnl.Add(new RibbonLink { Name = "Prizes Stats", Url = "/ControlRoom/Modules/Reports/PrizesStats.aspx" });
+            //pnl.Add(new RibbonLink { Name = "MiniGame Play Stats", Url = "/ControlRoom/Modules/Reports/MiniGameStats.aspx" });
+            //returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
-                Name = "Special Reports",
-                ImageAlt = "Special Reports",
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
-            };
-            pnl.Add(new RibbonLink { Name = "Reading Activity", Url = "/ControlRoom/Modules/Reports/ReadingActivityReport.aspx" });
-            pnl.Add(new RibbonLink { Name = "Patron Activity", Url = "/ControlRoom/Modules/Reports/PatronActivityReport.aspx" });
-            returnList.Add(pnl);
+            //pnl = new RibbonPanel {
+            //    Name = "Special Reports",
+            //    ImageAlt = "Special Reports",
+            //    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
+            //    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
+            //};
+            //pnl.Add(new RibbonLink { Name = "Reading Activity", Url = "/ControlRoom/Modules/Reports/ReadingActivityReport.aspx" });
+            //pnl.Add(new RibbonLink { Name = "Patron Activity", Url = "/ControlRoom/Modules/Reports/PatronActivityReport.aspx" });
 
+            //returnList.Add(pnl);
 
             return returnList;
         }
@@ -199,7 +199,7 @@ namespace GRA.SRP.Core.Utilities {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Awards.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Awards@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Badge Awards", Url = "/ControlRoom/Modules/Setup/AwardList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Award Triggers", Url = "/ControlRoom/Modules/Setup/AwardList.aspx" });
             pnl.Add(new RibbonLink { Name = "Manual Awards", Url = "/ControlRoom/Modules/Setup/AwardManual.aspx" });
             returnList.Add(pnl);
 

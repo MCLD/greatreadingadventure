@@ -7,6 +7,7 @@ using System.Web.SessionState;
 using GRA.SRP;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
+using GRA;
 
 namespace SRP {
     public class Global : System.Web.HttpApplication {
@@ -30,6 +31,15 @@ namespace SRP {
 
         void Application_Error(object sender, EventArgs e) {
             // Code that runs when an unhandled error occurs
+            try
+            {
+                var ex = Server.GetLastError();
+
+                this.Log().Error("Application error: {0} - {1}", ex.Message, ex.StackTrace);
+            } catch(Exception)
+            {
+                // couldn't log, do nothing
+            }
         }
 
         void Session_Start(object sender, EventArgs e) {

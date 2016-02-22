@@ -15,10 +15,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
     <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server"/>
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
         <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.js")%>"></script>
     </asp:PlaceHolder>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
