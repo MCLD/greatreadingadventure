@@ -206,6 +206,46 @@ namespace GRA.SRP.Controls {
 
                 Step.Text = (curStep + 1).ToString();
 
+
+                var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
+
+
+                // Goal needs to be modified by ProgramGamePointConversion
+                /* If daily goal is enabled we need to find what method point system uses. Just select the last item that is relevant.. */
+                foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                {
+                    int activityTypeId = (int)activityTypeValue;
+                    var pgc = ProgramGamePointConversion.FetchObjectByActivityId(PID,
+                                                                             activityTypeId);
+
+                    if (pgc != null && pgc.PointCount > 0)
+                    {
+                        var range = (RangeValidator)rptr.Items[0].FindControl("DailyGoalRangeValidator");
+
+                        if (activityTypeValue == ActivityType.Minutes)
+                        {
+                            range.MinimumValue = "5"; // At least 5 minutes a day.
+                            range.MaximumValue = "750"; // No more than 12 hours.
+                        }
+                        else if (activityTypeValue == ActivityType.Pages)
+                        {
+                            range.MinimumValue = "1"; // at least 1 page a day.
+                            range.MaximumValue = "2000"; // no more than 5000 pages a day.
+                        }
+                        else
+                        {
+                            // cannot have daily goal for other options
+                            continue;
+                        }
+
+                        /* save the activity type id */
+                        ViewState["ActivityTypeId"] = activityTypeId.ToString();
+                        var baseString = ((BaseSRPPage)Page).GetResourceString("registration-form-daily-goal");
+
+                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()})";
+                    }
+                }
+
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString() + "Visibility")).Text;
                 if(newPanelVisibility == "0")
@@ -230,7 +270,6 @@ namespace GRA.SRP.Controls {
                 ((Label)rptr.Items[0].FindControl("lblConsent")).Text = prog.ParentalConsentText;
 
                 ((Panel)rptr.Items[0].FindControl("pnlConsent")).Visible = prog.ParentalConsentFlag;
-                //
 
                 // do we show this next panel?
                 var newPanelVisibility = ((TextBox)rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString() + "Visibility")).Text;
@@ -540,7 +579,9 @@ namespace GRA.SRP.Controls {
                 p.ParentGuardianLastName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianLastName")).Text;
                 p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
-                p.DailyGoal = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
+
+                int goalValue = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
+                p.DailyGoal = goalValue;
 
 
                 p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);

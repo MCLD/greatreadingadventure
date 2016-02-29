@@ -600,22 +600,36 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
+
+
             <div class="form-group" runat="server" visible='<%# (bool)Eval("DailyGoal_Show")%>'>
                 <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-daily-goal"></asp:Label>
+                    <asp:Label ID="DailyGoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Label>
                 </label>
                 <div class="col-sm-6">
                     <asp:TextBox ID="DailyGoal" runat="server" CssClass="form-control"
                         Text='<%# Eval("DailyGoal") %>'
                         Enabled='<%# (bool)Eval("DailyGoal_Edit") %>'></asp:TextBox>
+
                 </div>
                 <div class="col-sm-3 form-control-static">
+                    <span runat="server" visible='<%# Eval("DailyGoal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DailyGoalReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
                         ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
-                        SetFocusOnError="True">* required</asp:RequiredFieldValidator>
-                    <asp:CompareValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
-                        ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
-                        SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
+                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                        <asp:RangeValidator
+                        ID="DailyGoalRangeValidator"
+                        MinimumValue="0"
+                        MaximumValue="100"
+                        ControlToValidate="DailyGoal"
+                        Display="Dynamic"
+                        Type="Integer"
+                        EnableClientScript="true"
+                        ErrorMessage='Invalid range for Daily Goal'
+                        runat="server"
+                        Text='invalid range'
+                        EnableTheming="True"
+                        SetFocusOnError="True" />
                 </div>
             </div>
 

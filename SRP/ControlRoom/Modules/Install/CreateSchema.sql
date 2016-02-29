@@ -254,7 +254,7 @@ SELECT award.*,
 	patron.PrimaryLibrary,
 	patron.District,
 	patron.SchoolName,
-	patron.DailyGoal,
+	patron.TotalGoal,
 	patron.Points
 FROM Award award
 INNER JOIN (
@@ -263,8 +263,7 @@ INNER JOIN (
 		pt.PrimaryLibrary,
 		pt.District,
 		pt.SchoolName,
-		isnull(pt.DailyGoal, 0) as DailyGoal,
-		DATEDIFF(day, program.StartDate, program.EndDate) AS Duration,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
@@ -272,8 +271,6 @@ INNER JOIN (
 				), 0) AS Points,
 		pt.TenID
 	FROM Patron pt
-	INNER JOIN Programs program
-		 ON pt.ProgID = program.PID
 	WHERE pt.PID = @PID
 	) AS patron ON patron.TenID = award.TenID
 	AND (
@@ -293,7 +290,7 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points) 
-	AND (award.GoalPercent <= (patron.points * 100) / (Duration * patron.DailyGoal)) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -306,8 +303,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwardsWTenant] @PID INT = 0, 	@TenID INT = 1
 
+CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwardsWTenant] @PID INT = 0, @TenID INT = 1
 AS
 SELECT award.*,
 	patron.PID,
@@ -315,7 +312,7 @@ SELECT award.*,
 	patron.PrimaryLibrary,
 	patron.District,
 	patron.SchoolName,
-	patron.DailyGoal,
+	patron.TotalGoal,
 	patron.Points
 FROM Award award
 INNER JOIN (
@@ -324,8 +321,7 @@ INNER JOIN (
 		pt.PrimaryLibrary,
 		pt.District,
 		pt.SchoolName,
-		isnull(pt.DailyGoal, 0) as DailyGoal,
-		DATEDIFF(day, program.StartDate, program.EndDate) AS Duration,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
@@ -333,8 +329,6 @@ INNER JOIN (
 				), 0) AS Points,
 		@TenID AS TenID
 	FROM Patron pt
-	INNER JOIN Programs program
-		 ON pt.ProgID = program.PID
 	WHERE pt.PID = @PID
 	) AS patron ON patron.TenID = award.TenID
 	AND (
@@ -354,11 +348,12 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points) 
-	AND (award.GoalPercent <= (patron.points * 100) / (Duration * patron.DailyGoal)) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
 		)
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Award_Insert]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -6940,6 +6935,7 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
 	isNull(p.SDistrict, 0) AS [SDistrict],
 	isNull(p.DailyGoal, 0) AS [DailyGoal],
+	isNull(p.GoalCache, 0) AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
@@ -7083,6 +7079,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@AvatarID INT,
 	@SDistrict INT,
 	@DailyGoal INT,
+	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -7149,6 +7146,7 @@ BEGIN
 		AvatarID,
 		SDistrict,
 		DailyGoal,
+		GoalCache,
 		TenID,
 		FldInt1,
 		FldInt2,
@@ -7212,6 +7210,7 @@ BEGIN
 		@AvatarID,
 		@SDistrict,
 		@DailyGoal,
+		@GoalCache,
 		@TenID,
 		@FldInt1,
 		@FldInt2,
@@ -7288,6 +7287,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@AvatarID INT,
 	@SDistrict INT,
 	@DailyGoal INT,
+	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -7352,6 +7352,7 @@ SET IsMasterAccount = @IsMasterAccount,
 	AvatarID = @AvatarID,
 	SDistrict = @SDistrict,
 	DailyGoal = @DailyGoal,
+	GoalCache = @GoalCache,
 	TenID = @TenID,
 	FldInt1 = @FldInt1,
 	FldInt2 = @FldInt2,
@@ -21300,6 +21301,7 @@ CREATE TABLE [dbo].[Patron](
 	[AvatarID] [int] NULL,
 	[RegistrationDate] [datetime] NULL,
 	[DailyGoal] [int] NULL,
+	[GoalCache] [int] NULL,
 	[SDistrict] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,

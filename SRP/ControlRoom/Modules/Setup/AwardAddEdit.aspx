@@ -128,9 +128,6 @@
             <td nowrap valign="top" > <b> % Goal: </b> </td>
             <td colspan="3"  valign="top">
                 <asp:TextBox ID="GoalPercent" runat="server" Text='<%# ((int) Eval("GoalPercent") == 0 ? "0" : Eval("GoalPercent")) %>' Width="50px"></asp:TextBox>
-                <asp:RequiredFieldValidator runat="server" 
-                    ControlToValidate="GoalPercent" Display="Dynamic" ErrorMessage="<font color='red'>Goal percent is required" 
-                    SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 <asp:RegularExpressionValidator
                     ControlToValidate="GoalPercent"
                     ValidationExpression="\d+"

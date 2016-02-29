@@ -7,7 +7,7 @@ SELECT award.*,
 	patron.PrimaryLibrary,
 	patron.District,
 	patron.SchoolName,
-	patron.DailyGoal,
+	patron.TotalGoal,
 	patron.Points
 FROM Award award
 INNER JOIN (
@@ -16,8 +16,7 @@ INNER JOIN (
 		pt.PrimaryLibrary,
 		pt.District,
 		pt.SchoolName,
-		isnull(pt.DailyGoal, 0) as DailyGoal,
-		DATEDIFF(day, program.StartDate, program.EndDate) AS Duration,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
@@ -25,8 +24,6 @@ INNER JOIN (
 				), 0) AS Points,
 		pt.TenID
 	FROM Patron pt
-	INNER JOIN Programs program
-		 ON pt.ProgID = program.PID
 	WHERE pt.PID = @PID
 	) AS patron ON patron.TenID = award.TenID
 	AND (
@@ -46,7 +43,7 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points) 
-	AND (award.GoalPercent <= (patron.points * 100) / (Duration * patron.DailyGoal)) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1

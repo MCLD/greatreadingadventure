@@ -36,14 +36,26 @@ namespace GRA.SRP.Controls {
 
             if (settings.DailyGoal_Show) {
 
-                int totalDays = (int)(pgm.EndDate - pgm.StartDate).TotalDays;
+                int totalGoal = patron.GoalCache;
 
-                int percent = (totalPoints * 100) / totalDays;
+                int percent = 0;
 
-                String percentFormat = $"{percent}%";
+                /* avoid divide by zero */
+                if (totalGoal > 0)
+                {
+                    percent = (totalPoints * 100) / totalGoal;
+                }                    
 
-                lblPercentGoal.Text = percentFormat;
-                divGoalProgressBar.Style["width"] = percentFormat;
+                String percentString = $"{percent}%";
+                lblPercentGoal.Text = percentString;
+
+
+                /* display over 100% in label, but do not allow bar to extend outside of bounds */
+                int widthPercent = Math.Min(percent, 100);
+                String widthPercentString = $"{widthPercent}%";
+
+                divGoalProgressBar.Style["width"] = widthPercentString;
+
             }
             else
             {

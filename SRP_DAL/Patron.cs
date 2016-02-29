@@ -73,7 +73,8 @@ namespace GRA.SRP.DAL {
         public string Custom5 { get; set; }
         public int AvatarID { get; set; }
         public int SDistrict { get; set; }
-        public int DailyGoal { get; set; }
+        public int GoalCache { get; set; } /* GoalCache is the total number of points from doing an activity over the duratino of a program */
+        public int DailyGoal { get; set; } /* Daily Goal refers to the number of an activity (minutes, pages,etc) */
         public int TenID { get; set; }
 
         public int FldInt1 { get; set; }
@@ -286,6 +287,8 @@ namespace GRA.SRP.DAL {
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                if (int.TryParse(dr["GoalCache"].ToString(), out _int))
+                    result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
                 if(int.TryParse(dr["FldInt1"].ToString(), out _int))
@@ -408,7 +411,8 @@ namespace GRA.SRP.DAL {
                     this.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
-
+                if (int.TryParse(dr["GoalCache"].ToString(), out _int))
+                    result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     this.TenID = _int;
                 if(int.TryParse(dr["FldInt1"].ToString(), out _int))
@@ -502,6 +506,8 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("@AvatarID", this.AvatarID));
             parameters.Add(new SqlParameter("@SDistrict", this.SDistrict));
             parameters.Add(new SqlParameter("@DailyGoal", this.DailyGoal));
+            parameters.Add(new SqlParameter("@GoalCache", this.GoalCache));
+
 
             parameters.Add(new SqlParameter("@TenID", this.TenID));
             parameters.Add(new SqlParameter("@FldInt1", this.FldInt1));
@@ -558,7 +564,7 @@ namespace GRA.SRP.DAL {
 
             //int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[62];
+            SqlParameter[] arrParams = new SqlParameter[63];
 
             string passwordHash = null;
             if(!string.IsNullOrEmpty(this.NewPassword)) {
@@ -627,26 +633,27 @@ namespace GRA.SRP.DAL {
             arrParams[43] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.AvatarID, this.AvatarID.GetTypeCode()));
             arrParams[44] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SDistrict, this.SDistrict.GetTypeCode()));
             arrParams[45] = new SqlParameter("@DailyGoal", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DailyGoal, this.DailyGoal.GetTypeCode()));
+            arrParams[46] = new SqlParameter("@GoalCache", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.GoalCache, this.GoalCache.GetTypeCode()));
 
 
-            arrParams[46] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TenID, this.TenID.GetTypeCode()));
-            arrParams[47] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt1, this.FldInt1.GetTypeCode()));
-            arrParams[48] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt2, this.FldInt2.GetTypeCode()));
-            arrParams[49] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt3, this.FldInt3.GetTypeCode()));
-            arrParams[50] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode()));
-            arrParams[51] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode()));
-            arrParams[52] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode()));
-            arrParams[53] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, string.Empty.GetTypeCode()));
-            arrParams[54] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, string.Empty.GetTypeCode()));
-            arrParams[55] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, string.Empty.GetTypeCode()));
+            arrParams[47] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.TenID, this.TenID.GetTypeCode()));
+            arrParams[48] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt1, this.FldInt1.GetTypeCode()));
+            arrParams[49] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt2, this.FldInt2.GetTypeCode()));
+            arrParams[50] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldInt3, this.FldInt3.GetTypeCode()));
+            arrParams[51] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit1, this.FldBit1.GetTypeCode()));
+            arrParams[52] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit2, this.FldBit2.GetTypeCode()));
+            arrParams[53] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldBit3, this.FldBit3.GetTypeCode()));
+            arrParams[54] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText1, string.Empty.GetTypeCode()));
+            arrParams[55] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText2, string.Empty.GetTypeCode()));
+            arrParams[56] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, string.Empty.GetTypeCode()));
 
 
-            arrParams[56] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1, this.Score1.GetTypeCode()));
-            arrParams[57] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2, this.Score2.GetTypeCode()));
-            arrParams[58] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Pct, this.Score1Pct.GetTypeCode()));
-            arrParams[59] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Pct, this.Score2Pct.GetTypeCode()));
-            arrParams[60] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Date, this.Score1Date.GetTypeCode()));
-            arrParams[61] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Date, this.Score2Date.GetTypeCode()));
+            arrParams[57] = new SqlParameter("@Score1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1, this.Score1.GetTypeCode()));
+            arrParams[58] = new SqlParameter("@Score2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2, this.Score2.GetTypeCode()));
+            arrParams[59] = new SqlParameter("@Score1Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Pct, this.Score1Pct.GetTypeCode()));
+            arrParams[60] = new SqlParameter("@Score2Pct", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Pct, this.Score2Pct.GetTypeCode()));
+            arrParams[61] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Date, this.Score1Date.GetTypeCode()));
+            arrParams[62] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Date, this.Score2Date.GetTypeCode()));
 
             try {
                 using(var connection = new SqlConnection(conn)) {
@@ -795,6 +802,33 @@ namespace GRA.SRP.DAL {
             //return true;
         }
 
+        public int RecalculateGoalCache(Programs program, ProgramGamePointConversion conversion) {
+
+            int goal = this.DailyGoal;
+
+            if (program != null)
+            {
+                int programLength = (int)((program.EndDate - program.StartDate).TotalDays);
+                goal *= programLength;
+            }
+            
+
+            if (conversion != null)
+            {
+                goal *= conversion.PointCount;
+            }
+
+            /* protect against divide by zero error */
+            if (goal < 1)
+            {
+                goal = 0;
+            }
+
+            this.GoalCache = goal;
+            return this.GoalCache;
+        }
+
+
 
         public static bool Login(string logon, string password) {
             return VerifyPassword(logon, password);
@@ -881,6 +915,8 @@ namespace GRA.SRP.DAL {
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                if (int.TryParse(dr["GoalCache"].ToString(), out _int))
+                    result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
                 if(int.TryParse(dr["FldInt1"].ToString(), out _int))
@@ -1003,6 +1039,8 @@ namespace GRA.SRP.DAL {
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                if (int.TryParse(dr["GoalCache"].ToString(), out _int))
+                    result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
                 if(int.TryParse(dr["FldInt1"].ToString(), out _int))
@@ -1090,6 +1128,8 @@ namespace GRA.SRP.DAL {
 
             return SqlHelper.ExecuteDataset(conn, CommandType.Text, query.ToString(), patronParameter);
         }
+
+
 
         //public bool Logoff()
         //{
