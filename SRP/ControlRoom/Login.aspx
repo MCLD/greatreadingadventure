@@ -6,6 +6,7 @@
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
         <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
     </asp:PlaceHolder>
@@ -20,7 +21,7 @@
 
         .loginbox {
             margin: 10em auto 0 auto;
-            width: 460px;
+            width: 490px;
             border: 10px solid #555;
             background: white;
             display: block;
@@ -80,7 +81,7 @@
                             <tr>
                                 <td >
                                     <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Font-Bold="true"><%= GRA.SRP.ControlRoom.SRPResources.Username%>: </asp:Label><br />
-                                    <asp:TextBox ID="UserName" runat="server" Width="200px" CssClass="gra-cr-username"></asp:TextBox>
+                                    <asp:TextBox ID="UserName" runat="server" Width="200px" CssClass="gra-cr-username form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="UserNameRequired" runat="server"
                                         ControlToValidate="UserName" ErrorMessage="User Name is required"
                                         ToolTip="Username required" ValidationGroup="uxLogin" Display="None" EnableClientScript="false"> </asp:RequiredFieldValidator>
@@ -90,7 +91,7 @@
                             <tr>
                                 <td style="padding-top: 0.5em;">
                                     <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password" Font-Bold="true"><%= GRA.SRP.ControlRoom.SRPResources.Password %>: </asp:Label><br />
-                                    <asp:TextBox ID="Password" runat="server" TextMode="Password" Width="200px" CssClass="gra-cr-password"></asp:TextBox>
+                                    <asp:TextBox ID="Password" runat="server" TextMode="Password" Width="200px" CssClass="gra-cr-password form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="PasswordRequired" runat="server"
                                         ControlToValidate="Password" ErrorMessage="Password is required"
                                         ToolTip="Password required" ValidationGroup="uxLogin" Display="None" EnableClientScript="false"> </asp:RequiredFieldValidator>

@@ -164,7 +164,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                                   CacheKey.PointGameConversionStub,
                                   o.PGID,
                                   o.ActivityTypeId);
-                            Cache.Remove(cacheValue);
+                            new SessionTools(Session).RemoveCache(Cache, cacheValue);
                         }
 
                         if(e.CommandName.ToLower() == "addandback") {
@@ -269,7 +269,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                                                                   CacheKey.PointGameConversionStub,
                                                                   o.PGID,
                                                                   o.ActivityTypeId);
-                                Cache.Remove(cacheValue);
+                                new SessionTools(Session).RemoveCache(Cache, cacheValue);
                             }
 
                         }

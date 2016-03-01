@@ -53,7 +53,10 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                 var e = BookList.FetchObject(int.Parse(lblPK.Text));
                 Badge.Delete(Badge.GetBadge(e.AwardBadgeID));
                 e.Delete();
-            } catch { }
+                new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
+                new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
+            }
+            catch { }
         }
 
         protected void btnBack_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
@@ -63,6 +66,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected void btnContinue_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
             pnlBookList.Visible = false;
             pnlReward.Visible = true;
+            if (string.IsNullOrEmpty(AdminName.Text))
+            {
+                AdminName.Text = UserName.Text = string.Format("{0} Badge", ListName.Text);
+            }
+
         }
 
         protected void btnCancel2_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
@@ -140,6 +148,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
 
                     obj.Insert();
                     Session["BLL"] = obj.BLID;
+                    new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
                     Response.Redirect("BookListAddEdit.aspx?M=K");
                 }
                 if(rblBadge.SelectedIndex == 1) {
@@ -147,18 +156,20 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.AwardBadgeID = int.Parse(BadgeID.SelectedValue);
                     obj.Insert();
                     Session["BLL"] = obj.BLID;
+                    new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
                     Response.Redirect("BookListAddEdit.aspx?M=K");
                 }
                 if(rblBadge.SelectedIndex == 2) {
                     // Start creation of new badge
                     obj.Insert();
                     lblPK.Text = obj.BLID.ToString();
+                    new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
 
                     pnlBadgeMore.Visible = true;
                     pnlReward.Visible = false;
+                    btnContinue3_Click(sender, e);
                 }
-                Cache[CacheKey.ChallengesActive] = true;
-
+                new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
             }
 
         }
@@ -200,15 +211,31 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         }
 
         protected void btnContinue3_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
-            var obj = LoadBadgeObject();
-            obj.Insert();
-            Cache[CacheKey.BadgesActive] = true;
-            lblBID.Text = obj.BID.ToString();
+            var badge = LoadBadgeObject();
+            badge.Insert();
+
+            try
+            {
+                var badgePath = string.Format(Server.MapPath("~/images/Badges/"));
+                System.IO.File.Copy(string.Format("{0}no_badge.png", badgePath),
+                                    string.Format("{0}{1}.png", badgePath, badge.BID));
+                System.IO.File.Copy(string.Format("{0}no_badge_sm.png", badgePath),
+                                    string.Format("{0}sm_{1}.png", badgePath, badge.BID));
+            }
+            catch (Exception ex)
+            {
+                this.Log().Error("Couldn't copy no_badge images into new badge: {0}",
+                                 ex.Message);
+            }
+
+            new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
+            lblBID.Text = badge.BID.ToString();
             var bl = BookList.FetchObject(int.Parse(lblPK.Text));
-            bl.AwardBadgeID = obj.BID;
+            bl.AwardBadgeID = badge.BID;
             bl.Update();
             FileUploadCtl.FileName = lblBID.Text;
             FileUploadCtl.ProcessRender();
+            OpenBadgesBadgeMaker.FileName = lblBID.Text;
 
             pnlLast.Visible = true;
             pnlBadgeMore.Visible = false;
@@ -223,6 +250,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             DeleteTemporaryBadge();
             pnlLast.Visible = false;
             pnlBadgeMore.Visible = true;
+            btnPrevious3_Click(sender, e);
         }
 
         protected void btnContinue4_Click(object sender, System.Web.UI.ImageClickEventArgs e) {

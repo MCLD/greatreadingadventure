@@ -4,7 +4,7 @@ using SRPApp.Classes;
 using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -26,11 +26,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
-                if (WasFiltered())
-                {
-                    GetFilterSessionValues();
-                }
-            
+                //if (WasFiltered())
+                //{
+                //    GetFilterSessionValues();
+                //}
+
                 _mStrSortExp = String.Empty;
             }
             else
@@ -47,42 +47,42 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             }
         }
 
-        public void SetFilterSessionValues()
-        {
-            Session["EL_Start"] = StartDate.Text;
-            Session["EL_End"] = EndDate.Text;
-            Session["EL_Branch"] = BranchId.SelectedValue;
-            Session["EL_Filtered"] = "1";
-        }
+        //public void SetFilterSessionValues()
+        //{
+        //    Session["EL_Start"] = StartDate.Text;
+        //    Session["EL_End"] = EndDate.Text;
+        //    Session["EL_Branch"] = BranchId.SelectedValue;
+        //    Session["EL_Filtered"] = "1";
+        //}
 
-        public void GetFilterSessionValues()
-        {
-            if (Session["EL_Start"] != null) StartDate.Text = Session["EL_Start"].ToString();
-            if (Session["EL_End"] != null) EndDate.Text = Session["EL_End"].ToString();
-            if (Session["EL_Branch"] != null) try { BranchId.SelectedValue = Session["EL_Branch"].ToString(); }
-                catch (Exception) { }
-        }
+        //public void GetFilterSessionValues()
+        //{
+        //    if (Session["EL_Start"] != null) StartDate.Text = Session["EL_Start"].ToString();
+        //    if (Session["EL_End"] != null) EndDate.Text = Session["EL_End"].ToString();
+        //    if (Session["EL_Branch"] != null) try { BranchId.SelectedValue = Session["EL_Branch"].ToString(); }
+        //        catch (Exception) { }
+        //}
 
-        public bool WasFiltered()
-        {
-            return (Session["EL_Filtered"] != null);
-        }
+        //public bool WasFiltered()
+        //{
+        //    return (Session["EL_Filtered"] != null);
+        //}
 
-        protected void btnFilter_Click(object sender, EventArgs e)
-        {
-            SetFilterSessionValues();
-            odsData.DataBind();
-            gv.DataBind();
-        }
+        //protected void btnFilter_Click(object sender, EventArgs e)
+        //{
+        //    SetFilterSessionValues();
+        //    odsData.DataBind();
+        //    gv.DataBind();
+        //}
 
-        protected void btnClear_Click(object sender, EventArgs e)
-        {
-            StartDate.Text = EndDate.Text= string.Empty;
-            BranchId.SelectedValue = "0";
-            SetFilterSessionValues();
-            odsData.DataBind();
-            gv.DataBind();
-        }
+        //protected void btnClear_Click(object sender, EventArgs e)
+        //{
+        //    StartDate.Text = EndDate.Text = string.Empty;
+        //    BranchId.SelectedValue = "0";
+        //    SetFilterSessionValues();
+        //    odsData.DataBind();
+        //    gv.DataBind();
+        //}
 
 
         protected void GvSorting(object sender, GridViewSortEventArgs e)
@@ -127,7 +127,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addpage = "~/ControlRoom/Modules/Setup/EventAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["EID"]= string.Empty; Response.Redirect(addpage);
+                Session["EID"] = string.Empty; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
@@ -143,7 +143,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
                         obj.FetchObject(key).Delete();
-
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;
                         if (masterPage != null) masterPage.PageMessage = SRPResources.DeleteOK;
@@ -181,7 +181,39 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         }
 
 
+        #region search/filter fields and buttons
+        protected void Search(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchText.Text))
+            {
+                SearchText.Text = string.Empty;
+            }
 
+            var wt = new WebTools();
+            if(!string.IsNullOrEmpty(SearchText.Text) || BranchId.SelectedIndex > 0)
+            {
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+            LoadData();
+        }
+
+        protected void ClearSearch(object sender, EventArgs e)
+        {
+            SearchText.Text = string.Empty;
+            BranchId.SelectedIndex = 0;
+            var wt = new WebTools();
+
+            BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+            SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            LoadData();
+        }
+        #endregion search/filter fields and buttons
     }
 }
 

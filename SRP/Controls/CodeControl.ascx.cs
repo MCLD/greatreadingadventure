@@ -29,7 +29,8 @@ namespace GRA.SRP.Controls {
 
             #region Event Attendance
             // Logging event attendance
-            string codeValue = codeEntryField.Text;
+            string codeValue = Logic.Code.SanitizeCode(codeEntryField.Text);
+            codeEntryField.Text = codeValue;
             int patronId = ((Patron)Session[SessionKey.Patron]).PID;
             var pointsAward = new AwardPoints(patronId);
 
@@ -48,8 +49,7 @@ namespace GRA.SRP.Controls {
                 }
 
                 // get event for that code, get the # points
-                var ds = Event.GetEventByEventCode(pointsAward.pgm.StartDate.ToShortDateString(),
-                                                   DateTime.Now.ToShortDateString(), codeValue);
+                var ds = Event.GetEventByEventCode(codeValue);
                 if(ds.Tables[0].Rows.Count == 0) {
                     Session[SessionKey.PatronMessage] = "Sorry, that's an invalid code.";
                     Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;

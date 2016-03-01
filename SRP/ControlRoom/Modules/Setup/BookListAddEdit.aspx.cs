@@ -104,9 +104,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
 
                     if(obj.IsValid(BusinessRulesValidationMode.INSERT)) {
                         obj.Insert();
-                        Cache[CacheKey.ChallengesActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.ChallengesActive);
 
-                        if(e.CommandName.ToLower() == "addandback") {
+                        if (e.CommandName.ToLower() == "addandback") {
                             Response.Redirect(returnURL);
                         }
 

@@ -16,9 +16,8 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
             if (!IsPostBack)
             {
                 MasterPage.IsSecure = true;
-                MasterPage.PageTitle = string.Format("{0}", "Global Settings");
+                MasterPage.PageTitle = "Global Settings";
                 SetPageRibbon(StandardModuleRibbons.SettingsRibbon());
-
             }
         }
     }

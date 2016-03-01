@@ -42,6 +42,10 @@ namespace GRA.SRP.Badges {
             if(!string.IsNullOrEmpty(displayBadge)
                 && int.TryParse(displayBadge.ToString(), out badgeId)) {
                 badge = DAL.Badge.FetchObject(badgeId);
+                if(badge != null && badge.HiddenFromPublic)
+                {
+                    badge = null;
+                }
                 if(badge != null) {
                     badgeTitle.Text = badge.UserName;
                     this.Title = string.Format("'{0}' Badge Details", badgeTitle.Text);

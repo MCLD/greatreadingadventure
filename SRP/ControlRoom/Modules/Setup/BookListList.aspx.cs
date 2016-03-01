@@ -4,7 +4,7 @@ using SRPApp.Classes;
 using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -134,6 +134,41 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 }
             }
         }
+
+        #region search/filter fields and buttons
+        protected void Search(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchText.Text))
+            {
+                SearchText.Text = string.Empty;
+            }
+
+            var wt = new WebTools();
+            if (!string.IsNullOrEmpty(SearchText.Text) || BranchId.SelectedIndex > 0)
+            {
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+            LoadData();
+        }
+
+        protected void ClearSearch(object sender, EventArgs e)
+        {
+            SearchText.Text = string.Empty;
+            BranchId.SelectedIndex = 0;
+            var wt = new WebTools();
+
+            BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+            SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            LoadData();
+        }
+        #endregion search/filter fields and buttons
+
     }
 }
 

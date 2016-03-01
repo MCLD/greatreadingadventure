@@ -18,7 +18,6 @@
         AllowSorting="True"
         AllowPaging="False"
         PageSize="5"
-        DataSourceID= string.Empty
         onrowcreated="GvRowCreated" 
         onsorting="GvSorting" 
         OnRowCommand="GvRowCommand"

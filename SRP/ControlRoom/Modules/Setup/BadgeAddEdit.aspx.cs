@@ -73,9 +73,10 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Badge();
-                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
-                    obj.UserName = ((TextBox)((DetailsView)sender).FindControl("UserName")).Text;
+                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text.Trim();
+                    obj.UserName = ((TextBox)((DetailsView)sender).FindControl("UserName")).Text.Trim();
                     obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("CustomEarnedMessage")).InnerHtml;
+                    obj.HiddenFromPublic = ((DropDownList)((DetailsView)sender).FindControl("HiddenFromPublic")).SelectedIndex > 0;
 
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -85,7 +86,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        Cache[CacheKey.BadgesActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
 
                         try
                         {
@@ -144,21 +145,21 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     int pk = int.Parse(lblPK.Text);
                     obj.Fetch(pk);
 
-                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text;
-                    obj.UserName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("UserName")).Text;
+                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text.Trim();
+                    obj.UserName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("UserName")).Text.Trim();
                     obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).InnerHtml;
                     obj.IncludesPhysicalPrizeFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("IncludesPhysicalPrizeFlag")).Checked;
                     obj.PhysicalPrizeName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("PhysicalPrizeName")).Text;
+                    obj.HiddenFromPublic = ((DropDownList)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("HiddenFromPublic")).SelectedIndex > 0;
 
                     obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("GenNotificationFlag")).Checked;
-                    obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationSubject")).Text;
+                    obj.NotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationSubject")).Text.Trim();
                     obj.NotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel2").FindControl("NotificationBody")).InnerHtml;
 
 
                     obj.AssignProgramPrizeCode = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("AssignProgramPrizeCode")).Checked;
-                    obj.PCNotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationSubject")).Text;
+                    obj.PCNotificationSubject = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationSubject")).Text.Trim();
                     obj.PCNotificationBody = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel3").FindControl("PCNotificationBody")).InnerHtml;
-
 
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -166,7 +167,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
                         obj.Update();
-
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
                         SaveBadgeExtendedAttributes(obj,
                                                     (GridView)
                                                     ((DetailsView)sender).FindControl("TabContainer1").FindControl(
@@ -180,58 +181,6 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                                                     (GridView)
                                                     ((DetailsView)sender).FindControl("TabContainer1").FindControl(
                                                         "TabPanel4").FindControl("gvLoc"));
-
-                        /*
-                        GridView gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvCat");
-                        string checkedMembers= string.Empty;
-                        foreach (GridViewRow row in gv.Rows)
-                        {
-                            if (((CheckBox)row.FindControl("isMember")).Checked)
-                            {
-                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
-                            }
-                        }
-                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
-                        obj.UpdateBadgeBranches(checkedMembers);
-
-                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvAge");
-                        checkedMembers= string.Empty;
-                        foreach (GridViewRow row in gv.Rows)
-                        {
-                            if (((CheckBox)row.FindControl("isMember")).Checked)
-                            {
-                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
-                            }
-                        }
-                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
-                        obj.UpdateBadgeAgeGroups(checkedMembers);
-
-
-                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvBranch");
-                        checkedMembers= string.Empty;
-                        foreach (GridViewRow row in gv.Rows)
-                        {
-                            if (((CheckBox)row.FindControl("isMember")).Checked)
-                            {
-                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
-                            }
-                        }
-                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
-                        obj.UpdateBadgeBranches(checkedMembers);
-
-                        gv = (GridView)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel4").FindControl("gvLoc");
-                        checkedMembers= string.Empty;
-                        foreach (GridViewRow row in gv.Rows)
-                        {
-                            if (((CheckBox)row.FindControl("isMember")).Checked)
-                            {
-                                checkedMembers = string.Format("{0},{1}", checkedMembers, ((Label)row.FindControl("CID")).Text);
-                            }
-                        }
-                        if (checkedMembers.Length > 0) checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
-                        obj.UpdateBadgeLocations(checkedMembers);
-                        */
-
 
                         if (e.CommandName.ToLower() == "saveandback")
                         {

@@ -22,7 +22,7 @@
         onrowcommand="GvRowCommand"      
         >
         <Columns>
-            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
                 <HeaderTemplate>
                     <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
@@ -39,80 +39,80 @@
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');"/>
                    &nbsp;
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
 			<asp:BoundField ReadOnly="True" HeaderText="PID" DataField="PID" 
                 SortExpression="PID" Visible="False" ItemStyle-Wrap="False" 
-                ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>          
 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Program Name" 
                 DataField="AdminName" SortExpression="AdminName" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
 			<asp:BoundField ReadOnly="True" HeaderText="Title" 
                 DataField="Title" SortExpression="Title" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField> 
 
             <asp:TemplateField   SortExpression="IsActive" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="Is Active?" >               
                 <ItemTemplate>
                     <%# FormatHelper.ToYesNo((bool)Eval("IsActive"))%>
                 </ItemTemplate>
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
             <asp:TemplateField   SortExpression="IsHidden" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
                  HeaderText="Is Hidden?">              
                 <ItemTemplate>
                     <%# FormatHelper.ToYesNo((bool)Eval("IsHidden"))%>
                 </ItemTemplate>
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
             <asp:TemplateField   SortExpression="StartDate" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="Start Date">            
                 <ItemTemplate>
                     <%# FormatHelper.ToNormalDate((DateTime)Eval("StartDate"))%>
                 </ItemTemplate>
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
             <asp:TemplateField   SortExpression="EndDate" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="End Date">             
                 <ItemTemplate>
                     <%# FormatHelper.ToNormalDate((DateTime)Eval("EndDate"))%>
                 </ItemTemplate>
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>	
             
             <asp:TemplateField   SortExpression="ParticipantCount" Visible="True" 
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="# Participants">             
                 <ItemTemplate>
                     <%# FormatHelper.ToInt((int)Eval("ParticipantCount"))%>
                 </ItemTemplate>
 				 <ControlStyle Width="250px" />
-                 <ItemStyle    Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                 <ItemStyle    Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>	            	
 
         </Columns>

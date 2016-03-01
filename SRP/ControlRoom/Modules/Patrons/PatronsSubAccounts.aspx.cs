@@ -87,7 +87,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
         {
             var patron = (Patron)Session["Curr_Patron"];
             MasterPage.PageTitle = string.Format("{0} - {1} {2} ({3})", "Patron Sub Accounts", patron.FirstName, patron.LastName, patron.Username);
-
+            gv1.DataSourceID = null;
             gv1.DataSource = Patron.GetSubAccountList(patron.PID);
             gv1.DataBind();
         }

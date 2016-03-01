@@ -58,24 +58,6 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.TextBox EventDate;
         
         /// <summary>
-        /// ceEventDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender ceEventDate;
-        
-        /// <summary>
-        /// meEventDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.MaskedEditExtender meEventDate;
-        
-        /// <summary>
         /// rfvEventDate control.
         /// </summary>
         /// <remarks>
@@ -85,67 +67,22 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEventDate;
         
         /// <summary>
-        /// EventTime control.
+        /// HiddenFromPublic control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EventTime;
+        protected global::System.Web.UI.WebControls.DropDownList HiddenFromPublic;
         
         /// <summary>
-        /// rfvEventTime control.
+        /// ExternalLinkToEvent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEventTime;
-        
-        /// <summary>
-        /// EndDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EndDate;
-        
-        /// <summary>
-        /// CalendarExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender1;
-        
-        /// <summary>
-        /// MaskedEditExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.MaskedEditExtender MaskedEditExtender1;
-        
-        /// <summary>
-        /// EndTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EndTime;
-        
-        /// <summary>
-        /// ShortDescription control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ShortDescription;
+        protected global::System.Web.UI.WebControls.TextBox ExternalLinkToEvent;
         
         /// <summary>
         /// HTML control.
@@ -515,6 +452,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvLoc;
+        
+        /// <summary>
+        /// OpenBadgesBadgeMaker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::GRA.SRP.ControlRoom.Controls.OpenBadgesBadgeMaker OpenBadgesBadgeMaker;
         
         /// <summary>
         /// FileUploadCtl control.

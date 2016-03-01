@@ -123,10 +123,7 @@
     <Content Include="apple-touch-icon-76x76.png" />
     <Content Include="apple-touch-icon-precomposed.png" />
     <Content Include="apple-touch-icon.png" />
-    <Content Include="App_Themes\Default\blue_bg.png" />
-    <Content Include="App_Themes\Default\blue_hd_bg.png" />
     <Content Include="App_Themes\Default\Default.css" />
-    <Content Include="App_Themes\Default\font-awesome.css" />
     <Content Include="Badges\Default.aspx" />
     <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
@@ -137,6 +134,8 @@
     <Content Include="Account\ChangePassword.aspx" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\animate.min.css" />
+    <Content Include="Content\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -158,6 +157,7 @@
     <Content Include="Content\odometer-theme-default.css" />
     <Content Include="ControlRoom\Controls\OpenBadgesBadgeMaker.ascx" />
     <Content Include="ControlRoom\Images\CircularProgressAnimation2.gif" />
+    <Content Include="ControlRoom\Modules\Settings\TestEmail.aspx" />
     <Content Include="ControlRoom\RibbonImages\Accounts%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Accounts.png" />
     <Content Include="ControlRoom\RibbonImages\GroupSecurity%402x.png" />
@@ -214,6 +214,7 @@
     <Content Include="favicon-32x32.png" />
     <Content Include="favicon-96x96.png" />
     <Content Include="favicon.png" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="images\Avatars\1.png" />
     <Content Include="images\Avatars\2.png" />
     <Content Include="images\Avatars\3.png" />
@@ -245,9 +246,22 @@
     <Content Include="Problem\NotFound.aspx" />
     <Content Include="robots.txt" />
     <Content Include="safari-pinned-tab.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="ControlRoom\Handlers\CodeAvailable.ashx" />
     <None Include="Properties\PublishProfiles\Demo.pubxml" />
     <None Include="Properties\PublishProfiles\Release.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-2.2.0.js" />
     <Content Include="Scripts\jquery-2.2.0.min.js" />
     <Content Include="Scripts\jquery.fancybox-buttons.js" />
@@ -256,6 +270,10 @@
     <Content Include="Scripts\jquery.fancybox.js" />
     <Content Include="Scripts\jquery.fancybox.pack.js" />
     <Content Include="Scripts\jquery.mousewheel-3.0.6.pack.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\odometer.js" />
     <Content Include="Scripts\odometer.min.js" />
     <Content Include="ControlRoom\AJAX.master" />
@@ -571,7 +589,6 @@
     <Content Include="Events\Details.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="font\fontawesome-webfont.svg" />
     <Content Include="FramedSurvey.aspx" />
     <Content Include="Adventures\Map.aspx" />
@@ -623,22 +640,12 @@
     <Content Include="Register.aspx" />
     <Content Include="RegisterILS.aspx" />
     <Content Include="Resources\program.default.en-US.txt" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ControlRoom\Web.config" />
     <Content Include="Handlers\GetBadgeInfo.ashx" />
     <Content Include="Handlers\GetEventInfo.ashx" />
     <Content Include="Handlers\GetEarnedBadgesInfo.ashx" />
     <Content Include="App_Themes\GRA\Controls.skin" />
     <Content Include="Handlers\IsUsernameAvailable.ashx" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include=".well-known\acme-challenge\Web.config" />
     <Content Include="Handlers\Status.ashx" />
     <Content Include="Handlers\Feed.ashx" />
@@ -1006,6 +1013,9 @@
     <Compile Include="ControlRoom\Controls\SurveyAnswerStatsCtl.ascx.designer.cs">
       <DependentUpon>SurveyAnswerStatsCtl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ControlRoom\Handlers\CodeAvailable.ashx.cs">
+      <DependentUpon>CodeAvailable.ashx</DependentUpon>
+    </Compile>
     <Compile Include="ControlRoom\Modules\Notifications\BulkNotification.aspx.cs">
       <DependentUpon>BulkNotification.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1047,6 +1057,13 @@
     </Compile>
     <Compile Include="ControlRoom\Modules\Settings\ClosingPush.aspx.designer.cs">
       <DependentUpon>ClosingPush.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\TestEmail.aspx.cs">
+      <DependentUpon>TestEmail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Settings\TestEmail.aspx.designer.cs">
+      <DependentUpon>TestEmail.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\Setup\AwardAddWizard.aspx.cs">
       <DependentUpon>AwardAddWizard.aspx</DependentUpon>

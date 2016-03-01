@@ -275,7 +275,7 @@ namespace GRA.SRP.ControlRoom {
                     this.MailSuccessPanel.Visible = true;
                 } else {
                     this.MailIssuePanel.Visible = true;
-                    this.MailIssueMessage.Text = string.Format("There was a problem sending the test message: {0}", service.Error);
+                    this.MailIssueMessage.Text = string.Format("There was a problem sending the test message: {0}", service.ErrorException.Message);
                 }
                 ShowStep((int)ViewState[StepKey], true);
             }
@@ -532,7 +532,7 @@ namespace GRA.SRP.ControlRoom {
                     body.Append("<a href=\"{ControlRoomLink}\">log in</a> using the default ");
                     body.Append("system administrator credentials.</p><p>For more information on ");
                     body.Append("setting up and using the {SystemName} software, feel free to ");
-                    body.Append("visit the <a href=\"http://manual.greatreadingadventure.com/\">manual</a>");
+                    body.Append("visit the <a href=\"http://manual.greatreadingadventure.com/\">manual</a> ");
                     body.Append("and <a href=\"http://forum.greatreadingadventure.com/\">forum</a>.");
                     body.Append("</p>");
 

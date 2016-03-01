@@ -255,6 +255,7 @@ namespace GRA.SRP.Core.Utilities {
             pnl.ImageAlt = "System Settings";
             pnl.Add(new RibbonLink { Name = "System Settings", Url = "/ControlRoom/Modules/Settings/SRPSettings.aspx" });
             pnl.Add(new RibbonLink { Name = "Registration Settings", Url = "/ControlRoom/Modules/Settings/RegistrationSettingsAddEdit.aspx" });
+            pnl.Add(new RibbonLink { Name = "Test Email", Url = "/ControlRoom/Modules/Settings/TestEmail.aspx" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel() {

@@ -19,6 +19,7 @@ namespace SRP_DAL {
             " LEFT OUTER JOIN [Minigame] mg on pp.[GameLevelActivityId] = mg.[MGID]" +
             " WHERE ((pp.[AwardReasonCD] = 1 AND pp.[BadgeId] > 0)" +
             " OR (pp.[AwardReasonCd] IN (2, 4))) AND pp.[PPID] > @after" +
+            " AND b.HiddenFromPublic != 1" +
             " ORDER BY pp.[PPID] DESC";
 
         public DataTable Latest(int after, int tenantId) { //, int tenId

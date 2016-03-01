@@ -63,6 +63,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected void btnContinue_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
             pnlBookList.Visible = false;
             pnlReward.Visible = true;
+            if (string.IsNullOrEmpty(AdminName.Text))
+            {
+                AdminName.Text = UserName.Text = string.Format("{0} Badge", AwardName.Text);
+            }
+
         }
 
         protected void btnCancel2_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
@@ -114,37 +119,37 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         }
 
         private Badge LoadBadgeObject() {
-            var obj = new Badge();
-            obj.AdminName = AdminName.Text;
-            obj.UserName = UserName.Text;
-            obj.CustomEarnedMessage = CustomEarnedMessage.InnerHtml;
+            var badge = new Badge();
+            badge.AdminName = AdminName.Text.Trim();
+            badge.UserName = UserName.Text.Trim();
+            badge.CustomEarnedMessage = CustomEarnedMessage.InnerHtml;
 
-            obj.IncludesPhysicalPrizeFlag = IncludesPhysicalPrizeFlag.Checked;
-            obj.PhysicalPrizeName = PhysicalPrizeName.Text;
+            badge.IncludesPhysicalPrizeFlag = IncludesPhysicalPrizeFlag.Checked;
+            badge.PhysicalPrizeName = PhysicalPrizeName.Text;
 
-            obj.GenNotificationFlag = GenNotificationFlag.Checked;
-            obj.NotificationSubject = NotificationSubject.Text;
-            obj.NotificationBody = NotificationBody.InnerHtml;
+            badge.GenNotificationFlag = GenNotificationFlag.Checked;
+            badge.NotificationSubject = NotificationSubject.Text.Trim();
+            badge.NotificationBody = NotificationBody.InnerHtml;
 
-            obj.AssignProgramPrizeCode = AssignProgramPrizeCode.Checked;
-            obj.PCNotificationSubject = PCNotificationSubject.Text;
-            obj.PCNotificationBody = PCNotificationBody.InnerHtml;
+            badge.AssignProgramPrizeCode = AssignProgramPrizeCode.Checked;
+            badge.PCNotificationSubject = PCNotificationSubject.Text.Trim();
+            badge.PCNotificationBody = PCNotificationBody.InnerHtml;
 
-            obj.AddedDate = DateTime.Now;
-            obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
-            obj.LastModDate = obj.AddedDate;
-            obj.LastModUser = obj.AddedUser;
+            badge.AddedDate = DateTime.Now;
+            badge.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+            badge.LastModDate = badge.AddedDate;
+            badge.LastModUser = badge.AddedUser;
 
-            return obj;
+            return badge;
         }
 
         protected void btnContinue2_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
-            var obj = LoadAwardObject();
+            var award = LoadAwardObject();
 
-            if(!obj.IsValid(BusinessRulesValidationMode.INSERT)) {
+            if(!award.IsValid(BusinessRulesValidationMode.INSERT)) {
                 var masterPage = (IControlRoomMaster)Master;
                 string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                foreach(BusinessRulesValidationMessage m in award.ErrorCodes) {
                     message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                 }
                 message = string.Format("{0}</ul>", message);
@@ -153,24 +158,25 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                 if(rblBadge.SelectedIndex == 0) {
                     // No Badge Awarded
 
-                    obj.Insert();
-                    Session["AWD"] = obj.AID;
+                    award.Insert();
+                    Session["AWD"] = award.AID;
                     Response.Redirect("AwardAddEdit.aspx?M=K");
                 }
                 if(rblBadge.SelectedIndex == 1) {
                     // Existing Badge Awarded
-                    obj.BadgeID = int.Parse(BadgeID.SelectedValue);
-                    obj.Insert();
-                    Session["AWD"] = obj.AID;
+                    award.BadgeID = int.Parse(BadgeID.SelectedValue);
+                    award.Insert();
+                    Session["AWD"] = award.AID;
                     Response.Redirect("AwardAddEdit.aspx?M=K");
                 }
                 if(rblBadge.SelectedIndex == 2) {
                     // Start creation of new badge
-                    obj.Insert();
-                    lblPK.Text = obj.AID.ToString();
+                    award.Insert();
+                    lblPK.Text = award.AID.ToString();
 
                     pnlBadgeMore.Visible = true;
                     pnlReward.Visible = false;
+                    btnContinue3_Click(sender, e);
                 }
             }
 
@@ -213,16 +219,32 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         }
 
         protected void btnContinue3_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
-            var obj = LoadBadgeObject();
-            obj.Insert();
-            Cache[CacheKey.BadgesActive] = true;
+            var badge = LoadBadgeObject();
+            badge.Insert();
 
-            lblBID.Text = obj.BID.ToString();
+            try
+            {
+                var badgePath = string.Format(Server.MapPath("~/images/Badges/"));
+                System.IO.File.Copy(string.Format("{0}no_badge.png", badgePath),
+                                    string.Format("{0}{1}.png", badgePath, badge.BID));
+                System.IO.File.Copy(string.Format("{0}no_badge_sm.png", badgePath),
+                                    string.Format("{0}sm_{1}.png", badgePath, badge.BID));
+            }
+            catch (Exception ex)
+            {
+                this.Log().Error("Couldn't copy no_badge images into new badge: {0}",
+                                 ex.Message);
+            }
+
+            new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
+
+            lblBID.Text = badge.BID.ToString();
             var bl = Award.FetchObject(int.Parse(lblPK.Text));
-            bl.BadgeID = obj.BID;
+            bl.BadgeID = badge.BID;
             bl.Update();
             FileUploadCtl.FileName = lblBID.Text;
             FileUploadCtl.ProcessRender();
+            OpenBadgesBadgeMaker.FileName = lblBID.Text;
 
             pnlLast.Visible = true;
             pnlBadgeMore.Visible = false;
@@ -237,6 +259,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             DeleteTemporaryBadge();
             pnlLast.Visible = false;
             pnlBadgeMore.Visible = true;
+            btnPrevious3_Click(sender, e);
         }
 
         protected void btnContinue4_Click(object sender, System.Web.UI.ImageClickEventArgs e) {
