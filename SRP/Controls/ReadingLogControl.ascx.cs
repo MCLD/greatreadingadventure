@@ -155,6 +155,11 @@ namespace GRA.SRP.Controls
             decimal computedPoints = intCount * pc.PointCount / pc.ActivityCount;
             points = (int)Math.Ceiling(computedPoints);
 
+
+            var patron = (Patron)Session[SessionKey.Patron];
+            var program = Programs.FetchObject(patron.ProgID);
+            patron.RecalculateGoalCache(program, pc);
+
             // ensure they aren't over teh day total
             var allPointsToday = PatronPoints.GetTotalPatronPoints(patronId, DateTime.Now);
             int maxPointsPerDayForLogging = SRPSettings.GetSettingValue("MaxPtsDay").SafeToInt();

@@ -28,7 +28,44 @@ namespace GRA.SRP.Controls
                 var patron = (Patron)Session["Patron"];
                 rptr.DataSource = Patron.GetPatronForEdit(patron.PID);
                 rptr.DataBind();
-   
+
+                // Goal needs to be modified by ProgramGamePointConversion
+                /* If daily goal is enabled we need to find what method point system uses. Just select the last item that is relevant.. */
+                foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                {
+                    int activityTypeId = (int)activityTypeValue;
+                    var pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
+                                                                             activityTypeId);
+
+                    if (pgc != null && pgc.PointCount > 0)
+                    {
+                        var range = (RangeValidator)rptr.Items[0].FindControl("DailyGoalRangeValidator");
+
+                        if (activityTypeValue == ActivityType.Minutes)
+                        {
+                            range.MinimumValue = "5"; // At least 5 minutes a day.
+                            range.MaximumValue = "750"; // No more than 12 hours.
+                        }
+                        else if (activityTypeValue == ActivityType.Pages)
+                        {
+                            range.MinimumValue = "1"; // at least 1 page a day.
+                            range.MaximumValue = "2000"; // no more than 5000 pages a day.
+                        }
+                        else
+                        {
+                            // cannot have daily goal for other options
+                            continue;
+                        }
+
+                        /* save the activity type id */
+                        ViewState["ActivityTypeId"] = activityTypeId.ToString();
+
+                        var baseString = basePage.GetResourceString("registration-form-daily-goal");
+
+                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()})";
+                    }
+                }
+
                 basePage.TranslateStrings(rptr);
             }
             this.SaveButtonText = basePage.GetResourceString("family-member-add-save");
@@ -74,6 +111,25 @@ namespace GRA.SRP.Controls
                     p.ParentGuardianLastName = ((TextBox)(e.Item).FindControl("ParentGuardianLastName")).Text;
                     p.ParentGuardianMiddleName = ((TextBox)(e.Item).FindControl("ParentGuardianMiddleName")).Text;
                     p.LibraryCard = ((TextBox)(e.Item).FindControl("LibraryCard")).Text;
+
+                    int goalValue = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("DailyGoal")).Text);
+                    p.DailyGoal = goalValue;
+
+                    if (ViewState["ActivityTypeId"] != null) {
+
+                        int activityTypeId = 0;
+
+                        if (int.TryParse(ViewState["ActivityTypeId"] as string, out activityTypeId)) {
+                            ProgramGamePointConversion pgc = ProgramGamePointConversion.FetchObjectByActivityId(p.ProgID, activityTypeId);
+
+                            if (pgc != null)
+                            {
+                                Programs program = Programs.FetchObject(p.ProgID);
+                                p.RecalculateGoalCache(program, pgc);
+                            }
+                        }
+                    }
+
 
                     //p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(e.Item).FindControl("PrimaryLibrary")).SelectedValue);
                     //p.SchoolName = ((DropDownList)(e.Item).FindControl("SchoolName")).SelectedValue;

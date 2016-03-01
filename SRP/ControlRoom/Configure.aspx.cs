@@ -569,8 +569,7 @@ namespace GRA.SRP.ControlRoom {
                                 while(!sr.EndOfStream) {
                                     var s = sr.ReadLine();
                                     if(!string.IsNullOrEmpty(s)
-                                       && (s.ToUpper().Trim().Equals("GO")
-                                           || s.ToUpper().Trim().StartsWith("GO"))) {
+                                       && (s.ToUpper().Trim().Equals("GO"))) {
                                         break;
                                     }
                                     sb.AppendLine(s);

@@ -41,7 +41,9 @@
                     <asp:Panel ID="Panel1" runat="server" GroupingText=" Award Triggers " ScrollBars="Auto" Visible="True">
                         <table width="100%" height="200px">
                             <tr>
-                                <td colspan="4"><p class="lead" style="margin-top: 0;">Choose what a patron must achieve in order to receive this award:</p></td>
+                                <td colspan="4">
+                                    <p class="lead" style="margin-top: 0;">Choose what a patron must achieve in order to receive this award:</p>
+                                </td>
                             </tr>
                             <tr>
                                 <td nowrap valign="top"><b>Must have earned this many points: </b></td>
@@ -75,7 +77,6 @@
                                         EnableTheming="True"
                                         SetFocusOnError="True" />
                                 </td>
-
                                 <td colspan="4" rowspan="6">
                                     <b>Must have earned the checked badges:</b>
                                     <br />
@@ -98,6 +99,36 @@
                                     </div>
 
 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap valign="top"><b>Must have reached % Goal: </b></td>
+                                <td colspan="3" valign="top">
+                                    <asp:TextBox ID="GoalPercent" runat="server" Text='' Width="50px" CssClass="form-control"></asp:TextBox>
+                                    <asp:RegularExpressionValidator
+                                        ControlToValidate="GoalPercent"
+                                        ValidationExpression="\d+"
+                                        Display="Dynamic"
+                                        EnableClientScript="true"
+                                        ErrorMessage="<font color='red'> * Goal percent must be 0-100.</font>"
+                                        runat="server"
+                                        Font-Bold="True" Font-Italic="True"
+                                        Text="<font color='red'> * Goal percent must be 0-100.</font>"
+                                        EnableTheming="True"
+                                        SetFocusOnError="True" />
+                                    <asp:RangeValidator
+                                        ControlToValidate="GoalPercent"
+                                        MinimumValue="0"
+                                        MaximumValue="200"
+                                        Display="Dynamic"
+                                        Type="Integer"
+                                        EnableClientScript="true"
+                                        ErrorMessage="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                        runat="server"
+                                        Font-Bold="True" Font-Italic="True"
+                                        Text="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                        EnableTheming="True"
+                                        SetFocusOnError="True" />
                                 </td>
                             </tr>
                             <tr>

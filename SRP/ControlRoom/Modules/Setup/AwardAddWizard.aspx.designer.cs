@@ -112,6 +112,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.GridView gvBadgeMembership;
         
         /// <summary>
+        /// GoalPercent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox GoalPercent;
+        
+        /// <summary>
         /// BranchID control.
         /// </summary>
         /// <remarks>

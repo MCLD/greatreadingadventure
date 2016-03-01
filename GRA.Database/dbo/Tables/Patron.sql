@@ -45,6 +45,8 @@
     [AvatarID]                 INT             NULL,
     [RegistrationDate]         DATETIME        CONSTRAINT [DF_Patron_RegistrationDate] DEFAULT (getdate()) NULL,
     [SDistrict]                INT             NULL,
+	[DailyGoal]                INT             NULL,
+	[GoalCache]                INT             NULL,
     [TenID]                    INT             NULL,
     [FldInt1]                  INT             NULL,
     [FldInt2]                  INT             NULL,

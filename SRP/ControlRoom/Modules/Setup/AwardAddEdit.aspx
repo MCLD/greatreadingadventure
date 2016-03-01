@@ -16,12 +16,10 @@
         OnDataBound="dv_DataBound"
         Width="100%">
         <Fields>
-
             <asp:BoundField DataField="AID" HeaderText="AID: " SortExpression="AID" ReadOnly="True" InsertVisible="False" Visible="False">
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
                 <ItemStyle Width="100%" />
             </asp:BoundField>
-
 
             <asp:TemplateField>
                 <EditItemTemplate>
@@ -122,6 +120,37 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td nowrap valign="top"><b>Must have reached % Goal: </b></td>
+                                            <td colspan="3" valign="top">
+                                                <asp:TextBox ID="GoalPercent" runat="server" Text='<%# ((int) Eval("GoalPercent") == 0 ? "0" : Eval("GoalPercent")) %>' Width="50px" CssClass="form-control"></asp:TextBox>
+                                                <asp:RegularExpressionValidator
+                                                    ControlToValidate="GoalPercent"
+                                                    ValidationExpression="\d+"
+                                                    Display="Dynamic"
+                                                    EnableClientScript="true"
+                                                    ErrorMessage="<font color='red'> * Goal percent must be 0-100.</font>"
+                                                    runat="server"
+                                                    Font-Bold="True" Font-Italic="True"
+                                                    Text="<font color='red'> * Goal percent must be 0-100.</font>"
+                                                    EnableTheming="True"
+                                                    SetFocusOnError="True" />
+                                                <asp:RangeValidator
+                                                    ControlToValidate="GoalPercent"
+                                                    MinimumValue="0"
+                                                    MaximumValue="200"
+                                                    Display="Dynamic"
+                                                    Type="Integer"
+                                                    EnableClientScript="true"
+                                                    ErrorMessage="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                                    runat="server"
+                                                    Font-Bold="True" Font-Italic="True"
+                                                    Text="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                                    EnableTheming="True"
+                                                    SetFocusOnError="True" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
                                             <td nowrap valign="top"><b>Must be associated with branch/library: </b></td>
                                             <td colspan="3" valign="top">
                                                 <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
@@ -181,7 +210,6 @@
                     </table>
                 </EditItemTemplate>
             </asp:TemplateField>
-
 
             <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="False"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">

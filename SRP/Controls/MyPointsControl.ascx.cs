@@ -10,6 +10,7 @@ using GRA.SRP.Utilities.CoreClasses;
 
 namespace GRA.SRP.Controls {
     public partial class MyPointsControl : System.Web.UI.UserControl {
+
         protected void Page_PreRender(object sender, EventArgs e) {
             if(Session["Patron"] == null) {
                 Response.Redirect("/");
@@ -22,14 +23,46 @@ namespace GRA.SRP.Controls {
 
             var patron = (Patron)Session["Patron"];
 
-            int tp = PatronPoints.GetTotalPatronPoints(patron.PID);
-            lblPoints.Text = tp.ToInt();
+            int totalPoints = PatronPoints.GetTotalPatronPoints(patron.PID);
+            lblPoints.Text = totalPoints.ToInt();
             var pgm = Programs.FetchObject(patron.ProgID);
             if(pgm.ProgramGameID > 0) {
                 if(ProgramGame.FetchObject(pgm.ProgramGameID) != null) {
-                    LoadNextLevelInfo(patron, pgm, tp);
+                    LoadNextLevelInfo(patron, pgm, totalPoints);
                 }
             }
+
+            RegistrationSettings settings = RegistrationSettings.FetchObject(patron.TenID);
+
+            if (settings.DailyGoal_Show) {
+
+                int totalGoal = patron.GoalCache;
+
+                int percent = 0;
+
+                /* avoid divide by zero */
+                if (totalGoal > 0)
+                {
+                    percent = (totalPoints * 100) / totalGoal;
+                }                    
+
+                String percentString = $"{percent}%";
+                lblPercentGoal.Text = percentString;
+
+
+                /* display over 100% in label, but do not allow bar to extend outside of bounds */
+                int widthPercent = Math.Min(percent, 100);
+                String widthPercentString = $"{widthPercent}%";
+
+                divGoalProgressBar.Style["width"] = widthPercentString;
+
+            }
+            else
+            {
+                divGoalProgress.Visible = false;
+            }
+
+
         }
 
         public void LoadNextLevelInfo(Patron p, Programs pg, int tp) {
