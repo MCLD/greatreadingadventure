@@ -240,7 +240,7 @@ SELECT *
 FROM [Award]
 WHERE AID = @AID
 GO
-/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwards]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwards]    Script Date: 2/16/2016 13:46:40 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -248,50 +248,54 @@ GO
 
 CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwards] @PID INT = 0
 AS
-SELECT a.*,
-	p.PID,
-	ProgID,
-	PrimaryLibrary,
-	p.District,
-	p.SchoolName,
-	Points
-FROM Award a
+SELECT award.*,
+	patron.PID,
+	patron.ProgID,
+	patron.PrimaryLibrary,
+	patron.District,
+	patron.SchoolName,
+	patron.TotalGoal,
+	patron.Points
+FROM Award award
 INNER JOIN (
-	SELECT PID,
-		ProgID,
-		PrimaryLibrary,
-		District,
-		SchoolName,
+	SELECT pt.PID,
+		pt.progID,
+		pt.PrimaryLibrary,
+		pt.District,
+		pt.SchoolName,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
 				WHERE pp.PID = pt.PID
 				), 0) AS Points,
-		TenID
+		pt.TenID
 	FROM Patron pt
 	WHERE pt.PID = @PID
-	) AS p ON p.TenID = a.TenID
+	) AS patron ON patron.TenID = award.TenID
 	AND (
-		a.ProgramID = p.ProgID
-		OR a.ProgramID = 0
+		award.ProgramID = patron.ProgID
+		OR award.ProgramID = 0
 		)
 	AND (
-		a.BranchID = p.PrimaryLibrary
-		OR a.BranchID = 0
+		award.BranchID = patron.PrimaryLibrary
+		OR award.BranchID = 0
 		)
 	AND (
-		a.District = p.District
-		OR a.District = ''
+		award.District = patron.District
+		OR award.District = ''
 		)
 	AND (
-		a.SchoolName = p.SchoolName
-		OR a.SchoolName = ''
+		award.SchoolName = patron.SchoolName
+		OR award.SchoolName = ''
 		)
-	AND (a.NumPoints <= p.Points)
+	AND (award.NumPoints <= patron.Points) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
-		OR dbo.fx_PatronHasAllBadgesInList(p.PID, BadgeList) = 1
+		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
 		)
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Award_GetPatronQualifyingAwardsWTenant]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -299,23 +303,25 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwardsWTenant] @PID INT = 0,
-	@TenID INT = 1
+
+CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwardsWTenant] @PID INT = 0, @TenID INT = 1
 AS
-SELECT a.*,
-	p.PID,
-	ProgID,
-	PrimaryLibrary,
-	p.District,
-	p.SchoolName,
-	Points
-FROM Award a
+SELECT award.*,
+	patron.PID,
+	patron.ProgID,
+	patron.PrimaryLibrary,
+	patron.District,
+	patron.SchoolName,
+	patron.TotalGoal,
+	patron.Points
+FROM Award award
 INNER JOIN (
-	SELECT PID,
-		ProgID,
-		PrimaryLibrary,
-		District,
-		SchoolName,
+	SELECT pt.PID,
+		pt.progID,
+		pt.PrimaryLibrary,
+		pt.District,
+		pt.SchoolName,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
@@ -324,28 +330,30 @@ INNER JOIN (
 		@TenID AS TenID
 	FROM Patron pt
 	WHERE pt.PID = @PID
-	) AS p ON p.TenID = a.TenID
+	) AS patron ON patron.TenID = award.TenID
 	AND (
-		a.ProgramID = p.ProgID
-		OR a.ProgramID = 0
+		award.ProgramID = patron.ProgID
+		OR award.ProgramID = 0
 		)
 	AND (
-		a.BranchID = p.PrimaryLibrary
-		OR a.BranchID = 0
+		award.BranchID = patron.PrimaryLibrary
+		OR award.BranchID = 0
 		)
 	AND (
-		a.District = p.District
-		OR a.District = ''
+		award.District = patron.District
+		OR award.District = ''
 		)
 	AND (
-		a.SchoolName = p.SchoolName
-		OR a.SchoolName = ''
+		award.SchoolName = patron.SchoolName
+		OR award.SchoolName = ''
 		)
-	AND (a.NumPoints <= p.Points)
+	AND (award.NumPoints <= patron.Points) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
-		OR dbo.fx_PatronHasAllBadgesInList(p.PID, BadgeList) = 1
+		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
 		)
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Award_Insert]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -366,6 +374,7 @@ CREATE PROCEDURE [dbo].[app_Award_Insert] (
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
 	@AddedUser VARCHAR(50),
+	@GoalPercent INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -393,6 +402,7 @@ BEGIN
 		LastModUser,
 		AddedDate,
 		AddedUser,
+		GoalPercent,
 		TenID,
 		FldInt1,
 		FldInt2,
@@ -417,6 +427,7 @@ BEGIN
 		@LastModUser,
 		@AddedDate,
 		@AddedUser,
+		@GoalPercent,
 		@TenID,
 		@FldInt1,
 		@FldInt2,
@@ -438,6 +449,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+
 CREATE PROCEDURE [dbo].[app_Award_Update] (
 	@AID INT,
 	@AwardName VARCHAR(80),
@@ -452,6 +464,7 @@ CREATE PROCEDURE [dbo].[app_Award_Update] (
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
 	@AddedUser VARCHAR(50),
+	@GoalPercent INT = 0,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -477,6 +490,7 @@ SET AwardName = @AwardName,
 	LastModUser = @LastModUser,
 	AddedDate = @AddedDate,
 	AddedUser = @AddedUser,
+	GoalPercent = @GoalPercent,
 	TenID = @TenID,
 	FldInt1 = @FldInt1,
 	FldInt2 = @FldInt2,
@@ -6919,7 +6933,9 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom5, '') AS [Custom5],
 	isNull(p.AvatarID, 0) AS [AvatarID],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
-	ISNULL(p.SDistrict, 0) AS SDistrict,
+	isNull(p.SDistrict, 0) AS [SDistrict],
+	isNull(p.DailyGoal, 0) AS [DailyGoal],
+	isNull(p.GoalCache, 0) AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
@@ -7016,6 +7032,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+
 CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@IsMasterAccount BIT,
 	@MasterAcctPID INT,
@@ -7061,6 +7078,8 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Custom5 VARCHAR(50),
 	@AvatarID INT,
 	@SDistrict INT,
+	@DailyGoal INT,
+	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -7126,6 +7145,8 @@ BEGIN
 		Custom5,
 		AvatarID,
 		SDistrict,
+		DailyGoal,
+		GoalCache,
 		TenID,
 		FldInt1,
 		FldInt2,
@@ -7188,6 +7209,8 @@ BEGIN
 		@Custom5,
 		@AvatarID,
 		@SDistrict,
+		@DailyGoal,
+		@GoalCache,
 		@TenID,
 		@FldInt1,
 		@FldInt2,
@@ -7208,12 +7231,14 @@ BEGIN
 
 	SELECT @PID = SCOPE_IDENTITY()
 END
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_Patron_Update]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@PID INT,
@@ -7261,6 +7286,8 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@Custom5 VARCHAR(50),
 	@AvatarID INT,
 	@SDistrict INT,
+	@DailyGoal INT,
+	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -7324,6 +7351,8 @@ SET IsMasterAccount = @IsMasterAccount,
 	Custom5 = @Custom5,
 	AvatarID = @AvatarID,
 	SDistrict = @SDistrict,
+	DailyGoal = @DailyGoal,
+	GoalCache = @GoalCache,
 	TenID = @TenID,
 	FldInt1 = @FldInt1,
 	FldInt2 = @FldInt2,
@@ -7342,6 +7371,7 @@ SET IsMasterAccount = @IsMasterAccount,
 	Score2Date = @Score2Date
 WHERE PID = @PID
 	AND TenID = @TenID
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_PatronBadges_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -10944,6 +10974,10 @@ CREATE PROCEDURE [dbo].[app_RegistrationSettings_Insert] (
 	@SDistrict_Req BIT,
 	@SDistrict_Show BIT,
 	@SDistrict_Edit BIT,
+	@DailyGoal_Prompt BIT,
+	@DailyGoal_Req BIT,
+	@DailyGoal_Show BIT,
+	@DailyGoal_Edit BIT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -11117,6 +11151,10 @@ BEGIN
 		SDistrict_Req,
 		SDistrict_Show,
 		SDistrict_Edit,
+	    DailyGoal_Prompt,
+		DailyGoal_Req,
+		DailyGoal_Show,
+		DailyGoal_Edit,
 		TenID,
 		FldInt1,
 		FldInt2,
@@ -11287,6 +11325,10 @@ BEGIN
 		@SDistrict_Req,
 		@SDistrict_Show,
 		@SDistrict_Edit,
+		@DailyGoal_Prompt,
+		@DailyGoal_Req,
+		@DailyGoal_Show,
+		@DailyGoal_Edit,
 		@TenID,
 		@FldInt1,
 		@FldInt2,
@@ -11301,6 +11343,7 @@ BEGIN
 
 	SELECT @RID = SCOPE_IDENTITY()
 END
+
 GO
 /****** Object:  StoredProcedure [dbo].[app_RegistrationSettings_Update]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -11468,6 +11511,10 @@ CREATE PROCEDURE [dbo].[app_RegistrationSettings_Update] (
 	@SDistrict_Req BIT,
 	@SDistrict_Show BIT,
 	@SDistrict_Edit BIT,
+	@DailyGoal_Prompt BIT,
+	@DailyGoal_Req BIT,
+	@DailyGoal_Show BIT,
+	@DailyGoal_Edit BIT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -11635,6 +11682,10 @@ SET Literacy1Label = @Literacy1Label,
 	SDistrict_Req = @SDistrict_Req,
 	SDistrict_Show = @SDistrict_Show,
 	SDistrict_Edit = @SDistrict_Edit,
+	DailyGoal_Prompt = @DailyGoal_Prompt,
+    DailyGoal_Req = @DailyGoal_Req,
+	DailyGoal_Show = @DailyGoal_Show,
+	DailyGoal_Edit = @DailyGoal_Edit,
 	LastModUser = @LastModUser,
 	AddedDate = @AddedDate,
 	AddedUser = @AddedUser,
@@ -20236,6 +20287,7 @@ CREATE TABLE [dbo].[Award](
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
+    [GoalPercent] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,
@@ -21248,6 +21300,8 @@ CREATE TABLE [dbo].[Patron](
 	[Custom5] [varchar](50) NULL,
 	[AvatarID] [int] NULL,
 	[RegistrationDate] [datetime] NULL,
+	[DailyGoal] [int] NULL,
+	[GoalCache] [int] NULL,
 	[SDistrict] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
@@ -21946,6 +22000,10 @@ CREATE TABLE [dbo].[RegistrationSettings](
 	[SDistrict_Req] [bit] NULL,
 	[SDistrict_Show] [bit] NULL,
 	[SDistrict_Edit] [bit] NULL,
+	[DailyGoal_Prompt] [bit] NULL,
+    [DailyGoal_Req] [bit] NULL,
+    [DailyGoal_Show] [bit] NULL,
+    [DailyGoal_Edit] [bit] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,

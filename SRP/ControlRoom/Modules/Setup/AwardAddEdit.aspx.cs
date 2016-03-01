@@ -101,6 +101,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.AwardName = ((TextBox)((DetailsView)sender).FindControl("AwardName")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.NumPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumPoints")).Text);
+                    obj.GoalPercent = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("GoalPercent")).Text);
+
                     obj.BranchID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BranchID")).SelectedValue);
                     obj.ProgramID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ProgramID")).SelectedValue);
 
@@ -151,6 +153,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.AwardName = ((TextBox)((DetailsView)sender).FindControl("AwardName")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.NumPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumPoints")).Text);
+                    obj.GoalPercent = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("GoalPercent")).Text);
+    
                     obj.BranchID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BranchID")).SelectedValue);
                     obj.ProgramID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ProgramID")).SelectedValue);
 

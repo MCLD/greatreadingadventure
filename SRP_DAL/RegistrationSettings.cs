@@ -46,6 +46,7 @@ namespace GRA.SRP.DAL
         private bool myParentGuardianMiddleName_Prompt;
         private bool myPrimaryLibrary_Prompt;
         private bool myLibraryCard_Prompt;
+        private bool myDailyGoal_Prompt;
         private bool mySchoolName_Prompt;
         private bool myDistrict_Prompt;
         private bool mySDistrict_Prompt;
@@ -84,6 +85,7 @@ namespace GRA.SRP.DAL
         private bool myParentGuardianMiddleName_Req;
         private bool myPrimaryLibrary_Req;
         private bool myLibraryCard_Req;
+        private bool myDailyGoal_Req;
         private bool mySchoolName_Req;
         private bool myDistrict_Req;
         private bool mySDistrict_Req;
@@ -122,6 +124,7 @@ namespace GRA.SRP.DAL
         private bool myParentGuardianMiddleName_Show;
         private bool myPrimaryLibrary_Show;
         private bool myLibraryCard_Show;
+        private bool myDailyGoal_Show;
         private bool mySchoolName_Show;
         private bool myDistrict_Show;
         private bool mySDistrict_Show;
@@ -160,6 +163,7 @@ namespace GRA.SRP.DAL
         private bool myParentGuardianMiddleName_Edit;
         private bool myPrimaryLibrary_Edit;
         private bool myLibraryCard_Edit;
+        private bool myDailyGoal_Edit;
         private bool mySchoolName_Edit;
         private bool myDistrict_Edit;
         private bool mySDistrict_Edit;
@@ -315,6 +319,11 @@ namespace GRA.SRP.DAL
         {
             get { return myLibraryCard_Prompt; }
             set { myLibraryCard_Prompt = value; }
+        }
+        public bool DailyGoal_Prompt
+        {
+            get { return myDailyGoal_Prompt; }
+            set { myDailyGoal_Prompt = value; }
         }
         public bool SchoolName_Prompt
         {
@@ -506,6 +515,11 @@ namespace GRA.SRP.DAL
             get { return myLibraryCard_Req; }
             set { myLibraryCard_Req = value; }
         }
+        public bool DailyGoal_Req
+        {
+            get { return myDailyGoal_Req; }
+            set { myDailyGoal_Req = value; }
+        }
         public bool SchoolName_Req
         {
             get { return mySchoolName_Req; }
@@ -696,6 +710,11 @@ namespace GRA.SRP.DAL
             get { return myLibraryCard_Show; }
             set { myLibraryCard_Show = value; }
         }
+        public bool DailyGoal_Show
+        {
+            get { return myDailyGoal_Show; }
+            set { myDailyGoal_Show = value; }
+        }
         public bool SchoolName_Show
         {
             get { return mySchoolName_Show; }
@@ -885,6 +904,11 @@ namespace GRA.SRP.DAL
         {
             get { return myLibraryCard_Edit; }
             set { myLibraryCard_Edit = value; }
+        }
+        public bool DailyGoal_Edit
+        {
+            get { return myDailyGoal_Edit; }
+            set { myDailyGoal_Edit = value; }
         }
         public bool SchoolName_Edit
         {
@@ -1274,6 +1298,12 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) result.AddedDate = _datetime;
                 result.AddedUser = dr["AddedUser"].ToString();
 
+                result.DailyGoal_Prompt = bool.Parse(dr["DailyGoal_Prompt"].ToString());
+                result.DailyGoal_Show = bool.Parse(dr["DailyGoal_Show"].ToString());
+                result.DailyGoal_Edit = bool.Parse(dr["DailyGoal_Edit"].ToString());
+                result.DailyGoal_Req = bool.Parse(dr["DailyGoal_Req"].ToString());
+
+
                 if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
                 if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
                 if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
@@ -1492,6 +1522,11 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) this.AddedDate = _datetime;
                 this.AddedUser = dr["AddedUser"].ToString();
 
+                this.DailyGoal_Prompt = bool.Parse(dr["DailyGoal_Prompt"].ToString());
+                this.DailyGoal_Show = bool.Parse(dr["DailyGoal_Show"].ToString());
+                this.DailyGoal_Edit = bool.Parse(dr["DailyGoal_Edit"].ToString());
+                this.DailyGoal_Req = bool.Parse(dr["DailyGoal_Req"].ToString());
+
                 if (int.TryParse(dr["TenID"].ToString(), out _int)) this.TenID = _int;
                 if (int.TryParse(dr["FldInt1"].ToString(), out _int)) this.FldInt1 = _int;
                 if (int.TryParse(dr["FldInt2"].ToString(), out _int)) this.FldInt2 = _int;
@@ -1524,7 +1559,7 @@ namespace GRA.SRP.DAL
         public static int Insert(RegistrationSettings o)
         {
 
-            SqlParameter[] arrParams = new SqlParameter[169];
+            SqlParameter[] arrParams = new SqlParameter[173];
 
             arrParams[0] = new SqlParameter("@Literacy1Label", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Literacy1Label, o.Literacy1Label.GetTypeCode()));
             arrParams[1] = new SqlParameter("@Literacy2Label", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Literacy2Label, o.Literacy2Label.GetTypeCode()));
@@ -1686,23 +1721,28 @@ namespace GRA.SRP.DAL
             arrParams[156] = new SqlParameter("@SDistrict_Show", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict_Show, o.SDistrict_Show.GetTypeCode()));
             arrParams[157] = new SqlParameter("@SDistrict_Edit", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict_Edit, o.SDistrict_Edit.GetTypeCode()));
 
-            arrParams[158] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[159] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[160] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[161] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[162] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[163] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[164] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[165] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[166] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[167] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[158] = new SqlParameter("@DailyGoal_Prompt", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Prompt, o.DailyGoal_Prompt.GetTypeCode()));
+            arrParams[159] = new SqlParameter("@DailyGoal_Req", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Req, o.DailyGoal_Req.GetTypeCode()));
+            arrParams[160] = new SqlParameter("@DailyGoal_Show", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Show, o.DailyGoal_Show.GetTypeCode()));
+            arrParams[161] = new SqlParameter("@DailyGoal_Edit", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Edit, o.DailyGoal_Edit.GetTypeCode()));
 
-            arrParams[168] = new SqlParameter("@RID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RID, o.RID.GetTypeCode()));
-            arrParams[168].Direction = ParameterDirection.Output;
+            arrParams[162] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[163] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[164] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[165] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[166] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[167] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[168] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[169] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[170] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[171] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+
+            arrParams[172] = new SqlParameter("@RID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RID, o.RID.GetTypeCode()));
+            arrParams[172].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_RegistrationSettings_Insert", arrParams);
 
-            o.RID = int.Parse(arrParams[168].Value.ToString());
+            o.RID = int.Parse(arrParams[172].Value.ToString());
 
             return o.RID;
 
@@ -1720,7 +1760,7 @@ namespace GRA.SRP.DAL
 
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[169];
+            SqlParameter[] arrParams = new SqlParameter[173];
 
             arrParams[0] = new SqlParameter("@RID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RID, o.RID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@Literacy1Label", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Literacy1Label, o.Literacy1Label.GetTypeCode()));
@@ -1883,16 +1923,23 @@ namespace GRA.SRP.DAL
             arrParams[158] = new SqlParameter("@SDistrict_Edit", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SDistrict_Edit, o.SDistrict_Edit.GetTypeCode()));
 
 
-            arrParams[159] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[160] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[161] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[162] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[163] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[164] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[165] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[166] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[167] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[168] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams[159] = new SqlParameter("@DailyGoal_Prompt", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Prompt, o.DailyGoal_Prompt.GetTypeCode()));
+            arrParams[160] = new SqlParameter("@DailyGoal_Req", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Req, o.DailyGoal_Req.GetTypeCode()));
+            arrParams[161] = new SqlParameter("@DailyGoal_Show", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Show, o.DailyGoal_Show.GetTypeCode()));
+            arrParams[162] = new SqlParameter("@DailyGoal_Edit", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DailyGoal_Edit, o.DailyGoal_Edit.GetTypeCode()));
+
+
+
+            arrParams[163] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
+            arrParams[164] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
+            arrParams[165] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
+            arrParams[166] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
+            arrParams[167] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
+            arrParams[168] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
+            arrParams[169] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
+            arrParams[170] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
+            arrParams[171] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
+            arrParams[172] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
 
 	
             try

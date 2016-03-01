@@ -12,6 +12,7 @@
     [LastModUser] VARCHAR (50)  CONSTRAINT [DF_Award_LastModUser] DEFAULT ('N/A') NULL,
     [AddedDate]   DATETIME      CONSTRAINT [DF_Award_AddedDate] DEFAULT (getdate()) NULL,
     [AddedUser]   VARCHAR (50)  CONSTRAINT [DF_Award_AddedUser] DEFAULT ('N/A') NULL,
+	[GoalPercent] INT		    NULL,
     [TenID]       INT           NULL,
     [FldInt1]     INT           NULL,
     [FldInt2]     INT           NULL,

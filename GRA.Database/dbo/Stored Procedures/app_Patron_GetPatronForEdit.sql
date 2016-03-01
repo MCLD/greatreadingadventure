@@ -50,7 +50,9 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom5, '') AS [Custom5],
 	isNull(p.AvatarID, 0) AS [AvatarID],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
-	ISNULL(p.SDistrict, 0) AS SDistrict,
+	isNull(p.SDistrict, 0) AS [SDistrict],
+	isNull(p.DailyGoal, 0) AS [DailyGoal],
+
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID

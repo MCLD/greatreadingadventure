@@ -1,47 +1,50 @@
 ﻿
 CREATE PROCEDURE [dbo].[app_Award_GetPatronQualifyingAwards] @PID INT = 0
 AS
-SELECT a.*,
-	p.PID,
-	ProgID,
-	PrimaryLibrary,
-	p.District,
-	p.SchoolName,
-	Points
-FROM Award a
+SELECT award.*,
+	patron.PID,
+	patron.ProgID,
+	patron.PrimaryLibrary,
+	patron.District,
+	patron.SchoolName,
+	patron.TotalGoal,
+	patron.Points
+FROM Award award
 INNER JOIN (
-	SELECT PID,
-		ProgID,
-		PrimaryLibrary,
-		District,
-		SchoolName,
+	SELECT pt.PID,
+		pt.progID,
+		pt.PrimaryLibrary,
+		pt.District,
+		pt.SchoolName,
+		isnull(pt.GoalCache, -1) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
 				WHERE pp.PID = pt.PID
 				), 0) AS Points,
-		TenID
+		pt.TenID
 	FROM Patron pt
 	WHERE pt.PID = @PID
-	) AS p ON p.TenID = a.TenID
+	) AS patron ON patron.TenID = award.TenID
 	AND (
-		a.ProgramID = p.ProgID
-		OR a.ProgramID = 0
+		award.ProgramID = patron.ProgID
+		OR award.ProgramID = 0
 		)
 	AND (
-		a.BranchID = p.PrimaryLibrary
-		OR a.BranchID = 0
+		award.BranchID = patron.PrimaryLibrary
+		OR award.BranchID = 0
 		)
 	AND (
-		a.District = p.District
-		OR a.District = ''
+		award.District = patron.District
+		OR award.District = ''
 		)
 	AND (
-		a.SchoolName = p.SchoolName
-		OR a.SchoolName = ''
+		award.SchoolName = patron.SchoolName
+		OR award.SchoolName = ''
 		)
-	AND (a.NumPoints <= p.Points)
+	AND (award.NumPoints <= patron.Points) 
+	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
-		OR dbo.fx_PatronHasAllBadgesInList(p.PID, BadgeList) = 1
+		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
 		)
