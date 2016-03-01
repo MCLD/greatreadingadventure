@@ -59,7 +59,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                 }
                 else
                 {
-                    gv1.DataSourceID= string.Empty;
+                    gv1.DataSourceID= null;
                     gv1.DataBind();
                 }
             }
@@ -201,7 +201,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             Session["PS_Filtered"] = null;
 
             GetFilterSessionValues();
-            gv1.DataSourceID= string.Empty;
+            gv1.DataSourceID= null;
         }
 
 

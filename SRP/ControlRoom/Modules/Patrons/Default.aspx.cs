@@ -49,7 +49,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
                     Filter.GetFilterSessionValues();
                     DoFilter();
                 } else {
-                    gv1.DataSourceID = string.Empty;
+                    gv1.DataSourceID = null;
                     gv1.DataBind();
                 }
             }

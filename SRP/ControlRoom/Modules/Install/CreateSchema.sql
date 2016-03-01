@@ -6773,7 +6773,6 @@ GO
 /****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllToOrFromPatron]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -6789,14 +6788,10 @@ SELECT n.*,
 FROM [Notifications] n
 LEFT JOIN Patron p1 ON n.PID_To = p1.pid
 LEFT JOIN Patron p2 ON n.PID_From = p2.pid
-WHERE (
-		PID_To = @PID
-		OR PID_From = @PID
-		)
+WHERE (PID_To = @PID OR PID_From = @PID)
 ORDER BY AddedDate DESC
 GO
-
-/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllToPatron]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_Notifications_GetAllToPatron]    Script Date: 9/4/2015 13:46:40 ******/
 SET ANSI_NULLS ON
 GO
 
