@@ -2,30 +2,6 @@
     AutoEventWireup="true" CodeBehind="ProgramGameLevelAddEdit.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.ProgramGameLevelAddEdit" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <style>
-        #element_to_pop_up1 {
-            display: none;
-            background-color: #fff;
-            border-radius: 10px 10px 10px 10px;
-            box-shadow: 0 0 25px 5px #999;
-            color: #111;
-            display: none;
-            min-width: 50px;
-            padding: 25px;
-        }
-
-        #element_to_pop_up2 {
-            display: none;
-            background-color: #fff;
-            border-radius: 10px 10px 10px 10px;
-            box-shadow: 0 0 25px 5px #999;
-            color: #111;
-            display: none;
-            min-width: 50px;
-            padding: 25px;
-        }
-    </style>
-    <script type="text/javascript" src="/Scripts/jquery.bpopup.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:ValidationSummary ID="ValidationSummaryMain" runat="server"
@@ -107,47 +83,17 @@
                                 <div style="font-size: large; color: Maroon;"><b>Normal Play Mode</b></div>
                             </td>
                             <td colspan="2">
-                                <asp:HyperLink ID="PreviewImage1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop1"
-                                    ImageUrl="~/images/preview-file-md.png"
+                                <asp:HyperLink ID="PreviewImage1" runat="server" CssClass="fancybox"
+                                    ImageUrl='<%# string.Format("~/Images/Games/Board/sm_{0}.png",Eval("PGID")) %>'
                                     NavigateUrl='<%# string.Format("~/Images/Games/Board/{0}.png",Eval("PGID")) %>'>HyperLink</asp:HyperLink>
-
-                                <div id='element_to_pop_up1'>
-                                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/{0}.png",Eval("PGID")) %>' Width="500px" />
-                                </div>
                             </td>
                             <td colspan="2">
                                 <div style="font-size: large; color: Maroon;"><b>Bonus Play Mode</b></div>
                             </td>
                             <td colspan="2">
-                                <asp:HyperLink ID="HyperLink1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop2"
-                                    ImageUrl="~/images/preview-file-md.png"
+                                <asp:HyperLink ID="HyperLink1" runat="server" CssClass="fancybox"
+                                    ImageUrl='<%# string.Format("~/Images/Games/Board/sm_bonus_{0}.png",Eval("PGID")) %>'
                                     NavigateUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",Eval("PGID")) %>'>HyperLink</asp:HyperLink>
-
-                                <div id='element_to_pop_up2'>
-                                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",Eval("PGID")) %>' Width="500px" />
-                                </div>
-
-                                <script>
-
-                                    (function ($) {
-
-                                        // DOM Ready
-                                        $(function () {
-
-                                            $('.pop1').bind('click', function (e) {
-                                                e.preventDefault();
-                                                $('#element_to_pop_up1').bPopup();
-                                            });
-
-                                            $('.pop2').bind('click', function (e) {
-                                                e.preventDefault();
-                                                $('#element_to_pop_up2').bPopup();
-                                            });
-
-                                        });
-
-                                    })(jQuery);
-                                </script>
                             </td>
                         </tr>
                         <tr>
@@ -417,47 +363,17 @@
                                 <div style="font-size: large; color: Maroon;"><b>Normal Play Mode</b></div>
                             </td>
                             <td colspan="2">
-                                <asp:HyperLink ID="PreviewImage1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop1"
-                                    ImageUrl="~/images/preview-file-md.png"
-                                    NavigateUrl='<%# PGID.Text%>'>HyperLink</asp:HyperLink>
-
-                                <div id='element_to_pop_up1'>
-                                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/{0}.png",PGID.Text) %>' Width="500px" />
-                                </div>
+                                <asp:HyperLink ID="PreviewImage1" runat="server" CssClass="fancybox"
+                                    ImageUrl='<%# string.Format("~/Images/Games/Board/sm_{0}.png",PGID.Text) %>'
+                                    NavigateUrl='<%# string.Format("~/Images/Games/Board/{0}.png",PGID.Text) %>'>HyperLink</asp:HyperLink>
                             </td>
                             <td colspan="2">
                                 <div style="font-size: large; color: Maroon;"><b>Bonus Play Mode</b></div>
                             </td>
                             <td colspan="2">
-                                <asp:HyperLink ID="HyperLink1" runat="server" rel='lightbox[Image 90% 90%]' CssClass="pop2"
-                                    ImageUrl="~/images/preview-file-md.png"
+                                <asp:HyperLink ID="HyperLink1" runat="server" CssClass="fancybox"
+                                    ImageUrl='<%# string.Format("~/Images/Games/Board/sm_bonus_{0}.png",PGID.Text) %>'
                                     NavigateUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",PGID.Text) %>'>HyperLink</asp:HyperLink>
-
-                                <div id='element_to_pop_up2'>
-                                    <asp:Image ID="Image2" runat="server" ImageUrl='<%# string.Format("~/Images/Games/Board/bonus_{0}.png",PGID.Text) %>' Width="500px" />
-                                </div>
-
-                                <script>
-
-                                    (function ($) {
-
-                                        // DOM Ready
-                                        $(function () {
-
-                                            $('.pop1').bind('click', function (e) {
-                                                e.preventDefault();
-                                                $('#element_to_pop_up1').bPopup();
-                                            });
-
-                                            $('.pop2').bind('click', function (e) {
-                                                e.preventDefault();
-                                                $('#element_to_pop_up2').bPopup();
-                                            });
-
-                                        });
-
-                                    })(jQuery);
-                                </script>
                             </td>
                         </tr>
                         <tr>

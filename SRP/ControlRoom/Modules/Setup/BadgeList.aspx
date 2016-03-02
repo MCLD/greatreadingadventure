@@ -107,7 +107,7 @@
                 <HeaderTemplate>
                 </HeaderTemplate>
                 <ItemTemplate>
-                    <a class="fancybox" rel="group" href="<%# VirtualPathUtility.ToAbsolute(String.Format("~/Images/Badges/{0}.png?{1}", Eval("BID").ToString(), DateTime.Now.Ticks)) %>">
+                    <a class="fancybox" href="<%# VirtualPathUtility.ToAbsolute(String.Format("~/Images/Badges/{0}.png?{1}", Eval("BID").ToString(), DateTime.Now.Ticks)) %>">
                         <asp:Image ID="Image1" runat="server"
                             ImageUrl='<%# String.Format("~/Images/Badges/sm_{0}.png?{1}", Eval("BID").ToString(), DateTime.Now.Ticks) %>'
                             Width="32" Height="32" /></a>
@@ -145,14 +145,5 @@
             </div>
         </EmptyDataTemplate>
     </asp:GridView>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(".fancybox").fancybox({
-                openEffect: 'elastic',
-                closeEffect: 'elastic'
-            });
-        });
-    </script>
 </asp:Content>
 

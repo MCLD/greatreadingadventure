@@ -11,7 +11,7 @@ namespace GRA.SRP.ControlRoom {
         }
         protected void Button1_Click(object sender, EventArgs e) {
             SRPUser user = (SRPUser)Session[SessionData.UserProfile.ToString()];
-            user.NewPassword = uxNewPasswordField.Text;
+            user.NewPassword = Password.Text;
             user.MustResetPassword = false;
             user.LastPasswordReset = DateTime.Now;
             user.Update();

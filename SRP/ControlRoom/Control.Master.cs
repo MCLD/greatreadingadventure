@@ -31,7 +31,7 @@ namespace GRA.SRP.ControlRoom
                 Session.Remove(CRSessionKey.CRMessage);
             }
 
-            CheckPermissions();
+            CheckPermissions(this.RequiredPermission);
             lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             pnlMessage.Visible = DisplayMessageOnLoad;
         }
@@ -123,18 +123,29 @@ namespace GRA.SRP.ControlRoom
             set
             {
                 _requiredPermission = value;
-                CheckPermissions();
+                CheckPermissions(_requiredPermission);
             }
         }
 
-        protected void CheckPermissions()
+        private long _additionalRequiredPermission = 0;
+        public long AdditionalRequiredPermission {
+            get {
+                return _additionalRequiredPermission;
+            }
+            set {
+                _additionalRequiredPermission = value;
+                CheckPermissions(_additionalRequiredPermission);
+            }
+        }
+
+        protected void CheckPermissions(long permissionValue)
         {
-            if (_requiredPermission != 0)
+            if (permissionValue != 0)
             {
                 try
                 {
                     string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
-                    if (!permList.Contains(_requiredPermission.ToString()))
+                    if (!permList.Contains(permissionValue.ToString()))
                     {
                         Response.Redirect("~/ControlRoom/NoAccess.aspx",false);
                     }
@@ -145,6 +156,5 @@ namespace GRA.SRP.ControlRoom
                 }
             }
         }
-
     }
 }
