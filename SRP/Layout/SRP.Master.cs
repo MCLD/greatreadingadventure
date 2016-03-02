@@ -373,6 +373,35 @@ namespace GRA.SRP
                         bp.ProgID = progID;
                         bp.Update();
                     }
+
+
+                    /* recalulate goal cache to accomdate changes in program length and point multipliers */
+                    ProgramGamePointConversion pgc = null;
+
+                    foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                    {
+                        int activityTypeId = (int)activityTypeValue;
+                        var temp = ProgramGamePointConversion.FetchObjectByActivityId(pgm.PID,
+                                                                                 activityTypeId);
+
+
+                        if (temp != null && temp.PointCount > 0)
+                        {
+                            if (activityTypeValue == ActivityType.Minutes || activityTypeValue == ActivityType.Pages)
+                            {
+                                pgc = temp;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (pgc != null)
+                    {
+                        bp.RecalculateGoalCache(pgm, pgc);
+                        bp.Update();
+                    }
+
+
                     new SessionTools(Session).EstablishPatron(bp);
 
                     TestingBL.CheckPatronNeedsPreTest();

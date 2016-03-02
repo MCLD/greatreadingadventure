@@ -242,7 +242,7 @@ namespace GRA.SRP.Controls {
                         ViewState["ActivityTypeId"] = activityTypeId.ToString();
                         var baseString = ((BaseSRPPage)Page).GetResourceString("registration-form-daily-goal");
 
-                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()})";
+                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()}):";
                     }
                 }
 
@@ -582,6 +582,22 @@ namespace GRA.SRP.Controls {
 
                 int goalValue = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
                 p.DailyGoal = goalValue;
+
+                if (ViewState["ActivityTypeId"] != null)
+                {
+                    int activityTypeId = 0;
+
+                    if (int.TryParse(ViewState["ActivityTypeId"] as string, out activityTypeId))
+                    {
+                        ProgramGamePointConversion pgc = ProgramGamePointConversion.FetchObjectByActivityId(p.ProgID, activityTypeId);
+
+                        if (pgc != null)
+                        {
+                            Programs program = Programs.FetchObject(p.ProgID);
+                            p.RecalculateGoalCache(program, pgc);
+                        }
+                    }
+                }
 
 
                 p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary")).SelectedValue);

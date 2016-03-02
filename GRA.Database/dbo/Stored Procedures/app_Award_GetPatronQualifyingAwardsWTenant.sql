@@ -16,7 +16,7 @@ INNER JOIN (
 		pt.PrimaryLibrary,
 		pt.District,
 		pt.SchoolName,
-		isnull(pt.GoalCache, -1) as TotalGoal,
+		isnull(pt.GoalCache, 0) as TotalGoal,
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
@@ -43,7 +43,7 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points) 
-	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal) 
+	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
