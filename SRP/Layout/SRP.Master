@@ -97,6 +97,9 @@
                         <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li id="offersNav" runat="server"><a href="~/Offers/" class="menu-item" runat="server">Offers</a></li>
 
+                        <li id="avatarNav" runat="server"><a href="~/Avatar/" class="menu-item" runat="server">Avatar</a></li>
+
+
                         <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server">
                             <span class="glyphicon glyphicon-user hidden-xs" data-toggle="tooltip" data-placement="bottom" title="My Account"></span>
                             <span class="glyphicon glyphicon-user visible-xs-inline"></span>

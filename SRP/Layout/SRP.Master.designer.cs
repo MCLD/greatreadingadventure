@@ -148,6 +148,15 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl offersNav;
         
         /// <summary>
+        /// avatarNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl avatarNav;
+        
+        /// <summary>
         /// a control.
         /// </summary>
         /// <remarks>

@@ -352,3 +352,35 @@ small.dd-desc {
 .gra-search-active {
     border-color: forestgreen !important;
 }
+
+
+/* avatars */
+.avatar-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 200px;
+    height: 200px;
+}
+
+.avatar-edit {
+    width: 200px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.avatar-layer-btn-top {
+    position: relative;
+    top: 0;
+}
+
+.avatar-layer-btn-left {
+    float: left;
+}
+
+.avatar-layer-btn-right {
+    float: right;
+}
