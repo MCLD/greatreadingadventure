@@ -364,7 +364,7 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal)
+	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -423,7 +423,7 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (award.GoalPercent <= (patron.points * 100) / TotalGoal)
+	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal) 
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
