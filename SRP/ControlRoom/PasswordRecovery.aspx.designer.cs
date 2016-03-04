@@ -31,6 +31,15 @@ namespace GRA.SRP.ControlRoom {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
+        /// invalidToken control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel invalidToken;
+        
+        /// <summary>
         /// passwordUpdate control.
         /// </summary>
         /// <remarks>
@@ -76,39 +85,48 @@ namespace GRA.SRP.ControlRoom {
         protected global::System.Web.UI.WebControls.CustomValidator uxConfirmNewPasswordCustomValidator;
         
         /// <summary>
-        /// uxNewPasswordField control.
+        /// PasswordLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox uxNewPasswordField;
+        protected global::System.Web.UI.WebControls.Label PasswordLabel;
         
         /// <summary>
-        /// uxConfirmNewPasswordField control.
+        /// Password control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox uxConfirmNewPasswordField;
+        protected global::System.Web.UI.WebControls.TextBox Password;
         
         /// <summary>
-        /// Button1 control.
+        /// PasswordVerifyLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Label PasswordVerifyLabel;
         
         /// <summary>
-        /// invalidToken control.
+        /// PasswordVerify control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel invalidToken;
+        protected global::System.Web.UI.WebControls.TextBox PasswordVerify;
+        
+        /// <summary>
+        /// ChangePassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ChangePassword;
     }
 }

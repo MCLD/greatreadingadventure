@@ -160,6 +160,7 @@
                 $('.gra-datetime').datetimepicker({
                     sideBySide: true
                 });
+                $('.fancybox').fancybox();
             });
             $('.gra-secret-code').focusout(function () {
                 $('#gra-code-available').removeClass();

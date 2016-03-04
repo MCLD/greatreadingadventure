@@ -85,6 +85,7 @@
                         fullscreenable: false
                     });
                 });
+                $('.fancybox').fancybox();
             });
         </script>
     </form>

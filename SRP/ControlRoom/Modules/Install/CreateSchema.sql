@@ -2278,8 +2278,8 @@ GO
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_Code_Insert] (
 	@CTID INT,
-	@Code VARCHAR(25),
-	@Description VARCHAR(80),
+	@Code VARCHAR(255),
+	@Description VARCHAR(255),
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -2341,8 +2341,8 @@ GO
 CREATE PROCEDURE [dbo].[app_Code_Update] (
 	@CID INT,
 	@CTID INT,
-	@Code VARCHAR(25),
-	@Description VARCHAR(80),
+	@Code VARCHAR(255),
+	@Description VARCHAR(255),
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -2435,7 +2435,7 @@ GO
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_CodeType_Insert] (
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -2498,7 +2498,7 @@ GO
 CREATE PROCEDURE [dbo].[app_CodeType_Update] (
 	@CTID INT,
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -3648,6 +3648,32 @@ FROM [LibraryCrosswalk]
 WHERE ID = @ID
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Export]    Script Date: 3/3/2016 13:53:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Export] @TenID INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT bc.[Code] AS [Branch],
+		dc.[Code] AS [LibraryDistrict],
+		lcw.[BranchLink] AS [Link],
+		lcw.[BranchAddress] AS [Address],
+		lcw.[BranchTelephone] AS [Telephone]
+	FROM librarycrosswalk lcw
+	INNER JOIN code bc ON lcw.[BranchId] = bc.[CID]
+	INNER JOIN code dc ON lcw.[DistrictId] = dc.[CID]
+	WHERE lcw.[TenID] = @TenID
+	ORDER BY dc.[Code],
+		bc.[Code]
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetAll]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -3687,7 +3713,10 @@ WHERE BranchID NOT IN (
 SELECT isnull(w.ID, 0) AS ID,
 	isnull(l.CID, 0) AS BranchID,
 	isnull(w.DistrictID, 0) AS DistrictID,
-	isnull(w.City, '') AS City
+	isnull(w.City, '') AS City,
+	isnull(w.BranchLink, '') AS BranchLink,
+	isnull(w.BranchAddress, '') AS BranchAddress,
+	isnull(w.BranchTelephone, '') AS BranchTelephone
 FROM [LibraryCrosswalk] w
 RIGHT JOIN @Libraries l ON w.BranchID = l.CID
 ORDER BY l.Code
@@ -3802,6 +3831,9 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Insert] (
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
 	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = '',
 	@ID INT OUTPUT
 	)
 AS
@@ -3819,7 +3851,10 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		BranchLink,
+		BranchAddress,
+		BranchTelephone
 		)
 	VALUES (
 		@BranchID,
@@ -3834,7 +3869,10 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@BranchLink,
+		@BranchAddress,
+		@BranchTelephone
 		)
 
 	SELECT @ID = SCOPE_IDENTITY()
@@ -3862,7 +3900,10 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Update] (
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = ''
 	)
 AS
 UPDATE LibraryCrosswalk
@@ -3878,7 +3919,10 @@ SET BranchID = @BranchID,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	BranchLink = @BranchLink,
+	BranchAddress = @BranchAddress,
+	BranchTelephone = @BranchTelephone
 WHERE ID = @ID
 	AND TenID = @TenID
 GO
@@ -13276,6 +13320,36 @@ AS
 DELETE
 FROM [SchoolCrosswalk]
 WHERE ID = @ID
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Export]    Script Date: 3/4/2016 09:38:46 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_SchoolCrosswalk_Export] @TenID INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT s.[Code] AS [SchoolName],
+		st.[Code] AS [SchoolType],
+		d.[Code] AS [DistrictName],
+		NULLIF(scw.[MinGrade], 0) AS [MinGrade],
+		NULLIF(scw.[MaxGrade], 0) AS [MaxGrade],
+		NULLIF(scw.[MinAge], 0) AS [MinAge],
+		NULLIF(scw.[MaxAge], 0) AS [MaxAge]
+	FROM [schoolcrosswalk] scw
+	INNER JOIN [code] s ON scw.[SchoolID] = s.[CID]
+	INNER JOIN [code] st ON scw.[SchTypeID] = st.[CID]
+	INNER JOIN [code] d ON scw.[DistrictID] = d.[CID]
+	WHERE scw.[TenID] = @TenID
+	ORDER BY d.[Code],
+		st.[Code],
+		s.[Code]
+END
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetAll]    Script Date: 2/4/2016 13:18:40 ******/

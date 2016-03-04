@@ -10,7 +10,7 @@ namespace GRA.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            CheckPermissions();
+            CheckPermissions(this.RequiredPermission);
             lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             pnlMessage.Visible = DisplayMessageOnLoad;
         }
@@ -97,28 +97,43 @@ namespace GRA.SRP.ControlRoom
         }
 
         private long _requiredPermission = 0;
-        public long RequiredPermission
-        {
-            get
-            { return _requiredPermission; }
-            set
-            {
+        public long RequiredPermission {
+            get { return _requiredPermission; }
+            set {
                 _requiredPermission = value;
-                CheckPermissions();
+                CheckPermissions(_requiredPermission);
             }
         }
 
-        protected void CheckPermissions()
+        private long _additionalRequiredPermission = 0;
+        public long AdditionalRequiredPermission {
+            get {
+                return _additionalRequiredPermission;
+            }
+            set {
+                _additionalRequiredPermission = value;
+                CheckPermissions(_additionalRequiredPermission);
+            }
+        }
+
+        protected void CheckPermissions(long permissionValue)
         {
-            if (_requiredPermission != 0)
+            if (permissionValue != 0)
             {
-                string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
-                if (!permList.Contains(_requiredPermission.ToString()))
+                try
                 {
-                    Response.Redirect("~/Controlroom/NoAccess.aspx");
+                    string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
+                    if (!permList.Contains(permissionValue.ToString()))
+                    {
+                        Response.Redirect("~/ControlRoom/NoAccess.aspx", false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.Log().Error("Error checking permissions: {0}", ex.Message);
+                    Response.Redirect("~/ControlRoom/Login.aspx");
                 }
             }
         }
-
     }
 }

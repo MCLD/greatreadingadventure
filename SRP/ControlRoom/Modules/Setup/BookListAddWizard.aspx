@@ -538,7 +538,8 @@
                     <uc1:FileUploadCtl ID="FileUploadCtl" runat="server"
                         CreateMediumThumbnail="False" CreateSmallThumbnail="True" Extension="png"
                         FileName="0" Folder="~/Images/Badges/" ImgWidth="200"
-                        MediumThumbnailWidth="128" SmallThumbnailWidth="64" />
+                        MediumThumbnailWidth="128" SmallThumbnailWidth="64"
+                        BlankImage="no_badge" BlankSmallImage="no_badge_sm" />
 
                 </td>
             </tr>

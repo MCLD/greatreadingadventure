@@ -110,7 +110,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	2200,
-	'Modify  Program Permission',
+	'Modify Program Permission',
 	'Allows a user to create a new Program',
 	NULL
 	)
@@ -194,7 +194,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	4400,
-	'Book Lists Management',
+	'Challenges Management',
 	'Allows access to the respective maintenance screens.',
 	NULL
 	)
