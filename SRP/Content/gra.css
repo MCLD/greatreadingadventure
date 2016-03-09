@@ -360,27 +360,28 @@ small.dd-desc {
     top: 0;
     left: 0;
     pointer-events: none;
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 400px;
 }
 
 .avatar-edit {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 400px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
 }
 
-.avatar-layer-btn-top {
-    position: relative;
-    top: 0;
+.avatar-layer-btn {
+   position: relative;
 }
 
 .avatar-layer-btn-left {
     float: left;
+    left: 0;
 }
 
 .avatar-layer-btn-right {
     float: right;
+    right: 0;
 }

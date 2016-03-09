@@ -184,8 +184,6 @@ namespace GRA.SRP.Controls
                         ? ((TextBox)(e.Item).FindControl("Custom5")).Text 
                         : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
                     
-                    //p.AvatarID = FormatHelper.SafeToInt(((DropDownList)(e.Item).FindControl("AvatarID")).SelectedValue);
-                    p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)e.Item.FindControl("AvatarID")).Value);
                     // do the save
                     p.Update();
                     Session["Patron"] = p;

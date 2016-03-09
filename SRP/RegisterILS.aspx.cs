@@ -148,10 +148,6 @@ namespace GRA.SRP {
             if(int.TryParse(PrimaryLibrary.SelectedValue, out primaryLibrary)) {
                 patron.PrimaryLibrary = primaryLibrary;
             }
-            int avatarId;
-            if(int.TryParse(AvatarID.Value, out avatarId)) {
-                patron.AvatarID = avatarId;
-            }
             if(!string.IsNullOrEmpty(MasterPID.Text)) {
                 int masterPid = 0;
                 if(int.TryParse(MasterPID.Text, out masterPid)) {

@@ -75,6 +75,8 @@ namespace GRA.SRP.DAL {
         public int SDistrict { get; set; }
         public int GoalCache { get; set; } /* GoalCache is the total number of points from doing an activity over the duratino of a program */
         public int DailyGoal { get; set; } /* Daily Goal refers to the number of an activity (minutes, pages,etc) */
+        public string AvatarState { get; set; }
+
         public int TenID { get; set; }
 
         public int FldInt1 { get; set; }
@@ -1129,6 +1131,44 @@ namespace GRA.SRP.DAL {
             return SqlHelper.ExecuteDataset(conn, CommandType.Text, query.ToString(), patronParameter);
         }
 
+
+        public static List<int> ReadAvatarStateString(string stateString)
+        {
+            var stateValues = new List<int>();
+
+            if (stateString != null && stateString.Length != 0)
+            {
+                string[] hexValues = stateString.Split(' ');
+
+                foreach (String hex in hexValues)
+                {
+                    int value = Convert.ToInt32(hex, 16);
+                    stateValues.Add(value);
+                }
+            }
+
+            return stateValues;
+        }
+
+        public static string WriteAvatarStateString(List<int> state)
+        {
+            String stateString = "";
+
+            foreach (int value in state)
+            {
+                string hexString = value.ToString("X2");
+
+                if (stateString.Length > 0)
+                {
+                    /* add spaces in between, but not on first */
+                    stateString += " ";
+                }
+
+                stateString += hexString;
+            }
+
+            return stateString;
+        }
 
 
         //public bool Logoff()

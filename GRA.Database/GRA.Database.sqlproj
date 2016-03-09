@@ -675,6 +675,8 @@
     <Build Include="dbo\Tables\PatronRecovery.sql" />
     <Build Include="dbo\Tables\SRPHistory.sql" />
     <Build Include="dbo\Stored Procedures\app_Notifications_GetAllToOrFromPatron.sql" />
+    <Build Include="dbo\Tables\AvatarPart.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_GetAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />

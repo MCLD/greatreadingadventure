@@ -9,7 +9,7 @@
         this.partIDs = [];
 
         this.$stateField = null;
-        this.$layerField = null;
+        this.$imgField = null;
 
         this.update = function () {
             var partID = this.partIDs[this.index];
@@ -19,7 +19,7 @@
             var imageUrl = "/images/AvatarParts/" + partID;
             imageUrl += ".png";
 
-            this.$layerField.attr("src", imageUrl);
+            this.$imgField.attr("src", imageUrl);
         }
     }
   
@@ -27,34 +27,37 @@
     $(document).ready(function () {
         var i = 0;
 
-        for (var fieldSelector in ASP_avatar_fields) {
-
-            var $field = $(fieldSelector);
-
-
-            var $imgField = $("#" + $field.data("img"));
-
-            var componentKey = $field.data("component");
+        for (var key in ASP_avatar_fields) {
 
             var component = new ComponentState();
-            component.index = ASP_avatar_state[i];
-            component.componentID = parseInt(componentKey);
-            component.$stateField = $field;
+            component.componentID = parseInt(key);
 
-
-        }
-
-
-        for (var key in ASP_avatar_components) {
+            component.$stateField = $("#" + ASP_avatar_fields[key]);
+            component.$imgField = $("#componentImg" + key);
 
             component.partIDs = ASP_avatar_components[key];
 
+
+            var selectedPartID = -1;
+            
+            if (component.$stateField.val().length != 0) {
+                selectedPartID = parseInt(component.$stateField.val());
+            }
+
+            var index = component.partIDs.indexOf(selectedPartID);
+
+            if (index != -1) {
+                component.index = index;
+            } else {
+                component.index = 0;
+            }
+
+
             component.update();
-
             components[key] = component;
-
             i += 1;
         }
+
 
 
         $(".avatar-layer-btn-right").click(function (event) {

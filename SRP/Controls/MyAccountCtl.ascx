@@ -110,26 +110,6 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-avatar"></asp:Label>
-                </label>
-                <div class="col-sm-9">
-                    <select id="ddAvatar"></select>
-                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                    <script>
-                        var ddData = <%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>;
-                        $('#ddAvatar').ddslick({
-                            data: ddData,
-                            background: "transparent",
-                            selectText: "Select an avatar",
-                            onSelected: function (data) {
-                                $('.selected-avatar').first().val(data.selectedData.value);
-                            }
-                        });
-                    </script>
-                </div>
-            </div>
             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolGrade_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-grade"></asp:Label>

@@ -5,7 +5,7 @@
 <div class="hidden-sm hidden-md hidden-lg">
     <div class="row margin-1em-bottom">
         <div class="col-xs-12 text-center">
-            <asp:HyperLink NavigateUrl="~/Account/" runat="server">
+            <asp:HyperLink NavigateUrl="~/Avatar/" runat="server">
                 <asp:Image ID="imgAvatarSm" runat="server" Width="64px" height="64" CssClass="margin-1em-right" />
             </asp:HyperLink>
             <span class="lead"><strong>Welcome,

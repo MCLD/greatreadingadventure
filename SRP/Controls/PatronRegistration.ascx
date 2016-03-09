@@ -953,26 +953,6 @@
                                     ClientValidationFunction="ClientValidate">password does not match</asp:CustomValidator>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-avatar"></asp:Label></label>
-                            <div class="col-sm-6">
-                                <select id="ddAvatar"></select>
-                                <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                                <script>
-                                    var ddData = <% =Avatar.GetJSONForSelection(1) %>;
-                                    $('#ddAvatar').ddslick({
-                                        data: ddData,
-                                        background: "transparent",
-                                        selectText: "Select an avatar",
-                                        onSelected: function (data) {
-                                            $('.selected-avatar').first().val(data.selectedData.value);
-                                        }
-                                    });
-                                </script>
-                            </div>
-                        </div>
                     </asp:Panel>
                 </ItemTemplate>
             </asp:Repeater>

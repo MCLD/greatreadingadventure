@@ -19,20 +19,20 @@ namespace GRA.SRP.Controls {
             string avatarPathSm = NoAvatarPathSm;
             string avatarPathMd = null;
             if(patron != null) {
-                string potentialAvatarPath = string.Format("~/images/Avatars/{0}.png",
-                                                           patron.AvatarID);
+                string potentialAvatarPath = string.Format("~/images/AvatarCache/{0}.png",
+                                                           patron.PID);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPath = potentialAvatarPath;
                 }
 
-                potentialAvatarPath = string.Format("~/images/Avatars/sm_{0}.png",
-                                                    patron.AvatarID);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/sm_{0}.png",
+                                                    patron.PID);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathSm = potentialAvatarPath;
                 }
 
-                potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
-                                                    patron.AvatarID);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/md_{0}.png",
+                                                    patron.PID);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathMd = potentialAvatarPath;
                 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Avatar.cs" />
+    <Compile Include="AvatarPart.cs" />
     <Compile Include="Award.cs" />
     <Compile Include="Badge.cs" />
     <Compile Include="BookList.cs" />
