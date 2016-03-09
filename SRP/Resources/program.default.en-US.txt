@@ -59,8 +59,12 @@ family-list-log=Enter activity
 ;;  Family Member Add
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 family-member-add-title=Add Family Member
-family-member-add-instructions=<p>Create an additional account for a family member.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
-family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
+family-member-add-description=Adding a family member to your account allows you to record reading, enter codes, and log in as that user.
+family-member-add-register-new=Register a new family member
+family-member-add-has-account=My family member already has an account
+family-member-add-instructions=<p>Create a new account for a family member.</p>
+family-member-add-existing-instructions=<p>Add an existing account as a family member. Enter your family member's username and password below.</p>
+family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>The <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>The <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
 family-member-add-save=Save
 family-member-add-cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
