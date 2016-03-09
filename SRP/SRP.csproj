@@ -110,8 +110,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Account\AddFamilyMember.aspx" />
     <Content Include="Account\AddFamilyMemberAccount.aspx" />
     <Content Include="Account\ActivityHistory.aspx" />
+    <Content Include="Account\AddFamilyMemberExistingAccount.aspx" />
     <Content Include="Account\BookList.aspx" />
     <Content Include="AddlSurvey.aspx" />
     <Content Include="android-chrome-144x144.png" />
@@ -807,6 +809,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\AddFamilyMember.aspx.cs">
+      <DependentUpon>AddFamilyMember.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddFamilyMember.aspx.designer.cs">
+      <DependentUpon>AddFamilyMember.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Account\AddFamilyMemberAccount.aspx.cs">
       <DependentUpon>AddFamilyMemberAccount.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -820,6 +829,13 @@
     </Compile>
     <Compile Include="Account\ActivityHistory.aspx.designer.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\AddFamilyMemberExistingAccount.aspx.cs">
+      <DependentUpon>AddFamilyMemberExistingAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddFamilyMemberExistingAccount.aspx.designer.cs">
+      <DependentUpon>AddFamilyMemberExistingAccount.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\BookList.aspx.cs">
       <DependentUpon>BookList.aspx</DependentUpon>
