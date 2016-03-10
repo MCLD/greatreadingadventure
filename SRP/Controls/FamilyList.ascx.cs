@@ -35,20 +35,20 @@ namespace GRA.SRP.Controls {
             if(e.Item.ItemType == ListItemType.Item
                || e.Item.ItemType == ListItemType.AlternatingItem) {
                 var patronRecord = (DataRowView)e.Item.DataItem;
-                var avatarId = patronRecord["AvatarID"].ToString();
+                var patronId = patronRecord["PID"].ToString();
 
                 string potentialAvatarPath = null;
                 string avatarPathSm = NoAvatarPathSm;
                 string avatarPathMd = null;
 
                 potentialAvatarPath = string.Format("~/images/Avatars/sm_{0}.png",
-                                                    avatarId);
+                                                    patronId);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathSm = potentialAvatarPath;
                 }
 
                 potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
-                                                    avatarId);
+                                                    patronId);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathMd = potentialAvatarPath;
                 }

@@ -209,6 +209,7 @@ namespace GRA.SRP.ControlRoom {
         }
 
         public static void InitializeAvatars(int TID, int MTID) {
+            /*
             var ds = Avatar.GetAll(MTID);
             foreach(DataRow r in ds.Tables[0].Rows) {
                 var SrcPK = Convert.ToInt32(r["AID"]);
@@ -218,14 +219,14 @@ namespace GRA.SRP.ControlRoom {
                 var MappedPK = GetMappedPKbyOriginalPK("avatar", TID, SrcPK);
                 if(MappedPK < 0) {
                     var srcObj = Avatar.FetchObject(SrcPK);
-                    /* ------------------------------------*/
+
                     srcObj.AID = 0;
                     srcObj.TenID = TID;
-                    /* ------------------------------------*/
-                    srcObj.AddedDate = srcObj.LastModDate = DateTime.Now;
+
+            srcObj.AddedDate = srcObj.LastModDate = DateTime.Now;
                     srcObj.AddedUser = srcObj.LastModUser = ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username;
-                    /* ------------------------------------*/
-                    srcObj.Insert();
+
+            srcObj.Insert();
 
                     if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png")))
                         System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png"),
@@ -240,6 +241,7 @@ namespace GRA.SRP.ControlRoom {
                     InsertInitializationTrackingRecord("avatar", TID, srcObj.AID, SrcPK);
                 }
             }
+    */
         }
 
         public static void InitializeBadges(int TID, int MTID) {
@@ -1055,6 +1057,8 @@ namespace GRA.SRP.ControlRoom {
                 Response.Write("<!--");
             }
             var WorkFolder = HttpContext.Current.Server.MapPath("~/Images/Avatars/");
+
+            /*
             foreach(var f in System.IO.Directory.GetFiles(WorkFolder, "sm_*.png")) {
                 var sID = f.Replace(WorkFolder, "").Replace(".png", "").Replace("sm_", "");
                 var ID = -1;
@@ -1069,6 +1073,7 @@ namespace GRA.SRP.ControlRoom {
                 }
                 Response.Write(".");
             }
+            */
 
             WorkFolder = HttpContext.Current.Server.MapPath("~/Images/Badges/");
             foreach(var f in System.IO.Directory.GetFiles(WorkFolder, "sm_*.png")) {

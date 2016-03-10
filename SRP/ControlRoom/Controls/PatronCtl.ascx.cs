@@ -223,7 +223,6 @@ namespace GRA.SRP.ControlRoom.Controls
                     p.Custom4 = cr.DDValues4 == "" ? ((TextBox)(e.Item).FindControl("Custom4")).Text : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
                     p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(e.Item).FindControl("Custom5")).Text : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
 
-                    p.AvatarID = FormatHelper.SafeToInt(((DropDownList)e.Item.FindControl("AvatarID")).SelectedValue);
                     p.ProgID = FormatHelper.SafeToInt(((DropDownList)e.Item.FindControl("ProgID")).SelectedValue);
                     p.IsMasterAccount = ((CheckBox) (e.Item).FindControl("IsMasterAccount")).Checked;
                     // do the save
@@ -316,11 +315,6 @@ namespace GRA.SRP.ControlRoom.Controls
 
             ctl = (DropDownList)e.Item.FindControl("SchoolType");
             txt = (TextBox)e.Item.FindControl("SchoolTypeTxt");
-            i = ctl.Items.FindByValue(txt.Text);
-            if (i != null) ctl.SelectedValue = txt.Text;
-
-            ctl = (DropDownList)e.Item.FindControl("AvatarID");
-            txt = (TextBox)e.Item.FindControl("AvatarIDTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 

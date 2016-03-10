@@ -53,13 +53,13 @@
                 <hr />
                 <div style="padding-left:105px;">
                 <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
-                    FileName='<%# Bind("AID") %>'
+                    FileName='<%# Bind("APID") %>'
                     ImgWidth="200" 
                     CreateSmallThumbnail="True" 
                     CreateMediumThumbnail="True"
                     SmallThumbnailWidth="64" 
                     MediumThumbnailWidth="128"
-                    Folder="~/Images/Avatars/"
+                    Folder="~/Images/AvatarParts/"
                     Extension="png"
                     Width="400px"
                 />

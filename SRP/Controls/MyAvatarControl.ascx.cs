@@ -22,7 +22,7 @@ namespace GRA.SRP.Controls {
 
             var patron = (Patron)Session["Patron"];
 
-            var avatarPartData = AvatarPart.GetAll(patron.PID);
+            var avatarPartData = AvatarPart.GetQualifiedByPatron(patron.PID);
 
             foreach (DataRow data in avatarPartData.Tables[0].Rows)
             {

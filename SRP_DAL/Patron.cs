@@ -5,10 +5,7 @@ using System.Configuration;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
-using System.Collections;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools.PasswordHash;
@@ -71,7 +68,6 @@ namespace GRA.SRP.DAL {
         public string Custom3 { get; set; }
         public string Custom4 { get; set; }
         public string Custom5 { get; set; }
-        public int AvatarID { get; set; }
         public int SDistrict { get; set; }
         public int GoalCache { get; set; } /* GoalCache is the total number of points from doing an activity over the duratino of a program */
         public int DailyGoal { get; set; } /* Daily Goal refers to the number of an activity (minutes, pages,etc) */
@@ -283,12 +279,11 @@ namespace GRA.SRP.DAL {
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
-                    result.AvatarID = _int;
                 if(int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                result.AvatarState = dr["AvatarState"].ToString();
                 if (int.TryParse(dr["GoalCache"].ToString(), out _int))
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
@@ -346,10 +341,6 @@ namespace GRA.SRP.DAL {
 
             if(dr.Read()) {
 
-                // declare return value
-
-                Patron result = new Patron();
-
                 DateTime _datetime;
 
                 int _int;
@@ -406,15 +397,13 @@ namespace GRA.SRP.DAL {
                 this.Custom2 = dr["Custom2"].ToString();
                 this.Custom3 = dr["Custom3"].ToString();
                 this.Custom4 = dr["Custom4"].ToString();
-                this.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
-                    this.AvatarID = _int;
                 if(int.TryParse(dr["SDistrict"].ToString(), out _int))
                     this.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
-                    result.DailyGoal = _int;
+                    this.DailyGoal = _int;
+                this.AvatarState = dr["AvatarState"].ToString();
                 if (int.TryParse(dr["GoalCache"].ToString(), out _int))
-                    result.GoalCache = _int;
+                    this.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     this.TenID = _int;
                 if(int.TryParse(dr["FldInt1"].ToString(), out _int))
@@ -505,10 +494,10 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("@Custom3", this.Custom3 ?? string.Empty));
             parameters.Add(new SqlParameter("@Custom4", this.Custom4 ?? string.Empty));
             parameters.Add(new SqlParameter("@Custom5", this.Custom5 ?? string.Empty));
-            parameters.Add(new SqlParameter("@AvatarID", this.AvatarID));
             parameters.Add(new SqlParameter("@SDistrict", this.SDistrict));
             parameters.Add(new SqlParameter("@DailyGoal", this.DailyGoal));
             parameters.Add(new SqlParameter("@GoalCache", this.GoalCache));
+            parameters.Add(new SqlParameter("@AvatarState", this.AvatarState));
 
 
             parameters.Add(new SqlParameter("@TenID", this.TenID));
@@ -567,6 +556,7 @@ namespace GRA.SRP.DAL {
             //int iReturn = -1; //assume the worst
 
             SqlParameter[] arrParams = new SqlParameter[63];
+
 
             string passwordHash = null;
             if(!string.IsNullOrEmpty(this.NewPassword)) {
@@ -632,9 +622,10 @@ namespace GRA.SRP.DAL {
             arrParams[40] = new SqlParameter("@Custom3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom3, this.Custom3.GetTypeCode()));
             arrParams[41] = new SqlParameter("@Custom4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom4, this.Custom4.GetTypeCode()));
             arrParams[42] = new SqlParameter("@Custom5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Custom5, this.Custom5.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@AvatarID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.AvatarID, this.AvatarID.GetTypeCode()));
-            arrParams[44] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SDistrict, this.SDistrict.GetTypeCode()));
-            arrParams[45] = new SqlParameter("@DailyGoal", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DailyGoal, this.DailyGoal.GetTypeCode()));
+            arrParams[43] = new SqlParameter("@SDistrict", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SDistrict, this.SDistrict.GetTypeCode()));
+            arrParams[44] = new SqlParameter("@DailyGoal", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DailyGoal, this.DailyGoal.GetTypeCode()));
+            arrParams[45] = new SqlParameter("@AvatarState", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.AvatarState, this.AvatarState.GetTypeCode()));
+
             arrParams[46] = new SqlParameter("@GoalCache", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.GoalCache, this.GoalCache.GetTypeCode()));
 
 
@@ -911,12 +902,11 @@ namespace GRA.SRP.DAL {
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
-                    result.AvatarID = _int;
                 if(int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                result.AvatarState = dr["AvatarState"].ToString();
                 if (int.TryParse(dr["GoalCache"].ToString(), out _int))
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
@@ -1035,12 +1025,11 @@ namespace GRA.SRP.DAL {
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["AvatarID"].ToString(), out _int))
-                    result.AvatarID = _int;
                 if(int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
+                result.AvatarState = dr["AvatarState"].ToString();
                 if (int.TryParse(dr["GoalCache"].ToString(), out _int))
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))

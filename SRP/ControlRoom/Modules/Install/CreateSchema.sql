@@ -1,168 +1,3 @@
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Delete]    Script Date: 2/4/2016 13:18:40 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_Delete] @AID INT,
-	@TenID INT = NULL
-AS
-DELETE
-FROM [Avatar]
-WHERE AID = @AID
-	AND TenID = @TenID
-GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetAll]    Script Date: 2/4/2016 13:18:40 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_GetAll] @TenID INT = NULL
-AS
-SELECT *
-FROM [Avatar]
-WHERE (
-		TenID = @TenID
-		OR @TenID IS NULL
-		)
-GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetByID]    Script Date: 2/4/2016 13:18:40 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_GetByID] @AID INT
-AS
-SELECT *
-FROM [Avatar]
-WHERE AID = @AID
-GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Insert]    Script Date: 2/4/2016 13:18:40 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_Insert] (
-	@Name VARCHAR(50),
-	@Gender VARCHAR(1),
-	@LastModDate DATETIME,
-	@LastModUser VARCHAR(50),
-	@AddedDate DATETIME,
-	@AddedUser VARCHAR(50),
-	@TenID INT = 0,
-	@FldInt1 INT = 0,
-	@FldInt2 INT = 0,
-	@FldInt3 INT = 0,
-	@FldBit1 BIT = 0,
-	@FldBit2 BIT = 0,
-	@FldBit3 BIT = 0,
-	@FldText1 TEXT = '',
-	@FldText2 TEXT = '',
-	@FldText3 TEXT = '',
-	@AID INT OUTPUT
-	)
-AS
-BEGIN
-	INSERT INTO Avatar (
-		NAME,
-		Gender,
-		LastModDate,
-		LastModUser,
-		AddedDate,
-		AddedUser,
-		TenID,
-		FldInt1,
-		FldInt2,
-		FldInt3,
-		FldBit1,
-		FldBit2,
-		FldBit3,
-		FldText1,
-		FldText2,
-		FldText3
-		)
-	VALUES (
-		@Name,
-		@Gender,
-		@LastModDate,
-		@LastModUser,
-		@AddedDate,
-		@AddedUser,
-		@TenID,
-		@FldInt1,
-		@FldInt2,
-		@FldInt3,
-		@FldBit1,
-		@FldBit2,
-		@FldBit3,
-		@FldText1,
-		@FldText2,
-		@FldText3
-		)
-
-	SELECT @AID = SCOPE_IDENTITY()
-
-	SELECT @AID
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Update]    Script Date: 2/4/2016 13:18:40 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_Update] (
-	@AID INT,
-	@Name VARCHAR(50),
-	@Gender VARCHAR(1),
-	@LastModDate DATETIME,
-	@LastModUser VARCHAR(50),
-	@AddedDate DATETIME,
-	@AddedUser VARCHAR(50),
-	@TenID INT = 0,
-	@FldInt1 INT = 0,
-	@FldInt2 INT = 0,
-	@FldInt3 INT = 0,
-	@FldBit1 BIT = 0,
-	@FldBit2 BIT = 0,
-	@FldBit3 BIT = 0,
-	@FldText1 TEXT = '',
-	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
-	)
-AS
-UPDATE Avatar
-SET NAME = @Name,
-	Gender = @Gender,
-	LastModDate = @LastModDate,
-	LastModUser = @LastModUser,
-	AddedDate = @AddedDate,
-	AddedUser = @AddedUser,
-	TenID = @TenID,
-	FldInt1 = @FldInt1,
-	FldInt2 = @FldInt2,
-	FldInt3 = @FldInt3,
-	FldBit1 = @FldBit1,
-	FldBit2 = @FldBit2,
-	FldBit3 = @FldBit3,
-	FldText1 = @FldText1,
-	FldText2 = @FldText2,
-	FldText3 = @FldText3
-WHERE AID = @AID
-	AND TenID = @TenID
-GO
 
 /****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -7566,11 +7401,11 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom3, '') AS [Custom3],
 	isNull(p.Custom4, '') AS [Custom4],
 	isNull(p.Custom5, '') AS [Custom5],
-	isNull(p.AvatarID, 0) AS [AvatarID],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
 	isNull(p.SDistrict, 0) AS [SDistrict],
 	isNull(p.DailyGoal, 0) AS [DailyGoal],
-	isNull(p.GoalCache, 0) AS [GoalCache],
+	isNull(p.AvatarState, '') AS [AvatarState],
+	isNull(p.GoalCache, '') AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
@@ -7716,9 +7551,9 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Custom3 VARCHAR(50),
 	@Custom4 VARCHAR(50),
 	@Custom5 VARCHAR(50),
-	@AvatarID INT,
 	@SDistrict INT,
 	@DailyGoal INT,
+	@AvatarState VARCHAR(50),
 	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -7783,9 +7618,9 @@ BEGIN
 		Custom3,
 		Custom4,
 		Custom5,
-		AvatarID,
 		SDistrict,
 		DailyGoal,
+		AvatarState,
 		GoalCache,
 		TenID,
 		FldInt1,
@@ -7847,9 +7682,9 @@ BEGIN
 		@Custom3,
 		@Custom4,
 		@Custom5,
-		@AvatarID,
 		@SDistrict,
 		@DailyGoal,
+		@AvatarState,
 		@GoalCache,
 		@TenID,
 		@FldInt1,
@@ -7924,9 +7759,9 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@Custom3 VARCHAR(50),
 	@Custom4 VARCHAR(50),
 	@Custom5 VARCHAR(50),
-	@AvatarID INT,
 	@SDistrict INT,
 	@DailyGoal INT,
+	@AvatarState VARCHAR(50),
 	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -7989,9 +7824,9 @@ SET IsMasterAccount = @IsMasterAccount,
 	Custom3 = @Custom3,
 	Custom4 = @Custom4,
 	Custom5 = @Custom5,
-	AvatarID = @AvatarID,
 	SDistrict = @SDistrict,
 	DailyGoal = @DailyGoal,
+	AvatarState = @AvatarState,
 	GoalCache = @GoalCache,
 	TenID = @TenID,
 	FldInt1 = @FldInt1,
@@ -8393,16 +8228,14 @@ IF @TenID IS NULL
 
 SELECT TOP 10 pp.PID,
 	isnull(SUM(isnull(convert(BIGINT, NumPoints), 0)), 0) AS TotalPoints,
-	p.Username,
-	p.AvatarID
+	p.Username
 INTO #TempLB
 FROM PatronPoints pp
 INNER JOIN Patron p ON pp.PID = p.PID
 	AND p.TenID = @TenID
 WHERE p.ProgID = @ProgId
 GROUP BY pp.PID,
-	p.Username,
-	p.AvatarID
+	p.Username
 ORDER BY TotalPoints DESC
 
 UPDATE #TempLB
@@ -8411,7 +8244,6 @@ WHERE TotalPoints > 20000000
 
 SELECT PID,
 	Username,
-	AvatarID,
 	CONVERT(INT, TotalPoints) AS TotalPoints,
 	ROW_NUMBER() OVER (
 		ORDER BY TotalPoints DESC
@@ -22740,10 +22572,10 @@ CREATE TABLE [dbo].[Patron] (
 	[Custom3] [varchar](50) NULL,
 	[Custom4] [varchar](50) NULL,
 	[Custom5] [varchar](50) NULL,
-	[AvatarID] [int] NULL,
 	[RegistrationDate] [datetime] NULL,
 	[DailyGoal] [int] NULL,
 	[GoalCache] [int] NULL,
+	[AvatarState] [int] NULL,
 	[SDistrict] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,

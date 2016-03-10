@@ -1,14 +1,9 @@
 ﻿
-CREATE PROCEDURE [dbo].[app_AvatarPart_GetAll] @PID INT = NULL
+CREATE PROCEDURE [dbo].[app_AvatarPartrGetAll] @TenID INT = NULL
 AS
-SELECT
-	a.*
-FROM [PatronBadges] pb
-INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
-WHERE pb.PID = @PID
-UNION ALL
-SELECT 
-    a.*
-FROM [AvatarPart] a
-WHERE a.BadgeID = -1
-ORDER BY ComponentID DESC
+SELECT *
+FROM [AvatarPart]
+WHERE (
+		TenID = @TenID
+		OR @TenID IS NULL
+		)

@@ -1,0 +1,6 @@
+﻿
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetByID] @APID INT
+AS
+SELECT *
+FROM [AvatarPart]
+WHERE APID = @APID

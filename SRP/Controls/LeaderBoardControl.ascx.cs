@@ -15,10 +15,10 @@ namespace GRA.SRP.Controls {
 
         }
 
-        protected string AvatarImage(string avatarId) {
+        protected string AvatarImage(string patronId) {
             string avatarPath = "~/Images/Avatars/no_avatar_sm.png";
-            string potentialAvatarPath = string.Format("~/Images/Badges/{0}_sm.png",
-                                                      avatarId);
+            string potentialAvatarPath = string.Format("~/Images/AvatarCache/{0}_sm.png",
+                                                      patronId);
             if(System.IO.File.Exists(Server.MapPath(potentialAvatarPath))) {
                 avatarPath = potentialAvatarPath;
             }

@@ -582,6 +582,7 @@ namespace GRA.SRP.Controls {
 
                 int goalValue = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
                 p.DailyGoal = goalValue;
+                p.AvatarState = "";
 
                 if (ViewState["ActivityTypeId"] != null)
                 {

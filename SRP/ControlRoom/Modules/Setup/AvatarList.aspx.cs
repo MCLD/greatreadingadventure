@@ -108,10 +108,10 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 try
                 {
 
-                    var obj = new Avatar();
+                    var obj = new AvatarPart();
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
-                        obj.GetAvatar(key).Delete();
+                        obj.GetAvatarPart(key).Delete();
 
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;

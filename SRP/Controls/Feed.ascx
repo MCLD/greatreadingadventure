@@ -44,7 +44,7 @@
                             if (entry["ID"] > feedLatest) {
                                 addedRows++;
                                 html.push('<tr class="animated bounceInLeft"><td class="feed-avatar">');
-                                html.push('<img Width="24" Height="24" src="' + feedRootPath + 'Images/Avatars/sm_' + entry.AvatarId + '.png" class="margin-1em-right"/></td>');
+                                html.push('<img Width="24" Height="24" src="' + feedRootPath + 'Images/AvatarCache/sm_' + entry.PatronId + '.png" class="margin-1em-right"/></td>');
                                 html.push('<td><strong>' + entry.Username + '</strong>');
                                 switch (entry.AwardReasonId) {
                                     case 1:

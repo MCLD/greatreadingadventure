@@ -15,7 +15,7 @@ namespace GRA.SRP.Handlers
     public class JsonFeedEntry
     {
         public int ID { get; set; }
-        public int AvatarId { get; set; }
+        public int PatronId { get; set; }
         public string Username { get; set; }
         public string AwardedAt { get; set; }
         public int AwardReasonId { get; set; }
@@ -63,7 +63,6 @@ namespace GRA.SRP.Handlers
             int after = 0;
             int.TryParse(context.Request.QueryString["after"], out after);
 
-            //p.[AvatarID], p.[Username], bl.ListName, b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId]
             try
             {
                 var feed = new ActivityFeed().Latest(after, tenantId);
@@ -72,7 +71,7 @@ namespace GRA.SRP.Handlers
                     var entry = new JsonFeedEntry
                     {
                         ID = (int)dataRow["PPID"],
-                        AvatarId = (int)dataRow["AvatarID"],
+                        PatronId = (int)dataRow["PID"],
                         Username = (string)dataRow["Username"],
                         AwardedAt = ((DateTime)dataRow["AwardDate"]).ToString(),
                         AwardReasonId = (int)dataRow["AwardReasonCd"],

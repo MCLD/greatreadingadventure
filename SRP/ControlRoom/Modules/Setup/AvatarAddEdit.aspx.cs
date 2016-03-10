@@ -69,7 +69,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 try
                 {
-                    var obj = new Avatar();
+                    var obj = new AvatarPart();
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
                     obj.Gender = "O";//"((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
                     obj.AddedDate = DateTime.Now;
@@ -84,9 +84,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         try {
                             var badgePath = string.Format(Server.MapPath("~/images/Avatars/"));
                             System.IO.File.Copy(string.Format("{0}no_avatar.png", badgePath),
-                                                string.Format("{0}{1}.png", badgePath, obj.AID));
+                                                string.Format("{0}{1}.png", badgePath, obj.APID));
                             System.IO.File.Copy(string.Format("{0}no_avatar_sm.png", badgePath),
-                                                string.Format("{0}sm_{1}.png", badgePath, obj.AID));
+                                                string.Format("{0}sm_{1}.png", badgePath, obj.APID));
                         } catch(Exception ex) {
                             this.Log().Error("Couldn't copy no_avatar images into new avatar: {0}",
                                              ex.Message);
@@ -98,7 +98,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                             Response.Redirect(returnURL);
                         }
 
-                        lblPK.Text = obj.AID.ToString();
+                        lblPK.Text = obj.APID.ToString();
 
                         odsData.DataBind();
                         dv.DataBind();
@@ -131,9 +131,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 try
                 {
-                    var obj = new Avatar();
+                    var obj = new AvatarPart();
                     int pk = int.Parse(lblPK.Text);
-                    obj = obj.GetAvatar(pk);
+                    obj = obj.GetAvatarPart(pk);
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
                     obj.Gender = "O";//"((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
                     obj.LastModDate = DateTime.Now;

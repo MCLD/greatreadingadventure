@@ -48,11 +48,11 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom3, '') AS [Custom3],
 	isNull(p.Custom4, '') AS [Custom4],
 	isNull(p.Custom5, '') AS [Custom5],
-	isNull(p.AvatarID, 0) AS [AvatarID],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
 	isNull(p.SDistrict, 0) AS [SDistrict],
 	isNull(p.DailyGoal, 0) AS [DailyGoal],
-
+	isNull(p.AvatarState, '') AS [AvatarState],
+	isNull(p.GoalCache, '') AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
