@@ -7,7 +7,7 @@
     <ProjectGuid>{FC9B54A0-0F1C-4472-8C4E-0E8296C51388}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GRA.SRP.Utilities</RootNamespace>
+    <RootNamespace>GRA.SRP.Core.Utilities</RootNamespace>
     <AssemblyName>SRPUtilities</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

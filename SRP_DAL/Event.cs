@@ -661,6 +661,17 @@ namespace GRA.SRP.DAL
                 "app_Event_Filter",
                 arrParams.ToArray());
         }
+
+        public static DataSet GetExport()
+        {
+            var arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
+            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_Export", arrParams);
+        }
     }//end class
 
 }//end namespace

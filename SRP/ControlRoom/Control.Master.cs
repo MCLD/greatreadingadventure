@@ -24,7 +24,8 @@ namespace GRA.SRP.ControlRoom
                     FormsAuthentication.RedirectToLoginPage();
                 }
             }
-            if(Session[CRSessionKey.CRMessage] != null) {
+            if (Session[CRSessionKey.CRMessage] != null)
+            {
                 this.PageTitle = "Great Reading Adventure - Control Room<BR> &nbsp;Notification";
                 this.PageError = Session[CRSessionKey.CRMessage].ToString();
                 this.DisplayMessageOnLoad = true;
@@ -35,47 +36,37 @@ namespace GRA.SRP.ControlRoom
             lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             pnlMessage.Visible = DisplayMessageOnLoad;
         }
-        public CRRibbon PageRibbon
-        {
-            get
-            {
+        public CRRibbon PageRibbon {
+            get {
                 return CRRibbonCtl;
             }
         }
 
-        public  bool DisplayMessageOnLoad
-        {
+        public bool DisplayMessageOnLoad {
             get;
             set;
         }
 
-        public  string PageTitle
-        {
-            get
-            {
+        public string PageTitle {
+            get {
                 return lblPageTitle.Text;
             }
-            set
-            {
+            set {
                 lblPageTitle.Text = value;
                 lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             }
         }
 
-        public   string PageError
-        {
-            set
-            {
+        public string PageError {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.Red); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
                 imgMessage.ImageUrl = "~/ControlRoom/Images/Error.png";
             }
         }
-        public   string PageWarning
-        {
-            set
-            {
+        public string PageWarning {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.DarkGray); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
@@ -83,10 +74,8 @@ namespace GRA.SRP.ControlRoom
             }
 
         }
-        public   string PageMessage
-        {
-            set
-            {
+        public string PageMessage {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.Black); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
@@ -96,14 +85,11 @@ namespace GRA.SRP.ControlRoom
         }
 
         private bool _isSecurePage = true;
-        public virtual bool IsSecure
-        {
-            get
-            {
+        public virtual bool IsSecure {
+            get {
                 return _isSecurePage;
             }
-            set
-            {
+            set {
                 _isSecurePage = value;
                 if (_isSecurePage)
                 {
@@ -116,12 +102,9 @@ namespace GRA.SRP.ControlRoom
         }
 
         private long _requiredPermission = 0;
-        public long RequiredPermission
-        {
-            get
-            { return _requiredPermission; }
-            set
-            {
+        public long RequiredPermission {
+            get { return _requiredPermission; }
+            set {
                 _requiredPermission = value;
                 CheckPermissions(_requiredPermission);
             }
@@ -147,9 +130,10 @@ namespace GRA.SRP.ControlRoom
                     string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
                     if (!permList.Contains(permissionValue.ToString()))
                     {
-                        Response.Redirect("~/ControlRoom/NoAccess.aspx",false);
+                        Response.Redirect("~/ControlRoom/NoAccess.aspx", false);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     this.Log().Error("Error checking permissions: {0}", ex.Message);
                     Response.Redirect("~/ControlRoom/Login.aspx");

@@ -333,6 +333,20 @@ INSERT INTO SRPPermissionsMaster (
 	[MODID]
 	)
 VALUES (
+	5400,
+	'Import/Export Management',
+	'Allows access to import/export of program management items.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
 	8000,
 	'Master Tenant Administrator',
 	'Allows access to the tenant maintenance screens.',

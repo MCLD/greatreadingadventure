@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,14 +14,13 @@ namespace GRA.SRP.Core.Utilities
     {
         public virtual string Version { get { return "1.0"; } }
 
-            public EntityBase()
+        public EntityBase()
         {
             ErrorCodes = new List<BusinessRulesValidationMessage>();
         }
 
 
-        public List<BusinessRulesValidationMessage> ErrorCodes
-        {
+        public List<BusinessRulesValidationMessage> ErrorCodes {
             get;
             set;
         }
@@ -81,7 +79,7 @@ namespace GRA.SRP.Core.Utilities
         }
 
 
-        public static string ProperCase(string stringInput) 
+        public static string ProperCase(string stringInput)
         {
             //Get the culture property of the thread.
             CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;

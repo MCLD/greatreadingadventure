@@ -17,7 +17,8 @@ using Newtonsoft.Json;
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class Avatar : EntityBase
+    [Serializable]
+    public class Avatar : EntityBase
     {
         public static new string Version { get { return "2.0"; } }
 
@@ -48,98 +49,81 @@ namespace GRA.SRP.DAL
 
         #region Accessors
 
-        public int AID
-        {
+        public int AID {
             get { return myAID; }
             set { myAID = value; }
         }
-        public string Name
-        {
+        public string Name {
             get { return myName; }
             set { myName = value; }
         }
-        public string Gender
-        {
+        public string Gender {
             get { return myGender; }
             set { myGender = value; }
         }
-        public DateTime LastModDate
-        {
+        public DateTime LastModDate {
             get { return myLastModDate; }
             set { myLastModDate = value; }
         }
-        public string LastModUser
-        {
+        public string LastModUser {
             get { return myLastModUser; }
             set { myLastModUser = value; }
         }
-        public DateTime AddedDate
-        {
+        public DateTime AddedDate {
             get { return myAddedDate; }
             set { myAddedDate = value; }
         }
-        public string AddedUser
-        {
+        public string AddedUser {
             get { return myAddedUser; }
             set { myAddedUser = value; }
         }
 
-        public int TenID
-        {
+        public int TenID {
             get { return myTenID; }
             set { myTenID = value; }
         }
 
-        public int FldInt1
-        {
+        public int FldInt1 {
             get { return myFldInt1; }
             set { myFldInt1 = value; }
         }
 
-        public int FldInt2
-        {
+        public int FldInt2 {
             get { return myFldInt2; }
             set { myFldInt2 = value; }
         }
 
-        public int FldInt3
-        {
+        public int FldInt3 {
             get { return myFldInt3; }
             set { myFldInt3 = value; }
         }
 
-        public bool FldBit1
-        {
+        public bool FldBit1 {
             get { return myFldBit1; }
             set { myFldBit1 = value; }
         }
 
-        public bool FldBit2
-        {
+        public bool FldBit2 {
             get { return myFldBit2; }
             set { myFldBit2 = value; }
         }
 
-        public bool FldBit3
-        {
+        public bool FldBit3 {
             get { return myFldBit3; }
             set { myFldBit3 = value; }
         }
 
-        public string FldText1
-        {
+        public string FldText1 {
             get { return myFldText1; }
             set { myFldText1 = value; }
         }
 
-        public string FldText2
-        {
+        public string FldText2 {
             get { return myFldText2; }
             set { myFldText2 = value; }
         }
 
-        public string FldText3
-        {
+        public string FldText3 {
             get { return myFldText3; }
             set { myFldText3 = value; }
         }
@@ -167,10 +151,10 @@ namespace GRA.SRP.DAL
             var arrParams = new SqlParameter[1];
             if (forCurrentTenantOnly)
             {
-                arrParams[0] = new SqlParameter("@TenID", 
-                    (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? 
-                            -1 : 
-                            (int) HttpContext.Current.Session["TenantID"])
+                arrParams[0] = new SqlParameter("@TenID",
+                    (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                            -1 :
+                            (int)HttpContext.Current.Session["TenantID"])
                 );
             }
             else
@@ -189,7 +173,8 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Avatar_GetAll", arrParams);
         }
 
-        public class DdslickData {
+        public class DdslickData
+        {
             public string text { get; set; }
             public int value { get; set; }
             public bool selected { get; set; }
@@ -197,12 +182,14 @@ namespace GRA.SRP.DAL
             public string description { get; set; }
         }
 
-        public static string  GetJSONForSelection(int selected)
+        public static string GetJSONForSelection(int selected)
         {
             var ds = GetAll();
             var avatars = new List<DdslickData>();
-            foreach(DataRow row in ds.Tables[0].Rows) {
-                var avatar = new DdslickData {
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                var avatar = new DdslickData
+                {
                     text = (string)row["Name"],
                     value = (int)row["AID"],
                     selected = (int)row["AID"] == selected,
@@ -497,9 +484,9 @@ namespace GRA.SRP.DAL
             {
                 var fileName = (HttpContext.Current.Server.MapPath("~/Images/Avatars/") + "\\" + o.AID.ToString() + ".png");
                 File.Delete(fileName);
-                fileName = (HttpContext.Current.Server.MapPath("~/Images/Avatars/") + "\\sm_" + o.AID.ToString() + ".png"); 
+                fileName = (HttpContext.Current.Server.MapPath("~/Images/Avatars/") + "\\sm_" + o.AID.ToString() + ".png");
                 File.Delete(fileName);
-                fileName = (HttpContext.Current.Server.MapPath("~/Images/Avatars/") + "\\md_" + o.AID.ToString() + ".png"); 
+                fileName = (HttpContext.Current.Server.MapPath("~/Images/Avatars/") + "\\md_" + o.AID.ToString() + ".png");
                 File.Delete(fileName);
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Avatar_Delete", arrParams);
