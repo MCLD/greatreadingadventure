@@ -2983,6 +2983,33 @@ FROM [Event]
 WHERE EID = @EID
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_Event_Export]    Script Date: 3/14/2016 11:11:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_Event_Export]    Script Date: 3/14/2016 11:11:41 ******/
+CREATE PROCEDURE [dbo].[app_Event_Export] @TenID INT = NULL
+AS
+SELECT e.[EventTitle] AS [Name],
+	e.[EventDate] AS [Date],
+	e.[HTML] AS [Description],
+	e.[SecretCode],
+	e.[NumberPoints] AS [PointsEarned],
+	e.[ExternalLinkToEvent] AS [Link],
+	e.[HiddenFromPublic],
+	c.[Code] AS [Branch]
+FROM [Event] e
+LEFT OUTER JOIN [Code] c ON e.[BranchID] = c.[CID]
+WHERE (
+		e.[TenID] = @TenID
+		OR @TenID IS NULL
+		)
+ORDER BY e.[EventDate]
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_Event_Filter]    Script Date: 2/29/2016 11:31:24 ******/
 SET ANSI_NULLS ON
 GO
