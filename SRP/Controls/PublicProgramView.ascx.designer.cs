@@ -11,5 +11,50 @@ namespace GRA.SRP.Classes {
     
     
     public partial class PublicProgramView {
+        
+        /// <summary>
+        /// RegisterLoginPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel RegisterLoginPanel;
+        
+        /// <summary>
+        /// NotYetPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel NotYetPanel;
+        
+        /// <summary>
+        /// NotStartedField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label NotStartedField;
+        
+        /// <summary>
+        /// AlreadyOverPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel AlreadyOverPanel;
+        
+        /// <summary>
+        /// ProgramAlreadyOver control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ProgramAlreadyOver;
     }
 }

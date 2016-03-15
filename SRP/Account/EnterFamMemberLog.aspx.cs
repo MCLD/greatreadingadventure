@@ -13,24 +13,32 @@ namespace GRA.SRP
 {
     public partial class EnterFamMemberLog : BaseSRPPage
     {
-       protected void Page_PreRender(object sender, EventArgs e) {
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
             var patron = Session["Patron"] as Patron;
-            if(patron == null) {
+            if (patron == null)
+            {
                 Response.Redirect("~");
             }
 
             var pgm = DAL.Programs.FetchObject(patron.ProgID);
-            if(pgm == null) {
+            if (pgm == null)
+            {
                 pgm = Programs.FetchObject(
                     Programs.GetDefaultProgramForAgeAndGrade(patron.Age,
                                                              patron.SchoolGrade.SafeToInt()));
             }
 
-            if(pgm == null || !pgm.IsOpen) {
-                NotYet.Text = pgm.HTML6;
+            if (pgm == null || !pgm.IsOpen)
+            {
+                string notOpenText = pgm.HTML6.Contains("{0}")
+                    ? string.Format(pgm.HTML6, pgm.LoggingStart.ToLongDateString())
+                    : pgm.HTML6;
+                NotYet.Text = Server.HtmlDecode(notOpenText);
                 NotYet.Visible = true;
                 FamilyCodeControl.Visible = false;
-            } else {
+            }
+            else {
                 NotYet.Visible = false;
                 FamilyCodeControl.Visible = true;
             }
@@ -39,7 +47,8 @@ namespace GRA.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             IsSecure = true;
-            if(!IsPostBack) {
+            if (!IsPostBack)
+            {
                 TranslateStrings(this);
             }
         }

@@ -303,9 +303,9 @@ small.dd-desc {
     color: black !important;
 }
 
-.adventure-card:hover {
-    text-decoration: none;
-}
+    .adventure-card:hover {
+        text-decoration: none;
+    }
 
 .adventure-caption-container {
     padding-top: 0.2em;
@@ -340,15 +340,29 @@ small.dd-desc {
 }
 
 @-webkit-keyframes gra-spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 @keyframes gra-spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
 
 .gra-search-active {
     border-color: forestgreen !important;
+}
+
+.code-glow {
+    box-shadow: 0 0 5px #ff00de , 0 0 10px #ff00de , 0 0 15px #ff00de , 0 0 20px #ff00de;
 }

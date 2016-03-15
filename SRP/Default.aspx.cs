@@ -12,7 +12,6 @@ namespace SRP {
                 Session["ProgramID"] = Request["PID"].ToString();
             }
             if(!IsPostBack) {
-
                 if(Session["ProgramID"] == null) {
                     try {
                         int PID = Programs.GetDefaultProgramID();
@@ -24,8 +23,6 @@ namespace SRP {
                 } else {
                     //pgmID.Text = Session["ProgramID"].ToString();
                 }
-
-
             }
             TranslateStrings(this);
         }

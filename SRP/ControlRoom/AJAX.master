@@ -60,7 +60,7 @@
         }
     </style>
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/moment.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
@@ -77,8 +77,8 @@
         <center>
         <div id="cdBodyDiv">
 
-            <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
-            </asp:ToolkitScriptManager>
+            <asp:ScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
+            </asp:ScriptManager>
             <div class="cdTop">
                 <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
                 <div style="text-align: left; ">				

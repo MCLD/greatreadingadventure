@@ -46,7 +46,7 @@ namespace GRA.SRP.ControlRoom {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        public global::AjaxControlToolkit.ToolkitScriptManager ToolkitScriptManager1;
+        public global::System.Web.UI.ScriptManager ToolkitScriptManager1;
         
         /// <summary>
         /// CRTopMenu1 control.
