@@ -91,6 +91,9 @@ namespace GRA.SRP.Controls {
                 //Session["ProgramID"] = bp.ProgID;
                 //Session["TenantID"] = bp.TenID;
 
+                TestingBL.CheckPatronNeedsPreTest();
+                TestingBL.CheckPatronNeedsPreTest();
+
                 Response.Redirect("~");
             }
         }

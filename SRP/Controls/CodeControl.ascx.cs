@@ -11,10 +11,8 @@ using System.Web.UI.WebControls;
 namespace GRA.SRP.Controls {
     public partial class CodeControl : System.Web.UI.UserControl {
         protected void Page_Load(object sender, EventArgs e) {
-            if (codeEntryField.CssClass.Contains("code-glow"))
-            {
-                codeEntryField.CssClass = codeEntryField.CssClass.Replace("code-glow", string.Empty);
-            }
+            var wt = new WebTools();
+            codeEntryField.CssClass = wt.CssRemoveClass(codeEntryField.CssClass, "code-glow");
 
             if (!IsPostBack) {
                 if(Session["Patron"] == null) {
@@ -33,10 +31,7 @@ namespace GRA.SRP.Controls {
                 if(storedCode != null && !string.IsNullOrWhiteSpace(storedCode.ToString()))
                 {
                     codeEntryField.Text = storedCode.ToString();
-                    if(!codeEntryField.CssClass.Contains("code-glow"))
-                    {
-                        codeEntryField.CssClass += " code-glow";
-                    }
+                    codeEntryField.CssClass = wt.CssEnsureClass(codeEntryField.CssClass, "code-glow");
                 
                     Session.Remove(SessionKey.SecretCode);
                     new SessionTools(Session).AlertPatron(

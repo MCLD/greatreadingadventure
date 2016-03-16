@@ -8,11 +8,11 @@ namespace SRPApp.Classes
     public class BaseSRPMaster : System.Web.UI.MasterPage
     {
         #region Properties
-        
+
         public int UID = 1;
         public string PageTitle { get; set; }
 
-        public string SRPPageName= string.Empty;
+        public string SRPPageName = string.Empty;
         public int SRPPageID = -1;
 
         //public DataSet Template ;
@@ -22,13 +22,12 @@ namespace SRPApp.Classes
         protected BaseSRPPage SRPPage;
         public ResourceManager rm = null;
 
+        public bool PatronTakingTest { get; set; }
         #endregion
-
-
 
         protected void PageLoad(object sender, EventArgs e)
         {
-            try {SRPPage = (BaseSRPPage)this.Page;} catch {}
+            try { SRPPage = (BaseSRPPage)this.Page; } catch { }
 
             //Template = SRPTemplateHelper.GetTemplate(UID);
             //Widgets = SRPTemplateHelper.GetTemplateWidgets(UID);
@@ -41,7 +40,7 @@ namespace SRPApp.Classes
             //var objCi = new CultureInfo(strCulture);
             //Thread.CurrentThread.CurrentCulture = objCi;
             //Thread.CurrentThread.CurrentUICulture = objCi;
-            
+
             //String strResourcesPath = Server.MapPath("~/Resources");
             //rm = ResourceManager.CreateFileBasedResourceManager("program.default", strResourcesPath, null);
 
@@ -68,7 +67,7 @@ namespace SRPApp.Classes
             //Thread.CurrentThread.CurrentUICulture = objCI;
             //String strResourcesPath = Server.MapPath("~/Resources");
             //rm = ResourceManager.CreateFileBasedResourceManager(strpgm, strResourcesPath, null);
-             
+
         }
 
     }

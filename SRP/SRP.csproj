@@ -52,6 +52,10 @@
       <HintPath>..\packages\AjaxMin.5.14.5506.26202\lib\net40\AjaxMin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ApplicationAssemblyUtility, Version=1.2.1.19051, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ApplicationAssemblyUtility.1.2.1\lib\net40\ApplicationAssemblyUtility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\DocumentFormat.OpenXml.dll</HintPath>
@@ -167,10 +171,15 @@
     <Content Include="Content\odometer-theme-default.css" />
     <Content Include="ControlRoom\Controls\OpenBadgesBadgeMaker.ascx" />
     <Content Include="ControlRoom\Images\CircularProgressAnimation2.gif" />
+    <Content Include="ControlRoom\Modules\About\Default.aspx" />
     <Content Include="ControlRoom\Modules\Settings\TestEmail.aspx" />
     <Content Include="ControlRoom\Modules\Setup\IEEvents.aspx" />
     <Content Include="ControlRoom\RibbonImages\Accounts%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Accounts.png" />
+    <Content Include="ControlRoom\RibbonImages\GitHub%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\GitHub.png" />
+    <Content Include="ControlRoom\RibbonImages\GRACompass%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\GRACompass.png" />
     <Content Include="ControlRoom\RibbonImages\GroupSecurity%402x.png" />
     <Content Include="ControlRoom\RibbonImages\GroupSecurity.png" />
     <Content Include="ControlRoom\RibbonImages\ImportExport%402x.png" />
@@ -181,6 +190,8 @@
     <Content Include="ControlRoom\RibbonImages\MorePatronInfo.png" />
     <Content Include="ControlRoom\RibbonImages\PatronInfo%402x.png" />
     <Content Include="ControlRoom\RibbonImages\PatronInfo.png" />
+    <Content Include="ControlRoom\RibbonImages\Share%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\Share.png" />
     <Content Include="ControlRoom\RibbonImages\SpecialReports%402x.png" />
     <Content Include="ControlRoom\RibbonImages\SpecialReports.png" />
     <Content Include="ControlRoom\RibbonImages\Styling%402x.png" />
@@ -1037,6 +1048,13 @@
     </Compile>
     <Compile Include="ControlRoom\Handlers\CodeAvailable.ashx.cs">
       <DependentUpon>CodeAvailable.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\About\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\About\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\Notifications\BulkNotification.aspx.cs">
       <DependentUpon>BulkNotification.aspx</DependentUpon>

@@ -59,29 +59,26 @@
             <tr>
                 <td colspan="8">
                     <asp:Panel ID="Panel1" runat="server" GroupingText=" Applicability Info" ScrollBars="Auto" Visible="True">
-                        <table width="100%">
-
+                        <table width="99%">
                             <tr>
-                                <td nowrap valign="top" width="5%"><b>Program: </b></td>
-                                <td colspan="1" valign="top" width="15%">
+                                <td nowrap style="padding-right: 0.5em;"><b>Program: </b></td>
+                                <td style="padding-right: 0.5em;">
                                     <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID"
-                                        AppendDataBoundItems="True">
+                                        AppendDataBoundItems="True" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
-
-                                <td nowrap valign="top" width="10%"><b>Branch/Library: </b></td>
-                                <td colspan="1" valign="top" width="15%">
+                                <td nowrap style="padding-right: 0.5em;"><b>Branch/Library: </b></td>
+                                <td style="padding-right: 0.5em;">
                                     <asp:DropDownList ID="LibraryID" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
-                                        AppendDataBoundItems="True">
+                                        AppendDataBoundItems="True" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
-
-                                <td nowrap valign="top"><b>Literacy Level 1: </b></td>
-                                <td colspan="1" valign="top" width="20%">
+                                <td nowrap style="padding-right: 0.5em;"><b>Literacy Level 1: </b></td>
+                                <td style="padding-right: 0.5em;">
                                     <asp:TextBox ID="LiteracyLevel1" runat="server" Text=''
-                                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                        ReadOnly="False" CssClass="align-right form-control"></asp:TextBox>
                                     <asp:RegularExpressionValidator ID="revLiteracyLevel1"
                                         ControlToValidate="LiteracyLevel1"
                                         ValidationExpression="\d+"
@@ -107,11 +104,10 @@
                                         EnableTheming="True"
                                         SetFocusOnError="True" />
                                 </td>
-
-                                <td nowrap valign="top"><b>Literacy Level 2: </b></td>
-                                <td colspan="1" valign="top" width="20%">
+                                <td nowrap style="padding-right: 0.5em;"><b>Literacy Level 2: </b></td>
+                                <td>
                                     <asp:TextBox ID="LiteracyLevel2" runat="server" Text=''
-                                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                                        ReadOnly="False" CssClass="align-right form-control"></asp:TextBox>
 
                                     <asp:RegularExpressionValidator ID="revLiteracyLevel2"
                                         ControlToValidate="LiteracyLevel2"
@@ -270,11 +266,53 @@
                     *Note: If you choose to create a new badge, you need to have the badge image ready for upload on the next step.
                 </td>
                 <td colspan="4" valign="top" width="900px">
-                    <img src="/controlroom/images/spacer.gif" height="23px" /><br />
-                    <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID" Width="500" Visible="true"
-                        AppendDataBoundItems="True" CssClass="form-control">
-                        <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
-                    </asp:DropDownList>
+                    <asp:Panel ID="ExistingBadgeSelection" runat="server">
+                        <table style="width: 600px;" class="margin-1em-bottom">
+                            <tr>
+                                <td style="width: 600px;">
+                                    <asp:TextBox ID="SearchText"
+                                        runat="server"
+                                        CssClass="form-control"
+                                        placeholder="Search for a badge"></asp:TextBox>
+                                </td>
+                                <td rowspan="2">
+                                    <asp:LinkButton runat="server"
+                                        OnClick="Search"
+                                        CssClass="btn btn-success margin-1em-left"
+                                        ForeColor="White"
+                                        ID="SearchButton">
+                                <span class="glyphicon glyphicon-search"></span>
+                                Filter badge list</asp:LinkButton>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:DropDownList ID="FilterBranchId"
+                                        runat="server"
+                                        DataSourceID="odsDDBranch"
+                                        DataTextField="Code"
+                                        DataValueField="CID"
+                                        AppendDataBoundItems="True"
+                                        CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Filter by library"></asp:ListItem>
+                                    </asp:DropDownList>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <asp:DropDownList ID="BadgeID"
+                            runat="server"
+                            DataSourceID="odsBadge"
+                            DataTextField="AdminName"
+                            DataValueField="BID"
+                            Width="500"
+                            Visible="true"
+                            AppendDataBoundItems="True"
+                            CssClass="form-control">
+                            <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
+                        </asp:DropDownList>
+                    </asp:Panel>
                 </td>
             </tr>
             <tr>
@@ -361,11 +399,11 @@
         <table width="100%" height="550px">
             <tr>
                 <td nowrap><b>Awards Physical Prize?: </b></td>
-                <td colspan="1">
+                <td>
                     <asp:CheckBox ID="IncludesPhysicalPrizeFlag" runat="server" Checked='False'></asp:CheckBox>
                 </td>
                 <td nowrap><b>Awarded Physical Prize Name: </b></td>
-                <td colspan="1">
+                <td>
                     <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='' Width="285px"></asp:TextBox>
                 </td>
             </tr>
@@ -602,8 +640,22 @@
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsBadge" runat="server"
-        SelectMethod="GetAll"
-        TypeName="GRA.SRP.DAL.Badge"></asp:ObjectDataSource>
+        SelectMethod="GetFiltered"
+        TypeName="GRA.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter
+                ControlID="SearchText"
+                Name="searchText"
+                PropertyName="Text"
+                Type="String" />
+            <asp:ControlParameter
+                ControlID="FilterBranchId"
+                DefaultValue="0"
+                Name="BranchId"
+                PropertyName="SelectedValue"
+                Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDBranch2" runat="server"
         SelectMethod="GetBadgeBranches"

@@ -121,6 +121,24 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
+        /// homeNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl homeNav;
+        
+        /// <summary>
+        /// mailNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mailNav;
+        
+        /// <summary>
         /// badgesNav control.
         /// </summary>
         /// <remarks>
@@ -164,6 +182,15 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl offersNav;
+        
+        /// <summary>
+        /// accountNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl accountNav;
         
         /// <summary>
         /// a control.

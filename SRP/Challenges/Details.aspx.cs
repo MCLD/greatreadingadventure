@@ -120,14 +120,18 @@ namespace GRA.SRP.Challenges {
                 string award = null;
 
                 if(bl.AwardPoints > 0) {
-                    award = string.Format("Completing this challenge will earn: <strong>{0} point{1}</strong>",
-                                          bl.AwardPoints,
-                                          bl.AwardPoints > 1 ? "s" : string.Empty);
+                    award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>{2} point{3}</strong>",
+                        bl.NumBooksToComplete,
+                        bl.NumBooksToComplete > 1 ? "s" : string.Empty,
+                        bl.AwardPoints,
+                        bl.AwardPoints > 1 ? "s" : string.Empty);
                 }
 
                 if(bl.AwardBadgeID > 0) {
                     if(string.IsNullOrWhiteSpace(award)) {
-                        award = "Completing this challenge will earn: <strong>a badge</strong>.";
+                        award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
+                            bl.NumBooksToComplete,
+                            bl.NumBooksToComplete > 1 ? "s" : string.Empty);
                     } else {
                         award += " and <strong>a badge</strong>.";
                     }
