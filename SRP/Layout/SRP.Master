@@ -30,7 +30,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
-    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
@@ -69,9 +69,9 @@
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
                             <span class="visible-xs-inline">Badges</span></a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
-                        <li class="<%=this.RegisterPageActive %>"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
+                        <li class="<%=this.RegisterPageActive %>" runat="server" id="LoggedOutRegister"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">navigation-button-register</asp:Label></a></li>
-                        <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
+                        <li class="<%=this.LoginPageActive %>" runat="server" id="LoggedOutLogin"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
                             <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
                         <%
                             } else {

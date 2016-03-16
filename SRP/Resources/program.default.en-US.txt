@@ -12,6 +12,8 @@ navigation-button-login=Login
 navigation-button-logout=Logout
 frontpage-button-register=Register Now
 frontpage-button-login=Login Now
+program-not-started=The program starts on {0}!
+program-already-over=The program ended {0}<br/>See you next year!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -240,6 +242,7 @@ secret-code-header=Secret code
 secret-code-description=Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!
 secret-code-prompt=Code:
 secret-code-submit=Submit
+secret-code-link=<strong>We've received a secret code for you!</strong>  Click the "Submit" button in the <em>Secret Code</em> section!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Books read
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

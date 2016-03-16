@@ -4,7 +4,7 @@
 <%@ Register src="../ControlRoom/Controls/QuestionPreview.ascx" tagname="QuestionPreview" tagprefix="uc1" %>
 
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
     </asp:PlaceHolder>
 
 <asp:Label ID="SRID" runat="server" Text="0" Visible="False"></asp:Label>
