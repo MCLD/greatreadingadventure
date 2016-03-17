@@ -12,7 +12,7 @@ using System.IO;
 
 namespace GRA.SRP.Controls {
     public partial class FamilyList : System.Web.UI.UserControl {
-        private const string NoAvatarPathSm = "~/images/Avatars/no_avatar_sm.png";
+        private const string NoAvatarPathSm = "~/images/AvatarCache/no_avatar_sm.png";
 
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
@@ -36,19 +36,20 @@ namespace GRA.SRP.Controls {
                || e.Item.ItemType == ListItemType.AlternatingItem) {
                 var patronRecord = (DataRowView)e.Item.DataItem;
                 var patronId = patronRecord["PID"].ToString();
+                var avatarState = patronRecord["AvatarState"].ToString();
 
                 string potentialAvatarPath = null;
                 string avatarPathSm = NoAvatarPathSm;
                 string avatarPathMd = null;
 
-                potentialAvatarPath = string.Format("~/images/Avatars/sm_{0}.png",
-                                                    patronId);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/sm_{0}.png",
+                                                    avatarState);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathSm = potentialAvatarPath;
                 }
 
-                potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
-                                                    patronId);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/md_{0}.png",
+                                                    avatarState);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathMd = potentialAvatarPath;
                 }

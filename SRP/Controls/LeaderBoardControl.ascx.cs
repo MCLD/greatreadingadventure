@@ -16,7 +16,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected string AvatarImage(string patronId) {
-            string avatarPath = "~/Images/Avatars/no_avatar_sm.png";
+            string avatarPath = "~/Images/AvatarCache/no_avatar_sm.png";
             string potentialAvatarPath = string.Format("~/Images/AvatarCache/{0}_sm.png",
                                                       patronId);
             if(System.IO.File.Exists(Server.MapPath(potentialAvatarPath))) {
@@ -37,7 +37,7 @@ namespace GRA.SRP.Controls {
                 var imageControl = (Image)e.Item.FindControl("SmallAvatar");
                 string potentialAvatarPath = imageControl.ImageUrl;
                 if(!System.IO.File.Exists(Server.MapPath(potentialAvatarPath))) {
-                    imageControl.ImageUrl = "~/Images/Avatars/no_avatar_sm.png";
+                    imageControl.ImageUrl = "~/Images/AvatarCache/no_avatar_sm.png";
                 }
             }
         }

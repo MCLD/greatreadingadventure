@@ -58,13 +58,13 @@
 
         <div class="avatar-edit">
             <asp:HiddenField id='componentState0' runat="server" />
-            <img id="componentImg0" class="avatar-layer" src="/images/Avatars/no_avatar.png"/>
+            <img id="componentImg0" class="avatar-layer" src="/images/AvatarCache/no_avatar.png"/>
             
             <asp:HiddenField id='componentState1' runat="server" />
-            <img id="componentImg1" class="avatar-layer" src="/images/Avatars/no_avatar.png" />
+            <img id="componentImg1" class="avatar-layer" src="/images/AvatarCache/no_avatar.png" />
 
             <asp:HiddenField id='componentState2' runat="server" />
-            <img id="componentImg2" class="avatar-layer" src="/images/Avatars/no_avatar.png" />
+            <img id="componentImg2" class="avatar-layer" src="/images/AvatarCache/no_avatar.png" />
         </div>
     </div>
 
