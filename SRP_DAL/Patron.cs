@@ -801,7 +801,7 @@ namespace GRA.SRP.DAL {
 
             if (program != null)
             {
-                int programLength = (int)((program.EndDate - program.StartDate).TotalDays);
+                int programLength = (int)((program.LoggingEnd - program.LoggingStart).TotalDays);
                 goal *= programLength;
             }
             
@@ -1125,13 +1125,14 @@ namespace GRA.SRP.DAL {
         {
             var stateValues = new List<int>();
 
-            if (stateString != null && stateString.Length != 0)
-            {
-                string[] hexValues = stateString.Split(' ');
 
-                foreach (String hex in hexValues)
+            if (stateString != null && stateString.Length != 0 && stateString.Length % 2 == 0)
+            {
+                for (int pos = 0; pos < stateString.Length; pos += 2)
                 {
-                    int value = Convert.ToInt32(hex, 16);
+                    string hexValue = stateString.Substring(pos, 2);
+
+                    int value = Convert.ToInt32(hexValue, 16);
                     stateValues.Add(value);
                 }
             }
@@ -1145,15 +1146,7 @@ namespace GRA.SRP.DAL {
 
             foreach (int value in state)
             {
-                string hexString = value.ToString("X2");
-
-                if (stateString.Length > 0)
-                {
-                    /* add spaces in between, but not on first */
-                    stateString += " ";
-                }
-
-                stateString += hexString;
+                stateString += value.ToString("X2");
             }
 
             return stateString;

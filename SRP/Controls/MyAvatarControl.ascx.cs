@@ -9,6 +9,7 @@ using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using SRPApp.Classes;
 using GRA.Tools;
+using System.IO;
 using System.Data;
 
 namespace GRA.SRP.Controls {
@@ -21,22 +22,25 @@ namespace GRA.SRP.Controls {
         protected void Page_Load(object sender, EventArgs e) {
 
             var patron = (Patron)Session["Patron"];
-
             var avatarPartData = AvatarPart.GetQualifiedByPatron(patron.PID);
+
+
+            jsAvatarComponents.Clear();
 
             foreach (DataRow data in avatarPartData.Tables[0].Rows)
             {
+                int avatarPartID = int.Parse(data["APID"].ToString());
+                string componentKey = data["ComponentID"].ToString();
+
+                if (!jsAvatarComponents.ContainsKey(componentKey))
+                {
+                    jsAvatarComponents.Add(componentKey, new List<int>());
+                }
+
+                jsAvatarComponents[componentKey].Add(avatarPartID);
+
                 Console.WriteLine(data["name"]);
             }
-
-            var head = new List<int> { 1, 2, 7 };
-            var body = new List<int> { 3, 4, 8 };
-            var legs = new List<int> { 5, 6, 9 };
-
-            jsAvatarComponents.Clear();
-            jsAvatarComponents.Add("0", head);
-            jsAvatarComponents.Add("1", body);
-            jsAvatarComponents.Add("2", legs);
 
 
             if (!IsPostBack) {
@@ -71,8 +75,19 @@ namespace GRA.SRP.Controls {
 
             string state = Patron.WriteAvatarStateString(avatarState);
             patron.AvatarState = state;
+            patron.Update();
 
 
+            var outputPath = Server.MapPath($"/images/AvatarCache/{patron.AvatarState}.png");
+
+            if (!File.Exists(outputPath))
+            {
+                GenerateAvatar(outputPath, avatarState);
+            }
+        }
+
+        protected void GenerateAvatar(string outputPath, List<int> avatarState)
+        {
             int width = 280;
             int height = 400;
 
@@ -96,18 +111,13 @@ namespace GRA.SRP.Controls {
                 }
                 try
                 {
-                    var oututUrl = Server.MapPath($"/images/AvatarCache/{patron.PID}.png");
-
-
-                    bitmap.Save(oututUrl,
-                                System.Drawing.Imaging.ImageFormat.Png);
+                    bitmap.Save(outputPath, System.Drawing.Imaging.ImageFormat.Png);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
 
                 }
             }
-            patron.Update();
         }
-  
     }
 }

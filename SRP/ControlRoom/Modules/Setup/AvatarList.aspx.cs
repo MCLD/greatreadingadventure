@@ -92,13 +92,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/AvatarAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["AID"]= string.Empty;
+                Session["APID"]= string.Empty;
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
                 int key = Convert.ToInt32(e.CommandArgument);
-                Session["AID"] = key;
+                Session["APID"] = key;
                 Response.Redirect(editpage);
                 //Response.Redirect(String.Format("{0}?PK={1}", editpage, key));
             }

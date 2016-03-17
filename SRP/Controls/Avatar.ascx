@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Avatar.ascx.cs" Inherits="GRA.SRP.Controls.Avatar" %>
-<asp:HyperLink NavigateUrl="~/Account/" runat="server">
+<asp:HyperLink NavigateUrl="~/Avatar/" runat="server">
     <asp:Image ID="imgAvatar" runat="server" Width="160px" CssClass="center-block hidden-xs" />
 </asp:HyperLink>
 <div class="hidden-sm hidden-md hidden-lg">

@@ -11,6 +11,9 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 using GRA.SRP.DAL;
+using GRA.SRP.Utilities.CoreClasses;
+
+
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
     public partial class AvatarAddEdit : BaseControlRoomPage
@@ -29,7 +32,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
 
                 //lblPK.Text = Request["PK"]; 
-                lblPK.Text = Session["AID"] == null ? "" : Session["AID"].ToString(); //Session["AID"]= string.Empty;
+                lblPK.Text = Session["APID"] == null ? "" : Session["APID"].ToString(); //Session["AID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
             }
@@ -71,6 +74,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 {
                     var obj = new AvatarPart();
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
+                    obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
+                    obj.ComponentID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ComponentID")).SelectedValue);
                     obj.Gender = "O";//"((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -82,7 +87,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                         obj.Insert();
 
                         try {
-                            var badgePath = string.Format(Server.MapPath("~/images/Avatars/"));
+                            var badgePath = string.Format(Server.MapPath("~/images/AvatarParts/"));
                             System.IO.File.Copy(string.Format("{0}no_avatar.png", badgePath),
                                                 string.Format("{0}{1}.png", badgePath, obj.APID));
                             System.IO.File.Copy(string.Format("{0}no_avatar_sm.png", badgePath),
@@ -135,6 +140,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     int pk = int.Parse(lblPK.Text);
                     obj = obj.GetAvatarPart(pk);
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
+                    obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
+                    obj.ComponentID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ComponentID")).SelectedValue);
                     obj.Gender = "O";//"((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

@@ -24,22 +24,54 @@
         ondatabound="dv_DataBound" Width="100%">
         <Fields>
 
-        <asp:BoundField DataField="AID" HeaderText="Avatar Id: " SortExpression="AID" ReadOnly="True" InsertVisible="False" Visible="False">
+        <asp:BoundField DataField="AID" HeaderText="Avatar Id: " SortExpression="APID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top"/>
         </asp:BoundField>
 
         <asp:TemplateField HeaderText="Avatar Name: " SortExpression="Name" HeaderStyle-Width="100px">
 		    <EditItemTemplate>
-                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="400px"></asp:TextBox>
+                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="400px"  CssClass="form-control"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvName" runat="server" 
                     ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
                     SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+
+                <b>Component/Layer:</b>
+
+                <asp:DropDownList ID="ComponentID" runat="server"  Width="500px" SelectedValue='<%# Eval("ComponentID") %>' CssClass="form-control">
+                     <asp:ListItem Value="0" Text="0 (Body)"></asp:ListItem>
+                     <asp:ListItem Value="1" Text="1 (Arms)"></asp:ListItem>
+                     <asp:ListItem Value="2" Text="2 (Head)"></asp:ListItem>
+                 </asp:DropDownList>
+
+                 <b>Unlock with badge:</b>
+
+                 <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID"
+                                    AppendDataBoundItems="True" Width="500px"  SelectedValue='<%# Eval("BadgeID") %>' CssClass="form-control">
+                                    <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
+                 </asp:DropDownList>
+
             </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' Width="400px"></asp:TextBox>
+                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' Width="400px"  CssClass="form-control"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvName" runat="server" 
                     ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
                     SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+
+                
+                <b>Component/Layer:</b>
+
+                <asp:DropDownList ID="ComponentID" runat="server"  Width="500px" CssClass="form-control">
+                     <asp:ListItem Value="0" Text="0 (Body)"></asp:ListItem>
+                     <asp:ListItem Value="1" Text="1 (Arms)"></asp:ListItem>
+                     <asp:ListItem Value="2" Text="2 (Head)"></asp:ListItem>
+                 </asp:DropDownList>
+
+                 <b>Unlock with badge:</b>
+
+                 <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID"
+                                    AppendDataBoundItems="True" Width="500px" CssClass="form-control">
+                                    <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
+                 </asp:DropDownList>
             </InsertItemTemplate>
             <ItemTemplate>
                 <asp:Label ID="Name" runat="server" Text='<%# Bind("Name") %>'></asp:Label>
@@ -54,11 +86,9 @@
                 <div style="padding-left:105px;">
                 <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
                     FileName='<%# Bind("APID") %>'
-                    ImgWidth="200" 
+                    ImgWidth="280" 
                     CreateSmallThumbnail="True" 
-                    CreateMediumThumbnail="True"
                     SmallThumbnailWidth="64" 
-                    MediumThumbnailWidth="128"
                     Folder="~/Images/AvatarParts/"
                     Extension="png"
                     Width="400px"
@@ -167,12 +197,17 @@
         </Fields>
     </asp:DetailsView>
 
+    <asp:ObjectDataSource ID="odsDDBadges" runat="server"
+        SelectMethod="GetAll"
+        TypeName="GRA.SRP.DAL.Badge"></asp:ObjectDataSource>
+
+
 
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsData" runat="server" 
-        SelectMethod="GetAvatar" TypeName="GRA.SRP.DAL.Avatar">
+        SelectMethod="GetAvatarPart" TypeName="GRA.SRP.DAL.AvatarPart">
         <SelectParameters>
-            <asp:ControlParameter ControlID="lblPK" Name="AID" 
+            <asp:ControlParameter ControlID="lblPK" Name="APID" 
                 PropertyName="Text" Type="Int32" />
         </SelectParameters>
     </asp:ObjectDataSource>

@@ -377,11 +377,19 @@ small.dd-desc {
 }
 
 .avatar-layer-btn-left {
-    float: left;
     left: 0;
 }
 
 .avatar-layer-btn-right {
-    float: right;
     right: 0;
+}
+
+ul.avatar-btn-group {
+    padding: 0;
+    list-style: none;
+}
+
+ul.avatar-btn-group li {
+   margin-top: 16px;
+   margin-bottom: 100px;
 }

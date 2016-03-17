@@ -1,5 +1,5 @@
 ﻿
-CREATE PROCEDURE [dbo].[app_AvatarPartrGetAll] @TenID INT = NULL
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetAll] @TenID INT = NULL
 AS
 SELECT *
 FROM [AvatarPart]

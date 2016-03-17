@@ -24,17 +24,38 @@
 
 
 
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="0">&lt;</button>
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="0">&gt;</button>
+
     
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="1">&lt;</button>
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="1">&gt;</button>
     
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="2">&lt;</button>
-    <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="2">&gt;</button>
 
 
-    <div class="container">
+    <div style="width: 450px; margin-left: auto; margin-right: auto;">
+
+    <ul class="avatar-btn-group" style="float: left;">
+        <li>
+            <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="2">&lt;</button>
+        </li>
+        <li>
+             <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="1">&lt;</button>
+        </li>
+        <li>
+             <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-left" type="button" data-component="0">&lt;</button>
+        </li>
+    </ul>
+
+    <ul class="avatar-btn-group" style="float: right;">
+        <li>
+             <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="2">&gt;</button>
+        </li>
+        <li>
+             <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="1">&gt;</button>
+        </li>
+        <li>
+             <button class="btn btn-primary avatar-layer-btn avatar-layer-btn-right" type="button" data-component="0">&gt;</button>
+        </li>
+    </ul>
+
+
         <div class="avatar-edit">
             <asp:HiddenField id='componentState0' runat="server" />
             <img id="componentImg0" class="avatar-layer" src="/images/Avatars/no_avatar.png"/>
