@@ -17,7 +17,8 @@ using System.Web.Caching;
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class Programs : EntityBase
+    [Serializable]
+    public class Programs : EntityBase
     {
 
         public static new string Version { get { return "2.0"; } }
@@ -40,7 +41,7 @@ namespace GRA.SRP.DAL
         private DateTime myLoggingStart;
         private DateTime myLoggingEnd;
         private bool myParentalConsentFlag;
-        private string myParentalConsentText ="";
+        private string myParentalConsentText = "";
         private bool myPatronReviewFlag;
         private bool myRequireBookDetails;
         private string myLogoutURL = "";
@@ -81,253 +82,206 @@ namespace GRA.SRP.DAL
 
         #region Accessors
 
-        public int PID
-        {
+        public int PID {
             get { return myPID; }
             set { myPID = value; }
         }
-        public string AdminName
-        {
+        public string AdminName {
             get { return myAdminName; }
             set { myAdminName = value; }
         }
-        public string Title
-        {
+        public string Title {
             get { return myTitle; }
             set { myTitle = value; }
         }
-        public string TabName
-        {
+        public string TabName {
             get { return myTabName; }
             set { myTabName = value; }
         }
-        public int POrder
-        {
+        public int POrder {
             get { return myPOrder; }
             set { myPOrder = value; }
         }
-        public bool IsActive
-        {
+        public bool IsActive {
             get { return myIsActive; }
             set { myIsActive = value; }
         }
-        public bool IsHidden
-        {
+        public bool IsHidden {
             get { return myIsHidden; }
             set { myIsHidden = value; }
         }
-        public DateTime StartDate
-        {
+        public DateTime StartDate {
             get { return myStartDate; }
             set { myStartDate = value; }
         }
-        public DateTime EndDate
-        {
+        public DateTime EndDate {
             get { return myEndDate; }
             set { myEndDate = value; }
         }
-        public int MaxAge
-        {
+        public int MaxAge {
             get { return myMaxAge; }
             set { myMaxAge = value; }
         }
-        public int MaxGrade
-        {
+        public int MaxGrade {
             get { return myMaxGrade; }
             set { myMaxGrade = value; }
         }
-        public DateTime LoggingStart
-        {
+        public DateTime LoggingStart {
             get { return myLoggingStart; }
             set { myLoggingStart = value; }
         }
-        public DateTime LoggingEnd
-        {
+        public DateTime LoggingEnd {
             get { return myLoggingEnd; }
             set { myLoggingEnd = value; }
         }
-        public bool ParentalConsentFlag
-        {
+        public bool ParentalConsentFlag {
             get { return myParentalConsentFlag; }
             set { myParentalConsentFlag = value; }
         }
-        public string ParentalConsentText
-        {
+        public string ParentalConsentText {
             get { return myParentalConsentText; }
             set { myParentalConsentText = value; }
         }
-        public bool PatronReviewFlag
-        {
+        public bool PatronReviewFlag {
             get { return myPatronReviewFlag; }
             set { myPatronReviewFlag = value; }
         }
-        public bool RequireBookDetails
-        {
+        public bool RequireBookDetails {
             get { return myRequireBookDetails; }
             set { myRequireBookDetails = value; }
         }
-        public string LogoutURL
-        {
+        public string LogoutURL {
             get { return myLogoutURL; }
             set { myLogoutURL = value; }
         }
-        public int ProgramGameID
-        {
+        public int ProgramGameID {
             get { return myProgramGameID; }
             set { myProgramGameID = value; }
         }
-        public string HTML1
-        {
+        public string HTML1 {
             get { return myHTML1; }
             set { myHTML1 = value; }
         }
-        public string HTML2
-        {
+        public string HTML2 {
             get { return myHTML2; }
             set { myHTML2 = value; }
         }
-        public string HTML3
-        {
+        public string HTML3 {
             get { return myHTML3; }
             set { myHTML3 = value; }
         }
-        public string HTML4
-        {
+        public string HTML4 {
             get { return myHTML4; }
             set { myHTML4 = value; }
         }
-        public string HTML5
-        {
+        public string HTML5 {
             get { return myHTML5; }
             set { myHTML5 = value; }
         }
-        public string HTML6
-        {
+        public string HTML6 {
             get { return myHTML6; }
             set { myHTML6 = value; }
         }
-        public string BannerImage
-        {
+        public string BannerImage {
             get { return myBannerImage; }
             set { myBannerImage = value; }
         }
-        public int RegistrationBadgeID
-        {
+        public int RegistrationBadgeID {
             get { return myRegistrationBadgeID; }
             set { myRegistrationBadgeID = value; }
         }
-        public int CompletionPoints
-        {
+        public int CompletionPoints {
             get { return myCompletionPoints; }
             set { myCompletionPoints = value; }
         }
-        public string LastModUser
-        {
+        public string LastModUser {
             get { return myLastModUser; }
             set { myLastModUser = value; }
         }
-        public DateTime AddedDate
-        {
+        public DateTime AddedDate {
             get { return myAddedDate; }
             set { myAddedDate = value; }
         }
-        public string AddedUser
-        {
+        public string AddedUser {
             get { return myAddedUser; }
             set { myAddedUser = value; }
         }
-        public DateTime LastModDate
-        {
+        public DateTime LastModDate {
             get { return myLastModDate; }
             set { myLastModDate = value; }
         }
 
-        public int TenID
-        {
+        public int TenID {
             get { return myTenID; }
             set { myTenID = value; }
         }
 
-        public int FldInt1
-        {
+        public int FldInt1 {
             get { return myFldInt1; }
             set { myFldInt1 = value; }
         }
 
-        public int FldInt2
-        {
+        public int FldInt2 {
             get { return myFldInt2; }
             set { myFldInt2 = value; }
         }
 
-        public int FldInt3
-        {
+        public int FldInt3 {
             get { return myFldInt3; }
             set { myFldInt3 = value; }
         }
 
-        public bool FldBit1
-        {
+        public bool FldBit1 {
             get { return myFldBit1; }
             set { myFldBit1 = value; }
         }
 
-        public bool FldBit2
-        {
+        public bool FldBit2 {
             get { return myFldBit2; }
             set { myFldBit2 = value; }
         }
 
-        public bool FldBit3
-        {
+        public bool FldBit3 {
             get { return myFldBit3; }
             set { myFldBit3 = value; }
         }
 
-        public string FldText1
-        {
+        public string FldText1 {
             get { return myFldText1; }
             set { myFldText1 = value; }
         }
 
-        public string FldText2
-        {
+        public string FldText2 {
             get { return myFldText2; }
             set { myFldText2 = value; }
         }
 
-        public string FldText3
-        {
+        public string FldText3 {
             get { return myFldText3; }
             set { myFldText3 = value; }
         }
 
-        public int PreTestID
-        {
+        public int PreTestID {
             get { return myPreTestID; }
             set { myPreTestID = value; }
         }
 
-        public int PostTestID
-        {
+        public int PostTestID {
             get { return myPostTestID; }
             set { myPostTestID = value; }
         }
 
-        public bool PreTestMandatory
-        {
+        public bool PreTestMandatory {
             get { return myPreTestMandatory; }
             set { myPreTestMandatory = value; }
         }
 
-        public DateTime PreTestEndDate
-        {
+        public DateTime PreTestEndDate {
             get { return myPreTestEndDate; }
             set { myPreTestEndDate = value; }
         }
 
-        public DateTime PostTestStartDate
-        {
+        public DateTime PostTestStartDate {
             get { return myPostTestStartDate; }
             set { myPostTestStartDate = value; }
         }
@@ -388,8 +342,8 @@ namespace GRA.SRP.DAL
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Programs_GetAllTabs", arrParams);
         }
-        
-        public static DataSet GetAllActive()        
+
+        public static DataSet GetAllActive()
         {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
@@ -414,7 +368,7 @@ namespace GRA.SRP.DAL
         public static int GetDefaultProgramID(int tenID)
         {
             var arrParams = new SqlParameter[1];
-            arrParams[0] = new SqlParameter("@TenID",tenID);
+            arrParams[0] = new SqlParameter("@TenID", tenID);
             return (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "app_Programs_GetDefaultProgramID", arrParams);
         }
 
@@ -524,7 +478,7 @@ namespace GRA.SRP.DAL
                 result.PreTestMandatory = bool.Parse(dr["PreTestMandatory"].ToString());
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) result.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) result.PostTestStartDate = _datetime;
-                
+
 
                 dr.Close();
 
@@ -634,7 +588,7 @@ namespace GRA.SRP.DAL
         {
 
             var ds = ProgramGamePointConversion.GetAll(obj.PID);
-            if (ds.Tables[0].Rows.Count ==0)
+            if (ds.Tables[0].Rows.Count == 0)
             {
                 foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
                 {
@@ -649,30 +603,30 @@ namespace GRA.SRP.DAL
                     o.LastModUser = o.AddedUser;
 
                     o.Insert();
-                }                
+                }
             }
             else
             {
                 foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
                 {
                     var o = ProgramGamePointConversion.FetchObjectByActivityId(obj.PID, (int)val);
-                    if (o==null)
+                    if (o == null)
                     {
                         o = new ProgramGamePointConversion
-                                {
-                                    PGID = obj.PID,
-                                    ActivityTypeId = (int) val,
-                                    ActivityCount = 1,
-                                    PointCount = 0,
-                                    AddedDate = obj.AddedDate,
-                                    AddedUser = obj.AddedUser
-                                };
+                        {
+                            PGID = obj.PID,
+                            ActivityTypeId = (int)val,
+                            ActivityCount = 1,
+                            PointCount = 0,
+                            AddedDate = obj.AddedDate,
+                            AddedUser = obj.AddedUser
+                        };
                         o.LastModDate = o.AddedDate;
                         o.LastModUser = o.AddedUser;
 
                         o.Insert();
                     }
-                }   
+                }
             }
         }
 
@@ -738,7 +692,7 @@ namespace GRA.SRP.DAL
             arrParams[43] = new SqlParameter("@PreTestMandatory", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode()));
             arrParams[44] = new SqlParameter("@PreTestEndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode()));
             arrParams[45] = new SqlParameter("@PostTestStartDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode()));
-            
+
             arrParams[46] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
             arrParams[46].Direction = ParameterDirection.Output;
 
@@ -856,25 +810,29 @@ namespace GRA.SRP.DAL
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_Delete", arrParams);
                 var fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".png");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.png");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".jpg");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.jpg");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
 
                 fileName = (HttpContext.Current.Server.MapPath("~/css/program/") + "\\" + PID.ToString() + ".css");
                 File.Delete(fileName);
-                 fileName = (HttpContext.Current.Server.MapPath("~/resources/") + "\\program." + PID.ToString() + "en-US.txt");
+                fileName = (HttpContext.Current.Server.MapPath("~/resources/") + "\\program." + PID.ToString() + "en-US.txt");
                 File.Delete(fileName);
 
             }
@@ -904,9 +862,8 @@ namespace GRA.SRP.DAL
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_MoveDn", arrParams);
         }
 
-        public bool IsOpen
-        {
-            get { 
+        public bool IsOpen {
+            get {
                 bool open = false;
 
                 DateTime now = DateTime.Now;
@@ -915,6 +872,14 @@ namespace GRA.SRP.DAL
                     open = true;
                 }
                 return open;
+            }
+        }
+
+        public bool IsRegistrationOpen {
+            get {
+                return DateTime.Now < StartDate || DateTime.Now > EndDate
+                    ? false
+                    : true;
             }
         }
 

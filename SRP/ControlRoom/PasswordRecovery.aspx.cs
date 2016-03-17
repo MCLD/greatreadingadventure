@@ -31,7 +31,7 @@ namespace GRA.SRP.ControlRoom {
             }
 
             var user = SRPUser.UpdatePasswordByToken(tokenObject.ToString(),
-                                                     uxNewPasswordField.Text);
+                                                     Password.Text);
 
             if(user == null) {
                 passwordUpdate.Visible = false;

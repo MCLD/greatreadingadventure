@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
+﻿CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
 AS
 SELECT
 	a.*
@@ -11,4 +10,4 @@ SELECT
     a.*
 FROM [AvatarPart] a
 WHERE a.BadgeID = -1
-ORDER BY ComponentID DESC
+ORDER BY Ordering

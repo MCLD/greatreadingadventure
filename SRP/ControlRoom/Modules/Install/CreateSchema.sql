@@ -1,3 +1,163 @@
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Delete]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_Delete] @APID INT,
+	@TenID INT = NULL
+AS
+DELETE
+FROM [AvatarPart]
+WHERE APID = @APID
+	AND TenID = @TenID
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetAll]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetAll] @TenID INT = NULL
+AS
+SELECT *
+FROM [AvatarPart]
+WHERE (
+		TenID = @TenID
+		OR @TenID IS NULL
+		)
+ORDER BY Ordering
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetByID]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetByID] @APID INT
+AS
+SELECT *
+FROM [AvatarPart]
+WHERE APID = @APID
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetQualifiedByPatron]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
+AS
+SELECT
+	a.*
+FROM [PatronBadges] pb
+INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
+WHERE pb.PID = @PID
+UNION ALL
+SELECT 
+    a.*
+FROM [AvatarPart] a
+WHERE a.BadgeID = -1
+ORDER BY Ordering
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Insert]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
+	@Name VARCHAR(50),
+	@Gender VARCHAR(1),
+	@ComponentID INT = 0,
+	@BadgeID INT = 0,
+    @Ordering INT = 0,
+	@LastModDate DATETIME,
+	@LastModUser VARCHAR(50),
+	@AddedDate DATETIME,
+	@AddedUser VARCHAR(50),
+	@TenID INT = 0,
+	@APID INT OUTPUT
+	)
+AS
+BEGIN
+	INSERT INTO AvatarPart (
+		Name,
+		Gender,
+	    ComponentID,
+		BadgeID,
+		Ordering,
+		LastModDate,
+		LastModUser,
+		AddedDate,
+		AddedUser,
+		TenID
+		)
+	VALUES (
+		@Name,
+		@Gender,
+		@ComponentID,
+	    @BadgeID,
+		@Ordering,
+		@LastModDate,
+		@LastModUser,
+		@AddedDate,
+		@AddedUser,
+		@TenID
+		)
+
+	SELECT @APID = SCOPE_IDENTITY()
+
+	SELECT @APID
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Update]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
+	@Name VARCHAR(50),
+	@Gender VARCHAR(1),
+	@ComponentID INT = 0,
+	@BadgeID INT = 0,
+	@Ordering INT = 0,
+	@LastModDate DATETIME,
+	@LastModUser VARCHAR(50),
+	@AddedDate DATETIME,
+	@AddedUser VARCHAR(50),
+	@TenID INT = 0,
+	@APID INT OUTPUT
+	)
+AS
+UPDATE AvatarPart
+SET Name = @Name,
+	Gender = @Gender,
+	ComponentID = @ComponentID,
+	BadgeID = @BadgeID,
+	Ordering = @Ordering,
+	LastModDate = @LastModDate,
+	LastModUser = @LastModUser,
+	AddedDate = @AddedDate,
+	AddedUser = @AddedUser,
+	TenID = @TenID
+WHERE APID = @APID
+	AND TenID = @TenID
+GO
+
 
 /****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -2113,8 +2273,8 @@ GO
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_Code_Insert] (
 	@CTID INT,
-	@Code VARCHAR(25),
-	@Description VARCHAR(80),
+	@Code VARCHAR(255),
+	@Description VARCHAR(255),
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -2176,8 +2336,8 @@ GO
 CREATE PROCEDURE [dbo].[app_Code_Update] (
 	@CID INT,
 	@CTID INT,
-	@Code VARCHAR(25),
-	@Description VARCHAR(80),
+	@Code VARCHAR(255),
+	@Description VARCHAR(255),
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -2270,7 +2430,7 @@ GO
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_CodeType_Insert] (
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -2333,7 +2493,7 @@ GO
 CREATE PROCEDURE [dbo].[app_CodeType_Update] (
 	@CTID INT,
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -2816,6 +2976,33 @@ AS
 DELETE
 FROM [Event]
 WHERE EID = @EID
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_Event_Export]    Script Date: 3/14/2016 11:11:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_Event_Export]    Script Date: 3/14/2016 11:11:41 ******/
+CREATE PROCEDURE [dbo].[app_Event_Export] @TenID INT = NULL
+AS
+SELECT e.[EventTitle] AS [Name],
+	e.[EventDate] AS [Date],
+	e.[HTML] AS [Description],
+	e.[SecretCode],
+	e.[NumberPoints] AS [PointsEarned],
+	e.[ExternalLinkToEvent] AS [Link],
+	e.[HiddenFromPublic],
+	c.[Code] AS [Branch]
+FROM [Event] e
+LEFT OUTER JOIN [Code] c ON e.[BranchID] = c.[CID]
+WHERE (
+		e.[TenID] = @TenID
+		OR @TenID IS NULL
+		)
+ORDER BY e.[EventDate]
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Event_Filter]    Script Date: 2/29/2016 11:31:24 ******/
@@ -3483,6 +3670,32 @@ FROM [LibraryCrosswalk]
 WHERE ID = @ID
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_Export]    Script Date: 3/3/2016 13:53:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Export] @TenID INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT bc.[Code] AS [Branch],
+		dc.[Code] AS [LibraryDistrict],
+		lcw.[BranchLink] AS [Link],
+		lcw.[BranchAddress] AS [Address],
+		lcw.[BranchTelephone] AS [Telephone]
+	FROM librarycrosswalk lcw
+	INNER JOIN code bc ON lcw.[BranchId] = bc.[CID]
+	INNER JOIN code dc ON lcw.[DistrictId] = dc.[CID]
+	WHERE lcw.[TenID] = @TenID
+	ORDER BY dc.[Code],
+		bc.[Code]
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_LibraryCrosswalk_GetAll]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -3522,7 +3735,10 @@ WHERE BranchID NOT IN (
 SELECT isnull(w.ID, 0) AS ID,
 	isnull(l.CID, 0) AS BranchID,
 	isnull(w.DistrictID, 0) AS DistrictID,
-	isnull(w.City, '') AS City
+	isnull(w.City, '') AS City,
+	isnull(w.BranchLink, '') AS BranchLink,
+	isnull(w.BranchAddress, '') AS BranchAddress,
+	isnull(w.BranchTelephone, '') AS BranchTelephone
 FROM [LibraryCrosswalk] w
 RIGHT JOIN @Libraries l ON w.BranchID = l.CID
 ORDER BY l.Code
@@ -3637,6 +3853,9 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Insert] (
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
 	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = '',
 	@ID INT OUTPUT
 	)
 AS
@@ -3654,7 +3873,10 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		BranchLink,
+		BranchAddress,
+		BranchTelephone
 		)
 	VALUES (
 		@BranchID,
@@ -3669,7 +3891,10 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@BranchLink,
+		@BranchAddress,
+		@BranchTelephone
 		)
 
 	SELECT @ID = SCOPE_IDENTITY()
@@ -3697,7 +3922,10 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Update] (
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = ''
 	)
 AS
 UPDATE LibraryCrosswalk
@@ -3713,7 +3941,10 @@ SET BranchID = @BranchID,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	BranchLink = @BranchLink,
+	BranchAddress = @BranchAddress,
+	BranchTelephone = @BranchTelephone
 WHERE ID = @ID
 	AND TenID = @TenID
 GO
@@ -13110,6 +13341,36 @@ FROM [SchoolCrosswalk]
 WHERE ID = @ID
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_Export]    Script Date: 3/4/2016 09:38:46 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_SchoolCrosswalk_Export] @TenID INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT s.[Code] AS [SchoolName],
+		st.[Code] AS [SchoolType],
+		d.[Code] AS [DistrictName],
+		NULLIF(scw.[MinGrade], 0) AS [MinGrade],
+		NULLIF(scw.[MaxGrade], 0) AS [MaxGrade],
+		NULLIF(scw.[MinAge], 0) AS [MinAge],
+		NULLIF(scw.[MaxAge], 0) AS [MaxAge]
+	FROM [schoolcrosswalk] scw
+	INNER JOIN [code] s ON scw.[SchoolID] = s.[CID]
+	INNER JOIN [code] st ON scw.[SchTypeID] = st.[CID]
+	INNER JOIN [code] d ON scw.[DistrictID] = d.[CID]
+	WHERE scw.[TenID] = @TenID
+	ORDER BY d.[Code],
+		st.[Code],
+		s.[Code]
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_SchoolCrosswalk_GetAll]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -21288,32 +21549,27 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[Avatar] (
-	[AID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[AvatarPart] (
+	[APID] [int] IDENTITY(1, 1) NOT NULL,
 	[Name] [varchar](50) NULL,
-	[Gender] [varchar](1) NULL,
+	[Gender] [varchar](50) NULL,
+	[ComponentID] [int] NULL,
+	[BadgeID] [int] NULL,
+	[Ordering] [int] NULL,
 	[LastModDate] [datetime] NULL,
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
-	[FldInt1] [int] NULL,
-	[FldInt2] [int] NULL,
-	[FldInt3] [int] NULL,
-	[FldBit1] [bit] NULL,
-	[FldBit2] [bit] NULL,
-	[FldBit3] [bit] NULL,
-	[FldText1] [text] NULL,
-	[FldText2] [text] NULL,
-	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Avatar] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
+
+	CONSTRAINT [PK_AvatarPart] PRIMARY KEY CLUSTERED ([APID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
 		IGNORE_DUP_KEY = OFF,
 		ALLOW_ROW_LOCKS = ON,
 		ALLOW_PAGE_LOCKS = ON
 		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+	) ON [PRIMARY] 
 GO
 
 SET ANSI_PADDING ON
@@ -21354,6 +21610,7 @@ CREATE TABLE [dbo].[Award] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
+
 	CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -22575,7 +22832,7 @@ CREATE TABLE [dbo].[Patron] (
 	[RegistrationDate] [datetime] NULL,
 	[DailyGoal] [int] NULL,
 	[GoalCache] [int] NULL,
-	[AvatarState] [int] NULL,
+	[AvatarState] [varchar](50) NULL,
 	[SDistrict] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
@@ -24530,19 +24787,19 @@ ORDER BY Username,
 	MiniGameTypeName
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModDate] DEFAULT(getdate())
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_LastModDate] DEFAULT(getdate())
 FOR [LastModDate]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModUser] DEFAULT('N/A')
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPArt_LastModUser] DEFAULT('N/A')
 FOR [LastModUser]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedDate] DEFAULT(getdate())
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_AddedDate] DEFAULT(getdate())
 FOR [AddedDate]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedUser] DEFAULT('N/A')
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_AddedUser] DEFAULT('N/A')
 FOR [AddedUser]
 GO
 

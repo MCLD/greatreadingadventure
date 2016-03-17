@@ -7,3 +7,4 @@ WHERE (
 		TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY Ordering

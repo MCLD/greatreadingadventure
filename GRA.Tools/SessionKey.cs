@@ -16,6 +16,7 @@ namespace GRA.Tools {
         public const string RefreshBadgeList = "RfrBdgLst";
         public const string SA = "SA";
         public const string TenantID = "TenantID";
+        public const string SecretCode = "SecretCode";
     }
 
     public static class PatronMessageLevels {

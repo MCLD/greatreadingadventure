@@ -115,10 +115,9 @@ namespace GRA.SRP.Core.Utilities {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MorePatronInfo@2x.png")
             };
+            pnl.Add(new RibbonLink { Name = "Patron Prizes", Url = "/ControlRoom/Modules/Patrons/PatronPrizes.aspx" });
             pnl.Add(new RibbonLink { Name = "Patron Logs", Url = "/ControlRoom/Modules/Patrons/PatronLog.aspx" });
             pnl.Add(new RibbonLink { Name = "Patron Badges", Url = "/ControlRoom/Modules/Patrons/PatronBadges.aspx" });
-            pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
-
             returnList.Add(pnl);
 
             pnl = new RibbonPanel {
@@ -127,7 +126,7 @@ namespace GRA.SRP.Core.Utilities {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Patron Prizes", Url = "/ControlRoom/Modules/Patrons/PatronPrizes.aspx" });
+            pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
             pnl.Add(new RibbonLink { Name = "Patron Reviews", Url = "/ControlRoom/Modules/Patrons/PatronReviews.aspx" });
             pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
 
@@ -184,13 +183,15 @@ namespace GRA.SRP.Core.Utilities {
         public static List<RibbonPanel> SetupRibbon() {
             var returnList = new List<RibbonPanel>();
             var pnl = new RibbonPanel {
-                Name = "Avatars/Badges",
-                ImageAlt = "Badges Setup",
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/AvatarsBadges.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/AvatarsBadges@2x.png")
+                Name = "Badges/Events/Challenges",
+                ImageAlt = "Badges/Events/Challenges",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Events.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Events@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Avatars", Url = "/ControlRoom/Modules/Setup/AvatarList.aspx" });
             pnl.Add(new RibbonLink { Name = "Badges", Url = "/ControlRoom/Modules/Setup/BadgeList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Events", Url = "/ControlRoom/Modules/Setup/EventList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Challenges", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
+
             returnList.Add(pnl);
 
             pnl = new RibbonPanel {
@@ -214,22 +215,13 @@ namespace GRA.SRP.Core.Utilities {
             returnList.Add(pnl);
 
             pnl = new RibbonPanel {
-                Name = "Events/Offers",
-                ImageAlt = "Events/Offers",
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/EventsOffers.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/EventsOffers@2x.png")
+                Name = "Avatars/Offers",
+                ImageAlt = "Avatars/Offers",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Avatars.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Avatars@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Events", Url = "/ControlRoom/Modules/Setup/EventList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Avatars", Url = "/ControlRoom/Modules/Setup/AvatarList.aspx" });
             pnl.Add(new RibbonLink { Name = "Offers", Url = "/ControlRoom/Modules/Setup/OfferList.aspx" });
-            returnList.Add(pnl);
-
-            pnl = new RibbonPanel {
-                Name = "Challenges",
-                ImageAlt = "Challenges",
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Challenges.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Challenges@2x.png")
-            };
-            pnl.Add(new RibbonLink { Name = "Challenges", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel {
@@ -240,6 +232,16 @@ namespace GRA.SRP.Core.Utilities {
             };
             pnl.Add(new RibbonLink { Name = "Test/Survey List", Url = "/ControlRoom/Modules/Setup/SurveyList.aspx" });
             pnl.Add(new RibbonLink { Name = "Test/Survey Results", Url = "/ControlRoom/Modules/Setup/SurveyResults.aspx" });
+            returnList.Add(pnl);
+
+            pnl = new RibbonPanel()
+            {
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport@2x.png")
+            };
+            pnl.Name = "Import/Export";
+            pnl.ImageAlt = "Import/Export";
+            pnl.Add(new RibbonLink { Name = "Import/Export Events", Url = "/ControlRoom/Modules/Setup/IEEvents.aspx" });
             returnList.Add(pnl);
 
             return returnList;

@@ -10,8 +10,8 @@ using System.Web.UI.WebControls;
 
 namespace GRA.SRP.Controls {
     public partial class Avatar : System.Web.UI.UserControl {
-        private const string NoAvatarPath = "~/images/Avatars/no_avatar.png";
-        private const string NoAvatarPathSm = "~/images/Avatars/no_avatar_sm.png";
+        private const string NoAvatarPath = "~/images/AvatarCache/no_avatar.png";
+        private const string NoAvatarPathSm = "~/images/AvatarCache/no_avatar_sm.png";
 
         protected void Page_Load(object sender, EventArgs e) {
             var patron = (Patron)(Session["Patron"]);

@@ -8,11 +8,11 @@
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
     </asp:PlaceHolder>
     <style>
         .gra-red {
-            color:  #94483D;
+            color: #94483D;
         }
 
         .logintextcenter {
@@ -35,6 +35,12 @@
             padding: 0.4em 0.9em !important;
             background-color: #678FC2;
         }
+
+        #uxLogin_RememberMe {
+            margin-right: 0.5em;
+            width: 1em;
+            height: 1em;
+        }
     </style>
 </head>
 <body>
@@ -42,7 +48,10 @@
         <div class="loginbox">
             <div class="logintextcenter" style="margin-bottom: 1em;">
                 <h1 style="margin-bottom: 0.2em;" class="gra-red">Control Room Login</h1>
-                <em><strong><asp:Label runat="server" Id="SystemName"></asp:Label></strong></em>
+                <em class="h4"><strong>
+                    <asp:HyperLink runat="server"
+                        ID="SystemName"
+                        NavigateUrl="~"></asp:HyperLink></strong></em>
             </div>
 
             <div style="margin: auto;">
@@ -79,7 +88,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td >
+                                <td>
                                     <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Font-Bold="true"><%= GRA.SRP.ControlRoom.SRPResources.Username%>: </asp:Label><br />
                                     <asp:TextBox ID="UserName" runat="server" Width="200px" CssClass="gra-cr-username form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="UserNameRequired" runat="server"
@@ -98,8 +107,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="logintextcenter" style="padding-top: 1em;">
-                                    <asp:CheckBox ID="RememberMe" runat="server" Text="Remember username"></asp:CheckBox>
+                                <td class="logintextcenter" style="padding-top: 1em; font-size: larger;">
+                                    <asp:CheckBox ID="RememberMe" runat="server" Text="Remember my username"></asp:CheckBox>
                                 </td>
                             </tr>
                             <tr>
@@ -120,16 +129,7 @@
         </div>
         <script>
             $('.ControlRoomLogo').on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function (eventObject) {
-                $(this).removeClass('animated');
-                if ($(this).hasClass('bounceIn')) {
-                    $(this).removeClass('bounceIn');
-                }
-                if ($(this).hasClass('flip')) {
-                    $(this).removeClass('flip');
-                }
-                if ($(this).hasClass('jello')) {
-                    $(this).removeClass('jello');
-                }
+                $(this).removeClass('animated bounceIn flip jello');
             });
             function swingIt() {
                 $('.ControlRoomLogo').addClass('animated jello');

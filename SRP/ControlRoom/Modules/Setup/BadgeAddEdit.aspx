@@ -47,9 +47,7 @@
                                             $('.publicValue').val($('.controlRoomValue').val());
                                         }
                                     }
-
                                 </script>
-
                             </td>
                         </tr>
 
@@ -125,7 +123,9 @@
                                                 SmallThumbnailWidth="64"
                                                 MediumThumbnailWidth="128"
                                                 Folder="~/Images/Badges/"
-                                                Extension="png" />
+                                                Extension="png"
+                                                BlankImage="no_badge"
+                                                BlankSmallImage="no_badge_sm" />
                                             <obbm1:OpenBadgesBadgeMaker
                                                 ID="badgeMaker"
                                                 runat="server"

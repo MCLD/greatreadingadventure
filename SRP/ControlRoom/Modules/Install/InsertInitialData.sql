@@ -110,7 +110,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	2200,
-	'Modify  Program Permission',
+	'Modify Program Permission',
 	'Allows a user to create a new Program',
 	NULL
 	)
@@ -194,7 +194,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	4400,
-	'Book Lists Management',
+	'Challenges Management',
 	'Allows access to the respective maintenance screens.',
 	NULL
 	)
@@ -322,6 +322,20 @@ VALUES (
 	5300,
 	'Reviews Management',
 	'Allows access to the respective maintenance screens.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
+	5400,
+	'Import/Export Management',
+	'Allows access to import/export of program management items.',
 	NULL
 	)
 GO
@@ -1748,7 +1762,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1855,250 +1869,262 @@ GO
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
 GO
 
-SET IDENTITY_INSERT [dbo].[Avatar] ON
+SET IDENTITY_INSERT [dbo].[AvatarPart] ON
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	1,
-	N'Percy',
+	N'Gray Torso',
 	N'O',
+	0,
+	-1,
+	0,
 	GetDate(),
 	N'sysadmin',
 	GetDate(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	2,
-	N'Katniss',
+	N'Gray Arms',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
 	1,
+	-1,
 	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	3,
-	N'Othello',
+	N'Gray Head',
 	N'O',
+	2,
+	-1,
+	0,
 	GetDate(),
 	N'sysadmin',
 	GetDate(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	4,
-	N'Hester',
+	N'Blue Torso',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
+	0,
+	-1,
 	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	5,
-	N'Gandalf',
+	N'Blue Arms',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
 	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	-1,
+	1,
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	6,
-	N'Cersei',
+	N'Blue Head',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
+	2,
+	-1,
 	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
 	)
 GO
 
-SET IDENTITY_INSERT [dbo].[Avatar] OFF
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	7,
+	N'Orange Torso',
+	N'O',
+	0,
+	-1,
+	2,
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	8,
+	N'Orange Arms',
+	N'O',
+	1,
+	-1,
+	2,
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	9,
+	N'Orange Head',
+	N'O',
+	2,
+	-1,
+	2,
+	GetDate(),
+	N'sysadmin',
+	GetDate(),
+	N'sysadmin',
+	1
+	)
+GO
+
+SET IDENTITY_INSERT [dbo].[AvatarPart] OFF
 GO
 
 IF (

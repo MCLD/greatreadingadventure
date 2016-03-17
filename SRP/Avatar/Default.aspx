@@ -7,7 +7,6 @@
 <%@ Register src="~/Controls/MyAvatarControl.ascx" tagname="MyAvatarControl" tagprefix="uc1" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
-    <script src="<%=ResolveUrl("~/Scripts/avatar.js")%>"></script>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <uc1:MyAvatarControl ID="AvatarControl" runat="server" />

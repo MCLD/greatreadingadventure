@@ -1,13 +1,11 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AvatarList" 
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="AvatarList.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.AvatarList" %>
 
-%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-<meta Http-Equiv="Cache-Control" Content="no-cache">
-<meta Http-Equiv="Pragma" Content="no-cache">
-<meta Http-Equiv="Expires" Content="0">
-<meta Http-Equiv="Pragma-directive: no-cache">
-<meta Http-Equiv="Cache-directive: no-cache">
-
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma-directive: no-cache">
+    <meta http-equiv="Cache-directive: no-cache">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
@@ -16,22 +14,20 @@
         TypeName="GRA.SRP.DAL.AvatarPart">
 
     </asp:ObjectDataSource>
-
     <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False"
         DataKeys="APID"
         DataSourceID="odsData"
-        onrowcreated="GvRowCreated" 
-        onsorting="GvSorting" 
-        onrowcommand="GvRowCommand"      
-        >
+        OnRowCreated="GvRowCreated"
+        OnSorting="GvSorting"
+        OnRowCommand="GvRowCommand">
 
         <Columns>
-            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <HeaderTemplate>
-                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
-                        CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
+                    &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" ToolTip="Add Record"
+                        CausesValidation="False" CommandName="AddRecord" CommandArgument="-1"
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
-                </HeaderTemplate>                
+                </HeaderTemplate>
                 <ItemTemplate>
                     &nbsp;
                     <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" Tooltip="Edit Record" 
@@ -46,15 +42,15 @@
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
-			<asp:BoundField ReadOnly="True" HeaderText="Avatar Id" DataField="AID" 
-                SortExpression="AID" Visible="False" ItemStyle-Wrap="False" 
+            <asp:BoundField ReadOnly="True" HeaderText="Avatar Id" DataField="AID"
+                SortExpression="AID" Visible="False" ItemStyle-Wrap="False"
                 ItemStyle-VerticalAlign="Middle">
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 
-			<asp:BoundField ReadOnly="True" HeaderText="Name" 
-                    DataField="Name" SortExpression="Name" Visible="True" 
-                    ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+            <asp:BoundField ReadOnly="True" HeaderText="Name"
+                DataField="Name" SortExpression="Name" Visible="True"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Left"></ItemStyle>
             </asp:BoundField>
 
@@ -63,44 +59,50 @@
                     ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
                 <ItemStyle VerticalAlign="Middle" Wrap="False" HorizontalAlign="Left"></ItemStyle>
             </asp:BoundField>
+
+             <asp:BoundField ReadOnly="True" HeaderText="Ordering" 
+                    DataField="Ordering" SortExpression="Ordering" Visible="True" 
+                    ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemStyle VerticalAlign="Middle" Wrap="False" HorizontalAlign="Left"></ItemStyle>
+            </asp:BoundField>
 			
-
-            <asp:TemplateField   ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
                 <HeaderTemplate>
-                    
-                </HeaderTemplate>                
+                </HeaderTemplate>
                 <ItemTemplate>
-                    <asp:Image ID="Image1" runat="server" ImageUrl='<%# String.Format("~/Images/AvatarParts/sm_{0}.png?{1}", Eval("APID").ToString(), DateTime.Now.ToString()) %>' Width="32" Height="32" />
+                    <a class="fancybox" href="<%# VirtualPathUtility.ToAbsolute(String.Format("~/Images/AvatarParts/{0}.png?{1}", Eval("APID").ToString(), DateTime.Now.Ticks)) %>">
+                        <asp:Image ID="Image1" runat="server"
+                            ImageUrl='<%# String.Format("~/Images/AvatarParts/sm_{0}.png?{1}", Eval("APID").ToString(), DateTime.Now.Ticks) %>'
+                            Width="32" Height="32" /></a>
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
+                <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>
             </asp:TemplateField>
-
-			<asp:BoundField ReadOnly="True" HeaderText="Modified On" 
-                DataField="LastModDate" SortExpression="LastModDate" Visible="False" 
+            <asp:BoundField ReadOnly="True" HeaderText="Modified On"
+                DataField="LastModDate" SortExpression="LastModDate" Visible="False"
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField>
-			<asp:BoundField ReadOnly="True" HeaderText="Modified By" 
-                DataField="LastModUser" SortExpression="LastModUser" Visible="False" 
+            <asp:BoundField ReadOnly="True" HeaderText="Modified By"
+                DataField="LastModUser" SortExpression="LastModUser" Visible="False"
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField>
-			<asp:BoundField ReadOnly="True" HeaderText="Added On" 
-                DataField="AddedDate" SortExpression="AddedDate" Visible="False" 
+            <asp:BoundField ReadOnly="True" HeaderText="Added On"
+                DataField="AddedDate" SortExpression="AddedDate" Visible="False"
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField>
-			<asp:BoundField ReadOnly="True" HeaderText="Added By" 
-                DataField="AddedUser" SortExpression="AddedUser" Visible="False" 
+            <asp:BoundField ReadOnly="True" HeaderText="Added By"
+                DataField="AddedUser" SortExpression="AddedUser" Visible="False"
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
                 <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:BoundField>
         </Columns>
         <EmptyDataTemplate>
-            <div style="width: 600px; padding: 20px; font-weight:bold; ">
-            No records were found. &nbsp; 
-                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" Tooltip="Add Record"
-                        CausesValidation="False" CommandName="AddRecord" CommandArgument="-1" 
+            <div style="width: 600px; padding: 20px; font-weight: bold;">
+                No records were found. &nbsp; 
+                    <asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" ToolTip="Add Record"
+                        CausesValidation="False" CommandName="AddRecord" CommandArgument="-1"
                         ImageUrl="~/ControlRoom/Images/add.png" Width="20px" />
             </div>
         </EmptyDataTemplate>

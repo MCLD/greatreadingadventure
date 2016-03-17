@@ -17,6 +17,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
         protected void Page_Load(object sender, EventArgs e)
         {
             MasterPage.RequiredPermission = 5100;
+            MasterPage.AdditionalRequiredPermission = 5300;
             MasterPage.IsSecure = true;
             if (Session["Curr_Patron"] == null) Response.Redirect("Default.aspx");
 
@@ -109,7 +110,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                             var obj2 = DAL.PatronReadingLog.FetchObject(obj.PRLID);
                             obj2.HasReview = false;
                             obj2.ReviewID = 0;
-                            
+
                             obj2.Update();
 
                         }

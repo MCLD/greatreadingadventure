@@ -19,6 +19,14 @@
     <asp:Repeater ID="rptr" runat="server" OnItemDataBound="rptr_ItemDataBound" OnItemCommand="rptr_ItemCommand">
         <ItemTemplate>
             <div class="margin-halfem-top row">
+                <asp:HyperLink CausesValidation="false"
+                    ID="Avatar"
+                    CssClass="btn btn-default margin-halfem-bottom"
+                    runat="server"
+                    NavigateUrl="~/Avatar/">
+                    <span class="glyphicon glyphicon-picture margin-halfem-right"></span>
+                    <asp:Label runat="server" Text="avatar-title"></asp:Label>
+                </asp:HyperLink>
                 <asp:HyperLink ID="FamilyAccountList"
                     CausesValidation="false"
                     CommandName="familyAccountList"
@@ -32,7 +40,7 @@
                     ID="FamilyAccountAdd"
                     CssClass="btn btn-default margin-halfem-bottom"
                     runat="server"
-                    NavigateUrl="~/Account/AddFamilyMemberAccount.aspx">
+                    NavigateUrl="~/Account/AddFamilyMember.aspx">
                     <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
                     <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
                 </asp:HyperLink>

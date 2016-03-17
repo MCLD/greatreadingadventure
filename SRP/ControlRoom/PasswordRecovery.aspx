@@ -1,99 +1,113 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PasswordRecovery.aspx.cs" Inherits="GRA.SRP.ControlRoom.PasswordRecovery" %>
 
 <!DOCTYPE html>
-
 <html>
 <head id="Head1" runat="server">
-    <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%> :: Password Reset</title>
-    <script language="javascript">
-        function ClientValidate(source, arguments) {
-            if (document.getElementById("uxConfirmNewPasswordField").value == document.getElementById("uxNewPasswordField").value) {
-                arguments.IsValid = true;
-            }
-            else {
-                arguments.IsValid = false;
-            }
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%> - Change Password</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <asp:PlaceHolder runat="server">
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
+    </asp:PlaceHolder>
+    <style>
+        .gra-red {
+            color: #94483D;
         }
-    </script>
 
+        .logintextcenter {
+            text-align: center;
+        }
+
+        .loginbox {
+            margin: 10em auto 0 auto;
+            width: 400px;
+            border: 10px solid #555;
+            background: white;
+            display: block;
+            padding: 1em;
+        }
+
+        .loginbutton {
+            border-style: none;
+            color: white;
+            font-size: 1.5em !important;
+            padding: 0.4em 0.9em !important;
+            background-color: #678FC2;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <div style="padding: 150px; padding-top: 150px; vertical-align: middle; min-width: 550px;">
-                <div style="padding: 10px; vertical-align: middle; min-width: 500px;" class="bkColor1">
-                    <div style="padding: 50px; vertical-align: middle; text-align: center; min-width: 400px;" class="bkColor2">
-                        <center>
-                            <fieldset style="border-style: solid; padding-left: 10px; padding-right: 10px; width: 380px;" class="borderColor1">
-                                <legend class="Message" style="font-size: 10pt; font-weight: bold; padding-left: 5px; padding-right: 5px;">You Must Reset Your Password</legend>
-                                <div style="float: left;">
-                                    <asp:Panel ID="passwordUpdate" runat="server">
-                                    <br />
-                                    <table align="center">
-                                        <tr>
-                                            <td align="left" colspan="2">
-
-                                                <asp:RequiredFieldValidator runat="server" ID="uxNewPasswordRequiredValidator"
-                                                    CssClass="MessageFailure" Display="Dynamic" ControlToValidate="uxNewPasswordField"
-                                                    ErrorMessage="Password is a required field.&lt;br&gt;"></asp:RequiredFieldValidator>
-
-                                                <asp:RegularExpressionValidator ID="uxNewPasswordStrengthValidator" CssClass="MessageFailure"
-                                                    runat="server" ControlToValidate="uxNewPasswordField" ValidationExpression="(?=^.{7,}$)(?=.*\d)(?=.*[a-zA-Z]+)(?![.\n]).*$"
-                                                    Display="Dynamic"
-                                                    ErrorMessage="New Password must be at least seven characters in length and contain one alpha and one numeric character.&lt;br&gt;"></asp:RegularExpressionValidator>
-
-                                                <asp:RequiredFieldValidator runat="server" ID="uxConfirmNewPasswordRequiredValidator"
-                                                    CssClass="MessageFailure" ControlToValidate="uxConfirmNewPasswordField" ErrorMessage="Confirm New Password is a required field.&lt;br&gt;"
-                                                    Display="Dynamic"></asp:RequiredFieldValidator>
-
-                                                <asp:CustomValidator ID="uxConfirmNewPasswordCustomValidator" CssClass="MessageFailure"
-                                                    runat="server" ControlToValidate="uxConfirmNewPasswordField"
-                                                    ErrorMessage="The New Password and Confirmation of New Password do not match.&lt;br&gt;"
-                                                    ClientValidationFunction="ClientValidate"></asp:CustomValidator>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right">New Password: </td>
-                                            <td>
-                                                <asp:TextBox ID="uxNewPasswordField" runat="server"
-                                                    TextMode="Password" Width="175px"></asp:TextBox>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="right">Re-Enter Password: </td>
-                                            <td style="margin-left: 80px">
-                                                <asp:TextBox ID="uxConfirmNewPasswordField" runat="server"
-                                                    TextMode="Password" Width="175px"></asp:TextBox>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center">&nbsp;</td>
-                                            <td>
-                                                <asp:Button ID="Button1" runat="server" Text="Change Password" CssClass="btn-lg"
-                                                    OnClick="Button1_Click" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                        </asp:Panel>
-                                        <asp:Panel ID="invalidToken" runat="server" Visible="false">
-                                            <h3>The provided password token is invalid. Please <a href="LoginRecovery.aspx">generate a new one</a> if you wish to change your password.</h3>
-                                        </asp:Panel>
-
-                                    <div style="text-align: center;">
-                                        <br />
-                                        &nbsp;
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <br />
-
-                        </center>
-                    </div>
+        <div class="loginbox">
+            <asp:Panel ID="invalidToken" runat="server" Visible="false" Style="margin-top: 0.5em; margin-left: 1em; margin-right: 1em;">
+                <div class="logintextcenter" style="margin-bottom: 1em;">
+                    <h1 style="margin-bottom: 0.2em;" class="gra-red">Invalid Token</h1>
                 </div>
-            </div>
+
+                <p style="font-size: larger; line-height: 1.5em;">The provided password token is invalid - it may have expired. Please <a href="LoginRecovery.aspx">generate a new one</a> if you wish to change your password.</p>
+            </asp:Panel>
+
+            <asp:Panel ID="passwordUpdate" runat="server">
+                <div class="logintextcenter" style="margin-bottom: 1em;">
+                    <h1 style="margin-bottom: 0.2em;" class="gra-red">Change Password</h1>
+                    <em style="font-size: larger;"><strong>You must select a new password.</strong></em>
+                </div>
+
+                <div style="margin-top: 0.5em; margin-left: 1em; margin-right: 1em;">
+                    <asp:RequiredFieldValidator runat="server" ID="uxNewPasswordRequiredValidator"
+                        CssClass="MessageFailure" Display="Dynamic" ControlToValidate="Password"
+                        ErrorMessage="&lt;p&gt;You must enter a new password.&lt;/p&gt;"></asp:RequiredFieldValidator>
+
+                    <asp:RegularExpressionValidator ID="uxNewPasswordStrengthValidator" CssClass="MessageFailure"
+                        runat="server" ControlToValidate="Password" ValidationExpression="(?=^.{7,}$)(?=.*\d)(?=.*[a-zA-Z]+)(?![.\n]).*$"
+                        Display="Dynamic"
+                        ErrorMessage="&lt;p&gt;Your new password must be at least seven characters in length and contain one alpha and one numeric character.&lt;/p&gt;"></asp:RegularExpressionValidator>
+
+                    <asp:RequiredFieldValidator runat="server" ID="uxConfirmNewPasswordRequiredValidator"
+                        CssClass="MessageFailure" ControlToValidate="PasswordVerify" ErrorMessage="&lt;p&gt;You must enter a new password verification.&lt;/p&gt;"
+                        Display="Dynamic"></asp:RequiredFieldValidator>
+
+                    <asp:CustomValidator ID="uxConfirmNewPasswordCustomValidator" CssClass="MessageFailure"
+                        runat="server" ControlToValidate="PasswordVerify"
+                        ErrorMessage="&lt;p&gt;Your new password and new password verification must match.&lt;/p&gt;"
+                        ClientValidationFunction="ClientValidate"></asp:CustomValidator>
+                </div>
+
+                <div>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="padding-top: 0.5em; padding-left: 6em;">
+                                <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password" Font-Bold="true"><%= GRA.SRP.ControlRoom.SRPResources.Password %>: </asp:Label><br />
+                                <asp:TextBox ID="Password" runat="server" TextMode="Password" Width="200px" CssClass="gra-cr-password form-control"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 0.5em; padding-left: 6em;">
+                                <asp:Label ID="PasswordVerifyLabel" runat="server" AssociatedControlID="PasswordVerify" Font-Bold="true"><%= GRA.SRP.ControlRoom.SRPResources.Password %> verification: </asp:Label><br />
+                                <asp:TextBox ID="PasswordVerify" runat="server" TextMode="Password" Width="200px" CssClass="form-control"></asp:TextBox>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="logintextcenter" style="padding-top: 3em; padding-bottom: 2em;">
+                                <asp:Button ID="ChangePassword" runat="server" OnClick="Button1_Click" Text='Change Password'
+                                    CssClass="loginbutton btn-lg" CausesValidation="true"></asp:Button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </asp:Panel>
+
         </div>
+        <script>
+            $().ready(function () {
+                $('.gra-cr-password').focus();
+            });
+
+            function ClientValidate(source, arguments) {
+                arguments.IsValid = $('#<%=Password.ClientID%>').val() == $('#<%=PasswordVerify.ClientID%>').val();
+            }
+        </script>
     </form>
 </body>
 </html>
-

@@ -8,119 +8,37 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
-using System.Collections;
+using System.Collections.Generic;
 using GRA.SRP.Core.Utilities;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class LibraryCrosswalk : EntityBase
+    [Serializable]
+    public class LibraryCrosswalk : EntityBase
     {
-
         #region Private Variables
-
-        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
-
-        private int myID;
-        private int myBranchID;
-        private int myDistrictID;
-        private string myCity;
-
-        private int myTenID = 0;
-        private int myFldInt1 = 0;
-        private int myFldInt2 = 0;
-        private int myFldInt3 = 0;
-        private bool myFldBit1 = false;
-        private bool myFldBit2 = false;
-        private bool myFldBit3 = false;
-        private string myFldText1 = "";
-        private string myFldText2 = "";
-        private string myFldText3 = "";
-
+        private static string conn = GlobalUtilities.SRPDB;
         #endregion
 
         #region Accessors
-
-        public int ID
-        {
-            get { return myID; }
-            set { myID = value; }
-        }
-        public int BranchID
-        {
-            get { return myBranchID; }
-            set { myBranchID = value; }
-        }
-        public int DistrictID
-        {
-            get { return myDistrictID; }
-            set { myDistrictID = value; }
-        }
-        public string City
-        {
-            get { return myCity; }
-            set { myCity = value; }
-        }
-
-        public int TenID
-        {
-            get { return myTenID; }
-            set { myTenID = value; }
-        }
-
-        public int FldInt1
-        {
-            get { return myFldInt1; }
-            set { myFldInt1 = value; }
-        }
-
-        public int FldInt2
-        {
-            get { return myFldInt2; }
-            set { myFldInt2 = value; }
-        }
-
-        public int FldInt3
-        {
-            get { return myFldInt3; }
-            set { myFldInt3 = value; }
-        }
-
-        public bool FldBit1
-        {
-            get { return myFldBit1; }
-            set { myFldBit1 = value; }
-        }
-
-        public bool FldBit2
-        {
-            get { return myFldBit2; }
-            set { myFldBit2 = value; }
-        }
-
-        public bool FldBit3
-        {
-            get { return myFldBit3; }
-            set { myFldBit3 = value; }
-        }
-
-        public string FldText1
-        {
-            get { return myFldText1; }
-            set { myFldText1 = value; }
-        }
-
-        public string FldText2
-        {
-            get { return myFldText2; }
-            set { myFldText2 = value; }
-        }
-
-        public string FldText3
-        {
-            get { return myFldText3; }
-            set { myFldText3 = value; }
-        }
+        public int ID { get; set; }
+        public int BranchID { get; set; }
+        public int DistrictID { get; set; }
+        public string City { get; set; }
+        public int TenID { get; set; }
+        public int FldInt1 { get; set; }
+        public int FldInt2 { get; set; }
+        public int FldInt3 { get; set; }
+        public bool FldBit1 { get; set; }
+        public bool FldBit2 { get; set; }
+        public bool FldBit3 { get; set; }
+        public string FldText1 { get; set; }
+        public string FldText2 { get; set; }
+        public string FldText3 { get; set; }
+        public string BranchLink { get; set; }
+        public string BranchAddress { get; set; }
+        public string BranchTelephone { get; set; }
 
         #endregion
 
@@ -132,6 +50,14 @@ namespace GRA.SRP.DAL
                  HttpContext.Current.Session["TenantID"].ToString() == ""
                      ? -1
                      : (int)HttpContext.Current.Session["TenantID"]);
+
+            this.City = string.Empty;
+            this.FldText1 = string.Empty;
+            this.FldText2 = string.Empty;
+            this.FldText3 = string.Empty;
+            this.BranchLink = string.Empty;
+            this.BranchAddress = string.Empty;
+            this.BranchTelephone = string.Empty;
         }
 
         #endregion
@@ -152,7 +78,7 @@ namespace GRA.SRP.DAL
         public static DataSet GetFilteredDistrictDDValues(string city)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@City", city);
+            arrParams[0] = new SqlParameter("@City", string.Empty);
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -166,7 +92,7 @@ namespace GRA.SRP.DAL
         {
             SqlParameter[] arrParams = new SqlParameter[3];
             arrParams[0] = new SqlParameter("@DistrictID", districtID);
-            arrParams[1] = new SqlParameter("@City", city);
+            arrParams[1] = new SqlParameter("@City", string.Empty);
             arrParams[2] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -217,16 +143,18 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
+                result.BranchLink = dr["BranchLink"].ToString();
+                result.BranchAddress = dr["BranchAddress"].ToString();
+                result.BranchTelephone = dr["BranchTelephone"].ToString();
+
                 dr.Close();
 
                 return result;
-
             }
 
             dr.Close();
 
             return null;
-
         }
 
 
@@ -271,6 +199,10 @@ namespace GRA.SRP.DAL
                 result.FldText1 = dr["FldText1"].ToString();
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
+
+                result.BranchLink = dr["BranchLink"].ToString();
+                result.BranchAddress = dr["BranchAddress"].ToString();
+                result.BranchTelephone = dr["BranchTelephone"].ToString();
 
                 dr.Close();
 
@@ -326,6 +258,10 @@ namespace GRA.SRP.DAL
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
 
+                this.BranchLink = dr["BranchLink"].ToString();
+                this.BranchAddress = dr["BranchAddress"].ToString();
+                this.BranchTelephone = dr["BranchTelephone"].ToString();
+
                 dr.Close();
 
                 return true;
@@ -348,29 +284,32 @@ namespace GRA.SRP.DAL
         public static int Insert(LibraryCrosswalk o)
         {
 
-            SqlParameter[] arrParams = new SqlParameter[14];
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@BranchID", GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@DistrictID", GlobalUtilities.DBSafeValue(o.DistrictID, o.DistrictID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@City", GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode())));
 
-            arrParams[0] = new SqlParameter("@BranchID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@DistrictID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DistrictID, o.DistrictID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            arrParams[3] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@BranchLink", GlobalUtilities.DBSafeValue(o.BranchLink, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchAddress", GlobalUtilities.DBSafeValue(o.BranchAddress, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchTelephone", GlobalUtilities.DBSafeValue(o.BranchTelephone, o.FldText3.GetTypeCode())));
 
-            arrParams[13] = new SqlParameter("@ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode()));
-            arrParams[13].Direction = ParameterDirection.Output;
+            var param = new SqlParameter("@ID", GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode()));
+            param.Direction = ParameterDirection.Output;
+            arrParams.Add(param);
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_LibraryCrosswalk_Insert", arrParams.ToArray());
 
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_LibraryCrosswalk_Insert", arrParams);
-
-            o.ID = int.Parse(arrParams[13].Value.ToString());
+            o.ID = int.Parse(param.Value.ToString());
 
             return o.ID;
 
@@ -388,28 +327,32 @@ namespace GRA.SRP.DAL
 
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[14];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@BranchID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@DistrictID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.DistrictID, o.DistrictID.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@City", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@ID", GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchID", GlobalUtilities.DBSafeValue(o.BranchID, o.BranchID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@DistrictID", GlobalUtilities.DBSafeValue(o.DistrictID, o.DistrictID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@City", GlobalUtilities.DBSafeValue(o.City, o.City.GetTypeCode())));
 
-            arrParams[4] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
+
+            arrParams.Add(new SqlParameter("@BranchLink", GlobalUtilities.DBSafeValue(o.BranchLink, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchAddress", GlobalUtilities.DBSafeValue(o.BranchAddress, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BranchTelephone", GlobalUtilities.DBSafeValue(o.BranchTelephone, o.FldText3.GetTypeCode())));
 
             try
             {
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_LibraryCrosswalk_Update", arrParams);
+                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_LibraryCrosswalk_Update", arrParams.ToArray());
 
             }
 
@@ -438,7 +381,7 @@ namespace GRA.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@ID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@ID", GlobalUtilities.DBSafeValue(o.ID, o.ID.GetTypeCode()));
 
             try
             {
@@ -456,6 +399,17 @@ namespace GRA.SRP.DAL
 
             return iReturn;
 
+        }
+
+        public static DataSet GetExport()
+        {
+            var arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
+            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_LibraryCrosswalk_Export", arrParams);
         }
 
         #endregion

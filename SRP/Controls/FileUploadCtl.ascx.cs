@@ -119,6 +119,47 @@ namespace GRA.SRP.Classes
             }
         }
 
+        public string BlankSmallImage {
+            get {
+                if (null != ViewState["_BlankSmallImage_" + this.ID + "_"])
+                {
+                    return ViewState["_BlankSmallImage_" + this.ID + "_"] as string;
+                }
+                return "";
+            }
+            set {
+                ViewState["_BlankSmallImage_" + this.ID + "_"] = value;
+            }
+        }
+
+        public string BlankMediumImage {
+            get {
+                if (null != ViewState["_BlankMediumImage_" + this.ID + "_"])
+                {
+                    return ViewState["_BlankMediumImage_" + this.ID + "_"] as string;
+                }
+                return "";
+            }
+            set {
+                ViewState["_BlankMediumImage_" + this.ID + "_"] = value;
+            }
+        }
+
+        public string BlankImage {
+            get {
+                if (null != ViewState["_BlankImage_" + this.ID + "_"])
+                {
+                    return ViewState["_BlankImage_" + this.ID + "_"] as string;
+                }
+                return "";
+            }
+            set {
+                ViewState["_BlankImage_" + this.ID + "_"] = value;
+            }
+        }
+
+
+
         [Browsable(true)]
         [Bindable(true, BindingDirection.TwoWay)]
         [DefaultValue("")]
@@ -199,7 +240,6 @@ namespace GRA.SRP.Classes
                     }
                     lblSm.Text = "<b>Thumbnail</b><br />Width=" + SmallThumbnailWidth.ToString() + "px";
                     lblSm.Visible = true;
-                    Image1.ImageUrl = Folder + "\\" + SmallThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
                 }
                 else {
                     PreviewImage1.Visible = false;
@@ -215,7 +255,6 @@ namespace GRA.SRP.Classes
                     }
                     lblMd.Text = "<b>Medium Size</b><br />Width=" + MediumThumbnailWidth.ToString() + "px";
                     lblMd.Visible = true;
-                    Image2.ImageUrl = Folder + "\\" + MediumThumbnailPrefix + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
                 }
                 else {
                     PreviewImage2.Visible = false;
@@ -228,8 +267,6 @@ namespace GRA.SRP.Classes
                     PreviewImage3.ImageUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
                 }
                 lblLg.Text = "<b>Image</b><br />Width=" + ImgWidth.ToString() + "px";
-                Image3.ImageUrl = Folder + "\\" + FileName + "." + Extension + "?" + DateTime.Now.Ticks;
-
             }
             else {
                 pnlNew.Visible = true;
@@ -383,28 +420,47 @@ namespace GRA.SRP.Classes
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            var fileName = string.Format("{0}\\{1}.{2}",
+            string path = string.Format("{0}{1}",
                 Server.MapPath(Folder),
+                Path.DirectorySeparatorChar);
+
+            var fileName = string.Format("{0}{1}.{2}",
+                path,
                 FileName,
                 Extension);
             File.Delete(fileName);
+            if(!string.IsNullOrEmpty(this.BlankImage))
+            {
+                System.IO.File.Copy(string.Format("{0}{1}.{2}", path, BlankImage, Extension),
+                                    fileName);
+            }
             if (CreateSmallThumbnail)
             {
-                fileName = string.Format("{0}\\{1}{2}.{3}",
-                    Server.MapPath(Folder),
+                fileName = string.Format("{0}{1}{2}.{3}",
+                    path,
                     SmallThumbnailPrefix,
                     FileName,
                     Extension);
                 File.Delete(fileName);
+                if (!string.IsNullOrEmpty(this.BlankSmallImage))
+                {
+                    System.IO.File.Copy(string.Format("{0}{1}.{2}", path, BlankSmallImage, Extension),
+                                        fileName);
+                }
             }
             if (CreateMediumThumbnail)
             {
-                fileName = string.Format("{0}\\{1}{2}.{3}",
-                    Server.MapPath(Folder),
+                fileName = string.Format("{0}{1}{2}.{3}",
+                    path,
                     MediumThumbnailPrefix,
                     FileName,
                     Extension);
                 File.Delete(fileName);
+                if (!string.IsNullOrEmpty(this.BlankMediumImage))
+                {
+                    System.IO.File.Copy(string.Format("{0}{1}.{2}", path, BlankMediumImage, Extension),
+                                        fileName);
+                }
             }
             ProcessRender();
         }

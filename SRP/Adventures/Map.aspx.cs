@@ -45,7 +45,7 @@ namespace GRA.SRP {
 
             var backImageFile = Server.MapPath(new Logic.Game().GetGameboardPath(patron, gm.PGID));
             var stampImageFile = Server.MapPath(string.Format(StampBasePath, gm.PGID));
-            var avatarImageFile = Server.MapPath(string.Format(AvatarBasePath, patron.PID));
+            var avatarImageFile = Server.MapPath(string.Format(AvatarBasePath, patron.AvatarState));
 
             var newBmp = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             System.Drawing.Image avatarImage = null;

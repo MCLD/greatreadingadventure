@@ -76,6 +76,33 @@ namespace GRA.SRP.ControlRoom.Modules.Settings {
         protected global::System.Web.UI.WebControls.ImageButton btnSaveback;
         
         /// <summary>
+        /// ExcelFileUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload ExcelFileUpload;
+        
+        /// <summary>
+        /// UploadButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton UploadButton;
+        
+        /// <summary>
+        /// DownloadButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton DownloadButton;
+        
+        /// <summary>
         /// odsDDDistrict control.
         /// </summary>
         /// <remarks>

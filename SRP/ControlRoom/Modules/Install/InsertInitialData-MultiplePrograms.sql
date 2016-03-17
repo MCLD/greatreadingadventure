@@ -110,7 +110,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	2200,
-	'Modify  Program Permission',
+	'Modify Program Permission',
 	'Allows a user to create a new Program',
 	NULL
 	)
@@ -194,7 +194,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	4400,
-	'Book Lists Management',
+	'Challenges Management',
 	'Allows access to the respective maintenance screens.',
 	NULL
 	)
@@ -322,6 +322,20 @@ VALUES (
 	5300,
 	'Reviews Management',
 	'Allows access to the respective maintenance screens.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
+	5400,
+	'Import/Export Management',
+	'Allows access to import/export of program management items.',
 	NULL
 	)
 GO
@@ -1748,7 +1762,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1848,7 +1862,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1948,7 +1962,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -2048,7 +2062,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -2369,252 +2383,6 @@ VALUES (
 GO
 
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
-GO
-
-SET IDENTITY_INSERT [dbo].[Avatar] ON
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	N'Percy',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	2,
-	N'Katniss',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	3,
-	N'Othello',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	4,
-	N'Hester',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	5,
-	N'Gandalf',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	6,
-	N'Cersei',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-SET IDENTITY_INSERT [dbo].[Avatar] OFF
 GO
 
 IF (

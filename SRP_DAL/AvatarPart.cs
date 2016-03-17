@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using Microsoft.ApplicationBlocks.Data;
 using GRA.SRP.Core.Utilities;
+using System.Text;
 
 namespace GRA.SRP.DAL
 {
@@ -16,6 +17,7 @@ namespace GRA.SRP.DAL
 
         public int APID { get; set; }
         public int ComponentID { get; set; }
+        public int Ordering { get; set; }
         public string Name { get; set; }
         public string Gender { get; set; }
         public DateTime LastModDate { get; set; }
@@ -46,8 +48,7 @@ namespace GRA.SRP.DAL
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_AvatarPart_GetQualifiedByPatron", arrParams);
         }
 
-
-        public AvatarPart GetAvatarPart(int APID)
+        public static AvatarPart FetchObject(int APID)
         {
             SqlParameter[] arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@APID", APID);
@@ -65,7 +66,8 @@ namespace GRA.SRP.DAL
                     result.APID = _int;
                 if (int.TryParse(dr["ComponentID"].ToString(), out _int))
                     result.ComponentID = _int;
-
+                if (int.TryParse(dr["Ordering"].ToString(), out _int))
+                    result.Ordering = _int;
                 result.Name = dr["Name"].ToString();
                 if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
                     result.LastModDate = _datetime;
@@ -86,9 +88,32 @@ namespace GRA.SRP.DAL
             return null;
         }
 
+        public AvatarPart GetAvatarPart(int APID)
+        {
+            return AvatarPart.FetchObject(APID);
+        }
+
         public static DataSet GetAll()
         {
             return GetAll(true);
+        }
+
+        public static DataSet GetAssociatedWithBadge(int badgeID)
+        {
+            var arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@BadgeID", badgeID);
+
+            StringBuilder query = new StringBuilder("SELECT * FROM [AvatarPart]"
+              + " WHERE BadgeID = @BadgeID"
+              + " ORDER BY Ordering");
+
+
+            var result = SqlHelper.ExecuteDataset(conn,
+                                                 System.Data.CommandType.Text,
+                                                 query.ToString(),
+                                                 arrParams);
+
+            return result;
         }
 
         public static DataSet GetAll(bool forCurrentTenantOnly = true)
@@ -128,6 +153,7 @@ namespace GRA.SRP.DAL
             var parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@ComponentID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ComponentID, o.ComponentID.GetTypeCode())));
+            parameters.Add(new SqlParameter("@Ordering", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Ordering, o.Ordering.GetTypeCode())));
             parameters.Add(new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode())));
             parameters.Add(new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode())));
 
@@ -163,6 +189,7 @@ namespace GRA.SRP.DAL
 
             parameters.Add(new SqlParameter("@APID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.APID, o.APID.GetTypeCode())));
             parameters.Add(new SqlParameter("@ComponentID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ComponentID, o.ComponentID.GetTypeCode())));
+            parameters.Add(new SqlParameter("@Ordering", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Ordering, o.Ordering.GetTypeCode())));
             parameters.Add(new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode())));
             parameters.Add(new SqlParameter("@Gender", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Gender, o.Gender.GetTypeCode())));
 

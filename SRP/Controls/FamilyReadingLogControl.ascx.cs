@@ -15,6 +15,8 @@ namespace GRA.SRP.Controls
 {
     public partial class FamilyReadingLogControl : System.Web.UI.UserControl
     {
+        protected const string RequireBookDetailsKey = "RequireBookDetails";
+
         protected bool ShowModal { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -41,6 +43,8 @@ namespace GRA.SRP.Controls
                     familyReadingLogControlPanel.Visible = false;
                     return;
                 }
+
+                ViewState[RequireBookDetailsKey] = program.RequireBookDetails;
 
                 ViewState["ProgramGameId"] = program.PID.ToString();
 
@@ -210,7 +214,7 @@ namespace GRA.SRP.Controls
 
         protected void submitButton_Click(object sender, EventArgs e)
         {
-            if (enterBookDetails.Checked)
+            if (enterBookDetails.Checked || ViewState[RequireBookDetailsKey] as bool? == true)
             {
                 // show pop-up
                 HttpCookie logDetailsCookie = new HttpCookie(CookieKey.LogBookDetails);

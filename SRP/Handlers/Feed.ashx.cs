@@ -22,6 +22,7 @@ namespace GRA.SRP.Handlers
         public int BadgeId { get; set; }
         public int ChallengeId { get; set; }
         public string AchievementName { get; set; }
+        public string AvatarState { get; set; }
     }
     public class JsonFeed : JsonBase
     {
@@ -76,7 +77,8 @@ namespace GRA.SRP.Handlers
                         AwardedAt = ((DateTime)dataRow["AwardDate"]).ToString(),
                         AwardReasonId = (int)dataRow["AwardReasonCd"],
                         BadgeId = (int)dataRow["BadgeId"],
-                        ChallengeId = dataRow["BLID"] == DBNull.Value ? 0 : (int)dataRow["BLID"]
+                        ChallengeId = dataRow["BLID"] == DBNull.Value ? 0 : (int)dataRow["BLID"],
+                        AvatarState = (string)dataRow["AvatarState"]
                     };
 
                     if (entry.ID > jsonResponse.Latest)

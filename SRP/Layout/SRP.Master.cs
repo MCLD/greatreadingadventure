@@ -337,7 +337,8 @@ namespace GRA.SRP
                         }
                     }
                 }
-                else {
+                else
+                {
                     this.loginPopupPanel.Visible = true;
                     if (Session[SessionKey.RequestedPath] != null)
                     {
@@ -349,6 +350,26 @@ namespace GRA.SRP
                     {
                         loginPopupUsername.Text = Request.Cookies[CookieKey.Username].Value;
                         loginPopupRememberMe.Checked = true;
+                    }
+
+                    string programId = Request["PID"];
+                    if (string.IsNullOrEmpty(programId))
+                    {
+                        programId = Session["ProgramID"].ToString();
+                    }
+                    if (string.IsNullOrEmpty(programId))
+                    {
+                        programId = Programs.GetDefaultProgramID().ToString();
+                    }
+                    var program = DAL.Programs.FetchObject(int.Parse(programId));
+
+                    if (!program.IsRegistrationOpen)
+                    {
+                        LoggedOutRegister.Visible = false;
+                    }
+                    if (!program.IsOpen && !program.IsRegistrationOpen)
+                    {
+                        LoggedOutLogin.Visible = false;
                     }
                 }
             }

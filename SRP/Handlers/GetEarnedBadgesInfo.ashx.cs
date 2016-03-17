@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.SessionState;
+using System.Data;
 
 namespace GRA.SRP.Handlers {
     /// <summary>
@@ -17,6 +18,7 @@ namespace GRA.SRP.Handlers {
             public int BadgeId { get; set; }
             public string ImageUrl { get; set; }
             public string EarnedMessage { get; set; }
+            public string AvatarMessage { get; set; }
         }
 
         public class JsonEarnedBadges : JsonBase {
@@ -60,6 +62,24 @@ namespace GRA.SRP.Handlers {
                                                            context.Request.Url,
                                                            context.Request.QueryString));
                         } else {
+
+
+                            var avatarMessage = "";
+
+                            var avatarPartData = DAL.AvatarPart.GetAssociatedWithBadge(badgeId);
+
+
+                            if (avatarPartData.Tables[0].Rows.Count > 0) {
+                                avatarMessage = "New avatars were also unlocked!";
+                            }
+
+                            /*
+                            foreach (DataRow data in avatarPartData.Tables[0].Rows)
+                            {
+
+                            }
+                            */
+
                             string badgePath = NoBadgePath;
                             string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
                                                                       badgeId);
@@ -71,7 +91,8 @@ namespace GRA.SRP.Handlers {
                                 UserName = badge.UserName,
                                 BadgeId = badge.BID,
                                 ImageUrl = VirtualPathUtility.ToAbsolute(badgePath),
-                                EarnedMessage = context.Server.HtmlDecode(badge.CustomEarnedMessage)
+                                EarnedMessage = context.Server.HtmlDecode(badge.CustomEarnedMessage),
+                                AvatarMessage = avatarMessage
                             });
                         }
                     }

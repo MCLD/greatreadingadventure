@@ -209,18 +209,17 @@ namespace GRA.SRP.ControlRoom {
         }
 
         public static void InitializeAvatars(int TID, int MTID) {
-            /*
-            var ds = Avatar.GetAll(MTID);
+            var ds = AvatarPart.GetAll(MTID);
             foreach(DataRow r in ds.Tables[0].Rows) {
-                var SrcPK = Convert.ToInt32(r["AID"]);
+                var SrcPK = Convert.ToInt32(r["APID"]);
 
-                var MappedFolder = HttpContext.Current.Server.MapPath("~/Images/Avatars/");
+                var MappedFolder = HttpContext.Current.Server.MapPath("~/Images/AvatarParts/");
 
-                var MappedPK = GetMappedPKbyOriginalPK("avatar", TID, SrcPK);
+                var MappedPK = GetMappedPKbyOriginalPK("avatarpart", TID, SrcPK);
                 if(MappedPK < 0) {
-                    var srcObj = Avatar.FetchObject(SrcPK);
+                    var srcObj = AvatarPart.FetchObject(SrcPK);
 
-                    srcObj.AID = 0;
+                    srcObj.APID = 0;
                     srcObj.TenID = TID;
 
             srcObj.AddedDate = srcObj.LastModDate = DateTime.Now;
@@ -230,18 +229,14 @@ namespace GRA.SRP.ControlRoom {
 
                     if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png")))
                         System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", srcObj.AID, "png"), true);
+                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", srcObj.APID, "png"), true);
                     if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", SrcPK, "png")))
                         System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", srcObj.AID, "png"), true);
-                    if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", SrcPK, "png")))
-                        System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", srcObj.AID, "png"), true);
+                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", srcObj.APID, "png"), true);
 
-                    InsertInitializationTrackingRecord("avatar", TID, srcObj.AID, SrcPK);
+                    InsertInitializationTrackingRecord("avatarpart", TID, srcObj.APID, SrcPK);
                 }
             }
-    */
         }
 
         public static void InitializeBadges(int TID, int MTID) {
@@ -1056,24 +1051,21 @@ namespace GRA.SRP.ControlRoom {
                 Response.Buffer = false;
                 Response.Write("<!--");
             }
-            var WorkFolder = HttpContext.Current.Server.MapPath("~/Images/Avatars/");
+            var WorkFolder = HttpContext.Current.Server.MapPath("~/Images/AvatarParts/");
 
-            /*
             foreach(var f in System.IO.Directory.GetFiles(WorkFolder, "sm_*.png")) {
                 var sID = f.Replace(WorkFolder, "").Replace(".png", "").Replace("sm_", "");
                 var ID = -1;
                 int.TryParse(sID, out ID);
                 if(ID > 0) {
-                    var mg = Avatar.FetchObject(ID);
+                    var mg = AvatarPart.FetchObject(ID);
                     if(mg == null) {
                         File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "", ID, "png"));
                         File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "sm_", ID, "png"));
-                        File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "md_", ID, "png"));
                     }
                 }
                 Response.Write(".");
             }
-            */
 
             WorkFolder = HttpContext.Current.Server.MapPath("~/Images/Badges/");
             foreach(var f in System.IO.Directory.GetFiles(WorkFolder, "sm_*.png")) {

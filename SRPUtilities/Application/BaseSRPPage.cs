@@ -64,7 +64,7 @@ namespace SRPApp.Classes {
             var tenantVs = ViewState["TenantID"];
 
             // Tenant not selected ...  
-            if(Session["TenantID"] == null || Session["TenantID"].ToString() == "") {
+            if (Session["TenantID"] == null || Session["TenantID"].ToString() == "") {
                 if(tenantVs != null
                    && !string.IsNullOrEmpty(tenantVs.ToString())) {
                     Session["TenantID"] = ViewState["TenantID"];
@@ -305,6 +305,15 @@ namespace SRPApp.Classes {
 
         private void basePagePreInit(object sender, EventArgs e) {
             try {
+                var secretCode = this.Context.Request.QueryString["secretcode"];
+                if (!string.IsNullOrWhiteSpace(secretCode))
+                {
+                    Session[SessionKey.SecretCode] = secretCode.Length > 50
+                        ? secretCode.Substring(0, 50).Trim()
+                        : secretCode.Trim();
+                    Session[SessionKey.RequestedPath] = "~/Dashboard.aspx";
+                }
+
                 MasterPage = (BaseSRPMaster)Master;
                 MasterPage.InitResFile();
             } catch //(Exception ex)

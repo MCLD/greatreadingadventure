@@ -76,6 +76,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.ComponentID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ComponentID")).SelectedValue);
+                    obj.Ordering = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Ordering")).Text);
                     obj.Gender = "O";//"((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -142,6 +143,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     obj.Name = ((TextBox)((DetailsView)sender).FindControl("Name")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.ComponentID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ComponentID")).SelectedValue);
+                    obj.Ordering = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Ordering")).Text);
                     obj.Gender = "O";//"((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session

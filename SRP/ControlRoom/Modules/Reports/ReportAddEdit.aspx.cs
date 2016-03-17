@@ -1829,7 +1829,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     if (_int == 2)
                     {
                         string excelFilename = Server.MapPath("~/Adhocreport.xlsx");
-                        CreateExcelFile.CreateExcelDocument(ds, excelFilename, filterStr.Replace(minorSep, " ").Replace(majorSep, "\n"));
+                        //CreateExcelFile.CreateExcelDocument(ds, excelFilename, filterStr.Replace(minorSep, " ").Replace(majorSep, "\n"));
+                        CreateExcelFile.CreateExcelDocument(ds, excelFilename);
 
                         Response.ContentType = "application/vnd.ms-excel";
                         Response.AppendHeader("Content-Disposition", "attachment; filename=Adhocreport.xlsx");
@@ -1838,12 +1839,6 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         File.Delete(excelFilename);
                         Response.End();
                     }
-
-
-
-
-
-
                 }
                 catch (Exception ex)
                 {

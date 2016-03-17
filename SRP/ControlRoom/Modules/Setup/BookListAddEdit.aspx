@@ -92,7 +92,7 @@
                             <td nowrap valign="top"><b>Literacy Level 1: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="LiteracyLevel1" runat="server" Text='<%# ((int) Eval("LiteracyLevel1") ==0 ? "" : Eval("LiteracyLevel1")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                                 <asp:RegularExpressionValidator ID="revLiteracyLevel1"
                                     ControlToValidate="LiteracyLevel1"
                                     ValidationExpression="\d+"
@@ -122,7 +122,7 @@
                             <td nowrap valign="top"><b>Literacy Level 2: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="LiteracyLevel2" runat="server" Text='<%# ((int) Eval("LiteracyLevel2") ==0 ? "" : Eval("LiteracyLevel2")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="revLiteracyLevel2"
                                     ControlToValidate="LiteracyLevel2"
@@ -155,7 +155,7 @@
                             <td nowrap valign="top"><b>Tasks to complete: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="NumBooksToComplete" runat="server" Text='<%# ((int) Eval("NumBooksToComplete") ==0 ? "" : Eval("NumBooksToComplete")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="RegularExpressionValidator1"
                                     ControlToValidate="NumBooksToComplete"
@@ -186,7 +186,7 @@
                             <td nowrap valign="top"><b># Points Awarded: </b></td>
                             <td colspan="1" valign="top">
                                 <asp:TextBox ID="AwardPoints" runat="server" Text='<%# ((int) Eval("AwardPoints") ==0 ? "" : Eval("AwardPoints")) %>'
-                                    ReadOnly="False" Width="50px" CssClass="align-right" CssClass="form-control"></asp:TextBox>
+                                    ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
 
                                 <asp:RegularExpressionValidator ID="revAwardPoints"
                                     ControlToValidate="AwardPoints"

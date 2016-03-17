@@ -44,8 +44,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxControlToolkit, Version=4.1.7.1005, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
-      <HintPath>..\packages\AjaxControlToolkit.7.1005\lib\40\AjaxControlToolkit.dll</HintPath>
+    <Reference Include="AjaxControlToolkit, Version=16.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AjaxControlToolkit.16.1.0.0\lib\net40\AjaxControlToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="AjaxMin, Version=5.14.5506.26196, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
@@ -61,8 +61,16 @@
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net20\Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -102,8 +110,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Account\AddFamilyMember.aspx" />
     <Content Include="Account\AddFamilyMemberAccount.aspx" />
     <Content Include="Account\ActivityHistory.aspx" />
+    <Content Include="Account\AddFamilyMemberExistingAccount.aspx" />
     <Content Include="Account\BookList.aspx" />
     <Content Include="AddlSurvey.aspx" />
     <Content Include="android-chrome-144x144.png" />
@@ -158,10 +168,13 @@
     <Content Include="ControlRoom\Controls\OpenBadgesBadgeMaker.ascx" />
     <Content Include="ControlRoom\Images\CircularProgressAnimation2.gif" />
     <Content Include="ControlRoom\Modules\Settings\TestEmail.aspx" />
+    <Content Include="ControlRoom\Modules\Setup\IEEvents.aspx" />
     <Content Include="ControlRoom\RibbonImages\Accounts%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Accounts.png" />
     <Content Include="ControlRoom\RibbonImages\GroupSecurity%402x.png" />
     <Content Include="ControlRoom\RibbonImages\GroupSecurity.png" />
+    <Content Include="ControlRoom\RibbonImages\ImportExport%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\ImportExport.png" />
     <Content Include="ControlRoom\RibbonImages\MoreMorePatronInfo%402x.png" />
     <Content Include="ControlRoom\RibbonImages\MoreMorePatronInfo.png" />
     <Content Include="ControlRoom\RibbonImages\MorePatronInfo%402x.png" />
@@ -176,12 +189,10 @@
     <Content Include="ControlRoom\RibbonImages\UserSecurity.png" />
     <Content Include="ControlRoom\RibbonImages\Adventures%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Adventures.png" />
-    <Content Include="ControlRoom\RibbonImages\AvatarsBadges%402x.png" />
-    <Content Include="ControlRoom\RibbonImages\AvatarsBadges.png" />
+    <Content Include="ControlRoom\RibbonImages\Avatars%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\Avatars.png" />
     <Content Include="ControlRoom\RibbonImages\Awards%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Awards.png" />
-    <Content Include="ControlRoom\RibbonImages\Challenges%402x.png" />
-    <Content Include="ControlRoom\RibbonImages\Challenges.png" />
     <Content Include="ControlRoom\RibbonImages\Codes%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Codes.png" />
     <Content Include="ControlRoom\RibbonImages\CustomFields%402x.png" />
@@ -190,8 +201,8 @@
     <Content Include="ControlRoom\RibbonImages\Dashboard.png" />
     <Content Include="ControlRoom\RibbonImages\Drawings%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Drawings.png" />
-    <Content Include="ControlRoom\RibbonImages\EventsOffers%402x.png" />
-    <Content Include="ControlRoom\RibbonImages\EventsOffers.png" />
+    <Content Include="ControlRoom\RibbonImages\Events%402x.png" />
+    <Content Include="ControlRoom\RibbonImages\Events.png" />
     <Content Include="ControlRoom\RibbonImages\Mail%402x.png" />
     <Content Include="ControlRoom\RibbonImages\Mail.png" />
     <Content Include="ControlRoom\RibbonImages\OrganizationManagement%402x.png" />
@@ -259,14 +270,12 @@
     <Content Include="ControlRoom\Handlers\CodeAvailable.ashx" />
     <None Include="Properties\PublishProfiles\Demo.pubxml" />
     <None Include="Properties\PublishProfiles\Release.pubxml" />
-    <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\avatar.js" />
-    <Content Include="Scripts\jquery-2.2.0.js" />
-    <Content Include="Scripts\jquery-2.2.0.min.js" />
+    <Content Include="Scripts\jquery-2.2.1.js" />
+    <Content Include="Scripts\jquery-2.2.1.min.js" />
     <Content Include="Scripts\jquery.fancybox-buttons.js" />
     <Content Include="Scripts\jquery.fancybox-media.js" />
     <Content Include="Scripts\jquery.fancybox-thumbs.js" />
@@ -660,8 +669,6 @@
     <None Include="Properties\PublishProfiles\Documentation.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
-    <Content Include="Scripts\jquery.bpopup.0.9.4.min.js" />
-    <Content Include="Scripts\jquery.bpopup.min.js" />
     <Content Include="Scripts\jquery.datepick.min.js" />
     <Content Include="Scripts\jquery.ddslick.js" />
     <Content Include="Scripts\jquery.ddslick.min.js" />
@@ -778,7 +785,7 @@
     <Content Include="trumbowyg\ui\sass\_sprite-black.scss" />
     <Content Include="trumbowyg\ui\sass\_sprite-white-2x.scss" />
     <Content Include="trumbowyg\ui\sass\_sprite-white.scss" />
-    <Content Include="Scripts\jquery-2.2.0.min.map" />
+    <Content Include="Scripts\jquery-2.2.1.min.map" />
     <None Include="Web.Demo.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -804,6 +811,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\AddFamilyMember.aspx.cs">
+      <DependentUpon>AddFamilyMember.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddFamilyMember.aspx.designer.cs">
+      <DependentUpon>AddFamilyMember.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Account\AddFamilyMemberAccount.aspx.cs">
       <DependentUpon>AddFamilyMemberAccount.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -817,6 +831,13 @@
     </Compile>
     <Compile Include="Account\ActivityHistory.aspx.designer.cs">
       <DependentUpon>ActivityHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\AddFamilyMemberExistingAccount.aspx.cs">
+      <DependentUpon>AddFamilyMemberExistingAccount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AddFamilyMemberExistingAccount.aspx.designer.cs">
+      <DependentUpon>AddFamilyMemberExistingAccount.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\BookList.aspx.cs">
       <DependentUpon>BookList.aspx</DependentUpon>
@@ -1088,6 +1109,13 @@
     </Compile>
     <Compile Include="ControlRoom\Modules\Setup\EventAddWizard.aspx.designer.cs">
       <DependentUpon>EventAddWizard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\IEEvents.aspx.cs">
+      <DependentUpon>IEEvents.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Setup\IEEvents.aspx.designer.cs">
+      <DependentUpon>IEEvents.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\Setup\SurveyAddEdit.aspx.cs">
       <DependentUpon>SurveyAddEdit.aspx</DependentUpon>
