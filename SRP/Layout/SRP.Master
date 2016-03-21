@@ -70,6 +70,7 @@
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
                             <span class="visible-xs-inline">Badges</span></a></li>
+                        <li id="challengesAnonNav" runat="server"><a href="~/Challenges/" class="menu-item" runat="server">Challenges</a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li runat="server" id="LoggedOutRegister"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">navigation-button-register</asp:Label></a></li>

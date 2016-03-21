@@ -102,7 +102,7 @@
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Left"></ItemStyle>
             </asp:BoundField>
 
-            <asp:TemplateField   SortExpression="DOB" Visible="True"  
+<%--            <asp:TemplateField   SortExpression="DOB" Visible="True"  
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
                 HeaderText="DOB">              
                 <ItemTemplate> 
@@ -117,7 +117,7 @@
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" HtmlEncode="False" ItemStyle-HorizontalAlign ="Left"  HeaderStyle-HorizontalAlign="Left">
 				<ControlStyle Width="150px" />
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="150px" HorizontalAlign="Left"></ItemStyle>
-            </asp:BoundField>
+            </asp:BoundField>--%>
 
 			<asp:BoundField ReadOnly="True" HeaderText="Program" 
                 DataField="Program" SortExpression="AdminName" Visible="True" 

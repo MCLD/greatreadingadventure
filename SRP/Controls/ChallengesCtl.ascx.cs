@@ -14,9 +14,14 @@ namespace GRA.SRP.Controls
 {
     public partial class ChallengesCtl : System.Web.UI.UserControl
     {
+        private const string CompletedCommand = "ShowCompleted";
+        private const string DisplayCommand = "Show";
+
         private bool ProgramOpen { get; set; }
+        private bool CompletedChallenge { get; set; }
         private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
         public bool ShowModal { get; set; }
+        public Patron CurrentPatron { get; set; }
 
         protected string ShowBadge(object badgeIdObject)
         {
@@ -30,6 +35,22 @@ namespace GRA.SRP.Controls
             }
         }
 
+        protected string PopupCommand(object amountObject, object totalObject)
+        {
+            int amount = amountObject as int? ?? 0;
+            int total = totalObject as int? ?? 0;
+
+            if (total == 0 || amount == 0)
+            {
+                return DisplayCommand;
+            }
+            if (amount >= total)
+            {
+                return CompletedCommand;
+            }
+            return DisplayCommand;
+        }
+
         protected string ProgressDisplay(object amountObject, object totalObject)
         {
             int amount = amountObject as int? ?? 0;
@@ -39,7 +60,7 @@ namespace GRA.SRP.Controls
             {
                 return string.Empty;
             }
-            if (amount == total)
+            if (amount >= total)
             {
                 return "Challenge complete!";
             }
@@ -63,18 +84,18 @@ namespace GRA.SRP.Controls
 
         protected void Page_Init(object sender, EventArgs e)
         {
-            var patron = Session["Patron"] as Patron;
-            if (patron == null)
-            {
-                Response.Redirect("~");
-            }
+            Programs pgm = null;
+            this.CurrentPatron = Session[SessionKey.Patron] as Patron;
 
-            var pgm = DAL.Programs.FetchObject(patron.ProgID);
-            if (pgm == null)
+            if (this.CurrentPatron != null)
             {
-                pgm = Programs.FetchObject(
-                    Programs.GetDefaultProgramForAgeAndGrade(patron.Age,
-                                                             patron.SchoolGrade.SafeToInt()));
+                pgm = DAL.Programs.FetchObject(this.CurrentPatron.ProgID);
+                if (pgm == null)
+                {
+                    pgm = Programs.FetchObject(
+                        Programs.GetDefaultProgramForAgeAndGrade(this.CurrentPatron.Age,
+                            this.CurrentPatron.SchoolGrade.SafeToInt()));
+                }
             }
 
             if (pgm == null || !pgm.IsOpen)
@@ -98,7 +119,12 @@ namespace GRA.SRP.Controls
 
         protected void PopulateChallengeList()
         {
-            var ds = DAL.BookList.GetForDisplay(((Patron)Session["Patron"]).PID);
+            int patronId = -1;
+            if(this.CurrentPatron != null)
+            {
+                patronId = this.CurrentPatron.PID;
+            }
+            var ds = DAL.BookList.GetForDisplay(patronId);
             rptr.DataSource = ds;
             rptr.DataBind();
             if (ds.Tables[0].Rows.Count == 0)
@@ -109,7 +135,8 @@ namespace GRA.SRP.Controls
 
         protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e)
         {
-            if (!this.ProgramOpen)
+            if (!this.ProgramOpen
+                || this.CompletedChallenge)
             {
                 if (e.Item.ItemType == ListItemType.Item
                    || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -128,6 +155,9 @@ namespace GRA.SRP.Controls
         {
             var BLID = int.Parse(e.CommandArgument.ToString());
 
+            this.CompletedChallenge = e.CommandName.Equals(CompletedCommand,
+                StringComparison.OrdinalIgnoreCase);
+
             var bl = BookList.FetchObject(BLID);
 
             lblTitle.Text = bl.ListName;
@@ -135,32 +165,44 @@ namespace GRA.SRP.Controls
 
             string award = null;
 
-            if (bl.AwardPoints > 0)
+            if (this.CompletedChallenge)
             {
-                award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>{2} point{3}</strong>",
-                    bl.NumBooksToComplete,
-                    bl.NumBooksToComplete > 1 ? "s" : string.Empty,
-                    bl.AwardPoints,
-                    bl.AwardPoints > 1 ? "s" : string.Empty);
+                //completed 
+                award = string.Format("<span class=\"text-success lead\">Congratulations, you completed this challenge!</span>");
+            }
+            else
+            {
+                // not yet completed
+                if (bl.AwardPoints > 0)
+                {
+                    award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>{2} point{3}</strong>",
+                        bl.NumBooksToComplete,
+                        bl.NumBooksToComplete > 1 ? "s" : string.Empty,
+                        bl.AwardPoints,
+                        bl.AwardPoints > 1 ? "s" : string.Empty);
+                }
+
+                if (bl.AwardBadgeID > 0)
+                {
+                    if (string.IsNullOrWhiteSpace(award))
+                    {
+                        award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>a badge</strong>.",
+                            bl.NumBooksToComplete,
+                            bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                    }
+                    else {
+                        award += " and <strong>a badge</strong>.";
+                    }
+                }
+                else {
+                    BadgeImage.Text = string.Empty;
+                    award += ".";
+                }
             }
 
             if (bl.AwardBadgeID > 0)
             {
-                if (string.IsNullOrWhiteSpace(award))
-                {
-                    award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>a badge</strong>.",
-                        bl.NumBooksToComplete,
-                        bl.NumBooksToComplete > 1 ? "s" : string.Empty);
-                }
-                else {
-                    award += " and <strong>a badge</strong>.";
-                }
-
                 BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
-            }
-            else {
-                BadgeImage.Text = string.Empty;
-                award += ".";
             }
 
             BadgeImage.Visible = !string.IsNullOrEmpty(BadgeImage.Text);
@@ -174,12 +216,29 @@ namespace GRA.SRP.Controls
             lblTitle.Visible = true;
             lblDesc.Visible = true;
 
-            var ds = BookListBooks.GetForDisplay(bl.BLID, ((Patron)Session["Patron"]).PID);
+            int patronId = -1;
+            if (this.CurrentPatron != null)
+            {
+                patronId = this.CurrentPatron.PID;
+            }
+
+            var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
             rptr2.DataSource = ds;
             rptr2.DataBind();
             printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?blid={0}&print=1",
                                                   bl.BLID);
             pnlDetail.Visible = true;
+
+            if (this.CompletedChallenge
+                || this.CurrentPatron == null)
+            {
+                btnSave.Visible = false;
+            }
+            else
+            {
+                btnSave.Visible = true;
+            }
+
             this.ShowModal = true;
         }
 
@@ -223,7 +282,7 @@ namespace GRA.SRP.Controls
                     }
                     pbl.BLBID = BLBID;
                     pbl.BLID = BLID;
-                    pbl.PID = ((Patron)Session["Patron"]).PID;
+                    pbl.PID = this.CurrentPatron.PID;
                     pbl.LastModDate = now;
 
                     pbl.HasReadFlag = chkRead.Checked;
@@ -258,7 +317,7 @@ namespace GRA.SRP.Controls
 
                 var bl = BookList.FetchObject(selBLI);
 
-                if (PatronPoints.HasEarnedBookList(((Patron)Session["Patron"]).PID, selBLI))
+                if (PatronPoints.HasEarnedBookList(this.CurrentPatron.PID, selBLI))
                 {
                     PopulateChallengeList();
                     return;
@@ -270,7 +329,7 @@ namespace GRA.SRP.Controls
                     new SessionTools(Session).AlertPatron(success,
                         glyphicon: "certificate");
 
-                    var pa = new AwardPoints(((Patron)Session["Patron"]).PID);
+                    var pa = new AwardPoints(this.CurrentPatron.PID);
                     var sBadges = pa.AwardPointsToPatron(bl.AwardPoints, PointAwardReason.BookListCompletion,
                                                             bookListID: bl.BLID);
                     if (sBadges.Length > 0)
@@ -281,163 +340,5 @@ namespace GRA.SRP.Controls
             }
             PopulateChallengeList();
         }
-
-
-
-        //protected void btnSave_Click(object sender, EventArgs e)
-        //{
-
-        //    var now = DateTime.Now;
-        //    var onlyCheckedBoxes = true;
-        //    var selBLI = 0;
-        //    foreach (RepeaterItem item in rptr2.Items)
-        //    {
-        //        if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
-        //        {
-        //            var chkRead = (CheckBox)item.FindControl("chkRead");
-        //            var PBLBID = int.Parse(((Label)item.FindControl("PBLBID")).Text);
-        //            var BLBID = int.Parse(((Label)item.FindControl("BLBID")).Text);
-        //            var BLID = int.Parse(((Label)item.FindControl("BLID")).Text);
-        //            selBLI = BLID;
-        //            var pbl = new PatronBookLists();
-        //            if (PBLBID !=0)
-        //            {
-        //                pbl = PatronBookLists.FetchObject(PBLBID);
-        //            }
-        //            pbl.BLBID = BLBID;
-        //            pbl.BLID = BLID;
-        //            pbl.PID = ((Patron)Session["Patron"]).PID;
-        //            pbl.LastModDate = now;
-
-        //            pbl.HasReadFlag = chkRead.Checked;
-        //            if (!pbl.HasReadFlag) onlyCheckedBoxes = false;
-
-        //            if (PBLBID != 0)
-        //            {
-        //                pbl.Update();
-        //            }
-        //            else
-        //            {
-        //                pbl.Insert();
-        //            }
-        //        }
-        //    }
-
-        //    lblMessage.Visible = true;
-
-        //    // read the entire book list!  Award points and badges 
-        //    if (onlyCheckedBoxes)
-        //    {
-        //        var bl = BookList.FetchObject(selBLI);
-
-        //        if (PatronPoints.HasEarnedBookList(((Patron)Session["Patron"]).PID, selBLI)) return;
-
-
-        //        if (bl.AwardBadgeID != 0 || bl.AwardPoints != 0)
-        //        {
-
-
-        //            //check first if they earned this already
-        //            var EarnedBadges = new List<Badge>();
-        //            var patron = (Patron)Session["Patron"];
-        //            var pgm = Programs.FetchObject(patron.ProgID);
-        //            var StartingPoints = PatronPoints.GetTotalPatronPoints(patron.PID);
-        //            var EndingPoints = StartingPoints;
-
-        //            Badge EarnedBadge;
-
-        //            var pp = new PatronPoints();
-        //            if (bl.AwardPoints != 0)
-        //            {
-        //                // 1 - log points to patron activity and no badge yet
-        //                pp = new PatronPoints
-        //                             {
-        //                                 PID = patron.PID,
-        //                                 NumPoints = bl.AwardPoints,
-        //                                 AwardDate = now,
-        //                                 AwardReasonCd = (int) PointAwardReason.BookListCompletion,
-        //                                 AwardReason =
-        //                                     PatronPoints.PointAwardReasonCdToDescription(
-        //                                         PointAwardReason.BookListCompletion),
-        //                                 BadgeAwardedFlag = false,
-        //                                 isBookList = true,
-        //                                 BookListID = bl.BLID,
-        //                                 isEvent = false,
-        //                                 isGame = false,
-        //                                 isGameLevelActivity = false,
-        //                                 isReading = false,
-        //                                 LogID = 0
-        //                             };
-        //                pp.Insert();                        
-        //            }
-        //            // if we also need to award badge ...
-        //            if (bl.AwardBadgeID != 0)
-        //            {
-        //                var pbds = PatronBadges.GetAll(patron.PID);
-        //                var a = pbds.Tables[0].AsEnumerable().Where(r => r.Field<int>("BadgeID") == bl.AwardBadgeID);
-
-        //                var newTable = new DataTable();
-        //                try {newTable = a.CopyToDataTable();}catch{}
-        //                //DataTable newTable = a.CopyToDataTable();
-
-        //                if (newTable.Rows.Count == 0)
-        //                {
-        //                    var pb = new PatronBadges { BadgeID = bl.AwardBadgeID, DateEarned = now, PID = patron.PID };
-        //                    pb.Insert();
-
-        //                    EarnedBadge = Badge.GetBadge(bl.AwardBadgeID);
-        //                    EarnedBadges.Add(EarnedBadge);
-
-        //                    //if badge generates notification, then generate the notification
-        //                    if (EarnedBadge.GenNotificationFlag)
-        //                    {
-        //                        var not = new Notifications
-        //                        {
-        //                            PID_To = patron.PID,
-        //                            PID_From = 0,  //0 == System Notification
-        //                            Subject = EarnedBadge.NotificationSubject,
-        //                            Body = EarnedBadge.NotificationBody,
-        //                            isQuestion = false,
-        //                            AddedDate = now,
-        //                            LastModDate = now,
-        //                            AddedUser = patron.Username,
-        //                            LastModUser = "N/A"
-        //                        };
-        //                        not.Insert();
-        //                    }
-
-        //                    // If we awarded points as well, the update with the badge...
-        //                    if (pp.PPID != 0)
-        //                    {
-        //                        pp.BadgeAwardedFlag = true;
-        //                        pp.BadgeID = bl.AwardBadgeID;
-        //                        pp.Update();
-        //                    }
-        //                }
-        //            }
-
-        //            if (EarnedBadges.Count > 0)
-        //            {
-        //                //Display Badges Awards messages
-        //                var badges = EarnedBadges.Count.ToString();
-        //                //foreach(Badge b in EarnedBadges)
-        //                //{
-        //                //    badges = badges + "|" + b.BID.ToString();
-        //                //}
-        //                badges = EarnedBadges.Aggregate(badges, (current, b) => current + "|" + b.BID.ToString());
-        //                //Server.Transfer("~/BadgeAward.aspx?b=" + badges);
-        //                Response.Redirect("~/BadgeAward.aspx?b=" + badges);
-
-        //            }
-        //        }
-
-
-
-
-        //    }
-
-
-        //}
-
     }
 }

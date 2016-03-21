@@ -33,7 +33,9 @@
                     <ItemTemplate>
                         <tr>
                             <td>
-                                <asp:LinkButton runat="server" CommandArgument='<%# Eval("BLID") %>'><%# Eval("ListName") %></asp:LinkButton>
+                                <asp:LinkButton runat="server"
+                                    CommandName='<%#PopupCommand(Eval("NumBooksCompleted"), Eval("NumBooksToComplete"))%>'
+                                    CommandArgument='<%# Eval("BLID") %>'><%# Eval("ListName") %></asp:LinkButton>
                             </td>
                             <td>
                                 <div class="progress">

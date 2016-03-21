@@ -19,11 +19,40 @@ namespace GRA.SRP.ControlRoom.Controls
 
                 txtUsername.Text = p.Username;
                 txtEmail.Text = p.EmailAddress;
-                txtDOB.Text = p.DOB.ToShortDateString();
+
+                if (p.DOB == DateTime.MinValue)
+                {
+                    DobLabel.Visible = false;
+                    txtDOB.Visible = false;
+                }
+                else
+                {
+                    DobLabel.Visible = true;
+                    txtDOB.Visible = true;
+                    txtDOB.Text = p.DOB.ToShortDateString();
+                }
                 txtFirstName.Text = p.FirstName;
                 txtLastName.Text = p.LastName;
-                txtGender.Text = p.Gender;
-                if (p.ProgID != 0) txtProgram.Text = Programs.FetchObject(p.ProgID).AdminName;
+                if (string.IsNullOrWhiteSpace(p.Gender))
+                {
+                    GenderLabel.Visible = false;
+                    txtGender.Visible = false;
+                }
+                else
+                {
+                    GenderLabel.Visible = true;
+                    txtGender.Visible = true;
+                    txtGender.Text = p.Gender;
+                }
+
+                Registered.Text = p.RegistrationDate.ToString();
+
+                PointTotal.Text = PatronPoints.GetTotalPatronPoints(p.PID).ToString();
+
+                if (p.ProgID != 0)
+                {
+                    txtProgram.Text = Programs.FetchObject(p.ProgID).AdminName;
+                }
             }
         }
     }

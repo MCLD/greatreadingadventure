@@ -40,6 +40,24 @@ namespace GRA.SRP.ControlRoom.Controls {
         protected global::System.Web.UI.WebControls.Label txtUsername;
         
         /// <summary>
+        /// txtProgram control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label txtProgram;
+        
+        /// <summary>
+        /// PointTotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label PointTotal;
+        
+        /// <summary>
         /// txtEmail control.
         /// </summary>
         /// <remarks>
@@ -47,6 +65,24 @@ namespace GRA.SRP.ControlRoom.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label txtEmail;
+        
+        /// <summary>
+        /// Registered control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Registered;
+        
+        /// <summary>
+        /// DobLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DobLabel;
         
         /// <summary>
         /// txtDOB control.
@@ -58,13 +94,13 @@ namespace GRA.SRP.ControlRoom.Controls {
         protected global::System.Web.UI.WebControls.Label txtDOB;
         
         /// <summary>
-        /// txtProgram control.
+        /// GenderLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label txtProgram;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GenderLabel;
         
         /// <summary>
         /// txtGender control.
