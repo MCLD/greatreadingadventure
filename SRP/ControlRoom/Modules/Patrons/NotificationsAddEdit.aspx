@@ -29,26 +29,28 @@
 
             <asp:TemplateField HeaderText="From: " SortExpression="From" HeaderStyle-Wrap="False">
                 <EditItemTemplate>
-                    <%# DisplayFrom((GRA.SRP.DAL.Notifications)Container.DataItem) %>
+                    <%# DisplayFrom(Container.DataItem as GRA.SRP.DAL.Notifications) %>
                 </EditItemTemplate>
-                <InsertItemTemplate>
-                </InsertItemTemplate>
                 <ItemTemplate>
-                    <%# DisplayFrom((GRA.SRP.DAL.Notifications)Container.DataItem) %>
+                    <%# DisplayFrom(Container.DataItem as GRA.SRP.DAL.Notifications) %>
                 </ItemTemplate>
+                <InsertItemTemplate>
+                    System
+                </InsertItemTemplate>
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
                 <ItemStyle Width="100%" />
             </asp:TemplateField>
 
             <asp:TemplateField HeaderText="To: " SortExpression="To" HeaderStyle-Wrap="False">
                 <EditItemTemplate>
-                    <%# DisplayTo((GRA.SRP.DAL.Notifications)Container.DataItem) %>
+                    <%# DisplayTo(Container.DataItem as GRA.SRP.DAL.Notifications) %>
                 </EditItemTemplate>
-                <InsertItemTemplate>
-                </InsertItemTemplate>
                 <ItemTemplate>
-                    <%# DisplayTo((GRA.SRP.DAL.Notifications)Container.DataItem) %>
+                    <%# DisplayTo(Container.DataItem as GRA.SRP.DAL.Notifications) %>
                 </ItemTemplate>
+                <InsertItemTemplate>
+                    <%# DisplayPatron() %>
+                </InsertItemTemplate>
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
                 <ItemStyle Width="100%" />
             </asp:TemplateField>
@@ -58,7 +60,7 @@
                     <%# Eval("Subject") %>
                 </EditItemTemplate>
                 <InsertItemTemplate>
-                    <asp:TextBox ID="Subject" runat="server" Text='' Width="500px"></asp:TextBox>
+                    <asp:TextBox ID="Subject" runat="server" Text='' CssClass="form-control" Width="500px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvSubject" runat="server"
                         ControlToValidate="Subject" Display="Dynamic" ErrorMessage="Subject is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>

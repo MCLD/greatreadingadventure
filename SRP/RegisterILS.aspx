@@ -28,7 +28,7 @@
 
                         <asp:Panel ID="familyMemberPanel" runat="server" Visible="False" CssClass="row">
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                                <div class="alert alert-info">
+                                <div class="alert alert-success">
                                     <span class="glyphicon glyphicon-info-sign"></span>
                                     <asp:Label runat="server" Text="registration-create-family-accounts"></asp:Label>
                                 </div>

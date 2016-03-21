@@ -75,7 +75,7 @@ namespace GRA.SRP.Controls
             }
 
             var emailNotePanel = e.Item.FindControl("RegistrationEmailNotRequiredNote") as Panel;
-            if(emailNotePanel != null && registrationInfo != null)
+            if (emailNotePanel != null && registrationInfo != null)
             {
                 emailNotePanel.Visible =
                     registrationInfo["EmailAddress_Prompt"] as bool? == true
@@ -209,7 +209,7 @@ namespace GRA.SRP.Controls
                 Step.Text = (curStep + 1).ToString();
 
             }
-            // Finished Current Step = 2 
+            // Finished Current Step = 2
 
             if (curStep == 3)
             {
@@ -233,13 +233,26 @@ namespace GRA.SRP.Controls
                     return;
                 }
 
-                var Goal = rptr.Items[0].FindControl("Goal") as TextBox;
-                if(Goal != null
+                var goal = rptr.Items[0].FindControl("Goal") as TextBox;
+                if(goal != null
                    && selectedProgram.GoalDefault > 0)
                 {
-                    Goal.Text = selectedProgram.GoalDefault.ToString();
+                    goal.Text = selectedProgram.GoalDefault.ToString();
                 }
-                
+
+                var sReqField = (HiddenField)rptr.Items[0].FindControl("ASchoolFieldIsRequired");
+                var aSchoolFieldIsRequired = bool.Parse(sReqField.Value) == true;
+
+                if (selectedProgram.HideSchoolInRegistration == true
+                    && aSchoolFieldIsRequired == false)
+                {
+                    ((Panel)rptr.Items[0].FindControl("SchoolArea")).Visible = false;
+                }
+                else
+                {
+                    ((Panel)rptr.Items[0].FindControl("SchoolArea")).Visible = true;
+                }
+
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -253,7 +266,7 @@ namespace GRA.SRP.Controls
                 if (newPanelVisibility == "0")
                     curStep = curStep + 1;  // If not, move to the next panel
             }
-            // Finished Current Step = 3 
+            // Finished Current Step = 3
 
             if (curStep == 4)
             {
@@ -302,7 +315,7 @@ namespace GRA.SRP.Controls
                     curStep = curStep + 1;  // If not, move to the next panel
 
             }
-            // Finished Current Step = 4 
+            // Finished Current Step = 4
 
             if (curStep == 5)
             {
@@ -328,7 +341,7 @@ namespace GRA.SRP.Controls
                     curStep = curStep + 1;  // If not, move to the next panel
 
             }
-            // Finished Current Step = 5 
+            // Finished Current Step = 5
 
             if (curStep == 6)
             {
@@ -340,7 +353,7 @@ namespace GRA.SRP.Controls
 
                 Step.Text = (curStep + 1).ToString();
             }
-            // Finished Current Step = 6 
+            // Finished Current Step = 6
 
             if (curStep == 7)
             {
@@ -383,7 +396,7 @@ namespace GRA.SRP.Controls
 
 
             }
-            // Finished Current Step = 7 
+            // Finished Current Step = 7
 
             if (curStep == 8)
             {
@@ -400,7 +413,7 @@ namespace GRA.SRP.Controls
 
                 Response.Redirect(GoToUrl);
             }
-            // Finished Current Step = 8 
+            // Finished Current Step = 8
 
             if (curStep == 9)
             {
@@ -438,7 +451,7 @@ namespace GRA.SRP.Controls
                 ((TextBox)rptr.Items[0].FindControl("LiteracyLevel1")).Text = string.Empty;
                 ((TextBox)rptr.Items[0].FindControl("LiteracyLevel2")).Text = string.Empty;
             }
-            // Finished Current Step = 9 
+            // Finished Current Step = 9
 
         }
 
@@ -865,7 +878,7 @@ namespace GRA.SRP.Controls
             var si = sc.Items.FindByValue(scVal);
             sc.SelectedValue = si != null ? scVal : "0";
 
-            if(sc.Items.Count == 2)
+            if (sc.Items.Count == 2)
             {
                 sc.SelectedIndex = 1;
             }
@@ -888,10 +901,10 @@ namespace GRA.SRP.Controls
             var il = pl.Items.FindByValue(plVal);
             pl.SelectedValue = il != null ? plVal : "0";
 
-            if(pl.Items.Count == 2)
+            if (pl.Items.Count == 2)
             {
                 pl.SelectedIndex = 1;
-            }          
+            }
         }
 
 

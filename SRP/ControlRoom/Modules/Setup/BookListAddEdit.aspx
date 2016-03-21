@@ -56,11 +56,11 @@
                         </tr>
 
                         <tr>
-                            <td nowrap valign="top"><b>Admin Description: </b></td>
-                            <td colspan="6" valign="top">
-                                <asp:TextBox ID="AdminDescription" runat="server" Text='<%# Eval("AdminDescription") %>' ReadOnly="False" Width="90%" Rows="3" TextMode="MultiLine" CssClass="form-control"></asp:TextBox>
-                            </td>
-                            <td valign="top"></td>
+<%--                            <td nowrap valign="top"><b>Admin Description: </b></td>
+                            <td colspan="6" valign="top">--%>
+                                <asp:TextBox ID="AdminDescription" runat="server" Text='<%# Eval("AdminDescription") %>' ReadOnly="False" Width="90%" Rows="3" TextMode="MultiLine" visible="false" CssClass="form-control"></asp:TextBox>
+<%--                            </td>
+                            <td valign="top"></td>--%>
                         </tr>
 
                         <tr>
@@ -75,7 +75,7 @@
                             <td colspan="1" valign="top">
                                 <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID"
                                     AppendDataBoundItems="True" CssClass="form-control">
-                                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                    <asp:ListItem Value="0" Text="All programs"></asp:ListItem>
                                 </asp:DropDownList>
                                 <asp:Label ID="ProgIDLbl" runat="server" Text='<%# Eval("ProgID") %>' Visible="False"></asp:Label>
                             </td>

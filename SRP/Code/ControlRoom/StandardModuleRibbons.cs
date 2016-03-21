@@ -127,8 +127,8 @@ namespace GRA.SRP.Core.Utilities
             var returnList = new List<RibbonPanel>();
             var pnl = new RibbonPanel
             {
-                Name = "More Patron Info",
-                ImageAlt = "More Selected Patron Info",
+                Name = "Patron Participation",
+                ImageAlt = "Patron Participation",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MorePatronInfo@2x.png")
             };
@@ -139,13 +139,13 @@ namespace GRA.SRP.Core.Utilities
 
             pnl = new RibbonPanel
             {
-                Name = "More Patron Info",
-                ImageAlt = "More Selected Patron Info",
+                Name = "Patron Interaction",
+                ImageAlt = "Patron Interaction",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo@2x.png")
             };
             bool displaySection = false;
-            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5000"))
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5150"))
             {
                 pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
                 displaySection = true;
@@ -158,6 +158,11 @@ namespace GRA.SRP.Core.Utilities
             if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5200"))
             {
                 pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
+                displaySection = true;
+            }
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("2200"))
+            {
+                pnl.Add(new RibbonLink { Name = "Patron Program Reward Codes", Url = "/ControlRoom/Modules/Patrons/PatronProgramRewardCodes.aspx" });
                 displaySection = true;
             }
 

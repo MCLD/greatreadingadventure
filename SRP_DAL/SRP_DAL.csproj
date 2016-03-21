@@ -106,7 +106,7 @@
     <Compile Include="SRPGroup.cs" />
     <Compile Include="SRPReport.cs" />
     <Compile Include="SRPSettings.cs" />
-    <Compile Include="ProgramStatus.cs" />
+    <Compile Include="TenantStatus.cs" />
     <Compile Include="Survey.cs" />
     <Compile Include="SurveyAnswers.cs" />
     <Compile Include="SurveyQuestion.cs" />

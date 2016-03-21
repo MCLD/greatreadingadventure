@@ -25,15 +25,15 @@
             </asp:BoundField>
 
 
-            <asp:TemplateField HeaderText="TName: " SortExpression="TName" HeaderStyle-Wrap="False">
+            <asp:TemplateField HeaderText="Drawing template name: " SortExpression="TName" HeaderStyle-Wrap="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="TName" runat="server" Text='<%# Eval("TName") %>' ReadOnly="False" Width="600px"></asp:TextBox>
+                    <asp:TextBox ID="TName" runat="server" Text='<%# Eval("TName") %>' ReadOnly="False" Width="600px" CssClass="form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvTName" runat="server"
                         ControlToValidate="TName" Display="Dynamic" ErrorMessage="TName is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 </EditItemTemplate>
                 <InsertItemTemplate>
-                    <asp:TextBox ID="TName" runat="server" Text='' Width="600px"></asp:TextBox>
+                    <asp:TextBox ID="TName" runat="server" Text='' Width="600px" CssClass="form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvTName" runat="server"
                         ControlToValidate="TName" Display="Dynamic" ErrorMessage="TName is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -48,7 +48,7 @@
             <asp:TemplateField HeaderText="Num Prizes: " SortExpression="NumPrizes" HeaderStyle-Wrap="False" InsertVisible="false">
                 <EditItemTemplate>
                     <asp:TextBox ID="NumPrizes" runat="server" Text='<%# ((int) Eval("NumPrizes") ==0 ? "" : Eval("NumPrizes")) %>'
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvNumPrizes" runat="server"
                         ControlToValidate="NumPrizes" Display="Dynamic" ErrorMessage="NumPrizes is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -97,7 +97,7 @@
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Send Notification? " SortExpression="SendNotificationFlag" HeaderStyle-Wrap="False" InsertVisible="False">
+            <asp:TemplateField HeaderText="Send Notification? " Visible="false" SortExpression="SendNotificationFlag" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:CheckBox ID="SendNotificationFlag" runat="server" Checked='<%# (bool)Eval("SendNotificationFlag") %>' ReadOnly="False"></asp:CheckBox>
                 </EditItemTemplate>
@@ -108,9 +108,9 @@
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="NotificationSubject: " SortExpression="NotificationSubject" HeaderStyle-Wrap="False" InsertVisible="False">
+            <asp:TemplateField HeaderText="NotificationSubject: " Visible="false" SortExpression="NotificationSubject" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="NotificationSubject" runat="server" Text='<%# Eval("NotificationSubject") %>' ReadOnly="False" Width="600px"></asp:TextBox>
+                    <asp:TextBox ID="NotificationSubject" runat="server" Text='<%# Eval("NotificationSubject") %>' ReadOnly="False" Width="600px" CssClass="form-control"></asp:TextBox>
 
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
@@ -120,7 +120,7 @@
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Notification Message: " SortExpression="NotificationMessage" HeaderStyle-Wrap="False" InsertVisible="False">
+            <asp:TemplateField HeaderText="Notification Message: " Visible="false" SortExpression="NotificationMessage" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <textarea id="NotificationMessage" runat="server" class="gra-editor"><%# Eval("NotificationMessage") %></textarea>
                 </EditItemTemplate>
@@ -134,7 +134,7 @@
             <asp:TemplateField HeaderText="Program: " SortExpression="ProgID" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:Label ID="ProgIDLbl" runat="server" Text='<%# Eval("ProgID") %>' Visible="False"></asp:Label>
@@ -148,7 +148,7 @@
 
             <asp:TemplateField HeaderText="Gender: " SortExpression="Gender" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:DropDownList ID="Gender" runat="server">
+                    <asp:DropDownList ID="Gender" CssClass="form-control" runat="server">
                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                         <asp:ListItem Value="F" Text="Female"></asp:ListItem>
                         <asp:ListItem Value="M" Text="Male"></asp:ListItem>
@@ -165,7 +165,7 @@
 
             <asp:TemplateField HeaderText="School Name: " SortExpression="SchoolName" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool"
+                    <asp:DropDownList ID="SchoolName" CssClass="form-control" runat="server" DataSourceID="odsDDSchool"
                         DataTextField="Code" DataValueField="CID"
                         AppendDataBoundItems="True">
                         <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
@@ -182,7 +182,7 @@
 
             <asp:TemplateField HeaderText="PrimaryLibrary: " SortExpression="PrimaryLibrary" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
+                    <asp:DropDownList ID="PrimaryLibrary" CssClass="form-control" runat="server" DataSourceID="odsDDBranch" DataTextField="Code" DataValueField="CID"
                         AppendDataBoundItems="True">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
@@ -195,7 +195,7 @@
             <asp:TemplateField HeaderText="Min Points: " SortExpression="MinPoints" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:TextBox ID="MinPoints" runat="server" Text='<%# ((int) Eval("MinPoints") ==0 ? "" : Eval("MinPoints")) %>'
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="revMinPoints"
                         ControlToValidate="MinPoints"
                         ValidationExpression="\d+"
@@ -231,7 +231,7 @@
             <asp:TemplateField HeaderText="MaxPoints: " SortExpression="MaxPoints" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:TextBox ID="MaxPoints" runat="server" Text='<%# ((int) Eval("MaxPoints") ==0 ? "" : Eval("MaxPoints")) %>'
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="revMaxPoints"
                         ControlToValidate="MaxPoints"
                         ValidationExpression="\d+"
@@ -266,12 +266,10 @@
 
             <asp:TemplateField HeaderText="Log Date Start: " SortExpression="LogDateStart" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="LogDateStart" runat="server" Text='<%# (Eval("LogDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("LogDateStart").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="ceLogDateStart" runat="server" TargetControlID="LogDateStart">
-                    </ajaxToolkit:CalendarExtender>
+                    <asp:TextBox ID="LogDateStart" runat="server" CssClass="form-control" Text='<%# (Eval("LogDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("LogDateStart").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
+                    <ajaxToolkit:CalendarExtender ID="ceLogDateStart" runat="server" TargetControlID="LogDateStart"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="meLogDateStart" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="LogDateStart" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
+                        UserDateFormat="MonthDayYear" TargetControlID="LogDateStart" MaskType="Date" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
                 <ItemTemplate>
@@ -282,12 +280,10 @@
 
             <asp:TemplateField HeaderText="Log Date End: " SortExpression="LogDateEnd" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="LogDateEnd" runat="server" Text='<%# (Eval("LogDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("LogDateEnd").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="ceLogDateEnd" runat="server" TargetControlID="LogDateEnd">
-                    </ajaxToolkit:CalendarExtender>
+                    <asp:TextBox ID="LogDateEnd" runat="server" CssClass="form-control" Text='<%# (Eval("LogDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("LogDateEnd").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
+                    <ajaxToolkit:CalendarExtender ID="ceLogDateEnd" runat="server" TargetControlID="LogDateEnd"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="meLogDateEnd" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="LogDateEnd" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
+                        UserDateFormat="MonthDayYear" TargetControlID="LogDateEnd" MaskType="Date" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
 
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
@@ -301,7 +297,7 @@
 
                 <EditItemTemplate>
                     <asp:TextBox ID="MinReviews" runat="server" Text='<%# ((int) Eval("MinReviews") ==0 ? "" : Eval("MinReviews")) %>'
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="revMinReviews"
                         ControlToValidate="MinReviews"
                         ValidationExpression="\d+"
@@ -337,7 +333,7 @@
             <asp:TemplateField HeaderText="Max Reviews: " SortExpression="MaxReviews" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:TextBox ID="MaxReviews" runat="server" Text='<%# ((int) Eval("MaxReviews") ==0 ? "" : Eval("MaxReviews")) %>'
-                        ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+                        ReadOnly="False" Width="50px" CssClass="align-right form-control"></asp:TextBox>
 
                     <asp:RegularExpressionValidator ID="revMaxReviews"
                         ControlToValidate="MaxReviews"
@@ -373,12 +369,10 @@
 
             <asp:TemplateField HeaderText="Review Date Start: " SortExpression="ReviewDateStart" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="ReviewDateStart" runat="server" Text='<%# (Eval("ReviewDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("ReviewDateStart").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px">></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="ceReviewDateStart" runat="server" TargetControlID="ReviewDateStart">
-                    </ajaxToolkit:CalendarExtender>
+                    <asp:TextBox ID="ReviewDateStart" runat="server" CssClass="form-control" Text='<%# (Eval("ReviewDateStart").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("ReviewDateStart").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px">></asp:TextBox>
+                    <ajaxToolkit:CalendarExtender ID="ceReviewDateStart" runat="server" TargetControlID="ReviewDateStart"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="meReviewDateStart" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="ReviewDateStart" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
+                        UserDateFormat="MonthDayYear" TargetControlID="ReviewDateStart" MaskType="Date" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
                 <ItemTemplate>
@@ -389,12 +383,10 @@
 
             <asp:TemplateField HeaderText="Review Date End: " SortExpression="ReviewDateEnd" HeaderStyle-Wrap="False" InsertVisible="False">
                 <EditItemTemplate>
-                    <asp:TextBox ID="ReviewDateEnd" runat="server" Text='<%# (Eval("ReviewDateEnd").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("ReviewDateEnd").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px">></asp:TextBox>
-                    <ajaxToolkit:CalendarExtender ID="ceReviewDateEnd" runat="server" TargetControlID="ReviewDateEnd">
-                    </ajaxToolkit:CalendarExtender>
+                    <asp:TextBox ID="ReviewDateEnd" runat="server" CssClass="form-control" Text='<%# (Eval("ReviewDateEnd").ToString().StartsWith("1/1/0001") ? "" : DateTime.Parse(Eval("ReviewDateEnd").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px">></asp:TextBox>
+                    <ajaxToolkit:CalendarExtender ID="ceReviewDateEnd" runat="server" TargetControlID="ReviewDateEnd"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="meReviewDateEnd" runat="server"
-                        UserDateFormat="MonthDayYear" TargetControlID="ReviewDateEnd" MaskType="Date" Mask="99/99/9999">
-                    </ajaxToolkit:MaskedEditExtender>
+                        UserDateFormat="MonthDayYear" TargetControlID="ReviewDateEnd" MaskType="Date" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
                 <ItemTemplate>

@@ -74,20 +74,32 @@ namespace GRA.SRP.DAL
             if (validationMode == BusinessRulesValidationMode.INSERT
                 || validationMode == BusinessRulesValidationMode.UPDATE)
             {
+                string filteredHtml = HTML.Replace("&lt;br&gt;", string.Empty);
+                if (string.IsNullOrEmpty(filteredHtml))
+                {
+                    AddErrorCode(new BusinessRulesValidationMessage("HTML",
+                        "Description",
+                        "You must provide an event description",
+                        BusinessRulesValidationCode.REQUIRED_FIELD));
+                }
                 SecretCode = SecretCode.ToLower();
                 if (!string.IsNullOrEmpty(SecretCode))
                 {
-                    var allowdups = SRPSettings.GetSettingValue("DupEvtCodes").ToUpper() == "TRUE";
+                    var allowdups = false;
 
                     if (SecretCode.Length > 50)
                     {
-                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code must be 50 characters or less.",
-                                                                        BusinessRulesValidationCode.UNSPECIFIED));
+                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code",
+                            "Secret Code",
+                            "The Secret Code must be 50 characters or less.",
+                            BusinessRulesValidationCode.UNSPECIFIED));
                     }
                     else if (!Regex.IsMatch(SecretCode, @"^[a-z0-9]+$"))
                     {
-                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code can only contain letters and numbers.",
-                                                                        BusinessRulesValidationCode.UNSPECIFIED));
+                        AddErrorCode(new BusinessRulesValidationMessage("Secret Code",
+                            "Secret Code",
+                            "The Secret Code can only contain letters and numbers.",
+                            BusinessRulesValidationCode.UNSPECIFIED));
                     }
                     else if (!allowdups)
                     {
@@ -103,8 +115,10 @@ namespace GRA.SRP.DAL
                         }
                         if (eventsWithCode != 0)
                         {
-                            AddErrorCode(new BusinessRulesValidationMessage("Secret Code", "Secret Code", "The Secret Code you have chosen is already in use.  Please select a different Secret Code.",
-                                                                            BusinessRulesValidationCode.UNSPECIFIED));
+                            AddErrorCode(new BusinessRulesValidationMessage("Secret Code",
+                                "Secret Code",
+                                "The Secret Code you have chosen is already in use.  Please select a different Secret Code.",
+                                BusinessRulesValidationCode.UNSPECIFIED));
                         }
                     }
                 }

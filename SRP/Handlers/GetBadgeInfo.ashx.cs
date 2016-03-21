@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GRA.Tools;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,56 +26,70 @@ namespace GRA.SRP.Handlers
         public void ProcessRequest(HttpContext context)
         {
             var jsonResponse = new JsonBadge();
-            if (context.Request.QueryString["BadgeId"] == null)
+            try
             {
-                jsonResponse.Success = false;
-                jsonResponse.ErrorMessage = "No badge id provided.";
-                this.Log().Error(string.Format("Badge requested from {0}?{1} with no id.",
-                                               context.Request.Url,
-                                               context.Request.QueryString));
-            }
-            else {
+                if (context.Request.QueryString["BadgeId"] == null)
+                {
+                    throw new Exception("No badge id provided.");
+                }
+
                 int badgeId = 0;
                 if (!int.TryParse(context.Request["BadgeId"].ToString(), out badgeId))
                 {
-                    jsonResponse.Success = false;
-                    jsonResponse.ErrorMessage = "Invalid badge id provided.";
-                    this.Log().Error(string.Format("Requested badge {0} from {1}?{2} - invalid id",
-                                                   context.Request["BadgeId"].ToString(),
-                                                   context.Request.Url,
-                                                   context.Request.QueryString));
+                    throw new Exception("Invalid badge id provided.");
                 }
-                else {
-                    var badge = DAL.Badge.FetchObject(badgeId);
-                    if (badge == null && badge.HiddenFromPublic != true)
+
+                var badge = DAL.Badge.FetchObject(badgeId);
+                if (badge == null)
+                {
+                    throw new Exception("Badge not found.");
+                }
+
+                // if the badge is flagged as hidden from the public, ensure the user has earned it
+                bool hideBadge = badge.HiddenFromPublic == true;
+
+                if (hideBadge == true)
+                {
+                    var patron = context.Session[SessionKey.Patron] as DAL.Patron;
+                    if (patron != null)
                     {
-                        jsonResponse.Success = false;
-                        jsonResponse.ErrorMessage = "Badge not found.";
-                        this.Log().Error(string.Format("Requested badge {0} from {1}?{2} - not found",
-                                                       badgeId,
-                                                       context.Request.Url,
-                                                       context.Request.QueryString));
+                        var patronBadges = DAL.PatronBadges.GetAll(patron.PID);
+                        if (patronBadges != null && patronBadges.Tables.Count > 0)
+                        {
+                            var filterExpression = string.Format("BadgeID = {0}", badge.BID);
+                            var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
+                            if (patronHasBadge.Count() > 0)
+                            {
+                                hideBadge = false;
+                            }
+                        }
                     }
-                    else {
-                        jsonResponse.UserName = badge.UserName;
+                }
 
-                        string badgePath = NoBadgePath;
-                        string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
-                                                                  badgeId);
-                        if (System.IO.File.Exists(context.Server.MapPath(potentialBadgePath)))
-                        {
-                            badgePath = potentialBadgePath;
-                        }
+                if (hideBadge == true)
+                {
+                    throw new Exception("Secret badge must be earned to be revealed.");
+                }
 
-                        jsonResponse.ImageUrl = VirtualPathUtility.ToAbsolute(badgePath);
+                jsonResponse.UserName = badge.UserName;
 
-                        List<string> earn = new List<string>();
+                string badgePath = NoBadgePath;
+                string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
+                                                          badgeId);
+                if (System.IO.File.Exists(context.Server.MapPath(potentialBadgePath)))
+                {
+                    badgePath = potentialBadgePath;
+                }
 
-                        string earnText = DAL.Badge.GetBadgeReading(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Earn points by reading: {0}.", earnText));
-                        }
+                jsonResponse.ImageUrl = VirtualPathUtility.ToAbsolute(badgePath);
+
+                List<string> earn = new List<string>();
+
+                string earnText = DAL.Badge.GetBadgeReading(badgeId);
+                if (earnText.Length > 0)
+                {
+                    earn.Add(string.Format("Earn points by reading: {0}.", earnText));
+                }
 
                         earnText = DAL.Badge.GetBadgeGoal(badgeId);
                         if (earnText.Length > 0)
@@ -88,35 +103,47 @@ namespace GRA.SRP.Handlers
                             earn.Add(string.Format("Enroll in a reading program: {0}.", earnText));
                         }
 
-                        earnText = DAL.Badge.GetBadgeBookLists(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Complete a Challenge: {0}.", earnText));
-                        }
-
-                        earnText = DAL.Badge.GetBadgeGames(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Unlock and complete an Adventure: {0}.",
-                                                   earnText));
-                        }
-
-                        earnText = DAL.Badge.GetBadgeEvents(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Attend an Event: {0}.", earnText));
-                        }
-
-                        if(earn.Count == 0)
-                        {
-                            earn.Add("Learn the secret code to unlock it.");
-                        }
-
-                        jsonResponse.Earn = earn.ToArray();
-                        jsonResponse.Success = true;
-                    }
+                earnText = DAL.Badge.GetBadgeBookLists(badgeId);
+                if (earnText.Length > 0)
+                {
+                    earn.Add(string.Format("Complete a Challenge: {0}.", earnText));
                 }
+
+                earnText = DAL.Badge.GetBadgeGames(badgeId);
+                if (earnText.Length > 0)
+                {
+                    earn.Add(string.Format("Unlock and complete an Adventure: {0}.",
+                                           earnText));
+                }
+
+                earnText = DAL.Badge.GetBadgeEvents(badgeId);
+                if (earnText.Length > 0)
+                {
+                    earn.Add(string.Format("Attend an Event: {0}.", earnText));
+                }
+
+                if (earn.Count == 0)
+                {
+                    earn.Add("Learn the secret code to unlock it.");
+                }
+
+                jsonResponse.Earn = earn.ToArray();
+                jsonResponse.Success = true;
             }
+            catch (Exception ex)
+            {
+                string safeBadgeId = context.Request["BadgeId"] == null
+                    ? "<none requested>"
+                    : context.Request["BadgeId"].ToString();
+                this.Log().Error("Requested badge {0} from {1}?{2} - {3}",
+                    safeBadgeId,
+                    context.Request.Url,
+                    context.Request.QueryString,
+                    ex.Message);
+                jsonResponse.Success = false;
+                jsonResponse.ErrorMessage = ex.Message;
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.Write(JsonConvert.SerializeObject(jsonResponse));
         }

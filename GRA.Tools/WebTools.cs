@@ -47,7 +47,7 @@ namespace GRA.Tools
                     return string.Join(" ", cssStyleList);
                 }
             }
-            return css;
+            return css.Trim();
         }
 
         public string CssRemoveClass(string css, string cssClass)
@@ -61,7 +61,7 @@ namespace GRA.Tools
                     return string.Join(" ", cssStyleList);
                 }
             }
-            return css;
+            return css.Trim();
         }
     }
 }

@@ -33,7 +33,7 @@
                 </EditItemTemplate>
                 <InsertItemTemplate>
                     <asp:DropDownList ID="TID" runat="server" DataSourceID="odsT" DataTextField="TName" DataValueField="TID"
-                        AppendDataBoundItems="True">
+                        AppendDataBoundItems="True" CssClass="form-control" Width="80%">
                         <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:Label ID="TIDLbl" runat="server" Text='' Visible="False"></asp:Label>
@@ -139,13 +139,13 @@
                     <%# FormatHelper.ToNormalDate((DateTime)Eval("DrawingDateTime"))%>
                     <br />
                     <hr />
-                    <asp:ImageButton ID="btnDraw" runat="server"
+                    <asp:LinkButton ID="btnDraw" runat="server"
                         CausesValidation="false"
                         CommandName="draw"
-                        ImageUrl="~/ControlRoom/Images/DrawWinners.png"
-                        Height="25"
+                        CssClass="btn btn-lg btn-primary"
+                        ForeColor="White"
                         Text="Draw" ToolTip="Draw"
-                        AlternateText="Draw" Visible='<%# FormatHelper.ToNormalDate((DateTime)Eval("DrawingDateTime")) == "N/A"%>' />
+                        AlternateText="Draw" Visible='<%# FormatHelper.ToNormalDate((DateTime)Eval("DrawingDateTime")) == "N/A"%>'>Select winners</asp:LinkButton>
                     <asp:Panel ID="pnlWinners" runat="server" Visible='<%# FormatHelper.ToNormalDate((DateTime)Eval("DrawingDateTime")) != "N/A"%>'>
 
                         <table>
@@ -154,13 +154,13 @@
                                 <td>
                                     <asp:TextBox ID="addl" runat="server" Text='' Width="50px" CssClass="form-control"></asp:TextBox></td>
                                 <td>
-                                    <asp:ImageButton ID="ImageButton1" runat="server"
+                                    <asp:LinkButton ID="ImageButton1" runat="server"
                                         CausesValidation="true"
                                         CommandName="drawadd"
-                                        ImageUrl="~/ControlRoom/Images/DrawWinners.png"
-                                        Height="25"
+                                        CssClass="btn btn-lg btn-primary"
+                                        ForeColor="White"
                                         Text="Draw" ToolTip="Draw"
-                                        AlternateText="Draw" ImageAlign="Baseline" /></td>
+                                        AlternateText="Draw" ImageAlign="Baseline">Select additional winners</asp:LinkButton></td>
                                 <td>
                                     <asp:RegularExpressionValidator ID="reva"
                                         ControlToValidate="addl"
@@ -209,15 +209,18 @@
                                 </asp:TemplateField>
 
 
-                                <asp:TemplateField HeaderText="Picked Up?" HeaderStyle-Wrap="False">
+                                <asp:TemplateField HeaderText="Redeemed?" HeaderStyle-Wrap="False">
                                     <ItemTemplate>
+                                        <%# (bool)Eval("PrizePickedUpFlag") ? string.Format("<strong>Redeemed</strong> at {0} (by {1})", Eval("LastModDate"), Eval("LastModUser")) : string.Empty%>
 
-                                        <%# (bool)Eval("PrizePickedUpFlag") ? FormatHelper.ToYesNo((bool)Eval("PrizePickedUpFlag")) : ""%>
+                                        <strong>
+                                            <asp:LinkButton ID="LinkButton2" runat="server"
+                                                CommandName="pickup" CommandArgument='<%# Bind("PDWID") %>'
+                                                Visible='<%#!(bool)Eval("PrizePickedUpFlag") %>'>Available, click to redeem</asp:LinkButton></strong>
 
-                                        <asp:LinkButton ID="LinkButton1" runat="server"
-                                            CommandName="pickup" CommandArgument='<%# Bind("PDWID") %>'
-                                            Visible='<%#!(bool)Eval("PrizePickedUpFlag") %>'>NO</asp:LinkButton>
-
+                                        <asp:LinkButton runat="server" ID="UndoLinkButton"
+                                            CommandName="undopickup" CommandArgument='<%# Bind("PDWID") %>'
+                                            Visible='<%#(bool)Eval("PrizePickedUpFlag") %>'>[Undo]</asp:LinkButton>
                                     </ItemTemplate>
                                     <HeaderStyle Font-Bold="True" HorizontalAlign="Left" VerticalAlign="Top" />
                                 </asp:TemplateField>
@@ -227,10 +230,6 @@
                                     DataNavigateUrlFormatString="/ControlRoom/Modules/Patrons/PatronDetails.aspx?pid={0}"
                                     DataTextField="Username"
                                     Target="_blank" />
-
-                                <asp:BoundField DataField="Username" HeaderText="Username" HeaderStyle-Wrap="False">
-                                    <HeaderStyle Font-Bold="True" HorizontalAlign="Left" VerticalAlign="Top" />
-                                </asp:BoundField>
                                 <asp:BoundField DataField="FirstName" HeaderText="First Name" HeaderStyle-Wrap="False">
                                     <HeaderStyle Font-Bold="True" HorizontalAlign="Left" VerticalAlign="Top" />
                                 </asp:BoundField>

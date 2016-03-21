@@ -5,6 +5,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Web;
 
 namespace GRA.SRP.ControlRoom.Modules.Drawings
 {
@@ -329,19 +330,31 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                 var key = Convert.ToInt32(e.CommandArgument);
                 try
                 {
-                    var obj = PrizeDrawingWinners.FetchObject(key);
-                    if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
+                    var prizeDrawingWinner = PrizeDrawingWinners.FetchObject(key);
+                    if (prizeDrawingWinner.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
+                        var now = DateTime.Now;
+                        string currentUser = "N/A";
+                        try
+                        {
+                            currentUser = HttpContext.Current.User.Identity.Name;
+                        }
+                        catch (Exception) { }
 
-                        try { DAL.Notifications.Delete(DAL.Notifications.FetchObject(obj.NotificationID)); }
+                        try { DAL.Notifications.Delete(DAL.Notifications.FetchObject(prizeDrawingWinner.NotificationID)); }
                         catch { }
                         try { var pp = PatronPrizes.FetchObjectByDrawing(key);
                             pp.RedeemedFlag = true;
+                            pp.LastModDate = now;
+                            pp.LastModUser = currentUser;
                             pp.Update();
                         }
                         catch { }
-                        obj.PrizePickedUpFlag = true;
-                        obj.Update();
+
+                        prizeDrawingWinner.PrizePickedUpFlag = true;
+                        prizeDrawingWinner.LastModDate = now;
+                        prizeDrawingWinner.LastModUser = currentUser;
+                        prizeDrawingWinner.Update();
 
                         odsWinners.DataBind();
                         var gv2 = (GridView)((DetailsView)sender).FindControl("gv2");
@@ -354,7 +367,69 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
+                        foreach (BusinessRulesValidationMessage m in prizeDrawingWinner.ErrorCodes)
+                        {
+                            message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
+                        }
+                        message = string.Format("{0}</ul>", message);
+                        if (masterPage != null) masterPage.PageError = message;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var masterPage = (IControlRoomMaster)Master;
+                    if (masterPage != null)
+                        masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
+                }
+            }
+
+            if (e.CommandName.ToLower() == "undopickup")
+            {
+                var key = Convert.ToInt32(e.CommandArgument);
+                try
+                {
+                    var prizeDrawingWinner = PrizeDrawingWinners.FetchObject(key);
+                    if (prizeDrawingWinner.IsValid(BusinessRulesValidationMode.UPDATE))
+                    {
+                        var now = DateTime.Now;
+                        string currentUser = "N/A";
+                        try
+                        {
+                            currentUser = HttpContext.Current.User.Identity.Name;
+                        }
+                        catch (Exception) { }
+
+                        try
+                        {
+                            var pp = PatronPrizes.FetchObjectByDrawing(key);
+                            this.Log().Warn("Reward for patron id {0} marked as NOT picked up by {1}",
+                                pp.PID,
+                                currentUser);
+
+                            pp.RedeemedFlag = false;
+                            pp.LastModDate = now;
+                            pp.LastModUser = currentUser;
+                            pp.Update();
+                        }
+                        catch { }
+
+                        prizeDrawingWinner.PrizePickedUpFlag = false;
+                        prizeDrawingWinner.LastModDate = now;
+                        prizeDrawingWinner.LastModUser = currentUser;
+                        prizeDrawingWinner.Update();
+
+                        odsWinners.DataBind();
+                        var gv2 = (GridView)((DetailsView)sender).FindControl("gv2");
+                        gv2.DataBind();
+
+                        var masterPage = (IControlRoomMaster)Master;
+                        if (masterPage != null) masterPage.PageMessage = "Prize has been marked as available. This change was logged.";
+                    }
+                    else
+                    {
+                        var masterPage = (IControlRoomMaster)Master;
+                        string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                        foreach (BusinessRulesValidationMessage m in prizeDrawingWinner.ErrorCodes)
                         {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }

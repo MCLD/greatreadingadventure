@@ -50,31 +50,13 @@ namespace GRA.SRP.Handlers
             var jsonResponse = new JsonStatus();
             try
             {
-                DateTime startingOn = DateTime.MinValue;
-                if (!string.IsNullOrEmpty(context.Request.QueryString["StartingOn"]))
-                {
-                    DateTime.TryParse(context.Request.QueryString["StartingOn"], out startingOn);
-                }
-
-                ProgramStatusReport result = null;
-                if (startingOn == DateTime.MinValue)
-                {
-                    result = new ProgramStatus(tenantId).CurrentStatus();
-                }
-                else {
-                    result = new ProgramStatus(startingOn, tenantId).CurrentStatus();
-                }
+                TenantStatusReport result = null;
+                result = new TenantStatus(tenantId).CurrentStatus();
 
                 jsonResponse.PointsEarned = result.PointsEarned;
                 jsonResponse.BadgesAwarded = result.BadgesAwarded;
                 jsonResponse.ChallengesCompleted = result.ChallengesCompleted;
-                if (!string.IsNullOrEmpty(result.Since))
-                {
-                    jsonResponse.Since = result.Since;
-                }
-                else {
-                    jsonResponse.Since = "All Participants";
-                }
+                jsonResponse.Since = "All Participants";
                 jsonResponse.Success = true;
             }
             catch (Exception ex)
@@ -107,7 +89,6 @@ namespace GRA.SRP.Handlers
                     this.Log().Error("Error caching status response: {0}", ex.Message);
                 }
             }
-
 
             context.Response.ContentType = "application/json";
             context.Response.Write(JsonConvert.SerializeObject(jsonResponse));

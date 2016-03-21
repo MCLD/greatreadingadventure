@@ -10,51 +10,33 @@
 namespace GRA.SRP.ControlRoom.Modules.Patrons {
     
     
-    public partial class PatronBadgesAddEdit {
+    public partial class PatronProgramRewardCodes {
         
         /// <summary>
-        /// ValidationSummaryMain control.
+        /// PatronContext control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummaryMain;
+        protected global::GRA.SRP.ControlRoom.Controls.PatronContext PatronContext;
         
         /// <summary>
-        /// PatronContext1 control.
+        /// NoCode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::GRA.SRP.ControlRoom.Controls.PatronContext PatronContext1;
+        protected global::System.Web.UI.WebControls.Panel NoCode;
         
         /// <summary>
-        /// dv control.
+        /// EarnedCodeRepeater control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DetailsView dv;
-        
-        /// <summary>
-        /// lblPK control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPK;
-        
-        /// <summary>
-        /// odsData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ObjectDataSource odsData;
+        protected global::System.Web.UI.WebControls.Repeater EarnedCodeRepeater;
     }
 }

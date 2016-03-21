@@ -305,6 +305,20 @@ INSERT INTO SRPPermissionsMaster (
 	[MODID]
 	)
 VALUES (
+	5150,
+	'Patron Notifications',
+	'Allows access notifications to specific patrons.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
 	5200,
 	'Test Management',
 	'Allows access to the respective maintenance screens.',
@@ -794,50 +808,6 @@ VALUES (
 	)
 GO
 
-INSERT INTO SRPSettings (
-	[Name],
-	[Value],
-	[StorageType],
-	[EditType],
-	[ModID],
-	[Label],
-	[Description],
-	[ValueList],
-	[DefaultValue],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	'DupEvtCodes',
-	'False',
-	'int',
-	'Checkbox',
-	0,
-	'Duplicate Secret Codes',
-	'Whether or not duplicate secret codes are allowed',
-	'',
-	'',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	'',
-	'',
-	''
-	)
-GO
-
 INSERT INTO CodeType (
 	[isSystem],
 	[CodeTypeName],
@@ -1178,8 +1148,8 @@ INSERT INTO CustomRegistrationFields (
 	)
 VALUES (
 	0,
-	'Custom 1',
-	'1',
+	'',
+	'',
 	0,
 	0,
 	0,
@@ -1406,45 +1376,6 @@ VALUES (
 	0,
 	0,
 	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
 	0,
 	0,
 	0,
@@ -1480,7 +1411,9 @@ VALUES (
 	0,
 	0,
 	0,
-	1,
+	0,
+	0,
+	0,
 	0,
 	0,
 	0,
@@ -1517,7 +1450,44 @@ VALUES (
 	0,
 	0,
 	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
 	1,
+	0,
+	1,
+	0,
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
 	0,
 	0,
 	0,
@@ -1739,7 +1709,8 @@ INSERT [dbo].[Programs] (
 	[GoalDefault],
 	[GoalMin],
 	[GoalMax],
-	[GoalIntervalId]
+	[GoalIntervalId],
+	[HideSchoolInRegistration]
 	)
 VALUES (
 	1,
@@ -1792,7 +1763,8 @@ VALUES (
 	0,
 	0,
 	120,
-	0
+	0,
+	1
 	)
 GO
 
@@ -2063,7 +2035,8 @@ INSERT [dbo].[Programs] (
 	[GoalDefault],
 	[GoalMin],
 	[GoalMax],
-	[GoalIntervalId]
+	[GoalIntervalId],
+	[HideSchoolInRegistration]
 	)
 VALUES (
 	4,
@@ -2117,6 +2090,7 @@ VALUES (
 	0,
 	120,
 	0
+	1
 	)
 GO
 

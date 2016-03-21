@@ -10,57 +10,92 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
-namespace GRA.SRP.Badges {
-    public partial class Details : BaseSRPPage {
+namespace GRA.SRP.Badges
+{
+    public partial class Details : BaseSRPPage
+    {
         private const string NoBadgePath = "~/images/Badges/no_badge.png";
 
-        protected void Page_Load(object sender, EventArgs e) {
-            if(!String.IsNullOrEmpty(Request["PID"])) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(Request["PID"]))
+            {
                 Session["ProgramID"] = Request["PID"].ToString();
             }
-            if(!IsPostBack) {
-                if(Session["ProgramID"] == null) {
-                    try {
+            if (!IsPostBack)
+            {
+                if (Session["ProgramID"] == null)
+                {
+                    try
+                    {
                         int PID = Programs.GetDefaultProgramID();
                         Session["ProgramID"] = PID.ToString();
-                    } catch {
+                    }
+                    catch
+                    {
                         Response.Redirect("~/Badges/");
                     }
                 }
             }
             TranslateStrings(this);
 
-            if(Request.UrlReferrer == null) {
+            if (Request.UrlReferrer == null)
+            {
                 badgeBackLink.NavigateUrl = "~/Badges/";
-            } else {
+            }
+            else {
                 badgeBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
             }
 
             Badge badge = null;
             int badgeId = 0;
             string displayBadge = Request.QueryString["BadgeId"];
-            if(!string.IsNullOrEmpty(displayBadge)
-                && int.TryParse(displayBadge.ToString(), out badgeId)) {
+            if (!string.IsNullOrEmpty(displayBadge)
+                && int.TryParse(displayBadge.ToString(), out badgeId))
+            {
                 badge = DAL.Badge.FetchObject(badgeId);
-                if(badge != null && badge.HiddenFromPublic)
+                if (badge != null && badge.HiddenFromPublic)
                 {
-                    badge = null;
+                    var patron = Session[SessionKey.Patron] as DAL.Patron;
+                    if (patron != null)
+                    {
+                        var patronBadges = DAL.PatronBadges.GetAll(patron.PID);
+                        if (patronBadges != null && patronBadges.Tables.Count > 0)
+                        {
+                            var filterExpression = string.Format("BadgeID = {0}", badge.BID);
+                            var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
+                            if (patronHasBadge.Count() == 0)
+                            {
+                                badge = null;
+                            }
+                        }
+                        else
+                        {
+                            badge = null;
+                        }
+                    }
+                    else
+                    {
+                        badge = null;
+                    }
                 }
-                if(badge != null) {
+                if (badge != null)
+                {
                     badgeTitle.Text = badge.UserName;
-                    this.Title = string.Format("'{0}' Badge Details", badgeTitle.Text);
+                    this.Title = string.Format("Badge: {0}", badgeTitle.Text);
                     this.MetaDescription = string.Format("All about the {0} badge - {1}",
                                                          badgeTitle.Text,
                                                          GetResourceString("system-name"));
                     string badgePath = NoBadgePath;
                     string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
                                                               badgeId);
-                    if(System.IO.File.Exists(Server.MapPath(potentialBadgePath))) {
+                    if (System.IO.File.Exists(Server.MapPath(potentialBadgePath)))
+                    {
                         badgePath = potentialBadgePath;
                     }
 
                     badgeImage.ImageUrl = badgePath;
-                    badgeImage.AlternateText = string.Format("{0} Badge", badge.UserName);
+                    badgeImage.AlternateText = string.Format("Badge: {0}", badge.UserName);
 
                     StringBuilder earn = new StringBuilder();
 
@@ -94,21 +129,26 @@ namespace GRA.SRP.Badges {
                         earn.AppendFormat("<li>Attend an Event: {0}</li>", earnText);
                     }
 
-                    if(earn.Length > 0) {
-                        badgeEarnPanel.Visible = true;
+                    if (earn.Length > 0)
+                    {
                         badgeEarnLabel.Text = earn.ToString();
-                    } else {
-                        badgeEarnPanel.Visible = false;
                     }
+                    else {
+                        badgeEarnLabel.Text = "<li>Learn the secret code to unlock it.</li>";
+                    }
+                    badgeEarnPanel.Visible = true;
                     badgeDetails.Visible = true;
                 }
                 badgeDetails.Visible = true;
             }
-            if(badge == null) {
+            if (badge == null)
+            {
                 badgeDetails.Visible = false;
                 var cph = Page.Master.FindControl("HeaderContent") as ContentPlaceHolder;
-                if(cph != null) {
-                    cph.Controls.Add(new HtmlMeta {
+                if (cph != null)
+                {
+                    cph.Controls.Add(new HtmlMeta
+                    {
                         Name = "robots",
                         Content = "noindex"
                     });

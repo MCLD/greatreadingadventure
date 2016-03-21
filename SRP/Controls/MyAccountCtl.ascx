@@ -395,7 +395,7 @@
             </div>
             <div class="form-group" runat="server" visible='<%# (bool)Eval("District_Show")%>'>
                 <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
+                    <asp:Label runat="server" Text="registration-form-library-district"></asp:Label>
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList
@@ -467,7 +467,7 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolType_Show")%>'>
+            <div class="form-group" id="SchoolTypePanel" runat="server" visible='<%# (bool)Eval("SchoolType_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
                 </label>
@@ -499,7 +499,7 @@
                 </div>
             </div>
 
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SDistrict_Show")%>'>
+            <div class="form-group" id="SDistrictPanel" runat="server" visible='<%# (bool)Eval("SDistrict_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
                 </label>
@@ -529,7 +529,7 @@
                         SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
                 </div>
             </div>
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolName_Show")%>'>
+            <div class="form-group" id="SchoolNamePanel" runat="server" visible='<%# (bool)Eval("SchoolName_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school"></asp:Label>
                 </label>
@@ -845,6 +845,14 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
+
+            <asp:Panel CssClass="form-group" runat="server" ID="ProgramRewardCodeDisplay">
+                <label class="col-sm-3 control-label"><asp:Label runat="server" Text="myaccount-program-reward-code"></asp:Label>:</label>
+                <div class="col-sm-9 form-control-static">
+                    <asp:Label ID="ProgramRewardCodes" runat="server"></asp:Label>
+                </div>
+            </asp:Panel>
+
             <div class="form-group clearfix">
                 <div class="col-sm-9">
                     <div class="pull-right">

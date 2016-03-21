@@ -66,6 +66,12 @@
                         CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("EID") %>'
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
                     &nbsp;
+                    <asp:HyperLink runat="server"
+                        NavigateUrl='<%# Eval("EID","~/Events/Details.aspx?EventId={0}") %>'
+                        AlternateText="Direct link to this event"
+                        ToolTip="Direct link to this event"
+                        Visible='<%# Eval("HiddenFromPublic") as bool? != true %>'
+                        Target="_blank"><span class="glyphicon glyphicon-new-window margin-halfem-bottom" style="font-size: large;"></asp:HyperLink>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>

@@ -39,10 +39,14 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
 
         protected void dv_DataBound(object sender, EventArgs e)
         {
-            if (dv.CurrentMode == DetailsViewMode.Edit)
+            if (dv.CurrentMode == DetailsViewMode.Insert)
             {
-                //var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
-                //if (control!=null) control.ProcessRender();
+                var dateEntry = dv.FindControl("DateEarned") as TextBox;
+                if(dateEntry != null
+                    && string.IsNullOrWhiteSpace(dateEntry.Text))
+                {
+                    dateEntry.Text = DateTime.Now.ToShortDateString();
+                }
             }
         }
 
@@ -205,6 +209,28 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             //        masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
             //    }
             //}
+        }
+
+        protected void LoadBadgeSearch()
+        {
+            var odsDDBadges = dv.FindControl("odsDDBadges") as ObjectDataSource;
+            if(odsDDBadges == null)
+            {
+                return;
+            }
+            odsDDBadges.Select();
+            var BadgeID = dv.FindControl("BadgeID") as DropDownList;
+            if (BadgeID != null)
+            {
+                BadgeID.Items.Clear();
+                BadgeID.Items.Add(new ListItem("[Select a Badge]", "0"));
+                BadgeID.DataBind();
+            }
+        }
+
+        protected void Search(object sender, EventArgs e)
+        {
+            LoadBadgeSearch();
         }
     }
 }

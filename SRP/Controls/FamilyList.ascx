@@ -22,8 +22,14 @@
 <table class="table">
     <thead>
         <tr>
-            <th colspan="3">
+            <th colspan="2">
                 <asp:Label runat="server" Text="family-list-members"></asp:Label></th>
+            <th>
+                <asp:Label runat="server" Text="myaccount-program-reward-code" ID="ProgramCodeLabel"></asp:Label>
+            </th>
+            <th>
+                &nbsp;
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -31,10 +37,13 @@
             <ItemTemplate>
                 <tr>
                     <td style="vertical-align: middle;">
-                        <asp:Image runat="server" ID="avatarImage" width="64" Height="64" />
+                        <asp:Image runat="server" ID="avatarImage" Width="64" Height="64" />
                     </td>
                     <td style="vertical-align: middle;">
                         <%# Eval("FirstName") + " " + Eval("LastName")%> (<%# Eval("username") %>)
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <asp:Label runat="server" ID="ProgramRewardCodes"></asp:Label>
                     </td>
                     <td class="clearfix" style="vertical-align: middle;">
                         <div class="pull-right margin-halfem-top">
@@ -42,7 +51,7 @@
                                 CommandName="login"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-login"
-                                CssClass="btn btn-default margin-halfem-bottom" />
+                                CssClass="btn btn-default margin-halfem-bottom margin-halfem-left" />
                             <asp:Button runat="server"
                                 CommandName="log"
                                 CommandArgument='<%# Eval("PID") %>'
