@@ -11391,6 +11391,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
 	@PostTestStartDate DATETIME,
+	@DefaultDailyGoal INT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -11441,7 +11442,8 @@ BEGIN
 		PostTestID,
 		PreTestMandatory,
 		PretestEndDate,
-		PostTestStartDate
+		PostTestStartDate,
+		DefaultDailyGoal
 		)
 	VALUES (
 		@AdminName,
@@ -11492,7 +11494,8 @@ BEGIN
 		@PostTestID,
 		@PreTestMandatory,
 		@PretestEndDate,
-		@PostTestStartDate
+		@PostTestStartDate,
+		@DefaultDailyGoal
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -11663,7 +11666,8 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@PostTestID INT = 0,
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
-	@PostTestStartDate DATETIME
+	@PostTestStartDate DATETIME,
+	@DefaultDailyGoal INT = 0
 	)
 AS
 UPDATE Programs
@@ -11712,7 +11716,8 @@ SET AdminName = @AdminName,
 	PostTestID = @PostTestID,
 	PreTestMandatory = @PreTestMandatory,
 	PretestEndDate = @PretestEndDate,
-	PostTestStartDate = @PostTestStartDate
+	PostTestStartDate = @PostTestStartDate,
+	DefaultDailyGoal = @DefaultDailyGoal
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -23510,6 +23515,7 @@ CREATE TABLE [dbo].[Programs] (
 	[PreTestMandatory] [bit] NULL,
 	[PretestEndDate] [datetime] NULL,
 	[PostTestStartDate] [datetime] NULL,
+	[DefaultDailyGoal] [int] NULL,
 	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,

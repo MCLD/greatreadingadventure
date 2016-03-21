@@ -224,7 +224,13 @@ namespace GRA.SRP.Controls
                     return;
                 }
 
-
+                var dailyGoal = rptr.Items[0].FindControl("DailyGoal") as TextBox;
+                if(dailyGoal != null
+                   && selectedProgram.DefaultDailyGoal > 0)
+                {
+                    dailyGoal.Text = selectedProgram.DefaultDailyGoal.ToString();
+                }
+                
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
