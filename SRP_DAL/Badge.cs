@@ -713,7 +713,7 @@ namespace GRA.SRP.DAL
             return (string)arrParams[2].Value;
         }
 
-        public static DataSet GetFiltered(string searchText)
+        public static DataSet GetFiltered(string searchText, int branchId)
         {
             var arrParams = new List<SqlParameter>();
             arrParams.Add(new SqlParameter("@TenID",
@@ -734,6 +734,11 @@ namespace GRA.SRP.DAL
                 }
                 arrParams.Add(new SqlParameter("@SearchText", searchText));
             }
+            if (branchId > 0)
+            {
+                arrParams.Add(new SqlParameter("@BranchId", branchId));
+            }
+
             return SqlHelper.ExecuteDataset(conn,
                 CommandType.StoredProcedure,
                 "app_Badge_Filter",

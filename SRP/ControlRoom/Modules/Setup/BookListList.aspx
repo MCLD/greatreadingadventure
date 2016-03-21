@@ -86,14 +86,12 @@
                 </HeaderTemplate>
                 <ItemTemplate>
                     &nbsp;
-                   
-                    <asp:ImageButton ID="ImageButton2" runat="server"
+                       <asp:LinkButton ID="ImageButton2" runat="server"
                         CausesValidation="True"
                         CommandName="Saveandbooks"
-                        ImageUrl="~/ControlRoom/RibbonImages/Challenges.png"
-                        Height="20"
-                        Text="Steps" ToolTip="Tasks" CommandArgument='<%# Bind("BLID") %>'
-                        AlternateText="Steps" />
+                        Text="Tasks" ToolTip="Tasks" CommandArgument='<%# Bind("BLID") %>'
+                        AlternateText="Tasks" 
+                        ><span class="glyphicon glyphicon-list margin-halfem-bottom" style="font-size: large;"></span></asp:LinkButton>
                     &nbsp;
                     <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" ToolTip="Edit Record"
                         CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("BLID") %>'

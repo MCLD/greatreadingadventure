@@ -84,6 +84,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 AdminName.Text = UserName.Text = string.Format("{0} Badge", EventTitle.Text);
             }
+            if (BranchId.SelectedIndex > 0)
+            {
+                FilterBranchId.SelectedIndex = BranchId.SelectedIndex;
+            }
+            LoadBadgeSearch();
         }
 
         protected void btnCancel2_Click(object sender, System.Web.UI.ImageClickEventArgs e)
@@ -170,7 +175,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 message = string.Format("{0}</ul>", message);
                 masterPage.PageError = message;
             }
-            else {
+            else
+            {
                 if (rblBadge.SelectedIndex == 0)
                 {
                     // No Badge Awarded
@@ -198,6 +204,20 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                     pnlBadgeMore.Visible = true;
                     pnlReward.Visible = false;
+
+                    foreach (GridViewRow row in gvBranch.Rows)
+                    {
+                        Label idLabel = row.FindControl("CID") as Label;
+                        if (idLabel != null && idLabel.Text == BranchId.SelectedValue)
+                        {
+                            var check = row.FindControl("isMember") as CheckBox;
+                            if (check != null)
+                            {
+                                check.Checked = true;
+                            }
+                        }
+                    }
+
                     btnContinue3_Click(sender, e);
                 }
                 new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
@@ -209,26 +229,26 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             if (rblBadge.SelectedIndex == 0)
             {
-                BadgeID.Visible = false;
+                ExistingBadgeSelection.Visible = false;
                 pnlBadge.Visible = false;
                 rfvAdminName.Enabled = rfvUserName.Enabled = false;
                 return;
             }
             if (rblBadge.SelectedIndex == 1)
             {
-                BadgeID.Visible = true;
+                ExistingBadgeSelection.Visible = true;
                 pnlBadge.Visible = false;
                 rfvAdminName.Enabled = rfvUserName.Enabled = false;
                 return;
             }
             if (rblBadge.SelectedIndex == 2)
             {
-                BadgeID.Visible = false;
+                ExistingBadgeSelection.Visible = false;
                 pnlBadge.Visible = true;
                 rfvAdminName.Enabled = rfvUserName.Enabled = true;
                 return;
             }
-            BadgeID.Visible = false;
+            ExistingBadgeSelection.Visible = false;
             pnlBadge.Visible = false;
             rfvAdminName.Enabled = rfvUserName.Enabled = false;
         }
@@ -250,6 +270,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             var badge = LoadBadgeObject();
             badge.Insert();
+
 
             try
             {
@@ -367,6 +388,19 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             if (checkedMembers.Length > 0)
                 checkedMembers = checkedMembers.Substring(1, checkedMembers.Length - 1);
             obj.UpdateBadgeLocations(checkedMembers);
+        }
+
+        protected void LoadBadgeSearch()
+        {
+            odsBadge.Select();
+            BadgeID.Items.Clear();
+            BadgeID.Items.Add(new ListItem("[Select a Badge]", "0"));
+            BadgeID.DataBind();
+        }
+
+        protected void Search(object sender, EventArgs e)
+        {
+            LoadBadgeSearch();
         }
     }
 }

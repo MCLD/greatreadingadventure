@@ -211,6 +211,42 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.RadioButtonList rblBadge;
         
         /// <summary>
+        /// ExistingBadgeSelection control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel ExistingBadgeSelection;
+        
+        /// <summary>
+        /// SearchText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SearchText;
+        
+        /// <summary>
+        /// SearchButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton SearchButton;
+        
+        /// <summary>
+        /// FilterBranchId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FilterBranchId;
+        
+        /// <summary>
         /// BadgeID control.
         /// </summary>
         /// <remarks>

@@ -45,9 +45,15 @@ namespace GRA.SRP
             Session.Remove("MasterAcctPID");
         }
 
-        public void EarnedBadges(object badgeIds)
+        public void EarnedBadges(string badgeIds)
         {
-            Session[SessionKey.EarnedBadges] = badgeIds;
+            var newBadges = badgeIds;
+            var currentlyEarnedBadges = Session[SessionKey.EarnedBadges];
+            if(currentlyEarnedBadges != null)
+            {
+                newBadges = string.Format("{0}|{1}", currentlyEarnedBadges, newBadges);
+            }
+            Session[SessionKey.EarnedBadges] = newBadges;
             Session[SessionKey.RefreshBadgeList] = true;
         }
 

@@ -221,11 +221,14 @@ namespace GRA.SRP
                 alertContainer.Visible = false;
             }
 
-            var earnedBadges = Session[SessionKey.EarnedBadges];
-            if (earnedBadges != null)
+            if (!PatronTakingTest)
             {
-                this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
-                new SessionTools(Session).ClearEarnedBadges();
+                var earnedBadges = Session[SessionKey.EarnedBadges];
+                if (earnedBadges != null)
+                {
+                    this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
+                    new SessionTools(Session).ClearEarnedBadges();
+                }
             }
         }
 
@@ -265,59 +268,81 @@ namespace GRA.SRP
 
             var sessionTool = new SessionTools(Session);
 
-            var adventuresActive = sessionTool.GetCache(Cache, CacheKey.AdventuresActive) as bool?;
-            if (adventuresActive == null)
+            if (this.PatronTakingTest)
             {
-                var programGames = DAL.ProgramGame.GetAll();
-                adventuresActive = programGames.Tables.Count > 0 && programGames.Tables[0].Rows.Count > 0;
-                sessionTool.SetCache(Cache, CacheKey.AdventuresActive, adventuresActive);
+                adventuresNav.Visible = false;
+                challengesNav.Visible = false;
+                offersNav.Visible = false;
+                badgesNav.Visible = false;
+                eventsNav.Visible = false;
+                mailNav.Visible = false;
+                homeNav.Visible = false;
+                accountNav.Visible = false;
             }
-            adventuresNav.Visible = adventuresActive == true;
-            adventuresNav.Attributes.Add("class", this.AdventuresSectionActive);
-
-            var challengesActive = sessionTool.GetCache(Cache, CacheKey.ChallengesActive) as bool?;
-            if (challengesActive == null)
+            else
             {
-                var challenges = DAL.BookList.GetAll();
-                challengesActive = challenges.Tables.Count > 0 && challenges.Tables[0].Rows.Count > 0;
-                sessionTool.SetCache(Cache, CacheKey.ChallengesActive, challengesActive);
-            }
-            challengesNav.Visible = challengesActive == true;
-            challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
+                homeNav.Visible = true;
+                homeNav.Attributes.Add("class", this.DashboardPageActive);
+                mailNav.Visible = true;
+                mailNav.Attributes.Add("class", this.MailSectionActive);
+                accountNav.Visible = true;
+                accountNav.Attributes.Add("class", this.AccountSectionActive);
+                LoggedOutRegister.Attributes.Add("class", this.RegisterPageActive);
+                LoggedOutLogin.Attributes.Add("class", this.LoginPageActive);
 
-            var offersActive = sessionTool.GetCache(Cache, CacheKey.OffersActive) as bool?;
-            if (offersActive == null)
-            {
-                var offers = DAL.Offer.GetAll();
-                offersActive = offers.Tables.Count > 0 && offers.Tables[0].Rows.Count > 0;
-                sessionTool.SetCache(Cache, CacheKey.OffersActive, offersActive);
-            }
-            offersNav.Visible = offersActive == true;
-            offersNav.Attributes.Add("class", this.OffersPageActive);
+                var adventuresActive = sessionTool.GetCache(Cache, CacheKey.AdventuresActive) as bool?;
+                if (adventuresActive == null)
+                {
+                    var programGames = DAL.ProgramGame.GetAll();
+                    adventuresActive = programGames.Tables.Count > 0 && programGames.Tables[0].Rows.Count > 0;
+                    sessionTool.SetCache(Cache, CacheKey.AdventuresActive, adventuresActive);
+                }
+                adventuresNav.Visible = adventuresActive == true;
+                adventuresNav.Attributes.Add("class", this.AdventuresSectionActive);
 
-            var badgesActive = sessionTool.GetCache(Cache, CacheKey.BadgesActive) as bool?;
-            if (badgesActive == null)
-            {
-                badgesActive = DAL.Badge.GetVisibleCount() > 0;
-                sessionTool.SetCache(Cache, CacheKey.BadgesActive, badgesActive);
-            }
-            badgesNav.Visible = badgesActive == true;
-            badgesAnonNav.Visible = badgesActive == true;
-            badgesNav.Attributes.Add("class", this.BadgesSectionActive);
-            badgesAnonNav.Attributes.Add("class", this.BadgesSectionActive);
+                var challengesActive = sessionTool.GetCache(Cache, CacheKey.ChallengesActive) as bool?;
+                if (challengesActive == null)
+                {
+                    var challenges = DAL.BookList.GetAll();
+                    challengesActive = challenges.Tables.Count > 0 && challenges.Tables[0].Rows.Count > 0;
+                    sessionTool.SetCache(Cache, CacheKey.ChallengesActive, challengesActive);
+                }
+                challengesNav.Visible = challengesActive == true;
+                challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
 
-            var eventsActive = sessionTool.GetCache(Cache, CacheKey.EventsActive) as bool?;
-            if (eventsActive == null)
-            {
-                var events = DAL.Event.GetAll();
-                eventsActive = events.Tables.Count > 0 && events.Tables[0].Rows.Count > 0;
-                sessionTool.SetCache(Cache, CacheKey.EventsActive, eventsActive);
-            }
-            eventsNav.Visible = eventsActive == true;
-            eventsAnonNav.Visible = eventsActive == true;
-            eventsNav.Attributes.Add("class", this.EventsSectionActive);
-            eventsAnonNav.Attributes.Add("class", this.EventsSectionActive);
+                var offersActive = sessionTool.GetCache(Cache, CacheKey.OffersActive) as bool?;
+                if (offersActive == null)
+                {
+                    var offers = DAL.Offer.GetAll();
+                    offersActive = offers.Tables.Count > 0 && offers.Tables[0].Rows.Count > 0;
+                    sessionTool.SetCache(Cache, CacheKey.OffersActive, offersActive);
+                }
+                offersNav.Visible = offersActive == true;
+                offersNav.Attributes.Add("class", this.OffersPageActive);
 
+                var badgesActive = sessionTool.GetCache(Cache, CacheKey.BadgesActive) as bool?;
+                if (badgesActive == null)
+                {
+                    badgesActive = DAL.Badge.GetVisibleCount() > 0;
+                    sessionTool.SetCache(Cache, CacheKey.BadgesActive, badgesActive);
+                }
+                badgesNav.Visible = badgesActive == true;
+                badgesAnonNav.Visible = badgesActive == true;
+                badgesNav.Attributes.Add("class", this.BadgesSectionActive);
+                badgesAnonNav.Attributes.Add("class", this.BadgesSectionActive);
+
+                var eventsActive = sessionTool.GetCache(Cache, CacheKey.EventsActive) as bool?;
+                if (eventsActive == null)
+                {
+                    var events = DAL.Event.GetAll();
+                    eventsActive = events.Tables.Count > 0 && events.Tables[0].Rows.Count > 0;
+                    sessionTool.SetCache(Cache, CacheKey.EventsActive, eventsActive);
+                }
+                eventsNav.Visible = eventsActive == true;
+                eventsAnonNav.Visible = eventsActive == true;
+                eventsNav.Attributes.Add("class", this.EventsSectionActive);
+                eventsAnonNav.Attributes.Add("class", this.EventsSectionActive);
+            }
 
             if (!IsPostBack)
             {
@@ -355,7 +380,11 @@ namespace GRA.SRP
                     string programId = Request["PID"];
                     if (string.IsNullOrEmpty(programId))
                     {
-                        programId = Session["ProgramID"].ToString();
+                        var sessProgId = Session["ProgramID"];
+                        if (sessProgId != null)
+                        {
+                            programId = sessProgId.ToString();
+                        }
                     }
                     if (string.IsNullOrEmpty(programId))
                     {

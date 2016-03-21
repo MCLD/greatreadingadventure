@@ -96,6 +96,7 @@ namespace GRA.SRP.Controls {
         public void EndTest() {
             // update SurveyResults and set is complete 
             // score if scorable;
+            var p = (Patron)Session["Patron"];
             var sr = SurveyResults.FetchObject(int.Parse(SRID.Text));
             sr.EndDate = DateTime.Now;
             sr.IsComplete = true;
@@ -107,7 +108,6 @@ namespace GRA.SRP.Controls {
                 else
                     sr.ScorePct = 0;
 
-                var p = (Patron)Session["Patron"];
                 if(sr.Source == Survey.Source(1)) {
                     p.Score1 = sr.Score;
                     p.Score1Pct = sr.ScorePct;
@@ -124,6 +124,18 @@ namespace GRA.SRP.Controls {
                 }
             }
             sr.Update();
+
+            var earnedBadgesList = new List<Badge>();
+            var s = DAL.Survey.FetchObject(sr.SID);
+            if(s.BadgeId != 0)
+            {
+                AwardPoints.AwardBadgeToPatron(s.BadgeId,
+                    p,
+                    ref earnedBadgesList);
+            }
+            AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref earnedBadgesList);
+            var earnedBadges = string.Join("|", earnedBadgesList.Select(b => b.BID).Distinct());
+            new SessionTools(Session).EarnedBadges(earnedBadges);
 
             var SurveyEndPage = "~";
             if(Session["Page"] != null && Session["Page"].ToString() == "1") {
@@ -152,9 +164,9 @@ namespace GRA.SRP.Controls {
         }
 
         protected void SurveyQLst_ItemCommand1(object source, RepeaterCommandEventArgs e) {
-            var SurveyTakingPage = "AddlSurvey.aspx";
+            var SurveyTakingPage = "~/AddlSurvey.aspx";
             if(Session["Page"] != null && Session["Page"].ToString() == "1") {
-                SurveyTakingPage = "FramedSurvey.aspx?C=Y";
+                SurveyTakingPage = "~/FramedSurvey.aspx?C=Y";
             }
             if(e.CommandName == "EOP") {
 

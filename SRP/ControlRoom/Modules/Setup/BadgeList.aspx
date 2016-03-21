@@ -5,12 +5,23 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid">
-        <asp:Panel runat="server" DefaultButton="SearchButton" class="row" style="margin-bottom: 1em;" ID="SearchPanel">
+        <asp:Panel runat="server" DefaultButton="SearchButton" class="row" Style="margin-bottom: 1em;" ID="SearchPanel">
             <div class="col-xs-4">
                 <asp:TextBox ID="SearchText"
                     runat="server"
                     CssClass="form-control"
                     placeholder="Search for a badge"></asp:TextBox>
+            </div>
+            <div class="col-xs-4">
+                <asp:DropDownList ID="BranchId"
+                    runat="server"
+                    DataSourceID="odsDDBranch"
+                    DataTextField="Code"
+                    DataValueField="CID"
+                    AppendDataBoundItems="True"
+                    CssClass="form-control">
+                    <asp:ListItem Value="0" Text="Filter by library"></asp:ListItem>
+                </asp:DropDownList>
             </div>
             <div class="col-xs-3">
                 <asp:LinkButton runat="server"
@@ -40,10 +51,24 @@
                 Name="searchText"
                 PropertyName="Text"
                 Type="String" />
+            <asp:ControlParameter
+                ControlID="BranchId"
+                DefaultValue="0"
+                Name="branchId"
+                PropertyName="SelectedValue"
+                Type="Int32" />
         </SelectParameters>
     </asp:ObjectDataSource>
 
-    <p style="margin-bottom: 0.5em;"><b>Badge Gallery Direct URL: </b><a href='/Badges/Default.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target="_blank"><%= Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Badges/Default.aspx?PID=" + Programs.GetDefaultProgramID() %></a></p>
+    <asp:ObjectDataSource ID="odsDDBranch" runat="server"
+        SelectMethod="GetAlByTypeName"
+        TypeName="GRA.SRP.DAL.Codes">
+        <SelectParameters>
+            <asp:Parameter Name="Name" DefaultValue="Branch" Type="String" />
+        </SelectParameters>
+    </asp:ObjectDataSource>
+
+    <p style="margin-bottom: 0.5em; display: none;"><b>Badge Gallery Direct URL: </b><a href='/Badges/Default.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target="_blank"><%= GRA.Tools.WebTools.GetBaseUrl(Request) + "/Badges/Default.aspx?PID=" + Programs.GetDefaultProgramID() %></a></p>
 
     <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False"
         DataKeys="BID"

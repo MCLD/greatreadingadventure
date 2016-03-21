@@ -259,7 +259,7 @@
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:BoundField>
 
-            <asp:TemplateField ShowHeader="False">
+            <asp:TemplateField ShowHeader="False" ItemStyle-VerticalAlign="top">
                 <ItemTemplate>
                     <asp:ImageButton ID="btnBack" runat="server"
                         CausesValidation="false"
@@ -324,13 +324,12 @@
 
 
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:ImageButton ID="ImageButton2" runat="server"
+                    <asp:LinkButton ID="ImageButton2" runat="server"
                         CausesValidation="True"
                         CommandName="Saveandbooks"
-                        ImageUrl="~/ControlRoom/RibbonImages/Challenges.png"
-                        Height="25"
                         Text="Save and see tasks" ToolTip="Save and see tasks"
-                        AlternateText="Save and return" />
+                        AlternateText="Save and see tasks" 
+                        ><span class="glyphicon glyphicon-list margin-halfem-bottom" style="font-size: x-large;"></span></asp:LinkButton>
                 </EditItemTemplate>
             </asp:TemplateField>
         </Fields>

@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace GRA.SRP.Core.Utilities {
-    public class StandardModuleRibbons {
-        public static List<RibbonPanel> ReportsRibbon() {
+namespace GRA.SRP.Core.Utilities
+{
+    public class StandardModuleRibbons
+    {
+        public static List<RibbonPanel> ReportsRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Reports",
                 ImageAlt = "Reports",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Reports.png"),
@@ -18,7 +22,8 @@ namespace GRA.SRP.Core.Utilities {
             returnList.Add(pnl);
 
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Dashboard",
                 ImageAlt = "Dashboard",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Dashboard.png"),
@@ -56,9 +61,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> DrawingsRibbon() {
+        public static List<RibbonPanel> DrawingsRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Drawings",
                 ImageAlt = "Drawings",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Drawings.png"),
@@ -72,9 +79,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> PatronRibbon() {
+        public static List<RibbonPanel> PatronRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Patrons",
                 ImageAlt = "Patrons",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Patrons.png"),
@@ -89,9 +98,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> SelectedPatronRibbon() {
+        public static List<RibbonPanel> SelectedPatronRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Patron Info",
                 ImageAlt = "Selected Patron Info",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/PatronInfo.png"),
@@ -107,9 +118,15 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> SelectedPatronOtherRibbon() {
+        public static List<RibbonPanel> SelectedPatronOtherRibbon()
+        {
+            string permList = HttpContext.Current.Session[SessionData.StringPermissionList.ToString()] == null
+                ? string.Empty
+                : HttpContext.Current.Session[SessionData.StringPermissionList.ToString()].ToString();
+
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "More Patron Info",
                 ImageAlt = "More Selected Patron Info",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MorePatronInfo.png"),
@@ -120,24 +137,36 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Patron Badges", Url = "/ControlRoom/Modules/Patrons/PatronBadges.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "More Patron Info",
                 ImageAlt = "More Selected Patron Info",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
-            pnl.Add(new RibbonLink { Name = "Patron Reviews", Url = "/ControlRoom/Modules/Patrons/PatronReviews.aspx" });
-            pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5000"))
+            {
+                pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
+            }
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5300"))
+            {
+                pnl.Add(new RibbonLink { Name = "Patron Reviews", Url = "/ControlRoom/Modules/Patrons/PatronReviews.aspx" });
+            }
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5200"))
+            {
+                pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
+            }
 
             returnList.Add(pnl);
 
             return returnList;
         }
 
-        public static List<RibbonPanel> NotificationsRibbon() {
+        public static List<RibbonPanel> NotificationsRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Mail",
                 ImageAlt = "Mail",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Mail.png"),
@@ -150,9 +179,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> ProgramRibbon() {
+        public static List<RibbonPanel> ProgramRibbon()
+        {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Program",
                 ImageAlt = "Program",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Programs.png"),
@@ -163,7 +194,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Display Order", Url = "/ControlRoom/Modules/Programs/ProgramOrder.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Styling",
                 ImageAlt = "Program Style",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Styling.png"),
@@ -177,12 +209,19 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> ManagementRibbon() {
+        public static List<RibbonPanel> ManagementRibbon()
+        {
             return SetupRibbon();
         }
-        public static List<RibbonPanel> SetupRibbon() {
+        public static List<RibbonPanel> SetupRibbon()
+        {
+            string permList = HttpContext.Current.Session[SessionData.StringPermissionList.ToString()] == null
+                ? string.Empty
+                : HttpContext.Current.Session[SessionData.StringPermissionList.ToString()].ToString();
+
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 Name = "Badges/Events/Challenges",
                 ImageAlt = "Badges/Events/Challenges",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Events.png"),
@@ -194,7 +233,8 @@ namespace GRA.SRP.Core.Utilities {
 
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Awards",
                 ImageAlt = "Awards",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Awards.png"),
@@ -204,7 +244,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Manual Awards", Url = "/ControlRoom/Modules/Setup/AwardManual.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Adventures",
                 ImageAlt = "Adventures",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Adventures.png"),
@@ -214,7 +255,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Adventures", Url = "/ControlRoom/Modules/Setup/MiniGameList.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Avatars/Offers",
                 ImageAlt = "Avatars/Offers",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Avatars.png"),
@@ -224,7 +266,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Offers", Url = "/ControlRoom/Modules/Setup/OfferList.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Tests/Surveys",
                 ImageAlt = "Tests/Surveys",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/TestsSurveys.png"),
@@ -234,22 +277,26 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Test/Survey Results", Url = "/ControlRoom/Modules/Setup/SurveyResults.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel()
+            if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5400"))
             {
-                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport.png"),
-                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport@2x.png")
-            };
-            pnl.Name = "Import/Export";
-            pnl.ImageAlt = "Import/Export";
-            pnl.Add(new RibbonLink { Name = "Import/Export Events", Url = "/ControlRoom/Modules/Setup/IEEvents.aspx" });
-            returnList.Add(pnl);
-
+                pnl = new RibbonPanel()
+                {
+                    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport.png"),
+                    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/ImportExport@2x.png")
+                };
+                pnl.Name = "Import/Export";
+                pnl.ImageAlt = "Import/Export";
+                pnl.Add(new RibbonLink { Name = "Import/Export Events", Url = "/ControlRoom/Modules/Setup/IEEvents.aspx" });
+                returnList.Add(pnl);
+            }
             return returnList;
         }
 
-        public static List<RibbonPanel> SettingsRibbon() {
+        public static List<RibbonPanel> SettingsRibbon()
+        {
             List<RibbonPanel> returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SystemSettings.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SystemSettings@2x.png")
             };
@@ -260,7 +307,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Test Email", Url = "/ControlRoom/Modules/Settings/TestEmail.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel() {
+            pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Codes.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Codes@2x.png")
             };
@@ -271,7 +319,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "School/District Setup", Url = "/ControlRoom/Modules/Settings/SchoolDistrict.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel() {
+            pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/CustomFields.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/CustomFields@2x.png")
             };
@@ -284,9 +333,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> MyAccountRibbon() {
+        public static List<RibbonPanel> MyAccountRibbon()
+        {
             List<RibbonPanel> returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel() {
+            var pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Accounts.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Accounts@2x.png")
             };
@@ -299,9 +350,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> MasterTenantRibbon() {
+        public static List<RibbonPanel> MasterTenantRibbon()
+        {
             List<RibbonPanel> returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel() {
+            var pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/OrganizationManagement.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/OrganizationManagement@2x.png")
             };
@@ -312,7 +365,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Groups", Url = "/ControlRoom/Modules/Tenant/TenantGroupList.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel {
+            pnl = new RibbonPanel
+            {
                 Name = "Tenant Reports",
                 ImageAlt = "Tenant Reports",
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/TenantSummary.png"),
@@ -326,9 +380,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> SubTenantRibbon() {
+        public static List<RibbonPanel> SubTenantRibbon()
+        {
             List<RibbonPanel> returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel {
+            var pnl = new RibbonPanel
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/TenantSummary.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/TenantSummary@2x.png")
             };
@@ -341,9 +397,11 @@ namespace GRA.SRP.Core.Utilities {
             return returnList;
         }
 
-        public static List<RibbonPanel> SecurityRibbon() {
+        public static List<RibbonPanel> SecurityRibbon()
+        {
             List<RibbonPanel> returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel() {
+            var pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/UserSecurity.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/UserSecurity@2x.png")
             };
@@ -354,7 +412,8 @@ namespace GRA.SRP.Core.Utilities {
             pnl.Add(new RibbonLink { Name = "Currently Logged In", Url = "/ControlRoom/Modules/Security/CurrentSessions.aspx" });
             returnList.Add(pnl);
 
-            pnl = new RibbonPanel() {
+            pnl = new RibbonPanel()
+            {
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GroupSecurity.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GroupSecurity@2x.png")
             };
@@ -366,5 +425,46 @@ namespace GRA.SRP.Core.Utilities {
 
             return returnList;
         }
+
+        public static List<RibbonPanel> AboutRibbon()
+        {
+            List<RibbonPanel> returnList = new List<RibbonPanel>();
+            var pnl = new RibbonPanel()
+            {
+                Name = "Great Reading Adventure",
+                ImageAlt = "Great Reading Adventure",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GRACompass.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GRACompass@2x.png")
+            };
+            pnl.Add(new RibbonLink { Name = "Web site", Url = "http://www.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Manual", Url = "http://manual.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Forum", Url = "http://forum.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Demo", Url = "http://demo.greatreadingadventure.com/" });
+            returnList.Add(pnl);
+
+            pnl = new RibbonPanel()
+            {
+                Name = "Source Code",
+                ImageAlt = "Source Code",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GitHub.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GitHub@2x.png")
+            };
+            pnl.Add(new RibbonLink { Name = "Source code at GitHub", Url = "https://github.com/MCLD/greatreadingadventure/" });
+            returnList.Add(pnl);
+
+            pnl = new RibbonPanel()
+            {
+                Name = "Other Links",
+                ImageAlt = "Other Links",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Share.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Share@2x.png")
+            };
+            pnl.Add(new RibbonLink { Name = "Facebook", Url = "https://www.facebook.com/greatreadingadventure/" });
+            pnl.Add(new RibbonLink { Name = "Twitter", Url = "https://twitter.com/greatreadingadv" });
+            returnList.Add(pnl);
+
+            return returnList;
+        }
+
     }
 }
