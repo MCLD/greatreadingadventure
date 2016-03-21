@@ -308,7 +308,9 @@ namespace GRA.SRP
                     sessionTool.SetCache(Cache, CacheKey.ChallengesActive, challengesActive);
                 }
                 challengesNav.Visible = challengesActive == true;
+                challengesAnonNav.Visible = challengesActive == true;
                 challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
+                challengesAnonNav.Attributes.Add("class", this.ChallengesSectionActive);
 
                 var offersActive = sessionTool.GetCache(Cache, CacheKey.OffersActive) as bool?;
                 if (offersActive == null)

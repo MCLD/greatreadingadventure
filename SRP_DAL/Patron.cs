@@ -104,6 +104,8 @@ namespace GRA.SRP.DAL {
         public DateTime Score1Date { get; set; }
 
         public DateTime Score2Date { get; set; }
+
+        public DateTime RegistrationDate { get; set; }
         #endregion
 
         #region Constructors
@@ -318,6 +320,11 @@ namespace GRA.SRP.DAL {
                 if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     result.Score2Date = _datetime;
 
+                if(DateTime.TryParse(dr["RegistrationDate"].ToString(), out _datetime))
+                {
+                    result.RegistrationDate = _datetime;
+                }
+
                 dr.Close();
 
                 return result;
@@ -441,6 +448,11 @@ namespace GRA.SRP.DAL {
                     this.Score1Date = _datetime;
                 if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     this.Score2Date = _datetime;
+
+                if (DateTime.TryParse(dr["RegistrationDate"].ToString(), out _datetime))
+                {
+                    this.RegistrationDate = _datetime;
+                }
 
                 dr.Close();
 

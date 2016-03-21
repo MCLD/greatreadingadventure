@@ -144,20 +144,27 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/MoreMorePatronInfo@2x.png")
             };
+            bool displaySection = false;
             if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5000"))
             {
                 pnl.Add(new RibbonLink { Name = "Patron Mail", Url = "/ControlRoom/Modules/Patrons/PatronNotifications.aspx" });
+                displaySection = true;
             }
             if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5300"))
             {
                 pnl.Add(new RibbonLink { Name = "Patron Reviews", Url = "/ControlRoom/Modules/Patrons/PatronReviews.aspx" });
+                displaySection = true;
             }
             if (!string.IsNullOrWhiteSpace(permList) && permList.Contains("5200"))
             {
                 pnl.Add(new RibbonLink { Name = "Patron Tests/Surveys", Url = "/ControlRoom/Modules/Patrons/PatronSurveys.aspx" });
+                displaySection = true;
             }
 
-            returnList.Add(pnl);
+            if (displaySection)
+            {
+                returnList.Add(pnl);
+            }
 
             return returnList;
         }

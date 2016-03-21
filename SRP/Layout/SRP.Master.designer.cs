@@ -67,6 +67,15 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl badgesAnonNav;
         
         /// <summary>
+        /// challengesAnonNav control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl challengesAnonNav;
+        
+        /// <summary>
         /// eventsAnonNav control.
         /// </summary>
         /// <remarks>
