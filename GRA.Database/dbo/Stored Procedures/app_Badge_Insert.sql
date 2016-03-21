@@ -25,6 +25,7 @@ CREATE PROCEDURE [dbo].[app_Badge_Insert] (
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
 	@FldText3 TEXT = '',
+	@HiddenFromPublic BIT,
 	@BID INT OUTPUT
 	)
 AS
@@ -54,7 +55,8 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		HiddenFromPublic
 		)
 	VALUES (
 		@AdminName,
@@ -81,7 +83,8 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@HiddenFromPublic
 		)
 
 	SELECT @BID = SCOPE_IDENTITY()

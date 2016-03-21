@@ -29,6 +29,8 @@ CREATE PROCEDURE [dbo].[app_Event_Insert] (
 	@ShortDescription TEXT,
 	@EndDate DATETIME,
 	@EndTime VARCHAR(50),
+	@ExternalLinkToEvent NVARCHAR(255),
+	@HiddenFromPublic BIT,
 	@EID INT OUTPUT
 	)
 AS
@@ -61,7 +63,9 @@ BEGIN
 		FldText3,
 		ShortDescription,
 		EndDate,
-		EndTime
+		EndTime,
+		ExternalLinkToEvent,
+		HiddenFromPublic
 		)
 	VALUES (
 		@EventTitle,
@@ -91,7 +95,9 @@ BEGIN
 		@FldText3,
 		@ShortDescription,
 		@EndDate,
-		@EndTime
+		@EndTime,
+		@ExternalLinkToEvent,
+		@HiddenFromPublic
 		)
 
 	SELECT @EID = SCOPE_IDENTITY()

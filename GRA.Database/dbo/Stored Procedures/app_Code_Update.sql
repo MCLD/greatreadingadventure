@@ -4,8 +4,8 @@
 CREATE PROCEDURE [dbo].[app_Code_Update] (
 	@CID INT,
 	@CTID INT,
-	@Code VARCHAR(25),
-	@Description VARCHAR(80),
+	@Code VARCHAR(255),
+	@Description VARCHAR(255),
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,

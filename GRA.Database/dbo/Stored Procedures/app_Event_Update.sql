@@ -29,7 +29,9 @@ CREATE PROCEDURE [dbo].[app_Event_Update] (
 	@FldText3 TEXT = '',
 	@ShortDescription TEXT,
 	@EndDate DATETIME,
-	@EndTime VARCHAR(50)
+	@EndTime VARCHAR(50),
+	@ExternalLinkToEvent NVARCHAR(255),
+	@HiddenFromPublic BIT
 	)
 AS
 UPDATE Event
@@ -60,6 +62,8 @@ SET EventTitle = @EventTitle,
 	FldText3 = @FldText3,
 	ShortDescription = @ShortDescription,
 	EndDate = @EndDate,
-	EndTime = @EndTime
+	EndTime = @EndTime,
+	ExternalLinkToEvent = @ExternalLinkToEvent,
+	HiddenFromPublic = @HiddenFromPublic
 WHERE EID = @EID
 	AND TenID = @TenID

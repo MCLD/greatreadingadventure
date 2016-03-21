@@ -13,6 +13,9 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Insert] (
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
 	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = '',
 	@ID INT OUTPUT
 	)
 AS
@@ -30,7 +33,10 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		BranchLink,
+		BranchAddress,
+		BranchTelephone
 		)
 	VALUES (
 		@BranchID,
@@ -45,7 +51,10 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@BranchLink,
+		@BranchAddress,
+		@BranchTelephone
 		)
 
 	SELECT @ID = SCOPE_IDENTITY()

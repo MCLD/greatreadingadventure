@@ -32,7 +32,9 @@ INSERT INTO Event (
 	EndDate,
 	EndTime,
 	ShortDescription,
-	FldInt3
+	FldInt3,
+	ExternalLinkToEvent,
+	HiddenFromPublic
 	)
 OUTPUT 'event',
 	@dst,
@@ -71,7 +73,9 @@ SELECT e.EventTitle,
 	e.EndDate,
 	e.EndTime,
 	e.ShortDescription,
-	e.EID
+	e.EID,
+	e.ExternalLinkToEvent,
+	e.HiddenFromPublic
 FROM Event e
 WHERE e.TenID = @src
 	AND e.EID NOT IN (

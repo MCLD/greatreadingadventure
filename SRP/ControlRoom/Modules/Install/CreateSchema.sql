@@ -619,7 +619,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-ALTER PROCEDURE [dbo].[app_Badge_Filter] @TenID INT = NULL,
+CREATE PROCEDURE [dbo].[app_Badge_Filter] @TenID INT = NULL,
 	@SearchText NVARCHAR(max) = NULL,
 	@BranchId INT = NULL
 AS
@@ -1922,7 +1922,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_BookListBooks_GetForDisplay]    Script Date: 01/05/2015 14:43:20 ******/
-ALTER PROCEDURE [dbo].[app_BookListBooks_GetForDisplay] @PID INT = 0
+CREATE PROCEDURE [dbo].[app_BookListBooks_GetForDisplay] @PID INT = 0
 AS
 --declare @PID int dbo.BookList
 --select @PID = 100000

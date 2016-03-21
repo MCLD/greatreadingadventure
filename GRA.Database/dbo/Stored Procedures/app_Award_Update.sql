@@ -13,7 +13,7 @@ CREATE PROCEDURE [dbo].[app_Award_Update] (
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
 	@AddedUser VARCHAR(50),
-	@GoalPercent INT,
+	@GoalPercent INT = 0,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,

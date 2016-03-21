@@ -19,6 +19,7 @@ CREATE PROCEDURE [dbo].[app_Survey_Insert] (
 	@FldText1 TEXT,
 	@FldText2 TEXT,
 	@FldText3 TEXT,
+	@BadgeId INT,
 	@SID INT OUTPUT
 	)
 AS
@@ -41,7 +42,8 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		BadgeId
 		)
 	VALUES (
 		@Name,
@@ -61,7 +63,8 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@BadgeId
 		)
 
 	SELECT @SID = SCOPE_IDENTITY()
