@@ -19,7 +19,8 @@ CREATE PROCEDURE [dbo].[app_Survey_Update] (
 	@FldBit3 BIT,
 	@FldText1 TEXT,
 	@FldText2 TEXT,
-	@FldText3 TEXT
+	@FldText3 TEXT,
+	@BadgeId INT
 	)
 AS
 UPDATE Survey
@@ -40,6 +41,7 @@ SET NAME = @Name,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	BadgeId = @BadgeId
 WHERE SID = @SID
 	AND TenID = @TenID

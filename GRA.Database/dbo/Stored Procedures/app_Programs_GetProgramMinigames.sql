@@ -51,10 +51,10 @@ ELSE
 		) AS x
 		/*
 -- deprecated when added the default board game minigames
-		select mg.* 
+		select mg.*
 			from Minigame mg join dbo.ProgramGameLevel pg
-				on mg.MGID = pg.Minigame2ID 
-			where pg.PGLID in 
+				on mg.MGID = pg.Minigame2ID
+			where pg.PGLID in
 					(select * from [dbo].[fnSplitBigInt](@LevelIDs))
-		order by pg.LevelNumber					
+		order by pg.LevelNumber
 */

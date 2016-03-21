@@ -25,7 +25,7 @@ BEGIN
 		WHERE PID = @ProgID
 
 		/*
-		if (select ProgramGameID from Programs where PID = @ProgID) = 0 
+		if (select ProgramGameID from Programs where PID = @ProgID) = 0
 		begin
 			select @GameCompletionPoints = IsNull(CompletionPoints,0) from Programs where PID = @ProgID
 		end
@@ -33,12 +33,12 @@ BEGIN
 		begin
 
 			select @GameCompletionPoints = isnull(SUM(isnull(pgl.PointNumber,0)),0)
-			from ProgramGame pg 
+			from ProgramGame pg
 					left join ProgramGameLevel pgl
 						on pg.PGID = pgl.PGID
 					left join Programs p
 						on p.ProgramGameID = pg.PGID
-			where 
+			where
 				p.PID = @ProgID
 		end
 		*/
