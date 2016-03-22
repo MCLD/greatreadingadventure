@@ -29,13 +29,13 @@ namespace GRA.SRP.ControlRoom
                 MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Patrons/Default.aspx", Name = "Patrons", IsSelected = false });
 
             if (permList.Contains("5000"))
-                MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Notifications/Default.aspx", Name = "Notifications", IsSelected = false });
+                MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Notifications/Default.aspx", Name = "Mail", IsSelected = false });
 
             //if (permList.Contains("5300"))
             //    MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Notifications/Default.aspx", Name = "Reviews", IsSelected = false });
 
             if (permList.Contains("2200"))
-                MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Programs/Default.aspx", Name = "Programs", IsSelected = false });
+                MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Programs/ProgramList.aspx", Name = "Programs", IsSelected = false });
 
             if (permList.Contains("4300") || permList.Contains("4400") || permList.Contains("4500") || permList.Contains("4600") ||
                 permList.Contains("4700") || permList.Contains("4800") || permList.Contains("4900") )
@@ -57,6 +57,7 @@ namespace GRA.SRP.ControlRoom
                 MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/Security/Default.aspx", Name = "Security", IsSelected = false });
 
             MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/PortalUser/MyAccount.aspx", Name = "My Account", IsSelected = false });
+            MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Modules/About/Default.aspx", Name = "About", IsSelected = false });
             MenuItems.Add(new SRPTopMenuItem { Url = "/ControlRoom/Logoff.aspx", Name = "Logoff", IsSelected = false });
         }
     }

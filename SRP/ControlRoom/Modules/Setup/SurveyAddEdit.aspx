@@ -25,7 +25,7 @@
                         <tr>
                             <td width="100px"><b>Admin Name: </b></td>
                             <td>
-                                <asp:TextBox ID="Name" runat="server" Text='<%# Eval("Name") %>' ReadOnly="False" Width="250px" MaxLength="50"></asp:TextBox>
+                                <asp:TextBox ID="Name" runat="server" Text='<%# Eval("Name") %>' ReadOnly="False" Width="250px" MaxLength="50" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvName" runat="server"
                                     ControlToValidate="Name" Display="Dynamic" ErrorMessage="<font color='red'>Admin Name is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -33,7 +33,7 @@
                             <td align="right"><b>Status: </b></td>
                             <td colspan="3">
 
-                                <asp:DropDownList ID="Status" runat="server">
+                                <asp:DropDownList ID="Status" runat="server" CssClass="form-control">
                                     <asp:ListItem Value="1" Text="Work In Progress"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Locked / Active"></asp:ListItem>
                                 </asp:DropDownList>
@@ -44,7 +44,7 @@
                         <tr>
                             <td><b>Patron Name: </b></td>
                             <td colspan="5">
-                                <asp:TextBox ID="LongName" runat="server" Text='<%# Eval("LongName") %>' ReadOnly="False" Width="600px" MaxLength="150"></asp:TextBox>
+                                <asp:TextBox ID="LongName" runat="server" Text='<%# Eval("LongName") %>' ReadOnly="False" Width="600px" MaxLength="150" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvLongName" runat="server"
                                     ControlToValidate="LongName" Display="Dynamic" ErrorMessage="<font color='red'>Patron Name is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -53,7 +53,7 @@
                         <tr>
                             <td colspan="6">
                                 <b>Description:</b><br />
-                                <asp:TextBox ID="Description" runat="server" Text='<%# Eval("Description") %>' ReadOnly="False" Width="98%" TextMode="MultiLine" Rows="3"></asp:TextBox>
+                                <asp:TextBox ID="Description" runat="server" Text='<%# Eval("Description") %>' ReadOnly="False" Width="98%" TextMode="MultiLine" Rows="3" CssClass="form-control"></asp:TextBox>
                             </td>
                         </tr>
                         <tr>
@@ -62,6 +62,86 @@
                                 <textarea id="Preamble" runat="server" class="gra-editor"><%#Eval("Preamble") %></textarea>
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="6">
+                                <b>Badge to award upon completion:</b>
+                                <table style="width: 99%" class="margin-1em-bottom">
+                                    <tr>
+                                        <td style="width: 600px;">
+                                            <asp:TextBox ID="SearchText"
+                                                runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Search for a badge"></asp:TextBox>
+                                        </td>
+                                        <td rowspan="2">
+                                            <asp:LinkButton runat="server"
+                                                CausesValidation="false"
+                                                OnClick="Search"
+                                                CssClass="btn btn-success margin-1em-left"
+                                                ForeColor="White"
+                                                ID="SearchButton">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                            Filter badge list</asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:DropDownList ID="FilterBranchId"
+                                                runat="server"
+                                                DataSourceID="odsDDBranch"
+                                                DataTextField="Code"
+                                                DataValueField="CID"
+                                                AppendDataBoundItems="True"
+                                                CssClass="form-control">
+                                                <asp:ListItem Value="0" Text="Filter by library"></asp:ListItem>
+                                            </asp:DropDownList>
+
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <asp:DropDownList ID="BadgeID"
+                                    runat="server"
+                                    DataSourceID="odsBadge"
+                                    DataTextField="AdminName"
+                                    DataValueField="BID"
+                                    Width="500"
+                                    Visible="true"
+                                    AppendDataBoundItems="True"
+                                    CssClass="form-control">
+                                    <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
+                                </asp:DropDownList>
+                                <asp:Label ID="BadgeIDLbl" runat="server" Text='<%# Eval("BadgeId") %>' Visible="False"></asp:Label>
+
+
+                                <asp:ObjectDataSource ID="odsDDBranch" runat="server"
+                                    SelectMethod="GetAlByTypeName"
+                                    TypeName="GRA.SRP.DAL.Codes">
+                                    <SelectParameters>
+                                        <asp:Parameter Name="Name" DefaultValue="Branch" Type="String" />
+                                    </SelectParameters>
+                                </asp:ObjectDataSource>
+
+                                <asp:ObjectDataSource ID="odsBadge" runat="server"
+                                    SelectMethod="GetFiltered"
+                                    TypeName="GRA.SRP.DAL.Badge">
+                                    <SelectParameters>
+                                        <asp:ControlParameter
+                                            ControlID="SearchText"
+                                            Name="SearchText"
+                                            PropertyName="Text"
+                                            Type="String" />
+                                        <asp:ControlParameter
+                                            ControlID="FilterBranchId"
+                                            DefaultValue="0"
+                                            Name="BranchId"
+                                            PropertyName="SelectedValue"
+                                            Type="Int32" />
+                                    </SelectParameters>
+                                </asp:ObjectDataSource>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td colspan="6">
                                 <hr />
@@ -91,7 +171,7 @@
                         <tr>
                             <td width="100px"><b>Admin Name: </b></td>
                             <td>
-                                <asp:TextBox ID="Name" runat="server" Text='' ReadOnly="False" Width="250px" MaxLength="50"></asp:TextBox>
+                                <asp:TextBox ID="Name" runat="server" Text='' ReadOnly="False" Width="250px" MaxLength="50" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvName" runat="server"
                                     ControlToValidate="Name" Display="Dynamic" ErrorMessage="<font color='red'>Admin Name is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -99,7 +179,7 @@
                             <td align="right"><b>Status: </b></td>
                             <td colspan="3">
 
-                                <asp:DropDownList ID="Status" runat="server">
+                                <asp:DropDownList ID="Status" runat="server" CssClass="form-control">
                                     <asp:ListItem Value="1" Text="Work In Progress"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Locked / Active" Enabled="false"></asp:ListItem>
                                 </asp:DropDownList>
@@ -109,7 +189,7 @@
                         <tr>
                             <td><b>Patron Name: </b></td>
                             <td colspan="5">
-                                <asp:TextBox ID="LongName" runat="server" Text='' ReadOnly="False" Width="600px" MaxLength="150"></asp:TextBox>
+                                <asp:TextBox ID="LongName" runat="server" Text='' ReadOnly="False" Width="600px" MaxLength="150" CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvLongName" runat="server"
                                     ControlToValidate="LongName" Display="Dynamic" ErrorMessage="<font color='red'>Patron Name is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -118,13 +198,91 @@
                         <tr>
                             <td colspan="6">
                                 <b>Description:</b><br />
-                                <asp:TextBox ID="Description" runat="server" Text='' ReadOnly="False" Width="98%" TextMode="MultiLine" Rows="3"></asp:TextBox>
+                                <asp:TextBox ID="Description" runat="server" Text='' ReadOnly="False" Width="98%" TextMode="MultiLine" Rows="3" CssClass="form-control"></asp:TextBox>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="6" height="200px">
                                 <b>Patron Preamble:</b>
-                                <textarea id="Preamble" runat="server" class="gra-editor"></textarea>
+                                <textarea id="Preamble" runat="server" class="gra-editor" cssclass="form-control"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <b>Badge to award upon completion:</b>
+                                <table style="width: 99%" class="margin-1em-bottom">
+                                    <tr>
+                                        <td style="width: 600px;">
+                                            <asp:TextBox ID="SearchText"
+                                                runat="server"
+                                                CssClass="form-control"
+                                                placeholder="Search for a badge"></asp:TextBox>
+                                        </td>
+                                        <td rowspan="2">
+                                            <asp:LinkButton runat="server"
+                                                CausesValidation="false"
+                                                OnClick="Search"
+                                                CssClass="btn btn-success margin-1em-left"
+                                                ForeColor="White"
+                                                ID="SearchButton">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                            Filter badge list</asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:DropDownList ID="FilterBranchId"
+                                                runat="server"
+                                                DataSourceID="odsDDBranch"
+                                                DataTextField="Code"
+                                                DataValueField="CID"
+                                                AppendDataBoundItems="True"
+                                                CssClass="form-control">
+                                                <asp:ListItem Value="0" Text="Filter by library"></asp:ListItem>
+                                            </asp:DropDownList>
+
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <asp:DropDownList ID="BadgeID"
+                                    runat="server"
+                                    DataSourceID="odsBadge"
+                                    DataTextField="AdminName"
+                                    DataValueField="BID"
+                                    Width="500"
+                                    Visible="true"
+                                    AppendDataBoundItems="True"
+                                    CssClass="form-control">
+                                    <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
+                                </asp:DropDownList>
+
+
+                                <asp:ObjectDataSource ID="odsDDBranch" runat="server"
+                                    SelectMethod="GetAlByTypeName"
+                                    TypeName="GRA.SRP.DAL.Codes">
+                                    <SelectParameters>
+                                        <asp:Parameter Name="Name" DefaultValue="Branch" Type="String" />
+                                    </SelectParameters>
+                                </asp:ObjectDataSource>
+
+                                <asp:ObjectDataSource ID="odsBadge" runat="server"
+                                    SelectMethod="GetFiltered"
+                                    TypeName="GRA.SRP.DAL.Badge">
+                                    <SelectParameters>
+                                        <asp:ControlParameter
+                                            ControlID="SearchText"
+                                            Name="SearchText"
+                                            PropertyName="Text"
+                                            Type="String" />
+                                        <asp:ControlParameter
+                                            ControlID="FilterBranchId"
+                                            DefaultValue="0"
+                                            Name="BranchId"
+                                            PropertyName="SelectedValue"
+                                            Type="Int32" />
+                                    </SelectParameters>
+                                </asp:ObjectDataSource>
                             </td>
                         </tr>
                         <tr>
@@ -233,6 +391,5 @@
                 PropertyName="Text" Type="Int32" />
         </SelectParameters>
     </asp:ObjectDataSource>
-
 </asp:Content>
 

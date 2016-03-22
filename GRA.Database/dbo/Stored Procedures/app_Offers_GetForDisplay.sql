@@ -23,7 +23,7 @@ WHERE PID = @PID
 
 ----------------------------------------------------------
 --select @Age, @Zip, @Age-36, @ProgramId, @BranchId
---select  o.* 
+--select  o.*
 --from Offer o
 ----------------------------------------------------------
 SELECT *

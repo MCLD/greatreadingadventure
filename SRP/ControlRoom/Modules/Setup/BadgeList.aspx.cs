@@ -25,7 +25,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4700;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Badges List");
+            MasterPage.PageTitle = "Badges List";
 
             _mStrSortExp = String.Empty;
 
@@ -141,15 +141,21 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         #region search/filter fields and buttons
         protected void Search(object sender, EventArgs e)
         {
-            var wt = new WebTools();
             if (string.IsNullOrWhiteSpace(SearchText.Text))
             {
                 SearchText.Text = string.Empty;
-                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+
+            var wt = new WebTools();
+            if (!string.IsNullOrEmpty(SearchText.Text) || BranchId.SelectedIndex > 0)
+            {
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
             }
             else
             {
-                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
             }
             LoadData();
         }
@@ -157,8 +163,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         protected void ClearSearch(object sender, EventArgs e)
         {
             SearchText.Text = string.Empty;
-            SearchText.CssClass = new WebTools().CssRemoveClass(SearchText.CssClass,
-                "gra-search-active");
+            BranchId.SelectedIndex = 0;
+            var wt = new WebTools();
+
+            BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+            SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
             LoadData();
         }
         #endregion search/filter fields and buttons

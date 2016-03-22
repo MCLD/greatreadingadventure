@@ -3,7 +3,7 @@
     [IsMasterAccount]          BIT             CONSTRAINT [DF_Patron_IsMasterAccount] DEFAULT ((0)) NULL,
     [MasterAcctPID]            INT             NULL,
     [Username]                 VARCHAR (50)    NULL,
-    [Password]                 NVARCHAR(255)    NULL,
+    [Password]                 NVARCHAR (255)  NULL,
     [DOB]                      DATETIME        NULL,
     [Age]                      INT             NULL,
     [SchoolGrade]              VARCHAR (5)     NULL,
@@ -43,9 +43,9 @@
     [Custom4]                  VARCHAR (50)    NULL,
     [Custom5]                  VARCHAR (50)    NULL,
     [RegistrationDate]         DATETIME        CONSTRAINT [DF_Patron_RegistrationDate] DEFAULT (getdate()) NULL,
+    [DailyGoal]                INT             NULL,
+    [GoalCache]                INT             NULL,
     [SDistrict]                INT             NULL,
-	[DailyGoal]                INT             NULL,
-	[GoalCache]                INT             NULL,
     [AvatarState]              VARCHAR (50)    NULL,
     [TenID]                    INT             NULL,
     [FldInt1]                  INT             NULL,
@@ -65,4 +65,6 @@
     [Score2Date]               DATETIME        NULL,
     CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED ([PID] ASC)
 );
+
+
 

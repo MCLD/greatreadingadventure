@@ -202,11 +202,53 @@
                     </asp:RadioButtonList>
                 </td>
                 <td colspan="4" valign="top" width="900px">
-                    <img src="/controlroom/images/spacer.gif" height="23px" /><br />
-                    <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsBadge" DataTextField="AdminName" DataValueField="BID" Width="500" Visible="true"
-                        AppendDataBoundItems="True" CssClass="form-control">
-                        <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
-                    </asp:DropDownList>
+                    <asp:Panel ID="ExistingBadgeSelection" runat="server">
+                        <table style="width: 600px;" class="margin-1em-bottom">
+                            <tr>
+                                <td style="width: 600px;">
+                                    <asp:TextBox ID="SearchText"
+                                        runat="server"
+                                        CssClass="form-control"
+                                        placeholder="Search for a badge"></asp:TextBox>
+                                </td>
+                                <td rowspan="2">
+                                    <asp:LinkButton runat="server"
+                                        OnClick="Search"
+                                        CssClass="btn btn-success margin-1em-left"
+                                        ForeColor="White"
+                                        ID="SearchButton">
+                                <span class="glyphicon glyphicon-search"></span>
+                                Filter badge list</asp:LinkButton>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:DropDownList ID="FilterBranchId"
+                                        runat="server"
+                                        DataSourceID="odsDDBranch"
+                                        DataTextField="Code"
+                                        DataValueField="CID"
+                                        AppendDataBoundItems="True"
+                                        CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Filter by library"></asp:ListItem>
+                                    </asp:DropDownList>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <asp:DropDownList ID="BadgeID"
+                            runat="server"
+                            DataSourceID="odsBadge"
+                            DataTextField="AdminName"
+                            DataValueField="BID"
+                            Width="500"
+                            Visible="true"
+                            AppendDataBoundItems="True"
+                            CssClass="form-control">
+                            <asp:ListItem Value="0" Text="[Select a Badge]"></asp:ListItem>
+                        </asp:DropDownList>
+                    </asp:Panel>
                 </td>
             </tr>
             <tr>
@@ -531,8 +573,22 @@
     </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsBadge" runat="server"
-        SelectMethod="GetAll"
-        TypeName="GRA.SRP.DAL.Badge"></asp:ObjectDataSource>
+        SelectMethod="GetFiltered"
+        TypeName="GRA.SRP.DAL.Badge">
+        <SelectParameters>
+            <asp:ControlParameter
+                ControlID="SearchText"
+                Name="searchText"
+                PropertyName="Text"
+                Type="String" />
+            <asp:ControlParameter
+                ControlID="FilterBranchId"
+                DefaultValue="0"
+                Name="BranchId"
+                PropertyName="SelectedValue"
+                Type="Int32" />
+        </SelectParameters>
+    </asp:ObjectDataSource>
 
     <asp:ObjectDataSource ID="odsDDBranch2" runat="server"
         SelectMethod="GetBadgeBranches"

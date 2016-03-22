@@ -5,7 +5,8 @@ AS
 SELECT pdw.*,
 	p.Username,
 	p.FirstName,
-	p.LastName
+	p.LastName,
+	p.PID
 FROM dbo.PrizeDrawingWinners pdw
 LEFT JOIN Patron p ON pdw.PatronID = p.PID
 WHERE PDID = @PDID

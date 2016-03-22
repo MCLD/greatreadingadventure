@@ -75,7 +75,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionData.cs" />
     <Compile Include="SRPPermission.cs" />
-    <Compile Include="WebHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.SessionState;
 
 namespace GRA.Tools
@@ -17,10 +18,22 @@ namespace GRA.Tools
         /// <returns>The URL to the current path with the trailing slash removed.</returns>
         public static string GetBaseUrl(HttpRequest request)
         {
-            return string.Format("{0}://{1}{2}",
-                                 request.Url.Scheme,
-                                 request.Url.Authority,
-                                 request.ApplicationPath.TrimEnd('/'));
+            // authority includes port, host does not
+            string configHostname = WebConfigurationManager.AppSettings["ReverseProxyHostname"];
+            if (!string.IsNullOrWhiteSpace(configHostname))
+            {
+                return string.Format("{0}://{1}{2}",
+                     request.Url.Scheme,
+                     configHostname,
+                     request.ApplicationPath.TrimEnd('/'));
+            }
+            else
+            {
+                return string.Format("{0}://{1}{2}",
+                    request.Url.Scheme,
+                    request.Url.Authority,
+                    request.ApplicationPath.TrimEnd('/'));
+            }
         }
 
         public string CssEnsureClass(string css, string cssClass)

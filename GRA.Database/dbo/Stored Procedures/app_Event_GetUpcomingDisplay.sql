@@ -42,5 +42,6 @@ WHERE (
 		TenID = @TenID
 		OR @TenID IS NULL
 		)
+	AND HiddenFromPublic != 1
 ORDER BY EventDate ASC,
 	EventTitle

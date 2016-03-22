@@ -52,7 +52,7 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.SDistrict, 0) AS [SDistrict],
 	isNull(p.DailyGoal, 0) AS [DailyGoal],
 	isNull(p.AvatarState, '') AS [AvatarState],
-	isNull(p.GoalCache, '') AS [GoalCache],
+	isNull(p.GoalCache, 0) AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID

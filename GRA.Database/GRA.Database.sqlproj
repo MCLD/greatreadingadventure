@@ -504,7 +504,6 @@
     <Build Include="dbo\Stored Procedures\cbspSRPUser_Update.sql" />
     <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetBySchoolID.sql" />
     <Build Include="dbo\Stored Procedures\app_Offer_Insert.sql" />
-    <Build Include="dbo\Stored Procedures\app_Event_GetAdminSearch.sql" />
     <Build Include="dbo\Stored Procedures\cbspSRPUser_UpdateGroups.sql" />
     <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_GetFilteredSchoolDDValues.sql" />
     <Build Include="dbo\Stored Procedures\app_Offer_Update.sql" />
@@ -676,6 +675,14 @@
     <Build Include="dbo\Stored Procedures\app_Notifications_GetAllToOrFromPatron.sql" />
     <Build Include="dbo\Tables\AvatarPart.sql" />
     <Build Include="dbo\Stored Procedures\app_AvatarPart_GetQualifiedByPatron.sql" />
+    <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_Export.sql" />
+    <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_Export.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_Filter.sql" />
+    <Build Include="dbo\Stored Procedures\app_Event_Export.sql" />
+    <Build Include="dbo\Stored Procedures\app_BookList_Filter.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetVisibleCount.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_Filter.sql" />
+    <Build Include="dbo\Stored Procedures\app_Award_Filter.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />

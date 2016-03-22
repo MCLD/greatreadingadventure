@@ -8,6 +8,7 @@ using SRP_DAL;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.Communications;
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom {
     public class TenantInitialize {
@@ -36,7 +37,7 @@ namespace GRA.SRP.ControlRoom {
 
             // TODO security - this should not email the password in cleartext
 
-            string baseUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.ApplicationPath.TrimEnd('/');
+            string baseUrl = WebTools.GetBaseUrl(HttpContext.Current.Request);
             var EmailBody =
                 "<h1>Dear " + u.FirstName + ",</h1><br><br>Your account has been created and has full administrative access to your organization's reading rogram. <br>This is your current account information. Please make sure you reset your password as soon as you are able to log back in.<br><br>" +
                 "Username: " + u.Username + "<br>Password: " + newPassword + "<br><br>If you have any questions regarding your account please contact " + SRPSettings.GetSettingValue("ContactName") +

@@ -1,4 +1,5 @@
 ﻿using GRA.Communications;
+using GRA.SRP.Controls;
 using GRA.SRP.DAL;
 using GRA.Tools;
 using SRPApp.Classes;
@@ -88,6 +89,10 @@ namespace GRA.SRP {
                 st.EstablishPatron(user);
                 st.AlertPatron(GetResourceString("Your password has been reset!"),
                                                  glyphicon: "ok");
+
+                TestingBL.CheckPatronNeedsPreTest();
+                TestingBL.CheckPatronNeedsPostTest();
+
                 Response.Redirect("~");
             }
         }

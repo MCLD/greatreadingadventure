@@ -4,9 +4,9 @@ CREATE PROCEDURE [dbo].[app_SurveyResults_GetExport] @SID INT = NULL,
 	@SourceID INT = NULL,
 	@SchoolID INT = NULL
 AS
--- declare @SID int 
+-- declare @SID int
 -- declare @SourceType varchar(250)
--- declare @SourceID int 
+-- declare @SourceID int
 -- select @SID = 1,@SourceType= null,@SourceID = null
 CREATE TABLE #Results (
 	SRID INT,

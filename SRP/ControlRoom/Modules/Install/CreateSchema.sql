@@ -607,7 +607,7 @@ FROM [Badge]
 WHERE BID = @BID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Badge_Filter]    Script Date: 2/26/2016 16:17:26 ******/
+/****** Object:  StoredProcedure [dbo].[app_Badge_Filter]    Script Date: 3/17/2016 14:36:10 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -615,7 +615,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[app_Badge_Filter] @TenID INT = NULL,
-	@SearchText NVARCHAR(max) = NULL
+	@SearchText NVARCHAR(max) = NULL,
+	@BranchId INT = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -625,21 +626,52 @@ BEGIN
 		SET @SearchText = NULL
 	END
 
-	SELECT *
-	FROM [Badge]
-	WHERE (
-			TenID = @TenID
-			OR @TenID IS NULL
-			)
-		AND (
-			(
-				[AdminName] LIKE @SearchText
-				OR [UserName] LIKE @SearchText
-				OR [AddedUser] LIKE @SearchText
+	IF @BranchId = 0
+	BEGIN
+		SET @BranchId = NULL
+	END
+
+	IF @BranchId IS NULL
+	BEGIN
+		SELECT b.*
+		FROM [Badge] b
+		WHERE (
+				b.[TenID] = @TenID
+				OR @TenID IS NULL
 				)
-			OR @SearchText IS NULL
-			)
-	ORDER BY AdminName
+			AND (
+				(
+					b.[AdminName] LIKE @SearchText
+					OR b.[UserName] LIKE @SearchText
+					OR b.[AddedUser] LIKE @SearchText
+					)
+				OR @SearchText IS NULL
+				)
+		ORDER BY b.[AdminName]
+	END
+	ELSE
+	BEGIN
+		SELECT b.*
+		FROM [Badge] b
+		LEFT OUTER JOIN [BadgeBranch] bb ON b.[BID] = bb.[BID]
+		WHERE (
+				b.[TenID] = @TenID
+				OR @TenID IS NULL
+				)
+			AND (
+				(
+					b.[AdminName] LIKE @SearchText
+					OR b.[UserName] LIKE @SearchText
+					OR b.[AddedUser] LIKE @SearchText
+					)
+				OR @SearchText IS NULL
+				)
+			AND (
+				bb.[CID] = @BranchID
+				OR @BranchID IS NULL
+				)
+		ORDER BY b.[AdminName]
+	END
 END
 GO
 
@@ -1497,6 +1529,7 @@ BEGIN
 	FROM [BookList] bl
 	LEFT JOIN [Code] c ON bl.[LibraryID] = c.[CID]
 	LEFT JOIN [Programs] p ON bl.[TenID] = p.[TenID]
+		AND bl.[ProgID] = p.[PID]
 	WHERE (
 			bl.[TenID] = @TenID
 			OR @TenID IS NULL
@@ -1897,7 +1930,7 @@ DECLARE @TenID INT
 SELECT @Lit1 = isnull(LiteracyLevel1, 0),
 	@Lit2 = isnull(LiteracyLevel2, ''),
 	@ProgramId = isnull(ProgID, 0),
-	@BranchId = isnull(PrimaryLibrary, 0),
+	@BranchId = 0,
 	@TenID = TenID
 FROM Patron
 WHERE PID = @PID
@@ -1954,8 +1987,7 @@ SELECT BLID,
 	ListName,
 	Description
 FROM BookList
-WHERE LibraryID = 0
-	AND ProgID = 0
+WHERE ProgID = 0
 	AND LiteracyLevel1 = 0
 	AND LiteracyLevel2 = 0
 	AND TenID = @TenID
@@ -15403,6 +15435,7 @@ CREATE PROCEDURE [dbo].[app_Survey_Insert] (
 	@FldText1 TEXT,
 	@FldText2 TEXT,
 	@FldText3 TEXT,
+	@BadgeId INT,
 	@SID INT OUTPUT
 	)
 AS
@@ -15425,7 +15458,8 @@ BEGIN
 		FldBit3,
 		FldText1,
 		FldText2,
-		FldText3
+		FldText3,
+		BadgeId
 		)
 	VALUES (
 		@Name,
@@ -15445,7 +15479,8 @@ BEGIN
 		@FldBit3,
 		@FldText1,
 		@FldText2,
-		@FldText3
+		@FldText3,
+		@BadgeId
 		)
 
 	SELECT @SID = SCOPE_IDENTITY()
@@ -15479,7 +15514,8 @@ CREATE PROCEDURE [dbo].[app_Survey_Update] (
 	@FldBit3 BIT,
 	@FldText1 TEXT,
 	@FldText2 TEXT,
-	@FldText3 TEXT
+	@FldText3 TEXT,
+	@BadgeId INT
 	)
 AS
 UPDATE Survey
@@ -15500,7 +15536,8 @@ SET NAME = @Name,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	BadgeId = @BadgeId
 WHERE SID = @SID
 	AND TenID = @TenID
 GO
@@ -24472,6 +24509,7 @@ CREATE TABLE [dbo].[Survey] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
+	[BadgeId] [int] NULL
 	CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,

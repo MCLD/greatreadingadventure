@@ -231,7 +231,7 @@
                                             <b>DIRECT LINK: </b>
                                         </td>
                                         <td colspan="3">
-                                            <a href='<%# "/Default.aspx?PID=" + Eval("PID").ToString() %>' target="_blank"><%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Default.aspx?PID=" + Eval("PID").ToString() %></a>
+                                            <a href='<%# "/Default.aspx?PID=" + Eval("PID").ToString() %>' target="_blank"><%# GRA.Tools.WebTools.GetBaseUrl(Request) + "/Default.aspx?PID=" + Eval("PID").ToString() %></a>
                                         </td>
                                     </tr>
 

@@ -1,7 +1,5 @@
 ﻿
 CREATE PROCEDURE [dbo].[app_Event_GetEventsByEventCode] (
-	@startDate DATETIME,
-	@endDate DATETIME,
 	@key VARCHAR(50) = '',
 	@TenID INT = NULL
 	)
@@ -9,8 +7,7 @@ AS
 BEGIN
 	SELECT *
 	FROM Event
-	WHERE EventDate BETWEEN @startDate
-			AND @endDate
+	WHERE CAST(GETDATE() AS DATE) >= CAST(EventDate AS DATE)
 		AND SecretCode = @Key
 		AND (
 			TenID = @TenID

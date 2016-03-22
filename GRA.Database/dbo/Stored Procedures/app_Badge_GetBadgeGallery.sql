@@ -49,4 +49,5 @@ WHERE TenID = @TenID
 			)
 		OR @L = 0
 		)
+	AND HiddenFromPublic != 1
 ORDER BY b.UserName

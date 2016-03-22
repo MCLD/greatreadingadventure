@@ -10,11 +10,13 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class Survey : EntityBase
+    [Serializable]
+    public class Survey : EntityBase
     {
         public static new string Version { get { return "2.0"; } }
 
@@ -28,9 +30,9 @@ namespace GRA.SRP.DAL
         private string myDescription = "";
         private string myPreamble = "";
         private int myStatus = 0;
-        private int myTakenCount=0;
-        private int myPatronCount=0;
-        private bool myCanBeScored=false;
+        private int myTakenCount = 0;
+        private int myPatronCount = 0;
+        private bool myCanBeScored = false;
 
         private int myTenID = 0;
         private int myFldInt1 = 0;
@@ -47,101 +49,84 @@ namespace GRA.SRP.DAL
 
         #region Accessors
 
-        public int SID
-        {
+        public int SID {
             get { return mySID; }
             set { mySID = value; }
         }
-        public string Name
-        {
+        public string Name {
             get { return myName; }
             set { myName = value; }
         }
-        public string LongName
-        {
+        public string LongName {
             get { return myLongName; }
             set { myLongName = value; }
         }
-        public string Description
-        {
+        public string Description {
             get { return myDescription; }
             set { myDescription = value; }
         }
-        public string Preamble
-        {
+        public string Preamble {
             get { return myPreamble; }
             set { myPreamble = value; }
         }
-        public int Status
-        {
+        public int Status {
             get { return myStatus; }
             set { myStatus = value; }
         }
-        public int TakenCount
-        {
+        public int TakenCount {
             get { return myTakenCount; }
             set { myTakenCount = value; }
         }
-        public int PatronCount
-        {
+        public int PatronCount {
             get { return myPatronCount; }
             set { myPatronCount = value; }
         }
-        public bool CanBeScored
-        {
+        public bool CanBeScored {
             get { return myCanBeScored; }
             set { myCanBeScored = value; }
         }
-        public int TenID
-        {
+        public int TenID {
             get { return myTenID; }
             set { myTenID = value; }
         }
-        public int FldInt1
-        {
+        public int FldInt1 {
             get { return myFldInt1; }
             set { myFldInt1 = value; }
         }
-        public int FldInt2
-        {
+        public int FldInt2 {
             get { return myFldInt2; }
             set { myFldInt2 = value; }
         }
-        public int FldInt3
-        {
+        public int FldInt3 {
             get { return myFldInt3; }
             set { myFldInt3 = value; }
         }
-        public bool FldBit1
-        {
+        public bool FldBit1 {
             get { return myFldBit1; }
             set { myFldBit1 = value; }
         }
-        public bool FldBit2
-        {
+        public bool FldBit2 {
             get { return myFldBit2; }
             set { myFldBit2 = value; }
         }
-        public bool FldBit3
-        {
+        public bool FldBit3 {
             get { return myFldBit3; }
             set { myFldBit3 = value; }
         }
-        public string FldText1
-        {
+        public string FldText1 {
             get { return myFldText1; }
             set { myFldText1 = value; }
         }
-        public string FldText2
-        {
+        public string FldText2 {
             get { return myFldText2; }
             set { myFldText2 = value; }
         }
-        public string FldText3
-        {
+        public string FldText3 {
             get { return myFldText3; }
             set { myFldText3 = value; }
         }
+
+        public int BadgeId { get; set; }
 
         #endregion
 
@@ -203,34 +188,35 @@ namespace GRA.SRP.DAL
 
                 // declare return value
 
-                Survey result = new Survey();
+                Survey survey = new Survey();
 
                 int _int;
 
-                if (int.TryParse(dr["SID"].ToString(), out _int)) result.SID = _int;
-                result.Name = dr["Name"].ToString();
-                result.LongName = dr["LongName"].ToString();
-                result.Description = dr["Description"].ToString();
-                result.Preamble = dr["Preamble"].ToString();
-                if (int.TryParse(dr["Status"].ToString(), out _int)) result.Status = _int;
-                if (int.TryParse(dr["TakenCount"].ToString(), out _int)) result.TakenCount = _int;
-                if (int.TryParse(dr["PatronCount"].ToString(), out _int)) result.PatronCount = _int;
-                result.CanBeScored = bool.Parse(dr["CanBeScored"].ToString());
+                if (int.TryParse(dr["SID"].ToString(), out _int)) survey.SID = _int;
+                survey.Name = dr["Name"].ToString();
+                survey.LongName = dr["LongName"].ToString();
+                survey.Description = dr["Description"].ToString();
+                survey.Preamble = dr["Preamble"].ToString();
+                if (int.TryParse(dr["Status"].ToString(), out _int)) survey.Status = _int;
+                if (int.TryParse(dr["TakenCount"].ToString(), out _int)) survey.TakenCount = _int;
+                if (int.TryParse(dr["PatronCount"].ToString(), out _int)) survey.PatronCount = _int;
+                survey.CanBeScored = bool.Parse(dr["CanBeScored"].ToString());
 
-                if (int.TryParse(dr["TenID"].ToString(), out _int)) result.TenID = _int;
-                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) result.FldInt1 = _int;
-                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) result.FldInt2 = _int;
-                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) result.FldInt3 = _int;
-                result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
-                result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
-                result.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
-                result.FldText1 = dr["FldText1"].ToString();
-                result.FldText2 = dr["FldText2"].ToString();
-                result.FldText3 = dr["FldText3"].ToString();
+                if (int.TryParse(dr["TenID"].ToString(), out _int)) survey.TenID = _int;
+                if (int.TryParse(dr["FldInt1"].ToString(), out _int)) survey.FldInt1 = _int;
+                if (int.TryParse(dr["FldInt2"].ToString(), out _int)) survey.FldInt2 = _int;
+                if (int.TryParse(dr["FldInt3"].ToString(), out _int)) survey.FldInt3 = _int;
+                survey.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
+                survey.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
+                survey.FldBit3 = bool.Parse(dr["FldBit3"].ToString());
+                survey.FldText1 = dr["FldText1"].ToString();
+                survey.FldText2 = dr["FldText2"].ToString();
+                survey.FldText3 = dr["FldText3"].ToString();
+                if (int.TryParse(dr["BadgeId"].ToString(), out _int)) survey.BadgeId = _int;
 
                 dr.Close();
 
-                return result;
+                return survey;
 
             }
 
@@ -281,6 +267,7 @@ namespace GRA.SRP.DAL
                 this.FldText1 = dr["FldText1"].ToString();
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
+                if (int.TryParse(dr["BadgeId"].ToString(), out _int)) this.BadgeId = _int;
 
                 dr.Close();
 
@@ -304,31 +291,34 @@ namespace GRA.SRP.DAL
         public static int Insert(Survey o)
         {
 
-            SqlParameter[] arrParams = new SqlParameter[19];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@LongName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LongName, o.LongName.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Description", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Description, o.Description.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Preamble", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Preamble, o.Preamble.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Status", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Status, o.Status.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@TakenCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TakenCount, o.TakenCount.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@PatronCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronCount, o.PatronCount.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@CanBeScored", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CanBeScored, o.CanBeScored.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LongName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LongName, o.LongName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Description", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Description, o.Description.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Preamble", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Preamble, o.Preamble.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Status", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Status, o.Status.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@TakenCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TakenCount, o.TakenCount.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PatronCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronCount, o.PatronCount.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CanBeScored", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CanBeScored, o.CanBeScored.GetTypeCode())));
 
-            arrParams[8] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@SID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SID, o.SID.GetTypeCode()));
-            arrParams[18].Direction = ParameterDirection.Output;
+            arrParams.Add(new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BadgeId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeId, o.BadgeId.GetTypeCode())));
 
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Survey_Insert", arrParams);
+            var sidParam = new SqlParameter("@SID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SID, o.SID.GetTypeCode()));
+            sidParam.Direction = ParameterDirection.Output;
+            arrParams.Add(sidParam);
+
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Survey_Insert", arrParams.ToArray());
 
             o.SID = int.Parse(arrParams[18].Value.ToString());
 
@@ -348,33 +338,34 @@ namespace GRA.SRP.DAL
 
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[19];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@SID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SID, o.SID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@LongName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LongName, o.LongName.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@Description", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Description, o.Description.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@Preamble", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Preamble, o.Preamble.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@Status", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Status, o.Status.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@TakenCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TakenCount, o.TakenCount.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@PatronCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronCount, o.PatronCount.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@CanBeScored", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CanBeScored, o.CanBeScored.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@SID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.SID, o.SID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Name", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Name, o.Name.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LongName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LongName, o.LongName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Description", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Description, o.Description.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Preamble", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Preamble, o.Preamble.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Status", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Status, o.Status.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@TakenCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TakenCount, o.TakenCount.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PatronCount", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronCount, o.PatronCount.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CanBeScored", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CanBeScored, o.CanBeScored.GetTypeCode())));
 
-            arrParams[9] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BadgeId", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BadgeId, o.BadgeId.GetTypeCode())));
 
             try
             {
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Survey_Update", arrParams);
+                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Survey_Update", arrParams.ToArray());
 
             }
 
@@ -486,7 +477,7 @@ namespace GRA.SRP.DAL
                 var isCheckbox = Convert.ToInt32(qRow["DisplayControl"]) == 1;
                 var QID = Convert.ToInt32(qRow["QID"]);
                 var qScore = 0;
-                
+
                 if (qType == 2 || qType == 4)
                 {
                     var dsA = SQChoices.GetAll(QID);
@@ -500,7 +491,7 @@ namespace GRA.SRP.DAL
                         }
                         else
                         {
-                           if (score > maxAScore) maxAScore = score;
+                            if (score > maxAScore) maxAScore = score;
                         }
                     }
                     if (!isCheckbox) qScore += maxAScore;
@@ -511,7 +502,7 @@ namespace GRA.SRP.DAL
 
                     var dsML = SQMatrixLines.GetAll(QID);
                     var numLines = dsML.Tables[0].Rows.Count;
-                    qScore = qScore*numLines;
+                    qScore = qScore * numLines;
                 }
                 maxScore += qScore;
             }
