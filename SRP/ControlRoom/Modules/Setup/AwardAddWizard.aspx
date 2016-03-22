@@ -79,46 +79,24 @@
                                 </td>
                                 <td colspan="4" rowspan="6">
                                     <b>Must have earned the checked badges:</b>
-
-                                    <table style="width: 600px;" class="margin-1em-bottom">
-                                        <tr>
-                                            <td style="width: 100%;">
-                                                <asp:TextBox ID="SearchText"
-                                                    runat="server"
-                                                    CssClass="form-control"
-                                                    placeholder="Search for a badge"></asp:TextBox>
-                                            </td>
-                                            <td rowspan="2">
-                                                <asp:LinkButton runat="server"
-                                                    OnClick="Search"
-                                                    CssClass="btn btn-success margin-1em-left"
-                                                    ForeColor="White"
-                                                    ID="SearchButton">
-                                                    <span class="glyphicon glyphicon-search"></span>
-                                                    Filter badge list</asp:LinkButton>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;">
-                                                    <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false" CssClass="form-control"></asp:TextBox>
-                                                    <asp:GridView ID="gvBadgeMembership" ShowHeader="false" runat="server" DataSourceID="odsBadgeMembership" AutoGenerateColumns="false" Width="100%">
-                                                        <Columns>
-                                                            <asp:TemplateField ShowHeader="false">
-                                                                <ItemTemplate>
-                                                                    <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" />
-                                                                    <%# Eval("AdminName") %>
-                                                                    <asp:Label ID="BID" runat="server" Text='<%# Eval("BID") %>' Visible="False"></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <br />
 
 
+
+                                    <div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;">
+                                        <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false" CssClass="form-control"></asp:TextBox>
+                                        <asp:GridView ID="gvBadgeMembership" ShowHeader="false" runat="server" DataSourceID="odsBadgeMembership" AutoGenerateColumns="false" Width="100%">
+                                            <Columns>
+                                                <asp:TemplateField ShowHeader="false">
+                                                    <ItemTemplate>
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" />
+                                                        <%# Eval("AdminName") %>
+                                                        <asp:Label ID="BID" runat="server" Text='<%# Eval("BID") %>' Visible="False"></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
 
 
                                 </td>

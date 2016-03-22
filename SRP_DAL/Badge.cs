@@ -635,7 +635,7 @@ namespace GRA.SRP.DAL
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeBookLists", arrParams);
 
-            return (string)arrParams[2].Value;
+            return arrParams[2].Value == DBNull.Value ? string.Empty : (string)arrParams[2].Value;
         }
 
         public static string GetBadgeReading(int BID)
@@ -692,7 +692,7 @@ namespace GRA.SRP.DAL
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeEvents", arrParams);
 
-            return (string)arrParams[2].Value;
+            return arrParams[2].Value == DBNull.Value ? string.Empty : (string)arrParams[2].Value;
         }
         public static string GetBadgeEventIDs(int BID)
         {

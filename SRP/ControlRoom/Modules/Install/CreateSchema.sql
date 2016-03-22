@@ -756,17 +756,15 @@ AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SELECT @List = ''
-
-SELECT @List = COALESCE(CASE 
-			WHEN @List = ''
-				THEN p.ListName
-			ELSE @List + ', ' + p.ListName
-			END, '')
-FROM BookList p
-WHERE p.TenID = @TenID
-	AND p.AwardBadgeID = @BID
-ORDER BY p.ListName
+SELECT @List = LTRIM(RTRIM(STUFF((
+					SELECT ', ' + p.ListName
+					FROM BookList p
+					WHERE p.TenID = @TenID
+						AND p.AwardBadgeID = @BID
+					GROUP BY p.ListName
+					ORDER BY p.ListName
+					FOR XML PATH('')
+					), 1, 1, '')))
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBranches]    Script Date: 2/4/2016 13:18:40 ******/
@@ -893,17 +891,16 @@ AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SELECT @List = ''
-
-SELECT @List = COALESCE(CASE 
-			WHEN @List = ''
-				THEN p.EventTitle
-			ELSE @List + ', ' + p.EventTitle
-			END, '')
-FROM Event p
-WHERE p.TenID = @TenID
-	AND p.BadgeID = @BID
-ORDER BY p.EventTitle
+SELECT @List = LTRIM(RTRIM(STUFF((
+					SELECT ', ' + e.EventTitle
+					FROM Event e
+					WHERE e.TenID = @TenID
+						AND e.BadgeID = @BID
+						AND e.HiddenFromPublic != 1
+					GROUP BY e.EventTitle
+					ORDER BY e.EventTitle
+					FOR XML PATH('')
+					), 1, 1, '')))
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGallery]    Script Date: 2/4/2016 13:18:40 ******/

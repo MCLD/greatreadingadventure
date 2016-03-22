@@ -101,6 +101,11 @@ namespace GRA.SRP.Handlers
                             earn.Add(string.Format("Attend an Event: {0}.", earnText));
                         }
 
+                        if(earn.Count == 0)
+                        {
+                            earn.Add("Learn the secret code to unlock it.");
+                        }
+
                         jsonResponse.Earn = earn.ToArray();
                         jsonResponse.Success = true;
                     }

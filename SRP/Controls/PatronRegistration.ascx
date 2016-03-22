@@ -598,7 +598,7 @@
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
                                     ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
-                                 <asp:RangeValidator
+                                <asp:RangeValidator
                                     ID="DailyGoalRangeValidator"
                                     MinimumValue="0"
                                     MaximumValue="100"
@@ -869,11 +869,13 @@
                                     <asp:Label runat="server" Text="registration-form-consent"></asp:Label>
                                 </label>
                                 <label class="col-sm-9 form-control-static">
-                                    <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
-                                    <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
+                                    <div class="row">
+                                        <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
+                                        <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                                        <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
+                                    </div>
                                 </label>
                                 <div class="col-sm-9 col-sm-offset-3">
-                                    <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                     <asp:CustomValidator
                                         ClientValidationFunction="ParentPermFlagValidation"
                                         EnableClientScript="true"
