@@ -70,7 +70,7 @@ namespace GRA.SRP.Handlers {
 
 
                             if (avatarPartData.Tables[0].Rows.Count > 0) {
-                                avatarMessage = "New avatars were also unlocked!";
+                                avatarMessage = "New avatars have also been unlocked!";
                             }
 
                             /*

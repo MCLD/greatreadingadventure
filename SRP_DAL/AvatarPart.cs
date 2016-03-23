@@ -19,20 +19,21 @@ namespace GRA.SRP.DAL
         public int ComponentID { get; set; }
         public int Ordering { get; set; }
         public string Name { get; set; }
-        public string Gender { get; set; }
+        public string Gender { get; set; } /* gender is currently unused, but the field could be useful in the future */
         public DateTime LastModDate { get; set; }
         public string LastModUser { get; set; }
         public DateTime AddedDate { get; set; }
         public string AddedUser { get; set; }
 
         public int BadgeID { get; set; }
-        public int TenID { get; set; }
 
         /* 
           BadgeID links to PatronBadges. This allows multiple avatar parts to be awarded from the same badge
           and an avatar can be awarded in multiple ways indrectly through the same badge in different Award Triggers.
           - Justin
         */
+
+        public int TenID { get; set; }
 
         public AvatarPart()
         {
@@ -64,11 +65,12 @@ namespace GRA.SRP.DAL
 
                 if (int.TryParse(dr["APID"].ToString(), out _int))
                     result.APID = _int;
+                result.Name = dr["Name"].ToString();
+                result.Gender = dr["Gender"].ToString();
                 if (int.TryParse(dr["ComponentID"].ToString(), out _int))
                     result.ComponentID = _int;
                 if (int.TryParse(dr["Ordering"].ToString(), out _int))
                     result.Ordering = _int;
-                result.Name = dr["Name"].ToString();
                 if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime))
                     result.LastModDate = _datetime;
                 result.LastModUser = dr["LastModUser"].ToString();

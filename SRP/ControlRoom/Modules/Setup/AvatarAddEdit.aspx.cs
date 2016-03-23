@@ -38,7 +38,6 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             }
         }
 
-
         protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
             string returnURL = "~/ControlRoom/Modules/Setup/AvatarList.aspx";
@@ -205,6 +204,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             if (dv.CurrentMode == DetailsViewMode.Edit)
             {
+                var ctl = (DropDownList)dv.FindControl("BadgeID");
+                var lbl = (Label)dv.FindControl("BadgeIDLbl");
+                var i = ctl.Items.FindByValue(lbl.Text);
+                if (i != null)
+                    ctl.SelectedValue = lbl.Text;
 
                 var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 if (control!=null) control.ProcessRender();

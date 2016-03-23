@@ -60,9 +60,10 @@
                             <td nowrap height="20px"><b>Unlock with badge: </b></td>
                             <td colspan="3">
                                 <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID"
-                                    AppendDataBoundItems="True" Width="98%" SelectedValue='<%# Eval("BadgeID") %>' CssClass="form-control">
+                                    AppendDataBoundItems="True" Width="98%" CssClass="form-control">
                                     <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
                                 </asp:DropDownList>
+                                <asp:Label ID="BadgeIDLbl" runat="server" Text='<%# Eval("BadgeID") %>' Visible="False"></asp:Label>
                             </td>
                         </tr>
                 </table>
@@ -101,6 +102,7 @@
                                     AppendDataBoundItems="True" Width="98%" CssClass="form-control">
                                     <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
                                 </asp:DropDownList>
+                                <asp:Label ID="BadgeIDLbl" runat="server" Visible="False"></asp:Label>
                             </td>
                         </tr>
                 </table>
