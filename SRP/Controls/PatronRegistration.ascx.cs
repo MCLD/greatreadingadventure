@@ -224,7 +224,13 @@ namespace GRA.SRP.Controls
                     return;
                 }
 
-
+                var dailyGoal = rptr.Items[0].FindControl("DailyGoal") as TextBox;
+                if(dailyGoal != null
+                   && selectedProgram.DefaultDailyGoal > 0)
+                {
+                    dailyGoal.Text = selectedProgram.DefaultDailyGoal.ToString();
+                }
+                
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                 var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 1).ToString());
 
@@ -312,7 +318,7 @@ namespace GRA.SRP.Controls
                 var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
                 var prog = new Programs();
                 prog.Fetch(PID);
-                ((Label)rptr.Items[0].FindControl("lblConsent")).Text = prog.ParentalConsentText;
+                ((Label)rptr.Items[0].FindControl("lblConsent")).Text = Server.HtmlDecode(prog.ParentalConsentText);
 
                 ((Panel)rptr.Items[0].FindControl("pnlConsent")).Visible = prog.ParentalConsentFlag;
 
@@ -454,7 +460,7 @@ namespace GRA.SRP.Controls
                 var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
                 var prog = new Programs();
                 prog.Fetch(PID);
-                ((Label)rptr.Items[0].FindControl("lblConsent")).Text = prog.ParentalConsentText;
+                ((Label)rptr.Items[0].FindControl("lblConsent")).Text = Server.HtmlDecode(prog.ParentalConsentText);
 
                 ((Panel)rptr.Items[0].FindControl("pnlConsent")).Visible = prog.ParentalConsentFlag;
 
