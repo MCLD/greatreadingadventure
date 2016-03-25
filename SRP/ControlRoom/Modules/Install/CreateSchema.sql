@@ -19108,7 +19108,7 @@ WHERE UID IN (
 	AND IsDeleted = 0
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 3/25/2016 14:15:26 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19126,6 +19126,8 @@ CREATE PROCEDURE [dbo].[GetPatronsPaged] (
 	@searchDOB DATETIME = NULL,
 	@searchProgram INT = 0,
 	@searchGender VARCHAR(2) = '',
+	@searchLibraryId INT = 0,
+	@searchLibraryDistrictId INT = 0,
 	@TenID INT = NULL
 	)
 AS
@@ -19187,23 +19189,41 @@ IF @searchGender <> ''
 			ELSE ' AND '
 			END + ' Gender like ''%' + @searchGender + '%'' '
 
+IF @searchLibraryId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' PrimaryLibrary = ' + CONVERT(VARCHAR, @searchLibraryId) + ' '
+
+IF @searchLibraryDistrictId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
+
+
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
 			THEN ''
 		ELSE ' AND '
 		END + ' p.TenID = ' + convert(VARCHAR, @TenID) + ' '
 
-SELECT @SQL1 = 'SELECT  PID, FirstName, LastName, DOB, Username, EmailAddress, Gender, Program, ProgId
+SELECT @SQL1 = 'SELECT  PID, FirstName, LastName, DOB, Username, EmailAddress, Gender, Program, ProgId, Branch
 FROM
 (
-Select p.*, pg.AdminName as Program
+Select p.*, c.[Code] as [Branch], pg.AdminName as Program
 , ROW_NUMBER() OVER (ORDER BY ' + @sortString + ' ) AS RowRank
-FROM Patron p left outer join Programs pg
+FROM Patron p
+left outer join [Code] c on p.[PrimaryLibrary] = c.[CID]
+left outer join Programs pg
 on p.ProgID = pg.PID
+WHERE (c.[CTID] = 1 OR c.[CTID] is NULL)
 ' + CASE len(@Filter)
 		WHEN 0
 			THEN ''
-		ELSE ' WHERE ' + @Filter
+		ELSE ' AND ' + @Filter
 		END + '
 ) AS p
 WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + convert(VARCHAR, @startRowIndex) + ' + ' + convert(VARCHAR, @maximumRows) + ') ' + CASE len(@Filter)
@@ -19214,9 +19234,10 @@ WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + con
 
 --select @SQL1
 EXEC (@SQL1)
+
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 3/25/2016 13:50:07 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19234,6 +19255,8 @@ CREATE PROCEDURE [dbo].[GetTotalPatrons] (
 	@searchDOB DATETIME = NULL,
 	@searchProgram INT = 0,
 	@searchGender VARCHAR(2) = '',
+	@searchLibraryId INT = 0,
+	@searchLibraryDistrictId INT = 0,
 	@TenID INT = NULL
 	)
 AS
@@ -19301,6 +19324,20 @@ IF @searchGender <> ''
 				THEN ''
 			ELSE ' AND '
 			END + ' Gender like ''%' + @searchGender + '%'' '
+
+IF @searchLibraryId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' PrimaryLibrary = ' + CONVERT(VARCHAR, @searchLibraryId) + ' '
+
+IF @searchLibraryDistrictId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
 
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
