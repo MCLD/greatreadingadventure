@@ -76,6 +76,15 @@ namespace GRA.SRP.ControlRoom.Controls {
         protected global::AjaxControlToolkit.MaskedEditExtender metxtDOB;
         
         /// <summary>
+        /// LibraryDistrictId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList LibraryDistrictId;
+        
+        /// <summary>
         /// ProgID control.
         /// </summary>
         /// <remarks>
@@ -94,6 +103,15 @@ namespace GRA.SRP.ControlRoom.Controls {
         protected global::System.Web.UI.WebControls.DropDownList Gender;
         
         /// <summary>
+        /// LibraryId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList LibraryId;
+        
+        /// <summary>
         /// odsDDPrograms control.
         /// </summary>
         /// <remarks>
@@ -101,5 +119,32 @@ namespace GRA.SRP.ControlRoom.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ObjectDataSource odsDDPrograms;
+        
+        /// <summary>
+        /// LibraryDistrictData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource LibraryDistrictData;
+        
+        /// <summary>
+        /// SelectedDistrictId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField SelectedDistrictId;
+        
+        /// <summary>
+        /// LibraryBranchData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource LibraryBranchData;
     }
 }

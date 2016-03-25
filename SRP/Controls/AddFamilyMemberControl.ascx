@@ -455,10 +455,10 @@
                 <div class="col-sm-3 form-control-static">
                     <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DistrictReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                     <asp:CompareValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                         SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                 </div>
             </div>

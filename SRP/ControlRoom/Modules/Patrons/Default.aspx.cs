@@ -45,7 +45,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
 
             if(!IsPostBack) {
                 if(Filter.WasFiltered()) {
-                    Filter.LoadDropdowns();
+                    //Filter.LoadDropdowns();
                     Filter.GetFilterSessionValues();
                     DoFilter();
                 } else {
@@ -84,7 +84,9 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
                 string.IsNullOrEmpty(Session["PS_Email"].ToString()) &&
                 string.IsNullOrEmpty(Session["PS_DOB"].ToString()) &&
                 string.IsNullOrEmpty(Session["PS_Gender"].ToString()) &&
-                string.IsNullOrEmpty(Session["PS_Prog"].ToString())
+                string.IsNullOrEmpty(Session["PS_Prog"].ToString()) &&
+                string.IsNullOrEmpty(Session["PS_LibraryDistrictId"].ToString()) &&
+                string.IsNullOrEmpty(Session["PS_LibraryId"].ToString())
                 ) {
                 Session["PS_Filtered"] = null;
                 return false;
@@ -172,7 +174,10 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
             Session["PS_Filtered"] = null;
 
             Session["PS_Gender"] = "z";
+            Session["PS_LibraryDistrictId"] = string.Empty;
+            Session["PS_LibraryId"] = string.Empty;
 
+            Filter.ProgID_DataBound(sender, e);
             DoFilter(true);
         }
 

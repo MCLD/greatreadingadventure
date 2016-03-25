@@ -140,6 +140,14 @@
                     </asp:Panel>
 
                     <asp:Panel ID="Panel3" runat="server" Visible="False">
+                        <asp:Panel runat="server" ID="RegistrationEmailNotRequiredNote" CssClass="row">
+                            <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+                                <div class="alert alert-info">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <asp:Label runat="server" Text="registration-email-not-required-note"></asp:Label>
+                                </div>
+                            </div>
+                        </asp:Panel>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
                                 <asp:Label runat="server" Text="registration-form-program"></asp:Label>
@@ -445,10 +453,10 @@
                             <div class="col-sm-3 form-control-static">
                                 <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DistrictReq"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                                     SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
