@@ -88,7 +88,7 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Great Reading Adventure - Control Room.
+        ///   Looks up a localized string similar to Control Room.
         /// </summary>
         public static string CRTitle {
             get {

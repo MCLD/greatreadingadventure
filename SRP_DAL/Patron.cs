@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using Microsoft.ApplicationBlocks.Data;
+using System.Collections.Generic;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools.PasswordHash;
@@ -13,10 +14,12 @@ using System.Text;
 using System.Collections.Generic;
 using GRA.Tools;
 
-namespace GRA.SRP.DAL {
+namespace GRA.SRP.DAL
+{
 
     [Serializable]
-    public class Patron : EntityBase {
+    public class Patron : EntityBase
+    {
         public static new string Version { get { return "2.0"; } }
 
         private const int pbkdf2Iterations = 150000;
@@ -108,7 +111,8 @@ namespace GRA.SRP.DAL {
 
         #region Constructors
 
-        public Patron() {
+        public Patron()
+        {
             TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
         }
 
@@ -116,7 +120,8 @@ namespace GRA.SRP.DAL {
 
         #region stored procedure wrappers
 
-        public static string GetTestRank(int PID, int WhichScore) {
+        public static string GetTestRank(int PID, int WhichScore)
+        {
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
             arrParams[1] = new SqlParameter("@WhichScore", WhichScore);
@@ -124,13 +129,15 @@ namespace GRA.SRP.DAL {
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetScoreRank", arrParams);
             var ret = "N/A";
 
-            if(ds.Tables[0].Rows.Count > 0) {
+            if (ds.Tables[0].Rows.Count > 0)
+            {
                 ret = string.Format("{0:0.##} Percentile", ds.Tables[0].Rows[0]["Percentile"]);
             }
             return ret;
         }
 
-        public static DataSet CRSearch() {
+        public static DataSet CRSearch()
+        {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
@@ -153,50 +160,78 @@ namespace GRA.SRP.DAL {
          * 
          */
 
-        public static DataSet GetPaged(string sort, int startRowIndex, int maximumRows
-            , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender) {
-            SqlParameter[] arrParams = new SqlParameter[11];
-            arrParams[0] = new SqlParameter("@startRowIndex", startRowIndex);
-            arrParams[1] = new SqlParameter("@maximumRows", maximumRows);
-            arrParams[2] = new SqlParameter("@sortString", sort);
-            arrParams[3] = new SqlParameter("@searchFirstName", searchFirstName);
-            arrParams[4] = new SqlParameter("@searchLastName", searchLastName);
-            arrParams[5] = new SqlParameter("@searchUsername", searchUsername);
-            arrParams[6] = new SqlParameter("@searchEmail", searchEmail);
-            arrParams[7] = new SqlParameter("@searchDOB", GlobalUtilities.DBSafeValue(FormatHelper.SafeToDateTime(searchDOB), FormatHelper.SafeToDateTime(searchDOB).GetTypeCode()));
-            arrParams[8] = new SqlParameter("@searchProgram", searchProgram);
-            arrParams[9] = new SqlParameter("@searchGender", searchGender);
-            arrParams[10] = new SqlParameter("@TenID",
+        public static DataSet GetPaged(string sort,
+            int startRowIndex,
+            int maximumRows,
+            string searchFirstName,
+            string searchLastName,
+            string searchUsername,
+            string searchEmail,
+            string searchDOB,
+            int searchProgram,
+            string searchGender,
+            int searchLibraryId,
+            int searchLibraryDistrictId)
+        {
+
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@startRowIndex", startRowIndex));
+            arrParams.Add(new SqlParameter("@maximumRows", maximumRows));
+            arrParams.Add(new SqlParameter("@sortString", sort));
+            arrParams.Add(new SqlParameter("@searchFirstName", searchFirstName));
+            arrParams.Add(new SqlParameter("@searchLastName", searchLastName));
+            arrParams.Add(new SqlParameter("@searchUsername", searchUsername));
+            arrParams.Add(new SqlParameter("@searchEmail", searchEmail));
+            arrParams.Add(new SqlParameter("@searchDOB", GlobalUtilities.DBSafeValue(FormatHelper.SafeToDateTime(searchDOB), FormatHelper.SafeToDateTime(searchDOB).GetTypeCode())));
+            arrParams.Add(new SqlParameter("@searchProgram", searchProgram));
+            arrParams.Add(new SqlParameter("@searchGender", searchGender));
+            arrParams.Add(new SqlParameter("@searchLibraryId", searchLibraryId));
+            arrParams.Add(new SqlParameter("@searchLibraryDistrictId", searchLibraryDistrictId));
+            arrParams.Add(new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
                                         (int)HttpContext.Current.Session["TenantID"])
-                            );
+                            ));
 
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetPatronsPaged", arrParams);
+            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetPatronsPaged", arrParams.ToArray());
         }
 
-        public static int GetTotalPagedCount(string sort, int startRowIndex, int maximumRows
-           , string searchFirstName, string searchLastName, string searchUsername, string searchEmail, string searchDOB, int searchProgram, string searchGender) {
-            SqlParameter[] arrParams = new SqlParameter[11];
-            arrParams[0] = new SqlParameter("@startRowIndex", startRowIndex);
-            arrParams[1] = new SqlParameter("@maximumRows", maximumRows);
-            arrParams[2] = new SqlParameter("@sortString", sort);
-            arrParams[3] = new SqlParameter("@searchFirstName", searchFirstName);
-            arrParams[4] = new SqlParameter("@searchLastName", searchLastName);
-            arrParams[5] = new SqlParameter("@searchUsername", searchUsername);
-            arrParams[6] = new SqlParameter("@searchEmail", searchEmail);
-            arrParams[7] = new SqlParameter("@searchDOB", GlobalUtilities.DBSafeValue(FormatHelper.SafeToDateTime(searchDOB), FormatHelper.SafeToDateTime(searchDOB).GetTypeCode()));
-            arrParams[8] = new SqlParameter("@searchProgram", searchProgram);
-            arrParams[9] = new SqlParameter("@searchGender", searchGender);
-            arrParams[10] = new SqlParameter("@TenID",
+        public static int GetTotalPagedCount(string sort,
+            int startRowIndex,
+            int maximumRows,
+            string searchFirstName,
+            string searchLastName,
+            string searchUsername,
+            string searchEmail,
+            string searchDOB,
+            int searchProgram,
+            string searchGender,
+            int searchLibraryId,
+            int searchLibraryDistrictId)
+        {
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@startRowIndex", startRowIndex));
+            arrParams.Add(new SqlParameter("@maximumRows", maximumRows));
+            arrParams.Add(new SqlParameter("@sortString", sort));
+            arrParams.Add(new SqlParameter("@searchFirstName", searchFirstName));
+            arrParams.Add(new SqlParameter("@searchLastName", searchLastName));
+            arrParams.Add(new SqlParameter("@searchUsername", searchUsername));
+            arrParams.Add(new SqlParameter("@searchEmail", searchEmail));
+            arrParams.Add(new SqlParameter("@searchDOB", GlobalUtilities.DBSafeValue(FormatHelper.SafeToDateTime(searchDOB), FormatHelper.SafeToDateTime(searchDOB).GetTypeCode())));
+            arrParams.Add(new SqlParameter("@searchProgram", searchProgram));
+            arrParams.Add(new SqlParameter("@searchGender", searchGender));
+            arrParams.Add(new SqlParameter("@searchLibraryId", searchLibraryId));
+            arrParams.Add(new SqlParameter("@searchLibraryDistrictId", searchLibraryDistrictId));
+            arrParams.Add(new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
                                         (int)HttpContext.Current.Session["TenantID"])
-                            );
+                            ));
 
-            return (int)SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetTotalPatrons", arrParams).Tables[0].Rows[0][0];
+            return (int)SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "GetTotalPatrons", arrParams.ToArray()).Tables[0].Rows[0][0];
         }
-        public static DataSet GetAll() {
+        public static DataSet GetAll()
+        {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
@@ -206,7 +241,8 @@ namespace GRA.SRP.DAL {
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetAll", arrParams);
         }
 
-        public static Patron FetchObject(int PID) {
+        public static Patron FetchObject(int PID)
+        {
 
             // declare reader
 
@@ -218,7 +254,8 @@ namespace GRA.SRP.DAL {
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByID", arrParams);
 
-            if(dr.Read()) {
+            if (dr.Read())
+            {
 
                 // declare return value
 
@@ -230,18 +267,18 @@ namespace GRA.SRP.DAL {
 
                 //decimal _decimal;
 
-                if(int.TryParse(dr["PID"].ToString(), out _int))
+                if (int.TryParse(dr["PID"].ToString(), out _int))
                     result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
                     result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
                     result.DOB = _datetime;
-                if(int.TryParse(dr["Age"].ToString(), out _int))
+                if (int.TryParse(dr["Age"].ToString(), out _int))
                     result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                if (int.TryParse(dr["ProgID"].ToString(), out _int))
                     result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
@@ -259,18 +296,18 @@ namespace GRA.SRP.DAL {
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
                     result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                if (int.TryParse(dr["SchoolType"].ToString(), out _int))
                     result.SchoolType = _int;
-                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
                     result.LiteracyLevel1 = _int;
-                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
                     result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
@@ -290,11 +327,11 @@ namespace GRA.SRP.DAL {
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
-                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt1"].ToString(), out _int))
                     result.FldInt1 = _int;
-                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt2"].ToString(), out _int))
                     result.FldInt2 = _int;
-                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt3"].ToString(), out _int))
                     result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
@@ -303,21 +340,21 @@ namespace GRA.SRP.DAL {
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                if (int.TryParse(dr["Score1"].ToString(), out _int))
                     result.Score1 = _int;
-                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                if (int.TryParse(dr["Score2"].ToString(), out _int))
                     result.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
                     result.Score1Pct = _decimal;
-                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
                     result.Score2Pct = _decimal;
-                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
                     result.Score1Date = _datetime;
-                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     result.Score2Date = _datetime;
 
-                if(DateTime.TryParse(dr["RegistrationDate"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["RegistrationDate"].ToString(), out _datetime))
                 {
                     result.RegistrationDate = _datetime;
                 }
@@ -334,7 +371,8 @@ namespace GRA.SRP.DAL {
 
         }
 
-        public bool Fetch(int PID) {
+        public bool Fetch(int PID)
+        {
 
             // declare reader
 
@@ -346,7 +384,8 @@ namespace GRA.SRP.DAL {
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByID", arrParams);
 
-            if(dr.Read()) {
+            if (dr.Read())
+            {
 
                 DateTime _datetime;
 
@@ -354,18 +393,18 @@ namespace GRA.SRP.DAL {
 
                 //decimal _decimal;
 
-                if(int.TryParse(dr["PID"].ToString(), out _int))
+                if (int.TryParse(dr["PID"].ToString(), out _int))
                     this.PID = _int;
                 this.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
                     this.MasterAcctPID = _int;
                 this.Username = dr["Username"].ToString();
-                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
                     this.DOB = _datetime;
-                if(int.TryParse(dr["Age"].ToString(), out _int))
+                if (int.TryParse(dr["Age"].ToString(), out _int))
                     this.Age = _int;
                 this.SchoolGrade = dr["SchoolGrade"].ToString();
-                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                if (int.TryParse(dr["ProgID"].ToString(), out _int))
                     this.ProgID = _int;
                 this.FirstName = dr["FirstName"].ToString();
                 this.MiddleName = dr["MiddleName"].ToString();
@@ -383,18 +422,18 @@ namespace GRA.SRP.DAL {
                 this.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 this.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 this.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
                     this.PrimaryLibrary = _int;
                 this.LibraryCard = dr["LibraryCard"].ToString();
                 this.SchoolName = dr["SchoolName"].ToString();
                 this.District = dr["District"].ToString();
                 this.Teacher = dr["Teacher"].ToString();
                 this.GroupTeamName = dr["GroupTeamName"].ToString();
-                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                if (int.TryParse(dr["SchoolType"].ToString(), out _int))
                     this.SchoolType = _int;
-                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
                     this.LiteracyLevel1 = _int;
-                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
                     this.LiteracyLevel2 = _int;
                 this.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 this.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
@@ -404,7 +443,8 @@ namespace GRA.SRP.DAL {
                 this.Custom2 = dr["Custom2"].ToString();
                 this.Custom3 = dr["Custom3"].ToString();
                 this.Custom4 = dr["Custom4"].ToString();
-                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                this.Custom5 = dr["Custom5"].ToString();
+                if (int.TryParse(dr["SDistrict"].ToString(), out _int))
                     this.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     this.DailyGoal = _int;
@@ -413,11 +453,11 @@ namespace GRA.SRP.DAL {
                     this.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     this.TenID = _int;
-                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt1"].ToString(), out _int))
                     this.FldInt1 = _int;
-                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt2"].ToString(), out _int))
                     this.FldInt2 = _int;
-                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt3"].ToString(), out _int))
                     this.FldInt3 = _int;
                 this.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 this.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
@@ -426,18 +466,18 @@ namespace GRA.SRP.DAL {
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
 
-                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                if (int.TryParse(dr["Score1"].ToString(), out _int))
                     this.Score1 = _int;
-                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                if (int.TryParse(dr["Score2"].ToString(), out _int))
                     this.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
                     this.Score1Pct = _decimal;
-                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
                     this.Score2Pct = _decimal;
-                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
                     this.Score1Date = _datetime;
-                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     this.Score2Date = _datetime;
 
                 if (DateTime.TryParse(dr["RegistrationDate"].ToString(), out _datetime))
@@ -457,7 +497,8 @@ namespace GRA.SRP.DAL {
 
         }
 
-        public int Insert() {
+        public int Insert()
+        {
 
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -544,14 +585,16 @@ namespace GRA.SRP.DAL {
             return this.PID;
         }
 
-        public static bool VerifyPassword(string logon, string password) {
+        public static bool VerifyPassword(string logon, string password)
+        {
             string passwordHashQuery = "SELECT [Password] FROM [Patron] WHERE [UserName] = @UserName";
             SqlParameter parameter = new SqlParameter("UserName", logon);
             string passwordHash = (string)SqlHelper.ExecuteScalar(conn,
                                                                   CommandType.Text,
                                                                   passwordHashQuery,
                                                                   parameter);
-            if(string.IsNullOrEmpty(passwordHash)) {
+            if (string.IsNullOrEmpty(passwordHash))
+            {
                 // no such user
                 return false;
             }
@@ -559,11 +602,13 @@ namespace GRA.SRP.DAL {
         }
 
 
-        public int Update() {
+        public int Update()
+        {
             return this.Update(false);
         }
 
-        private int Update(bool clearTokens = false) {
+        private int Update(bool clearTokens = false)
+        {
 
             //int iReturn = -1; //assume the worst
 
@@ -571,10 +616,12 @@ namespace GRA.SRP.DAL {
 
 
             string passwordHash = null;
-            if(!string.IsNullOrEmpty(this.NewPassword)) {
+            if (!string.IsNullOrEmpty(this.NewPassword))
+            {
                 passwordHash = PasswordHash.CreateHash(this.NewPassword,
                                                        pbkdf2Iterations);
-            } else {
+            }
+            else {
                 string passwordHashQuery = "SELECT [Password] FROM [Patron] WHERE [Pid] = @pid";
                 SqlParameter parameter = new SqlParameter("pid", this.PID);
                 passwordHash = (string)SqlHelper.ExecuteScalar(conn,
@@ -590,9 +637,12 @@ namespace GRA.SRP.DAL {
             arrParams[4] = new SqlParameter("@Password", passwordHash);
             arrParams[5] = new SqlParameter("@DOB", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.DOB, this.DOB.GetTypeCode()));
             arrParams[6] = new SqlParameter("@Age", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Age, this.Age.GetTypeCode()));
-            try {
+            try
+            {
                 arrParams[7] = new SqlParameter("@SchoolGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.SchoolGrade, this.SchoolGrade.GetTypeCode()));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 this.Log().Error("Unable to set SchoolGrade to: {0}: {1} - {2}",
                                  this.SchoolGrade,
                                  ex.Message,
@@ -660,15 +710,19 @@ namespace GRA.SRP.DAL {
             arrParams[61] = new SqlParameter("@Score1Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score1Date, this.Score1Date.GetTypeCode()));
             arrParams[62] = new SqlParameter("@Score2Date", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.Score2Date, this.Score2Date.GetTypeCode()));
 
-            try {
-                using(var connection = new SqlConnection(conn)) {
+            try
+            {
+                using (var connection = new SqlConnection(conn))
+                {
                     connection.Open();
-                    using(SqlTransaction transaction = connection.BeginTransaction("UpdatePatron")) {
+                    using (SqlTransaction transaction = connection.BeginTransaction("UpdatePatron"))
+                    {
                         SqlHelper.ExecuteNonQuery(transaction,
                                                   CommandType.StoredProcedure,
                                                   "dbo.app_Patron_Update",
                                                   arrParams);
-                        if(clearTokens) {
+                        if (clearTokens)
+                        {
                             string removeTokensQuery = "DELETE FROM [PatronRecovery] WHERE [PID] = @pid";
                             SqlHelper.ExecuteNonQuery(transaction,
                                                       CommandType.Text,
@@ -681,7 +735,9 @@ namespace GRA.SRP.DAL {
                 }
                 return 1;
 
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 this.Log().Error(() => string.Format("Unable to update Patron {0}/{1}: {2}",
                                                      this.PID,
                                                      this.Username,
@@ -690,7 +746,8 @@ namespace GRA.SRP.DAL {
             }
         }
 
-        public static Patron GetUserByToken(string token, int hoursWindow = 24) {
+        public static Patron GetUserByToken(string token, int hoursWindow = 24)
+        {
             StringBuilder sql = new StringBuilder();
             sql.Append("SELECT [PID] FROM [PatronRecovery] WHERE [Token] = @token ");
             sql.Append("AND DateDiff(hh, [Generated], GETDATE()) <= @hourswindow");
@@ -700,12 +757,15 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("hourswindow", hoursWindow));
 
             object pidObject = null;
-            try {
+            try
+            {
                 pidObject = SqlHelper.ExecuteScalar(conn,
                                                     CommandType.Text,
                                                     sql.ToString(),
                                                     parameters.ToArray());
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 "Patron".Log().Error(() => string.Format("Unable to retrieve patron from token {0}",
                                                          token),
                                      ex);
@@ -713,8 +773,9 @@ namespace GRA.SRP.DAL {
             }
 
             int pid = 0;
-            if(pidObject == null
-               || !int.TryParse(pidObject.ToString(), out pid)) {
+            if (pidObject == null
+               || !int.TryParse(pidObject.ToString(), out pid))
+            {
                 "SRPUser".Log().Error("Unable parse to parse PID {0}, returned value: {0}",
                                       pidObject,
                                       pid);
@@ -722,16 +783,19 @@ namespace GRA.SRP.DAL {
             }
 
             Patron p = new Patron();
-            if(p.Fetch(pid)) {
+            if (p.Fetch(pid))
+            {
                 return p;
-            } else {
+            }
+            else {
                 return null;
             }
         }
 
         public static Patron UpdatePasswordByToken(string token,
                                                    string newPassword,
-                                                   int hoursWindow = 24) {
+                                                   int hoursWindow = 24)
+        {
             Patron user = GetUserByToken(token, hoursWindow);
             user.NewPassword = newPassword;
             user.Update(true);
@@ -740,8 +804,10 @@ namespace GRA.SRP.DAL {
             return user;
         }
 
-        public string GeneratePasswordResetToken(int desiredLength = 12) {
-            if(this.PID == 0) {
+        public string GeneratePasswordResetToken(int desiredLength = 12)
+        {
+            if (this.PID == 0)
+            {
                 throw new Exception("Unable to perform password reset, no user provided.");
             }
             string resetToken = Password.GeneratePasswordResetToken(desiredLength);
@@ -757,19 +823,23 @@ namespace GRA.SRP.DAL {
             parameters.Add(new SqlParameter("pid", this.PID));
             parameters.Add(new SqlParameter("token", resetToken));
 
-            try {
+            try
+            {
                 SqlHelper.ExecuteNonQuery(conn,
                                           CommandType.Text,
                                           sql.ToString(),
                                           parameters.ToArray());
                 return resetToken;
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 this.Log().Error(() => "Unable to save password reset token to database", ex);
                 return null;
             }
         }
 
-        public int Delete() {
+        public int Delete()
+        {
 
             int iReturn = -1; //assume the worst
 
@@ -777,11 +847,14 @@ namespace GRA.SRP.DAL {
 
             arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.PID, this.PID.GetTypeCode()));
 
-            try {
+            try
+            {
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Patron_Delete", arrParams);
 
-            } catch(SqlException exx) {
+            }
+            catch (SqlException exx)
+            {
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -793,12 +866,15 @@ namespace GRA.SRP.DAL {
 
         #endregion
 
-        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode) {
+        protected override bool CheckBusinessRules(BusinessRulesValidationMode validationMode)
+        {
             // Remove any old error Codes
             ClearErrorCodes();
-            if(validationMode == BusinessRulesValidationMode.INSERT) {
+            if (validationMode == BusinessRulesValidationMode.INSERT)
+            {
                 Patron obj = GetObjectByUsername(Username);
-                if(obj != null) {
+                if (obj != null)
+                {
                     AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "The Username you have chosen is already in use.  Please select a different Username.",
                       BusinessRulesValidationCode.UNSPECIFIED));
                 }
@@ -807,7 +883,8 @@ namespace GRA.SRP.DAL {
             //return true;
         }
 
-        public int RecalculateGoalCache(Programs program, ProgramGamePointConversion conversion) {
+        public int RecalculateGoalCache(Programs program, ProgramGamePointConversion conversion)
+        {
 
             int goal = this.DailyGoal;
 
@@ -816,7 +893,7 @@ namespace GRA.SRP.DAL {
                 int programLength = (int)((program.LoggingEnd - program.LoggingStart).TotalDays);
                 goal *= programLength;
             }
-            
+
 
             if (conversion != null)
             {
@@ -835,11 +912,13 @@ namespace GRA.SRP.DAL {
 
 
 
-        public static bool Login(string logon, string password) {
+        public static bool Login(string logon, string password)
+        {
             return VerifyPassword(logon, password);
         }
 
-        public static Patron GetObjectByUsername(string logon) {
+        public static Patron GetObjectByUsername(string logon)
+        {
 
             // declare reader
 
@@ -851,7 +930,8 @@ namespace GRA.SRP.DAL {
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByUsername", arrParams);
 
-            if(dr.Read()) {
+            if (dr.Read())
+            {
 
                 // declare return value
 
@@ -863,18 +943,18 @@ namespace GRA.SRP.DAL {
 
                 //decimal _decimal;
 
-                if(int.TryParse(dr["PID"].ToString(), out _int))
+                if (int.TryParse(dr["PID"].ToString(), out _int))
                     result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
                     result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
                     result.DOB = _datetime;
-                if(int.TryParse(dr["Age"].ToString(), out _int))
+                if (int.TryParse(dr["Age"].ToString(), out _int))
                     result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                if (int.TryParse(dr["ProgID"].ToString(), out _int))
                     result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
@@ -892,18 +972,18 @@ namespace GRA.SRP.DAL {
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
                     result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                if (int.TryParse(dr["SchoolType"].ToString(), out _int))
                     result.SchoolType = _int;
-                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
                     result.LiteracyLevel1 = _int;
-                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
                     result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
@@ -914,7 +994,7 @@ namespace GRA.SRP.DAL {
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                if (int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
@@ -923,11 +1003,11 @@ namespace GRA.SRP.DAL {
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
-                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt1"].ToString(), out _int))
                     result.FldInt1 = _int;
-                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt2"].ToString(), out _int))
                     result.FldInt2 = _int;
-                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt3"].ToString(), out _int))
                     result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
@@ -936,18 +1016,18 @@ namespace GRA.SRP.DAL {
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                if (int.TryParse(dr["Score1"].ToString(), out _int))
                     result.Score1 = _int;
-                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                if (int.TryParse(dr["Score2"].ToString(), out _int))
                     result.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
                     result.Score1Pct = _decimal;
-                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
                     result.Score2Pct = _decimal;
-                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
                     result.Score1Date = _datetime;
-                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     result.Score2Date = _datetime;
 
                 dr.Close();
@@ -962,7 +1042,8 @@ namespace GRA.SRP.DAL {
 
         }
 
-        public static Patron GetObjectByEmail(string email) {
+        public static Patron GetObjectByEmail(string email)
+        {
 
             // declare reader
 
@@ -974,7 +1055,8 @@ namespace GRA.SRP.DAL {
 
             dr = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "app_Patron_GetByEmail", arrParams);
 
-            if(dr.Read()) {
+            if (dr.Read())
+            {
 
                 // declare return value
 
@@ -986,18 +1068,18 @@ namespace GRA.SRP.DAL {
 
                 //decimal _decimal;
 
-                if(int.TryParse(dr["PID"].ToString(), out _int))
+                if (int.TryParse(dr["PID"].ToString(), out _int))
                     result.PID = _int;
                 result.IsMasterAccount = bool.Parse(dr["IsMasterAccount"].ToString());
-                if(int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
+                if (int.TryParse(dr["MasterAcctPID"].ToString(), out _int))
                     result.MasterAcctPID = _int;
                 result.Username = dr["Username"].ToString();
-                if(DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["DOB"].ToString(), out _datetime))
                     result.DOB = _datetime;
-                if(int.TryParse(dr["Age"].ToString(), out _int))
+                if (int.TryParse(dr["Age"].ToString(), out _int))
                     result.Age = _int;
                 result.SchoolGrade = dr["SchoolGrade"].ToString();
-                if(int.TryParse(dr["ProgID"].ToString(), out _int))
+                if (int.TryParse(dr["ProgID"].ToString(), out _int))
                     result.ProgID = _int;
                 result.FirstName = dr["FirstName"].ToString();
                 result.MiddleName = dr["MiddleName"].ToString();
@@ -1015,18 +1097,18 @@ namespace GRA.SRP.DAL {
                 result.ParentGuardianFirstName = dr["ParentGuardianFirstName"].ToString();
                 result.ParentGuardianLastName = dr["ParentGuardianLastName"].ToString();
                 result.ParentGuardianMiddleName = dr["ParentGuardianMiddleName"].ToString();
-                if(int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
+                if (int.TryParse(dr["PrimaryLibrary"].ToString(), out _int))
                     result.PrimaryLibrary = _int;
                 result.LibraryCard = dr["LibraryCard"].ToString();
                 result.SchoolName = dr["SchoolName"].ToString();
                 result.District = dr["District"].ToString();
                 result.Teacher = dr["Teacher"].ToString();
                 result.GroupTeamName = dr["GroupTeamName"].ToString();
-                if(int.TryParse(dr["SchoolType"].ToString(), out _int))
+                if (int.TryParse(dr["SchoolType"].ToString(), out _int))
                     result.SchoolType = _int;
-                if(int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel1"].ToString(), out _int))
                     result.LiteracyLevel1 = _int;
-                if(int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
+                if (int.TryParse(dr["LiteracyLevel2"].ToString(), out _int))
                     result.LiteracyLevel2 = _int;
                 result.ParentPermFlag = bool.Parse(dr["ParentPermFlag"].ToString());
                 result.Over18Flag = bool.Parse(dr["Over18Flag"].ToString());
@@ -1037,7 +1119,7 @@ namespace GRA.SRP.DAL {
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                if (int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["DailyGoal"].ToString(), out _int))
                     result.DailyGoal = _int;
@@ -1046,11 +1128,11 @@ namespace GRA.SRP.DAL {
                     result.GoalCache = _int;
                 if (int.TryParse(dr["TenID"].ToString(), out _int))
                     result.TenID = _int;
-                if(int.TryParse(dr["FldInt1"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt1"].ToString(), out _int))
                     result.FldInt1 = _int;
-                if(int.TryParse(dr["FldInt2"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt2"].ToString(), out _int))
                     result.FldInt2 = _int;
-                if(int.TryParse(dr["FldInt3"].ToString(), out _int))
+                if (int.TryParse(dr["FldInt3"].ToString(), out _int))
                     result.FldInt3 = _int;
                 result.FldBit1 = bool.Parse(dr["FldBit1"].ToString());
                 result.FldBit2 = bool.Parse(dr["FldBit2"].ToString());
@@ -1059,18 +1141,18 @@ namespace GRA.SRP.DAL {
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
-                if(int.TryParse(dr["Score1"].ToString(), out _int))
+                if (int.TryParse(dr["Score1"].ToString(), out _int))
                     result.Score1 = _int;
-                if(int.TryParse(dr["Score2"].ToString(), out _int))
+                if (int.TryParse(dr["Score2"].ToString(), out _int))
                     result.Score2 = _int;
                 var _decimal = (decimal)0.0;
-                if(decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score1Pct"].ToString(), out _decimal))
                     result.Score1Pct = _decimal;
-                if(decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
+                if (decimal.TryParse(dr["Score2Pct"].ToString(), out _decimal))
                     result.Score2Pct = _decimal;
-                if(DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score1Date"].ToString(), out _datetime))
                     result.Score1Date = _datetime;
-                if(DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
+                if (DateTime.TryParse(dr["Score2Date"].ToString(), out _datetime))
                     result.Score2Date = _datetime;
 
                 dr.Close();
@@ -1086,7 +1168,8 @@ namespace GRA.SRP.DAL {
         }
 
 
-        public static bool CanManageSubAccount(int ma, int sa) {
+        public static bool CanManageSubAccount(int ma, int sa)
+        {
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@MainAccount", ma);
             arrParams[1] = new SqlParameter("@SubAccount", sa);
@@ -1096,7 +1179,8 @@ namespace GRA.SRP.DAL {
         }
 
 
-        public static DataSet GetSubAccountList(int maid) {
+        public static DataSet GetSubAccountList(int maid)
+        {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@PID", maid);
 
@@ -1104,7 +1188,8 @@ namespace GRA.SRP.DAL {
         }
 
 
-        public static DataSet GetPatronForEdit(int PID) {
+        public static DataSet GetPatronForEdit(int PID)
+        {
             var TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                              -1 :
                              (int)HttpContext.Current.Session["TenantID"]
@@ -1113,7 +1198,8 @@ namespace GRA.SRP.DAL {
             return GetPatronForEdit(PID, TenID);
         }
 
-        public static DataSet GetPatronForEdit(int PID, int TenID) {
+        public static DataSet GetPatronForEdit(int PID, int TenID)
+        {
             var arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
             arrParams[1] = new SqlParameter("@TenID", TenID);
@@ -1121,7 +1207,8 @@ namespace GRA.SRP.DAL {
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Patron_GetPatronForEdit", arrParams);
         }
 
-        public static DataSet GetReadingList(int pid) {
+        public static DataSet GetReadingList(int pid)
+        {
             StringBuilder query = new StringBuilder();
             query.Append("SELECT DISTINCT [Author], [Title] FROM [PatronReadingLog] ");
             query.Append("WHERE [PID] = @PID AND (AUTHOR != '' AND TITLE != '') ");

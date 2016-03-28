@@ -83,9 +83,10 @@ namespace GRA.SRP.Challenges
             }
             else {
                 this.ProgramOpen = true;
+                btnSave.Visible = true;
             }
 
-            if (this.PrintPage.Equals("true", StringComparison.OrdinalIgnoreCase)) ;
+            if (this.PrintPage.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 btnSave.Visible = false;
             }

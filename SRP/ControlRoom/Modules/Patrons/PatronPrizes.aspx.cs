@@ -103,8 +103,17 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                     var pp = DAL.PatronPrizes.FetchObject(key);
                     if (pp.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
+                        var now = DateTime.Now;
+                        string currentUser = "N/A";
+                        try
+                        {
+                            currentUser = HttpContext.Current.User.Identity.Name;
+                        }
+                        catch (Exception) { }
 
                         pp.RedeemedFlag = true;
+                        pp.LastModDate = now;
+                        pp.LastModUser = currentUser;
                         pp.Update();
 
                         if (pp.DrawingID != 0)
@@ -113,6 +122,8 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                             if (pw != null)
                             {
                                 pw.PrizePickedUpFlag = true;
+                                pw.LastModDate = now;
+                                pw.LastModUser = currentUser;
                                 pw.Update();
 
                                 if (pw.NotificationID != 0)
@@ -146,6 +157,68 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
 
+
+            }
+
+            if (e.CommandName.ToLower() == "undopickup")
+            {
+                int key = Convert.ToInt32(e.CommandArgument);
+                try
+                {
+                    var pp = DAL.PatronPrizes.FetchObject(key);
+                    if (pp.IsValid(BusinessRulesValidationMode.UPDATE))
+                    {
+                        var now = DateTime.Now;
+                        string currentUser = "N/A";
+                        try
+                        {
+                            currentUser = HttpContext.Current.User.Identity.Name;
+                        }
+                        catch (Exception) { }
+
+                        this.Log().Warn("Reward for patron id {0} marked as NOT picked up by {1}",
+                            pp.PID,
+                            currentUser);
+
+                        pp.RedeemedFlag = false;
+                        pp.LastModDate = now;
+                        pp.LastModUser = currentUser;
+                        pp.Update();
+
+                        if (pp.DrawingID != 0)
+                        {
+                            var pw = PrizeDrawingWinners.FetchObject(pp.DrawingID);
+                            if (pw != null)
+                            {
+                                pw.PrizePickedUpFlag = false;
+                                pw.LastModDate = now;
+                                pw.LastModUser = currentUser;
+                                pw.Update();
+                            }
+                        }
+
+                        LoadData();
+                        var masterPage = (IControlRoomMaster)Master;
+                        if (masterPage != null) masterPage.PageMessage = "Prize has been marked as available. This change was logged.";
+                    }
+                    else
+                    {
+                        var masterPage = (IControlRoomMaster)Master;
+                        string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                        foreach (BusinessRulesValidationMessage m in pp.ErrorCodes)
+                        {
+                            message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
+                        }
+                        message = string.Format("{0}</ul>", message);
+                        if (masterPage != null) masterPage.PageError = message;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var masterPage = (IControlRoomMaster)Master;
+                    if (masterPage != null)
+                        masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
+                }
             }
 
         }

@@ -751,17 +751,15 @@ AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SELECT @List = ''
-
-SELECT @List = COALESCE(CASE 
-			WHEN @List = ''
-				THEN p.ListName
-			ELSE @List + ', ' + p.ListName
-			END, '')
-FROM BookList p
-WHERE p.TenID = @TenID
-	AND p.AwardBadgeID = @BID
-ORDER BY p.ListName
+SELECT @List = LTRIM(RTRIM(STUFF((
+					SELECT ', ' + p.ListName
+					FROM BookList p
+					WHERE p.TenID = @TenID
+						AND p.AwardBadgeID = @BID
+					GROUP BY p.ListName
+					ORDER BY p.ListName
+					FOR XML PATH('')
+					), 1, 1, '')))
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeBranches]    Script Date: 2/4/2016 13:18:40 ******/
@@ -888,17 +886,16 @@ AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SELECT @List = ''
-
-SELECT @List = COALESCE(CASE 
-			WHEN @List = ''
-				THEN p.EventTitle
-			ELSE @List + ', ' + p.EventTitle
-			END, '')
-FROM Event p
-WHERE p.TenID = @TenID
-	AND p.BadgeID = @BID
-ORDER BY p.EventTitle
+SELECT @List = LTRIM(RTRIM(STUFF((
+					SELECT ', ' + e.EventTitle
+					FROM Event e
+					WHERE e.TenID = @TenID
+						AND e.BadgeID = @BID
+						AND e.HiddenFromPublic != 1
+					GROUP BY e.EventTitle
+					ORDER BY e.EventTitle
+					FOR XML PATH('')
+					), 1, 1, '')))
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGallery]    Script Date: 2/4/2016 13:18:40 ******/
@@ -11383,6 +11380,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
 	@PostTestStartDate DATETIME,
+	@DefaultDailyGoal INT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -11433,7 +11431,8 @@ BEGIN
 		PostTestID,
 		PreTestMandatory,
 		PretestEndDate,
-		PostTestStartDate
+		PostTestStartDate,
+		DefaultDailyGoal
 		)
 	VALUES (
 		@AdminName,
@@ -11484,7 +11483,8 @@ BEGIN
 		@PostTestID,
 		@PreTestMandatory,
 		@PretestEndDate,
-		@PostTestStartDate
+		@PostTestStartDate,
+		@DefaultDailyGoal
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -11655,7 +11655,8 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@PostTestID INT = 0,
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
-	@PostTestStartDate DATETIME
+	@PostTestStartDate DATETIME,
+	@DefaultDailyGoal INT = 0
 	)
 AS
 UPDATE Programs
@@ -11704,7 +11705,8 @@ SET AdminName = @AdminName,
 	PostTestID = @PostTestID,
 	PreTestMandatory = @PreTestMandatory,
 	PretestEndDate = @PretestEndDate,
-	PostTestStartDate = @PostTestStartDate
+	PostTestStartDate = @PostTestStartDate,
+	DefaultDailyGoal = @DefaultDailyGoal
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -19098,7 +19100,7 @@ WHERE UID IN (
 	AND IsDeleted = 0
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 3/25/2016 14:15:26 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19116,6 +19118,8 @@ CREATE PROCEDURE [dbo].[GetPatronsPaged] (
 	@searchDOB DATETIME = NULL,
 	@searchProgram INT = 0,
 	@searchGender VARCHAR(2) = '',
+	@searchLibraryId INT = 0,
+	@searchLibraryDistrictId INT = 0,
 	@TenID INT = NULL
 	)
 AS
@@ -19177,23 +19181,41 @@ IF @searchGender <> ''
 			ELSE ' AND '
 			END + ' Gender like ''%' + @searchGender + '%'' '
 
+IF @searchLibraryId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' PrimaryLibrary = ' + CONVERT(VARCHAR, @searchLibraryId) + ' '
+
+IF @searchLibraryDistrictId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
+
+
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
 			THEN ''
 		ELSE ' AND '
 		END + ' p.TenID = ' + convert(VARCHAR, @TenID) + ' '
 
-SELECT @SQL1 = 'SELECT  PID, FirstName, LastName, DOB, Username, EmailAddress, Gender, Program, ProgId
+SELECT @SQL1 = 'SELECT  PID, FirstName, LastName, DOB, Username, EmailAddress, Gender, Program, ProgId, Branch
 FROM
 (
-Select p.*, pg.AdminName as Program
+Select p.*, c.[Code] as [Branch], pg.AdminName as Program
 , ROW_NUMBER() OVER (ORDER BY ' + @sortString + ' ) AS RowRank
-FROM Patron p left outer join Programs pg
+FROM Patron p
+left outer join [Code] c on p.[PrimaryLibrary] = c.[CID]
+left outer join Programs pg
 on p.ProgID = pg.PID
+WHERE (c.[CTID] = 1 OR c.[CTID] is NULL)
 ' + CASE len(@Filter)
 		WHEN 0
 			THEN ''
-		ELSE ' WHERE ' + @Filter
+		ELSE ' AND ' + @Filter
 		END + '
 ) AS p
 WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + convert(VARCHAR, @startRowIndex) + ' + ' + convert(VARCHAR, @maximumRows) + ') ' + CASE len(@Filter)
@@ -19204,9 +19226,10 @@ WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + con
 
 --select @SQL1
 EXEC (@SQL1)
+
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 3/25/2016 13:50:07 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19224,6 +19247,8 @@ CREATE PROCEDURE [dbo].[GetTotalPatrons] (
 	@searchDOB DATETIME = NULL,
 	@searchProgram INT = 0,
 	@searchGender VARCHAR(2) = '',
+	@searchLibraryId INT = 0,
+	@searchLibraryDistrictId INT = 0,
 	@TenID INT = NULL
 	)
 AS
@@ -19291,6 +19316,20 @@ IF @searchGender <> ''
 				THEN ''
 			ELSE ' AND '
 			END + ' Gender like ''%' + @searchGender + '%'' '
+
+IF @searchLibraryId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' PrimaryLibrary = ' + CONVERT(VARCHAR, @searchLibraryId) + ' '
+
+IF @searchLibraryDistrictId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
 
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
@@ -23498,6 +23537,7 @@ CREATE TABLE [dbo].[Programs] (
 	[PreTestMandatory] [bit] NULL,
 	[PretestEndDate] [datetime] NULL,
 	[PostTestStartDate] [datetime] NULL,
+	[DefaultDailyGoal] [int] NULL,
 	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,

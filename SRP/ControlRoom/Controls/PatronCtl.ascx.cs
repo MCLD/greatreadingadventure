@@ -306,6 +306,11 @@ namespace GRA.SRP.ControlRoom.Controls
             var i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
+            txt = (TextBox)e.Item.FindControl("Age");
+            if(txt != null && string.IsNullOrWhiteSpace(txt.Text))
+            {
+                txt.Text = "0";
+            }
 
             ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary");
             txt = (TextBox)e.Item.FindControl("PrimaryLibraryTxt");

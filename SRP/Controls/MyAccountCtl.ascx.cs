@@ -14,7 +14,8 @@ namespace GRA.SRP.Controls
         private CustomRegistrationFields customFields;
         protected CustomRegistrationFields CustomFields {
             get {
-                if(customFields == null) {
+                if (customFields == null)
+                {
                     customFields = CustomRegistrationFields.FetchObject();
                 }
                 return customFields;
@@ -75,10 +76,10 @@ namespace GRA.SRP.Controls
         {
             if (Page.IsValid)
             {
-                if(e.CommandName == "save")
+                if (e.CommandName == "save")
                 {
 
-                    var p = Patron.FetchObject(((Patron) Session["Patron"]).PID);
+                    var p = Patron.FetchObject(((Patron)Session["Patron"]).PID);
                     DateTime _d;
 
                     var DOB = e.Item.FindControl("DOB") as TextBox;
@@ -97,7 +98,7 @@ namespace GRA.SRP.Controls
                     p.Gender = ((DropDownList)(e.Item).FindControl("Gender")).SelectedValue;
                     p.EmailAddress = ((TextBox)(e.Item).FindControl("EmailAddress")).Text;
                     p.PhoneNumber = ((TextBox)(e.Item).FindControl("PhoneNumber")).Text;
-                        p.PhoneNumber = FormatHelper.FormatPhoneNumber(p.PhoneNumber);
+                    p.PhoneNumber = FormatHelper.FormatPhoneNumber(p.PhoneNumber);
                     p.StreetAddress1 = ((TextBox)(e.Item).FindControl("StreetAddress1")).Text;
                     p.StreetAddress2 = ((TextBox)(e.Item).FindControl("StreetAddress2")).Text;
                     p.City = ((TextBox)(e.Item).FindControl("City")).Text;
@@ -115,11 +116,13 @@ namespace GRA.SRP.Controls
                     int goalValue = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("DailyGoal")).Text);
                     p.DailyGoal = goalValue;
 
-                    if (ViewState["ActivityTypeId"] != null) {
+                    if (ViewState["ActivityTypeId"] != null)
+                    {
 
                         int activityTypeId = 0;
 
-                        if (int.TryParse(ViewState["ActivityTypeId"] as string, out activityTypeId)) {
+                        if (int.TryParse(ViewState["ActivityTypeId"] as string, out activityTypeId))
+                        {
                             ProgramGamePointConversion pgc = ProgramGamePointConversion.FetchObjectByActivityId(p.ProgID, activityTypeId);
 
                             if (pgc != null)
@@ -172,19 +175,18 @@ namespace GRA.SRP.Controls
                         ? ((TextBox)(e.Item).FindControl("Custom1")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom1DD")).SelectedValue;
                     p.Custom2 = string.IsNullOrEmpty(this.CustomFields.DDValues2)
-                        ? ((TextBox)(e.Item).FindControl("Custom2")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom2")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom2DD")).SelectedValue;
                     p.Custom3 = string.IsNullOrEmpty(this.CustomFields.DDValues3)
-                        ? ((TextBox)(e.Item).FindControl("Custom3")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom3")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom3DD")).SelectedValue;
                     p.Custom4 = string.IsNullOrEmpty(this.CustomFields.DDValues4)
-                        ? ((TextBox)(e.Item).FindControl("Custom4")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom4")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
                     p.Custom5 = string.IsNullOrEmpty(this.CustomFields.DDValues5)
-                        ? ((TextBox)(e.Item).FindControl("Custom5")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom5")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
-                    
-                    // do the save
+                   // do the save
                     p.Update();
                     Session["Patron"] = p;
 
@@ -232,7 +234,6 @@ namespace GRA.SRP.Controls
 
         protected void ReloadSchoolDistrict()
         {
-            //*
             var sc = (DropDownList)(rptr.Items[0]).FindControl("SchoolName");
             var st = (DropDownList)(rptr.Items[0]).FindControl("SchoolType");
             var sd = (DropDownList)(rptr.Items[0]).FindControl("SDistrict");
@@ -250,12 +251,15 @@ namespace GRA.SRP.Controls
 
             var si = sc.Items.FindByValue(scVal);
             sc.SelectedValue = si != null ? scVal : "0";
-            //*            
+
+            if (sc.Items.Count == 2)
+            {
+                sc.SelectedIndex = 1;
+            }
         }
 
         protected void ReloadLibraryDistrict()
         {
-            //*
             var pl = (DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary");
             var dt = (DropDownList)(rptr.Items[0]).FindControl("District");
             var plVal = pl.SelectedValue;
@@ -268,7 +272,11 @@ namespace GRA.SRP.Controls
             }
             var il = pl.Items.FindByValue(plVal);
             pl.SelectedValue = il != null ? plVal : "0";
-            //*            
+
+            if (pl.Items.Count == 2)
+            {
+                pl.SelectedIndex = 1;
+            }
         }
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -277,13 +285,13 @@ namespace GRA.SRP.Controls
             var i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
-            ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary"); 
+            ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary");
             txt = (TextBox)e.Item.FindControl("PrimaryLibraryTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
 
-            ctl = (DropDownList)e.Item.FindControl("SchoolType"); 
+            ctl = (DropDownList)e.Item.FindControl("SchoolType");
             txt = (TextBox)e.Item.FindControl("SchoolTypeTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
@@ -308,39 +316,48 @@ namespace GRA.SRP.Controls
             var familyListButton = e.Item.FindControl("FamilyAccountList");
             var familyAddbutton = e.Item.FindControl("FamilyAccountAdd");
             var showFamilyList = Session[SessionKey.IsMasterAccount] as bool? == true;
-            if(familyListButton != null) {
+            if (familyListButton != null)
+            {
                 familyListButton.Visible = showFamilyList;
             }
-            if(familyAddbutton != null) {
+            if (familyAddbutton != null)
+            {
                 var patron = e.Item.DataItem as DataRowView;
-                if(patron != null
+                if (patron != null
                    && patron["Over18Flag"] as bool? == true
-                   && patron["MasterAcctPID"] as int? == 0) {
+                   && patron["MasterAcctPID"] as int? == 0)
+                {
                     familyAddbutton.Visible = !showFamilyList;
-                } else {
+                }
+                else {
                     familyAddbutton.Visible = false;
                 }
             }
 
 
             var registrationHelper = new RegistrationHelper();
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues1)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues1))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues1));
                 registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues2)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues2))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues2));
                 registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues3)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues3))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues3));
                 registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues4)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues4))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues4));
                 registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues5)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues5))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
                 registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
             }
@@ -350,7 +367,7 @@ namespace GRA.SRP.Controls
         {
             var actualAge = 0;
             int.TryParse(age, out actualAge);
-            
+
             if (!string.IsNullOrEmpty(dob))
             {
                 try

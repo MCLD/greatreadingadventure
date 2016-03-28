@@ -26,7 +26,16 @@ namespace GRA.SRP.ControlRoom
             }
             if (Session[CRSessionKey.CRMessage] != null)
             {
-                this.PageTitle = "Great Reading Adventure - Control Room<BR> &nbsp;Notification";
+                var sysName = Session[CRSessionKey.SystemName];
+                if (sysName == null || string.IsNullOrWhiteSpace(sysName.ToString()))
+                {
+                    sysName = "Great Reading Adventure - Control Room";
+                }
+                else
+                {
+                    sysName = string.Format("{0} - Control Room", sysName);
+                }
+                this.PageTitle = sysName.ToString();
                 this.PageError = Session[CRSessionKey.CRMessage].ToString();
                 this.DisplayMessageOnLoad = true;
                 Session.Remove(CRSessionKey.CRMessage);
