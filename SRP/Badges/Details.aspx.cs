@@ -69,6 +69,11 @@ namespace GRA.SRP.Badges {
                         earn.AppendFormat("<li>Earn points by reading: {0}.</li>", earnText);
                     }
 
+                    earnText = Badge.GetBadgeGoal(badgeId);
+                    if (earnText.Length > 0) {
+                        earn.AppendFormat("<li>Achieve part of your personal reading goal: {0}.</li>", earnText);
+                    }
+
                     earnText = Badge.GetEnrollmentPrograms(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Enroll in a reading program: {0}</li>", earnText);

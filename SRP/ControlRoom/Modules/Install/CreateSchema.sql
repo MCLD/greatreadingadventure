@@ -1070,6 +1070,34 @@ WHERE p.TenID = @TenID
 GROUP BY p.AwardName
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGoals]    Script Date: 3/28/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_Badge_GetBadgeGoals] @TenID INT,
+	@BID INT = 0,
+	@List VARCHAR(2000) OUTPUT
+AS
+SET NOCOUNT ON
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+SELECT @List = ''
+
+SELECT @List = COALESCE(CASE 
+			WHEN @List = ''
+				THEN p.AwardName
+			ELSE @List + ', ' + p.AwardName
+			END, '')
+FROM Award p
+WHERE p.TenID = @TenID
+	AND p.BadgeID = @BID
+	AND p.GoalPercent > 0
+GROUP BY p.AwardName
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_Badge_GetByID]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
