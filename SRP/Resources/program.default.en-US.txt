@@ -140,7 +140,6 @@ registration-form-guardian-name-last=Parent/guardian last name:
 registration-form-library-district=Library system:
 registration-form-library=Library:
 registration-form-library-card=Library card #:
-registration-form-daily-goal=Daily goal
 registration-form-school-district=School district:
 registration-form-school-type=School type:
 registration-form-school=School name:

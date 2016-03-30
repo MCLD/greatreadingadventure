@@ -34,7 +34,7 @@ namespace GRA.SRP.Controls {
 
             RegistrationSettings settings = RegistrationSettings.FetchObject(patron.TenID);
 
-            if (settings.DailyGoal_Show) {
+            if (settings.Goal_Show) {
 
                 int totalGoal = patron.GoalCache;
 

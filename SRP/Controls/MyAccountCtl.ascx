@@ -590,30 +590,30 @@
             </div>
 
 
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("DailyGoal_Show")%>'>
+            <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Show")%>'>
                 <label class="col-sm-3 control-label">
-                    <asp:Label ID="DailyGoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Label>
+                    <asp:Label ID="GoalLabel" runat="server"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="DailyGoal" runat="server" CssClass="form-control"
-                        Text='<%# Eval("DailyGoal") %>'
-                        Enabled='<%# (bool)Eval("DailyGoal_Edit") %>'></asp:TextBox>
+                    <asp:TextBox ID="Goal" runat="server" CssClass="form-control"
+                        Text='<%# Eval("Goal") %>'
+                        Enabled='<%# (bool)Eval("Goal_Edit") %>'></asp:TextBox>
 
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("DailyGoal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DailyGoalReq"></span>
-                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
-                        ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
+                    <span runat="server" visible='<%# Eval("Goal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GoalReq"></span>
+                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
+                        ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                         <asp:RangeValidator
-                        ID="DailyGoalRangeValidator"
+                        ID="GoalRangeValidator"
                         MinimumValue="0"
                         MaximumValue="100"
-                        ControlToValidate="DailyGoal"
+                        ControlToValidate="Goal"
                         Display="Dynamic"
                         Type="Integer"
                         EnableClientScript="true"
-                        ErrorMessage='Invalid range for Daily Goal'
+                        ErrorMessage='Invalid range for Goal'
                         runat="server"
                         Text='invalid range'
                         EnableTheming="True"

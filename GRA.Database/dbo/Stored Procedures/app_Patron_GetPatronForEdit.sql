@@ -50,7 +50,7 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom5, '') AS [Custom5],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
 	isNull(p.SDistrict, 0) AS [SDistrict],
-	isNull(p.DailyGoal, 0) AS [DailyGoal],
+	isNull(p.Goal, 0) AS [Goal],
 	isNull(p.AvatarState, '') AS [AvatarState],
 	isNull(p.GoalCache, 0) AS [GoalCache],
 	rs.*

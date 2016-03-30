@@ -1368,10 +1368,10 @@ INSERT INTO RegistrationSettings (
 	[SDistrict_Req],
 	[SDistrict_Show],
 	[SDistrict_Edit],
-	[DailyGoal_Prompt],
-	[DailyGoal_Req],
-	[DailyGoal_Show],
-	[DailyGoal_Edit],
+	[Goal_Prompt],
+	[Goal_Req],
+	[Goal_Show],
+	[Goal_Edit],
 	[TenID],
 	[FldInt1],
 	[FldInt2],
@@ -1735,7 +1735,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	1,
@@ -1784,7 +1788,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	5,
+	100,
+	0
 	)
 GO
 

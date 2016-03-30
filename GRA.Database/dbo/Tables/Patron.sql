@@ -43,7 +43,7 @@
     [Custom4]                  VARCHAR (50)    NULL,
     [Custom5]                  VARCHAR (50)    NULL,
     [RegistrationDate]         DATETIME        CONSTRAINT [DF_Patron_RegistrationDate] DEFAULT (getdate()) NULL,
-    [DailyGoal]                INT             NULL,
+    [Goal]                INT             NULL,
     [GoalCache]                INT             NULL,
     [SDistrict]                INT             NULL,
     [AvatarState]              VARCHAR (50)    NULL,

@@ -239,7 +239,10 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     program.PostTestID = ((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestID")).SelectedValue.SafeToInt();
                     program.PreTestMandatory = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestMandatory")).Checked;
 
-                    program.DefaultDailyGoal = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("DefaultDailyGoal")).Text);
+                    program.GoalDefault = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalDefault")).Text);
+                    program.GoalMin = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalMin")).Text);
+                    program.GoalMax = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalMax")).Text);
+                    program.GoalIntervalId = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalIntervalId")).SelectedValue);
 
                     program.LastModDate = DateTime.Now;
                     program.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
