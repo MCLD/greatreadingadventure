@@ -434,7 +434,7 @@
 
                     <asp:Panel ID="Panel5" runat="server" Visible="False">
                         <asp:TextBox ID="Panel5Visibility" runat="server"
-                            Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt")   ? "1" : "0") %>'
+                            Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt") || (bool)Eval("Goal_Prompt")   ? "1" : "0") %>'
                             Visible="false"></asp:TextBox>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("District_Prompt")%>'>
@@ -1097,7 +1097,7 @@
 </div>
 
 <script>
-    
+
     $('.required-asterisk').focusout(function () {
         var asteriskClass = $(this).data('asterisk');
         if (asteriskClass) {
@@ -1126,7 +1126,7 @@
             showOtherMonths: true,
             selectOtherMonths: true,
             showSpeed: 'fast',
-            onSelect: function(dates) {
+            onSelect: function (dates) {
                 var asteriskClass = $(this).data('asterisk');
                 if (asteriskClass) {
                     if (dates.length == 0) {
@@ -1162,7 +1162,7 @@
 
         $('.required-asterisk-aspcheckbox :input').each(function (index, element) {
             aspCheckClickCheck($(element));
-            $(element).on('click', function(eventData) {
+            $(element).on('click', function (eventData) {
                 aspCheckClickCheck($(eventData.target));
             });
         });
