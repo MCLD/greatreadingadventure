@@ -366,3 +366,36 @@ small.dd-desc {
 .code-glow {
     box-shadow: 0 0 5px #ff00de , 0 0 10px #ff00de , 0 0 15px #ff00de , 0 0 20px #ff00de;
 }
+
+/* avatars */
+.avatar-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width:100%;
+    height: auto;
+}
+
+.avatar-layer-btn {
+   position: relative;
+}
+
+.avatar-layer-btn-left {
+    left: 0;
+}
+
+.avatar-layer-btn-right {
+    right: 0;
+}
+
+ul.avatar-btn-group {
+    padding: 0;
+    list-style: none;
+}
+
+ul.avatar-btn-group li {
+   margin-top: 16px;
+   margin-bottom: 100px;
+}
+

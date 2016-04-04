@@ -10,8 +10,8 @@ using System.Web.UI.WebControls;
 
 namespace GRA.SRP.Controls {
     public partial class Avatar : System.Web.UI.UserControl {
-        private const string NoAvatarPath = "~/images/Avatars/no_avatar.png";
-        private const string NoAvatarPathSm = "~/images/Avatars/no_avatar_sm.png";
+        private const string NoAvatarPath = "~/images/AvatarCache/no_avatar.png";
+        private const string NoAvatarPathSm = "~/images/AvatarCache/no_avatar_sm.png";
 
         protected void Page_Load(object sender, EventArgs e) {
             var patron = (Patron)(Session["Patron"]);
@@ -19,20 +19,20 @@ namespace GRA.SRP.Controls {
             string avatarPathSm = NoAvatarPathSm;
             string avatarPathMd = null;
             if(patron != null) {
-                string potentialAvatarPath = string.Format("~/images/Avatars/{0}.png",
-                                                           patron.AvatarID);
+                string potentialAvatarPath = string.Format("~/images/AvatarCache/{0}.png",
+                                                           patron.AvatarState);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPath = potentialAvatarPath;
                 }
 
-                potentialAvatarPath = string.Format("~/images/Avatars/sm_{0}.png",
-                                                    patron.AvatarID);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/sm_{0}.png",
+                                                    patron.AvatarState);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathSm = potentialAvatarPath;
                 }
 
-                potentialAvatarPath = string.Format("~/images/Avatars/md_{0}.png",
-                                                    patron.AvatarID);
+                potentialAvatarPath = string.Format("~/images/AvatarCache/md_{0}.png",
+                                                    patron.AvatarState);
                 if(File.Exists(Server.MapPath(potentialAvatarPath))) {
                     avatarPathMd = potentialAvatarPath;
                 }

@@ -287,7 +287,10 @@ namespace GRA.SRP.DAL
             set { myPostTestStartDate = value; }
         }
 
-        public int DefaultDailyGoal { get; set; }
+        public int GoalDefault { get; set; }
+        public int GoalMin { get; set; }
+        public int GoalMax { get; set; }
+        public int GoalIntervalId { get; set; }
 
         #endregion
 
@@ -481,7 +484,10 @@ namespace GRA.SRP.DAL
                 result.PreTestMandatory = bool.Parse(dr["PreTestMandatory"].ToString());
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) result.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) result.PostTestStartDate = _datetime;
-                if (int.TryParse(dr["DefaultDailyGoal"].ToString(), out _int)) result.DefaultDailyGoal = _int;
+                if (int.TryParse(dr["GoalDefault"].ToString(), out _int)) result.GoalDefault = _int;
+                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) result.GoalMin = _int;
+                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
+                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
 
                 dr.Close();
 
@@ -572,7 +578,10 @@ namespace GRA.SRP.DAL
                 this.PreTestMandatory = bool.Parse(dr["PreTestMandatory"].ToString());
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) this.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) this.PostTestStartDate = _datetime;
-                if (int.TryParse(dr["DefaultDailyGoal"].ToString(), out _int)) this.DefaultDailyGoal = _int;
+                if (int.TryParse(dr["GoalDefault"].ToString(), out _int)) this.GoalDefault = _int;
+                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) result.GoalMin = _int;
+                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
+                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
 
                 dr.Close();
 
@@ -696,7 +705,10 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@PreTestMandatory", GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PreTestEndDate", GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PostTestStartDate", GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode())));
-            arrParams.Add(new SqlParameter("@DefaultDailyGoal", GlobalUtilities.DBSafeValue(o.DefaultDailyGoal, o.DefaultDailyGoal.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalDefault", GlobalUtilities.DBSafeValue(o.GoalDefault, o.GoalDefault.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMin", GlobalUtilities.DBSafeValue(o.GoalMin, o.GoalMin.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
 
             var newIdParam = new SqlParameter("@PID", GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
             newIdParam.Direction = ParameterDirection.Output;
@@ -776,7 +788,10 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@PreTestMandatory", GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PreTestEndDate", GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PostTestStartDate", GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode())));
-            arrParams.Add(new SqlParameter("@DefaultDailyGoal", GlobalUtilities.DBSafeValue(o.DefaultDailyGoal, o.DefaultDailyGoal.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalDefault", GlobalUtilities.DBSafeValue(o.GoalDefault, o.GoalDefault.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMin", GlobalUtilities.DBSafeValue(o.GoalMin, o.GoalMin.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
 
             try
             {
@@ -886,9 +901,24 @@ namespace GRA.SRP.DAL
             }
         }
 
+        public GoalInterval GetGoalInterval
+        {
+            get
+            {
+                return (GoalInterval)Enum.ToObject(typeof(GoalInterval), this.GoalIntervalId);
+            }
+        }
+
         #endregion
 
     }//end class
+
+    public enum GoalInterval
+    {
+        Daily = 0,
+        Weekly = 1,
+        Program = 2 /* over the duration of the entire program */
+    }
 
 }//end namespace
 

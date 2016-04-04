@@ -657,6 +657,25 @@ namespace GRA.SRP.DAL
             return (string)arrParams[2].Value;
         }
 
+        public static string GetBadgeGoal(int BID)
+        {
+            var arrParams = new SqlParameter[3];
+
+            arrParams[0] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
+            arrParams[1] = new SqlParameter("@BID", BID);
+            arrParams[2] = new SqlParameter("@List", SqlDbType.VarChar, 2000);
+            arrParams[2].Direction = ParameterDirection.InputOutput;
+
+
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeGoals", arrParams);
+
+            return (string)arrParams[2].Value;
+        }
+
         public static string GetBadgeGames(int BID)
         {
             var arrParams = new SqlParameter[3];

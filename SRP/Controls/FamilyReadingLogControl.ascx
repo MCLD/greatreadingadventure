@@ -37,6 +37,8 @@
                         OnClick="submitButton_Click"></asp:LinkButton>
                 </div>
             </div>
+
+            <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
             <div class="col-xs-12">
                 <div class="form-group">
                     <asp:CheckBox runat="server"
@@ -45,6 +47,7 @@
                         CssClass="family-readinglog-checkbox checkbox-inline"></asp:CheckBox>
                 </div>
             </div>
+            <% } %>
         </div>
     </div>
 

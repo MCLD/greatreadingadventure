@@ -416,29 +416,93 @@
                                     </tr>
                                     <tr>
                                         <td align="right">
-                                            <b>Default daily goal:</b>
+                                            <b>Default goal:</b>
                                             <span class="glyphicon glyphicon-info-sign"
                                                 data-toggle="tooltip"
                                                 data-placement="right"
-                                                title="The 'daily goal' field will have this amount filled in by default for patrons. Must have 'Daily Goal' enabled in registration."></span>
+                                                title="The 'goal' field will have this amount filled in by default for patrons. Must have 'Goal' enabled in registration."></span>
 
                                         </td>
                                         <td colspan="3">
-                                            <asp:TextBox ID="DefaultDailyGoal" runat="server" Text='<%# ((int) Eval("DefaultDailyGoal") ==0 ? "" : Eval("DefaultDailyGoal")) %>'
+                                            <asp:TextBox ID="GoalDefault" runat="server" Text='<%# ((int) Eval("GoalDefault") ==0 ? "" : Eval("GoalDefault")) %>'
                                                 ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
 
-                                            <asp:RegularExpressionValidator ID="DefaultDailyGoalValidator"
-                                                ControlToValidate="DefaultDailyGoal"
+                                            <asp:RegularExpressionValidator ID="GoalDefaultValidator"
+                                                ControlToValidate="GoalDefault"
                                                 ValidationExpression="\d+"
                                                 Display="Dynamic"
                                                 EnableClientScript="true"
-                                                ErrorMessage="<font color='red'>Default daily goal must be numeric.</font>"
+                                                ErrorMessage="<font color='red'>Default goal must be numeric.</font>"
                                                 runat="server"
                                                 Font-Bold="True" Font-Italic="True"
-                                                Text="<font color='red'> * Default daily goal must be numeric. </font>"
+                                                Text="<font color='red'> * Default goal must be numeric. </font>"
                                                 EnableTheming="True"
                                                 SetFocusOnError="True" />
 
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">
+                                            <b>Minimum goal:</b>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:TextBox ID="GoalMin" runat="server" Text='<%# ((int) Eval("GoalMin") ==0 ? "" : Eval("GoalMin")) %>'
+                                                ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+
+                                            <asp:RegularExpressionValidator ID="GoalMinValidator"
+                                                ControlToValidate="GoalMin"
+                                                ValidationExpression="\d+"
+                                                Display="Dynamic"
+                                                EnableClientScript="true"
+                                                ErrorMessage="<font color='red'>Minimum goal must be numeric.</font>"
+                                                runat="server"
+                                                Font-Bold="True" Font-Italic="True"
+                                                Text="<font color='red'> * Minimum goal must be numeric. </font>"
+                                                EnableTheming="True"
+                                                SetFocusOnError="True" />
+
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">
+                                            <b>Maximum goal:</b>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:TextBox ID="GoalMax" runat="server" Text='<%# ((int) Eval("GoalMax") ==0 ? "" : Eval("GoalMax")) %>'
+                                                ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+
+                                            <asp:RegularExpressionValidator ID="GoalMaxValidator"
+                                                ControlToValidate="GoalMax"
+                                                ValidationExpression="\d+"
+                                                Display="Dynamic"
+                                                EnableClientScript="true"
+                                                ErrorMessage="<font color='red'>Maximum goal must be numeric.</font>"
+                                                runat="server"
+                                                Font-Bold="True" Font-Italic="True"
+                                                Text="<font color='red'> * Maximum goal must be numeric. </font>"
+                                                EnableTheming="True"
+                                                SetFocusOnError="True" />
+
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="right">
+                                            <b>Goal Interval:</b>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="The interval is the duration the goal spans over. For example the goal be configured for a certain number of minutes per day, or several books for an entire program."></span>
+                                        </td>
+                                        <td colspan="3">
+                                           <asp:DropDownList ID="GoalIntervalId" runat="server"  Width="98%"  SelectedValue='<%# Eval("GoalIntervalId") %>' CssClass="form-control">
+                                               <asp:ListItem Value="0" Text="Daily"></asp:ListItem>
+                                               <asp:ListItem Value="1" Text="Weekly"></asp:ListItem>
+                                               <asp:ListItem Value="2" Text="Program"></asp:ListItem>
+                                           </asp:DropDownList>
                                         </td>
                                         <td></td>
                                     </tr>

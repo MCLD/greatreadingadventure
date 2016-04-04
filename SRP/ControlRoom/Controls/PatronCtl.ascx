@@ -87,19 +87,6 @@
                         SetFocusOnError="True" Font-Bold="True" Operator="GreaterThan" ValueToCompare="0"><font color='red'> * Required </font></asp:CompareValidator>
                 </td>
             </tr>
-
-
-            <tr>
-                <td>Avatar:</td>
-                <td>
-                    <asp:TextBox ID="AvatarIDTxt" runat="server" Text='<%# Eval("AvatarID") %>' Visible="False"></asp:TextBox>
-                    <asp:DropDownList ID="AvatarID" runat="server" DataSourceID="odsDDAvatars" DataTextField="Name" DataValueField="AID"
-                        AppendDataBoundItems="True" CssClass="form-control">
-                        <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                    </asp:DropDownList>
-                </td>
-            </tr>
-
             <tr>
                 <td>Is Master Account?:</td>
                 <td>

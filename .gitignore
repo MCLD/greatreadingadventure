@@ -220,7 +220,8 @@ _Pvt_Extensions
 *.ide/
 
 # Project-specific files
-SRP/Images/Avatars/*.png
+SRP/Images/AvatarParts/*.png
+SRP/Images/AvatarCache/*.png
 SRP/Images/Badges/*.png
 SRP/Images/Banners/*.png
 SRP/Images/Games/*.png
@@ -235,12 +236,12 @@ SRP/Images/Games/WordMatch/*.png
 SRP/Images/Offers/*.png
 
 # exclusions for missing image images
-!SRP/Images/Avatars/no_avatar.png
-!SRP/Images/Avatars/no_avatar_sm.png
+!SRP/Images/AvatarCache/no_avatar.png
+!SRP/Images/AvatarCache/no_avatar_sm.png
 !SRP/Images/Badges/no_badge.png
 !SRP/Images/Badges/no_badge_sm.png
 
-SRP/Images/Avatars/*.jpg
+SRP/Images/AvatarParts/*.jpg
 SRP/Images/Badges/*.jpg
 SRP/Images/Banners/*.jpg
 SRP/Images/Games/Board/*.jpg
@@ -253,25 +254,25 @@ SRP/Images/Games/MixMatch/*.jpg
 SRP/Images/Games/WordMatch/*.jpg
 SRP/Images/Offers/*.jpg
 
-# include default avatars
-!SRP/Images/Avatars/1.png
-!SRP/Images/Avatars/md_1.png
-!SRP/Images/Avatars/sm_1.png
-!SRP/Images/Avatars/2.png
-!SRP/Images/Avatars/md_2.png
-!SRP/Images/Avatars/sm_2.png
-!SRP/Images/Avatars/3.png
-!SRP/Images/Avatars/md_3.png
-!SRP/Images/Avatars/sm_3.png
-!SRP/Images/Avatars/4.png
-!SRP/Images/Avatars/md_4.png
-!SRP/Images/Avatars/sm_4.png
-!SRP/Images/Avatars/5.png
-!SRP/Images/Avatars/md_5.png
-!SRP/Images/Avatars/sm_5.png
-!SRP/Images/Avatars/6.png
-!SRP/Images/Avatars/md_6.png
-!SRP/Images/Avatars/sm_6.png
+# include default avatar parts
+!SRP/Images/AvatarParts/1.png
+!SRP/Images/AvatarParts/sm_1.png
+!SRP/Images/AvatarParts/2.png
+!SRP/Images/AvatarParts/sm_2.png
+!SRP/Images/AvatarParts/3.png
+!SRP/Images/AvatarParts/sm_3.png
+!SRP/Images/AvatarParts/4.png
+!SRP/Images/AvatarParts/sm_4.png
+!SRP/Images/AvatarParts/5.png
+!SRP/Images/AvatarParts/sm_5.png
+!SRP/Images/AvatarParts/6.png
+!SRP/Images/AvatarParts/sm_6.png
+!SRP/Images/AvatarParts/7.png
+!SRP/Images/AvatarParts/sm_7.png
+!SRP/Images/AvatarParts/8.png
+!SRP/Images/AvatarParts/sm_8.png
+!SRP/Images/AvatarParts/9.png
+!SRP/Images/AvatarParts/sm_9.png
 
 
 # exclude program css files except for the default four programs

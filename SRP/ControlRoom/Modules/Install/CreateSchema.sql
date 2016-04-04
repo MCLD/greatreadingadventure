@@ -1,168 +1,163 @@
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Delete]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Delete]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Avatar_Delete] @AID INT,
+CREATE PROCEDURE [dbo].[app_AvatarPart_Delete] @APID INT,
 	@TenID INT = NULL
 AS
 DELETE
-FROM [Avatar]
-WHERE AID = @AID
+FROM [AvatarPart]
+WHERE APID = @APID
 	AND TenID = @TenID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetAll]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetAll]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Avatar_GetAll] @TenID INT = NULL
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetAll] @TenID INT = NULL
 AS
 SELECT *
-FROM [Avatar]
+FROM [AvatarPart]
 WHERE (
 		TenID = @TenID
 		OR @TenID IS NULL
 		)
+ORDER BY Ordering
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Avatar_GetByID]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetByID]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Avatar_GetByID] @AID INT
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetByID] @APID INT
 AS
 SELECT *
-FROM [Avatar]
-WHERE AID = @AID
+FROM [AvatarPart]
+WHERE APID = @APID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Insert]    Script Date: 2/4/2016 13:18:40 ******/
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetQualifiedByPatron]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[app_Avatar_Insert] (
+CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
+AS
+SELECT
+	a.*
+FROM [PatronBadges] pb
+INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
+WHERE pb.PID = @PID
+UNION ALL
+SELECT 
+    a.*
+FROM [AvatarPart] a
+WHERE a.BadgeID = -1
+ORDER BY Ordering
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Insert]    Script Date: 3/18/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
 	@Name VARCHAR(50),
 	@Gender VARCHAR(1),
+	@ComponentID INT = 0,
+	@BadgeID INT = 0,
+    @Ordering INT = 0,
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
 	@AddedUser VARCHAR(50),
 	@TenID INT = 0,
-	@FldInt1 INT = 0,
-	@FldInt2 INT = 0,
-	@FldInt3 INT = 0,
-	@FldBit1 BIT = 0,
-	@FldBit2 BIT = 0,
-	@FldBit3 BIT = 0,
-	@FldText1 TEXT = '',
-	@FldText2 TEXT = '',
-	@FldText3 TEXT = '',
-	@AID INT OUTPUT
+	@APID INT OUTPUT
 	)
 AS
 BEGIN
-	INSERT INTO Avatar (
-		NAME,
+	INSERT INTO AvatarPart (
+		Name,
 		Gender,
+	    ComponentID,
+		BadgeID,
+		Ordering,
 		LastModDate,
 		LastModUser,
 		AddedDate,
 		AddedUser,
-		TenID,
-		FldInt1,
-		FldInt2,
-		FldInt3,
-		FldBit1,
-		FldBit2,
-		FldBit3,
-		FldText1,
-		FldText2,
-		FldText3
+		TenID
 		)
 	VALUES (
 		@Name,
 		@Gender,
+		@ComponentID,
+	    @BadgeID,
+		@Ordering,
 		@LastModDate,
 		@LastModUser,
 		@AddedDate,
 		@AddedUser,
-		@TenID,
-		@FldInt1,
-		@FldInt2,
-		@FldInt3,
-		@FldBit1,
-		@FldBit2,
-		@FldBit3,
-		@FldText1,
-		@FldText2,
-		@FldText3
+		@TenID
 		)
 
-	SELECT @AID = SCOPE_IDENTITY()
+	SELECT @APID = SCOPE_IDENTITY()
 
-	SELECT @AID
+	SELECT @APID
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Avatar_Update]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_AvatarPart_Update]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE PROCEDURE [dbo].[app_Avatar_Update] (
-	@AID INT,
+CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
 	@Name VARCHAR(50),
 	@Gender VARCHAR(1),
+	@ComponentID INT = 0,
+	@BadgeID INT = 0,
+	@Ordering INT = 0,
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
 	@AddedUser VARCHAR(50),
 	@TenID INT = 0,
-	@FldInt1 INT = 0,
-	@FldInt2 INT = 0,
-	@FldInt3 INT = 0,
-	@FldBit1 BIT = 0,
-	@FldBit2 BIT = 0,
-	@FldBit3 BIT = 0,
-	@FldText1 TEXT = '',
-	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@APID INT OUTPUT
 	)
 AS
-UPDATE Avatar
-SET NAME = @Name,
+UPDATE AvatarPart
+SET Name = @Name,
 	Gender = @Gender,
+	ComponentID = @ComponentID,
+	BadgeID = @BadgeID,
+	Ordering = @Ordering,
 	LastModDate = @LastModDate,
 	LastModUser = @LastModUser,
 	AddedDate = @AddedDate,
 	AddedUser = @AddedUser,
-	TenID = @TenID,
-	FldInt1 = @FldInt1,
-	FldInt2 = @FldInt2,
-	FldInt3 = @FldInt3,
-	FldBit1 = @FldBit1,
-	FldBit2 = @FldBit2,
-	FldBit3 = @FldBit3,
-	FldText1 = @FldText1,
-	FldText2 = @FldText2,
-	FldText3 = @FldText3
-WHERE AID = @AID
+	TenID = @TenID
+WHERE APID = @APID
 	AND TenID = @TenID
 GO
+
 
 /****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -1072,6 +1067,34 @@ FROM Award p
 WHERE p.TenID = @TenID
 	AND p.BadgeID = @BID
 	AND p.NumPoints > 0
+GROUP BY p.AwardName
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_Badge_GetBadgeGoals]    Script Date: 3/28/2016 13:18:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_Badge_GetBadgeGoals] @TenID INT,
+	@BID INT = 0,
+	@List VARCHAR(2000) OUTPUT
+AS
+SET NOCOUNT ON
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+SELECT @List = ''
+
+SELECT @List = COALESCE(CASE 
+			WHEN @List = ''
+				THEN p.AwardName
+			ELSE @List + ', ' + p.AwardName
+			END, '')
+FROM Award p
+WHERE p.TenID = @TenID
+	AND p.BadgeID = @BID
+	AND p.GoalPercent > 0
 GROUP BY p.AwardName
 GO
 
@@ -7666,11 +7689,11 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Custom3, '') AS [Custom3],
 	isNull(p.Custom4, '') AS [Custom4],
 	isNull(p.Custom5, '') AS [Custom5],
-	isNull(p.AvatarID, 0) AS [AvatarID],
 	isNull(p.RegistrationDate, NULL) AS [RegistrationDate],
 	isNull(p.SDistrict, 0) AS [SDistrict],
-	isNull(p.DailyGoal, 0) AS [DailyGoal],
-	isNull(p.GoalCache, 0) AS [GoalCache],
+	isNull(p.Goal, 0) AS [Goal],
+	isNull(p.AvatarState, '') AS [AvatarState],
+	isNull(p.GoalCache, '') AS [GoalCache],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
@@ -7816,9 +7839,9 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Custom3 VARCHAR(50),
 	@Custom4 VARCHAR(50),
 	@Custom5 VARCHAR(50),
-	@AvatarID INT,
 	@SDistrict INT,
-	@DailyGoal INT,
+	@Goal INT,
+	@AvatarState VARCHAR(50),
 	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -7883,9 +7906,9 @@ BEGIN
 		Custom3,
 		Custom4,
 		Custom5,
-		AvatarID,
 		SDistrict,
-		DailyGoal,
+		Goal,
+		AvatarState,
 		GoalCache,
 		TenID,
 		FldInt1,
@@ -7947,9 +7970,9 @@ BEGIN
 		@Custom3,
 		@Custom4,
 		@Custom5,
-		@AvatarID,
 		@SDistrict,
-		@DailyGoal,
+		@Goal,
+		@AvatarState,
 		@GoalCache,
 		@TenID,
 		@FldInt1,
@@ -8024,9 +8047,9 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@Custom3 VARCHAR(50),
 	@Custom4 VARCHAR(50),
 	@Custom5 VARCHAR(50),
-	@AvatarID INT,
 	@SDistrict INT,
-	@DailyGoal INT,
+	@Goal INT,
+	@AvatarState VARCHAR(50),
 	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
@@ -8089,9 +8112,9 @@ SET IsMasterAccount = @IsMasterAccount,
 	Custom3 = @Custom3,
 	Custom4 = @Custom4,
 	Custom5 = @Custom5,
-	AvatarID = @AvatarID,
 	SDistrict = @SDistrict,
-	DailyGoal = @DailyGoal,
+	Goal = @Goal,
+	AvatarState = @AvatarState,
 	GoalCache = @GoalCache,
 	TenID = @TenID,
 	FldInt1 = @FldInt1,
@@ -8493,16 +8516,14 @@ IF @TenID IS NULL
 
 SELECT TOP 10 pp.PID,
 	isnull(SUM(isnull(convert(BIGINT, NumPoints), 0)), 0) AS TotalPoints,
-	p.Username,
-	p.AvatarID
+	p.Username
 INTO #TempLB
 FROM PatronPoints pp
 INNER JOIN Patron p ON pp.PID = p.PID
 	AND p.TenID = @TenID
 WHERE p.ProgID = @ProgId
 GROUP BY pp.PID,
-	p.Username,
-	p.AvatarID
+	p.Username
 ORDER BY TotalPoints DESC
 
 UPDATE #TempLB
@@ -8511,7 +8532,6 @@ WHERE TotalPoints > 20000000
 
 SELECT PID,
 	Username,
-	AvatarID,
 	CONVERT(INT, TotalPoints) AS TotalPoints,
 	ROW_NUMBER() OVER (
 		ORDER BY TotalPoints DESC
@@ -11388,7 +11408,10 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
 	@PostTestStartDate DATETIME,
-	@DefaultDailyGoal INT = 0,
+	@GoalDefault INT = 0,
+	@GoalMin INT = 0,
+	@GoalMAx INT = 0,
+	@GoalIntervalId INT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -11440,7 +11463,10 @@ BEGIN
 		PreTestMandatory,
 		PretestEndDate,
 		PostTestStartDate,
-		DefaultDailyGoal
+		GoalDefault,
+		GoalMin,
+		GoalMax,
+		GoalIntervalId
 		)
 	VALUES (
 		@AdminName,
@@ -11492,7 +11518,10 @@ BEGIN
 		@PreTestMandatory,
 		@PretestEndDate,
 		@PostTestStartDate,
-		@DefaultDailyGoal
+		@GoalDefault,
+		@GoalMin,
+		@GoalMax,
+		@GoalIntervalId
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -11664,7 +11693,10 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
 	@PostTestStartDate DATETIME,
-	@DefaultDailyGoal INT = 0
+	@GoalDefault INT = 0,
+	@GoalMin INT = 0,
+	@GoalMax INT = 0,
+	@GoalIntervalId INT = 0
 	)
 AS
 UPDATE Programs
@@ -11714,7 +11746,10 @@ SET AdminName = @AdminName,
 	PreTestMandatory = @PreTestMandatory,
 	PretestEndDate = @PretestEndDate,
 	PostTestStartDate = @PostTestStartDate,
-	DefaultDailyGoal = @DefaultDailyGoal
+	GoalDefault = @GoalDefault,
+	GoalMin = @GoalMin,
+	GoalMax = @GoalMax,
+	GoalIntervalId = @GoalIntervalId
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -11936,10 +11971,10 @@ CREATE PROCEDURE [dbo].[app_RegistrationSettings_Insert] (
 	@SDistrict_Req BIT,
 	@SDistrict_Show BIT,
 	@SDistrict_Edit BIT,
-	@DailyGoal_Prompt BIT,
-	@DailyGoal_Req BIT,
-	@DailyGoal_Show BIT,
-	@DailyGoal_Edit BIT,
+	@Goal_Prompt BIT,
+	@Goal_Req BIT,
+	@Goal_Show BIT,
+	@Goal_Edit BIT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -12113,10 +12148,10 @@ BEGIN
 		SDistrict_Req,
 		SDistrict_Show,
 		SDistrict_Edit,
-		DailyGoal_Prompt,
-		DailyGoal_Req,
-		DailyGoal_Show,
-		DailyGoal_Edit,
+		Goal_Prompt,
+		Goal_Req,
+		Goal_Show,
+		Goal_Edit,
 		TenID,
 		FldInt1,
 		FldInt2,
@@ -12287,10 +12322,10 @@ BEGIN
 		@SDistrict_Req,
 		@SDistrict_Show,
 		@SDistrict_Edit,
-		@DailyGoal_Prompt,
-		@DailyGoal_Req,
-		@DailyGoal_Show,
-		@DailyGoal_Edit,
+		@Goal_Prompt,
+		@Goal_Req,
+		@Goal_Show,
+		@Goal_Edit,
 		@TenID,
 		@FldInt1,
 		@FldInt2,
@@ -12474,10 +12509,10 @@ CREATE PROCEDURE [dbo].[app_RegistrationSettings_Update] (
 	@SDistrict_Req BIT,
 	@SDistrict_Show BIT,
 	@SDistrict_Edit BIT,
-	@DailyGoal_Prompt BIT,
-	@DailyGoal_Req BIT,
-	@DailyGoal_Show BIT,
-	@DailyGoal_Edit BIT,
+	@Goal_Prompt BIT,
+	@Goal_Req BIT,
+	@Goal_Show BIT,
+	@Goal_Edit BIT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
 	@FldInt2 INT = 0,
@@ -12645,10 +12680,10 @@ SET Literacy1Label = @Literacy1Label,
 	SDistrict_Req = @SDistrict_Req,
 	SDistrict_Show = @SDistrict_Show,
 	SDistrict_Edit = @SDistrict_Edit,
-	DailyGoal_Prompt = @DailyGoal_Prompt,
-	DailyGoal_Req = @DailyGoal_Req,
-	DailyGoal_Show = @DailyGoal_Show,
-	DailyGoal_Edit = @DailyGoal_Edit,
+	Goal_Prompt = @Goal_Prompt,
+	Goal_Req = @Goal_Req,
+	Goal_Show = @Goal_Show,
+	Goal_Edit = @Goal_Edit,
 	LastModUser = @LastModUser,
 	AddedDate = @AddedDate,
 	AddedUser = @AddedUser,
@@ -21633,32 +21668,27 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[Avatar] (
-	[AID] [int] IDENTITY(1, 1) NOT NULL,
+CREATE TABLE [dbo].[AvatarPart] (
+	[APID] [int] IDENTITY(1, 1) NOT NULL,
 	[Name] [varchar](50) NULL,
-	[Gender] [varchar](1) NULL,
+	[Gender] [varchar](50) NULL,
+	[ComponentID] [int] NULL,
+	[BadgeID] [int] NULL,
+	[Ordering] [int] NULL,
 	[LastModDate] [datetime] NULL,
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
-	[FldInt1] [int] NULL,
-	[FldInt2] [int] NULL,
-	[FldInt3] [int] NULL,
-	[FldBit1] [bit] NULL,
-	[FldBit2] [bit] NULL,
-	[FldBit3] [bit] NULL,
-	[FldText1] [text] NULL,
-	[FldText2] [text] NULL,
-	[FldText3] [text] NULL,
-	CONSTRAINT [PK_Avatar] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
+
+	CONSTRAINT [PK_AvatarPart] PRIMARY KEY CLUSTERED ([APID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
 		IGNORE_DUP_KEY = OFF,
 		ALLOW_ROW_LOCKS = ON,
 		ALLOW_PAGE_LOCKS = ON
 		) ON [PRIMARY]
-	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+	) ON [PRIMARY] 
 GO
 
 SET ANSI_PADDING ON
@@ -21699,6 +21729,7 @@ CREATE TABLE [dbo].[Award] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
+
 	CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -22917,10 +22948,10 @@ CREATE TABLE [dbo].[Patron] (
 	[Custom3] [varchar](50) NULL,
 	[Custom4] [varchar](50) NULL,
 	[Custom5] [varchar](50) NULL,
-	[AvatarID] [int] NULL,
 	[RegistrationDate] [datetime] NULL,
-	[DailyGoal] [int] NULL,
+	[Goal] [int] NULL,
 	[GoalCache] [int] NULL,
+	[AvatarState] [varchar](50) NULL,
 	[SDistrict] [int] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
@@ -23549,7 +23580,10 @@ CREATE TABLE [dbo].[Programs] (
 	[PreTestMandatory] [bit] NULL,
 	[PretestEndDate] [datetime] NULL,
 	[PostTestStartDate] [datetime] NULL,
-	[DefaultDailyGoal] [int] NULL,
+	[GoalDefault] [int] NULL,
+	[GoalMin] [int] NULL,
+	[GoalMax] [int] NULL,
+	[GoalIntervalId] [int] NULL,
 	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -23733,10 +23767,10 @@ CREATE TABLE [dbo].[RegistrationSettings] (
 	[SDistrict_Req] [bit] NULL,
 	[SDistrict_Show] [bit] NULL,
 	[SDistrict_Edit] [bit] NULL,
-	[DailyGoal_Prompt] [bit] NULL,
-	[DailyGoal_Req] [bit] NULL,
-	[DailyGoal_Show] [bit] NULL,
-	[DailyGoal_Edit] [bit] NULL,
+	[Goal_Prompt] [bit] NULL,
+	[Goal_Req] [bit] NULL,
+	[Goal_Show] [bit] NULL,
+	[Goal_Edit] [bit] NULL,
 	[TenID] [int] NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,
@@ -24877,19 +24911,19 @@ ORDER BY Username,
 	MiniGameTypeName
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModDate] DEFAULT(getdate())
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_LastModDate] DEFAULT(getdate())
 FOR [LastModDate]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_LastModUser] DEFAULT('N/A')
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPArt_LastModUser] DEFAULT('N/A')
 FOR [LastModUser]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedDate] DEFAULT(getdate())
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_AddedDate] DEFAULT(getdate())
 FOR [AddedDate]
 GO
 
-ALTER TABLE [dbo].[Avatar] ADD CONSTRAINT [DF_Avatar_AddedUser] DEFAULT('N/A')
+ALTER TABLE [dbo].[AvatarPart] ADD CONSTRAINT [DF_AvatarPart_AddedUser] DEFAULT('N/A')
 FOR [AddedUser]
 GO
 

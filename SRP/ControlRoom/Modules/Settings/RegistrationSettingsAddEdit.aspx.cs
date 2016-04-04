@@ -103,7 +103,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Prompt")).Checked;
                     obj.District_Prompt = ((CheckBox)((DetailsView)sender).FindControl("District_Prompt")).Checked;
                     obj.SDistrict_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Prompt")).Checked;
-                    obj.DailyGoal_Prompt = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Prompt")).Checked;
+                    obj.Goal_Prompt = ((CheckBox)((DetailsView)sender).FindControl("Goal_Prompt")).Checked;
                     obj.Teacher_Prompt = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Prompt")).Checked;
                     obj.GroupTeamName_Prompt = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Prompt")).Checked;
                     obj.SchoolType_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Prompt")).Checked;
@@ -142,7 +142,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Req = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Req")).Checked;
                     obj.District_Req = ((CheckBox)((DetailsView)sender).FindControl("District_Req")).Checked;
                     obj.SDistrict_Req = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Req")).Checked;
-                    obj.DailyGoal_Req = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Req")).Checked;
+                    obj.Goal_Req = ((CheckBox)((DetailsView)sender).FindControl("Goal_Req")).Checked;
                     obj.Teacher_Req = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Req")).Checked;
                     obj.GroupTeamName_Req = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Req")).Checked;
                     obj.SchoolType_Req = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Req")).Checked;
@@ -181,7 +181,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Show = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Show")).Checked;
                     obj.District_Show = ((CheckBox)((DetailsView)sender).FindControl("District_Show")).Checked;
                     obj.SDistrict_Show = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Show")).Checked;
-                    obj.DailyGoal_Show = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Show")).Checked;
+                    obj.Goal_Show = ((CheckBox)((DetailsView)sender).FindControl("Goal_Show")).Checked;
                     obj.Teacher_Show = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Show")).Checked;
                     obj.GroupTeamName_Show = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Show")).Checked;
                     obj.SchoolType_Show = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Show")).Checked;
@@ -220,7 +220,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Edit = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Edit")).Checked;
                     obj.District_Edit = ((CheckBox)((DetailsView)sender).FindControl("District_Edit")).Checked;
                     obj.SDistrict_Edit = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Edit")).Checked;
-                    obj.DailyGoal_Req = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Req")).Checked;
+                    obj.Goal_Req = ((CheckBox)((DetailsView)sender).FindControl("Goal_Req")).Checked;
 
                     obj.Teacher_Edit = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Edit")).Checked;
                     obj.GroupTeamName_Edit = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Edit")).Checked;
@@ -311,7 +311,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Prompt")).Checked;
                     obj.District_Prompt = ((CheckBox)((DetailsView)sender).FindControl("District_Prompt")).Checked;
                     obj.SDistrict_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Prompt")).Checked;
-                    obj.DailyGoal_Prompt = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Prompt")).Checked;
+                    obj.Goal_Prompt = ((CheckBox)((DetailsView)sender).FindControl("Goal_Prompt")).Checked;
                     obj.Teacher_Prompt = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Prompt")).Checked;
                     obj.GroupTeamName_Prompt = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Prompt")).Checked;
                     obj.SchoolType_Prompt = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Prompt")).Checked;
@@ -350,7 +350,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Req = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Req")).Checked;
                     obj.District_Req = ((CheckBox)((DetailsView)sender).FindControl("District_Req")).Checked;
                     obj.SDistrict_Req = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Req")).Checked;
-                    obj.DailyGoal_Req = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Req")).Checked;
+                    obj.Goal_Req = ((CheckBox)((DetailsView)sender).FindControl("Goal_Req")).Checked;
                     obj.Teacher_Req = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Req")).Checked;
                     obj.GroupTeamName_Req = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Req")).Checked;
                     obj.SchoolType_Req = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Req")).Checked;
@@ -389,7 +389,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Show = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Show")).Checked;
                     obj.District_Show = ((CheckBox)((DetailsView)sender).FindControl("District_Show")).Checked;
                     obj.SDistrict_Show = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Show")).Checked;
-                    obj.DailyGoal_Show = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Show")).Checked;
+                    obj.Goal_Show = ((CheckBox)((DetailsView)sender).FindControl("Goal_Show")).Checked;
                     obj.Teacher_Show = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Show")).Checked;
                     obj.GroupTeamName_Show = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Show")).Checked;
                     obj.SchoolType_Show = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Show")).Checked;
@@ -428,7 +428,7 @@ namespace GRA.SRP.ControlRoom.Modules.Settings
                     obj.SchoolName_Edit = ((CheckBox)((DetailsView)sender).FindControl("SchoolName_Edit")).Checked;
                     obj.District_Edit = ((CheckBox)((DetailsView)sender).FindControl("District_Edit")).Checked;
                     obj.SDistrict_Edit = ((CheckBox)((DetailsView)sender).FindControl("SDistrict_Edit")).Checked;
-                    obj.DailyGoal_Edit = ((CheckBox)((DetailsView)sender).FindControl("DailyGoal_Edit")).Checked;
+                    obj.Goal_Edit = ((CheckBox)((DetailsView)sender).FindControl("Goal_Edit")).Checked;
                     obj.Teacher_Edit = ((CheckBox)((DetailsView)sender).FindControl("Teacher_Edit")).Checked;
                     obj.GroupTeamName_Edit = ((CheckBox)((DetailsView)sender).FindControl("GroupTeamName_Edit")).Checked;
                     obj.SchoolType_Edit = ((CheckBox)((DetailsView)sender).FindControl("SchoolType_Edit")).Checked;

@@ -9,60 +9,20 @@ namespace GRA.SRP.DAL {
     [Serializable]
     public class ProgramGamePointConversion : EntityBase {
 
-        #region Private Variables
 
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
-        private int myPGCID;
-        private int myPGID;
-        private int myActivityTypeId;
-        private int myActivityCount;
-        private int myPointCount;
-        private DateTime myLastModDate;
-        private string myLastModUser;
-        private DateTime myAddedDate;
-        private string myAddedUser;
-
-        #endregion
-
         #region Accessors
 
-        public int PGCID {
-            get { return myPGCID; }
-            set { myPGCID = value; }
-        }
-        public int PGID {
-            get { return myPGID; }
-            set { myPGID = value; }
-        }
-        public int ActivityTypeId {
-            get { return myActivityTypeId; }
-            set { myActivityTypeId = value; }
-        }
-        public int ActivityCount {
-            get { return myActivityCount; }
-            set { myActivityCount = value; }
-        }
-        public int PointCount {
-            get { return myPointCount; }
-            set { myPointCount = value; }
-        }
-        public DateTime LastModDate {
-            get { return myLastModDate; }
-            set { myLastModDate = value; }
-        }
-        public string LastModUser {
-            get { return myLastModUser; }
-            set { myLastModUser = value; }
-        }
-        public DateTime AddedDate {
-            get { return myAddedDate; }
-            set { myAddedDate = value; }
-        }
-        public string AddedUser {
-            get { return myAddedUser; }
-            set { myAddedUser = value; }
-        }
+        public int PGCID { get; set; }
+        public int PGID { get; set; }
+        public int ActivityTypeId { get; set; }
+        public int ActivityCount { get; set; }
+        public int PointCount { get; set; }
+        public DateTime LastModDate { get; set; }
+        public string LastModUser { get; set; }
+        public DateTime AddedDate { get; set; }
+        public string AddedUser { get; set; }
 
         #endregion
 

@@ -139,15 +139,6 @@ namespace GRA.SRP {
         protected global::System.Web.UI.WebControls.TextBox Password2;
         
         /// <summary>
-        /// AvatarID control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText AvatarID;
-        
-        /// <summary>
         /// step4 control.
         /// </summary>
         /// <remarks>

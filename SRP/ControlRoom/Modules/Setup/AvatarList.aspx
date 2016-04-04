@@ -9,12 +9,13 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <asp:ObjectDataSource ID="odsData" runat="server"
-        SelectMethod="GetAll"
-        TypeName="GRA.SRP.DAL.Avatar"></asp:ObjectDataSource>
+    <asp:ObjectDataSource ID="odsData" runat="server" 
+        SelectMethod="GetAll" 
+        TypeName="GRA.SRP.DAL.AvatarPart">
 
+    </asp:ObjectDataSource>
     <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False"
-        DataKeys="AID"
+        DataKeys="APID"
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"
         OnSorting="GvSorting"
@@ -29,14 +30,14 @@
                 </HeaderTemplate>
                 <ItemTemplate>
                     &nbsp;
-                    <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" ToolTip="Edit Record"
-                        CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("AID") %>'
+                    <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" Tooltip="Edit Record" 
+                        CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("APID") %>'  
                         ImageUrl="~/ControlRoom/Images/edit.png" Width="20px" />
                     &nbsp;
-                    <asp:ImageButton ID="btnDelete" runat="server" AlternateText="Delete Record" ToolTip="Delete Record"
-                        CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("AID") %>'
-                        ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
-                    &nbsp;
+                    <asp:ImageButton ID="btnDelete" runat="server" AlternateText="Delete Record" Tooltip="Delete Record" 
+                        CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("APID") %>' 
+                        ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');"/>
+                   &nbsp;
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
@@ -53,14 +54,25 @@
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Left"></ItemStyle>
             </asp:BoundField>
 
+            <asp:BoundField ReadOnly="True" HeaderText="Component" 
+                    DataField="ComponentID" SortExpression="ComponentID" Visible="True" 
+                    ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemStyle VerticalAlign="Middle" Wrap="False" HorizontalAlign="Left"></ItemStyle>
+            </asp:BoundField>
 
+             <asp:BoundField ReadOnly="True" HeaderText="Ordering" 
+                    DataField="Ordering" SortExpression="Ordering" Visible="True" 
+                    ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemStyle VerticalAlign="Middle" Wrap="False" HorizontalAlign="Left"></ItemStyle>
+            </asp:BoundField>
+			
             <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
                 <HeaderTemplate>
                 </HeaderTemplate>
                 <ItemTemplate>
-                    <a class="fancybox" href="<%# VirtualPathUtility.ToAbsolute(String.Format("~/Images/Avatars/{0}.png?{1}", Eval("AID").ToString(), DateTime.Now.Ticks)) %>">
+                    <a class="fancybox" href="<%# VirtualPathUtility.ToAbsolute(String.Format("~/Images/AvatarParts/{0}.png?{1}", Eval("APID").ToString(), DateTime.Now.Ticks)) %>">
                         <asp:Image ID="Image1" runat="server"
-                            ImageUrl='<%# String.Format("~/Images/Avatars/sm_{0}.png?{1}", Eval("AID").ToString(), DateTime.Now.Ticks) %>'
+                            ImageUrl='<%# String.Format("~/Images/AvatarParts/sm_{0}.png?{1}", Eval("APID").ToString(), DateTime.Now.Ticks) %>'
                             Width="32" Height="32" /></a>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Middle" Wrap="False" Width="300px" HorizontalAlign="Center"></ItemStyle>

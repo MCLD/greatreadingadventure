@@ -1368,10 +1368,10 @@ INSERT INTO RegistrationSettings (
 	[SDistrict_Req],
 	[SDistrict_Show],
 	[SDistrict_Edit],
-	[DailyGoal_Prompt],
-	[DailyGoal_Req],
-	[DailyGoal_Show],
-	[DailyGoal_Edit],
+	[Goal_Prompt],
+	[Goal_Req],
+	[Goal_Show],
+	[Goal_Edit],
 	[TenID],
 	[FldInt1],
 	[FldInt2],
@@ -1735,7 +1735,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	1,
@@ -1784,7 +1788,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	5,
+	100,
+	0
 	)
 GO
 
@@ -1835,7 +1843,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	2,
@@ -1884,7 +1896,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	5,
+	100,
+	0
 	)
 GO
 
@@ -1935,7 +1951,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	3,
@@ -1984,7 +2004,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	5,
+	100,
+	0
 	)
 GO
 
@@ -2035,7 +2059,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	4,
@@ -2084,7 +2112,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	5,
+	100,
+	0
 	)
 GO
 
@@ -2383,252 +2415,6 @@ VALUES (
 GO
 
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
-GO
-
-SET IDENTITY_INSERT [dbo].[Avatar] ON
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	1,
-	N'Percy',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	2,
-	N'Katniss',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	3,
-	N'Othello',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	4,
-	N'Hester',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	5,
-	N'Gandalf',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-INSERT [dbo].[Avatar] (
-	[AID],
-	[Name],
-	[Gender],
-	[LastModDate],
-	[LastModUser],
-	[AddedDate],
-	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
-	)
-VALUES (
-	6,
-	N'Cersei',
-	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
-	)
-GO
-
-SET IDENTITY_INSERT [dbo].[Avatar] OFF
 GO
 
 IF (

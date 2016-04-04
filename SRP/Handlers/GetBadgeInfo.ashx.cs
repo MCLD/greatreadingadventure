@@ -76,6 +76,12 @@ namespace GRA.SRP.Handlers
                             earn.Add(string.Format("Earn points by reading: {0}.", earnText));
                         }
 
+                        earnText = DAL.Badge.GetBadgeGoal(badgeId);
+                        if (earnText.Length > 0)
+                        {
+                            earn.Add(string.Format("Achieve part of your personal reading goal: {0}.", earnText));
+                        }
+
                         earnText = DAL.Badge.GetEnrollmentPrograms(badgeId);
                         if (earnText.Length > 0)
                         {

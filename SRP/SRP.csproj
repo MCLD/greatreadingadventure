@@ -232,6 +232,7 @@
     <Content Include="ControlRoom\RibbonImages\TestsSurveys%402x.png" />
     <Content Include="ControlRoom\RibbonImages\TestsSurveys.png" />
     <Content Include="Controls\Feed.ascx" />
+    <Content Include="Controls\MyAvatarControl.ascx" />
     <Content Include="Controls\Status.ascx" />
     <Content Include="favicon-16x16.png" />
     <Content Include="favicon-32x32.png" />
@@ -260,6 +261,7 @@
     <Content Include="images\gra300.png" />
     <Content Include="images\meadow%402x.jpg" />
     <Content Include="images\meadow.jpg" />
+    <Content Include="Avatar\Default.aspx" />
     <Content Include="mstile-144x144.png" />
     <Content Include="mstile-150x150.png" />
     <Content Include="mstile-310x150.png" />
@@ -2285,6 +2287,13 @@
     <Compile Include="Controls\MyPointsControl.ascx.designer.cs">
       <DependentUpon>MyPointsControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MyAvatarControl.ascx.cs">
+      <DependentUpon>MyAvatarControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\MyAvatarControl.ascx.designer.cs">
+      <DependentUpon>MyAvatarControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PatronNotificationsCtl.ascx.cs">
       <DependentUpon>PatronNotificationsCtl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2517,6 +2526,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Adventures\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Avatar\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Avatar\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Mail\Default.aspx.cs">

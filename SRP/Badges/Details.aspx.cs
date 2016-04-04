@@ -64,27 +64,32 @@ namespace GRA.SRP.Badges {
 
                     StringBuilder earn = new StringBuilder();
 
-                    string earnText = DAL.Badge.GetBadgeReading(badgeId);
+                    string earnText = Badge.GetBadgeReading(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Earn points by reading: {0}.</li>", earnText);
                     }
 
-                    earnText = DAL.Badge.GetEnrollmentPrograms(badgeId);
+                    earnText = Badge.GetBadgeGoal(badgeId);
+                    if (earnText.Length > 0) {
+                        earn.AppendFormat("<li>Achieve part of your personal reading goal: {0}.</li>", earnText);
+                    }
+
+                    earnText = Badge.GetEnrollmentPrograms(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Enroll in a reading program: {0}</li>", earnText);
                     }
 
-                    earnText = DAL.Badge.GetBadgeBookLists(badgeId);
+                    earnText = Badge.GetBadgeBookLists(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Complete a Challenge: {0}</li>", earnText);
                     }
 
-                    earnText = DAL.Badge.GetBadgeGames(badgeId);
+                    earnText = Badge.GetBadgeGames(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Unlock and complete an Adventure: {0}</li>", earnText);
                     }
 
-                    earnText = DAL.Badge.GetBadgeEvents(badgeId);
+                    earnText = Badge.GetBadgeEvents(badgeId);
                     if(earnText.Length > 0) {
                         earn.AppendFormat("<li>Attend an Event: {0}</li>", earnText);
                     }

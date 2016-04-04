@@ -229,11 +229,11 @@
                     </tr>
 
                     <tr>
-                        <td width="250px" align="right" valign="middle">Daily Goal: &nbsp;</td>
-                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="DailyGoal_Prompt" runat="server" Checked='<%# (bool)Eval("DailyGoal_Prompt") %>' ReadOnly="False"></asp:CheckBox></td>
-                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="DailyGoal_Req" runat="server" Checked='<%# (bool)Eval("DailyGoal_Req") %>' ReadOnly="False"></asp:CheckBox></td>
-                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="DailyGoal_Show" runat="server" Checked='<%# (bool)Eval("DailyGoal_Show") %>' ReadOnly="False"></asp:CheckBox></td>
-                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="DailyGoal_Edit" runat="server" Checked='<%# (bool)Eval("DailyGoal_Edit") %>' ReadOnly="False"></asp:CheckBox></td>
+                        <td width="250px" align="right" valign="middle">Goal: &nbsp;</td>
+                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="Goal_Prompt" runat="server" Checked='<%# (bool)Eval("Goal_Prompt") %>' ReadOnly="False"></asp:CheckBox></td>
+                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="Goal_Req" runat="server" Checked='<%# (bool)Eval("Goal_Req") %>' ReadOnly="False"></asp:CheckBox></td>
+                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="Goal_Show" runat="server" Checked='<%# (bool)Eval("Goal_Show") %>' ReadOnly="False"></asp:CheckBox></td>
+                        <td width="100px" align="center" valign="middle"><asp:CheckBox ID="Goal_Edit" runat="server" Checked='<%# (bool)Eval("Goal_Edit") %>' ReadOnly="False"></asp:CheckBox></td>
                     </tr>
 
                     <tr>

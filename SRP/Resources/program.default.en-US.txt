@@ -93,6 +93,11 @@ myaccount-save=Save
 myaccount-family=Manage Family Members
 myaccount-add-family-member=Add Family Member
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Avatar Screen
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+avatar-title=Avatar
+avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked, during the program, by earning badges.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 registration-title=Register and Create Account
@@ -135,7 +140,6 @@ registration-form-guardian-name-last=Parent/guardian last name:
 registration-form-library-district=Library system:
 registration-form-library=Library:
 registration-form-library-card=Library card #:
-registration-form-daily-goal=Daily goal
 registration-form-school-district=School district:
 registration-form-school-type=School type:
 registration-form-school=School name:

@@ -233,11 +233,11 @@ namespace GRA.SRP.Controls
                     return;
                 }
 
-                var dailyGoal = rptr.Items[0].FindControl("DailyGoal") as TextBox;
-                if(dailyGoal != null
-                   && selectedProgram.DefaultDailyGoal > 0)
+                var Goal = rptr.Items[0].FindControl("Goal") as TextBox;
+                if(Goal != null
+                   && selectedProgram.GoalDefault > 0)
                 {
-                    dailyGoal.Text = selectedProgram.DefaultDailyGoal.ToString();
+                    Goal.Text = selectedProgram.GoalDefault.ToString();
                 }
                 
                 var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
@@ -265,12 +265,12 @@ namespace GRA.SRP.Controls
 
                 Step.Text = (curStep + 1).ToString();
 
-
                 var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
+                var selectedProgram = DAL.Programs.FetchObject(PID);
 
 
                 // Goal needs to be modified by ProgramGamePointConversion
-                /* If daily goal is enabled we need to find what method point system uses. Just select the last item that is relevant.. */
+                /* If daily goal is enabled we need to find what method point system uses. Just select the first item that is relevant.. */
                 foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
                 {
                     int activityTypeId = (int)activityTypeValue;
@@ -279,29 +279,20 @@ namespace GRA.SRP.Controls
 
                     if (pgc != null && pgc.PointCount > 0)
                     {
-                        var range = (RangeValidator)rptr.Items[0].FindControl("DailyGoalRangeValidator");
+                        var range = (RangeValidator)rptr.Items[0].FindControl("GoalRangeValidator");
 
-                        if (activityTypeValue == ActivityType.Minutes)
-                        {
-                            range.MinimumValue = "5"; // At least 5 minutes a day.
-                            range.MaximumValue = "750"; // No more than 12 hours.
-                        }
-                        else if (activityTypeValue == ActivityType.Pages)
-                        {
-                            range.MinimumValue = "1"; // at least 1 page a day.
-                            range.MaximumValue = "2000"; // no more than 5000 pages a day.
-                        }
-                        else
-                        {
-                            // cannot have daily goal for other options
-                            continue;
-                        }
+                        range.MinimumValue = selectedProgram.GoalMin.ToString();
+                        range.MaximumValue = selectedProgram.GoalMax.ToString();
+                        range.Text = $"{range.MinimumValue}-{range.MaximumValue}";
 
                         /* save the activity type id */
                         ViewState["ActivityTypeId"] = activityTypeId.ToString();
-                        var baseString = ((BaseSRPPage)Page).GetResourceString("registration-form-daily-goal");
 
-                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()}):";
+                        var intervalString = selectedProgram.GetGoalInterval.ToString();
+
+                        ((Label)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()}):";
+                        // found a valid point conversion for goal so break
+                        break;
                     }
                 }
 
@@ -663,8 +654,9 @@ namespace GRA.SRP.Controls
                 p.ParentGuardianMiddleName = ((TextBox)(rptr.Items[0]).FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)(rptr.Items[0]).FindControl("LibraryCard")).Text;
 
-                int goalValue = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("DailyGoal")).Text);
-                p.DailyGoal = goalValue;
+                int goalValue = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("Goal")).Text);
+                p.Goal = goalValue;
+                p.AvatarState = "";
 
                 if (ViewState["ActivityTypeId"] != null)
                 {
@@ -743,8 +735,6 @@ namespace GRA.SRP.Controls
                 p.Custom5 = string.IsNullOrEmpty(cr.DDValues5)
                     ? ((TextBox)(rptr.Items[0]).FindControl("Custom5")).Text
                     : ((DropDownList)(rptr.Items[0]).FindControl("Custom5DD")).SelectedValue;
-
-                p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)rptr.Items[0].FindControl("AvatarID")).Value);
 
                 var registeringMasterAccount = true;
                 if (!RegisteringFamily.Text.Equals("0"))

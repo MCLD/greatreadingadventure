@@ -155,8 +155,6 @@ namespace GRA.SRP.Controls
                     p.Custom4 = cr.DDValues4 == "" ? ((TextBox)(e.Item).FindControl("Custom4")).Text : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
                     p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(e.Item).FindControl("Custom5")).Text : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
                     
-
-                    p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)e.Item.FindControl("AvatarID")).Value);
                     // do the save
                     p.Update();
                     

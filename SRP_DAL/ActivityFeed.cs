@@ -11,7 +11,7 @@ namespace SRP_DAL {
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private const string query = "SELECT TOP 5" +
-            " p.[AvatarID], p.[Username], bl.ListName, bl.[BLID], b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId], mg.[GameName]" +
+            " p.[PID], p.[Username], bl.ListName, bl.[BLID], b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId], mg.[GameName]" +
             " FROM [PatronPoints] pp" +
             " INNER JOIN [Patron] p ON pp.[PID] = p.[PID] AND p.[TenID] = @TenId" +
             " LEFT OUTER JOIN [Badge] b on pp.[BadgeId] = b.[BID]" +

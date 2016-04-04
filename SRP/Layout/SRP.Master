@@ -425,9 +425,15 @@
                         content.push('<div class="' + spacingClass + ' text-center">')
                         content.push('<span class="lead">' + value.UserName + '</span>');
                         content.push('<img src="' + value.ImageUrl + '" class="center-block thumbnail" alt="' + value.UserName + ' Badge" />');
+
+                        if (value.AvatarMessage.trim().length > 0) {
+                            content.push('<p class="text-center"><b>' + value.AvatarMessage + '</b></p>');
+                        }
+
                         if (value.EarnedMessage.trim().length > 0) {
                             content.push('<p class="text-center">' + value.EarnedMessage + '</p>');
                         }
+
                         content.push('</div>');
                     });
                     content.push('</div>');

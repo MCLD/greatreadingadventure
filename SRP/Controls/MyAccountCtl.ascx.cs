@@ -30,8 +30,10 @@ namespace GRA.SRP.Controls
                 rptr.DataSource = Patron.GetPatronForEdit(patron.PID);
                 rptr.DataBind();
 
+                Programs program = Programs.FetchObject(patron.ProgID);
+
                 // Goal needs to be modified by ProgramGamePointConversion
-                /* If daily goal is enabled we need to find what method point system uses. Just select the last item that is relevant.. */
+                /* If daily goal is enabled we need to find what method point system uses. Just select the first item that is relevant.. */
                 foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
                 {
                     int activityTypeId = (int)activityTypeValue;
@@ -40,30 +42,20 @@ namespace GRA.SRP.Controls
 
                     if (pgc != null && pgc.PointCount > 0)
                     {
-                        var range = (RangeValidator)rptr.Items[0].FindControl("DailyGoalRangeValidator");
+                        var range = (RangeValidator)rptr.Items[0].FindControl("GoalRangeValidator");
 
-                        if (activityTypeValue == ActivityType.Minutes)
-                        {
-                            range.MinimumValue = "5"; // At least 5 minutes a day.
-                            range.MaximumValue = "750"; // No more than 12 hours.
-                        }
-                        else if (activityTypeValue == ActivityType.Pages)
-                        {
-                            range.MinimumValue = "1"; // at least 1 page a day.
-                            range.MaximumValue = "2000"; // no more than 5000 pages a day.
-                        }
-                        else
-                        {
-                            // cannot have daily goal for other options
-                            continue;
-                        }
+                        range.MinimumValue = program.GoalMin.ToString();
+                        range.MaximumValue = program.GoalMax.ToString();
+                        range.Text = $"{range.MinimumValue}-{range.MaximumValue}";
 
                         /* save the activity type id */
                         ViewState["ActivityTypeId"] = activityTypeId.ToString();
 
-                        var baseString = basePage.GetResourceString("registration-form-daily-goal");
+                        var intervalString = program.GetGoalInterval.ToString();
 
-                        ((Label)rptr.Items[0].FindControl("DailyGoalLabel")).Text = $"{baseString} ({activityTypeValue.ToString()})";
+                        ((Label)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()})";
+                        // found a valid point conversion for goal so break
+                        break;
                     }
                 }
 
@@ -113,8 +105,8 @@ namespace GRA.SRP.Controls
                     p.ParentGuardianMiddleName = ((TextBox)(e.Item).FindControl("ParentGuardianMiddleName")).Text;
                     p.LibraryCard = ((TextBox)(e.Item).FindControl("LibraryCard")).Text;
 
-                    int goalValue = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("DailyGoal")).Text);
-                    p.DailyGoal = goalValue;
+                    int goalValue = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("Goal")).Text);
+                    p.Goal = goalValue;
 
                     if (ViewState["ActivityTypeId"] != null)
                     {
@@ -128,6 +120,7 @@ namespace GRA.SRP.Controls
                             if (pgc != null)
                             {
                                 Programs program = Programs.FetchObject(p.ProgID);
+
                                 p.RecalculateGoalCache(program, pgc);
                             }
                         }
@@ -186,10 +179,7 @@ namespace GRA.SRP.Controls
                     p.Custom5 = string.IsNullOrEmpty(this.CustomFields.DDValues5)
                         ? ((TextBox)(e.Item).FindControl("Custom5")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
-
-                    //p.AvatarID = FormatHelper.SafeToInt(((DropDownList)(e.Item).FindControl("AvatarID")).SelectedValue);
-                    p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)e.Item.FindControl("AvatarID")).Value);
-                    // do the save
+                   // do the save
                     p.Update();
                     Session["Patron"] = p;
 

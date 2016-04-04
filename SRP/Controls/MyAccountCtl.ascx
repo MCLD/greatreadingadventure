@@ -19,6 +19,14 @@
     <asp:Repeater ID="rptr" runat="server" OnItemDataBound="rptr_ItemDataBound" OnItemCommand="rptr_ItemCommand">
         <ItemTemplate>
             <div class="margin-halfem-top row">
+                <asp:HyperLink CausesValidation="false"
+                    ID="Avatar"
+                    CssClass="btn btn-default margin-halfem-bottom"
+                    runat="server"
+                    NavigateUrl="~/Avatar/">
+                    <span class="glyphicon glyphicon-picture margin-halfem-right"></span>
+                    <asp:Label runat="server" Text="avatar-title"></asp:Label>
+                </asp:HyperLink>
                 <asp:HyperLink ID="FamilyAccountList"
                     CausesValidation="false"
                     CommandName="familyAccountList"
@@ -108,26 +116,6 @@
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LastName_Req") %>'
                         ControlToValidate="LastName" Display="Dynamic" ErrorMessage="Last name is required"
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-avatar"></asp:Label>
-                </label>
-                <div class="col-sm-9">
-                    <select id="ddAvatar"></select>
-                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                    <script>
-                        var ddData = <%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>;
-                        $('#ddAvatar').ddslick({
-                            data: ddData,
-                            background: "transparent",
-                            selectText: "Select an avatar",
-                            onSelected: function (data) {
-                                $('.selected-avatar').first().val(data.selectedData.value);
-                            }
-                        });
-                    </script>
                 </div>
             </div>
             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolGrade_Show")%>'>
@@ -602,30 +590,30 @@
             </div>
 
 
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("DailyGoal_Show")%>'>
+            <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Show")%>'>
                 <label class="col-sm-3 control-label">
-                    <asp:Label ID="DailyGoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Label>
+                    <asp:Label ID="GoalLabel" runat="server"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:TextBox ID="DailyGoal" runat="server" CssClass="form-control"
-                        Text='<%# Eval("DailyGoal") %>'
-                        Enabled='<%# (bool)Eval("DailyGoal_Edit") %>'></asp:TextBox>
+                    <asp:TextBox ID="Goal" runat="server" CssClass="form-control"
+                        Text='<%# Eval("Goal") %>'
+                        Enabled='<%# (bool)Eval("Goal_Edit") %>'></asp:TextBox>
 
                 </div>
                 <div class="col-sm-3 form-control-static">
-                    <span runat="server" visible='<%# Eval("DailyGoal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DailyGoalReq"></span>
-                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("DailyGoal_Req") %>'
-                        ControlToValidate="DailyGoal" Display="Dynamic" ErrorMessage="Daily Goal is required"
+                    <span runat="server" visible='<%# Eval("Goal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GoalReq"></span>
+                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
+                        ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                         <asp:RangeValidator
-                        ID="DailyGoalRangeValidator"
+                        ID="GoalRangeValidator"
                         MinimumValue="0"
                         MaximumValue="100"
-                        ControlToValidate="DailyGoal"
+                        ControlToValidate="Goal"
                         Display="Dynamic"
                         Type="Integer"
                         EnableClientScript="true"
-                        ErrorMessage='Invalid range for Daily Goal'
+                        ErrorMessage='Invalid range for Goal'
                         runat="server"
                         Text='invalid range'
                         EnableTheming="True"

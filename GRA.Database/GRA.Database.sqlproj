@@ -153,7 +153,6 @@
     <Build Include="dbo\Tables\SurveyAnswers.sql" />
     <Build Include="dbo\Tables\SurveyQuestion.sql" />
     <Build Include="dbo\Tables\SurveyResults.sql" />
-    <Build Include="dbo\Tables\Avatar.sql" />
     <Build Include="dbo\Tables\Tenant.sql" />
     <Build Include="dbo\Tables\Award.sql" />
     <Build Include="dbo\Tables\TenantInitData.sql" />
@@ -217,23 +216,23 @@
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllComplete.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetAll.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_Delete.sql" />
-    <Build Include="dbo\Stored Procedures\app_Avatar_Delete.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_Delete.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllExpanded.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetAllWinners.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetAll.sql" />
-    <Build Include="dbo\Stored Procedures\app_Avatar_GetAll.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_GetAll.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetAllStats.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawing_GetByID.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByID.sql" />
-    <Build Include="dbo\Stored Procedures\app_Avatar_GetByID.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_GetByID.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetByID.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawing_Insert.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByIDWithParent.sql" />
-    <Build Include="dbo\Stored Procedures\app_Avatar_Insert.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_Insert.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetBySurveyAndSource.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawing_Update.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetByMGID.sql" />
-    <Build Include="dbo\Stored Procedures\app_Avatar_Update.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_Update.sql" />
     <Build Include="dbo\Stored Procedures\app_SurveyResults_GetExport.sql" />
     <Build Include="dbo\Stored Procedures\app_PrizeDrawingWinners_Delete.sql" />
     <Build Include="dbo\Stored Procedures\app_MGMatchingGame_GetRandomPlayItems.sql" />
@@ -674,6 +673,8 @@
     <Build Include="dbo\Tables\PatronRecovery.sql" />
     <Build Include="dbo\Tables\SRPHistory.sql" />
     <Build Include="dbo\Stored Procedures\app_Notifications_GetAllToOrFromPatron.sql" />
+    <Build Include="dbo\Tables\AvatarPart.sql" />
+    <Build Include="dbo\Stored Procedures\app_AvatarPart_GetQualifiedByPatron.sql" />
     <Build Include="dbo\Stored Procedures\app_SchoolCrosswalk_Export.sql" />
     <Build Include="dbo\Stored Procedures\app_LibraryCrosswalk_Export.sql" />
     <Build Include="dbo\Stored Procedures\app_Event_Filter.sql" />
@@ -682,6 +683,7 @@
     <Build Include="dbo\Stored Procedures\app_Badge_GetVisibleCount.sql" />
     <Build Include="dbo\Stored Procedures\app_Badge_Filter.sql" />
     <Build Include="dbo\Stored Procedures\app_Award_Filter.sql" />
+    <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeGoals.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />
