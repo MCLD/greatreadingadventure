@@ -46,7 +46,6 @@ FROM [AvatarPart]
 WHERE APID = @APID
 GO
 
-
 /****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetQualifiedByPatron]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -56,19 +55,18 @@ GO
 
 CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
 AS
-SELECT
-	a.*
+SELECT a.*
 FROM [PatronBadges] pb
 INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
 WHERE pb.PID = @PID
+
 UNION ALL
 SELECT 
     a.*
 FROM [AvatarPart] a
-WHERE a.BadgeID = -1
+WHERE a.BadgeID = - 1
 ORDER BY Ordering
 GO
-
 
 /****** Object:  StoredProcedure [dbo].[app_AvatarPart_Insert]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -82,7 +80,7 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
 	@Gender VARCHAR(1),
 	@ComponentID INT = 0,
 	@BadgeID INT = 0,
-    @Ordering INT = 0,
+	@Ordering INT = 0,
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
@@ -93,9 +91,9 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
 AS
 BEGIN
 	INSERT INTO AvatarPart (
-		Name,
+		NAME,
 		Gender,
-	    ComponentID,
+		ComponentID,
 		BadgeID,
 		Ordering,
 		LastModDate,
@@ -108,7 +106,7 @@ BEGIN
 		@Name,
 		@Gender,
 		@ComponentID,
-	    @BadgeID,
+		@BadgeID,
 		@Ordering,
 		@LastModDate,
 		@LastModUser,
@@ -129,6 +127,7 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
 	@Name VARCHAR(50),
 	@Gender VARCHAR(1),
@@ -144,7 +143,7 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
 	)
 AS
 UPDATE AvatarPart
-SET Name = @Name,
+SET NAME = @Name,
 	Gender = @Gender,
 	ComponentID = @ComponentID,
 	BadgeID = @BadgeID,
@@ -157,7 +156,6 @@ SET Name = @Name,
 WHERE APID = @APID
 	AND TenID = @TenID
 GO
-
 
 /****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -283,7 +281,7 @@ CREATE PROCEDURE [dbo].[app_Award_GetBadgeListMembership] @BadgeList VARCHAR(500
 AS
 SELECT BID,
 	AdminName,
-	CASE
+	CASE 
 		WHEN CHARINDEX(CONVERT(VARCHAR(10), BID) + ',', ',' + @BadgeList + ',') > 0
 			THEN 1
 		ELSE 0
@@ -359,7 +357,10 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal)
+	AND (
+		TotalGoal < 1
+		OR award.GoalPercent <= (patron.points * 100) / TotalGoal
+		)
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -418,7 +419,10 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal)
+	AND (
+		TotalGoal < 1
+		OR award.GoalPercent <= (patron.points * 100) / TotalGoal
+		)
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -717,7 +721,7 @@ WHERE TenID = @TenID
 SELECT @BID AS BID,
 	c.CID,
 	c.Code AS NAME, --c.CTID,
-	CASE
+	CASE 
 		WHEN bb.BID IS NULL
 			THEN 0
 		ELSE 1
@@ -785,7 +789,7 @@ WHERE TenID = @TenID
 SELECT @BID AS BID,
 	c.CID,
 	c.Code AS NAME, --c.CTID,
-	CASE
+	CASE 
 		WHEN bb.BID IS NULL
 			THEN 0
 		ELSE 1
@@ -825,7 +829,7 @@ WHERE TenID = @TenID
 SELECT @BID AS BID,
 	c.CID,
 	c.Code AS NAME, --c.CTID,
-	CASE
+	CASE 
 		WHEN bb.BID IS NULL
 			THEN 0
 		ELSE 1
@@ -860,7 +864,7 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 SELECT @List = ''
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN convert(VARCHAR, EID)
 			ELSE @List + ', ' + convert(VARCHAR, EID)
@@ -976,7 +980,7 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 SELECT @List = ''
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN p.GameName
 			ELSE @List + ', ' + p.GameName
@@ -1011,7 +1015,7 @@ WHERE TenID = @TenID
 SELECT @BID AS BID,
 	c.CID,
 	c.Code AS NAME, --c.CTID,
-	CASE
+	CASE 
 		WHEN bb.BID IS NULL
 			THEN 0
 		ELSE 1
@@ -1047,7 +1051,7 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 SELECT @List = ''
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN g.GameName
 			ELSE @List + ', ' + g.GameName
@@ -1058,7 +1062,7 @@ WHERE g.TenID = @TenID
 	AND p.AwardBadgeID = @BID
 	OR AwardBadgeIDBonus = @BID
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN p.AwardName
 			ELSE @List + ', ' + p.AwardName
@@ -1129,7 +1133,7 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 SELECT @List = ''
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN p.TabName
 			ELSE @List + ', ' + p.TabName
@@ -1139,7 +1143,7 @@ WHERE p.TenID = @TenID
 	AND p.RegistrationBadgeID = @BID
 ORDER BY p.POrder
 
-SELECT @List = COALESCE(CASE
+SELECT @List = COALESCE(CASE 
 			WHEN @List = ''
 				THEN r.TabName
 			ELSE @List + ', ' + r.TabName
@@ -1721,7 +1725,10 @@ SELECT ROW_NUMBER() OVER (
 		) AS NumBooksCompleted
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
-WHERE t.BLID in (SELECT DISTINCT [BLID] FROM [BookListBooks])
+WHERE t.BLID IN (
+		SELECT DISTINCT [BLID]
+		FROM [BookListBooks]
+		)
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 2/4/2016 13:18:40 ******/
@@ -3208,7 +3215,7 @@ DECLARE @Now DATETIME
 
 SELECT @Now = GETDATE()
 
-SELECT CASE
+SELECT CASE 
 		WHEN EventDate <= @Now
 			AND EndDate IS NULL
 			THEN 'Expired '
@@ -5184,7 +5191,7 @@ FROM #Temp1
 INSERT INTO #Temp2
 SELECT MAGTID,
 	(
-		CASE
+		CASE 
 			WHEN @Difficulty = 1
 				THEN 't1_' + CONVERT(VARCHAR, MAGTID) + '.png'
 			WHEN @Difficulty = 2
@@ -10142,9 +10149,9 @@ AS (
 			SELECT ShortCode
 			FROM ProgramCodes
 			)
-
+	
 	UNION ALL
-
+	
 	SELECT number + 1,
 		NEWID()
 	FROM numbers
@@ -11312,9 +11319,9 @@ IF @WhichMG = 0
 			- 1 AS LevelNumber
 		FROM Minigame mg
 		WHERE mg.MGID = @DefaultMG
-
+		
 		UNION
-
+		
 		SELECT mg.MGID,
 			mg.GameName,
 			pg.LevelNumber
@@ -11335,9 +11342,9 @@ ELSE
 			- 1 AS LevelNumber
 		FROM Minigame mg
 		WHERE mg.MGID = @DefaultMG
-
+		
 		UNION
-
+		
 		SELECT mg.MGID,
 			mg.GameName,
 			pg.LevelNumber
@@ -18260,7 +18267,7 @@ SELECT @UID,
 	dbo.SRPGroups.GroupDescription,
 	dbo.SRPUserGroups.AddedDate,
 	dbo.SRPUserGroups.AddedUser,
-	CASE
+	CASE 
 		WHEN dbo.SRPUserGroups.AddedDate IS NULL
 			THEN 0
 		ELSE 1
@@ -18423,7 +18430,7 @@ SELECT @UID AS UID,
 	dbo.SRPPermissionsMaster.PermissionDesc,
 	dbo.SRPUserPermissions.AddedDate,
 	dbo.SRPUserPermissions.AddedUser,
-	CASE
+	CASE 
 		WHEN dbo.SRPUserPermissions.AddedDate IS NULL
 			THEN 0
 		ELSE 1
@@ -18927,7 +18934,7 @@ SELECT @GID AS GID,
 	dbo.SRPPermissionsMaster.PermissionDesc,
 	dbo.SRPGroupPermissions.AddedDate,
 	dbo.SRPGroupPermissions.AddedUser,
-	CASE
+	CASE 
 		WHEN dbo.SRPGroupPermissions.AddedDate IS NULL
 			THEN 0
 		ELSE 1
@@ -19021,7 +19028,7 @@ SELECT @GID AS GID,
 	dbo.SRPUser.EmailAddress,
 	dbo.SRPUserGroups.AddedDate,
 	dbo.SRPUserGroups.AddedUser,
-	CASE
+	CASE 
 		WHEN dbo.SRPUserGroups.AddedDate IS NULL
 			THEN 0 --'False'
 		ELSE 1 --'True'
@@ -19249,7 +19256,6 @@ IF @searchLibraryDistrictId <> 0
 			ELSE ' AND '
 			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
 
-
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
 			THEN ''
@@ -19280,7 +19286,6 @@ WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + con
 
 --select @SQL1
 EXEC (@SQL1)
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 3/25/2016 13:50:07 ******/
@@ -19515,10 +19520,10 @@ IF OBJECT_ID('tempdb..#Temp1') IS NOT NULL
 	DROP TABLE #Temp1
 
 SELECT AdminName AS Program,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -19549,10 +19554,10 @@ WHERE p.TenID = @TenID
 		)
 GROUP BY p.ProgId,
 	AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -19670,10 +19675,10 @@ IF OBJECT_ID('tempdb..#Temp2') IS NOT NULL
 	DROP TABLE #Temp2
 
 SELECT AdminName AS Program,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -19705,10 +19710,10 @@ WHERE p.TenID = @TenID
 	AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
 GROUP BY p.ProgId,
 	AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -19981,10 +19986,10 @@ SET ANSI_WARNINGS OFF;
 
 SELECT ProgID,
 	pg.AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -20037,10 +20042,10 @@ WHERE Patron.TenID = @TenID
 	AND [dbo].[fx_IsFinisher](Patron.PID, Pg.PID) = 1
 GROUP BY ProgID,
 	AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -20322,27 +20327,27 @@ SELECT pg.AdminName AS Program,
 	ISNULL(c4.Code, '') AS School,
 	p.Age,
 	p.SchoolGrade,
-	CASE
+	CASE 
 		WHEN Score1Date IS NOT NULL
 			THEN CONVERT(VARCHAR(50), Score1)
 		ELSE 'N/A'
 		END AS Score1,
-	CASE
+	CASE 
 		WHEN Score1Date IS NOT NULL
 			THEN CONVERT(VARCHAR(10), Score1Date, 101)
 		ELSE 'N/A'
 		END AS Score1Date,
-	CASE
+	CASE 
 		WHEN Score2Date IS NOT NULL
 			THEN CONVERT(VARCHAR(50), Score2)
 		ELSE 'N/A'
 		END AS Score2,
-	CASE
+	CASE 
 		WHEN Score2Date IS NOT NULL
 			THEN CONVERT(VARCHAR(10), Score2Date, 101)
 		ELSE 'N/A'
 		END AS Score2Date,
-	CASE
+	CASE 
 		WHEN Score1Date IS NOT NULL
 			AND Score2Date IS NOT NULL
 			THEN CONVERT(VARCHAR(50), Score2 - Score1)
@@ -20673,10 +20678,10 @@ CREATE PROCEDURE [dbo].[rpt_RegistrationStats] @ProgId INT = NULL,
 AS
 SELECT ProgID,
 	pg.AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -20728,10 +20733,10 @@ WHERE Patron.TenID = @TenID
 		)
 GROUP BY ProgID,
 	AdminName,
-	CASE
+	CASE 
 		WHEN DOB IS NOT NULL
 			THEN FLOOR((CAST(GetDate() AS INT) - CAST(DOB AS INT)) / 365.25)
-		ELSE CASE
+		ELSE CASE 
 				WHEN Age IS NOT NULL
 					THEN Age
 				ELSE 0
@@ -20868,7 +20873,6 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-
 CREATE PROCEDURE [dbo].[rpt_TenantStatusReport] @TenID INT,
 	@BranchId INT = NULL,
 	@DistrictId INT = NULL,
@@ -20999,7 +21003,6 @@ BEGIN
 		@BadgesAwarded AS BadgesAwarded,
 		@RedeemedProgramCodes AS RedeemedProgramCodes
 END
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[rpt_TenantSummaryReport]    Script Date: 2/4/2016 13:18:40 ******/
@@ -21541,7 +21544,7 @@ BEGIN
 		FROM PatronPoints
 		WHERE PID = @PID
 
-		SELECT @ret = CASE
+		SELECT @ret = CASE 
 				WHEN @UserPoints < @GameCompletionPoints
 					OR @GameCompletionPoints = 0
 					THEN 0
@@ -21617,7 +21620,7 @@ BEGIN
 		FROM PatronPoints
 		WHERE PID = @PID
 
-		SELECT @ret = CASE
+		SELECT @ret = CASE 
 				WHEN @GameCompletionPoints > @UserPoints
 					THEN 0
 				ELSE 1
@@ -21671,7 +21674,7 @@ BEGIN
 		FROM PatronPoints
 		WHERE PID = @PID
 
-		SELECT @ret = CASE
+		SELECT @ret = CASE 
 				WHEN @GameCompletionPoints < @UserPoints
 					THEN 0
 				ELSE 1
@@ -21832,7 +21835,6 @@ CREATE TABLE [dbo].[AvatarPart] (
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
-
 	CONSTRAINT [PK_AvatarPart] PRIMARY KEY CLUSTERED ([APID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -21881,7 +21883,6 @@ CREATE TABLE [dbo].[Award] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-
 	CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -24748,8 +24749,7 @@ CREATE TABLE [dbo].[Survey] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	[BadgeId] [int] NULL
-	CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
+	[BadgeId] [int] NULL CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
 		IGNORE_DUP_KEY = OFF,
