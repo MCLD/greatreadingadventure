@@ -1790,8 +1790,8 @@ VALUES (
 	NULL,
 	NULL,
 	0,
-	5,
-	100,
+	0,
+	120,
 	0
 	)
 GO
@@ -1898,8 +1898,8 @@ VALUES (
 	NULL,
 	NULL,
 	0,
-	5,
-	100,
+	0,
+	120,
 	0
 	)
 GO
@@ -2006,8 +2006,8 @@ VALUES (
 	NULL,
 	NULL,
 	0,
-	5,
-	100,
+	0,
+	120,
 	0
 	)
 GO
@@ -2114,8 +2114,8 @@ VALUES (
 	NULL,
 	NULL,
 	0,
-	5,
-	100,
+	0,
+	120,
 	0
 	)
 GO
@@ -2415,6 +2415,600 @@ VALUES (
 GO
 
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[AvatarPart] ON
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	1,
+	N'Bottom1',
+	N'O',
+	0,
+	- 1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	2,
+	N'Bottom2',
+	N'O',
+	0,
+	- 1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	3,
+	N'Bottom3',
+	N'O',
+	0,
+	- 1,
+	2,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	4,
+	N'Bottom4',
+	N'O',
+	0,
+	- 1,
+	3,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	5,
+	N'Bottom5',
+	N'O',
+	0,
+	- 1,
+	4,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	6,
+	N'Top1',
+	N'O',
+	1,
+	- 1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	7,
+	N'Top2',
+	N'O',
+	1,
+	- 1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	8,
+	N'Top3',
+	N'O',
+	1,
+	- 1,
+	2,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	9,
+	N'Top4',
+	N'O',
+	1,
+	- 1,
+	3,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	10,
+	N'Top5',
+	N'O',
+	1,
+	- 1,
+	4,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	11,
+	N'Top6',
+	N'O',
+	1,
+	- 1,
+	5,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	12,
+	N'Top7',
+	N'O',
+	1,
+	- 1,
+	6,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	13,
+	N'Top8',
+	N'O',
+	1,
+	- 1,
+	7,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	14,
+	N'BoyHead',
+	N'O',
+	2,
+	- 1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	15,
+	N'GirlHead',
+	N'O',
+	2,
+	- 1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	16,
+	N'Man1Head',
+	N'O',
+	2,
+	- 1,
+	2,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	17,
+	N'Man2Head',
+	N'O',
+	2,
+	- 1,
+	3,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	18,
+	N'Man3Head',
+	N'O',
+	2,
+	- 1,
+	4,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	19,
+	N'Woman1Head',
+	N'O',
+	2,
+	- 1,
+	5,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	20,
+	N'Woman2Head',
+	N'O',
+	2,
+	- 1,
+	6,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	21,
+	N'Woman3Head',
+	N'O',
+	2,
+	- 1,
+	7,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+SET IDENTITY_INSERT [dbo].[AvatarPart] OFF
 GO
 
 IF (

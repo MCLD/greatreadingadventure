@@ -273,7 +273,30 @@ SRP/Images/Offers/*.jpg
 !SRP/Images/AvatarParts/sm_8.png
 !SRP/Images/AvatarParts/9.png
 !SRP/Images/AvatarParts/sm_9.png
-
+!SRP/Images/AvatarParts/10.png
+!SRP/Images/AvatarParts/sm_10.png
+!SRP/Images/AvatarParts/11.png
+!SRP/Images/AvatarParts/sm_11.png
+!SRP/Images/AvatarParts/12.png
+!SRP/Images/AvatarParts/sm_12.png
+!SRP/Images/AvatarParts/13.png
+!SRP/Images/AvatarParts/sm_13.png
+!SRP/Images/AvatarParts/14.png
+!SRP/Images/AvatarParts/sm_14.png
+!SRP/Images/AvatarParts/15.png
+!SRP/Images/AvatarParts/sm_15.png
+!SRP/Images/AvatarParts/16.png
+!SRP/Images/AvatarParts/sm_16.png
+!SRP/Images/AvatarParts/17.png
+!SRP/Images/AvatarParts/sm_17.png
+!SRP/Images/AvatarParts/18.png
+!SRP/Images/AvatarParts/sm_18.png
+!SRP/Images/AvatarParts/19.png
+!SRP/Images/AvatarParts/sm_19.png
+!SRP/Images/AvatarParts/20.png
+!SRP/Images/AvatarParts/sm_20.png
+!SRP/Images/AvatarParts/21.png
+!SRP/Images/AvatarParts/sm_21.png
 
 # exclude program css files except for the default four programs
 SRP/CSS/Program/*.css
