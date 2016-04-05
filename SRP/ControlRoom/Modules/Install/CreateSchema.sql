@@ -7854,7 +7854,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Custom5 VARCHAR(50),
 	@SDistrict INT,
 	@Goal INT,
-	@AvatarState VARCHAR(50),
+	@AvatarState VARCHAR(50) = '',
 	@GoalCache INT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,
