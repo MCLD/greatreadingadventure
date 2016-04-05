@@ -66,7 +66,7 @@ family-member-add-register-new=Register a new family member
 family-member-add-has-account=My family member already has an account
 family-member-add-instructions=<p>Create a new account for a family member.</p>
 family-member-add-existing-instructions=<p>Add an existing account as a family member. Enter your family member's username and password below.</p>
-family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>The <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>The <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
+family-member-add-username-password-details=Enter details to create an account for a family member.<br><br><ul><li>The <strong>username</strong> can be anything you like as long as it is 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see the username in the activity feed</strong> so consider that while you select your username.</li><br><li>The <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li><br><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
 family-member-add-save=Save
 family-member-add-cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -92,6 +92,7 @@ myaccount-family-title=Family Account Settings
 myaccount-save=Save
 myaccount-family=Manage Family Members
 myaccount-add-family-member=Add Family Member
+myaccount-program-reward-code=Reward code(s)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Avatar Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

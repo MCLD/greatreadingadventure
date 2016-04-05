@@ -161,6 +161,9 @@
                     sideBySide: true
                 });
                 $('.fancybox').fancybox();
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
             });
             $('.gra-secret-code').focusout(function () {
                 $('#gra-code-available').removeClass();

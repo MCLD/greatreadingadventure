@@ -16,6 +16,7 @@ namespace GRA.SRP.Controls {
 
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
+                ProgramCodeLabel.Visible = false;
 
                 var patron = (Patron)Session["Patron"];
                 if(Session[SessionKey.IsMasterAccount] as bool? != true) {
@@ -62,6 +63,25 @@ namespace GRA.SRP.Controls {
                                                   VirtualPathUtility.ToAbsolute(avatarPathMd));
                     image.Attributes.Add("srcset", srcSet);
                 }
+
+                var rewardLabel = e.Item.FindControl("ProgramRewardCodes") as Label;
+                var rewardCodesData = DAL.ProgramCodes.GetAllForPatron((int)patronRecord["PID"]);
+                if (rewardCodesData != null
+                    && rewardCodesData.Tables.Count > 0
+                    && rewardCodesData.Tables[0].Rows.Count > 0)
+                {
+                    var codes = rewardCodesData.Tables[0]
+                        .AsEnumerable()
+                        .Select(r => r.Field<string>("ShortCode"))
+                        .ToArray();
+                    rewardLabel.Text = string.Join("<br>", codes);
+                    ProgramCodeLabel.Visible = true;
+                }
+                else
+                {
+                    rewardLabel.Text = string.Empty;
+                }
+
             }
         }
 

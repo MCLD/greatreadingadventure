@@ -54,7 +54,7 @@
                                         break;
                                     case 2:
                                         // challenge
-                                        html.push(' completed the <a href="' + feedRootPath + 'Challenges/Details.aspx?blid=' + entry.ChallengeId + '">');
+                                        html.push(' completed the <a href="' + feedRootPath + 'Challenges/Details.aspx?ChallengeId=' + entry.ChallengeId + '">');
                                         html.push(entry.AchievementName + ' challenge</a>');
                                         if (entry.BadgeId && entry.BadgeId > 0) {
                                             html.push(' and <a href="' + feedRootPath + 'Badges/Details.aspx?BadgeId=' + entry.BadgeId + '"');

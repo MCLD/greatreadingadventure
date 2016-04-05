@@ -19,7 +19,8 @@ namespace GRA.SRP
                 {
                     return SRPPage.GetResourceString("system-name");
                 }
-                else {
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -31,7 +32,8 @@ namespace GRA.SRP
                 {
                     return SRPPage.GetResourceString("slogan");
                 }
-                else {
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -46,11 +48,13 @@ namespace GRA.SRP
                     {
                         return string.Empty;
                     }
-                    else {
+                    else
+                    {
                         return result.Trim();
                     }
                 }
-                else {
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -62,7 +66,8 @@ namespace GRA.SRP
                 {
                     return SRPPage.GetResourceString("upsell");
                 }
-                else {
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -74,7 +79,8 @@ namespace GRA.SRP
                 {
                     return SRPPage.GetResourceString("footer-copyright");
                 }
-                else {
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -217,7 +223,8 @@ namespace GRA.SRP
                 alertContainer.Visible = true;
                 Session.Remove(SessionKey.PatronMessage);
             }
-            else {
+            else
+            {
                 alertContainer.Visible = false;
             }
 
@@ -256,10 +263,7 @@ namespace GRA.SRP
                 this.CurrentPage.MetaDescription = this.DefaultMetaDescription;
             }
 
-            HtmlMeta meta = new HtmlMeta();
-            meta.Name = "description";
-            meta.Content = this.CurrentPage.MetaDescription;
-            MetaDescriptionPlaceholder.Controls.Add(meta);
+            Page.MetaDescription = this.CurrentPage.MetaDescription;
 
             var currentTenant = HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == ""
                 ? -1
@@ -466,7 +470,8 @@ namespace GRA.SRP
                         loginUsernameCookie.Value = loginPopupUsername.Text.Trim();
                         Response.SetCookie(loginUsernameCookie);
                     }
-                    else {
+                    else
+                    {
                         if (Request.Cookies[CookieKey.Username] != null)
                         {
                             Response.Cookies[CookieKey.Username].Expires = DateTime.Now.AddDays(-1);
@@ -484,11 +489,13 @@ namespace GRA.SRP
                         string requestedPath = ViewState[SessionKey.RequestedPath].ToString();
                         Response.Redirect(requestedPath);
                     }
-                    else {
+                    else
+                    {
                         Response.Redirect("~");
                     }
                 }
-                else {
+                else
+                {
                     this.LoginPopupErrorMessage = "Invalid username or password.";
                     new SessionTools(Session).ClearPatron();
                 }

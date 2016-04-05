@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
-    <asp:PlaceHolder ID="MetaDescriptionPlaceholder" runat="server" />
     <title runat="server"></title>
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
@@ -35,14 +34,6 @@
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-        function focusFirstField() {
-            $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
-        }
-    </script>
     <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body class="page">
@@ -78,7 +69,8 @@
                             <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
                         <%
                             }
-                            else {
+                            else
+                            {
                         %>
                         <li runat="server" id="homeNav"><a href="~" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-book hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
@@ -88,10 +80,7 @@
                             <span class="glyphicon glyphicon-envelope hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Mail"></span>
                             <span class="glyphicon glyphicon-envelope visible-xs-inline"></span>
                             <span class="visible-xs-inline">Mail</span>
-                            <% if (!string.IsNullOrEmpty(this.Unread) && this.Unread != "0")
-                                { %>
-                            <span id="unreadBadge" class="label label-primary label-as-badge text-primary animated bounceIn"><% =this.Unread %></span>
-                            <% } %>
+                            <span id="unreadBadge" style="display: none;" class="label label-primary label-as-badge text-primary"></span>
                         </a></li>
                         <li id="badgesNav" runat="server"><a href="~/Badges/MyBadges.aspx" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
@@ -255,22 +244,30 @@
         </footer>
         <% } %>
     </form>
-    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
-    </asp:ContentPlaceHolder>
     <script>
-        $(function () {
-            if ("<%=this.ShowLoginPopup%>" == "True") {
-                showLoginPopup();
-            }
-        });
+        function updateUnreadCount(newUnreadCount) {
+            var oldUnreadCount = $('#unreadBadge').text();
+            $('#unreadBadge').removeClass('animated bounceIn');
 
-        $('#loginPopupPanel').on('shown.bs.modal', function () {
-            if ($('#loginPopupUsername').val().length > 0) {
-                $('#loginPopupPassword').focus();
+            if (newUnreadCount != '' && newUnreadCount != 0 && newUnreadCount != oldUnreadCount) {
+                $('#unreadBadge').text(newUnreadCount);
+                $('#unreadBadge').addClass('animated bounceIn');
+                $('#unreadBadge').show();
             } else {
-                $('#loginPopupUsername').focus();
+                $('#unreadBadge').text('');
+                $('#unreadBadge').hide();
             }
-        });
+        }
+
+        function refreshUnreadCount() {
+            var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/UnreadCount.ashx')
+            .done(function (data, textStatus, jqXHR) {
+                if (data.Success) {
+                    updateUnreadCount(data.UnreadMessages);
+                }
+            });
+            return false;
+        }
 
         function showLoginPopup() {
             var elems = $("div[id$='loginPopupPanel']");
@@ -288,25 +285,6 @@
             $("#loginPopupErrorMessage").hide();
             return false;
         }
-
-        $().ready(function () {
-            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
-                showLoginPopup();
-                $("#loginPopupUsernameErrorGlyph").show();
-                $("#loginPopupPasswordErrorGlyph").show();
-                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
-                    $("#loginPopupLoginGroup").toggleClass("has-error");
-                }
-                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
-                    $("#loginPopupPasswordGroup").toggleClass("has-error");
-                }
-                $("#loginPopupErrorMessage").show();
-            }
-
-            if ('<%=this.EarnedBadges%>'.trim() != '') {
-                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
-            }
-        });
 
         function passwordPopupValidateLogin() {
             var valid = true;
@@ -352,6 +330,7 @@
             }
             return valid;
         }
+
         function HideTooltipShowBadgeInfo(sender, badgeId) {
             if (sender) {
                 if ($(sender).tooltip) {
@@ -367,7 +346,7 @@
                 if (!data.Success) {
                     alert("Couldn't show badge information: " + data.ErrorMessage);
                 } else {
-                    var fullTitle = data.UserName + ' Badge';
+                    var fullTitle = 'Badge: ' + data.UserName;
                     $('#badgePopupTitle').text(fullTitle);
                     var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
                     $('#badgePopupImageContainer').empty();
@@ -440,6 +419,7 @@
                     $('#badgeAwardPopupContent').append(content.join(""));
                     content = [];
                     $('#badgeAwardPopupPanel').modal('show');
+                    refreshUnreadCount();
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
@@ -447,6 +427,46 @@
             });
             return false;
         }
+
+        function focusFirstField() {
+            $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
+        }
+
+        $(function () {
+            if ("<%=this.ShowLoginPopup%>" == "True") {
+                showLoginPopup();
+            }
+
+            updateUnreadCount('<%=this.Unread %>');
+            $('[data-toggle="tooltip"]').tooltip()
+
+            $('#loginPopupPanel').on('shown.bs.modal', function () {
+                if ($('#loginPopupUsername').val().length > 0) {
+                    $('#loginPopupPassword').focus();
+                } else {
+                    $('#loginPopupUsername').focus();
+                }
+            });
+
+            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
+                showLoginPopup();
+                $("#loginPopupUsernameErrorGlyph").show();
+                $("#loginPopupPasswordErrorGlyph").show();
+                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
+                }
+                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+                $("#loginPopupErrorMessage").show();
+            }
+
+            if ('<%=this.EarnedBadges%>'.trim() != '') {
+                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
+            }
+        });
     </script>
+    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
+    </asp:ContentPlaceHolder>
 </body>
 </html>

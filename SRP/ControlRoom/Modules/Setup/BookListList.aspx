@@ -76,9 +76,10 @@
         OnRowCreated="GvRowCreated"
         OnSorting="GvSorting"
         OnRowCommand="GvRowCommand"
+        OnRowDataBound="GvRowDataBound"
         Width="100%">
         <Columns>
-            <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField ItemStyle-Wrap="False">
                 <HeaderTemplate>
                     &nbsp;&nbsp;<asp:ImageButton ID="btnAdd" runat="server" AlternateText="Add Record" ToolTip="Add Record"
                         CausesValidation="False" CommandName="AddRecord" CommandArgument="-1"
@@ -87,11 +88,10 @@
                 <ItemTemplate>
                     &nbsp;
                        <asp:LinkButton ID="ImageButton2" runat="server"
-                        CausesValidation="True"
-                        CommandName="Saveandbooks"
-                        Text="Tasks" ToolTip="Tasks" CommandArgument='<%# Bind("BLID") %>'
-                        AlternateText="Tasks" 
-                        ><span class="glyphicon glyphicon-list margin-halfem-bottom" style="font-size: large;"></span></asp:LinkButton>
+                           CausesValidation="True"
+                           CommandName="Saveandbooks"
+                           Text="Tasks" ToolTip="Tasks" CommandArgument='<%# Bind("BLID") %>'
+                           AlternateText="Tasks"><span class="glyphicon glyphicon-list margin-halfem-bottom" style="font-size: large;"></span></asp:LinkButton>
                     &nbsp;
                     <asp:ImageButton ID="btnEdit" runat="server" AlternateText="Edit Record" ToolTip="Edit Record"
                         CausesValidation="False" CommandName="EditRecord" CommandArgument='<%# Bind("BLID") %>'
@@ -102,93 +102,86 @@
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
 
                     &nbsp;
+                   <asp:HyperLink runat="server" 
+                       NavigateUrl='<%# Eval("BLID","~/Challenges/Details.aspx?ChallengeId={0}") %>'
+                       AlternateText="Direct link to this challenge"
+                       ToolTip="Direct link to this challenge"
+                       Target="_blank"><span class="glyphicon glyphicon-new-window margin-halfem-bottom" style="font-size: large;"></asp:HyperLink>
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
             <asp:BoundField ReadOnly="True" HeaderText="BLID" DataField="BLID"
-                SortExpression="BLID" Visible="False" ItemStyle-Wrap="False"
-                ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                SortExpression="BLID" Visible="False" ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
 
-
-            <asp:BoundField ReadOnly="True" HeaderText="AdminName"
+            <asp:BoundField ReadOnly="True" HeaderText="Admin Name"
                 DataField="AdminName" SortExpression="AdminName" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
 
-            <asp:BoundField ReadOnly="True" HeaderText="ListName"
+            <asp:BoundField ReadOnly="True" HeaderText="Challenge Name"
                 DataField="ListName" SortExpression="ListName" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
 
+            <asp:BoundField ReadOnly="True" HeaderText="Points"
+                DataField="AwardPoints" SortExpression="AwardPoints" Visible="True"
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
+            </asp:BoundField>
 
-            <asp:TemplateField SortExpression="LiteracyLevel1" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
-                HeaderText="Literacy Level 1">
+            <asp:TemplateField SortExpression="NumBooksToComplete" Visible="True"
+                ItemStyle-Wrap="False"
+                HeaderText="Tasks">
                 <ItemTemplate>
-                    <%# ((int)Eval("LiteracyLevel1")==0 ? "": FormatHelper.ToInt((int)Eval("LiteracyLevel1")))%>
+                    <%# Eval("NumBooksToComplete") %>/<%# Eval("TotalTasks") %>
+                    <%# Eval("TotalTasks") as int? == 0 ? "<span class=\"glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" title=\"This challenge needs tasks or it will not be visible!\"></span>" : string.Empty %>
                 </ItemTemplate>
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
-            </asp:TemplateField>
-
-            <asp:TemplateField SortExpression="LiteracyLevel2" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
-                HeaderText="Literacy Level 2">
-                <ItemTemplate>
-                    <%# ((int)Eval("LiteracyLevel2")==0 ? "": FormatHelper.ToInt((int)Eval("LiteracyLevel2")))%>
-                </ItemTemplate>
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
             <asp:TemplateField SortExpression="ProgName" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False"
                 HeaderText="Program">
                 <ItemTemplate>
-                    <%# Eval("ProgName")%>
+                    <%# string.IsNullOrWhiteSpace(Eval("ProgName").ToString()) ? "All programs" : Eval("ProgName") %>
                 </ItemTemplate>
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
             <asp:TemplateField SortExpression="Library" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False"
                 HeaderText="Library">
                 <ItemTemplate>
                     <%# Eval("Library")%>
                 </ItemTemplate>
-                <ControlStyle Width="250px" />
-                <ItemStyle Width="250px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
             <asp:BoundField ReadOnly="True" HeaderText="Modified On"
                 DataField="LastModDate" SortExpression="LastModDate" Visible="False"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
             <asp:BoundField ReadOnly="True" HeaderText="Modified By"
                 DataField="LastModUser" SortExpression="LastModUser" Visible="False"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
             <asp:BoundField ReadOnly="True" HeaderText="Added On"
                 DataField="AddedDate" SortExpression="AddedDate" Visible="False"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
             <asp:BoundField ReadOnly="True" HeaderText="Added By"
                 DataField="AddedUser" SortExpression="AddedUser" Visible="False"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False">
+                <ItemStyle Wrap="False"></ItemStyle>
             </asp:BoundField>
 
 
@@ -202,5 +195,4 @@
             </div>
         </EmptyDataTemplate>
     </asp:GridView>
-</asp:Content>
-
+ </asp:Content>

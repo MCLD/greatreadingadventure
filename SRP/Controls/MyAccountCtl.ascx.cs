@@ -4,7 +4,9 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Linq;
 using GRA.Tools;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.Controls
 {
@@ -273,6 +275,8 @@ namespace GRA.SRP.Controls
         }
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
+            var patron = e.Item.DataItem as DataRowView;
+
             var ctl = (DropDownList)e.Item.FindControl("Gender");
             var txt = (TextBox)e.Item.FindControl("GenderTxt");
             var i = ctl.Items.FindByValue(txt.Text);
@@ -315,7 +319,6 @@ namespace GRA.SRP.Controls
             }
             if (familyAddbutton != null)
             {
-                var patron = e.Item.DataItem as DataRowView;
                 if (patron != null
                    && patron["Over18Flag"] as bool? == true
                    && patron["MasterAcctPID"] as int? == 0)
@@ -353,6 +356,34 @@ namespace GRA.SRP.Controls
             {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
                 registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
+            }
+
+            var rewardPanel = e.Item.FindControl("ProgramRewardCodeDisplay") as Panel;
+            var rewardLabel = e.Item.FindControl("ProgramRewardCodes") as Label;
+            var rewardCodesData = DAL.ProgramCodes.GetAllForPatron((int)patron["PID"]);
+            if (rewardCodesData != null
+                && rewardCodesData.Tables.Count > 0
+                && rewardCodesData.Tables[0].Rows.Count > 0)
+            {
+                var codes = rewardCodesData.Tables[0]
+                    .AsEnumerable()
+                    .Select(r => r.Field<string>("ShortCode"))
+                    .ToArray();
+                rewardLabel.Text = string.Join("<br>", codes);
+                rewardPanel.Visible = true;
+            }
+            else
+            {
+                rewardLabel.Text = string.Empty;
+                rewardPanel.Visible = false;
+            }
+
+            var program = DAL.Programs.FetchObject((int)patron["ProgID"]);
+            if (program.HideSchoolInRegistration)
+            {
+                e.Item.FindControl("SDistrictPanel").Visible = false;
+                e.Item.FindControl("SchoolTypePanel").Visible = false;
+                e.Item.FindControl("SchoolNamePanel").Visible = false;
             }
         }
 

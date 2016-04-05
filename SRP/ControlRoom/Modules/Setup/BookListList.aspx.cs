@@ -21,7 +21,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             MasterPage.PageTitle = string.Format("{0}", "Challenges");
 
             _mStrSortExp = String.Empty;
-            
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
@@ -85,7 +85,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string addpage = "~/ControlRoom/Modules/Setup/BookListAddWizard.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BLL"]= string.Empty; Response.Redirect(addpage);
+                Session["BLL"] = string.Empty; Response.Redirect(addpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
@@ -99,7 +99,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 Session["BLL"] = key; Response.Redirect("~/ControlRoom/Modules/Setup/BookListBooksList.aspx");
                 //Response.Redirect(String.Format("{0}?PK={1}", "~/ControlRoom/Modules/Setup/BookListBooksList.aspx", key));
             }
-            
+
             if (e.CommandName.ToLower() == "deleterecord")
             {
                 var key = Convert.ToInt32(e.CommandArgument);
@@ -131,6 +131,23 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var masterPage = (IControlRoomMaster)Master;
                     if (masterPage != null)
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
+                }
+            }
+        }
+
+        protected void GvRowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                var challengeRow = e.Row.DataItem as System.Data.DataRowView;
+                if (challengeRow != null)
+                {
+                    if (challengeRow["TotalTasks"] == null
+                        || challengeRow["TotalTasks"] as int? == 0)
+                    {
+                        e.Row.CssClass = new WebTools().CssEnsureClass("text-danger", 
+                            e.Row.CssClass);
+                    }
                 }
             }
         }

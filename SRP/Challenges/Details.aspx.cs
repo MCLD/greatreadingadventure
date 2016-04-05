@@ -15,8 +15,8 @@ namespace GRA.SRP.Challenges
     public partial class Details : BaseSRPPage
     {
         private bool ProgramOpen { get; set; }
-
-        private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
+        private readonly string BadgeLink = VirtualPathUtility.ToAbsolute("~/Badges/Details.aspx");
+        private const string BadgeLinkAndImage = "<a href=\"{0}?BadgeId={1}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({1});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{1}.png\" /></a>";
         public bool ShowModal { get; set; }
 
         protected string ShowBadge(object badgeIdObject)
@@ -26,8 +26,21 @@ namespace GRA.SRP.Challenges
             {
                 return "No badge.";
             }
-            else {
-                return string.Format(BadgeLinkAndImage, badgeId);
+            else
+            {
+                var badge = DAL.Badge.FetchObject((int)badgeId);
+                if (badge == null)
+                {
+                    return "No badge.";
+                }
+                if (badge.HiddenFromPublic != true)
+                {
+                    return string.Format(BadgeLinkAndImage, BadgeLink, badgeId);
+                }
+                else
+                {
+                    return "Unknown <small>(it's a secret)</small>.";
+                }
             }
         }
         protected string ProgressDisplay(object amountObject, object totalObject)
@@ -56,7 +69,8 @@ namespace GRA.SRP.Challenges
             {
                 return 100;
             }
-            else {
+            else
+            {
                 return (int)(amount * 100.0 / total);
             }
         }
@@ -81,7 +95,8 @@ namespace GRA.SRP.Challenges
                 this.ProgramOpen = false;
                 btnSave.Visible = false;
             }
-            else {
+            else
+            {
                 this.ProgramOpen = true;
                 btnSave.Visible = true;
             }
@@ -96,10 +111,10 @@ namespace GRA.SRP.Challenges
         {
             if (!IsPostBack)
             {
-                if (Request.QueryString["blid"] != null)
+                if (Request.QueryString["ChallengeId"] != null)
                 {
                     int blid;
-                    if (int.TryParse(Request.QueryString["blid"].ToString(), out blid))
+                    if (int.TryParse(Request.QueryString["ChallengeId"].ToString(), out blid))
                     {
                         LookupChallenge(blid);
                     }
@@ -150,7 +165,8 @@ namespace GRA.SRP.Challenges
                     PatronMessageLevels.Warning,
                     "exclamation-sign");
             }
-            else {
+            else
+            {
 
                 challengeTitle.Text = bl.ListName;
                 this.Title = string.Format("{0} Challenge", challengeTitle.Text);
@@ -169,19 +185,41 @@ namespace GRA.SRP.Challenges
 
                 if (bl.AwardBadgeID > 0)
                 {
-                    if (string.IsNullOrWhiteSpace(award))
+                    var badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
+                    if (badge != null)
                     {
-                        award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
-                            bl.NumBooksToComplete,
-                            bl.NumBooksToComplete > 1 ? "s" : string.Empty);
-                    }
-                    else {
-                        award += " and <strong>a badge</strong>.";
-                    }
+                        if (badge.HiddenFromPublic != true)
+                        {
+                            if (string.IsNullOrWhiteSpace(award))
+                            {
+                                award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
+                                    bl.NumBooksToComplete,
+                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                            }
+                            else
+                            {
+                                award += " and <strong>a badge</strong>.";
+                            }
 
-                    BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                            BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                        } else
+                        {
+                            if (string.IsNullOrWhiteSpace(award))
+                            {
+                                award = string.Format("Completing {0} task{1} will earn: <strong>a secret badge</strong>.",
+                                    bl.NumBooksToComplete,
+                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                            }
+                            else
+                            {
+                                award += " and <strong>a secret badge</strong>.";
+                            }
+                            BadgeImage.Text = string.Empty;
+                        }
+                    }
                 }
-                else {
+                else
+                {
                     BadgeImage.Text = string.Empty;
                     award += ".";
                 }
@@ -251,7 +289,8 @@ namespace GRA.SRP.Challenges
                     {
                         onlyCheckedBoxes = false;
                     }
-                    else {
+                    else
+                    {
                         readCount++;
                     }
 
@@ -259,7 +298,8 @@ namespace GRA.SRP.Challenges
                     {
                         pbl.Update();
                     }
-                    else {
+                    else
+                    {
                         pbl.Insert();
                     }
                 }

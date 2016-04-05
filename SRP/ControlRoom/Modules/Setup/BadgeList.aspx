@@ -95,6 +95,12 @@
                         CausesValidation="False" CommandName="DeleteRecord" CommandArgument='<%# Bind("BID") %>'
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
                     &nbsp;
+                    <asp:HyperLink runat="server"
+                        NavigateUrl='<%# Eval("BID","~/Badges/Details.aspx?BadgeId={0}") %>'
+                        AlternateText="Direct link to this badge"
+                        ToolTip="Direct link to this badge"
+                        Visible='<%# Eval("HiddenFromPublic") as bool? != true %>'
+                        Target="_blank"><span class="glyphicon glyphicon-new-window margin-halfem-bottom" style="font-size: large;"></asp:HyperLink>
                 </ItemTemplate>
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>

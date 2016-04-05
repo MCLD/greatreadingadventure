@@ -19,7 +19,8 @@ namespace GRA.SRP.Controls
 
         private bool ProgramOpen { get; set; }
         private bool CompletedChallenge { get; set; }
-        private const string BadgeLinkAndImage = "<a href=\"~/Badges/Details.aspx?BadgeId={0}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({0});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{0}.png\" /></a>";
+        private readonly string BadgeLink = VirtualPathUtility.ToAbsolute("~/Badges/Details.aspx");
+        private const string BadgeLinkAndImage = "<a href=\"{0}?BadgeId={1}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({1});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{1}.png\" /></a>";
         public bool ShowModal { get; set; }
         public Patron CurrentPatron { get; set; }
 
@@ -30,8 +31,21 @@ namespace GRA.SRP.Controls
             {
                 return "No badge.";
             }
-            else {
-                return string.Format(BadgeLinkAndImage, badgeId);
+            else
+            {
+                var badge = DAL.Badge.FetchObject((int)badgeId);
+                if (badge == null)
+                {
+                    return "No badge.";
+                }
+                if (badge.HiddenFromPublic != true)
+                {
+                    return string.Format(BadgeLinkAndImage, BadgeLink, badgeId);
+                }
+                else
+                {
+                    return "Unknown <small>(it's a secret)</small>.";
+                }
             }
         }
 
@@ -77,7 +91,8 @@ namespace GRA.SRP.Controls
             {
                 return 0;
             }
-            else {
+            else
+            {
                 return (int)(amount * 100.0 / total);
             }
         }
@@ -103,7 +118,8 @@ namespace GRA.SRP.Controls
                 this.ProgramOpen = false;
                 btnSave.Visible = false;
             }
-            else {
+            else
+            {
                 this.ProgramOpen = true;
             }
         }
@@ -120,7 +136,7 @@ namespace GRA.SRP.Controls
         protected void PopulateChallengeList()
         {
             int patronId = -1;
-            if(this.CurrentPatron != null)
+            if (this.CurrentPatron != null)
             {
                 patronId = this.CurrentPatron.PID;
             }
@@ -184,25 +200,40 @@ namespace GRA.SRP.Controls
 
                 if (bl.AwardBadgeID > 0)
                 {
-                    if (string.IsNullOrWhiteSpace(award))
+                    var badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
+                    if (badge != null)
                     {
-                        award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>a badge</strong>.",
-                            bl.NumBooksToComplete,
-                            bl.NumBooksToComplete > 1 ? "s" : string.Empty);
-                    }
-                    else {
-                        award += " and <strong>a badge</strong>.";
-                    }
-                }
-                else {
-                    BadgeImage.Text = string.Empty;
-                    award += ".";
-                }
-            }
+                        if (badge.HiddenFromPublic != true)
+                        {
+                            if (string.IsNullOrWhiteSpace(award))
+                            {
+                                award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
+                                    bl.NumBooksToComplete,
+                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                            }
+                            else
+                            {
+                                award += " and <strong>a badge</strong>.";
+                            }
 
-            if (bl.AwardBadgeID > 0)
-            {
-                BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                            BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                        }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(award))
+                            {
+                                award = string.Format("Completing {0} task{1} will earn: <strong>a secret badge</strong>.",
+                                    bl.NumBooksToComplete,
+                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                            }
+                            else
+                            {
+                                award += " and <strong>a secret badge</strong>.";
+                            }
+                            BadgeImage.Text = string.Empty;
+                        }
+                    }
+                }
             }
 
             BadgeImage.Visible = !string.IsNullOrEmpty(BadgeImage.Text);
@@ -225,7 +256,7 @@ namespace GRA.SRP.Controls
             var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
             rptr2.DataSource = ds;
             rptr2.DataBind();
-            printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?blid={0}&print=1",
+            printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?ChallengeId={0}&print=1",
                                                   bl.BLID);
             pnlDetail.Visible = true;
 
@@ -290,7 +321,8 @@ namespace GRA.SRP.Controls
                     {
                         onlyCheckedBoxes = false;
                     }
-                    else {
+                    else
+                    {
                         readCount++;
                     }
 
@@ -298,7 +330,8 @@ namespace GRA.SRP.Controls
                     {
                         pbl.Update();
                     }
-                    else {
+                    else
+                    {
                         pbl.Insert();
                     }
                 }

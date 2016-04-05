@@ -440,7 +440,19 @@
                                                 SetFocusOnError="True" />
 
                                         </td>
-                                        <td></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right"><strong>Hide school during signup:</strong>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="If school is asked for during registration but not required (see 'Settings' -> 'Registration Settings') checking this box will hide it for this program (e.g. if this is a prereader or adult program)."></span>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:CheckBox ID="HideSchoolInRegistration" runat="server" Checked='<%# (bool)Eval("HideSchoolInRegistration") %>' ReadOnly="False"></asp:CheckBox>
+                                        </td>
+                                        <td>&nbsp;</td>
                                     </tr>
                                     <tr>
                                         <td align="right">
@@ -1049,12 +1061,4 @@
     <asp:ObjectDataSource ID="odsDDTests" runat="server"
         SelectMethod="GetAllFinalized"
         TypeName="GRA.SRP.DAL.Survey"></asp:ObjectDataSource>
-
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-
 </asp:Content>
-

@@ -46,7 +46,6 @@ FROM [AvatarPart]
 WHERE APID = @APID
 GO
 
-
 /****** Object:  StoredProcedure [dbo].[app_AvatarPart_GetQualifiedByPatron]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -56,19 +55,18 @@ GO
 
 CREATE PROCEDURE [dbo].[app_AvatarPart_GetQualifiedByPatron] @PID INT = NULL
 AS
-SELECT
-	a.*
+SELECT a.*
 FROM [PatronBadges] pb
 INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
 WHERE pb.PID = @PID
+
 UNION ALL
 SELECT 
     a.*
 FROM [AvatarPart] a
-WHERE a.BadgeID = -1
+WHERE a.BadgeID = - 1
 ORDER BY Ordering
 GO
-
 
 /****** Object:  StoredProcedure [dbo].[app_AvatarPart_Insert]    Script Date: 3/18/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -82,7 +80,7 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
 	@Gender VARCHAR(1),
 	@ComponentID INT = 0,
 	@BadgeID INT = 0,
-    @Ordering INT = 0,
+	@Ordering INT = 0,
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
@@ -93,9 +91,9 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Insert] (
 AS
 BEGIN
 	INSERT INTO AvatarPart (
-		Name,
+		NAME,
 		Gender,
-	    ComponentID,
+		ComponentID,
 		BadgeID,
 		Ordering,
 		LastModDate,
@@ -108,7 +106,7 @@ BEGIN
 		@Name,
 		@Gender,
 		@ComponentID,
-	    @BadgeID,
+		@BadgeID,
 		@Ordering,
 		@LastModDate,
 		@LastModUser,
@@ -129,6 +127,7 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
 	@Name VARCHAR(50),
 	@Gender VARCHAR(1),
@@ -144,7 +143,7 @@ CREATE PROCEDURE [dbo].[app_AvatarPart_Update] (
 	)
 AS
 UPDATE AvatarPart
-SET Name = @Name,
+SET NAME = @Name,
 	Gender = @Gender,
 	ComponentID = @ComponentID,
 	BadgeID = @BadgeID,
@@ -157,7 +156,6 @@ SET Name = @Name,
 WHERE APID = @APID
 	AND TenID = @TenID
 GO
-
 
 /****** Object:  StoredProcedure [dbo].[app_Award_Delete]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -359,7 +357,10 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal) 
+	AND (
+		TotalGoal < 1
+		OR award.GoalPercent <= (patron.points * 100) / TotalGoal
+		)
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -418,7 +419,10 @@ INNER JOIN (
 		OR award.SchoolName = ''
 		)
 	AND (award.NumPoints <= patron.Points)
-	AND (TotalGoal < 1 OR award.GoalPercent <= (patron.points * 100) / TotalGoal) 
+	AND (
+		TotalGoal < 1
+		OR award.GoalPercent <= (patron.points * 100) / TotalGoal
+		)
 	AND (
 		BadgeList = ''
 		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
@@ -1524,7 +1528,7 @@ WHERE BLID = @BLID
 	AND TenID = @TenID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_BookList_Filter]    Script Date: 2/29/2016 12:59:54 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_Filter]    Script Date: 3/28/2016 13:51:22 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1549,6 +1553,11 @@ BEGIN
 	END
 
 	SELECT bl.*,
+		(
+			SELECT COUNT(BLBID)
+			FROM [BookListBooks] blb
+			WHERE blb.[BLID] = bl.[BLID]
+			) AS TotalTasks,
 		ISNULL(p.[AdminName], '') AS [ProgName],
 		ISNULL(c.[Code], '') AS [Library]
 	FROM [BookList] bl
@@ -1716,6 +1725,10 @@ SELECT ROW_NUMBER() OVER (
 		) AS NumBooksCompleted
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
+WHERE t.BLID IN (
+		SELECT DISTINCT [BLID]
+		FROM [BookListBooks]
+		)
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 2/4/2016 13:18:40 ******/
@@ -11410,8 +11423,9 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@PostTestStartDate DATETIME,
 	@GoalDefault INT = 0,
 	@GoalMin INT = 0,
-	@GoalMAx INT = 0,
+	@GoalMax INT = 0,
 	@GoalIntervalId INT = 0,
+	@HideSchoolInRegistration BIT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -11466,7 +11480,8 @@ BEGIN
 		GoalDefault,
 		GoalMin,
 		GoalMax,
-		GoalIntervalId
+		GoalIntervalId,
+		HideSchoolInRegistration
 		)
 	VALUES (
 		@AdminName,
@@ -11521,7 +11536,8 @@ BEGIN
 		@GoalDefault,
 		@GoalMin,
 		@GoalMax,
-		@GoalIntervalId
+		@GoalIntervalId,
+		@HideSchoolInRegistration
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -11696,7 +11712,8 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@GoalDefault INT = 0,
 	@GoalMin INT = 0,
 	@GoalMax INT = 0,
-	@GoalIntervalId INT = 0
+	@GoalIntervalId INT = 0,
+	@HideSchoolInRegistration BIT = 0
 	)
 AS
 UPDATE Programs
@@ -11749,7 +11766,8 @@ SET AdminName = @AdminName,
 	GoalDefault = @GoalDefault,
 	GoalMin = @GoalMin,
 	GoalMax = @GoalMax,
-	GoalIntervalId = @GoalIntervalId
+	GoalIntervalId = @GoalIntervalId,
+	HideSchoolInRegistration = @HideSchoolInRegistration
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -19238,7 +19256,6 @@ IF @searchLibraryDistrictId <> 0
 			ELSE ' AND '
 			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
 
-
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
 			THEN ''
@@ -19269,7 +19286,6 @@ WHERE RowRank > ' + convert(VARCHAR, @startRowIndex) + ' AND RowRank <= (' + con
 
 --select @SQL1
 EXEC (@SQL1)
-
 GO
 
 /****** Object:  StoredProcedure [dbo].[GetTotalPatrons]    Script Date: 3/25/2016 13:50:07 ******/
@@ -20850,6 +20866,145 @@ SELECT 'TOTAL: ',
 WHERE @IncSummary = 1
 GO
 
+/****** Object:  StoredProcedure [dbo].[rpt_TenantStatusReport]    Script Date: 4/1/2016 15:25:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_TenantStatusReport] @TenID INT,
+	@BranchId INT = NULL,
+	@DistrictId INT = NULL,
+	@ProgramId INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @RegisteredPatrons INT,
+		@PointsEarned INT,
+		@PointsEarnedReading INT,
+		@ChallengesCompleted INT,
+		@SecretCodesRedeemed INT,
+		@AdventuresCompleted INT,
+		@BadgesAwarded INT,
+		@RedeemedProgramCodes INT
+	DECLARE @Branches TABLE ([BranchId] INT)
+	DECLARE @HasBranches BIT = 0
+
+	IF @BranchId IS NULL
+		AND @DistrictId IS NOT NULL
+	BEGIN
+		INSERT INTO @Branches
+		SELECT [BranchId]
+		FROM [LibraryCrosswalk]
+		WHERE [DistrictID] = @DistrictId
+
+		SET @HasBranches = 1
+	END
+	ELSE IF @BranchId IS NOT NULL
+	BEGIN
+		INSERT INTO @Branches
+		VALUES (@BranchId)
+
+		SET @HasBranches = 1
+	END
+
+	SELECT @RegisteredPatrons = count(PID)
+	FROM [Patron] p
+	WHERE p.[tenid] = @TenID
+		AND (
+			p.[ProgID] = @ProgramId
+			OR @ProgramId IS NULL
+			)
+		AND (
+			p.[PrimaryLibrary] IN (
+				SELECT [BranchId]
+				FROM @Branches
+				)
+			OR @HasBranches = 0
+			)
+
+	SELECT @PointsEarned = sum(pp.[NumPoints]),
+		@PointsEarnedReading = sum(CASE pp.[AwardReasonCd]
+				WHEN 0
+					THEN 1
+				ELSE 0
+				END),
+		@ChallengesCompleted = sum(CASE pp.[IsBookList]
+				WHEN 1
+					THEN 1
+				ELSE 0
+				END),
+		@SecretCodesRedeemed = sum(CASE pp.[isEvent]
+				WHEN 1
+					THEN 1
+				ELSE 0
+				END),
+		@AdventuresCompleted = sum(CASE pp.[AwardReasonCd]
+				WHEN 4
+					THEN 1
+				ELSE 0
+				END)
+	FROM [patronpoints] pp
+	INNER JOIN [patron] p ON p.[pid] = pp.[pid]
+		AND p.[tenid] = @TenID
+		AND (
+			p.[ProgID] = @ProgramId
+			OR @ProgramId IS NULL
+			)
+		AND (
+			p.[PrimaryLibrary] IN (
+				SELECT [BranchId]
+				FROM @Branches
+				)
+			OR @HasBranches = 0
+			)
+
+	SELECT @BadgesAwarded = count(pbid)
+	FROM [patronbadges] pb
+	INNER JOIN [patron] p ON p.[pid] = pb.[pid]
+		AND p.[tenid] = @TenID
+		AND (
+			p.[ProgID] = @ProgramId
+			OR @ProgramId IS NULL
+			)
+		AND (
+			p.[PrimaryLibrary] IN (
+				SELECT [BranchId]
+				FROM @Branches
+				)
+			OR @HasBranches = 0
+			)
+
+	SELECT @RedeemedProgramCodes = count(pc.[PCID])
+	FROM [ProgramCodes] pc
+	INNER JOIN [Patron] p ON p.[PID] = pc.[PatronId]
+		AND p.[TenID] = @TenID
+		AND (
+			p.[ProgID] = @ProgramId
+			OR @ProgramId IS NULL
+			)
+		AND (
+			p.[PrimaryLibrary] IN (
+				SELECT [BranchId]
+				FROM @Branches
+				)
+			OR @HasBranches = 0
+			)
+	WHERE pc.[isUsed] = 1
+
+	SELECT @RegisteredPatrons AS RegisteredPatrons,
+		COALESCE(@PointsEarned, 0) AS PointsEarned,
+		COALESCE(@PointsEarnedReading, 0) AS PointsEarnedReading,
+		COALESCE(@ChallengesCompleted, 0) AS ChallengesCompleted,
+		COALESCE(@SecretCodesRedeemed, 0) AS SecretCodesRedeemed,
+		COALESCE(@AdventuresCompleted, 0) AS AdventuresCompleted,
+		@BadgesAwarded AS BadgesAwarded,
+		@RedeemedProgramCodes AS RedeemedProgramCodes
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[rpt_TenantSummaryReport]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -21680,7 +21835,6 @@ CREATE TABLE [dbo].[AvatarPart] (
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
-
 	CONSTRAINT [PK_AvatarPart] PRIMARY KEY CLUSTERED ([APID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -21729,7 +21883,6 @@ CREATE TABLE [dbo].[Award] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-
 	CONSTRAINT [PK_Award] PRIMARY KEY CLUSTERED ([AID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -23584,6 +23737,7 @@ CREATE TABLE [dbo].[Programs] (
 	[GoalMin] [int] NULL,
 	[GoalMax] [int] NULL,
 	[GoalIntervalId] [int] NULL,
+	[HideSchoolInRegistration] [bit] NULL,
 	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
@@ -24595,8 +24749,7 @@ CREATE TABLE [dbo].[Survey] (
 	[FldText1] [text] NULL,
 	[FldText2] [text] NULL,
 	[FldText3] [text] NULL,
-	[BadgeId] [int] NULL
-	CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
+	[BadgeId] [int] NULL CONSTRAINT [PK_Survey] PRIMARY KEY CLUSTERED ([SID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,
 		IGNORE_DUP_KEY = OFF,

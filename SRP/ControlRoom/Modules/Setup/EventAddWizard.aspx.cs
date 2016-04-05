@@ -268,9 +268,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
         protected void btnContinue3_Click(object sender, System.Web.UI.ImageClickEventArgs e)
         {
+            var evt = Event.GetEvent(int.Parse(lblPK.Text));
             var badge = LoadBadgeObject();
-            badge.Insert();
 
+            if (evt.HiddenFromPublic == true)
+            {
+                badge.HiddenFromPublic = true;
+            }
+
+            badge.Insert();
 
             try
             {
@@ -288,7 +294,6 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
             new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
             lblBID.Text = badge.BID.ToString();
-            var evt = Event.GetEvent(int.Parse(lblPK.Text));
             evt.BadgeID = badge.BID;
             evt.Update();
             FileUploadCtl.FileName = lblBID.Text;

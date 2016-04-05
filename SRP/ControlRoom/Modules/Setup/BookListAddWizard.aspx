@@ -43,12 +43,12 @@
                 </td>
             </tr>
 
-            <tr>
+<%--            <tr>
                 <td nowrap><b>Admin Description: </b></td>
-                <td colspan="7" valign="top">
-                    <asp:TextBox ID="AdminDescription" runat="server" CssClass="form-control" ReadOnly="False" Width="98%" Rows="3" TextMode="MultiLine" onblur="copyCrDescChallenge()"></asp:TextBox>
-                </td>
-            </tr>
+                <td colspan="7" valign="top">--%>
+                    <asp:TextBox ID="AdminDescription" runat="server" CssClass="form-control" ReadOnly="False" Width="98%" Rows="3" TextMode="MultiLine" onblur="copyCrDescChallenge()" Visible="false"></asp:TextBox>
+<%--                </td>
+            </tr>--%>
             <tr>
                 <td nowrap valign="top"><b>Patron Description: </b></td>
                 <td colspan="7" style="height: 300px;">
@@ -65,7 +65,7 @@
                                 <td style="padding-right: 0.5em;">
                                     <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsProg" DataTextField="AdminName" DataValueField="PID"
                                         AppendDataBoundItems="True" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="All programs"></asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
                                 <td nowrap style="padding-right: 0.5em;"><b>Branch/Library: </b></td>

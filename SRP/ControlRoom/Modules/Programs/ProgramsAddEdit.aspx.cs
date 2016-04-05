@@ -244,6 +244,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     program.GoalMax = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalMax")).Text);
                     program.GoalIntervalId = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalIntervalId")).SelectedValue);
 
+                    program.HideSchoolInRegistration = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("HideSchoolInRegistration")).Checked;
+
                     program.LastModDate = DateTime.Now;
                     program.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 
@@ -348,7 +350,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
         //protected void CompileResourceFile(string resourceFile)
         //{
         //    Process objProcess = new Process();
-        //    //objProcess.StartInfo.FileName = @"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin\x64\resgen.exe"; 
+        //    //objProcess.StartInfo.FileName = @"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin\x64\resgen.exe";
         //    objProcess.StartInfo.FileName = @"C:\temp\resgen.exe";
         //    objProcess.StartInfo.FileName = (Server.MapPath("~/Resources/") + "\\resgen.exe").Replace("\\\\", "\\");
         //    objProcess.StartInfo.UseShellExecute = false;
@@ -359,4 +361,3 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
         //}
     }
 }
-
