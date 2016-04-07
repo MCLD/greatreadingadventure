@@ -75,17 +75,20 @@ namespace GRA.SRP.Controls {
 
 
                 var outputPath = Server.MapPath($"/images/AvatarCache/{patron.AvatarState}.png");
-                var smallOutputPath = Server.MapPath($"/images/AvatarCache/sm_{patron.AvatarState}.png");
+                var mdOutputPath = Server.MapPath($"/images/AvatarCache/md_{patron.AvatarState}.png");
+                var smOutputPath = Server.MapPath($"/images/AvatarCache/sm_{patron.AvatarState}.png");
 
                 if (!File.Exists(outputPath))
                 {
                     var image = GenerateAvatar(avatarState);
-                    var smallImage = GenerateSmallImage(image, 0.3);
+                    var mdImage = GenerateSmallImage(image, 0.6);
+                    var smImage = GenerateSmallImage(image, 0.3);
 
                     try
                     {
                         image.Save(outputPath, System.Drawing.Imaging.ImageFormat.Png);
-                        smallImage.Save(smallOutputPath, System.Drawing.Imaging.ImageFormat.Png);
+                        mdImage.Save(mdOutputPath, System.Drawing.Imaging.ImageFormat.Png);
+                        smImage.Save(smOutputPath, System.Drawing.Imaging.ImageFormat.Png);
                     }
                     catch (Exception ex)
                     {
@@ -112,6 +115,7 @@ namespace GRA.SRP.Controls {
             var newWidth = (int)(image.Width * ratio);
             var newHeight = (int)(image.Height * ratio);
 
+            /* generate square image constrained to width */
             var newImage = new Bitmap(newWidth, newWidth);
             using (var g = Graphics.FromImage(newImage))
             {
