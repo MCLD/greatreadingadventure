@@ -36,6 +36,16 @@
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">Progress: getting started</div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-8 col-sm-offset-2">
+                                            <asp:Panel runat="server" ID="InitialStartPanel" Visible="false" CssClass="alert alert-danger">
+                                                <span class="glyphicon glyphicon-remove margin-halfem-right"></span>
+                                                <asp:Label runat="server" ID="InitialStartMessage"></asp:Label>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+
                                     <p class="margin-1em-bottom">The next few pages will guide you through the initial configuration of the Great Reading Adventure software.</p>
 
                                     <p>There are three steps:</p>

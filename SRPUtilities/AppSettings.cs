@@ -14,6 +14,8 @@ namespace GRA.SRP.Core.Utilities
         [DescriptionAttribute("DefaultEmailFrom")]
         DefaultEmailFrom,
         [DescriptionAttribute("IgnoreMissingDatabaseGroups")]
-        IgnoreMissingDatabaseGroups
+        IgnoreMissingDatabaseGroups,
+        [DescriptionAttribute("GraConfigured")]
+        GraConfigured
     }
 }
