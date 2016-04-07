@@ -605,7 +605,7 @@
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
                         ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
-                        <asp:RangeValidator
+                    <asp:RangeValidator
                         ID="GoalRangeValidator"
                         MinimumValue="0"
                         MaximumValue="100"
@@ -847,7 +847,8 @@
             </div>
 
             <asp:Panel CssClass="form-group" runat="server" ID="ProgramRewardCodeDisplay">
-                <label class="col-sm-3 control-label"><asp:Label runat="server" Text="myaccount-program-reward-code"></asp:Label>:</label>
+                <label class="col-sm-3 control-label">
+                    <asp:Label runat="server" Text="myaccount-program-reward-code"></asp:Label>:</label>
                 <div class="col-sm-9 form-control-static">
                     <asp:Label ID="ProgramRewardCodes" runat="server"></asp:Label>
                 </div>

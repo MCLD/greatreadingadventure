@@ -17,6 +17,11 @@ BEGIN
 	END
 
 	SELECT bl.*,
+		(
+			SELECT COUNT(BLBID)
+			FROM [BookListBooks] blb
+			WHERE blb.[BLID] = bl.[BLID]
+			) AS TotalTasks,
 		ISNULL(p.[AdminName], '') AS [ProgName],
 		ISNULL(c.[Code], '') AS [Library]
 	FROM [BookList] bl

@@ -10,6 +10,8 @@ CREATE PROCEDURE [dbo].[GetTotalPatrons] (
 	@searchDOB DATETIME = NULL,
 	@searchProgram INT = 0,
 	@searchGender VARCHAR(2) = '',
+	@searchLibraryId INT = 0,
+	@searchLibraryDistrictId INT = 0,
 	@TenID INT = NULL
 	)
 AS
@@ -77,6 +79,20 @@ IF @searchGender <> ''
 				THEN ''
 			ELSE ' AND '
 			END + ' Gender like ''%' + @searchGender + '%'' '
+
+IF @searchLibraryId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' PrimaryLibrary = ' + CONVERT(VARCHAR, @searchLibraryId) + ' '
+
+IF @searchLibraryDistrictId <> 0
+	SELECT @Filter = @Filter + CASE len(@Filter)
+			WHEN 0
+				THEN ''
+			ELSE ' AND '
+			END + ' District = ' + CONVERT(VARCHAR, @searchLibraryDistrictId) + ' '
 
 SELECT @Filter = @Filter + CASE len(@Filter)
 		WHEN 0
