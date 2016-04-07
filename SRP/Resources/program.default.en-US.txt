@@ -92,7 +92,7 @@ myaccount-family-title=Family Account Settings
 myaccount-save=Save
 myaccount-family=Manage Family Members
 myaccount-add-family-member=Add Family Member
-myaccount-program-reward-code=Reward code(s)
+myaccount-program-reward-code=Reward Codes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Avatar Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

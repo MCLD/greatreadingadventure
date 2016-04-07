@@ -17,6 +17,7 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Reports.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Reports@2x.png")
             };
+            pnl.Add(new RibbonLink { Name = "At-a-glance Report", Url = "/ControlRoom/Modules/Reports/Default.aspx" });
             pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
             pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
             returnList.Add(pnl);

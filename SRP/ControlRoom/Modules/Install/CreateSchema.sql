@@ -10210,6 +10210,25 @@ FROM [ProgramCodes]
 WHERE PID = @PID
 GO
 
+/****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllByTenantId]    Script Date: 4/6/2016 15:03:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_ProgramCodes_GetAllByTenantId] @TenID INT = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT COUNT(pc.[PCID]) [CodeCount]
+	FROM [ProgramCodes] pc
+	INNER JOIN [Programs] p ON pc.[PID] = p.[PID]
+		AND p.[TenID] = @TenID
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[app_ProgramCodes_GetAllForPatron]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
