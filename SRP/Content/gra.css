@@ -398,7 +398,14 @@ ul.avatar-btn-group {
         margin-top: 16px;
         margin-bottom: 100px;
     }
+/* events */
 
+.event-branch-detail-glyphicon {
+    display: inline-block;
+    margin-left: 0.5em;
+}
+
+/* at a glance report in the CR */
 div.ataglance {
     border-radius: 0.5em;
     padding: 0.6em;

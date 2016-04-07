@@ -89,6 +89,16 @@ SELECT ROW_NUMBER() OVER (
 		ORDER BY bl.BLID
 		) AS Rank,
 	bl.*,
-	(select count(*) from [PatronBookLists] pbl WHERE pbl.[blid] = bl.[blid] AND pbl.[pid] = @pid AND pbl.[HasReadFlag] = 1) as NumBooksCompleted
+	(
+		SELECT count(*)
+		FROM [PatronBookLists] pbl
+		WHERE pbl.[blid] = bl.[blid]
+			AND pbl.[pid] = @pid
+			AND pbl.[HasReadFlag] = 1
+		) AS NumBooksCompleted
 FROM #temp1 t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
+WHERE t.BLID IN (
+		SELECT DISTINCT [BLID]
+		FROM [BookListBooks]
+		)

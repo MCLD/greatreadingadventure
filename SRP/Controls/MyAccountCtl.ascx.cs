@@ -62,6 +62,7 @@ namespace GRA.SRP.Controls
                 }
 
                 basePage.TranslateStrings(rptr);
+                ReloadLibraryDistrict();
             }
             this.SaveButtonText = basePage.GetResourceString("family-member-add-save");
         }

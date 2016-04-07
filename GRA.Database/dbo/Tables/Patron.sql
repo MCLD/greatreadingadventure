@@ -43,10 +43,10 @@
     [Custom4]                  VARCHAR (50)    NULL,
     [Custom5]                  VARCHAR (50)    NULL,
     [RegistrationDate]         DATETIME        CONSTRAINT [DF_Patron_RegistrationDate] DEFAULT (getdate()) NULL,
-    [Goal]                INT             NULL,
+    [Goal]                     INT             NULL,
     [GoalCache]                INT             NULL,
-    [SDistrict]                INT             NULL,
     [AvatarState]              VARCHAR (50)    NULL,
+    [SDistrict]                INT             NULL,
     [TenID]                    INT             NULL,
     [FldInt1]                  INT             NULL,
     [FldInt2]                  INT             NULL,
@@ -65,6 +65,8 @@
     [Score2Date]               DATETIME        NULL,
     CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED ([PID] ASC)
 );
+
+
 
 
 

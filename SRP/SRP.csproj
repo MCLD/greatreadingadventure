@@ -716,6 +716,7 @@
     <Content Include="Select.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="TechnicalDifficulties.aspx" />
     <Content Include="Thanks.aspx" />
     <Content Include="trumbowyg\langs\ar.min.js" />
     <Content Include="trumbowyg\langs\ca.min.js" />
@@ -2648,6 +2649,13 @@
     </Compile>
     <Compile Include="Select.aspx.designer.cs">
       <DependentUpon>Select.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="TechnicalDifficulties.aspx.cs">
+      <DependentUpon>TechnicalDifficulties.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TechnicalDifficulties.aspx.designer.cs">
+      <DependentUpon>TechnicalDifficulties.aspx</DependentUpon>
     </Compile>
     <Compile Include="Thanks.aspx.cs">
       <DependentUpon>Thanks.aspx</DependentUpon>

@@ -13,6 +13,9 @@ namespace GRA.SRP.Controls
 {
     public partial class Events : System.Web.UI.UserControl
     {
+        private const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window\"></span></a>";
+        private const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
+
         public string FirstAvailableDate { get; set; }
         public string LastAvailableDate { get; set; }
         public string NoneAvailableText { get; set; }
@@ -26,7 +29,8 @@ namespace GRA.SRP.Controls
             {
                 nonNullEndDate = DateTime.MinValue;
             }
-            else {
+            else
+            {
                 nonNullEndDate = (DateTime)endDate;
             }
             return Event.DisplayEventDateTime(new Event
@@ -196,7 +200,9 @@ namespace GRA.SRP.Controls
             }
             else if (Session["UEL_Branch"] != null)
             {
-                try { BranchId.SelectedValue = Session["UEL_Branch"].ToString(); } catch (Exception) { }
+                try {
+                    BranchId.SelectedValue = Session["UEL_Branch"].ToString();
+                } catch (Exception) { }
             }
         }
 
@@ -205,15 +211,33 @@ namespace GRA.SRP.Controls
             return (Session["UEL_Filtered"] != null);
         }
 
-
-
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-        }
-
         protected void btnList_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Events/");
+        }
+
+        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item
+                || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                var eventRow = e.Item.DataItem as System.Data.DataRowView;
+                var branchName = eventRow["Branch"].ToString();
+                var branchAddress = eventRow["BranchAddress"];
+                var branchLink = eventRow["BranchLink"];
+                var label = e.Item.FindControl("BranchName") as Label;
+
+                if (branchLink != null && !string.IsNullOrWhiteSpace(branchLink.ToString()))
+                {
+                    label.Text = string.Format(BranchLinkStub, branchLink.ToString(), branchName);
+                }
+
+                if (branchAddress != null && !string.IsNullOrWhiteSpace(branchAddress.ToString()))
+                {
+                    label.Text += string.Format(BranchMapStub,
+                        HttpUtility.UrlEncode(branchAddress.ToString()));
+                }
+            }
         }
     }
 }
