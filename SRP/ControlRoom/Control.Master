@@ -45,7 +45,7 @@
     <form id="form1" runat="server">
         <center>
             <div id="cdBodyDiv">
-                <div class="cdTop">
+                <div class="cdTop hidden-print">
                     <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
                     <div style="text-align: left;">
                         <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
@@ -54,8 +54,8 @@
                         </div>
                     </div>
                 </div>
-                <div id="cdSeparator"></div>
-                <div class="cdMessage">
+                <div id="cdSeparator" class="hidden-print"></div>
+                <div class="cdMessage hidden-print">
                     <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC"
                         BorderStyle="Solid" BorderWidth="0px" Style="padding: 10px;" Visible="false">
                         <table width="100%" cellpadding="10" cellspacing="0" style="border: solid 1px black;">
