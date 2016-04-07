@@ -37,7 +37,7 @@ namespace GRA.SRP.ControlRoom
                 {
                     ProgramCodesDiv.Visible = false;
                 }
-                MasterPage.PageTitle = "Current Program Status";
+                MasterPage.PageTitle = "At-a-glance Program Status - Items Earned by Patrons";
 
                 var tenant = GRA.SRP.Core.Utilities.Tenant.FetchObject((int)CRTenantID);
                 OrganizationName.Text = tenant.LandingName;

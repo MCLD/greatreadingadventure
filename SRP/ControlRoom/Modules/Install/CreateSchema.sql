@@ -3266,7 +3266,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 4/7/2016 15:25:26 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -3278,47 +3278,48 @@ CREATE PROCEDURE [dbo].[app_Event_GetUpcomingDisplay] @startDate DATETIME = NULL
 	@branchID INT = 0,
 	@TenID INT = NULL
 AS
-SELECT *,
-	(
-		SELECT [Description]
-		FROM dbo.Code
-		WHERE CID = BranchID
-		) AS Branch
-FROM [Event]
+SELECT e.*,
+	c.[Code] AS [Branch],
+	lc.[BranchLink],
+	lc.[BranchAddress],
+	lc.[BranchTelephone]
+FROM [Event] e
+LEFT OUTER JOIN [Code] c ON e.[BranchID] = c.[CID]
+LEFT OUTER JOIN [LibraryCrosswalk] lc ON e.[BranchID] = lc.[BranchID]
 WHERE (
-		BranchID = @branchID
+		e.[BranchID] = @branchID
 		OR @branchID = 0
 		)
 	AND (
-		EventDate >= @startDate
+		e.[EventDate] >= @startDate
 		OR (
-			EndDate IS NOT NULL
-			AND EndDate >= @startDate
+			e.[EndDate] IS NOT NULL
+			AND e.[EndDate] >= @startDate
 			)
 		OR @startDate IS NULL
 		)
 	AND (
-		EventDate <= @endDate
+		e.[EventDate] <= @endDate
 		OR (
-			EndDate IS NOT NULL
-			AND EndDate <= @endDate
+			e.[EndDate] IS NOT NULL
+			AND e.[EndDate] <= @endDate
 			)
 		OR @endDate IS NULL
 		)
 	AND (
-		dateadd(d, 1, EventDate) >= GETDATE()
+		dateadd(d, 1, e.[EventDate]) >= GETDATE()
 		OR (
-			dateadd(d, 1, EndDate) >= GETDATE()
-			AND EndDate IS NOT NULL
+			dateadd(d, 1, e.[EndDate]) >= GETDATE()
+			AND e.[EndDate] IS NOT NULL
 			)
 		)
 	AND (
-		TenID = @TenID
+		e.[TenID] = @TenID
 		OR @TenID IS NULL
 		)
-	AND HiddenFromPublic != 1
-ORDER BY EventDate ASC,
-	EventTitle
+	AND e.[HiddenFromPublic] != 1
+ORDER BY e.[EventDate] ASC,
+	e.[EventTitle]
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Event_InitTenant]    Script Date: 2/4/2016 13:18:40 ******/

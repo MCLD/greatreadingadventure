@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
             if (!IsPostBack)
             {
-                MasterPage.PageTitle = string.Format("{0}", "At-a-glance Report");
+                MasterPage.PageTitle = string.Format("{0}", "At-a-glance Report - Items Earned by Patrons");
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
                 var tenant = GRA.SRP.Core.Utilities.Tenant.FetchObject((int)CRTenantID);
                 OrganizationName.Text = tenant.LandingName;

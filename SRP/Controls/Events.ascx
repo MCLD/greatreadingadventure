@@ -60,7 +60,9 @@
             </tr>
         </thead>
         <tbody>
-            <asp:Repeater runat="server" ID="rptr" OnItemCommand="rptr_ItemCommand">
+            <asp:Repeater runat="server"
+                ID="rptr"
+                OnItemDataBound="rptr_ItemDataBound">
                 <ItemTemplate>
                     <tr>
                         <td><a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
@@ -73,7 +75,8 @@
                                                      Eval("EndDate") as DateTime?,
                                                      Eval("EndTime").ToString()) %>
                         </td>
-                        <td><%# Eval("Branch")%></td>
+                        <td>
+                            <asp:Label ID="BranchName" runat="server" Text='<%# Eval("Branch")%>'></asp:Label></td>
                     </tr>
                 </ItemTemplate>
                 <FooterTemplate>
@@ -98,31 +101,33 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 margin-1em-bottom">
                         This event takes place on
                         <strong><span id="eventPopupWhen"></span><span id="eventPopupWhere"></span></strong>.
                     </div>
                 </div>
                 <div class="row" id="eventPopupDetailsPanel">
-                    <div class="col-sm-12 margin-1em-top">Event details:</div>
-                    <div class="col-sm-10 col-sm-offset-1 margin-1em-top">
-                        <span id="eventPopupDescription"></span>
+                    <div class="col-sm-12 margin-1em-bottom">Event details:</div>
+                    <div class="col-sm-12">
+                        <blockquote>
+                            <span id="eventPopupDescription"></span>
+                        </blockquote>
                     </div>
                 </div>
-                <div class="row margin-1em-top" id="eventPopupCustom1Panel">
+                <div class="row margin-1em-bottom" id="eventPopupCustom1Panel">
                     <span id="eventPopupCustomLabel1"></span>: 
                     <span id="eventPopupCustomValue1"></span>
                 </div>
-                <div class="row margin-1em-top" id="eventPopupCustom2Panel">
+                <div class="row margin-1em-bottom" id="eventPopupCustom2Panel">
                     <span id="eventPopupCustomLabel2"></span>: 
                     <span id="eventPopupCustomValue2"></span>
                 </div>
-                <div class="row margin-1em-top" id="eventPopupCustom3Panel">
+                <div class="row margin-1em-bottom" id="eventPopupCustom3Panel">
                     <span id="eventPopupCustomLabel3"></span>: 
                     <span id="eventPopupCustomValue3"></span>
                 </div>
                 <div class="row" id="eventPopupLinkPanel">
-                    <div class="col-sm-12 margin-1em-top">
+                    <div class="col-sm-12 margin-1em-bottom">
                         See more details: <a id="eventPopupLink" href="#" target="_blank"></a>
                     </div>
                 </div>
@@ -212,7 +217,7 @@
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
-                alert("Couldn't contact server to get event details: " + errorThrown);
+                window.location = "Details.aspx?EventId=" + eventId;
             });
             return false;
         }
