@@ -58,6 +58,24 @@ namespace GRA.SRP.Events {
         protected global::System.Web.UI.WebControls.Label eventWhere;
         
         /// <summary>
+        /// eventWhereLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink eventWhereLink;
+        
+        /// <summary>
+        /// eventWhereMapLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink eventWhereMapLink;
+        
+        /// <summary>
         /// eventDescription control.
         /// </summary>
         /// <remarks>
@@ -182,5 +200,14 @@ namespace GRA.SRP.Events {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink eventBackLink;
+        
+        /// <summary>
+        /// Microdata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Microdata;
     }
 }
