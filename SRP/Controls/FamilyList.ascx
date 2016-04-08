@@ -37,7 +37,7 @@
             <ItemTemplate>
                 <tr>
                     <td style="vertical-align: middle;">
-                        <asp:Image runat="server" ID="avatarImage" Width="64" Height="64" />
+                        <asp:Image runat="server" ID="avatarImage" Width="84" Height="84" />
                     </td>
                     <td style="vertical-align: middle;">
                         <%# Eval("FirstName") + " " + Eval("LastName")%> (<%# Eval("username") %>)

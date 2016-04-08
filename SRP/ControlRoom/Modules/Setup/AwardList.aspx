@@ -72,7 +72,13 @@
     </asp:ObjectDataSource>
 
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="True" PageSize="20"
+    <asp:GridView ID="gv"
+        runat="server"
+        AllowSorting="True"
+        AutoGenerateColumns="False"
+        AllowPaging="True"
+        PageSize="10"
+        PagerStyle-Font-Size="Medium"
         DataKeys="AID"
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"

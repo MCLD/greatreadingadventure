@@ -1619,7 +1619,7 @@ FROM [BookList]
 WHERE BLID = @BLID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 4/8/2016 13:41:56 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1682,9 +1682,15 @@ SELECT BLID,
 	ListName,
 	Description
 FROM BookList
-WHERE ProgID > 0
-	AND ProgID = @ProgramId
-	AND TenID = @TenID
+WHERE (
+		ProgID > 0
+		AND ProgID = @ProgramId
+		AND TenID = @TenID
+		)
+	OR (
+		ProgID = 0
+		AND TenID = @TenID
+		)
 
 INSERT INTO #temp
 SELECT BLID,
@@ -1729,6 +1735,7 @@ WHERE t.BLID IN (
 		SELECT DISTINCT [BLID]
 		FROM [BookListBooks]
 		)
+ORDER BY bl.[ListName]
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 2/4/2016 13:18:40 ******/

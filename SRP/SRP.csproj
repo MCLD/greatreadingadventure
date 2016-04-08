@@ -241,6 +241,7 @@
     <Content Include="favicon.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="images\AvatarCache\no_avatar.png" />
+    <Content Include="images\AvatarCache\no_avatar_md.png" />
     <Content Include="images\AvatarCache\no_avatar_sm.png" />
     <Content Include="images\AvatarParts\1.png" />
     <Content Include="images\AvatarParts\10.png" />

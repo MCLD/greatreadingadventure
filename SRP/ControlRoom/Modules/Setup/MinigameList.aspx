@@ -14,7 +14,14 @@
 	</asp:ObjectDataSource>
 
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False" Width="100%"
+    <asp:GridView ID="gv" 
+        runat="server" 
+        AllowSorting="True" 
+        AutoGenerateColumns="False" 
+        AllowPaging="True"
+        PageSize="10"
+        PagerStyle-Font-Size="Medium"
+        Width="100%"
         DataKeys="MGID"
         DataSourceID="odsData"
         onrowcreated="GvRowCreated" 

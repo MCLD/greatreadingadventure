@@ -167,83 +167,115 @@ namespace GRA.SRP.Challenges
             }
             else
             {
-
-                challengeTitle.Text = bl.ListName;
-                this.Title = string.Format("{0} Challenge", challengeTitle.Text);
-                lblDesc.Text = Server.HtmlDecode(bl.Description);
-
-                string award = null;
-
-                if (bl.AwardPoints > 0)
-                {
-                    award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>{2} point{3}</strong>",
-                        bl.NumBooksToComplete,
-                        bl.NumBooksToComplete > 1 ? "s" : string.Empty,
-                        bl.AwardPoints,
-                        bl.AwardPoints > 1 ? "s" : string.Empty);
-                }
-
-                if (bl.AwardBadgeID > 0)
-                {
-                    var badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
-                    if (badge != null)
-                    {
-                        if (badge.HiddenFromPublic != true)
-                        {
-                            if (string.IsNullOrWhiteSpace(award))
-                            {
-                                award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
-                                    bl.NumBooksToComplete,
-                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
-                            }
-                            else
-                            {
-                                award += " and <strong>a badge</strong>.";
-                            }
-
-                            BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
-                        } else
-                        {
-                            if (string.IsNullOrWhiteSpace(award))
-                            {
-                                award = string.Format("Completing {0} task{1} will earn: <strong>a secret badge</strong>.",
-                                    bl.NumBooksToComplete,
-                                    bl.NumBooksToComplete > 1 ? "s" : string.Empty);
-                            }
-                            else
-                            {
-                                award += " and <strong>a secret badge</strong>.";
-                            }
-                            BadgeImage.Text = string.Empty;
-                        }
-                    }
-                }
-                else
-                {
-                    BadgeImage.Text = string.Empty;
-                    award += ".";
-                }
-
-                BadgeImage.Visible = !string.IsNullOrEmpty(BadgeImage.Text);
-
-                if (!string.IsNullOrWhiteSpace(award))
-                {
-                    lblPoints.Text = award;
-                    lblPoints.Visible = true;
-                }
-
                 int patronId = -1;
                 var p = Session[SessionKey.Patron] as Patron;
                 if (p != null)
                 {
                     patronId = p.PID;
                 }
-                var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
-                rptr.DataSource = ds;
-                rptr.DataBind();
 
+                // see if this is bound to a specific program
+                if (bl.ProgID != 0)
+                {
+                    // no user is logged in, don't show it
+                    if(p == null)
+                    {
+                        var prog = DAL.Programs.FetchObject(bl.ProgID);
+                        challengeDetails.Visible = false;
+                        new SessionTools(Session).AlertPatron(
+                            string.Format("You must be registered in the <strong>{0}</strong> program to view this Challenge.",
+                                prog.TabName),
+                            PatronMessageLevels.Warning,
+                            "exclamation-sign");
+                    }
 
-                this.ShowModal = true;
+                    // user is registered under another pgoram
+                    if (p != null && bl.ProgID != p.ProgID)
+                    {
+                        var prog = DAL.Programs.FetchObject(bl.ProgID);
+                        challengeDetails.Visible = false;
+                        new SessionTools(Session).AlertPatron(
+                            string.Format("That Challenge is only available to people in the <strong>{0}</strong> program.",
+                                prog.TabName),
+                            PatronMessageLevels.Warning,
+                            "exclamation-sign");
+                    }
+                }
+
+                if(challengeDetails.Visible)
+                {
+
+                    challengeTitle.Text = bl.ListName;
+                    this.Title = string.Format("{0} Challenge", challengeTitle.Text);
+                    lblDesc.Text = Server.HtmlDecode(bl.Description);
+
+                    string award = null;
+
+                    if (bl.AwardPoints > 0)
+                    {
+                        award = string.Format("Completing <strong>{0} task{1}</strong> will earn: <strong>{2} point{3}</strong>",
+                            bl.NumBooksToComplete,
+                            bl.NumBooksToComplete > 1 ? "s" : string.Empty,
+                            bl.AwardPoints,
+                            bl.AwardPoints > 1 ? "s" : string.Empty);
+                    }
+
+                    if (bl.AwardBadgeID > 0)
+                    {
+                        var badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
+                        if (badge != null)
+                        {
+                            if (badge.HiddenFromPublic != true)
+                            {
+                                if (string.IsNullOrWhiteSpace(award))
+                                {
+                                    award = string.Format("Completing {0} task{1} will earn: <strong>a badge</strong>.",
+                                        bl.NumBooksToComplete,
+                                        bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                                }
+                                else
+                                {
+                                    award += " and <strong>a badge</strong>.";
+                                }
+
+                                BadgeImage.Text = string.Format("<img class=\"thumbnail disabled\" src=\"/images/badges/sm_{0}.png\" />", bl.AwardBadgeID);
+                            }
+                            else
+                            {
+                                if (string.IsNullOrWhiteSpace(award))
+                                {
+                                    award = string.Format("Completing {0} task{1} will earn: <strong>a secret badge</strong>.",
+                                        bl.NumBooksToComplete,
+                                        bl.NumBooksToComplete > 1 ? "s" : string.Empty);
+                                }
+                                else
+                                {
+                                    award += " and <strong>a secret badge</strong>.";
+                                }
+                                BadgeImage.Text = string.Empty;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        BadgeImage.Text = string.Empty;
+                        award += ".";
+                    }
+
+                    BadgeImage.Visible = !string.IsNullOrEmpty(BadgeImage.Text);
+
+                    if (!string.IsNullOrWhiteSpace(award))
+                    {
+                        lblPoints.Text = award;
+                        lblPoints.Visible = true;
+                    }
+
+                    var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
+                    rptr.DataSource = ds;
+                    rptr.DataBind();
+
+                    this.ShowModal = true;
+                }
             }
         }
 

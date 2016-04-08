@@ -21,6 +21,7 @@ namespace GRA.SRP.Handlers
         public int AwardReasonId { get; set; }
         public int BadgeId { get; set; }
         public int ChallengeId { get; set; }
+        public int ChallengeProgramId { get; set; }
         public string AchievementName { get; set; }
         public string AvatarState { get; set; }
     }
@@ -78,7 +79,8 @@ namespace GRA.SRP.Handlers
                         AwardReasonId = (int)dataRow["AwardReasonCd"],
                         BadgeId = (int)dataRow["BadgeId"],
                         ChallengeId = dataRow["BLID"] == DBNull.Value ? 0 : (int)dataRow["BLID"],
-                        AvatarState = (string)dataRow["AvatarState"]
+                        ChallengeProgramId = dataRow["BLProgID"] == DBNull.Value ? 0 : (int)dataRow["BLProgID"],
+                        AvatarState = dataRow["AvatarState"] == DBNull.Value ? string.Empty : (string)dataRow["AvatarState"]
                     };
 
                     if (entry.ID > jsonResponse.Latest)

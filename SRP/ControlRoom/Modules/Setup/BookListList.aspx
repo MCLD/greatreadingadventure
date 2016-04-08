@@ -70,7 +70,13 @@
     </asp:ObjectDataSource>
 
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False"
+    <asp:GridView ID="gv"
+        runat="server"
+        AllowSorting="True"
+        AutoGenerateColumns="False"
+        AllowPaging="True"
+        PageSize="10"
+        PagerStyle-Font-Size="Medium"
         DataKeys="BLID"
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"
@@ -102,7 +108,7 @@
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
 
                     &nbsp;
-                   <asp:HyperLink runat="server" 
+                   <asp:HyperLink runat="server"
                        NavigateUrl='<%# Eval("BLID","~/Challenges/Details.aspx?ChallengeId={0}") %>'
                        AlternateText="Direct link to this challenge"
                        ToolTip="Direct link to this challenge"
@@ -195,4 +201,4 @@
             </div>
         </EmptyDataTemplate>
     </asp:GridView>
- </asp:Content>
+</asp:Content>

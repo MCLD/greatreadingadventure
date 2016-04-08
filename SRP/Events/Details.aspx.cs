@@ -83,6 +83,10 @@ namespace GRA.SRP.Events
                                 = codeObject.Description;
                             eventWhereLink.Text = string.Format("{0} <span class=\"glyphicon glyphicon-new-window hidden-print\"></span>",
                                 codeObject.Description);
+
+                            eventWhere.Visible = true;
+                            atLabel.Visible = true;
+                            eventWhereLink.Visible = false;
                         }
                         var crosswalk = DAL.LibraryCrosswalk.FetchObjectByLibraryID(evnt.BranchID);
                         if (crosswalk != null)
@@ -103,17 +107,11 @@ namespace GRA.SRP.Events
                                 eventWhereLink.Visible = true;
                                 atLabel.Visible = true;
                             }
-                            else
-                            {
-                                eventWhere.Visible = true;
-                                eventWhereLink.Visible = false;
-                                atLabel.Visible = true;
-                            }
 
                             mdLib.Address = crosswalk.BranchAddress;
                             mdLib.Telephone = crosswalk.BranchTelephone;
                             mdLib.Url = crosswalk.BranchLink;
-                        };
+                        }
                     }
 
                     if (string.IsNullOrEmpty(mdLib.Name))
