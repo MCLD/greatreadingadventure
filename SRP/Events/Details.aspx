@@ -13,11 +13,11 @@
                     <p>
                         This event takes place on
                         <strong>
-                            <asp:Label runat="server" ID="eventWhen"></asp:Label></strong><asp:Label runat="server" ID="atLabel"> at </asp:Label><strong><asp:Label runat="server" ID="eventWhere"></asp:Label></strong>.
+                            <asp:Label runat="server" ID="eventWhen"></asp:Label></strong><asp:Label runat="server" ID="atLabel"> at </asp:Label><strong><asp:Label runat="server" ID="eventWhere"></asp:Label><asp:Hyperlink runat="server" ID="eventWhereLink" Target="_blank" title="Show me this location's Web page in a new window"></asp:Hyperlink><asp:Hyperlink runat="server" ID="eventWhereMapLink" Target="_blank" Visible="false" CssClass="event-branch-detail-glyphicon hidden-print" title="Show me a map of this location in a new window"><span class="glyphicon glyphicon-map-marker"></span></asp:Hyperlink></strong>.
                     </p>
                     <p>Event details:</p>
                     <blockquote>
-                        <asp:Label runat="server" ID="eventDescription" ></asp:Label>
+                        <asp:Label runat="server" ID="eventDescription"></asp:Label>
                     </blockquote>
                     <asp:Panel runat="server" CssClass="margin-1em-top" ID="eventCustom1Panel">
                         <asp:Label runat="server" ID="eventCustomLabel1"></asp:Label>:
@@ -49,6 +49,7 @@
             </asp:Panel>
         </div>
     </div>
+    <asp:Label runat="server" ID="Microdata" CssClass="hidden"></asp:Label>
     <script>
         if(<%=this.PrintPage%> == true) {
             window.print();

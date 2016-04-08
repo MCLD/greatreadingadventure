@@ -8,14 +8,13 @@ using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using GRA.Tools;
 
 namespace GRA.SRP.Controls
 {
     public partial class Events : System.Web.UI.UserControl
     {
-        private const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window\"></span></a>";
-        private const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
-
         public string FirstAvailableDate { get; set; }
         public string LastAvailableDate { get; set; }
         public string NoneAvailableText { get; set; }
@@ -200,9 +199,11 @@ namespace GRA.SRP.Controls
             }
             else if (Session["UEL_Branch"] != null)
             {
-                try {
+                try
+                {
                     BranchId.SelectedValue = Session["UEL_Branch"].ToString();
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
             }
         }
 
@@ -224,18 +225,75 @@ namespace GRA.SRP.Controls
                 var eventRow = e.Item.DataItem as System.Data.DataRowView;
                 var branchName = eventRow["Branch"].ToString();
                 var branchAddress = eventRow["BranchAddress"];
+                var branchTelephone = eventRow["BranchTelephone"];
                 var branchLink = eventRow["BranchLink"];
                 var label = e.Item.FindControl("BranchName") as Label;
 
-                if (branchLink != null && !string.IsNullOrWhiteSpace(branchLink.ToString()))
+                bool haveLink = branchLink != null
+                    && !string.IsNullOrWhiteSpace(branchLink.ToString());
+                bool haveAddress = branchAddress != null
+                    && !string.IsNullOrWhiteSpace(branchAddress.ToString());
+
+                DateTime eventDate = DateTime.MinValue;
+                if (eventRow["EventDate"] != null)
                 {
-                    label.Text = string.Format(BranchLinkStub, branchLink.ToString(), branchName);
+                    eventDate = eventRow["EventDate"] as DateTime? ?? DateTime.MinValue;
                 }
 
-                if (branchAddress != null && !string.IsNullOrWhiteSpace(branchAddress.ToString()))
+                if (haveLink)
                 {
-                    label.Text += string.Format(BranchMapStub,
+                    label.Text = string.Format(WebTools.BranchLinkStub,
+                        branchLink.ToString(),
+                        branchName);
+                }
+
+                if (haveAddress)
+                {
+                    label.Text += string.Format(WebTools.BranchMapStub,
                         HttpUtility.UrlEncode(branchAddress.ToString()));
+                }
+
+                try
+                {
+                    if (haveLink && haveAddress && eventDate != DateTime.MinValue)
+                    {
+                        string detailsLink = string.Format("{0}{1}",
+                            WebTools.GetBaseUrl(Request),
+                            ResolveUrl(string.Format("~/Events/Details.aspx?EventId={0}", eventRow["EID"])));
+
+                        SchemaOrgLibrary mdLib = new SchemaOrgLibrary
+                        {
+                            Name = branchName,
+                            Address = branchAddress.ToString(),
+                            Url = branchLink.ToString()
+                        };
+
+                        if (branchTelephone != null && !string.IsNullOrWhiteSpace(branchTelephone.ToString()))
+                        {
+                            mdLib.Telephone = branchTelephone.ToString();
+                        }
+
+                        SchemaOrgEvent mdEvt = new SchemaOrgEvent
+                        {
+                            Name = eventRow["EventTitle"].ToString(),
+                            Url = detailsLink,
+                            Location = mdLib,
+                            StartDate = eventDate
+                        };
+
+                        var md = e.Item.FindControl("Microdata") as Label;
+
+                        if (md != null)
+                        {
+                            md.Text = new WebTools().BuildEventJsonld(mdEvt);
+                        }
+                    }
+                } catch (Exception ex)
+                {
+                    this.Log().Error("Problem creating microdata in event list for {0}: {1} - {2}",
+                        eventRow["EID"],
+                        ex.Message,
+                        ex.StackTrace);
                 }
             }
         }

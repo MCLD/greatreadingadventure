@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,10 @@ namespace GRA.Tools
 {
     public class WebTools
     {
+        public const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window\"></span></a>";
+        public const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
+        public const string BranchMapLinkStub = "http://maps.google.com/?q={0}";
+
         /// <summary>
         /// Provided an <see cref="HttpRequest"/>, returns the URL to the current path minus the
         /// trailing slash.
@@ -63,5 +68,81 @@ namespace GRA.Tools
             }
             return css.Trim();
         }
+
+        public string BuildEventJsonld(SchemaOrgEvent evt)
+        {
+            // check requied fields per https://developers.google.com/structured-data/rich-snippets/events
+            if (evt == null
+                || evt.Location == null
+                || string.IsNullOrEmpty(evt.Name)
+                || evt.StartDate == DateTime.MinValue
+                || string.IsNullOrEmpty(evt.Location.Name)
+                || string.IsNullOrEmpty(evt.Location.Address))
+            {
+                return string.Empty;
+            }
+
+            JObject location = null;
+            if (!string.IsNullOrEmpty(evt.Location.Telephone))
+            {
+                location = new JObject(
+                    new JProperty("@type", "Library"),
+                    new JProperty("name", evt.Location.Name),
+                    new JProperty("address", evt.Location.Address),
+                    new JProperty("telephone", evt.Location.Telephone),
+                    new JProperty("url", evt.Location.Url)
+                    );
+            }
+            else
+            {
+                location = new JObject(
+                    new JProperty("@type", "Library"),
+                    new JProperty("name", evt.Location.Name),
+                    new JProperty("address", evt.Location.Address),
+                    new JProperty("url", evt.Location.Url)
+                    );
+            }
+
+            JObject jsonld = null;
+            if (!string.IsNullOrEmpty(evt.Url))
+            {
+                jsonld = new JObject(
+                    new JProperty("@context", "http://schema.org"),
+                    new JProperty("@type", "Event"),
+                    new JProperty("name", evt.Name),
+                    new JProperty("url", evt.Url),
+                    new JProperty("location", location),
+                    new JProperty("startDate", evt.StartDate.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                    );
+            }
+            else
+            {
+                jsonld = new JObject(
+                    new JProperty("@context", "http://schema.org"),
+                    new JProperty("@type", "Event"),
+                    new JProperty("name", evt.Name),
+                    new JProperty("location", location),
+                    new JProperty("startDate", evt.StartDate.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                    );
+            }
+            return string.Format("<script type=\"application/ld+json\">{0}</script>",
+                jsonld.ToString());
+        }
+    }
+
+    public class SchemaOrgLibrary
+    {
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Telephone { get; set; }
+        public string Url { get; set; }
+    }
+
+    public class SchemaOrgEvent
+    {
+        public SchemaOrgLibrary Location { get; set; }
+        public string Name { get; set; }
+        public string Url { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }

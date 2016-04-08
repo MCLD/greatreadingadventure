@@ -65,9 +65,11 @@
                 OnItemDataBound="rptr_ItemDataBound">
                 <ItemTemplate>
                     <tr>
-                        <td><a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
-                            runat="server"
-                            onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
+                        <td>
+                            <asp:Label runat="server" ID="Microdata" CssClass="hidden"></asp:Label>
+                            <a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
+                                runat="server"
+                                onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
                         </td>
                         <td>
                             <%# DisplayEventDateTime(Eval("EventDate") as DateTime?,
@@ -171,7 +173,7 @@
                     $('#eventPopupTitle').text(data.Title);
                     $('#eventPopupWhen').text(data.When);
                     if (data.Where) {
-                        $('#eventPopupWhere').text(" at " + data.Where);
+                        $('#eventPopupWhere').html(" at " + data.Where);
                     }
                     if (data.ExternalLink) {
                         $('#eventPopupLinkPanel').show();

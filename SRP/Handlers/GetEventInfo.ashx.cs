@@ -1,5 +1,6 @@
 ﻿using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,8 @@ namespace GRA.SRP.Handlers
                                                context.Request.Url,
                                                context.Request.QueryString));
             }
-            else {
+            else
+            {
                 int eventId = 0;
                 if (!int.TryParse(context.Request["EventId"].ToString(), out eventId))
                 {
@@ -53,7 +55,8 @@ namespace GRA.SRP.Handlers
                                                    context.Request.Url,
                                                    context.Request.QueryString));
                 }
-                else {
+                else
+                {
                     DAL.Event e = new DAL.Event().FetchObject(eventId);
                     if (e == null || e.HiddenFromPublic == true)
                     {
@@ -64,7 +67,8 @@ namespace GRA.SRP.Handlers
                                                        context.Request.Url,
                                                        context.Request.QueryString));
                     }
-                    else {
+                    else
+                    {
                         var cf = CustomEventFields.FetchObject();
                         jsonResponse.Success = true;
                         jsonResponse.Title = e.EventTitle;
@@ -74,10 +78,29 @@ namespace GRA.SRP.Handlers
 
                         if (e.BranchID > 0)
                         {
+                            string branchName = string.Empty;
                             var codeObject = DAL.Codes.FetchObject(e.BranchID);
                             if (codeObject != null)
                             {
                                 jsonResponse.Where = codeObject.Description;
+                            }
+                            var crosswalk = DAL.LibraryCrosswalk.FetchObjectByLibraryID(e.BranchID);
+                            if (crosswalk != null)
+                            {
+                                if (!string.IsNullOrEmpty(jsonResponse.Where)
+                                    && !string.IsNullOrEmpty(crosswalk.BranchLink))
+                                {
+                                    jsonResponse.Where = string.Format(WebTools.BranchLinkStub,
+                                        crosswalk.BranchLink,
+                                        jsonResponse.Where);
+                                }
+
+                                if (!string.IsNullOrEmpty(jsonResponse.Where)
+                                    && !string.IsNullOrEmpty(crosswalk.BranchAddress))
+                                {
+                                    jsonResponse.Where += string.Format(WebTools.BranchMapStub,
+                                        HttpUtility.UrlEncode(crosswalk.BranchAddress));
+                                }
                             }
                         }
                         if (!string.IsNullOrWhiteSpace(e.Custom1)
