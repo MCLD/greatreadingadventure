@@ -70,7 +70,13 @@
 
     <p style="margin-bottom: 0.5em; display: none;"><b>Badge Gallery Direct URL: </b><a href='/Badges/Default.aspx?PID=<%=Programs.GetDefaultProgramID()%>' target="_blank"><%= GRA.Tools.WebTools.GetBaseUrl(Request) + "/Badges/Default.aspx?PID=" + Programs.GetDefaultProgramID() %></a></p>
 
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="False"
+    <asp:GridView ID="gv"
+        runat="server"
+        AllowSorting="True"
+        AutoGenerateColumns="False"
+        AllowPaging="True"
+        PageSize="10"
+        PagerStyle-Font-Size="Medium"
         DataKeys="BID"
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"

@@ -11,20 +11,20 @@ namespace SRP_DAL {
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         private const string query = "SELECT TOP 5" +
-            " p.[PID], p.[Username], bl.ListName, bl.[BLID], b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId], mg.[GameName]" +
+            " p.[PID], p.[Username], p.[AvatarState], bl.ListName, bl.[BLID], bl.[ProgID] as BLProgID, b.[UserName] as BadgeName, pp.[PPID], pp.[AwardDate], pp.[AwardReasonCd], pp.[BadgeId], mg.[GameName]" +
             " FROM [PatronPoints] pp" +
             " INNER JOIN [Patron] p ON pp.[PID] = p.[PID] AND p.[TenID] = @TenId" +
             " LEFT OUTER JOIN [Badge] b on pp.[BadgeId] = b.[BID]" +
             " LEFT OUTER JOIN [BookList] bl on pp.[BookListId] = bl.[BLID]" +
             " LEFT OUTER JOIN [Minigame] mg on pp.[GameLevelActivityId] = mg.[MGID]" +
             " WHERE ((pp.[AwardReasonCD] = 1 AND pp.[BadgeId] > 0)" +
-            " OR (pp.[AwardReasonCd] IN (2, 4))) AND pp.[PPID] > @after" +
+            " OR (pp.[AwardReasonCd] IN (2, 4))) " + // AND pp.[PPID] > @after
             " AND b.HiddenFromPublic != 1" +
             " ORDER BY pp.[PPID] DESC";
 
         public DataTable Latest(int after, int tenantId) { //, int tenId
             var parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("after", after));
+            //parameters.Add(new SqlParameter("after", after));
             parameters.Add(new SqlParameter("TenId", tenantId));
             return SqlHelper.ExecuteDataTable(conn,
                                               System.Data.CommandType.Text,

@@ -43,7 +43,14 @@
             </div>
         </asp:Panel>
     </div>
-    <asp:GridView ID="gv" runat="server" AllowSorting="True" AutoGenerateColumns="False" AllowPaging="true" PageSize="250" Width="100%"
+    <asp:GridView ID="gv"
+        runat="server"
+        AllowSorting="True"
+        AutoGenerateColumns="False"
+        AllowPaging="true"
+        PageSize="10"
+        PagerStyle-Font-Size="Medium"
+        Width="100%"
         DataKeys="EID"
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"
