@@ -41,10 +41,12 @@ namespace GRA.SRP.ControlRoom
 
                 var tenant = GRA.SRP.Core.Utilities.Tenant.FetchObject((int)CRTenantID);
                 OrganizationName.Text = tenant.LandingName;
-                var program = DAL.Programs.FetchObject(DAL.Programs.GetDefaultProgramID());
-                if (!string.IsNullOrWhiteSpace(program.BannerImage))
+                var defaultBannerPath = string.Format("~/images/Banners/{0}.png",
+                    DAL.Programs.GetDefaultProgramID());
+                var defaultBannerFilePath = Server.MapPath(defaultBannerPath);
+                if (System.IO.File.Exists(defaultBannerFilePath))
                 {
-                    ProgramImage.ImageUrl = program.BannerImage;
+                    ProgramImage.ImageUrl = defaultBannerPath;
                     ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded",
                         ProgramImage.CssClass);
                 }
