@@ -15,6 +15,19 @@ namespace GRA.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if(!Page.IsPostBack)
+            {
+                var crLoginHtml = DAL.SRPSettings.GetSettingValue("CRLoginHtml");
+                if(!string.IsNullOrEmpty(crLoginHtml))
+                {
+                    CRLoginHtml.Text = crLoginHtml;
+                    CRLoginHtml.Visible = true;
+                }
+                else
+                {
+                    CRLoginHtml.Visible = false;
+                }
+            }
             if (CRTenantID != null)
             {
                 var result = new TenantStatus((int)CRTenantID).CurrentStatus();
