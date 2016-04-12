@@ -686,6 +686,7 @@
     <Build Include="dbo\Stored Procedures\app_Badge_GetBadgeGoals.sql" />
     <Build Include="dbo\Stored Procedures\rpt_TenantStatusReport.sql" />
     <Build Include="dbo\Stored Procedures\app_ProgramCodes_GetAllByTenantId.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_ProgramByBranch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />

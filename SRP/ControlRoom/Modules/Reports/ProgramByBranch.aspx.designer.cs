@@ -7,27 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP.ControlRoom {
+namespace GRA.SRP.ControlRoom.Modules.Reports {
     
     
-    public partial class CRTopMenu {
+    public partial class ProgramByBranch {
         
         /// <summary>
-        /// CRHome control.
+        /// AlertPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink CRHome;
+        protected global::System.Web.UI.WebControls.Panel AlertPanel;
         
         /// <summary>
-        /// rptTabs control.
+        /// AlertMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptTabs;
+        protected global::System.Web.UI.WebControls.Label AlertMessage;
     }
 }

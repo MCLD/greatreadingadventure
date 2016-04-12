@@ -55,9 +55,15 @@ SELECT BLID,
 	ListName,
 	Description
 FROM BookList
-WHERE ProgID > 0
-	AND ProgID = @ProgramId
-	AND TenID = @TenID
+WHERE (
+		ProgID > 0
+		AND ProgID = @ProgramId
+		AND TenID = @TenID
+		)
+	OR (
+		ProgID = 0
+		AND TenID = @TenID
+		)
 
 INSERT INTO #temp
 SELECT BLID,
@@ -102,3 +108,4 @@ WHERE t.BLID IN (
 		SELECT DISTINCT [BLID]
 		FROM [BookListBooks]
 		)
+ORDER BY bl.[ListName]

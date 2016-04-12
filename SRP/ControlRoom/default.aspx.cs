@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using SRP_DAL;
 using GRA.Tools;
+using GRA.SRP.Core.Utilities;
 
 namespace GRA.SRP.ControlRoom
 {
@@ -26,6 +27,12 @@ namespace GRA.SRP.ControlRoom
                 else
                 {
                     CRLoginHtml.Visible = false;
+                }
+
+                var defaultRibbon = StandardModuleRibbons.DefaultRibbon();
+                if(defaultRibbon.Count > 0)
+                {
+                    SetPageRibbon(defaultRibbon);
                 }
             }
             if (CRTenantID != null)

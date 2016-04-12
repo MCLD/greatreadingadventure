@@ -7,10 +7,114 @@ namespace GRA.SRP.Core.Utilities
 {
     public class StandardModuleRibbons
     {
+        public static List<RibbonPanel> DefaultRibbon()
+        {
+            var returnList = new List<RibbonPanel>();
+            string permList = HttpContext.Current.Session[SessionData.StringPermissionList.ToString()] == null
+                ? string.Empty
+                : HttpContext.Current.Session[SessionData.StringPermissionList.ToString()].ToString();
+
+            if (string.IsNullOrWhiteSpace(permList))
+            {
+                return returnList;
+            }
+
+            RibbonPanel pnl = null;
+
+            if (permList.Contains("5100"))
+            {
+                pnl = new RibbonPanel
+                {
+                    Name = "Patrons",
+                    ImageAlt = "Patrons",
+                    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Patrons.png"),
+                    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Patrons@2x.png")
+                };
+                pnl.Add(new RibbonLink { Name = "Patron Search", Url = "/ControlRoom/Modules/Patrons/Default.aspx" });
+                //pnl.Add(new RibbonLink { Name = "By Program", Url = "/ControlRoom/Modules/Patrons/PatronsByProgram.aspx" });
+                pnl.Add(new RibbonLink { Name = "Add Patron", Url = "/ControlRoom/Modules/Patrons/PatronAdd.aspx" });
+                returnList.Add(pnl);
+            }
+
+            if (permList.Contains("5000"))
+            {
+                pnl = new RibbonPanel
+                {
+                    Name = "Mail",
+                    ImageAlt = "Mail",
+                    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Mail.png"),
+                    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Mail@2x.png")
+                };
+                pnl.Add(new RibbonLink { Name = "Mail Queue", Url = "/ControlRoom/Modules/Notifications/NotificationList.aspx" });
+                pnl.Add(new RibbonLink { Name = "Bulk Mail", Url = "/ControlRoom/Modules/Notifications/BulkNotification.aspx" });
+                returnList.Add(pnl);
+            }
+
+            pnl = new RibbonPanel
+            {
+                Name = "Badges/Events/Challenges",
+                ImageAlt = "Badges/Events/Challenges",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Events.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Events@2x.png")
+            };
+
+            if (permList.Contains("4700"))
+            {
+                pnl.Add(new RibbonLink { Name = "Badges", Url = "/ControlRoom/Modules/Setup/BadgeList.aspx" });
+            }
+            if (permList.Contains("4500"))
+            {
+                pnl.Add(new RibbonLink { Name = "Events", Url = "/ControlRoom/Modules/Setup/EventList.aspx" });
+            }
+            if (permList.Contains("4400"))
+            {
+                pnl.Add(new RibbonLink { Name = "Challenges", Url = "/ControlRoom/Modules/Setup/BookListList.aspx" });
+            }
+            if (pnl.Links.Count > 0)
+            {
+                returnList.Add(pnl);
+            }
+
+            if (permList.Contains("4200"))
+            {
+                pnl = new RibbonPanel
+                {
+                    Name = "Reports",
+                    ImageAlt = "Reports",
+                    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Reports.png"),
+                    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Reports@2x.png")
+                };
+                pnl.Add(new RibbonLink { Name = "At-a-glance Report", Url = "/ControlRoom/Modules/Reports/Default.aspx" });
+                pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
+                pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
+                pnl.Add(new RibbonLink { Name = "Program by Branch Report <span class=\"glyphicon glyphicon-download\"></span>", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
+                returnList.Add(pnl);
+            }
+
+            if(permList.Contains("1000"))
+            {
+                pnl = new RibbonPanel()
+                {
+                    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/UserSecurity.png"),
+                    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/UserSecurity@2x.png")
+                };
+                pnl.Name = "User Security";
+                pnl.ImageAlt = "User Security";
+                pnl.Add(new RibbonLink { Name = "Control Room Users", Url = "/ControlRoom/Modules/Security/Default.aspx" });
+                pnl.Add(new RibbonLink { Name = "Add New User", Url = "/ControlRoom/Modules/Security/UserAddEdit.aspx?type=new" });
+                pnl.Add(new RibbonLink { Name = "Currently Logged In", Url = "/ControlRoom/Modules/Security/CurrentSessions.aspx" });
+                returnList.Add(pnl);
+            }
+
+            return returnList;
+        }
+
         public static List<RibbonPanel> ReportsRibbon()
         {
             var returnList = new List<RibbonPanel>();
-            var pnl = new RibbonPanel
+            RibbonPanel pnl = null;
+
+            pnl = new RibbonPanel
             {
                 Name = "Reports",
                 ImageAlt = "Reports",
@@ -20,8 +124,8 @@ namespace GRA.SRP.Core.Utilities
             pnl.Add(new RibbonLink { Name = "At-a-glance Report", Url = "/ControlRoom/Modules/Reports/Default.aspx" });
             pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
             pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
+            pnl.Add(new RibbonLink { Name = "Program by Branch Report <span class=\"glyphicon glyphicon-download\"></span>", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
             returnList.Add(pnl);
-
 
             pnl = new RibbonPanel
             {
@@ -34,8 +138,6 @@ namespace GRA.SRP.Core.Utilities
             pnl.Add(new RibbonLink { Name = "Registration Stats", Url = "/ControlRoom/Modules/Reports/RegStats.aspx" });
             pnl.Add(new RibbonLink { Name = "Achiever Stats", Url = "/ControlRoom/Modules/Reports/FinishStats.aspx" });
             returnList.Add(pnl);
-
-
 
             //pnl = new RibbonPanel {
             //    Name = "Special Reports",
@@ -91,7 +193,7 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Patrons@2x.png")
             };
             pnl.Add(new RibbonLink { Name = "Patron Search", Url = "/ControlRoom/Modules/Patrons/Default.aspx" });
-            pnl.Add(new RibbonLink { Name = "By Program", Url = "/ControlRoom/Modules/Patrons/PatronsByProgram.aspx" });
+            //pnl.Add(new RibbonLink { Name = "By Program", Url = "/ControlRoom/Modules/Patrons/PatronsByProgram.aspx" });
             //pnl.Add(new RibbonLink { Name = "Search Results", Url = "/ControlRoom/Modules/Patrons/Default.aspx" });
             pnl.Add(new RibbonLink { Name = "Add Patron", Url = "/ControlRoom/Modules/Patrons/PatronAdd.aspx" });
             returnList.Add(pnl);
@@ -449,10 +551,10 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GRACompass.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GRACompass@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Web site", Url = "http://www.greatreadingadventure.com/" });
-            pnl.Add(new RibbonLink { Name = "Manual", Url = "http://manual.greatreadingadventure.com/" });
-            pnl.Add(new RibbonLink { Name = "Forum", Url = "http://forum.greatreadingadventure.com/" });
-            pnl.Add(new RibbonLink { Name = "Demo", Url = "http://demo.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Web site <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "http://www.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Manual <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "http://manual.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Forum <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "http://forum.greatreadingadventure.com/" });
+            pnl.Add(new RibbonLink { Name = "Demo <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "http://demo.greatreadingadventure.com/" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel()
@@ -462,7 +564,8 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GitHub.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/GitHub@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Source code at GitHub", Url = "https://github.com/MCLD/greatreadingadventure/" });
+            pnl.Add(new RibbonLink { Name = "Source code <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "https://github.com/MCLD/greatreadingadventure/" });
+            pnl.Add(new RibbonLink { Name = "Latest release <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "https://github.com/MCLD/greatreadingadventure/releases/latest" });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel()
@@ -472,8 +575,8 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Share.png"),
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/Share@2x.png")
             };
-            pnl.Add(new RibbonLink { Name = "Facebook", Url = "https://www.facebook.com/greatreadingadventure/" });
-            pnl.Add(new RibbonLink { Name = "Twitter", Url = "https://twitter.com/greatreadingadv" });
+            pnl.Add(new RibbonLink { Name = "Facebook <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "https://www.facebook.com/greatreadingadventure/" });
+            pnl.Add(new RibbonLink { Name = "Twitter <span class=\"glyphicon glyphicon-new-window\"></span>", Url = "https://twitter.com/greatreadingadv" });
             returnList.Add(pnl);
 
             return returnList;

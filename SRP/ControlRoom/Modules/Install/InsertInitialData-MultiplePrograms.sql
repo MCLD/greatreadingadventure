@@ -831,14 +831,14 @@ INSERT INTO SRPSettings (
 	)
 VALUES (
 	'CRLoginHtml',
-	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/">manual</a>.</p>',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
 	'Text',
 	'TextBox',
 	0,
 	'CR Login HTML',
 	'HTML to show CR users upon login',
 	'',
-	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/">manual</a>.</p>',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
 	1,
 	0,
 	0,
