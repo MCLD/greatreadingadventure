@@ -1,10 +1,15 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Events.ascx.cs" Inherits="GRA.SRP.Controls.Events" %>
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 <asp:Panel ID="pnlList" runat="server" Visible="true" DefaultButton="btnFilter">
-    <div class="row hidden-print">
+    <div class="row">
         <div class="col-sm-12">
             <span class="h1">
                 <asp:Label runat="server" Text="events-title"></asp:Label></span>
+        </div>
+    </div>
+    <div class="row margin-halfem-top">
+        <div class="col-sm-12">
+            <asp:Label runat="server" Text="events-instructions"></asp:Label>
         </div>
     </div>
     <div class="row hidden-print margin-1em-top margin-1em-bottom">
@@ -61,7 +66,7 @@
             <asp:TextBox
                 ID="SearchText"
                 runat="server"
-                placeholder="Enter text here to search events, try a word or two"
+                placeholder="Enter text here to search events, try a word or phrase"
                 CssClass="form-control"></asp:TextBox>
         </div>
     </div>
@@ -77,16 +82,12 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 visible-print-block">
-            <asp:Label runat="server" Text="events-title" CssClass="lead"></asp:Label>
-        </div>
         <div class="col-xs-12 hidden-print alert alert-success" runat="server" id="WhatsShowingPanel">
             <asp:Label ID="WhatsShowing" runat="server"></asp:Label>
         </div>
         <div class="col-xs-12 visible-print-block">
             <asp:Label ID="WhatsShowingPrint" runat="server"></asp:Label>
         </div>
-
     </div>
     <table class="table table-striped">
         <thead>

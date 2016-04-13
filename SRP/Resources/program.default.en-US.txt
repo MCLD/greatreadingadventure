@@ -184,11 +184,12 @@ offers-serial=Offer Serial #
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 events-title=Events
+events-instructions=Attend library and community events, learn secret codes, and earn points and badges!
 events-header-when=When
 events-header-where=Where
 events-header-what=What
 events-header-summary=Summary
-events-filter-button=Filter Events
+events-filter-button=Search Events
 events-filter-clear-button=Show All Events
 events-thisweek-button=Events This Week
 events-prompt=Event: 
@@ -204,12 +205,15 @@ notifications-message-sent=Your message has been sent!
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 challenges-title=Challenges
-challenges-instructions=Complete Challenges to earn points and win badges!
+challenges-instructions=Take on a Challenge by participating in activities or read books on a book list to earn badges and points!
 challenges-no-challenges=There are currently no Challenges. Check back soon!
+challenges-no-match=Couldn't find any Challenges matching the text you entered.
 challenges-prompt=Challenge: 
 challenges-close=Close
 challenges-save=Save
 challenges-return=Back
+challenges-search-button=Search Challenges
+challenges-search-clear-button=Show All Challenges
 challenges-progress-saved=Your progress has been saved!
 challenges-completed=<strong>Good work</strong>, you've completed a Challenge!
 challenges-completed-badge=<strong>Congratulations</strong>, you completed a Challenge and were awarded a badge!
@@ -227,7 +231,7 @@ badges-my-badges=My Badges
 badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found.
-badges-filter-button=Filter
+badges-filter-button=Search Badges
 badges-filter-clear-button=Show All Badges
 badges-mybadges-button=My Badges
 badges-badgegallery-button=Badge Gallery
