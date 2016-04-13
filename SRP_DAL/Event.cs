@@ -14,6 +14,7 @@ using System.Text;
 using GRA.SRP.Utilities.CoreClasses;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using GRA.Tools;
 
 namespace GRA.SRP.DAL
 {
@@ -21,12 +22,12 @@ namespace GRA.SRP.DAL
     [Serializable]
     public class Event : EntityBase
     {
+        private const string TrailingBr = "&lt;br&gt;";
         public static new string Version { get { return "2.0"; } }
 
         #region Private Variables
 
         private static string conn = GlobalUtilities.SRPDB;
-
         #endregion
 
         #region Accessors
@@ -205,20 +206,28 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static DataSet GetUpcomingDisplay(string startDate, string endDate, int branchID)
+        public static DataSet GetUpcomingDisplay(string startDate, string endDate, int systemID, int branchID, string searchText)
         {
-            SqlParameter[] arrParams = new SqlParameter[4];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@startDate", GlobalUtilities.DBSafeDate(startDate));
-            arrParams[1] = new SqlParameter("@endDate", GlobalUtilities.DBSafeDate(endDate)); // (string.IsNullOrEmpty(endDate) ? (object)DBNull.Value : DateTime.Parse(endDate)));
-            arrParams[2] = new SqlParameter("@branchID", branchID);
-            arrParams[3] = new SqlParameter("@TenID",
+            arrParams.Add(new SqlParameter("@startDate", GlobalUtilities.DBSafeDate(startDate)));
+            arrParams.Add(new SqlParameter("@endDate", GlobalUtilities.DBSafeDate(endDate)));
+            arrParams.Add(new SqlParameter("@branchID", branchID));
+            arrParams.Add(new SqlParameter("@systemID", systemID));
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                arrParams.Add(new SqlParameter("@searchText",
+                    new DatabaseTools().PrepareSearchString(searchText.Trim())));
+            }
+            arrParams.Add(new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
-                                        (int)HttpContext.Current.Session["TenantID"])
-                            );
+                                        (int)HttpContext.Current.Session["TenantID"])));
 
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Event_GetUpcomingDisplay", arrParams);
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_Event_GetUpcomingDisplay",
+                arrParams.ToArray());
         }
 
         public static DataSet GetAll()
@@ -279,6 +288,11 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["EventDate"].ToString(), out _datetime)) result.EventDate = _datetime;
                 result.EventTime = dr["EventTime"].ToString();
                 result.HTML = dr["HTML"].ToString();
+                if (!string.IsNullOrWhiteSpace(result.HTML) && result.HTML.EndsWith(TrailingBr))
+                {
+                    result.HTML = result.HTML.Substring(0, result.HTML.Length - TrailingBr.Length);
+                }
+
                 result.SecretCode = dr["SecretCode"].ToString();
                 if (int.TryParse(dr["NumberPoints"].ToString(), out _int)) result.NumberPoints = _int;
                 if (int.TryParse(dr["BadgeID"].ToString(), out _int)) result.BadgeID = _int;
@@ -352,6 +366,11 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["EventDate"].ToString(), out _datetime)) result.EventDate = _datetime;
                 result.EventTime = dr["EventTime"].ToString();
                 result.HTML = dr["HTML"].ToString();
+                if (!string.IsNullOrWhiteSpace(result.HTML) && result.HTML.EndsWith(TrailingBr))
+                {
+                    result.HTML = result.HTML.Substring(0, result.HTML.Length - TrailingBr.Length);
+                }
+
                 result.SecretCode = dr["SecretCode"].ToString();
                 if (int.TryParse(dr["NumberPoints"].ToString(), out _int)) result.NumberPoints = _int;
                 if (int.TryParse(dr["BadgeID"].ToString(), out _int)) result.BadgeID = _int;
@@ -426,7 +445,11 @@ namespace GRA.SRP.DAL
                 this.EventTitle = dr["EventTitle"].ToString();
                 if (DateTime.TryParse(dr["EventDate"].ToString(), out _datetime)) this.EventDate = _datetime;
                 this.EventTime = dr["EventTime"].ToString();
-                this.HTML = dr["HTML"].ToString();
+                result.HTML = dr["HTML"].ToString();
+                if (!string.IsNullOrWhiteSpace(result.HTML) && result.HTML.EndsWith(TrailingBr))
+                {
+                    result.HTML = result.HTML.Substring(0, result.HTML.Length - TrailingBr.Length);
+                }
                 this.SecretCode = dr["SecretCode"].ToString();
                 if (int.TryParse(dr["NumberPoints"].ToString(), out _int)) this.NumberPoints = _int;
                 if (int.TryParse(dr["BadgeID"].ToString(), out _int)) this.BadgeID = _int;
@@ -482,7 +505,14 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@EventTitle", GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode())));
             arrParams.Add(new SqlParameter("@EventDate", GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode())));
             arrParams.Add(new SqlParameter("@EventTime", GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode())));
-            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode())));
+
+            string html = o.HTML;
+            if (!string.IsNullOrWhiteSpace(html) && html.EndsWith(TrailingBr))
+            {
+                html = html.Substring(0, html.Length - TrailingBr.Length);
+            }
+
+            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(html, html.GetTypeCode())));
             arrParams.Add(new SqlParameter("@SecretCode", GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NumberPoints", GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode())));
             arrParams.Add(new SqlParameter("@BadgeID", GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode())));
@@ -532,14 +562,18 @@ namespace GRA.SRP.DAL
         public static int Update(Event o)
         {
             int iReturn = -1; //assume the worst
-
             var arrParams = new List<SqlParameter>();
 
             arrParams.Add(new SqlParameter("@EID", GlobalUtilities.DBSafeValue(o.EID, o.EID.GetTypeCode())));
             arrParams.Add(new SqlParameter("@EventTitle", GlobalUtilities.DBSafeValue(o.EventTitle, o.EventTitle.GetTypeCode())));
             arrParams.Add(new SqlParameter("@EventDate", GlobalUtilities.DBSafeValue(o.EventDate, o.EventDate.GetTypeCode())));
             arrParams.Add(new SqlParameter("@EventTime", GlobalUtilities.DBSafeValue(o.EventTime, o.EventTime.GetTypeCode())));
-            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(o.HTML, o.HTML.GetTypeCode())));
+            string html = o.HTML;
+            if (!string.IsNullOrWhiteSpace(html) && html.EndsWith(TrailingBr))
+            {
+                html = html.Substring(0, html.Length - TrailingBr.Length);
+            }
+            arrParams.Add(new SqlParameter("@HTML", GlobalUtilities.DBSafeValue(html, html.GetTypeCode())));
             arrParams.Add(new SqlParameter("@SecretCode", GlobalUtilities.DBSafeValue(o.SecretCode, o.SecretCode.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NumberPoints", GlobalUtilities.DBSafeValue(o.NumberPoints, o.NumberPoints.GetTypeCode())));
             arrParams.Add(new SqlParameter("@BadgeID", GlobalUtilities.DBSafeValue(o.BadgeID, o.BadgeID.GetTypeCode())));
@@ -640,7 +674,7 @@ namespace GRA.SRP.DAL
         /// <returns>A nice string describing start and end times.</returns>
         public static string DisplayEventDateTime(Event e)
         {
-            return string.Format("{0} {1}",
+            return string.Format("{0} at {1}",
                 e.EventDate.ToShortDateString(),
                 e.EventDate.ToShortTimeString());
         }

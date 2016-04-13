@@ -18,67 +18,27 @@ namespace GRA.SRP.Controls
         public string FirstAvailableDate { get; set; }
         public string LastAvailableDate { get; set; }
         public string NoneAvailableText { get; set; }
-        protected string DisplayEventDateTime(DateTime? eventDate,
-                                              string eventTime,
-                                              DateTime? endDate,
-                                              string endTime)
+        public bool Filtered { get; set; }
+        protected string DisplayEventDateTime(DateTime? eventDate)
         {
-            DateTime nonNullEndDate;
-            if (endDate == null)
+            if (eventDate != null)
             {
-                nonNullEndDate = DateTime.MinValue;
+                return Event.DisplayEventDateTime(new Event
+                {
+                    EventDate = (DateTime)eventDate
+                });
             }
             else
             {
-                nonNullEndDate = (DateTime)endDate;
+                return string.Empty;
             }
-            return Event.DisplayEventDateTime(new Event
-            {
-                EventDate = (DateTime)eventDate,
-                EventTime = eventTime,
-                EndDate = nonNullEndDate,
-                EndTime = endTime
-            });
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                var requestedBranch = Request.QueryString["BranchId"];
-                if (!string.IsNullOrWhiteSpace(requestedBranch))
-                {
-                    int branchId;
-
-                    if (int.TryParse(requestedBranch, out branchId))
-                    {
-                        // test if branch is valid
-                        try
-                        {
-                            var branches = DAL.Codes.GetAlByTypeName("Branch");
-                            if (branches != null && branches.Tables[0] != null)
-                            {
-                                var b = branches.Tables[0].Select(string.Format("CID = {0}", branchId));
-                                if (b.Count() > 0)
-                                {
-                                    GetFilterSessionValues(branchId);
-                                    GetData(branchId);
-                                }
-                                else
-                                {
-                                    throw new Exception();
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            GetFilterSessionValues();
-                            GetData();
-                        }
-                    }
-                }
-                GetFilterSessionValues();
-                GetData();
+                DoFilter();
             }
 
             int programId;
@@ -98,7 +58,7 @@ namespace GRA.SRP.Controls
             this.NoneAvailableText = basePage.GetResourceString("events-none-available");
         }
 
-        protected void btnFilter_Click(object sender, EventArgs e)
+        protected void DoFilter()
         {
             StringBuilder sb = new StringBuilder();
             if (!string.IsNullOrEmpty(StartDate.Text))
@@ -119,7 +79,18 @@ namespace GRA.SRP.Controls
                 sb.Append(EndDate.Text);
                 sb.Append("</strong>");
             }
-            if (!string.IsNullOrEmpty(BranchId.SelectedItem.Text))
+            if (SystemId.SelectedIndex > 0)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(" / ");
+                }
+                sb.Append("System: ");
+                sb.Append("<strong>");
+                sb.Append(SystemId.SelectedItem.Text);
+                sb.Append("</strong>");
+            }
+            if (BranchId.SelectedIndex > 0)
             {
                 if (sb.Length > 0)
                 {
@@ -130,86 +101,71 @@ namespace GRA.SRP.Controls
                 sb.Append(BranchId.SelectedItem.Text);
                 sb.Append("</strong>");
             }
-            whatsShowing.Text = sb.ToString();
-            whatsShowing.Visible = !string.IsNullOrEmpty(whatsShowing.Text);
-            SetFilterSessionValues();
-            GetData();
+            if (SearchText.Text.Length > 0)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(" / ");
+                }
+                sb.Append("Search text: ");
+                sb.Append("<strong>");
+                sb.Append(SearchText.Text);
+                sb.Append("</strong>");
+            }
+
+            WhatsShowing.Text = WhatsShowingPrint.Text = sb.ToString();
+            WhatsShowingPanel.Visible = Filtered = !string.IsNullOrEmpty(WhatsShowing.Text);
+
+            rptr.DataSource = Event.GetUpcomingDisplay(
+                StartDate.Text,
+                EndDate.Text,
+                int.Parse(SystemId.SelectedValue),
+                int.Parse(BranchId.SelectedValue),
+                SearchText.Text
+                );
+            rptr.DataBind();
+
+            var wt = new WebTools();
+            if (Filtered)
+            {
+                StartDate.CssClass = wt.CssEnsureClass(StartDate.CssClass, "gra-search-active");
+                EndDate.CssClass = wt.CssEnsureClass(EndDate.CssClass, "gra-search-active");
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SystemId.CssClass = wt.CssEnsureClass(SystemId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                StartDate.CssClass = wt.CssRemoveClass(StartDate.CssClass, "gra-search-active");
+                EndDate.CssClass = wt.CssRemoveClass(EndDate.CssClass, "gra-search-active");
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SystemId.CssClass = wt.CssRemoveClass(SystemId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+        }
+
+        protected void btnFilter_Click(object sender, EventArgs e)
+        {
+            DoFilter();
+        }
+
+        protected void ClearSelections()
+        {
+            StartDate.Text
+                = EndDate.Text
+                = SearchText.Text
+                = WhatsShowing.Text
+                = WhatsShowingPrint.Text
+                = string.Empty;
+            WhatsShowingPanel.Visible = Filtered = false;
+            SystemId.SelectedValue = "0";
+            UpdateBranchList();
         }
 
         protected void btnClear_Click(object sender, EventArgs e)
         {
-            StartDate.Text = EndDate.Text = whatsShowing.Text = string.Empty;
-            whatsShowing.Visible = false;
-            BranchId.SelectedValue = "0";
-            SetFilterSessionValues();
-            GetData();
-        }
-
-        public void GetData(int? branchId = null)
-        {
-            System.Data.DataSet ds = null;
-            if (branchId != null)
-            {
-                ds = Event.GetUpcomingDisplay(
-                    Session["UEL_Start"] == null ? string.Empty : Session["UEL_Start"].ToString(),
-                    Session["UEL_End"] == null ? string.Empty : Session["UEL_End"].ToString(),
-                    (int)branchId);
-            }
-            else
-            {
-                ds = Event.GetUpcomingDisplay(
-                    Session["UEL_Start"] == null ? string.Empty : Session["UEL_Start"].ToString(),
-                    Session["UEL_End"] == null ? string.Empty : Session["UEL_End"].ToString(),
-                    Session["UEL_Branch"] == null ? 0 : int.Parse(Session["UEL_Branch"].ToString()));
-            }
-            rptr.DataSource = ds;
-            rptr.DataBind();
-        }
-        public void SetFilterSessionValues()
-        {
-            Session["UEL_Start"] = StartDate.Text;
-            Session["UEL_End"] = EndDate.Text;
-            Session["UEL_Branch"] = BranchId.SelectedValue;
-            Session["UEL_Filtered"] = "1";
-        }
-
-        public void GetFilterSessionValues(int? branchId = null)
-        {
-            if (Session["UEL_Start"] != null)
-            {
-                StartDate.Text = Session["UEL_Start"].ToString();
-            }
-            else
-            {
-                Session["UEL_Start"] = string.Empty;
-            }
-            if (Session["UEL_End"] != null)
-            {
-                EndDate.Text = Session["UEL_End"].ToString();
-            }
-            else
-            {
-                Session["UEL_End"] = string.Empty;
-            }
-
-            if (branchId != null)
-            {
-                BranchId.SelectedValue = branchId.ToString();
-                Session["UEL_Branch"] = branchId;
-            }
-            else if (Session["UEL_Branch"] != null)
-            {
-                try
-                {
-                    BranchId.SelectedValue = Session["UEL_Branch"].ToString();
-                }
-                catch (Exception) { }
-            }
-        }
-
-        public bool WasFiltered()
-        {
-            return (Session["UEL_Filtered"] != null);
+            ClearSelections();
+            DoFilter();
         }
 
         protected void btnList_Click(object sender, EventArgs e)
@@ -288,7 +244,8 @@ namespace GRA.SRP.Controls
                             md.Text = new WebTools().BuildEventJsonld(mdEvt);
                         }
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     this.Log().Error("Problem creating microdata in event list for {0}: {1} - {2}",
                         eventRow["EID"],
@@ -296,6 +253,36 @@ namespace GRA.SRP.Controls
                         ex.StackTrace);
                 }
             }
+        }
+
+        protected void UpdateBranchList()
+        {
+            BranchDataSource.Select();
+            BranchId.Items.Clear();
+            BranchId.Items.Add(new ListItem("All libraries/branches", "0"));
+            BranchId.DataBind();
+            if (BranchId.Items.Count == 2)
+            {
+                BranchId.SelectedIndex = 1;
+            }
+        }
+
+        protected void SystemId_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateBranchList();
+        }
+
+        protected void ShowThisWeek()
+        {
+            ClearSelections();
+            StartDate.Text = DateTime.Now.ToShortDateString();
+            EndDate.Text = DateTime.Now.AddDays(7).ToShortDateString();
+            DoFilter();
+        }
+
+        protected void ThisWeek_Click(object sender, EventArgs e)
+        {
+            ShowThisWeek();
         }
     }
 }

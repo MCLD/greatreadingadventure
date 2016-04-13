@@ -35,8 +35,6 @@
                         <div class="col-xs-12">
                             <span class="hidden-print">See more details:
                                 <asp:HyperLink runat="server" ID="ExternalLink" Target="_blank"></asp:HyperLink></span>
-                            <span class="visible-print">See more details: <small>
-                                <asp:Literal runat="server" ID="ExternalLinkPrint"></asp:Literal></small></span>
                         </div>
                     </asp:Panel>
                 </div>

@@ -188,8 +188,9 @@ events-header-when=When
 events-header-where=Where
 events-header-what=What
 events-header-summary=Summary
-events-filter-button=Filter
+events-filter-button=Filter Events
 events-filter-clear-button=Show All Events
+events-thisweek-button=Events This Week
 events-prompt=Event: 
 events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

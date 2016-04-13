@@ -133,7 +133,6 @@ namespace GRA.SRP.Events
                         eventLinkPanel.Visible = true;
                         ExternalLink.NavigateUrl = evnt.ExternalLinkToEvent;
                         ExternalLink.Text = string.Format(eventTitle.Text);
-                        ExternalLinkPrint.Text = evnt.ExternalLinkToEvent;
                     }
                     else
                     {

@@ -11,7 +11,7 @@ namespace GRA.Tools
 {
     public class WebTools
     {
-        public const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window\"></span></a>";
+        public const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window hidden-print\"></span></a>";
         public const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
         public const string BranchMapLinkStub = "http://maps.google.com/?q={0}";
 

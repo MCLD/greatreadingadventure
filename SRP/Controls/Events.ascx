@@ -1,52 +1,92 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Events.ascx.cs" Inherits="GRA.SRP.Controls.Events" %>
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
-<asp:Panel ID="pnlList" runat="server" Visible="true">
-
+<asp:Panel ID="pnlList" runat="server" Visible="true" DefaultButton="btnFilter">
     <div class="row hidden-print">
         <div class="col-sm-12">
             <span class="h1">
                 <asp:Label runat="server" Text="events-title"></asp:Label></span>
         </div>
     </div>
-    <div class="row hidden-print">
-        <div class="col-sm-12 form-inline margin-halfem-top">
-            <label for="StartDate" class="margin-halfem-bottom">Start Date:</label>
+    <div class="row hidden-print margin-1em-top margin-1em-bottom">
+        <div class="col-xs-12 col-sm-2">
+            <div class="margin-halfem-top">
+                <label for="<%=StartDate.ClientID %>">Start Date:</label>
+                <asp:TextBox
+                    ID="StartDate"
+                    runat="server"
+                    Width="7em"
+                    CssClass="datepicker form-control"></asp:TextBox>
+            </div>
+            <div class="margin-halfem-top">
+                <label for="<%=EndDate.ClientID %>">End Date:</label>
+                <asp:TextBox
+                    ID="EndDate"
+                    runat="server"
+                    Width="7em"
+                    CssClass="datepicker form-control"></asp:TextBox>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-10">
+            <div class="margin-halfem-top">
+                <label for="<%=SystemId.ClientID %>">Library system:</label>
+                <asp:DropDownList
+                    ID="SystemId"
+                    runat="server"
+                    DataSourceID="DistrictDataSource"
+                    DataTextField="Description"
+                    DataValueField="CID"
+                    AppendDataBoundItems="True"
+                    AutoPostBack="true"
+                    OnSelectedIndexChanged="SystemId_SelectedIndexChanged"
+                    CssClass="form-control">
+                    <asp:ListItem Value="0">All library systems</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+            <div class="margin-halfem-top">
+                <label for="<%=BranchId.ClientID %>">Branch/library:</label>
+                <asp:DropDownList
+                    ID="BranchId"
+                    runat="server"
+                    DataSourceID="BranchDataSource"
+                    DataTextField="Description"
+                    DataValueField="CID"
+                    AppendDataBoundItems="True"
+                    CssClass="form-control">
+                    <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+        </div>
+        <div class="col-xs-12 margin-halfem-top">
+            <label for="<%=SearchText.ClientID %>">Search:</label>
             <asp:TextBox
-                ID="StartDate"
+                ID="SearchText"
                 runat="server"
-                Width="7em"
-                CssClass="datepicker margin-halfem-right form-control"></asp:TextBox>
-            <label for="EndDate" class="margin-halfem-bottom">End Date:</label>
-            <asp:TextBox
-                ID="EndDate"
-                runat="server"
-                Width="7em"
-                CssClass="datepicker margin-halfem-right form-control"></asp:TextBox>
-            <label for="BranchId" class="margin-halfem-bottom">Branch/library:</label>
-            <asp:DropDownList
-                ID="BranchId"
-                runat="server"
-                DataSourceID="odsDDBranch"
-                DataTextField="Description"
-                DataValueField="CID"
-                AppendDataBoundItems="True"
-                CssClass="margin-1em-right form-control margin-halfem-right">
-                <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
-            </asp:DropDownList>
-            <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
-                <button class="btn btn-default margin-halfem-right" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
+                placeholder="Enter text here to search events, try a word or two"
+                CssClass="form-control"></asp:TextBox>
+        </div>
+    </div>
+    <div class="row hidden-print margin-1em-top margin-1em-bottom">
+        <div class="col-xs-12">
+            <div class="pull-right margin-halfem-top" style="display: inline-block;">
+                <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
+                <asp:Button ID="ThisWeek" runat="server" Text="events-thisweek-button" CssClass="btn btn-default hidden-print" OnClick="ThisWeek_Click" />
                 <asp:Button ID="btnFilter" runat="server" Text="events-filter-button"
-                    OnClick="btnFilter_Click" CssClass="btn btn-default hidden-print margin-halfem-right" />
-                <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-default hidden-print" />
+                    OnClick="btnFilter_Click" CssClass="btn btn-success hidden-print" />
+                <asp:Button ID="btnClear" runat="server" Text="events-filter-clear-button" OnClick="btnClear_Click" CssClass="btn btn-primary hidden-print" />
             </div>
         </div>
     </div>
-    <div class="row visible-print-block margin-1em-top margin-1em-bottom">
-        <div class="col-xs-12">
+    <div class="row">
+        <div class="col-xs-12 visible-print-block">
             <asp:Label runat="server" Text="events-title" CssClass="lead"></asp:Label>
         </div>
+        <div class="col-xs-12 hidden-print alert alert-success" runat="server" id="WhatsShowingPanel">
+            <asp:Label ID="WhatsShowing" runat="server"></asp:Label>
+        </div>
+        <div class="col-xs-12 visible-print-block">
+            <asp:Label ID="WhatsShowingPrint" runat="server"></asp:Label>
+        </div>
 
-        <asp:Label ID="whatsShowing" runat="server" CssClass="col-xs-12"></asp:Label>
     </div>
     <table class="table table-striped">
         <thead>
@@ -72,10 +112,7 @@
                                 onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
                         </td>
                         <td>
-                            <%# DisplayEventDateTime(Eval("EventDate") as DateTime?,
-                                                     Eval("EventTime").ToString(),
-                                                     Eval("EndDate") as DateTime?,
-                                                     Eval("EndTime").ToString()) %>
+                            <%# DisplayEventDateTime(Eval("EventDate") as DateTime?) %>
                         </td>
                         <td>
                             <asp:Label ID="BranchName" runat="server" Text='<%# Eval("Branch")%>'></asp:Label></td>
@@ -117,15 +154,15 @@
                     </div>
                 </div>
                 <div class="row margin-1em-bottom" id="eventPopupCustom1Panel">
-                    <span id="eventPopupCustomLabel1"></span>: 
+                    <span id="eventPopupCustomLabel1"></span>:
                     <span id="eventPopupCustomValue1"></span>
                 </div>
                 <div class="row margin-1em-bottom" id="eventPopupCustom2Panel">
-                    <span id="eventPopupCustomLabel2"></span>: 
+                    <span id="eventPopupCustomLabel2"></span>:
                     <span id="eventPopupCustomValue2"></span>
                 </div>
                 <div class="row margin-1em-bottom" id="eventPopupCustom3Panel">
-                    <span id="eventPopupCustomLabel3"></span>: 
+                    <span id="eventPopupCustomLabel3"></span>:
                     <span id="eventPopupCustomValue3"></span>
                 </div>
                 <div class="row" id="eventPopupLinkPanel">
@@ -144,11 +181,21 @@
     </div>
 </div>
 
-<asp:ObjectDataSource ID="odsDDBranch" runat="server"
-    SelectMethod="GetAlByTypeName"
-    TypeName="GRA.SRP.DAL.Codes">
+<asp:ObjectDataSource ID="DistrictDataSource" runat="server"
+    SelectMethod="GetFilteredDistrictDDValues"
+    TypeName="GRA.SRP.DAL.LibraryCrosswalk">
     <SelectParameters>
-        <asp:Parameter Name="Name" DefaultValue="Branch" Type="String" />
+        <asp:Parameter DefaultValue="" Name="city" Type="String" />
+    </SelectParameters>
+</asp:ObjectDataSource>
+
+<asp:ObjectDataSource ID="BranchDataSource" runat="server"
+    SelectMethod="GetFilteredBranchDDValues"
+    TypeName="GRA.SRP.DAL.LibraryCrosswalk">
+    <SelectParameters>
+        <asp:ControlParameter ControlID="SystemId" DefaultValue="0" Name="districtID"
+            PropertyName="Text" Type="Int32" />
+        <asp:Parameter DefaultValue="" Name="city" Type="String" />
     </SelectParameters>
 </asp:ObjectDataSource>
 
