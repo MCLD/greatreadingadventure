@@ -7820,7 +7820,9 @@ INNER JOIN dbo.Patron mast ON subs.MasterAcctPID = mast.PID
 	AND mast.PID = @PID
 	AND mast.IsMasterAccount = 1
 LEFT JOIN Programs pg ON subs.ProgID = pg.PID
-	--order BY subs.PID desc
+ORDER BY [FirstName],
+	[LastName],
+	[Username]
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Patron_Insert]    Script Date: 2/4/2016 13:18:40 ******/
