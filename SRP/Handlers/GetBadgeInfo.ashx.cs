@@ -14,6 +14,7 @@ namespace GRA.SRP.Handlers
         public string UserName { get; set; }
         public string ImageUrl { get; set; }
         public string[] Earn { get; set; }
+        public string DateEarned { get; set; }
     }
 
     /// <summary>
@@ -47,23 +48,32 @@ namespace GRA.SRP.Handlers
 
                 // if the badge is flagged as hidden from the public, ensure the user has earned it
                 bool hideBadge = badge.HiddenFromPublic == true;
+                bool earnedBadge = false;
 
-                if (hideBadge == true)
+                var patron = context.Session[SessionKey.Patron] as DAL.Patron;
+                if (patron != null)
                 {
-                    var patron = context.Session[SessionKey.Patron] as DAL.Patron;
-                    if (patron != null)
+                    var patronBadges = DAL.PatronBadges.GetAll(patron.PID);
+                    if (patronBadges != null && patronBadges.Tables.Count > 0)
                     {
-                        var patronBadges = DAL.PatronBadges.GetAll(patron.PID);
-                        if (patronBadges != null && patronBadges.Tables.Count > 0)
+                        var filterExpression = string.Format("BadgeID = {0}", badge.BID);
+                        var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
+                        if (patronHasBadge.Count() > 0)
                         {
-                            var filterExpression = string.Format("BadgeID = {0}", badge.BID);
-                            var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
-                            if (patronHasBadge.Count() > 0)
+                            earnedBadge = true;
+                            var earned = patronHasBadge[0]["DateEarned"] as DateTime?;
+                            if (earned != null)
                             {
-                                hideBadge = false;
+                                jsonResponse.DateEarned = ((DateTime)earned).ToShortDateString();
                             }
                         }
                     }
+                }
+
+
+                if (hideBadge == true && earnedBadge == true)
+                {
+                    hideBadge = false;
                 }
 
                 if (hideBadge == true)

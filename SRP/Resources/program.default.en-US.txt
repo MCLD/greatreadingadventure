@@ -14,6 +14,10 @@ frontpage-button-register=Register Now
 frontpage-button-login=Login Now
 program-not-started=The program starts on {0}!
 program-already-over=The program ended {0}<br/>See you next year!
+twitter-description=I'm participating in a reading program because books are awesome!
+;facebook-appid=
+;twitter-username=
+;twitter-hashtags=hashtag1,hashtag2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

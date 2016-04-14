@@ -122,6 +122,7 @@
                             <div class="col-xs-12" id="badgePopupImageContainer">
                             </div>
                             <div id="badgePopupEarn" class="col-sm-10 col-sm-offset-1 margin-1em-top">
+                                <span id="badgePopupEarnWhen" class="text-primary text-center"></span>
                                 Ways to earn this badge:
                                     <div class="margin-halfem-top">
                                         <ul id="badgePopupEarnList">
@@ -132,6 +133,9 @@
                     </div>
                     <div class="modal-footer">
                         <div class="pull-right clearfix">
+                            <button class="btn btn-default" type="button" id="badgePopupShare">
+                                <span class="glyphicon glyphicon-share"></span>
+                                Share this</button>
                             <button class="btn btn-default" type="button" id="badgePopupPrint"><span class="glyphicon glyphicon-print"></span></button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
@@ -360,10 +364,22 @@
                             $('#badgePopupEarnList').append('<li>' + value + '</li>');
                         });
                     }
+                    if (data.DateEarned) {
+                        if (data.DateEarned.length == 0) {
+                            $('#badgePopupEarnWhen').hide();
+                        } else {
+                            $('#badgePopupEarnWhen').html('<p><strong>You earned this badge on ' + data.DateEarned + '!</strong></p>');
+                            $('#badgePopupEarnWhen').show();
+                        }
+                    } else {
+                        $('#badgePopupEarnWhen').hide();
+                    }
                     $('#badgePopupPrint').click(function () {
                         location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId + "&Print=1";
                     });
-
+                    $('#badgePopupShare').click(function () {
+                        location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId;
+                    })
                     $('#badgePopupPanel').modal('show');
                 }
             })

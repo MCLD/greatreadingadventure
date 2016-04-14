@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.SessionState;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.Tools
 {
@@ -127,6 +128,14 @@ namespace GRA.Tools
             }
             return string.Format("<script type=\"application/ld+json\">{0}</script>",
                 jsonld.ToString());
+        }
+
+        public HtmlControl OgMetadataTag(string property, string content)
+        {
+            var tag = new HtmlMeta();
+            tag.Attributes.Add("property", property);
+            tag.Content = content;
+            return tag;
         }
     }
 
