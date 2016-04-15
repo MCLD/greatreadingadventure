@@ -83,7 +83,7 @@
                 <strong>Subject:</strong>
                 <asp:Label ID="lblTitle" runat="server"></asp:Label>
             </p>
-            <p>
+            <p style="margin-bottom: 1.5em;">
                 <strong>Received:</strong>
                 <asp:Label ID="lblReceived" runat="server"></asp:Label>
             </p>

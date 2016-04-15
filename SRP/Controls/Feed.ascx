@@ -46,8 +46,10 @@
                                 addedRows++;
                                 html.push('<tr class="animated bounceInLeft">');
                                 if (entry.AvatarState) {
-                                    html.push('<td class="feed-avatar"><img Width="42" Height="42" src="' + feedRootPath + 'Images/AvatarCache/sm_' + entry.AvatarState + '.png" class="margin-1em-right"/></td>');
-                                    html.push('<td>')
+                                    html.push('<td class="feed-avatar">');
+                                    html.push('<a href="' + feedRootPath + 'Images/AvatarCache/' + entry.AvatarState + '.png" class="fancybox">');
+                                    html.push('<img style="height: 42px; width: 42px;" src="' + feedRootPath + 'Images/AvatarCache/sm_' + entry.AvatarState + '.png" class="margin-1em-right"/></td>');
+                                    html.push('</a><td>');
                                 } else {
                                     html.push('<td colspan="2">')
                                 }

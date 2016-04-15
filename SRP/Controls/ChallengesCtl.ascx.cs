@@ -19,6 +19,7 @@ namespace GRA.SRP.Controls
 
         private bool ProgramOpen { get; set; }
         private bool CompletedChallenge { get; set; }
+        private bool Filtered { get; set; }
         private readonly string BadgeLink = VirtualPathUtility.ToAbsolute("~/Badges/Details.aspx");
         private const string BadgeLinkAndImage = "<a href=\"{0}?BadgeId={1}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({1});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{1}.png\" /></a>";
         public bool ShowModal { get; set; }
@@ -93,6 +94,10 @@ namespace GRA.SRP.Controls
             }
             else
             {
+                if(amount > total)
+                {
+                    return 100;
+                }
                 return (int)(amount * 100.0 / total);
             }
         }
@@ -140,12 +145,68 @@ namespace GRA.SRP.Controls
             {
                 patronId = this.CurrentPatron.PID;
             }
-            var ds = DAL.BookList.GetForDisplay(patronId);
+            Filtered = !string.IsNullOrWhiteSpace(SearchText.Text);
+            var ds = DAL.BookList.GetForDisplay(patronId, SearchText.Text);
             rptr.DataSource = ds;
             rptr.DataBind();
+            var wt = new WebTools();
             if (ds.Tables[0].Rows.Count == 0)
             {
-                lblNoLists.Visible = true;
+                ChallengesContainer.Visible = false;
+                if (Filtered)
+                {
+                    WhatsShowing.Text
+                        = WhatsShowingPrint.Text
+                        = StringResources.getString("challenges-no-match");
+                    WhatsShowingPanel.Visible = true;
+                    WhatsShowingPanel.CssClass = wt.CssRemoveClass(WhatsShowingPanel.CssClass,
+                        "alert-success");
+                    WhatsShowingPanel.CssClass = wt.CssEnsureClass(WhatsShowingPanel.CssClass,
+                        "alert-warning");
+                }
+                else
+                {
+                    WhatsShowing.Text
+                        = WhatsShowingPrint.Text
+                        = StringResources.getString("challenges-no-challenges");
+                    WhatsShowingPanel.Visible = true;
+                    WhatsShowingPanel.CssClass = wt.CssRemoveClass(WhatsShowingPanel.CssClass,
+                        "alert-success");
+                    WhatsShowingPanel.CssClass = wt.CssEnsureClass(WhatsShowingPanel.CssClass,
+                        "alert-warning");
+                }
+            }
+            else
+            {
+                ChallengesContainer.Visible = true;
+                if (Filtered)
+                {
+                    WhatsShowing.Text
+                        = WhatsShowingPrint.Text
+                        = string.Format("You searched for: <strong>{0}</strong>", SearchText.Text);
+                    WhatsShowingPanel.Visible = true;
+                    WhatsShowingPanel.CssClass
+                        = wt.CssRemoveClass(WhatsShowingPanel.CssClass, "alert-warning");
+                    WhatsShowingPanel.CssClass
+                        = wt.CssEnsureClass(WhatsShowingPanel.CssClass, "alert-success");
+                }
+                else
+                {
+                    WhatsShowing.Text
+                        = WhatsShowingPrint.Text
+                        = string.Empty;
+                    WhatsShowingPanel.Visible = false;
+                }
+            }
+            if (Filtered)
+            {
+                SearchText.CssClass
+                    = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                SearchText.CssClass
+                    = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
             }
         }
 
@@ -257,7 +318,9 @@ namespace GRA.SRP.Controls
             rptr2.DataSource = ds;
             rptr2.DataBind();
             printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?ChallengeId={0}&print=1",
-                                                  bl.BLID);
+                bl.BLID);
+            detailsLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?ChallengeId={0}",
+                bl.BLID);
             pnlDetail.Visible = true;
 
             if (this.CompletedChallenge
@@ -373,5 +436,16 @@ namespace GRA.SRP.Controls
             }
             PopulateChallengeList();
         }
+
+        protected void btnFilter_Click(object sender, EventArgs e)
+        {
+            PopulateChallengeList();
+        }
+        protected void btnClear_Click(object sender, EventArgs e)
+        {
+            SearchText.Text = string.Empty;
+            PopulateChallengeList();
+        }
+
     }
 }

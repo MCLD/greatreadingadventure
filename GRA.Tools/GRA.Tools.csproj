@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CacheKey.cs" />
     <Compile Include="CookieKey.cs" />
+    <Compile Include="DatabaseTools.cs" />
     <Compile Include="DisplayHelper.cs" />
     <Compile Include="FormatWith.cs" />
     <Compile Include="LogExtensions.cs" />

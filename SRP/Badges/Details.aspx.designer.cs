@@ -13,6 +13,15 @@ namespace GRA.SRP.Badges {
     public partial class Details {
         
         /// <summary>
+        /// Metadata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder Metadata;
+        
+        /// <summary>
         /// badgeDetails control.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace GRA.SRP.Badges {
         protected global::System.Web.UI.WebControls.Panel badgeEarnPanel;
         
         /// <summary>
+        /// badgeEarnWhen control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label badgeEarnWhen;
+        
+        /// <summary>
         /// badgeEarnLabel control.
         /// </summary>
         /// <remarks>
@@ -56,6 +74,24 @@ namespace GRA.SRP.Badges {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label badgeEarnLabel;
+        
+        /// <summary>
+        /// TwitterShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink TwitterShare;
+        
+        /// <summary>
+        /// FacebookShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink FacebookShare;
         
         /// <summary>
         /// badgeBackLink control.

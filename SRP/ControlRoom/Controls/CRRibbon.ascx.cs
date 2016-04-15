@@ -49,7 +49,7 @@ namespace GRA.SRP.ControlRoom {
             if (links.Count <= 4) {
                 StringBuilder slinks = new StringBuilder("<ul class=\"cntUL0\" style=\"margin-bottom: 0px\">");
                 foreach (RibbonLink l in links) {
-                    if (l.Url.StartsWith("http"))
+                    if (l.Url.StartsWith("http") || l.NewWindow == true)
                     {
                         slinks.AppendFormat("<li class=\"cntSqbulletedlist\"><a href=\"{0}\" target=\"_blank\">{1}</a></li>",
                         l.Url,

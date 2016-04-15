@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Master page and front page text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-system-name=Great Reading Adventure 
+system-name=Great Reading Adventure
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
@@ -14,6 +14,11 @@ frontpage-button-register=Register Now
 frontpage-button-login=Login Now
 program-not-started=The program starts on {0}!
 program-already-over=The program ended {0}<br/>See you next year!
+twitter-description=I'm participating in a reading program because books are awesome!
+;facebook-description=I'm on a journey with The Great Reading Adventure to face adventures and challenges, learn secret codes, attend events, earn badges, and (of course) read!
+;facebook-appid=
+;twitter-username=
+;socialmedia-hashtags=hashtag1,hashtag2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,8 +40,8 @@ password-recovery-expired=Your password change request has expired. Please gener
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 change-password-title=Change Password
-change-password-current=Current password:  
-change-password-new=New password: 
+change-password-current=Current password:
+change-password-new=New password:
 change-password-verify=Verify new password:
 change-password-submit=Change my password
 change-password-rules=Please select a new password.<ul><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
@@ -97,7 +102,8 @@ myaccount-program-reward-code=Reward Codes
 ;;  Avatar Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 avatar-title=Avatar
-avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked, during the program, by earning badges.
+avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked during the program by earning badges.
+avatar-return=Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -184,13 +190,16 @@ offers-serial=Offer Serial #
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 events-title=Events
+events-instructions=Attend library and community events, learn secret codes, and earn points and badges!
 events-header-when=When
 events-header-where=Where
 events-header-what=What
 events-header-summary=Summary
-events-filter-button=Filter
+events-filter-button=Search Events
+events-return=View All Events
 events-filter-clear-button=Show All Events
-events-prompt=Event: 
+events-thisweek-button=Events This Week
+events-prompt=Event:
 events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
@@ -203,12 +212,15 @@ notifications-message-sent=Your message has been sent!
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 challenges-title=Challenges
-challenges-instructions=Complete Challenges to earn points and win badges!
+challenges-instructions=Take on a Challenge by participating in activities or read books on a book list to earn badges and points!
 challenges-no-challenges=There are currently no Challenges. Check back soon!
-challenges-prompt=Challenge: 
+challenges-no-match=Couldn't find any Challenges matching the text you entered.
+challenges-prompt=Challenge:
 challenges-close=Close
 challenges-save=Save
-challenges-return=Back
+challenges-return=View All Challenges
+challenges-search-button=Search Challenges
+challenges-search-clear-button=Show All Challenges
 challenges-progress-saved=Your progress has been saved!
 challenges-completed=<strong>Good work</strong>, you've completed a Challenge!
 challenges-completed-badge=<strong>Congratulations</strong>, you completed a Challenge and were awarded a badge!
@@ -226,10 +238,11 @@ badges-my-badges=My Badges
 badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found.
-badges-filter-button=Filter
+badges-filter-button=Search Badges
 badges-filter-clear-button=Show All Badges
 badges-mybadges-button=My Badges
 badges-badgegallery-button=Badge Gallery
+badges-return=View All Badges
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -117,6 +117,11 @@
                     </div>
                 </div>
             </div>
+            <div class="row hidden-print" style="margin-top: 2em;">
+                <div class="col-xs-12">
+                    <asp:Label ID="CRLoginHtml" runat="server"></asp:Label>
+                </div>
+            </div>
         </asp:Panel>
     </div>
 </asp:Content>

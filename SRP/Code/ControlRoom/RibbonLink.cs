@@ -5,27 +5,10 @@ using System.Web;
 
 namespace GRA.SRP.Core.Utilities {
     public class RibbonLink {
-        #region Fields (2)
-
-        private string _name;
-        private string _url;
-
-        #endregion Fields
-
         #region Properties (2)
-
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
-        public string Url
-        {
-            get { return _url; }
-            set { _url = value; }
-        }
-
+        public string Name { get; set; }
+        public string Url { get; set; }
+        public bool NewWindow { get; set; }
         #endregion Properties 
     }
 
@@ -62,7 +45,6 @@ namespace GRA.SRP.Core.Utilities {
         public void Add(string pName, string pUrl) {
             Links.Add(new RibbonLink { Name = pName, Url = pUrl });
         }
-
         #endregion Methods
     }
 

@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using SRP_DAL;
 using GRA.Tools;
+using GRA.SRP.Core.Utilities;
 
 namespace GRA.SRP.ControlRoom
 {
@@ -15,6 +16,25 @@ namespace GRA.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if(!Page.IsPostBack)
+            {
+                var crLoginHtml = DAL.SRPSettings.GetSettingValue("CRLoginHtml");
+                if(!string.IsNullOrEmpty(crLoginHtml))
+                {
+                    CRLoginHtml.Text = crLoginHtml;
+                    CRLoginHtml.Visible = true;
+                }
+                else
+                {
+                    CRLoginHtml.Visible = false;
+                }
+
+                var defaultRibbon = StandardModuleRibbons.DefaultRibbon();
+                if(defaultRibbon.Count > 0)
+                {
+                    SetPageRibbon(defaultRibbon);
+                }
+            }
             if (CRTenantID != null)
             {
                 var result = new TenantStatus((int)CRTenantID).CurrentStatus();
@@ -41,10 +61,12 @@ namespace GRA.SRP.ControlRoom
 
                 var tenant = GRA.SRP.Core.Utilities.Tenant.FetchObject((int)CRTenantID);
                 OrganizationName.Text = tenant.LandingName;
-                var program = DAL.Programs.FetchObject(DAL.Programs.GetDefaultProgramID());
-                if (!string.IsNullOrWhiteSpace(program.BannerImage))
+                var defaultBannerPath = string.Format("~/images/Banners/{0}.png",
+                    DAL.Programs.GetDefaultProgramID());
+                var defaultBannerFilePath = Server.MapPath(defaultBannerPath);
+                if (System.IO.File.Exists(defaultBannerFilePath))
                 {
-                    ProgramImage.ImageUrl = program.BannerImage;
+                    ProgramImage.ImageUrl = defaultBannerPath;
                     ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded",
                         ProgramImage.CssClass);
                 }

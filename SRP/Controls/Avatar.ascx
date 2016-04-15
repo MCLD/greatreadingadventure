@@ -6,7 +6,7 @@
     <div class="row margin-1em-bottom">
         <div class="col-xs-12 text-center">
             <asp:HyperLink NavigateUrl="~/Avatar/" runat="server">
-                <asp:Image ID="imgAvatarSm" runat="server" Width="64px" height="64" CssClass="margin-1em-right" />
+                <asp:Image ID="imgAvatarSm" runat="server" Width="64px" height="64px" CssClass="margin-1em-right" />
             </asp:HyperLink>
             <span class="lead"><strong>Welcome,
             <asp:Label ID="patronName" runat="server"></asp:Label>!</strong></span>

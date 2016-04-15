@@ -808,6 +808,50 @@ VALUES (
 	)
 GO
 
+INSERT INTO SRPSettings (
+	[Name],
+	[Value],
+	[StorageType],
+	[EditType],
+	[ModID],
+	[Label],
+	[Description],
+	[ValueList],
+	[DefaultValue],
+	[TenID],
+	[FldInt1],
+	[FldInt2],
+	[FldInt3],
+	[FldBit1],
+	[FldBit2],
+	[FldBit3],
+	[FldText1],
+	[FldText2],
+	[FldText3]
+	)
+VALUES (
+	'CRLoginHtml',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
+	'Text',
+	'TextBox',
+	0,
+	'CR Login HTML',
+	'HTML to show CR users upon login',
+	'',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	'',
+	'',
+	''
+	)
+GO
+
 INSERT INTO CodeType (
 	[isSystem],
 	[CodeTypeName],
@@ -3008,8 +3052,8 @@ BEGIN
 		N'sysadmin',
 		'Initial configuration',
 		3,
+		1,
 		0,
-		3,
 		'Performed initial configuration of multiple programs'
 		)
 END

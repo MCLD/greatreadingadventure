@@ -16,7 +16,6 @@
     </div>
     <div class="row">
         <div class="col-sm-12 margin-halfem-top form-inline">
-            <label>Filter badges:</label>
             <asp:DropDownList ID="CategoryId" runat="server" DataSourceID="odsDDCat" DataTextField="Description" DataValueField="CID"
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Category"></asp:ListItem>
@@ -25,8 +24,9 @@
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Age"></asp:ListItem>
             </asp:DropDownList>
+            <label>Branch/library:</label>
             <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
-                AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
+                AppendDataBoundItems="True" Width="300px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="All libraries/branches"></asp:ListItem>
             </asp:DropDownList>
             <asp:DropDownList ID="LocationID" runat="server" DataSourceID="odsDDLoc"
@@ -35,12 +35,12 @@
                 <asp:ListItem Value="0" Text="Location"></asp:ListItem>
             </asp:DropDownList>
             <div class="margin-halfem-top margin-halfem-bottom" style="display: inline-block;">
-                <asp:HyperLink runat="server" Id="myBadgesButton" NavigateUrl="~/Badges/MyBadges.aspx"
+                <asp:HyperLink runat="server" ID="myBadgesButton" NavigateUrl="~/Badges/MyBadges.aspx"
                     CssClass="btn btn-default btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click"><asp:Label runat="server" Text="badges-mybadges-button"></asp:Label></asp:HyperLink>
                 <asp:Button ID="btnFilter" runat="server" Text="badges-filter-button"
-                    CssClass="btn btn-default btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click" />
+                    CssClass="btn btn-success btn-sm hidden-print margin-1em-right" OnClick="btnFilter_Click" />
                 <asp:Button ID="btnClear" runat="server" Text="badges-filter-clear-button"
-                    CssClass="btn btn-default btn-sm hidden-print" OnClick="btnClear_Click" />
+                    CssClass="btn btn-primary btn-sm hidden-print" OnClick="btnClear_Click" />
             </div>
         </div>
     </div>

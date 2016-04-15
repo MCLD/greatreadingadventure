@@ -28,7 +28,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>

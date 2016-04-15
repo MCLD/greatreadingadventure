@@ -15,10 +15,9 @@
 <div class="row">
     <asp:Repeater runat="server" ID="rptr">
         <ItemTemplate>
-            <span runat="server" visible="<%# Container.ItemIndex < 5 %>">
+            <span runat="server" visible="<%# Container.ItemIndex < 8 %>">
                 <div class="<%=this.BadgeClass %> text-center"
                     data-toggle="tooltip"
-                    data-placement="left"
                     title="<%# "You earned the " + Eval("Title") + " badge on " + ((DateTime)Eval("DateEarned")).ToShortDateString() %>">
                     <a href='<%# Eval("BadgeId", "~/Badges/Details.aspx?BadgeId={0}") %>'
                         runat="server"
@@ -29,10 +28,9 @@
                     </a>
                 </div>
             </span>
-            <span runat="server" visible="<%# Container.ItemIndex == 5 %>">
+            <span runat="server" visible="<%# Container.ItemIndex == 8 %>">
                 <div class="<%=this.BadgeClass %> text-center"
                     data-toggle="tooltip"
-                    data-placement="left"
                     title="Click here to see more badges you've earned!">
                     <a href="~/Badges/MyBadges.aspx" runat="server" class="thumbnail"
                         style="display: inline-block; width: 74px; height: 74px; padding-top: 2.2em;">
@@ -42,9 +40,10 @@
             </span>
         </ItemTemplate>
     </asp:Repeater>
-</div>
-<div class="row">
-    <div class="col-xs-12 text-center">
-        <asp:HyperLink runat="server" NavigateUrl="~/Badges/"><em>Explore more badges...</em></asp:HyperLink>
+    <div class="col-xs-6 col-md-12 text-center">
+        <div style="padding-top: 2em;">
+            <asp:HyperLink runat="server" NavigateUrl="~/Badges/"><em>Explore more badges...</em></asp:HyperLink>
+        </div>
     </div>
+
 </div>

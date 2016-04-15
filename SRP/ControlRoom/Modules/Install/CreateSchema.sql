@@ -61,8 +61,8 @@ INNER JOIN AvatarPart a ON pb.BadgeID = a.BadgeID
 WHERE pb.PID = @PID
 
 UNION ALL
-SELECT 
-    a.*
+
+SELECT a.*
 FROM [AvatarPart] a
 WHERE a.BadgeID = - 1
 ORDER BY Ordering
@@ -1619,7 +1619,7 @@ FROM [BookList]
 WHERE BLID = @BLID
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 4/8/2016 13:41:56 ******/
+/****** Object:  StoredProcedure [dbo].[app_BookList_GetForDisplay]    Script Date: 4/13/2016 11:08:14 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -1627,101 +1627,50 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[app_BookList_GetForDisplay] @PID INT = 0,
-	@TenID INT = NULL
+	@TenID INT = NULL,
+	@SearchText NVARCHAR(255) = NULL
 AS
---declare @PID int dbo.BookList
---select @PID = 100000
-IF (@TenID IS NULL)
-	SELECT @TenID = TenID
-	FROM Patron
-	WHERE PID = @PID
+-- variables for user information
+DECLARE @ProgramId INT,
+	@PatronTenant INT
 
-DECLARE @Lit1 INT
-DECLARE @Lit2 INT,
-	@ProgramId INT,
-	@BranchId INT
-
-SELECT @Lit1 = isnull(LiteracyLevel1, 0),
-	@Lit2 = isnull(LiteracyLevel2, ''),
-	@ProgramId = isnull(ProgID, 0),
-	@BranchId = isnull(PrimaryLibrary, 0)
+-- load user information, Program and Tenant
+SELECT @ProgramId = isnull(ProgID, 0),
+	@PatronTenant = isnull([TenID], 0)
 FROM Patron
 WHERE PID = @PID
 
-----------------------------------------------------------
---select @Age, @Zip, @Age-36, @ProgramId, @BranchId
---select  o.*
---from Offer o
-----------------------------------------------------------
-CREATE TABLE #temp (
-	BLID INT,
-	ListName VARCHAR(50),
-	Description TEXT
-	)
+-- if no tenant was supplied, use the patron's tenant
+IF (@TenID IS NULL)
+BEGIN
+	SET @TenID = @PatronTenant
+END
 
-INSERT INTO #temp
-SELECT BLID,
-	ListName,
-	Description
-FROM BookList
-WHERE LiteracyLevel1 > 0
-	AND @Lit1 = LiteracyLevel1
-	AND TenID = @TenID
+-- temporary storage for unique BLIDs
+CREATE TABLE #temp (BLID INT)
 
+-- get BLIDs that are not associated with a program, associated with the user's program, and match the search text (if provided)
 INSERT INTO #temp
-SELECT BLID,
-	ListName,
-	Description
-FROM BookList
-WHERE LiteracyLevel2 > 0
-	AND @Lit2 = LiteracyLevel2
-	AND TenID = @TenID
-
-INSERT INTO #temp
-SELECT BLID,
-	ListName,
-	Description
-FROM BookList
+SELECT DISTINCT bl.[BLID]
+FROM BookList bl
+LEFT OUTER JOIN [BookListBooks] blb ON blb.[BLID] = bl.[BLID]
 WHERE (
-		ProgID > 0
-		AND ProgID = @ProgramId
-		AND TenID = @TenID
+		bl.[ProgID] = 0
+		OR bl.[ProgID] = @ProgramId
 		)
-	OR (
-		ProgID = 0
-		AND TenID = @TenID
+	AND (
+		@SearchText IS NULL
+		OR (
+			bl.[ListName] LIKE @SearchText
+			OR bl.[Description] LIKE @SearchText
+			OR blb.[Title] LIKE @SearchText
+			OR blb.[Author] LIKE @SearchText
+			)
 		)
+	AND bl.[TenID] = @TenID
 
-INSERT INTO #temp
-SELECT BLID,
-	ListName,
-	Description
-FROM BookList
-WHERE LibraryID > 0
-	AND LibraryID = @BranchId
-	AND TenID = @TenID
-
-INSERT INTO #temp
-SELECT BLID,
-	ListName,
-	Description
-FROM BookList
-WHERE LibraryID = 0
-	AND ProgID = 0
-	AND LiteracyLevel1 = 0
-	AND LiteracyLevel2 = 0
-	AND TenID = @TenID
-
-SELECT DISTINCT BLID
-INTO #temp1
-FROM #temp
-
-DROP TABLE #temp
-
-SELECT ROW_NUMBER() OVER (
-		ORDER BY bl.BLID
-		) AS Rank,
-	bl.*,
+-- final organization of booklist
+SELECT bl.*,
 	(
 		SELECT count(*)
 		FROM [PatronBookLists] pbl
@@ -1729,13 +1678,15 @@ SELECT ROW_NUMBER() OVER (
 			AND pbl.[pid] = @pid
 			AND pbl.[HasReadFlag] = 1
 		) AS NumBooksCompleted
-FROM #temp1 t
+FROM #temp t
 LEFT JOIN dbo.BookList bl ON bl.BLID = t.BLID
 WHERE t.BLID IN (
 		SELECT DISTINCT [BLID]
 		FROM [BookListBooks]
 		)
 ORDER BY bl.[ListName]
+
+DROP TABLE #temp
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 2/4/2016 13:18:40 ******/
@@ -3273,7 +3224,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 4/7/2016 15:25:26 ******/
+/****** Object:  StoredProcedure [dbo].[app_Event_GetUpcomingDisplay]    Script Date: 4/12/2016 17:12:08 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -3282,7 +3233,9 @@ GO
 
 CREATE PROCEDURE [dbo].[app_Event_GetUpcomingDisplay] @startDate DATETIME = NULL,
 	@endDate DATETIME = NULL,
+	@systemID INT = 0,
 	@branchID INT = 0,
+	@searchText NVARCHAR(255) = NULL,
 	@TenID INT = NULL
 AS
 SELECT e.*,
@@ -3296,6 +3249,10 @@ LEFT OUTER JOIN [LibraryCrosswalk] lc ON e.[BranchID] = lc.[BranchID]
 WHERE (
 		e.[BranchID] = @branchID
 		OR @branchID = 0
+		)
+	AND (
+		lc.[DistrictID] = @systemID
+		OR @systemID = 0
 		)
 	AND (
 		e.[EventDate] >= @startDate
@@ -3325,6 +3282,13 @@ WHERE (
 		OR @TenID IS NULL
 		)
 	AND e.[HiddenFromPublic] != 1
+	AND (
+		(
+			e.[EventTitle] LIKE @searchText
+			OR e.[HTML] LIKE @searchText
+			)
+		OR @searchText IS NULL
+		)
 ORDER BY e.[EventDate] ASC,
 	e.[EventTitle]
 GO
@@ -7807,7 +7771,9 @@ INNER JOIN dbo.Patron mast ON subs.MasterAcctPID = mast.PID
 	AND mast.PID = @PID
 	AND mast.IsMasterAccount = 1
 LEFT JOIN Programs pg ON subs.ProgID = pg.PID
-	--order BY subs.PID desc
+ORDER BY [FirstName],
+	[LastName],
+	[Username]
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_Patron_Insert]    Script Date: 2/4/2016 13:18:40 ******/
@@ -20623,6 +20589,82 @@ ORDER BY AdminName,
 	RedeemedFlag DESC
 GO
 
+/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranch]    Script Date: 4/12/2016 12:46:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT pgm.[TabName] AS [Program],
+		count(p.[pid]) AS [Signups],
+		sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
+				WHEN 1
+					THEN 1
+				ELSE 0
+				END) AS [Achievers],
+		pgm.[CompletionPoints] AS [Achiever Points]
+	FROM [Programs] pgm
+	LEFT OUTER JOIN [patron] p ON p.[ProgID] = pgm.[PID]
+	WHERE p.[TenId] = @TenID
+	GROUP BY pgm.[TabName],
+		pgm.[PID],
+		pgm.[CompletionPoints]
+	ORDER BY pgm.[PID]
+
+	DECLARE @ProgramId INT
+
+	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
+	FOR
+	SELECT [PID]
+	FROM [Programs]
+	ORDER BY [PID]
+
+	OPEN PGM_CURSOR
+
+	FETCH NEXT
+	FROM PGM_CURSOR
+	INTO @ProgramId
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT coalesce(s.[Description], 'No System') AS [Library System],
+			coalesce(b.[description], 'No Branch') AS [Library],
+			count(p.[pid]) AS [Signups],
+			sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
+					WHEN 1
+						THEN 1
+					ELSE 0
+					END) AS [Achievers]
+		FROM [code] b
+		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
+		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
+			AND s.[CTID] = 2
+		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
+			AND p.[ProgID] = @ProgramId
+			AND p.[TenID] = @TenID
+		WHERE b.[CTID] = 1
+		GROUP BY s.[Description],
+			b.[description]
+		ORDER BY s.[Description],
+			b.[description]
+
+		FETCH NEXT
+		FROM PGM_CURSOR
+		INTO @ProgramId
+	END
+
+	CLOSE PGM_CURSOR
+
+	DEALLOCATE PGM_CURSOR
+END
+GO
+
 /****** Object:  StoredProcedure [dbo].[rpt_ReadingActivityReport]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -21869,7 +21911,7 @@ CREATE TABLE [dbo].[AvatarPart] (
 		ALLOW_ROW_LOCKS = ON,
 		ALLOW_PAGE_LOCKS = ON
 		) ON [PRIMARY]
-	) ON [PRIMARY] 
+	) ON [PRIMARY]
 GO
 
 SET ANSI_PADDING ON

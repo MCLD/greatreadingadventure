@@ -72,30 +72,23 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             DistrictName.Text = LibraryDistrictList.SelectedItem.Text;
             BranchName.Text = LibraryBranchList.SelectedItem.Text;
 
-            var defaultImage = true;
-            if (ProgramList.SelectedValue != "0")
+            var selectedProgram = ProgramList.SelectedValue;
+            if (selectedProgram == "0")
             {
-                var program = DAL.Programs.FetchObject(int.Parse(ProgramList.SelectedValue));
-                if (!string.IsNullOrWhiteSpace(program.BannerImage))
-                {
-                    defaultImage = false;
-                    ProgramImage.ImageUrl = program.BannerImage;
-                    ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded", ProgramImage.CssClass);
-                }
+                selectedProgram = DAL.Programs.GetDefaultProgramID().ToString();
             }
-            if (defaultImage)
+
+            var defaultBannerPath = string.Format("~/images/Banners/{0}.png", selectedProgram);
+            var defaultBannerFilePath = Server.MapPath(defaultBannerPath);
+            if (System.IO.File.Exists(defaultBannerFilePath))
             {
-                var program = DAL.Programs.FetchObject(DAL.Programs.GetDefaultProgramID());
-                if (!string.IsNullOrWhiteSpace(program.BannerImage))
-                {
-                    ProgramImage.ImageUrl = program.BannerImage;
-                    ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded", ProgramImage.CssClass);
-                }
-                else
-                {
-                    ProgramImage.ImageUrl = "~/images/meadow.jpg";
-                    ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded", ProgramImage.CssClass);
-                }
+                ProgramImage.ImageUrl = defaultBannerPath;
+                ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded", ProgramImage.CssClass);
+            }
+            else
+            {
+                ProgramImage.ImageUrl = "~/images/meadow.jpg";
+                ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded", ProgramImage.CssClass);
             }
         }
 

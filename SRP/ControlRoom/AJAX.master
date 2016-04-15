@@ -60,8 +60,8 @@
         }
     </style>
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
-        <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.pack.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/moment.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>

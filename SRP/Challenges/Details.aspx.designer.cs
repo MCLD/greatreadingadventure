@@ -13,6 +13,15 @@ namespace GRA.SRP.Challenges {
     public partial class Details {
         
         /// <summary>
+        /// Metadata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder Metadata;
+        
+        /// <summary>
         /// challengeDetails control.
         /// </summary>
         /// <remarks>
@@ -65,6 +74,24 @@ namespace GRA.SRP.Challenges {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptr;
+        
+        /// <summary>
+        /// TwitterShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink TwitterShare;
+        
+        /// <summary>
+        /// FacebookShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink FacebookShare;
         
         /// <summary>
         /// challengesBackLink control.

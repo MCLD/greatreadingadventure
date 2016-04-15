@@ -6,14 +6,20 @@ using System.Text;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.SessionState;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace GRA.Tools
 {
     public class WebTools
     {
-        public const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window\"></span></a>";
+        public const string BranchLinkStub = " <a href=\"{0}\" target=\"_blank\" title=\"Show me this location's Web page in a new window\">{1} <span class=\"glyphicon glyphicon-new-window hidden-print\"></span></a>";
         public const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
         public const string BranchMapLinkStub = "http://maps.google.com/?q={0}";
+
+        private const string TwitterStubTextUrlHashtags = "http://twitter.com/share?text={0}&url={1}&hashtags={2}";
+        private const string TwitterStubTextUrl = "http://twitter.com/share?text={0}&url={1}";
+        private const string FacebookStubUrl = "http://www.facebook.com/sharer.php?u={0}";
 
         /// <summary>
         /// Provided an <see cref="HttpRequest"/>, returns the URL to the current path minus the
@@ -27,8 +33,7 @@ namespace GRA.Tools
             string configHostname = WebConfigurationManager.AppSettings["ReverseProxyHostname"];
             if (!string.IsNullOrWhiteSpace(configHostname))
             {
-                return string.Format("{0}://{1}{2}",
-                     request.Url.Scheme,
+                return string.Format("{0}{1}",
                      configHostname,
                      request.ApplicationPath.TrimEnd('/'));
             }
@@ -127,6 +132,107 @@ namespace GRA.Tools
             }
             return string.Format("<script type=\"application/ld+json\">{0}</script>",
                 jsonld.ToString());
+        }
+
+        private HtmlControl OgMetadataTag(string property, string content)
+        {
+            var tag = new HtmlMeta();
+            tag.Attributes.Add("property", property);
+            tag.Content = content;
+            return tag;
+        }
+
+        public void AddOgMetadata(PlaceHolder placeholder,
+            string title,
+            string description,
+            string image,
+            string url,
+            string type = "website",
+            string facebookApp = null)
+        {
+            if (!string.IsNullOrEmpty(facebookApp) && facebookApp != "facebook-appid")
+            {
+                placeholder.Controls.Add(OgMetadataTag("fb:app_id", facebookApp));
+            }
+            placeholder.Controls.Add(OgMetadataTag("og:title", title));
+            placeholder.Controls.Add(OgMetadataTag("og:type", type));
+            placeholder.Controls.Add(OgMetadataTag("og:url", url));
+            placeholder.Controls.Add(OgMetadataTag("og:image", image));
+            placeholder.Controls.Add(OgMetadataTag("og:description", description));
+        }
+
+        public void AddTwitterMetadata(PlaceHolder placeholder,
+            string title,
+            string description,
+            string image,
+            string cardType = "summary",
+            string twitterUsername = null)
+        {
+            placeholder.Controls.Add(new HtmlMeta { Name = "twitter:card", Content = cardType });
+            if (!string.IsNullOrEmpty(twitterUsername)
+                && twitterUsername != "twitter-username")
+            {
+                placeholder.Controls.Add(new HtmlMeta
+                {
+                    Name = "twitter:site",
+                    Content = twitterUsername
+                });
+            }
+            placeholder.Controls.Add(new HtmlMeta { Name = "twitter:title", Content = title });
+            placeholder.Controls.Add(new HtmlMeta
+            {
+                Name = "twitter:description",
+                Content = description
+            });
+            placeholder.Controls.Add(new HtmlMeta
+            {
+                Name = "twitter:image",
+                Content = image
+            });
+        }
+
+        public string GetTwitterLink(string text, string url, string hashtags)
+        {
+            if (!string.IsNullOrEmpty(hashtags))
+            {
+                return string.Format(WebTools.TwitterStubTextUrlHashtags,
+                    text,
+                    url,
+                    hashtags);
+            }
+            else
+            {
+                return string.Format(WebTools.TwitterStubTextUrl,
+                    text,
+                    url);
+            }
+        }
+
+        public string GetFacebookLink(string url)
+        {
+            return string.Format(WebTools.FacebookStubUrl, url);
+        }
+
+        public string BuildFacebookDescription(string description,
+            string hashtags,
+            string fbDescription)
+        {
+            StringBuilder fbText = new StringBuilder();
+            fbText.Append(description);
+            if (!string.IsNullOrEmpty(fbDescription))
+            {
+                fbText.Append(" - ");
+                fbText.Append(fbDescription);
+            }
+            if (!string.IsNullOrEmpty(hashtags))
+            {
+                foreach (var hashtag in hashtags.Split(','))
+                {
+                    fbText.Append(" #");
+                    fbText.Append(hashtag);
+                }
+            }
+            return fbText.ToString();
         }
     }
 

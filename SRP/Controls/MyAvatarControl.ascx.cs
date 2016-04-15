@@ -21,7 +21,6 @@ namespace GRA.SRP.Controls {
 
 
         protected void Page_Load(object sender, EventArgs e) {
-
             var patron = (Patron)Session["Patron"];
 
             var avatarPartData = AvatarPart.GetQualifiedByPatron(patron.PID);
@@ -43,7 +42,7 @@ namespace GRA.SRP.Controls {
 
             if (!IsPostBack)
             {
-                List<int> state = Patron.ReadAvatarStateString(patron.AvatarState); 
+                List<int> state = Patron.ReadAvatarStateString(patron.AvatarState);
 
                 if (state.Count == 3)
                 {
@@ -54,14 +53,19 @@ namespace GRA.SRP.Controls {
             }
         }
 
-
+        protected void SaveShareButton_Command(Object sender, CommandEventArgs e)
+        {
+            SaveButton_Command(sender, e);
+            var patron = (Patron)Session["Patron"];
+            Response.Redirect(string.Format("~/Avatar/View.aspx?AvatarId={0}",
+                patron.AvatarState));
+        }
 
         protected void SaveButton_Command(Object sender, CommandEventArgs e)
         {
             if (e.CommandName == "save")
             {
                 var patron = (Patron)Session["Patron"];
-
 
                 var avatarState = new List<int>();
 
@@ -72,7 +76,6 @@ namespace GRA.SRP.Controls {
                 string state = Patron.WriteAvatarStateString(avatarState);
                 patron.AvatarState = state;
                 patron.Update();
-
 
                 var outputPath = Server.MapPath($"/images/AvatarCache/{patron.AvatarState}.png");
                 var mdOutputPath = Server.MapPath($"/images/AvatarCache/md_{patron.AvatarState}.png");

@@ -3,6 +3,7 @@ using GRA.Tools;
 using SRPApp.Classes;
 using System;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -35,14 +36,7 @@ namespace GRA.SRP.Events
 
             TranslateStrings(this);
 
-            if (Request.UrlReferrer == null)
-            {
-                eventBackLink.NavigateUrl = "~/Events/";
-            }
-            else
-            {
-                eventBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
-            }
+            eventBackLink.NavigateUrl = "~/Events/";
 
             DAL.Event evnt = null;
             int eventId = 0;
@@ -133,7 +127,6 @@ namespace GRA.SRP.Events
                         eventLinkPanel.Visible = true;
                         ExternalLink.NavigateUrl = evnt.ExternalLinkToEvent;
                         ExternalLink.Text = string.Format(eventTitle.Text);
-                        ExternalLinkPrint.Text = evnt.ExternalLinkToEvent;
                     }
                     else
                     {
@@ -188,6 +181,59 @@ namespace GRA.SRP.Events
                             ex.Message,
                             ex.StackTrace);
                     }
+
+                    // begin social
+                    var wt = new WebTools();
+
+                    var systemName = StringResources.getStringOrNull("system-name");
+                    var fbDescription = StringResources.getStringOrNull("facebook-description");
+                    var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
+
+                    var title = string.Format("{0} event: {1}",
+                        systemName,
+                        evnt.EventTitle);
+                    string description = string.Format("I'm thinking about attending this {0} event: {1}!",
+                        systemName,
+                        evnt.EventTitle);
+                    string twitDescrip = string.Format("Check out this {0} event: {1}!",
+                        systemName,
+                        evnt.EventTitle);
+                    if (twitDescrip.Length > 118)
+                    {
+                        // if it's longer than this it won't fit with the url, shorten it
+                        twitDescrip = string.Format("Check this out: {0}!",
+                            evnt.EventTitle);
+                    }
+
+                    var baseUrl = WebTools.GetBaseUrl(Request);
+                    var eventDetailsUrl = string.Format("{0}/Events/Details.aspx?EventId={1}",
+                        baseUrl,
+                        evnt.EID);
+                    string bannerPath = new GRA.Logic.Banner().FullMetadataBannerPath(baseUrl,
+                        Session,
+                        Server);
+
+                    wt.AddOgMetadata(Metadata,
+                        title,
+                        wt.BuildFacebookDescription(description, hashtags, fbDescription),
+                        bannerPath,
+                        eventDetailsUrl,
+                        facebookApp: GetResourceString("facebook-appid"));
+
+                    wt.AddTwitterMetadata(Metadata,
+                        title,
+                        description,
+                        bannerPath,
+                        twitterUsername: GetResourceString("twitter-username"));
+
+                    TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
+                        Server.UrlEncode(eventDetailsUrl),
+                        hashtags);
+                    TwitterShare.Visible = true;
+                    FacebookShare.NavigateUrl
+                        = wt.GetFacebookLink(Server.UrlEncode(eventDetailsUrl));
+                    FacebookShare.Visible = true;
+                    //end social
                 }
             }
 

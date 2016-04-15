@@ -11,6 +11,7 @@ using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
 using System.Collections.Generic;
+using GRA.Tools;
 
 namespace GRA.SRP.DAL
 {
@@ -208,22 +209,30 @@ namespace GRA.SRP.DAL
 
         #region stored procedure wrappers
 
-        public static DataSet GetForDisplay(int PID)
+        public static DataSet GetForDisplay(int PID, string searchText)
         {
             var TenID =
                 (HttpContext.Current.Session["TenantID"] == null ||
                  HttpContext.Current.Session["TenantID"].ToString() == ""
                      ? -1
                      : (int)HttpContext.Current.Session["TenantID"]);
-            return GetForDisplay(PID, TenID);
+            return GetForDisplay(PID, TenID, searchText);
         }
 
-        public static DataSet GetForDisplay(int PID, int TenID)
+        public static DataSet GetForDisplay(int PID, int TenID, string searchText)
         {
-            SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@PID", PID);
-            arrParams[1] = new SqlParameter("@TenID", TenID);
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_BookList_GetForDisplay", arrParams);
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@PID", PID));
+            arrParams.Add(new SqlParameter("@TenID", TenID));
+            if(!string.IsNullOrWhiteSpace(searchText))
+            {
+                arrParams.Add(new SqlParameter("@SearchText",
+                    new DatabaseTools().PrepareSearchString(searchText.Trim())));
+            }
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_BookList_GetForDisplay",
+                arrParams.ToArray());
         }
 
 
