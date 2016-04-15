@@ -94,6 +94,10 @@ namespace GRA.SRP.Controls
             }
             else
             {
+                if(amount > total)
+                {
+                    return 100;
+                }
                 return (int)(amount * 100.0 / total);
             }
         }

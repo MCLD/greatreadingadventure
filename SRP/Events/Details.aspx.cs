@@ -36,14 +36,7 @@ namespace GRA.SRP.Events
 
             TranslateStrings(this);
 
-            if (Request.UrlReferrer == null)
-            {
-                eventBackLink.NavigateUrl = "~/Events/";
-            }
-            else
-            {
-                eventBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
-            }
+            eventBackLink.NavigateUrl = "~/Events/";
 
             DAL.Event evnt = null;
             int eventId = 0;
@@ -237,7 +230,7 @@ namespace GRA.SRP.Events
                         Server.UrlEncode(eventDetailsUrl),
                         hashtags);
                     TwitterShare.Visible = true;
-                    FacebookShare.NavigateUrl 
+                    FacebookShare.NavigateUrl
                         = wt.GetFacebookLink(Server.UrlEncode(eventDetailsUrl));
                     FacebookShare.Visible = true;
                     //end social

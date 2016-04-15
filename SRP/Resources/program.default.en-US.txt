@@ -15,7 +15,7 @@ frontpage-button-login=Login Now
 program-not-started=The program starts on {0}!
 program-already-over=The program ended {0}<br/>See you next year!
 twitter-description=I'm participating in a reading program because books are awesome!
-facebook-description=I'm on a journey with The Great Reading Adventure to face adventures and challenges, learn secret codes, attend events, earn badges, and (of course) read!
+;facebook-description=I'm on a journey with The Great Reading Adventure to face adventures and challenges, learn secret codes, attend events, earn badges, and (of course) read!
 ;facebook-appid=
 ;twitter-username=
 ;socialmedia-hashtags=hashtag1,hashtag2
@@ -196,6 +196,7 @@ events-header-where=Where
 events-header-what=What
 events-header-summary=Summary
 events-filter-button=Search Events
+events-return=View All Events
 events-filter-clear-button=Show All Events
 events-thisweek-button=Events This Week
 events-prompt=Event: 
@@ -217,7 +218,7 @@ challenges-no-match=Couldn't find any Challenges matching the text you entered.
 challenges-prompt=Challenge: 
 challenges-close=Close
 challenges-save=Save
-challenges-return=Back
+challenges-return=View All Challenges
 challenges-search-button=Search Challenges
 challenges-search-clear-button=Show All Challenges
 challenges-progress-saved=Your progress has been saved!
@@ -241,6 +242,7 @@ badges-filter-button=Search Badges
 badges-filter-clear-button=Show All Badges
 badges-mybadges-button=My Badges
 badges-badgegallery-button=Badge Gallery
+badges-return=View All Badges
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

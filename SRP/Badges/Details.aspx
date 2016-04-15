@@ -28,7 +28,7 @@
                         <asp:HyperLink runat="server" ID="FacebookShare" Visible="false" CssClass="btn btn-default" Target="_blank"><span class="glyphicon glyphicon-share"></span>
                              Facebook</asp:HyperLink>
                         <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
-                        <asp:HyperLink runat="server" ID="badgeBackLink" CssClass="btn btn-default">Back</asp:HyperLink>
+                        <asp:HyperLink runat="server" ID="badgeBackLink" CssClass="btn btn-default"><asp:Label runat="server" Text="badges-return"></asp:Label></asp:HyperLink>
                     </div>
                 </div>
             </asp:Panel>

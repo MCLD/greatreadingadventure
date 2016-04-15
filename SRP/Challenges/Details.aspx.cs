@@ -5,6 +5,7 @@ using GRA.Tools;
 using SRPApp.Classes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -15,6 +16,7 @@ namespace GRA.SRP.Challenges
     public partial class Details : BaseSRPPage
     {
         private bool ProgramOpen { get; set; }
+        private bool ChallengeCompleted { get; set; }
         private readonly string BadgeLink = VirtualPathUtility.ToAbsolute("~/Badges/Details.aspx");
         private const string BadgeLinkAndImage = "<a href=\"{0}?BadgeId={1}\" runat=\"server\" OnClick=\"return ShowBadgeInfo({1});\" class=\"thumbnail pull-left\"><img src=\"/images/badges/sm_{1}.png\" /></a>";
         public bool ShowModal { get; set; }
@@ -90,7 +92,8 @@ namespace GRA.SRP.Challenges
                 }
             }
 
-            if (pgm == null || !pgm.IsOpen)
+
+            if (pgm == null || !pgm.IsOpen || ChallengeCompleted)
             {
                 this.ProgramOpen = false;
                 btnSave.Visible = false;
@@ -124,14 +127,7 @@ namespace GRA.SRP.Challenges
                 {
                     Response.Redirect("~/Challenges/");
                 }
-                if (Request.UrlReferrer == null)
-                {
-                    challengesBackLink.NavigateUrl = "~/Challenges/";
-                }
-                else
-                {
-                    challengesBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
-                }
+                challengesBackLink.NavigateUrl = "~/Challenges/";
                 TranslateStrings(this);
             }
         }
@@ -139,6 +135,7 @@ namespace GRA.SRP.Challenges
         protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e)
         {
             if (!this.ProgramOpen
+                || ChallengeCompleted
                 || this.PrintPage.Equals("true", StringComparison.OrdinalIgnoreCase))
             {
                 if (e.Item.ItemType == ListItemType.Item
@@ -189,7 +186,7 @@ namespace GRA.SRP.Challenges
                             "exclamation-sign");
                     }
 
-                    // user is registered under another pgoram
+                    // user is registered under another program
                     if (p != null && bl.ProgID != p.ProgID)
                     {
                         var prog = DAL.Programs.FetchObject(bl.ProgID);
@@ -273,6 +270,24 @@ namespace GRA.SRP.Challenges
                     }
 
                     var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
+
+                    //Eval("NumBooksCompleted"), Eval("NumBooksToComplete")
+                    if(ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        int completed = 0;
+                        foreach(DataRow row in ds.Tables[0].Rows) {
+                            if ((bool?)row["HasRead"] == true)
+                            {
+                                completed++;
+                                if(completed >= bl.NumBooksToComplete)
+                                {
+                                    ChallengeCompleted = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     rptr.DataSource = ds;
                     rptr.DataBind();
 

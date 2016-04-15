@@ -42,15 +42,8 @@ namespace GRA.SRP.Badges
             }
             TranslateStrings(this);
 
-            if (Request.UrlReferrer == null)
-            {
-                badgeBackLink.NavigateUrl = "~/Badges/";
-            }
-            else
-            {
-                badgeBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
-            }
-
+            badgeBackLink.NavigateUrl = "~/Badges/";
+            
             Badge badge = null;
             TwitterShare.Visible = false;
             FacebookShare.Visible = false;

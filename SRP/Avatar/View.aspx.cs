@@ -15,14 +15,7 @@ namespace GRA.SRP.Avatar
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.UrlReferrer == null)
-            {
-                AvatarBackLink.NavigateUrl = "~/";
-            }
-            else
-            {
-                AvatarBackLink.NavigateUrl = Request.UrlReferrer.AbsolutePath;
-            }
+            AvatarBackLink.NavigateUrl = "~/";
 
             SystemName.Text = SystemNamePrint.Text = StringResources.getString("system-name");
             SystemSlogan.Text = StringResources.getString("slogan");
