@@ -33,8 +33,7 @@ namespace GRA.Tools
             string configHostname = WebConfigurationManager.AppSettings["ReverseProxyHostname"];
             if (!string.IsNullOrWhiteSpace(configHostname))
             {
-                return string.Format("{0}://{1}{2}",
-                     request.Url.Scheme,
+                return string.Format("{0}{1}",
                      configHostname,
                      request.ApplicationPath.TrimEnd('/'));
             }

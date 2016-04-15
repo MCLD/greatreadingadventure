@@ -3052,8 +3052,8 @@ BEGIN
 		N'sysadmin',
 		'Initial configuration',
 		3,
+		1,
 		0,
-		3,
 		'Performed initial configuration of multiple programs'
 		)
 END
