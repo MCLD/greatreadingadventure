@@ -85,7 +85,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.2.1\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.2.3\lib\net40\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -311,14 +311,18 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="ControlRoom\Handlers\CodeAvailable.ashx" />
     <Content Include="Handlers\UnreadCount.ashx" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\Demo.pubxml" />
     <None Include="Properties\PublishProfiles\Release.pubxml" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\jquery-2.2.1.js" />
-    <Content Include="Scripts\jquery-2.2.1.min.js" />
+    <None Include="Scripts\jquery-2.2.3.intellisense.js" />
+    <Content Include="Scripts\jquery-2.2.3.js" />
+    <Content Include="Scripts\jquery-2.2.3.min.js" />
     <Content Include="Scripts\jquery.fancybox-buttons.js" />
     <Content Include="Scripts\jquery.fancybox-media.js" />
     <Content Include="Scripts\jquery.fancybox-thumbs.js" />
@@ -703,9 +707,6 @@
     <Content Include="Handlers\Status.ashx" />
     <Content Include="Handlers\Feed.ashx" />
     <Content Include="manifest.json" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Properties\PublishProfiles\Development-external.pubxml" />
     <None Include="Properties\PublishProfiles\Documentation.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
@@ -827,7 +828,7 @@
     <Content Include="trumbowyg\ui\sass\_sprite-black.scss" />
     <Content Include="trumbowyg\ui\sass\_sprite-white-2x.scss" />
     <Content Include="trumbowyg\ui\sass\_sprite-white.scss" />
-    <Content Include="Scripts\jquery-2.2.1.min.map" />
+    <Content Include="Scripts\jquery-2.2.3.min.map" />
     <None Include="Web.Demo.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

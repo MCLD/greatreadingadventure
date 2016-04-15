@@ -8,7 +8,7 @@
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
     </asp:PlaceHolder>
     <style>
         .gra-red {

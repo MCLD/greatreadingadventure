@@ -7,7 +7,7 @@
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%> - Password Reset Request</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
     </asp:PlaceHolder>
     <style>
         .gra-red {
