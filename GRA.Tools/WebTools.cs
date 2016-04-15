@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.SessionState;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace GRA.Tools
 {
@@ -130,12 +131,62 @@ namespace GRA.Tools
                 jsonld.ToString());
         }
 
-        public HtmlControl OgMetadataTag(string property, string content)
+        private HtmlControl OgMetadataTag(string property, string content)
         {
             var tag = new HtmlMeta();
             tag.Attributes.Add("property", property);
             tag.Content = content;
             return tag;
+        }
+
+        public void AddOgMetadata(PlaceHolder placeholder,
+            string title,
+            string description,
+            string image,
+            string url,
+            string type = "website",
+            string facebookApp = null)
+        {
+            if (!string.IsNullOrEmpty(facebookApp) && facebookApp != "facebook-appid")
+            {
+                placeholder.Controls.Add(OgMetadataTag("fb:app_id", facebookApp));
+            }
+            placeholder.Controls.Add(OgMetadataTag("og:title", title));
+            placeholder.Controls.Add(OgMetadataTag("og:type", type));
+            placeholder.Controls.Add(OgMetadataTag("og:url", url));
+            placeholder.Controls.Add(OgMetadataTag("og:image", image));
+            placeholder.Controls.Add(OgMetadataTag("og:description", description));
+        }
+
+        public void AddTwitterMetadata(PlaceHolder placeholder,
+            string title,
+            string description,
+            string image,
+            string cardType = "summary",
+            string twitterUsername = null)
+        {
+            placeholder.Controls.Add(new HtmlMeta { Name = "twitter:card", Content = cardType });
+            if (!string.IsNullOrEmpty(twitterUsername)
+                && twitterUsername != "twitter-username")
+            {
+                placeholder.Controls.Add(new HtmlMeta
+                {
+                    Name = "twitter:site",
+                    Content = twitterUsername
+                });
+            }
+            placeholder.Controls.Add(new HtmlMeta { Name = "twitter:title", Content = title });
+            placeholder.Controls.Add(new HtmlMeta
+            {
+                Name = "twitter:description",
+                Content = description
+            });
+            placeholder.Controls.Add(new HtmlMeta
+            {
+                Name = "twitter:image",
+                Content = image
+            });
+
         }
     }
 

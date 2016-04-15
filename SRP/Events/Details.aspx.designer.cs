@@ -13,6 +13,15 @@ namespace GRA.SRP.Events {
     public partial class Details {
         
         /// <summary>
+        /// Metadata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder Metadata;
+        
+        /// <summary>
         /// eventDetails control.
         /// </summary>
         /// <remarks>
@@ -182,6 +191,24 @@ namespace GRA.SRP.Events {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink ExternalLink;
+        
+        /// <summary>
+        /// TwitterShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink TwitterShare;
+        
+        /// <summary>
+        /// FacebookShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink FacebookShare;
         
         /// <summary>
         /// eventBackLink control.

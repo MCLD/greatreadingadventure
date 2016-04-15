@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.SessionState;
 
 namespace GRA.Logic
 {
@@ -11,7 +12,7 @@ namespace GRA.Logic
     {
         private const string DefaultBanner = "~/images/meadow.jpg";
         private const string DefaultBanner2x = "~/images/meadow@2x.jpg";
-        public Tuple<string,string> GetBannerPath(string programId, HttpServerUtility Server)
+        public Tuple<string, string> GetBannerPath(string programId, HttpServerUtility Server)
         {
             var banner = DefaultBanner;
             var banner2x = DefaultBanner2x;
@@ -24,7 +25,7 @@ namespace GRA.Logic
                 if (File.Exists(Server.MapPath(programBanner)))
                 {
                     banner = programBanner;
-                    if(File.Exists(Server.MapPath(programBanner2x)))
+                    if (File.Exists(Server.MapPath(programBanner2x)))
                     {
                         banner2x = programBanner2x;
                     }
@@ -42,7 +43,7 @@ namespace GRA.Logic
                     if (File.Exists(Server.MapPath(programBanner)))
                     {
                         banner = programBanner;
-                        if(File.Exists(Server.MapPath(programBanner2x)))
+                        if (File.Exists(Server.MapPath(programBanner2x)))
                         {
                             banner2x = programBanner2x;
                         }
@@ -55,5 +56,34 @@ namespace GRA.Logic
             }
             return new Tuple<string, string>(banner, banner2x);
         }
+
+        public string FullMetadataBannerPath(string baseUrl,
+            HttpSessionState Session,
+            HttpServerUtility Server)
+        {
+            string programId = Session["ProgramId"] != null
+                ? Session["ProgramId"].ToString()
+                : null;
+
+            Tuple<string, string> bannerPaths = GetBannerPath(programId, Server);
+
+            string bannerImage = !string.IsNullOrEmpty(bannerPaths.Item2)
+                ? VirtualPathUtility.ToAbsolute(bannerPaths.Item2)
+                : VirtualPathUtility.ToAbsolute(bannerPaths.Item1);
+            return string.Format("{0}{1}", baseUrl, bannerImage);
+        }
+
+        public string FullMetadataBannerPath(string baseUrl,
+            string programId,
+            HttpServerUtility Server)
+        {
+            Tuple<string, string> bannerPaths = GetBannerPath(programId, Server);
+
+            string bannerImage = !string.IsNullOrEmpty(bannerPaths.Item2)
+                ? VirtualPathUtility.ToAbsolute(bannerPaths.Item2)
+                : VirtualPathUtility.ToAbsolute(bannerPaths.Item1);
+            return string.Format("{0}{1}", baseUrl, bannerImage);
+        }
+
     }
 }

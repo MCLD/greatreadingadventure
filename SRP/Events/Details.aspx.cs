@@ -3,6 +3,7 @@ using GRA.Tools;
 using SRPApp.Classes;
 using System;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -187,6 +188,70 @@ namespace GRA.SRP.Events
                             ex.Message,
                             ex.StackTrace);
                     }
+
+                    /* metadata & sharing */
+                    string systemName = GetResourceString("system-name");
+                    string title = string.Format("{0} event: {1}",
+                        systemName,
+                        evnt.EventTitle);
+
+                    string description = string.Format("I'm thinking about attending this {0} event: {1}!",
+                        systemName,
+                        evnt.EventTitle);
+                    string twitDescrip = string.Format("Check out this {0} event: {1}!",
+                        systemName,
+                        evnt.EventTitle);
+                    if (twitDescrip.Length > 118)
+                    {
+                        // if it's longer than this it won't fit with the url, shorten it
+                        twitDescrip = string.Format("Check this out: {0}!",
+                            evnt.EventTitle);
+                    }
+
+                    var wt = new WebTools();
+                    var baseUrl = WebTools.GetBaseUrl(Request);
+                    var eventDetailsUrl = string.Format("{0}/Events/Details.aspx?EventId={1}",
+                        baseUrl,
+                        evnt.EID);
+                    string bannerPath = new GRA.Logic.Banner().FullMetadataBannerPath(baseUrl,
+                        Session,
+                        Server);
+
+                    // open graph & facebook
+                    wt.AddOgMetadata(Metadata,
+                        title,
+                        description,
+                        bannerPath,
+                        eventDetailsUrl,
+                        facebookApp: GetResourceString("facebook-appid"));
+
+                    //twitter
+                    wt.AddTwitterMetadata(Metadata,
+                        title,
+                        description,
+                        bannerPath,
+                        twitterUsername: GetResourceString("twitter-username"));
+
+                    string twitterHashtags = GetResourceString("twitter-hashtags");
+                    if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags
+                        != "twitter-hashtags")
+                    {
+                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
+                            twitDescrip,
+                            Server.UrlEncode(eventDetailsUrl),
+                            twitterHashtags);
+                    }
+                    else
+                    {
+                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
+                            twitDescrip,
+                            Server.UrlEncode(eventDetailsUrl));
+                    }
+                    TwitterShare.Visible = true;
+                    FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
+                        Server.UrlEncode(eventDetailsUrl));
+                    FacebookShare.Visible = true;
+                    /* end metadata & sharing */
                 }
             }
 

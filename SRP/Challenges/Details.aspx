@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Layout/SRP.Master" AutoEventWireup="true" CodeBehind="Details.aspx.cs" Inherits="GRA.SRP.Challenges.Details" %>
 
+<asp:Content runat="server" ContentPlaceHolderID="HeaderContent">
+    <asp:PlaceHolder runat="server" ID="Metadata"></asp:PlaceHolder>
+</asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
@@ -66,6 +69,10 @@
                 </table>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">
+                        <asp:HyperLink runat="server" ID="TwitterShare" Visible="false" CssClass="btn btn-default" Target="_blank"><span class="glyphicon glyphicon-share"></span>
+                             Twitter</asp:HyperLink>
+                        <asp:HyperLink runat="server" ID="FacebookShare" Visible="false" CssClass="btn btn-default" Target="_blank"><span class="glyphicon glyphicon-share"></span>
+                             Facebook</asp:HyperLink>
                         <button class="btn btn-default" type="button" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button>
                         <asp:HyperLink runat="server" ID="challengesBackLink" CssClass="btn btn-default"><asp:Label runat="server" Text="challenges-return"></asp:Label></asp:HyperLink>
                         <asp:Button ID="btnSave" runat="server" Text="challenges-save" OnClick="btnSave_Click" CssClass="btn btn-default" />

@@ -314,7 +314,9 @@ namespace GRA.SRP.Controls
             rptr2.DataSource = ds;
             rptr2.DataBind();
             printLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?ChallengeId={0}&print=1",
-                                                  bl.BLID);
+                bl.BLID);
+            detailsLink.NavigateUrl = string.Format("~/Challenges/Details.aspx?ChallengeId={0}",
+                bl.BLID);
             pnlDetail.Visible = true;
 
             if (this.CompletedChallenge

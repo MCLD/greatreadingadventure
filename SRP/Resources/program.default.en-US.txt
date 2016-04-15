@@ -101,7 +101,8 @@ myaccount-program-reward-code=Reward Codes
 ;;  Avatar Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 avatar-title=Avatar
-avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked, during the program, by earning badges.
+avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked during the program by earning badges.
+avatar-return=Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

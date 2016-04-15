@@ -174,6 +174,9 @@
             </div>
             <div class="modal-footer">
                 <div class="pull-right clearfix">
+                    <button class="btn btn-default" type="button" id="eventPopupShare">
+                        <span class="glyphicon glyphicon-share"></span>
+                        Share this</button>
                     <button class="btn btn-default" type="button" id="eventPopupPrint"><span class="glyphicon glyphicon-print"></span></button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -261,6 +264,9 @@
 
                     $('#eventPopupPrint').click(function () {
                         location.href = "<%=Request.ApplicationPath%>Events/Details.aspx?EventId=" + eventId + "&Print=1";
+                    });
+                    $('#eventPopupShare').click(function () {
+                        location.href = "<%=Request.ApplicationPath%>Events/Details.aspx?EventId=" + eventId;
                     });
 
                     $('#eventPopupPanel').modal('show');

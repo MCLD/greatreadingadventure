@@ -138,6 +138,7 @@
     <Content Include="apple-touch-icon-precomposed.png" />
     <Content Include="apple-touch-icon.png" />
     <Content Include="App_Themes\Default\Default.css" />
+    <Content Include="Avatar\View.aspx" />
     <Content Include="Badges\Default.aspx" />
     <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
@@ -893,6 +894,13 @@
     </Compile>
     <Compile Include="AddlSurvey.aspx.designer.cs">
       <DependentUpon>AddlSurvey.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Avatar\View.aspx.cs">
+      <DependentUpon>View.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Avatar\View.aspx.designer.cs">
+      <DependentUpon>View.aspx</DependentUpon>
     </Compile>
     <Compile Include="Badges\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

@@ -65,10 +65,10 @@ namespace GRA.SRP.Badges
                 {
                     var patron = Session[SessionKey.Patron] as DAL.Patron;
                     DataSet patronBadges = null;
-                    if(patron != null)
+                    if (patron != null)
                     {
                         patronBadges = DAL.PatronBadges.GetAll(patron.PID);
-                        if(patronBadges.Tables.Count > 0)
+                        if (patronBadges.Tables.Count > 0)
                         {
                             var filterExpression = string.Format("BadgeID = {0}", badge.BID);
                             var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
@@ -207,41 +207,32 @@ namespace GRA.SRP.Badges
                         }
                     }
 
+                    var wt = new WebTools();
                     var baseUrl = WebTools.GetBaseUrl(Request);
                     var badgeDetailsUrl = string.Format("{0}/Badges/Details.aspx?BadgeId={1}",
                         baseUrl,
                         badge.BID);
-                    string badgeImage = VirtualPathUtility.ToAbsolute(badgePath);
-                    string badgeImagePath = string.Format("{0}{1}", baseUrl, badgeImage);
+                    var badgeImagePath = string.Format("{0}{1}", baseUrl,
+                        VirtualPathUtility.ToAbsolute(badgePath));
 
-                    var wt = new WebTools();
+                    wt.AddOgMetadata(Metadata,
+                        title,
+                        description,
+                        badgeImagePath,
+                        badgeDetailsUrl,
+                        "game.achievement",
+                        GetResourceString("facebook-appid"));
 
-                    // open graph & facebook
-                    string facebookApp = GetResourceString("facebook-appid");
-                    if (!string.IsNullOrEmpty(facebookApp) && facebookApp != "facebook-appid")
-                    {
-                        Metadata.Controls.Add(wt.OgMetadataTag("fb:app_id", facebookApp));
-                    }
-                    Metadata.Controls.Add(wt.OgMetadataTag("og:title", title));
-                    Metadata.Controls.Add(wt.OgMetadataTag("og:type", "game.achievement"));
-                    Metadata.Controls.Add(wt.OgMetadataTag("og:url", badgeDetailsUrl));
-                    Metadata.Controls.Add(wt.OgMetadataTag("og:image", badgeImagePath));
-                    Metadata.Controls.Add(wt.OgMetadataTag("og:description", description));
-
-                    //twitter
-                    string twitterUsername = GetResourceString("twitter-username");
-                    string twitterHashtags = GetResourceString("twitter-hashtags");
-                    Metadata.Controls.Add(new HtmlMeta { Name = "twitter:card", Content = "summary" });
-                    if (!string.IsNullOrEmpty(twitterUsername) && twitterUsername != "twitter-username")
-                    {
-                        Metadata.Controls.Add(wt.OgMetadataTag("twitter:site", twitterUsername));
-                    }
-                    Metadata.Controls.Add(new HtmlMeta { Name = "twitter:title", Content = title });
-                    Metadata.Controls.Add(wt.OgMetadataTag("twitter:description", twitDescrip));
-                    Metadata.Controls.Add(new HtmlMeta { Name = "twitter:image", Content = badgeImagePath });
+                    wt.AddTwitterMetadata(Metadata,
+                        title, 
+                        twitDescrip, 
+                        badgeImagePath, 
+                        twitterUsername: GetResourceString("twitter-username"));
                     /* end metadata */
 
-                    if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags != "twitter-hashtags")
+                    string twitterHashtags = GetResourceString("twitter-hashtags");
+                    if (!string.IsNullOrEmpty(twitterHashtags)
+                        && twitterHashtags != "twitter-hashtags")
                     {
                         TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
                             twitDescrip,

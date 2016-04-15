@@ -206,8 +206,8 @@ namespace GRA.SRP.Challenges
                 {
 
                     challengeTitle.Text = bl.ListName;
-                    this.Title = string.Format("{0} Challenge", challengeTitle.Text);
-                    lblDesc.Text = Server.HtmlDecode(bl.Description);
+                    this.Title = string.Format("Challenge: {0}", challengeTitle.Text);
+                    lblDesc.Text = string.Format("<p>{0}</p>", Server.HtmlDecode(bl.Description));
 
                     string award = null;
 
@@ -273,6 +273,69 @@ namespace GRA.SRP.Challenges
                     var ds = BookListBooks.GetForDisplay(bl.BLID, patronId);
                     rptr.DataSource = ds;
                     rptr.DataBind();
+
+                    /* metadata & sharing */
+                    string systemName = GetResourceString("system-name");
+                    string title = string.Format("{0} challenge: {1}",
+                        systemName,
+                        bl.ListName);
+
+                    string description = string.Format("Check out this {0} challenge: {1}!",
+                        systemName,
+                        bl.ListName);
+                    string twitDescrip = description;
+
+                    if (twitDescrip.Length > 118)
+                    {
+                        // if it's longer than this it won't fit with the url, shorten it
+                        twitDescrip = string.Format("Check this out: {0}!",
+                            bl.ListName);
+                    }
+
+                    var wt = new WebTools();
+                    var baseUrl = WebTools.GetBaseUrl(Request);
+                    var eventDetailsUrl = string.Format("{0}/Challenges/Details.aspx?ChallengeId={1}",
+                        baseUrl,
+                        bl.BLID);
+                    string bannerPath = new GRA.Logic.Banner().FullMetadataBannerPath(baseUrl,
+                        Session,
+                        Server);
+
+                    // open graph & facebook
+                    wt.AddOgMetadata(Metadata,
+                        title,
+                        description,
+                        bannerPath,
+                        eventDetailsUrl,
+                        facebookApp: GetResourceString("facebook-appid"));
+                    
+                    //twitter
+                    wt.AddTwitterMetadata(Metadata,
+                        title,
+                        description,
+                        bannerPath,
+                        twitterUsername: GetResourceString("twitter-username"));
+
+                    string twitterHashtags = GetResourceString("twitter-hashtags");
+                    if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags
+                        != "twitter-hashtags")
+                    {
+                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
+                            twitDescrip,
+                            Server.UrlEncode(eventDetailsUrl),
+                            twitterHashtags);
+                    }
+                    else
+                    {
+                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
+                            twitDescrip,
+                            Server.UrlEncode(eventDetailsUrl));
+                    }
+                    TwitterShare.Visible = true;
+                    FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
+                        Server.UrlEncode(eventDetailsUrl));
+                    FacebookShare.Visible = true;
+                    /* end metadata & sharing */
 
                     this.ShowModal = true;
                 }

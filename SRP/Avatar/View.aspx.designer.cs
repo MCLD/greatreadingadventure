@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP.Challenges {
+namespace GRA.SRP.Avatar {
     
     
-    public partial class Details {
+    public partial class View {
         
         /// <summary>
         /// Metadata control.
@@ -22,58 +22,67 @@ namespace GRA.SRP.Challenges {
         protected global::System.Web.UI.WebControls.PlaceHolder Metadata;
         
         /// <summary>
-        /// challengeDetails control.
+        /// mainForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel challengeDetails;
+        protected global::System.Web.UI.HtmlControls.HtmlForm mainForm;
         
         /// <summary>
-        /// challengeTitle control.
+        /// homeLink control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label challengeTitle;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor homeLink;
         
         /// <summary>
-        /// lblDesc control.
+        /// SystemName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDesc;
+        protected global::System.Web.UI.WebControls.Label SystemName;
         
         /// <summary>
-        /// lblPoints control.
+        /// SystemSlogan control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPoints;
+        protected global::System.Web.UI.WebControls.Label SystemSlogan;
         
         /// <summary>
-        /// BadgeImage control.
+        /// AvatarAlert control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label BadgeImage;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AvatarAlert;
         
         /// <summary>
-        /// rptr control.
+        /// AvatarPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptr;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AvatarPanel;
+        
+        /// <summary>
+        /// AvatarImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image AvatarImage;
         
         /// <summary>
         /// TwitterShare control.
@@ -94,21 +103,57 @@ namespace GRA.SRP.Challenges {
         protected global::System.Web.UI.WebControls.HyperLink FacebookShare;
         
         /// <summary>
-        /// challengesBackLink control.
+        /// AvatarBackLink control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink challengesBackLink;
+        protected global::System.Web.UI.WebControls.HyperLink AvatarBackLink;
         
         /// <summary>
-        /// btnSave control.
+        /// AvatarPrintPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AvatarPrintPanel;
+        
+        /// <summary>
+        /// SystemNamePrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label SystemNamePrint;
+        
+        /// <summary>
+        /// BannerImagePrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image BannerImagePrint;
+        
+        /// <summary>
+        /// AvatarImagePrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image AvatarImagePrint;
+        
+        /// <summary>
+        /// MyAvatarPrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label MyAvatarPrint;
     }
 }
