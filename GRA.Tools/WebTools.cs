@@ -220,6 +220,11 @@ namespace GRA.Tools
         {
             StringBuilder fbText = new StringBuilder();
             fbText.Append(description);
+            if (!string.IsNullOrEmpty(fbDescription))
+            {
+                fbText.Append(" - ");
+                fbText.Append(fbDescription);
+            }
             if (!string.IsNullOrEmpty(hashtags))
             {
                 foreach (var hashtag in hashtags.Split(','))
@@ -227,11 +232,6 @@ namespace GRA.Tools
                     fbText.Append(" #");
                     fbText.Append(hashtag);
                 }
-            }
-            if (!string.IsNullOrEmpty(fbDescription))
-            {
-                fbText.Append(" - ");
-                fbText.Append(fbDescription);
             }
             return fbText.ToString();
         }
