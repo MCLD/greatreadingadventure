@@ -27,8 +27,7 @@
             <th>
                 <asp:Label runat="server" Text="myaccount-program-reward-code" ID="ProgramCodeLabel"></asp:Label>
             </th>
-            <th>
-                &nbsp;
+            <th>&nbsp;
             </th>
         </tr>
     </thead>
@@ -37,7 +36,9 @@
             <ItemTemplate>
                 <tr>
                     <td style="vertical-align: middle;">
-                        <asp:Image runat="server" ID="avatarImage" Width="84" Height="84" />
+                        <asp:HyperLink runat="server" ID="avatarLink" CssClass="fancybox">
+                            <asp:Image runat="server" ID="avatarImage" Width="84" Height="84" />
+                        </asp:HyperLink>
                     </td>
                     <td style="vertical-align: middle;">
                         <%# Eval("FirstName") + " " + Eval("LastName")%> (<%# Eval("username") %>)

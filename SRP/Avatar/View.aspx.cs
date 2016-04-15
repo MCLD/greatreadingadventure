@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -80,16 +81,20 @@ namespace GRA.SRP.Avatar
             }
 
             string avatarPath = null;
+            string avatarMdPath = null;
             bool validAvatar = false;
             string avatarId = Request.QueryString["AvatarId"];
             if (!string.IsNullOrEmpty(avatarId) && avatarId.Length <= 24)
             {
                 char[] avatarIdArray = avatarId.ToCharArray();
 
-                avatarIdArray = Array.FindAll<char>(avatarIdArray, (c => (char.IsLetterOrDigit(c))));
+                avatarIdArray = Array.FindAll<char>(avatarIdArray,
+                    (c => (char.IsLetterOrDigit(c))));
                 avatarId = new string(avatarIdArray);
 
                 avatarPath = string.Format("~/Images/AvatarCache/{0}.png", avatarId);
+                avatarMdPath = string.Format("~/Images/AvatarCache/md_{0}.png", avatarId);
+
                 if (File.Exists(Server.MapPath(avatarPath)))
                 {
                     validAvatar = true;
@@ -104,9 +109,16 @@ namespace GRA.SRP.Avatar
             }
             else
             {
-                var title = string.Format("{0} avatar", SystemName.Text);
-                var description = string.Format("Check out this awesome avatar in {0}!", SystemName.Text);
+                // begin social
                 var wt = new WebTools();
+
+                var fbDescription = StringResources.getStringOrNull("facebook-description");
+                var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
+
+                var title = string.Format("{0} avatar", SystemName.Text);
+                var description = string.Format("Check out this awesome avatar in {0}!",
+                    SystemName.Text);
+
                 var baseUrl = WebTools.GetBaseUrl(Request);
                 var avatarDetailPath = string.Format("{0}/Avatar/View.aspx?AvatarId={1}",
                     baseUrl,
@@ -114,6 +126,9 @@ namespace GRA.SRP.Avatar
                 var fullAvatarPath = string.Format("{0}{1}",
                     baseUrl,
                     VirtualPathUtility.ToAbsolute(avatarPath));
+                var fullAvatarMdPath = string.Format("{0}{1}",
+                    baseUrl,
+                    VirtualPathUtility.ToAbsolute(avatarMdPath));
 
                 if (patron != null)
                 {
@@ -122,11 +137,9 @@ namespace GRA.SRP.Avatar
                         SystemName.Text);
                 }
 
-                // open graph & facebook
-
                 wt.AddOgMetadata(Metadata,
                     title,
-                    description,
+                    wt.BuildFacebookDescription(description, hashtags, fbDescription),
                     fullAvatarPath,
                     avatarDetailPath,
                     facebookApp: StringResources.getString("facebook-appid"));
@@ -134,29 +147,17 @@ namespace GRA.SRP.Avatar
                 wt.AddTwitterMetadata(Metadata,
                     title,
                     description,
-                    fullAvatarPath,
-                    "summary_large_image",
+                    fullAvatarMdPath,
                     StringResources.getString("twitter-username"));
 
-                string twitterHashtags = StringResources.getString("twitter-hashtags");
-                if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags
-                    != "twitter-hashtags")
-                {
-                    TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
-                        description,
-                        Server.UrlEncode(avatarDetailPath),
-                        twitterHashtags);
-                }
-                else
-                {
-                    TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
-                        description,
-                        Server.UrlEncode(avatarDetailPath));
-                }
+                TwitterShare.NavigateUrl = wt.GetTwitterLink(description,
+                    Server.UrlEncode(avatarDetailPath),
+                    hashtags);
                 TwitterShare.Visible = true;
-                FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
-                    Server.UrlEncode(avatarDetailPath));
+
+                FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(avatarDetailPath));
                 FacebookShare.Visible = true;
+                // end social
             }
 
             AvatarPrintPanel.Visible = AvatarPanel.Visible;

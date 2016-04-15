@@ -189,12 +189,16 @@ namespace GRA.SRP.Events
                             ex.StackTrace);
                     }
 
-                    /* metadata & sharing */
-                    string systemName = GetResourceString("system-name");
-                    string title = string.Format("{0} event: {1}",
+                    // begin social
+                    var wt = new WebTools();
+
+                    var systemName = StringResources.getStringOrNull("system-name");
+                    var fbDescription = StringResources.getStringOrNull("facebook-description");
+                    var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
+
+                    var title = string.Format("{0} event: {1}",
                         systemName,
                         evnt.EventTitle);
-
                     string description = string.Format("I'm thinking about attending this {0} event: {1}!",
                         systemName,
                         evnt.EventTitle);
@@ -208,7 +212,6 @@ namespace GRA.SRP.Events
                             evnt.EventTitle);
                     }
 
-                    var wt = new WebTools();
                     var baseUrl = WebTools.GetBaseUrl(Request);
                     var eventDetailsUrl = string.Format("{0}/Events/Details.aspx?EventId={1}",
                         baseUrl,
@@ -217,41 +220,27 @@ namespace GRA.SRP.Events
                         Session,
                         Server);
 
-                    // open graph & facebook
                     wt.AddOgMetadata(Metadata,
                         title,
-                        description,
+                        wt.BuildFacebookDescription(description, hashtags, fbDescription),
                         bannerPath,
                         eventDetailsUrl,
                         facebookApp: GetResourceString("facebook-appid"));
 
-                    //twitter
                     wt.AddTwitterMetadata(Metadata,
                         title,
                         description,
                         bannerPath,
                         twitterUsername: GetResourceString("twitter-username"));
 
-                    string twitterHashtags = GetResourceString("twitter-hashtags");
-                    if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags
-                        != "twitter-hashtags")
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
-                            twitDescrip,
-                            Server.UrlEncode(eventDetailsUrl),
-                            twitterHashtags);
-                    }
-                    else
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
-                            twitDescrip,
-                            Server.UrlEncode(eventDetailsUrl));
-                    }
+                    TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
+                        Server.UrlEncode(eventDetailsUrl),
+                        hashtags);
                     TwitterShare.Visible = true;
-                    FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
-                        Server.UrlEncode(eventDetailsUrl));
+                    FacebookShare.NavigateUrl 
+                        = wt.GetFacebookLink(Server.UrlEncode(eventDetailsUrl));
                     FacebookShare.Visible = true;
-                    /* end metadata & sharing */
+                    //end social
                 }
             }
 

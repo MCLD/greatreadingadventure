@@ -83,5 +83,24 @@ namespace SRPApp.Classes {
 
             return getString(pid, key);
         }
+
+        public static string getStringOrNull(string key)
+        {
+            string pid = "default";
+            if (HttpContext.Current.Session["ProgramID"] != null)
+            {
+                pid = HttpContext.Current.Session["ProgramID"].ToString();
+            }
+
+            var value = getString(pid, key);
+            if(value != key)
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

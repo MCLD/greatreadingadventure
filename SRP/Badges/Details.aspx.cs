@@ -170,6 +170,9 @@ namespace GRA.SRP.Badges
 
                     /* metadata */
                     string systemName = GetResourceString("system-name");
+                    var fbDescription = StringResources.getStringOrNull("facebook-description");
+                    var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
+
                     string title = string.Format("{0} badge: {1}",
                         systemName,
                         badge.UserName);
@@ -217,10 +220,9 @@ namespace GRA.SRP.Badges
 
                     wt.AddOgMetadata(Metadata,
                         title,
-                        description,
+                        wt.BuildFacebookDescription(description, hashtags, fbDescription),
                         badgeImagePath,
                         badgeDetailsUrl,
-                        "game.achievement",
                         GetResourceString("facebook-appid"));
 
                     wt.AddTwitterMetadata(Metadata,
@@ -228,27 +230,14 @@ namespace GRA.SRP.Badges
                         twitDescrip, 
                         badgeImagePath, 
                         twitterUsername: GetResourceString("twitter-username"));
-                    /* end metadata */
 
-                    string twitterHashtags = GetResourceString("twitter-hashtags");
-                    if (!string.IsNullOrEmpty(twitterHashtags)
-                        && twitterHashtags != "twitter-hashtags")
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
-                            twitDescrip,
+                        TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
                             Server.UrlEncode(badgeDetailsUrl),
-                            twitterHashtags);
-                    }
-                    else
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
-                            twitDescrip,
-                            Server.UrlEncode(badgeDetailsUrl));
-                    }
+                            hashtags);
                     TwitterShare.Visible = true;
-                    FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
-                        Server.UrlEncode(badgeDetailsUrl));
+                    FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(badgeDetailsUrl));
                     FacebookShare.Visible = true;
+                    // end social
                 }
                 badgeDetails.Visible = true;
             }

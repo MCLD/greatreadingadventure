@@ -10,16 +10,21 @@ using GRA.SRP.DAL;
 using GRA.Tools;
 using System.IO;
 
-namespace GRA.SRP.Controls {
-    public partial class FamilyList : System.Web.UI.UserControl {
+namespace GRA.SRP.Controls
+{
+    public partial class FamilyList : System.Web.UI.UserControl
+    {
         private const string NoAvatarPathSm = "~/images/AvatarCache/no_avatar_sm.png";
 
-        protected void Page_Load(object sender, EventArgs e) {
-            if(!IsPostBack) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
                 ProgramCodeLabel.Visible = false;
 
                 var patron = (Patron)Session["Patron"];
-                if(Session[SessionKey.IsMasterAccount] as bool? != true) {
+                if (Session[SessionKey.IsMasterAccount] as bool? != true)
+                {
                     Response.Redirect("~");
                 }
 
@@ -32,9 +37,11 @@ namespace GRA.SRP.Controls {
             }
         }
 
-        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e) {
-            if(e.Item.ItemType == ListItemType.Item
-               || e.Item.ItemType == ListItemType.AlternatingItem) {
+        protected void rptr_ItemDataBound(object source, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item
+               || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
                 var patronRecord = (DataRowView)e.Item.DataItem;
                 var patronId = patronRecord["PID"].ToString();
                 var avatarState = patronRecord["AvatarState"].ToString();
@@ -42,26 +49,43 @@ namespace GRA.SRP.Controls {
                 string potentialAvatarPath = null;
                 string avatarPathSm = NoAvatarPathSm;
                 string avatarPathMd = null;
+                string avatarPathLg = null;
 
                 potentialAvatarPath = string.Format("~/images/AvatarCache/sm_{0}.png",
                                                     avatarState);
-                if(File.Exists(Server.MapPath(potentialAvatarPath))) {
+                if (File.Exists(Server.MapPath(potentialAvatarPath)))
+                {
                     avatarPathSm = potentialAvatarPath;
                 }
 
                 potentialAvatarPath = string.Format("~/images/AvatarCache/md_{0}.png",
                                                     avatarState);
-                if(File.Exists(Server.MapPath(potentialAvatarPath))) {
+                if (File.Exists(Server.MapPath(potentialAvatarPath)))
+                {
                     avatarPathMd = potentialAvatarPath;
+                }
+
+                potentialAvatarPath = string.Format("~/images/AvatarCache/{0}.png",
+                                    avatarState);
+                if (File.Exists(Server.MapPath(potentialAvatarPath)))
+                {
+                    avatarPathLg = potentialAvatarPath;
                 }
 
                 var image = (Image)e.Item.FindControl("avatarImage");
                 image.ImageUrl = avatarPathSm;
-                if(!string.IsNullOrEmpty(avatarPathMd)) {
+                if (!string.IsNullOrEmpty(avatarPathMd))
+                {
                     string srcSet = string.Format("{0} 1x, {1} 2x",
                                                   VirtualPathUtility.ToAbsolute(avatarPathSm),
                                                   VirtualPathUtility.ToAbsolute(avatarPathMd));
                     image.Attributes.Add("srcset", srcSet);
+                }
+
+                var avatarLink = (HyperLink)e.Item.FindControl("avatarLink");
+                if (!string.IsNullOrEmpty(avatarPathLg))
+                {
+                    avatarLink.NavigateUrl = avatarPathLg;
                 }
 
                 var rewardLabel = e.Item.FindControl("ProgramRewardCodes") as Label;
@@ -85,23 +109,28 @@ namespace GRA.SRP.Controls {
             }
         }
 
-        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e) {
+        protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
             Session["SA"] = "0";
-            if(e.CommandName == "pwd") {
+            if (e.CommandName == "pwd")
+            {
                 Session["SA"] = e.CommandArgument.ToString();
                 Response.Redirect("~/Account/ChangeFamMemberPwd.aspx");
 
             }
-            if(e.CommandName == "log") {
+            if (e.CommandName == "log")
+            {
                 Session["SA"] = e.CommandArgument.ToString();
                 Response.Redirect("~/Account/EnterFamMemberLog.aspx");
 
             }
-            if(e.CommandName == "login") {
+            if (e.CommandName == "login")
+            {
                 var newPID = int.Parse(e.CommandArgument.ToString());
 
-                if((int)Session["MasterAcctPID"] != newPID
-                   && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID)) {
+                if ((int)Session["MasterAcctPID"] != newPID
+                   && !Patron.CanManageSubAccount((int)Session["MasterAcctPID"], newPID))
+                {
                     // kick them out
                     Response.Redirect("~");
                 }

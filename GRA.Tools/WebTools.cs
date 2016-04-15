@@ -17,6 +17,10 @@ namespace GRA.Tools
         public const string BranchMapStub = " <a href=\"http://maps.google.com/?q={0}\" target=\"_blank\" class=\"event-branch-detail-glyphicon hidden-print\" title=\"Show me a map of this location in a new window\"><span class=\"glyphicon glyphicon glyphicon-map-marker\"></span></a>";
         public const string BranchMapLinkStub = "http://maps.google.com/?q={0}";
 
+        private const string TwitterStubTextUrlHashtags = "http://twitter.com/share?text={0}&url={1}&hashtags={2}";
+        private const string TwitterStubTextUrl = "http://twitter.com/share?text={0}&url={1}";
+        private const string FacebookStubUrl = "http://www.facebook.com/sharer.php?u={0}";
+
         /// <summary>
         /// Provided an <see cref="HttpRequest"/>, returns the URL to the current path minus the
         /// trailing slash.
@@ -186,7 +190,50 @@ namespace GRA.Tools
                 Name = "twitter:image",
                 Content = image
             });
+        }
 
+        public string GetTwitterLink(string text, string url, string hashtags)
+        {
+            if (!string.IsNullOrEmpty(hashtags))
+            {
+                return string.Format(WebTools.TwitterStubTextUrlHashtags,
+                    text,
+                    url,
+                    hashtags);
+            }
+            else
+            {
+                return string.Format(WebTools.TwitterStubTextUrl,
+                    text,
+                    url);
+            }
+        }
+
+        public string GetFacebookLink(string url)
+        {
+            return string.Format(WebTools.FacebookStubUrl, url);
+        }
+
+        public string BuildFacebookDescription(string description,
+            string hashtags,
+            string fbDescription)
+        {
+            StringBuilder fbText = new StringBuilder();
+            fbText.Append(description);
+            if (!string.IsNullOrEmpty(hashtags))
+            {
+                foreach (var hashtag in hashtags.Split(','))
+                {
+                    fbText.Append(" #");
+                    fbText.Append(hashtag);
+                }
+            }
+            if (!string.IsNullOrEmpty(fbDescription))
+            {
+                fbText.Append(" - ");
+                fbText.Append(fbDescription);
+            }
+            return fbText.ToString();
         }
     }
 

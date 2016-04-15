@@ -38,7 +38,7 @@ namespace GRA.SRP.Controls {
         }
 
         protected void RenderBadges() {
-            var ds = DAL.PatronBadges.GetTop(((Patron)Session["Patron"]).PID, 6);
+            var ds = DAL.PatronBadges.GetTop(((Patron)Session["Patron"]).PID, 9);
             rptr.DataSource = ds;
             rptr.DataBind();
             var badgeCount = ds.Tables[0].Rows.Count;

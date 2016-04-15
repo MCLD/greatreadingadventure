@@ -27,9 +27,11 @@
     <meta name="theme-color" content="#ffffff">
     <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
     <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
     <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.1.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
@@ -454,7 +456,16 @@
             }
 
             updateUnreadCount('<%=this.Unread %>');
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
+            $(".fancybox").fancybox({
+                openEffect: "elastic",
+                closeEffect: "fade",
+                helpers: {
+                    overlay: {
+                        locked: false
+                    }
+                }
+            });
 
             $('#loginPopupPanel').on('shown.bs.modal', function () {
                 if ($('#loginPopupUsername').val().length > 0) {

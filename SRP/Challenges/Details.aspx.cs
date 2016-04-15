@@ -178,7 +178,7 @@ namespace GRA.SRP.Challenges
                 if (bl.ProgID != 0)
                 {
                     // no user is logged in, don't show it
-                    if(p == null)
+                    if (p == null)
                     {
                         var prog = DAL.Programs.FetchObject(bl.ProgID);
                         challengeDetails.Visible = false;
@@ -202,8 +202,9 @@ namespace GRA.SRP.Challenges
                     }
                 }
 
-                if(challengeDetails.Visible)
+                if (challengeDetails.Visible)
                 {
+                    Badge badge = null;
 
                     challengeTitle.Text = bl.ListName;
                     this.Title = string.Format("Challenge: {0}", challengeTitle.Text);
@@ -222,7 +223,7 @@ namespace GRA.SRP.Challenges
 
                     if (bl.AwardBadgeID > 0)
                     {
-                        var badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
+                        badge = DAL.Badge.FetchObject(bl.AwardBadgeID);
                         if (badge != null)
                         {
                             if (badge.HiddenFromPublic != true)
@@ -242,6 +243,7 @@ namespace GRA.SRP.Challenges
                             }
                             else
                             {
+                                badge = null;
                                 if (string.IsNullOrWhiteSpace(award))
                                 {
                                     award = string.Format("Completing {0} task{1} will earn: <strong>a secret badge</strong>.",
@@ -274,8 +276,13 @@ namespace GRA.SRP.Challenges
                     rptr.DataSource = ds;
                     rptr.DataBind();
 
-                    /* metadata & sharing */
-                    string systemName = GetResourceString("system-name");
+                    // begin social
+                    var wt = new WebTools();
+
+                    string systemName = StringResources.getStringOrNull("system-name");
+                    var fbDescription = StringResources.getStringOrNull("facebook-description");
+                    var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
+
                     string title = string.Format("{0} challenge: {1}",
                         systemName,
                         bl.ListName);
@@ -283,8 +290,8 @@ namespace GRA.SRP.Challenges
                     string description = string.Format("Check out this {0} challenge: {1}!",
                         systemName,
                         bl.ListName);
-                    string twitDescrip = description;
 
+                    string twitDescrip = description;
                     if (twitDescrip.Length > 118)
                     {
                         // if it's longer than this it won't fit with the url, shorten it
@@ -292,50 +299,51 @@ namespace GRA.SRP.Challenges
                             bl.ListName);
                     }
 
-                    var wt = new WebTools();
                     var baseUrl = WebTools.GetBaseUrl(Request);
-                    var eventDetailsUrl = string.Format("{0}/Challenges/Details.aspx?ChallengeId={1}",
+                    var challengeUrl = string.Format("{0}/Challenges/Details.aspx?ChallengeId={1}",
                         baseUrl,
                         bl.BLID);
-                    string bannerPath = new GRA.Logic.Banner().FullMetadataBannerPath(baseUrl,
-                        Session,
-                        Server);
 
-                    // open graph & facebook
+                    string imagePath = null;
+                    if (badge != null)
+                    {
+                        string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
+                                          badge.BID);
+                        if (System.IO.File.Exists(Server.MapPath(potentialBadgePath)))
+                        {
+                            imagePath = string.Format("{0}{1}",
+                                baseUrl,
+                                VirtualPathUtility.ToAbsolute(potentialBadgePath));
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(imagePath))
+                    {
+                        imagePath = new GRA.Logic.Banner().FullMetadataBannerPath(baseUrl,
+                            Session,
+                            Server);
+                    }
+
                     wt.AddOgMetadata(Metadata,
                         title,
-                        description,
-                        bannerPath,
-                        eventDetailsUrl,
+                        wt.BuildFacebookDescription(description, hashtags, fbDescription),
+                        imagePath,
+                        challengeUrl,
                         facebookApp: GetResourceString("facebook-appid"));
-                    
-                    //twitter
+
                     wt.AddTwitterMetadata(Metadata,
                         title,
                         description,
-                        bannerPath,
+                        imagePath,
                         twitterUsername: GetResourceString("twitter-username"));
 
-                    string twitterHashtags = GetResourceString("twitter-hashtags");
-                    if (!string.IsNullOrEmpty(twitterHashtags) && twitterHashtags
-                        != "twitter-hashtags")
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}&hashtags={2}",
-                            twitDescrip,
-                            Server.UrlEncode(eventDetailsUrl),
-                            twitterHashtags);
-                    }
-                    else
-                    {
-                        TwitterShare.NavigateUrl = string.Format("http://twitter.com/share?text={0}&url={1}",
-                            twitDescrip,
-                            Server.UrlEncode(eventDetailsUrl));
-                    }
+                    TwitterShare.NavigateUrl = wt.GetTwitterLink(description,
+                        Server.UrlEncode(challengeUrl),
+                        hashtags);
                     TwitterShare.Visible = true;
-                    FacebookShare.NavigateUrl = string.Format("http://www.facebook.com/sharer.php?u={0}",
-                        Server.UrlEncode(eventDetailsUrl));
+                    FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(challengeUrl));
                     FacebookShare.Visible = true;
-                    /* end metadata & sharing */
+                    // end social
 
                     this.ShowModal = true;
                 }
