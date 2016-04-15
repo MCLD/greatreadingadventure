@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Master page and front page text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-system-name=Great Reading Adventure 
+system-name=Great Reading Adventure
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
@@ -40,8 +40,8 @@ password-recovery-expired=Your password change request has expired. Please gener
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 change-password-title=Change Password
-change-password-current=Current password:  
-change-password-new=New password: 
+change-password-current=Current password:
+change-password-new=New password:
 change-password-verify=Verify new password:
 change-password-submit=Change my password
 change-password-rules=Please select a new password.<ul><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
@@ -199,7 +199,7 @@ events-filter-button=Search Events
 events-return=View All Events
 events-filter-clear-button=Show All Events
 events-thisweek-button=Events This Week
-events-prompt=Event: 
+events-prompt=Event:
 events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
@@ -215,7 +215,7 @@ challenges-title=Challenges
 challenges-instructions=Take on a Challenge by participating in activities or read books on a book list to earn badges and points!
 challenges-no-challenges=There are currently no Challenges. Check back soon!
 challenges-no-match=Couldn't find any Challenges matching the text you entered.
-challenges-prompt=Challenge: 
+challenges-prompt=Challenge:
 challenges-close=Close
 challenges-save=Save
 challenges-return=View All Challenges
