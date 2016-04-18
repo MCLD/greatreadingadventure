@@ -93,6 +93,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
             obj.District = District.SelectedValue;
             obj.SchoolName = SchoolName.SelectedValue;
 
+            obj.BadgesAchieved = BadgesAchieved.Text.SafeToInt();
             obj.BadgeList = CoalesceBadges();
 
 

@@ -109,6 +109,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
                     obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
 
+                    obj.BadgesAchieved = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("BadgesAchieved")).Text);
                     obj.BadgeList = CoalesceBadges((DetailsView)sender);// ((TextBox)((DetailsView)sender).FindControl("BadgeList")).Text;
 
                     obj.AddedDate = DateTime.Now;
@@ -161,6 +162,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
                     obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
 
+                    obj.BadgesAchieved = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("BadgesAchieved")).Text);
                     obj.BadgeList = CoalesceBadges((DetailsView)sender);// ((TextBox)((DetailsView)sender).FindControl("BadgeList")).Text;
 
                     obj.LastModDate = DateTime.Now;

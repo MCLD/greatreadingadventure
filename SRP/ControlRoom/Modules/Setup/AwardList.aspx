@@ -187,7 +187,7 @@
                 ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="Badge List">
                 <ItemTemplate>
-                    <%# (Eval("BadgeList").ToString().Length > 0 ? "Yes" : "No")%>
+                    <%# DisplayBadgeStatus(Eval("BadgeList"), Eval("BadgesAchieved"))%>
                 </ItemTemplate>
                 <ControlStyle Width="250px" />
                 <ItemStyle Width="250px" VerticalAlign="Middle" Wrap="False"></ItemStyle>
