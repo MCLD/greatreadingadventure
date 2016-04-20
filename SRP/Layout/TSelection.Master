@@ -94,7 +94,7 @@
                                 <asp:Label runat="server" Text="upsell"></asp:Label></span>
                         </div>
                         <div class="col-sm-1 text-center" style="vertical-align: middle;">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                         </div>
                     </div>
                 </div>
