@@ -363,7 +363,7 @@ INNER JOIN (
 		)
 	AND (
 		BadgeList = ''
-		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
+		OR dbo.fx_PatronBadgeCount(patron.PID, BadgeList) >= award.BadgesAchieved
 		)
 GO
 
@@ -425,7 +425,7 @@ INNER JOIN (
 		)
 	AND (
 		BadgeList = ''
-		OR dbo.fx_PatronHasAllBadgesInList(patron.PID, BadgeList) = 1
+		OR dbo.fx_PatronBadgeCount(patron.PID, BadgeList) >= award.BadgesAchieved
 		)
 GO
 
@@ -445,6 +445,7 @@ CREATE PROCEDURE [dbo].[app_Award_Insert] (
 	@District VARCHAR(50),
 	@SchoolName VARCHAR(50),
 	@BadgeList VARCHAR(500),
+	@BadgesAchieved INT,
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
 	@AddedDate DATETIME,
@@ -472,6 +473,7 @@ BEGIN
 		ProgramID,
 		District,
 		SchoolName,
+		BadgesAchieved,
 		BadgeList,
 		LastModDate,
 		LastModUser,
@@ -497,6 +499,7 @@ BEGIN
 		@ProgramID,
 		@District,
 		@SchoolName,
+		@BadgesAchieved,
 		@BadgeList,
 		@LastModDate,
 		@LastModUser,
@@ -535,6 +538,7 @@ CREATE PROCEDURE [dbo].[app_Award_Update] (
 	@ProgramID INT,
 	@District VARCHAR(50),
 	@SchoolName VARCHAR(50),
+	@BadgesAchieved INT,
 	@BadgeList VARCHAR(500),
 	@LastModDate DATETIME,
 	@LastModUser VARCHAR(50),
@@ -561,6 +565,7 @@ SET AwardName = @AwardName,
 	ProgramID = @ProgramID,
 	District = @District,
 	SchoolName = @SchoolName,
+	BadgesAchieved = @BadgesAchieved,
 	BadgeList = @BadgeList,
 	LastModDate = @LastModDate,
 	LastModUser = @LastModUser,
@@ -21754,6 +21759,39 @@ BEGIN
 END
 GO
 
+/****** Object:  UserDefinedFunction [dbo].[fx_PatronBadgeCount]    Script Date: 4/18/2016 10:41:22 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+/* =============================================
+-- Return a count of how many badges Patron ID 
+-- @PID has out of the comma-separated text 
+-- list in @BadgeList
+-- ============================================= */
+CREATE FUNCTION [dbo].[fx_PatronBadgeCount] (
+	@PID INT,
+	@BadgeList NVARCHAR(4000)
+	)
+RETURNS INT
+AS
+BEGIN
+	DECLARE @return INT
+
+	SELECT @return = COUNT(DISTINCT BadgeID)
+	FROM PatronBadges
+	WHERE PID = @PID
+		AND BadgeID IN (
+			SELECT *
+			FROM fnSplitBigInt(@BadgeList)
+			)
+
+	RETURN @return
+END
+GO
+
 /****** Object:  UserDefinedFunction [dbo].[fx_PatronHasAllBadgesInList]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -21937,6 +21975,7 @@ CREATE TABLE [dbo].[Award] (
 	[District] [varchar](50) NULL,
 	[SchoolName] [varchar](50) NULL,
 	[BadgeList] [varchar](500) NULL,
+	[BadgesAchieved] [int] NULL,
 	[LastModDate] [datetime] NULL,
 	[LastModUser] [varchar](50) NULL,
 	[AddedDate] [datetime] NULL,

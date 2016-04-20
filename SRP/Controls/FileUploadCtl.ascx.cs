@@ -325,6 +325,7 @@ namespace GRA.SRP.Classes
                 using (var newGraphic = System.Drawing.Graphics.FromImage(newImage))
                 {
                     newGraphic.DrawImage(upImage, x, y, newWidth, newHeight);
+                    newGraphic.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                     newGraphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     newGraphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                     newImage.Save(thumbName, System.Drawing.Imaging.ImageFormat.Png);
@@ -368,6 +369,7 @@ namespace GRA.SRP.Classes
                             newBmp.MakeTransparent();
                             using (var newGraphic = System.Drawing.Graphics.FromImage(newBmp))
                             {
+                                newGraphic.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                                 newGraphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                                 newGraphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                                 newGraphic.DrawImage(upImage, 0, 0, newWidth, newHeight);

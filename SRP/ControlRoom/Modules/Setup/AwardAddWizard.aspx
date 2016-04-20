@@ -78,10 +78,12 @@
                                         SetFocusOnError="True" />
                                 </td>
                                 <td colspan="4" rowspan="6">
-                                    <b>Must have earned the checked badges:</b>
-                                    <br />
-
-
+                                    <div class="form-inline">
+                                        <b style="font-size: larger;">Must have earned
+                                            <asp:TextBox ID="BadgesAchieved" Width="3em" runat="server" CssClass="form-control BadgesAchievedField"></asp:TextBox>
+                                            of the <a id="CheckedBadgesCount" href="#"></a>
+                                            checked badges :</b>
+                                    </div>
 
                                     <div style="height: 200px; width: 100%; overflow: auto; border: solid 0px red; border: solid 1px #dddddd;">
                                         <asp:TextBox ID="BadgeList" runat="server" Text='' ReadOnly="False" Visible="false" CssClass="form-control"></asp:TextBox>
@@ -89,7 +91,7 @@
                                             <Columns>
                                                 <asp:TemplateField ShowHeader="false">
                                                     <ItemTemplate>
-                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" />
+                                                        <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server"  CssClass="BranchSelectionOption" />
                                                         <%# Eval("AdminName") %>
                                                         <asp:Label ID="BID" runat="server" Text='<%# Eval("BID") %>' Visible="False"></asp:Label>
                                                     </ItemTemplate>
@@ -639,3 +641,22 @@
 
 </asp:Content>
 
+<asp:Content ContentPlaceHolderID="scripts" runat="server">
+    <script>
+        function updateCount() {
+            $('#CheckedBadgesCount').text($('.BranchSelectionOption input:checkbox:checked').length);
+        }
+
+        $(function () {
+            updateCount();
+        });
+
+        $('.BranchSelectionOption').change(function () {
+            updateCount();
+        });
+
+        $('#CheckedBadgesCount').on('click', function () {
+            $('.BadgesAchievedField').val($('#CheckedBadgesCount').text());
+        });
+    </script>
+</asp:Content>

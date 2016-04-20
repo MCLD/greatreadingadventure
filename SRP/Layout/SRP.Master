@@ -75,8 +75,8 @@
                             {
                         %>
                         <li runat="server" id="homeNav"><a href="~" class="menu-item" runat="server">
-                            <span class="glyphicon glyphicon-book hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
-                            <span class="glyphicon glyphicon-book visible-xs-inline"></span>
+                            <span class="glyphicon glyphicon-home hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
+                            <span class="glyphicon glyphicon-home visible-xs-inline"></span>
                             <span class="visible-xs-inline">Home</span></a></li>
                         <li runat="server" id="mailNav"><a href="~/Mail/" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-envelope hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Mail"></span>

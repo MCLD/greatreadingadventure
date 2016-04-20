@@ -77,7 +77,7 @@ namespace GRA.SRP.ControlRoom.Controls
                                     thumbBitmap.MakeTransparent();
                                     using (var thumbnail = Graphics.FromImage(thumbBitmap))
                                     {
-
+                                        thumbnail.CompositingQuality = CompositingQuality.HighQuality;
                                         thumbnail.SmoothingMode = SmoothingMode.AntiAlias;
                                         thumbnail.InterpolationMode = InterpolationMode.HighQualityBicubic;
                                         thumbnail.DrawImage(badgeImage,
@@ -107,7 +107,7 @@ namespace GRA.SRP.ControlRoom.Controls
                                     thumbBitmap.MakeTransparent();
                                     using (var thumbnail = Graphics.FromImage(thumbBitmap))
                                     {
-
+                                        thumbnail.CompositingQuality = CompositingQuality.HighQuality;
                                         thumbnail.SmoothingMode = SmoothingMode.AntiAlias;
                                         thumbnail.InterpolationMode = InterpolationMode.HighQualityBicubic;
                                         thumbnail.DrawImage(badgeImage,

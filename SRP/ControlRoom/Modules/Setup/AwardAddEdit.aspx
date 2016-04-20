@@ -89,8 +89,12 @@
                                             </td>
 
                                             <td colspan="4" rowspan="6">
-                                                <b>Must have earned the checked badges :</b>
-                                                <br />
+                                                <div class="form-inline">
+                                                    <b style="font-size: larger;">Must have earned
+                                                        <asp:TextBox ID="BadgesAchieved" Width="3em" runat="server" CssClass="form-control BadgesAchievedField" Text='<%# ((int) Eval("BadgesAchieved") == 0 ? string.Empty : Eval("BadgesAchieved")) %>'></asp:TextBox>
+                                                        of the <a id="CheckedBadgesCount" href="#"></a>
+                                                        checked badges :</b>
+                                                </div>
 
 
 
@@ -107,7 +111,7 @@
                                                         <Columns>
                                                             <asp:TemplateField ShowHeader="false">
                                                                 <ItemTemplate>
-                                                                    <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" />
+                                                                    <asp:CheckBox ID="isMember" Checked='<%# (((int)Eval("isMember")).ToString()=="1"?true:false) %>' runat="server" CssClass="BranchSelectionOption" />
                                                                     <%# Eval("AdminName") %>
                                                                     <asp:Label ID="BID" runat="server" Text='<%# Eval("BID") %>' Visible="False"></asp:Label>
                                                                 </ItemTemplate>
@@ -338,7 +342,24 @@
             <asp:Parameter Name="Name" DefaultValue="School" Type="String" />
         </SelectParameters>
     </asp:ObjectDataSource>
-
-
 </asp:Content>
 
+<asp:Content ContentPlaceHolderID="scripts" runat="server">
+    <script>
+        function updateCount() {
+            $('#CheckedBadgesCount').text($('.BranchSelectionOption input:checkbox:checked').length);
+        }
+
+        $(function () {
+            updateCount();
+        });
+
+        $('.BranchSelectionOption').change(function () {
+            updateCount();
+        });
+
+        $('#CheckedBadgesCount').on('click', function () {
+            $('.BadgesAchievedField').val($('#CheckedBadgesCount').text());
+        });
+    </script>
+</asp:Content>

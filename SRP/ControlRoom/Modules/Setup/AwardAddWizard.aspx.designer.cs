@@ -94,6 +94,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.RangeValidator rvNumPoints;
         
         /// <summary>
+        /// BadgesAchieved control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox BadgesAchieved;
+        
+        /// <summary>
         /// BadgeList control.
         /// </summary>
         /// <remarks>

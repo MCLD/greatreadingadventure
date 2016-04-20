@@ -11,6 +11,7 @@ using GRA.SRP.Controls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.Tools;
+using System.Text;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -241,6 +242,14 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         }
         #endregion search/filter fields and buttons
 
+        protected string DisplayBadgeStatus(object badgeList, object badgesAchieved) {
+            if(!string.IsNullOrEmpty((string)badgeList))
+            {
+                var badgeIdsList = ((string)badgeList).Split(',');
+                return string.Format("{0}/{1}", badgesAchieved, badgeIdsList.Length);
+            }
+            return string.Empty;
+        }
     }
 }
 
