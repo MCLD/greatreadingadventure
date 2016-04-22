@@ -324,7 +324,8 @@ namespace GRA.SRP.Controls
             pnlDetail.Visible = true;
 
             if (this.CompletedChallenge
-                || this.CurrentPatron == null)
+                || this.CurrentPatron == null
+                || this.ProgramOpen == false)
             {
                 btnSave.Visible = false;
             }
