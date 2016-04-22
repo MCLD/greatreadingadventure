@@ -7,7 +7,7 @@
     <div class="col-sm-6">
         <%=this.CurrentProgram == null ? "" : Server.HtmlDecode(this.CurrentProgram.HTML1) %>
 
-        <div class="clearfix margin-1em-top margin-1em-bottom">
+        <asp:Panel runat="server" ID="RegisterLoginPanel" CssClass="clearfix margin-1em-top margin-1em-bottom">
             <div class="col-sm-6 margin-halfem-top">
                 <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info btn-block btn-lg">
                     <asp:Label runat="server" Text="frontpage-button-register"></asp:Label></a>
@@ -17,8 +17,17 @@
                     onclick="return showLoginPopup();">
                     <asp:Label runat="server" Text="frontpage-button-login"></asp:Label></a>
             </div>
-        </div>
-
+        </asp:Panel>
+        <asp:Panel runat="server" ID="NotYetPanel" Visible="true" CssClass="clearfix margin-1em-top margin-1em-bottom text-center">
+            <div class="col-xs-12">
+                <em class="lead"><asp:Label runat="server" ID="NotStartedField" value="program-not-started"></asp:Label></em>
+            </div>
+        </asp:Panel>
+        <asp:Panel runat="server" ID="AlreadyOverPanel" Visible="true" CssClass="clearfix margin-1em-top margin-1em-bottom text-center">
+            <div class="col-xs-12">
+                <em class="lead"><asp:Label runat="server" ID="ProgramAlreadyOver" value="program-already-over"></asp:Label></em>
+            </div>
+        </asp:Panel>
         <%=this.CurrentProgram == null ? "" : Server.HtmlDecode(this.CurrentProgram.HTML2) %>
     </div>
     <div class="col-sm-3">

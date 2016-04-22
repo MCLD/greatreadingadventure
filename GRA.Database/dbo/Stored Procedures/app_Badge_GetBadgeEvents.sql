@@ -7,14 +7,13 @@ AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SELECT @List = ''
-
-SELECT @List = COALESCE(CASE 
-			WHEN @List = ''
-				THEN p.EventTitle
-			ELSE @List + ', ' + p.EventTitle
-			END, '')
-FROM Event p
-WHERE p.TenID = @TenID
-	AND p.BadgeID = @BID
-ORDER BY p.EventTitle
+SELECT @List = LTRIM(RTRIM(STUFF((
+					SELECT ', ' + e.EventTitle
+					FROM Event e
+					WHERE e.TenID = @TenID
+						AND e.BadgeID = @BID
+						AND e.HiddenFromPublic != 1
+					GROUP BY e.EventTitle
+					ORDER BY e.EventTitle
+					FOR XML PATH('')
+					), 1, 1, '')))

@@ -72,11 +72,9 @@
                             </td>
                             <td>
                                 <asp:TextBox ID="StartDate" runat="server" Text='' ReadOnly="False" Width="80px"></asp:TextBox>
-                                <ajaxToolkit:CalendarExtender ID="ceStartDate" runat="server" TargetControlID="StartDate">
-                                </ajaxToolkit:CalendarExtender>
+                                <ajaxToolkit:CalendarExtender ID="ceStartDate" runat="server" TargetControlID="StartDate"></ajaxToolkit:CalendarExtender>
                                 <ajaxToolkit:MaskedEditExtender ID="meStartDate" runat="server"
-                                    UserDateFormat="MonthDayYear" TargetControlID="StartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                </ajaxToolkit:MaskedEditExtender>
+                                    UserDateFormat="MonthDayYear" TargetControlID="StartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                 <asp:RequiredFieldValidator ID="rfvStartDate" runat="server"
                                     ControlToValidate="StartDate" Display="Dynamic" ErrorMessage="StartDate is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -86,11 +84,9 @@
                             </td>
                             <td>
                                 <asp:TextBox ID="EndDate" runat="server" Text='' ReadOnly="False" Width="80px"></asp:TextBox>
-                                <ajaxToolkit:CalendarExtender ID="ceEndDate" runat="server" TargetControlID="EndDate">
-                                </ajaxToolkit:CalendarExtender>
+                                <ajaxToolkit:CalendarExtender ID="ceEndDate" runat="server" TargetControlID="EndDate"></ajaxToolkit:CalendarExtender>
                                 <ajaxToolkit:MaskedEditExtender ID="meEndDate" runat="server"
-                                    UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                </ajaxToolkit:MaskedEditExtender>
+                                    UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                 <asp:RequiredFieldValidator ID="rfvEndDate" runat="server"
                                     ControlToValidate="EndDate" Display="Dynamic" ErrorMessage="EndDate is required"
                                     SetFocusOnError="False" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -103,12 +99,10 @@
                             </td>
                             <td>
                                 <asp:TextBox ID="LoggingStart" runat="server" Text='' ReadOnly="False" Width="80px"></asp:TextBox>
-                                <ajaxToolkit:CalendarExtender ID="ceLoggingStart" runat="server" TargetControlID="LoggingStart">
-                                </ajaxToolkit:CalendarExtender>
+                                <ajaxToolkit:CalendarExtender ID="ceLoggingStart" runat="server" TargetControlID="LoggingStart"></ajaxToolkit:CalendarExtender>
                                 <ajaxToolkit:MaskedEditExtender ID="meLoggingStart" runat="server"
                                     UserDateFormat="MonthDayYear" TargetControlID="LoggingStart" MaskType="Date" Mask="99/99/9999"
-                                    ClearMaskOnLostFocus="True" ClearTextOnInvalid="true">
-                                </ajaxToolkit:MaskedEditExtender>
+                                    ClearMaskOnLostFocus="True" ClearTextOnInvalid="true"></ajaxToolkit:MaskedEditExtender>
                                 <asp:RequiredFieldValidator ID="rfvLoggingStart" runat="server"
                                     ControlToValidate="LoggingStart" Display="Dynamic" ErrorMessage="LoggingStart is required"
                                     SetFocusOnError="False" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -118,11 +112,9 @@
                             </td>
                             <td>
                                 <asp:TextBox ID="LoggingEnd" runat="server" Text='' ReadOnly="False" Width="80px"></asp:TextBox>
-                                <ajaxToolkit:CalendarExtender ID="ceLoggingEnd" runat="server" TargetControlID="LoggingEnd">
-                                </ajaxToolkit:CalendarExtender>
+                                <ajaxToolkit:CalendarExtender ID="ceLoggingEnd" runat="server" TargetControlID="LoggingEnd"></ajaxToolkit:CalendarExtender>
                                 <ajaxToolkit:MaskedEditExtender ID="meLoggingEnd" runat="server"
-                                    UserDateFormat="MonthDayYear" TargetControlID="LoggingEnd" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                </ajaxToolkit:MaskedEditExtender>
+                                    UserDateFormat="MonthDayYear" TargetControlID="LoggingEnd" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                 <asp:RequiredFieldValidator ID="rfvLoggingEnd" runat="server"
                                     ControlToValidate="LoggingEnd" Display="Dynamic" ErrorMessage="LoggingEnd is required"
                                     SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -162,7 +154,6 @@
                 </InsertItemTemplate>
                 <EditItemTemplate>
                     <ajaxToolkit:TabContainer ID="tc1" runat="server" ActiveTabIndex="0"
-                        Height="600px"
                         Width="100%"
                         AutoPostBack="false"
                         TabStripPlacement="Top"
@@ -232,7 +223,7 @@
                                             <b>DIRECT LINK: </b>
                                         </td>
                                         <td colspan="3">
-                                            <a href='<%# "/Default.aspx?PID=" + Eval("PID").ToString() %>' target="_blank"><%# Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Default.aspx?PID=" + Eval("PID").ToString() %></a>
+                                            <a href='<%# "/Default.aspx?PID=" + Eval("PID").ToString() %>' target="_blank"><%# GRA.Tools.WebTools.GetBaseUrl(Request) + "/Default.aspx?PID=" + Eval("PID").ToString() %></a>
                                         </td>
                                     </tr>
 
@@ -242,11 +233,9 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="StartDate" runat="server" Text='<%# (Eval("StartDate").ToString()=="" ? "" : DateTime.Parse(Eval("StartDate").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="ceStartDate" runat="server" TargetControlID="StartDate">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="ceStartDate" runat="server" TargetControlID="StartDate"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meStartDate" runat="server"
-                                                UserDateFormat="MonthDayYear" TargetControlID="StartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                UserDateFormat="MonthDayYear" TargetControlID="StartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                             <asp:RequiredFieldValidator ID="rfvStartDate" runat="server"
                                                 ControlToValidate="StartDate" Display="Dynamic" ErrorMessage="StartDate is required"
                                                 SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -256,11 +245,9 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="EndDate" runat="server" Text='<%# (Eval("EndDate").ToString()=="" ? "" : DateTime.Parse(Eval("EndDate").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="ceEndDate" runat="server" TargetControlID="EndDate">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="ceEndDate" runat="server" TargetControlID="EndDate"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meEndDate" runat="server"
-                                                UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                UserDateFormat="MonthDayYear" TargetControlID="EndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                             <asp:RequiredFieldValidator ID="rfvEndDate" runat="server"
                                                 ControlToValidate="EndDate" Display="Dynamic" ErrorMessage="EndDate is required"
                                                 SetFocusOnError="False" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -273,12 +260,10 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="LoggingStart" runat="server" Text='<%# (Eval("LoggingStart").ToString()=="" ? "" : DateTime.Parse(Eval("LoggingStart").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="ceLoggingStart" runat="server" TargetControlID="LoggingStart">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="ceLoggingStart" runat="server" TargetControlID="LoggingStart"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meLoggingStart" runat="server"
                                                 UserDateFormat="MonthDayYear" TargetControlID="LoggingStart" MaskType="Date" Mask="99/99/9999"
-                                                ClearMaskOnLostFocus="True" ClearTextOnInvalid="true">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                ClearMaskOnLostFocus="True" ClearTextOnInvalid="true"></ajaxToolkit:MaskedEditExtender>
                                             <asp:RequiredFieldValidator ID="rfvLoggingStart" runat="server"
                                                 ControlToValidate="LoggingStart" Display="Dynamic" ErrorMessage="LoggingStart is required"
                                                 SetFocusOnError="False" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -288,11 +273,9 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="LoggingEnd" runat="server" Text='<%# (Eval("LoggingEnd").ToString()=="" ? "" : DateTime.Parse(Eval("LoggingEnd").ToString()).ToShortDateString() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="ceLoggingEnd" runat="server" TargetControlID="LoggingEnd">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="ceLoggingEnd" runat="server" TargetControlID="LoggingEnd"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meLoggingEnd" runat="server"
-                                                UserDateFormat="MonthDayYear" TargetControlID="LoggingEnd" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                UserDateFormat="MonthDayYear" TargetControlID="LoggingEnd" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                             <asp:RequiredFieldValidator ID="rfvLoggingEnd" runat="server"
                                                 ControlToValidate="LoggingEnd" Display="Dynamic" ErrorMessage="LoggingEnd is required"
                                                 SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
@@ -413,6 +396,16 @@
                                     </tr>
                                     <tr>
                                         <td align="right">
+                                            <b>Require user to enter book details: </b>
+                                        </td>
+                                        <td>
+                                            <asp:CheckBox ID="RequireBookDetails" runat="server" Checked='<%# (bool)Eval("RequireBookDetails") %>' ReadOnly="False"></asp:CheckBox>
+                                        </td>
+                                        <td align="right"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">
                                             <b>Logout URL: </b>
                                         </td>
                                         <td colspan="3">
@@ -421,6 +414,111 @@
                                         </td>
                                         <td></td>
                                     </tr>
+                                    <tr>
+                                        <td align="right">
+                                            <b>Default goal:</b>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="The 'goal' field will have this amount filled in by default for patrons. Must have 'Goal' enabled in registration."></span>
+
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:TextBox ID="GoalDefault" runat="server" Text='<%# ((int) Eval("GoalDefault") ==0 ? "" : Eval("GoalDefault")) %>'
+                                                ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+
+                                            <asp:RegularExpressionValidator ID="GoalDefaultValidator"
+                                                ControlToValidate="GoalDefault"
+                                                ValidationExpression="\d+"
+                                                Display="Dynamic"
+                                                EnableClientScript="true"
+                                                ErrorMessage="<font color='red'>Default goal must be numeric.</font>"
+                                                runat="server"
+                                                Font-Bold="True" Font-Italic="True"
+                                                Text="<font color='red'> * Default goal must be numeric. </font>"
+                                                EnableTheming="True"
+                                                SetFocusOnError="True" />
+
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right"><strong>Hide school during signup:</strong>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="If school is asked for during registration but not required (see 'Settings' -> 'Registration Settings') checking this box will hide it for this program (e.g. if this is a prereader or adult program)."></span>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:CheckBox ID="HideSchoolInRegistration" runat="server" Checked='<%# (bool)Eval("HideSchoolInRegistration") %>' ReadOnly="False"></asp:CheckBox>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">
+                                            <b>Minimum goal:</b>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:TextBox ID="GoalMin" runat="server" Text='<%# ((int) Eval("GoalMin") ==0 ? "" : Eval("GoalMin")) %>'
+                                                ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+
+                                            <asp:RegularExpressionValidator ID="GoalMinValidator"
+                                                ControlToValidate="GoalMin"
+                                                ValidationExpression="\d+"
+                                                Display="Dynamic"
+                                                EnableClientScript="true"
+                                                ErrorMessage="<font color='red'>Minimum goal must be numeric.</font>"
+                                                runat="server"
+                                                Font-Bold="True" Font-Italic="True"
+                                                Text="<font color='red'> * Minimum goal must be numeric. </font>"
+                                                EnableTheming="True"
+                                                SetFocusOnError="True" />
+
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">
+                                            <b>Maximum goal:</b>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:TextBox ID="GoalMax" runat="server" Text='<%# ((int) Eval("GoalMax") ==0 ? "" : Eval("GoalMax")) %>'
+                                                ReadOnly="False" Width="50px" CssClass="align-right"></asp:TextBox>
+
+                                            <asp:RegularExpressionValidator ID="GoalMaxValidator"
+                                                ControlToValidate="GoalMax"
+                                                ValidationExpression="\d+"
+                                                Display="Dynamic"
+                                                EnableClientScript="true"
+                                                ErrorMessage="<font color='red'>Maximum goal must be numeric.</font>"
+                                                runat="server"
+                                                Font-Bold="True" Font-Italic="True"
+                                                Text="<font color='red'> * Maximum goal must be numeric. </font>"
+                                                EnableTheming="True"
+                                                SetFocusOnError="True" />
+
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="right">
+                                            <b>Goal Interval:</b>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="The interval is the duration the goal spans over. For example the goal be configured for a certain number of minutes per day, or several books for an entire program."></span>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:DropDownList ID="GoalIntervalId" runat="server" Width="98%" SelectedValue='<%# Eval("GoalIntervalId") %>' CssClass="form-control">
+                                                <asp:ListItem Value="0" Text="Daily"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Weekly"></asp:ListItem>
+                                                <asp:ListItem Value="2" Text="Program"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+
                                 </table>
 
                             </ContentTemplate>
@@ -707,11 +805,9 @@
                                         <td><b>Program Start Test End Date: </b></td>
                                         <td>
                                             <asp:TextBox ID="PreTestEndDate" runat="server" Text='<%# (Eval("PreTestEndDate").ToString()=="" ? "" : DateTime.Parse(Eval("PreTestEndDate").ToString()).ToWidgetDisplayDate() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="cePretestEndDate" runat="server" TargetControlID="PreTestEndDate">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="cePretestEndDate" runat="server" TargetControlID="PreTestEndDate"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meePretestEndDate" runat="server"
-                                                UserDateFormat="MonthDayYear" TargetControlID="PreTestEndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                UserDateFormat="MonthDayYear" TargetControlID="PreTestEndDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                         </td>
                                     </tr>
 
@@ -728,11 +824,9 @@
                                         <td><b>Program End Test Start Date: </b></td>
                                         <td>
                                             <asp:TextBox ID="PostTestStartDate" runat="server" Text='<%# (Eval("PostTestStartDate").ToString()=="" ? "" : DateTime.Parse(Eval("PostTestStartDate").ToString()).ToWidgetDisplayDate() ) %>' ReadOnly="False" Width="80px"></asp:TextBox>
-                                            <ajaxToolkit:CalendarExtender ID="cePostTestStartDate" runat="server" TargetControlID="PostTestStartDate">
-                                            </ajaxToolkit:CalendarExtender>
+                                            <ajaxToolkit:CalendarExtender ID="cePostTestStartDate" runat="server" TargetControlID="PostTestStartDate"></ajaxToolkit:CalendarExtender>
                                             <ajaxToolkit:MaskedEditExtender ID="meePostTestStartDate" runat="server"
-                                                UserDateFormat="MonthDayYear" TargetControlID="PostTestStartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True">
-                                            </ajaxToolkit:MaskedEditExtender>
+                                                UserDateFormat="MonthDayYear" TargetControlID="PostTestStartDate" MaskType="Date" Mask="99/99/9999" ClearMaskOnLostFocus="True"></ajaxToolkit:MaskedEditExtender>
                                         </td>
                                     </tr>
                                     <tr>
@@ -816,7 +910,16 @@
                                                 SetFocusOnError="True" />
                                         </td>
                                         <td colspan="4">
-                                            <asp:Button ID="btnGen" runat="server" Text="Generate Codes" CommandName="gen" />
+
+                                            <asp:LinkButton
+                                                ID="btnGen"
+                                                runat="server"
+                                                CommandName="gen"
+                                                CssClass="btn btn-sm btn-primary generate-codes-button"
+                                                ForeColor="White"
+                                                data-loading-text="Generating..."><span class="glyphicon glyphicon-qrcode"></span>
+                                                <asp:Label runat="server" ID="GenerateButtonText">Generate Codes</asp:Label>
+                                            </asp:LinkButton>
                                         </td>
                                     </tr>
                                     <tr>
@@ -826,8 +929,11 @@
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-
-                                            <asp:Button ID="btnExport" runat="server" Text="Export Codes" CommandName="exp" />
+                                            <asp:LinkButton ID="btnExport" ForeColor="White" CommandName="exp"
+                                                CssClass="btn btn-sm btn-success download-codes-button"
+                                                runat="server"><span class="glyphicon glyphicon-download"></span>
+                                                Download Excel file
+                                            </asp:LinkButton>
 
                                         </td>
                                     </tr>
@@ -967,9 +1073,15 @@
     <asp:ObjectDataSource ID="odsDDTests" runat="server"
         SelectMethod="GetAllFinalized"
         TypeName="GRA.SRP.DAL.Survey"></asp:ObjectDataSource>
-
-
-
-
 </asp:Content>
 
+<asp:Content ContentPlaceHolderID="scripts" runat="server">
+    <script>
+        $(function () {
+            $('.generate-codes-button').on('click', function () {
+                var $btn = $(this).button('loading');
+                $('.download-codes-button').attr('disabled', true);
+            });
+        });
+    </script>
+</asp:Content>

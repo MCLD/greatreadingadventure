@@ -1,209 +1,71 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 using System.IO;
 using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.HtmlControls;
+using System.Collections.Generic;
 using Microsoft.ApplicationBlocks.Data;
-using System.Collections;
 using GRA.SRP.Core.Utilities;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable()]    
+    [Serializable()]
     public class Badge : EntityBase
     {
         public static new string Version { get { return "2.0"; } }
 
         #region Private Variables
 
-        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
-
-        private int myBID;
-        private string myAdminName;
-        private string myUserName;
-        private bool myGenNotificationFlag;
-        private string myNotificationSubject = "";
-        private string myNotificationBody = "";
-        private string myCustomEarnedMessage = "";
-        private bool myIncludesPhysicalPrizeFlag;
-        private string myPhysicalPrizeName = "";
-        private bool myAssignProgramPrizeCode;
-        private string myPCNotificationSubject="";
-        private string myPCNotificationBody="";
-        private DateTime myLastModDate;
-        private string myLastModUser;
-        private DateTime myAddedDate;
-        private string myAddedUser;
-
-        private int myTenID = 0;
-        private int myFldInt1 = 0;
-        private int myFldInt2 = 0;
-        private int myFldInt3 = 0;
-        private bool myFldBit1 = false;
-        private bool myFldBit2 = false;
-        private bool myFldBit3 = false;
-        private string myFldText1 = "";
-        private string myFldText2 = "";
-        private string myFldText3 = "";
+        private static string conn = GlobalUtilities.SRPDB;
 
         #endregion
 
         #region Accessors
 
-        public int BID
-        {
-            get { return myBID; }
-            set { myBID = value; }
-        }
-        public string AdminName
-        {
-            get { return myAdminName; }
-            set { myAdminName = value; }
-        }
-        public string UserName
-        {
-            get { return myUserName; }
-            set { myUserName = value; }
-        }
-        public bool GenNotificationFlag
-        {
-            get { return myGenNotificationFlag; }
-            set { myGenNotificationFlag = value; }
-        }
-        public string NotificationSubject
-        {
-            get { return myNotificationSubject; }
-            set { myNotificationSubject = value; }
-        }
-        public string NotificationBody
-        {
-            get { return myNotificationBody; }
-            set { myNotificationBody = value; }
-        }
-        public string CustomEarnedMessage
-        {
-            get { return myCustomEarnedMessage; }
-            set { myCustomEarnedMessage = value; }
-        }
-        public bool IncludesPhysicalPrizeFlag
-        {
-            get { return myIncludesPhysicalPrizeFlag; }
-            set { myIncludesPhysicalPrizeFlag = value; }
-        }
-        public string PhysicalPrizeName
-        {
-            get { return myPhysicalPrizeName; }
-            set { myPhysicalPrizeName = value; }
-        }
-        public bool AssignProgramPrizeCode
-        {
-            get { return myAssignProgramPrizeCode; }
-            set { myAssignProgramPrizeCode = value; }
-        }
-        public string PCNotificationSubject
-        {
-            get { return myPCNotificationSubject; }
-            set { myPCNotificationSubject = value; }
-        }
-        public string PCNotificationBody
-        {
-            get { return myPCNotificationBody; }
-            set { myPCNotificationBody = value; }
-        }
-        public DateTime LastModDate
-        {
-            get { return myLastModDate; }
-            set { myLastModDate = value; }
-        }
-        public string LastModUser
-        {
-            get { return myLastModUser; }
-            set { myLastModUser = value; }
-        }
-        public DateTime AddedDate
-        {
-            get { return myAddedDate; }
-            set { myAddedDate = value; }
-        }
-        public string AddedUser
-        {
-            get { return myAddedUser; }
-            set { myAddedUser = value; }
-        }
-
-        public int TenID
-        {
-            get { return myTenID; }
-            set { myTenID = value; }
-        }
-
-        public int FldInt1
-        {
-            get { return myFldInt1; }
-            set { myFldInt1 = value; }
-        }
-
-        public int FldInt2
-        {
-            get { return myFldInt2; }
-            set { myFldInt2 = value; }
-        }
-
-        public int FldInt3
-        {
-            get { return myFldInt3; }
-            set { myFldInt3 = value; }
-        }
-
-        public bool FldBit1
-        {
-            get { return myFldBit1; }
-            set { myFldBit1 = value; }
-        }
-
-        public bool FldBit2
-        {
-            get { return myFldBit2; }
-            set { myFldBit2 = value; }
-        }
-
-        public bool FldBit3
-        {
-            get { return myFldBit3; }
-            set { myFldBit3 = value; }
-        }
-
-        public string FldText1
-        {
-            get { return myFldText1; }
-            set { myFldText1 = value; }
-        }
-
-        public string FldText2
-        {
-            get { return myFldText2; }
-            set { myFldText2 = value; }
-        }
-
-        public string FldText3
-        {
-            get { return myFldText3; }
-            set { myFldText3 = value; }
-        }
-
+        public int BID { get; set; }
+        public string AdminName { get; set; }
+        public string UserName { get; set; }
+        public bool GenNotificationFlag { get; set; }
+        public string NotificationSubject { get; set; }
+        public string NotificationBody { get; set; }
+        public string CustomEarnedMessage { get; set; }
+        public bool IncludesPhysicalPrizeFlag { get; set; }
+        public string PhysicalPrizeName { get; set; }
+        public bool AssignProgramPrizeCode { get; set; }
+        public string PCNotificationSubject { get; set; }
+        public string PCNotificationBody { get; set; }
+        public DateTime LastModDate { get; set; }
+        public string LastModUser { get; set; }
+        public DateTime AddedDate { get; set; }
+        public string AddedUser { get; set; }
+        public int TenID { get; set; }
+        public int FldInt1 { get; set; }
+        public int FldInt2 { get; set; }
+        public int FldInt3 { get; set; }
+        public bool FldBit1 { get; set; }
+        public bool FldBit2 { get; set; }
+        public bool FldBit3 { get; set; }
+        public string FldText1 { get; set; }
+        public string FldText2 { get; set; }
+        public string FldText3 { get; set; }
+        public bool HiddenFromPublic { get; set; }
         #endregion
 
         #region Constructors
 
         public Badge()
         {
-            TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
+            this.TenID = (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ? -1 : (int)HttpContext.Current.Session["TenantID"]);
+            this.NotificationSubject = string.Empty;
+            this.NotificationBody = string.Empty;
+            this.CustomEarnedMessage = string.Empty;
+            this.PhysicalPrizeName = string.Empty;
+            this.PCNotificationSubject = string.Empty;
+            this.PCNotificationBody = string.Empty;
+            this.FldText1 = string.Empty;
+            this.FldText2 = string.Empty;
+            this.FldText3 = string.Empty;
         }
 
         #endregion
@@ -215,6 +77,27 @@ namespace GRA.SRP.DAL
             SqlParameter[] arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@ids", ids);
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Badge_GetList", arrParams);
+        }
+
+        public static int GetVisibleCount()
+        {
+            var arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
+
+
+            var result = SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "app_Badge_GetVisibleCount", arrParams);
+            if (result == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)result;
+            }
         }
 
         public static DataSet GetAll()
@@ -292,6 +175,8 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
+                result.HiddenFromPublic = dr["HiddenFromPublic"] as bool? == true;
+
                 dr.Close();
 
                 return result;
@@ -359,6 +244,8 @@ namespace GRA.SRP.DAL
                 result.FldText2 = dr["FldText2"].ToString();
                 result.FldText3 = dr["FldText3"].ToString();
 
+                result.HiddenFromPublic = dr["HiddenFromPublic"] as bool? == true;
+
                 dr.Close();
 
                 return result;
@@ -424,6 +311,8 @@ namespace GRA.SRP.DAL
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
 
+                this.HiddenFromPublic = dr["HiddenFromPublic"] as bool? == true;
+
                 dr.Close();
 
                 return true;
@@ -445,40 +334,43 @@ namespace GRA.SRP.DAL
         public static int Insert(Badge o)
         {
 
-            SqlParameter[] arrParams = new SqlParameter[26];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@AdminName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@UserName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.UserName, o.UserName.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@GenNotificationFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@NotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@NotificationBody", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@CustomEarnedMessage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@IncludesPhysicalPrizeFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@PhysicalPrizeName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@AssignProgramPrizeCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AssignProgramPrizeCode, o.AssignProgramPrizeCode.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@PCNotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCNotificationSubject, o.PCNotificationSubject.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@PCNotificationBody", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCNotificationBody, o.PCNotificationBody.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@AdminName", GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@UserName", GlobalUtilities.DBSafeValue(o.UserName, o.UserName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GenNotificationFlag", GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NotificationSubject", GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NotificationBody", GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CustomEarnedMessage", GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IncludesPhysicalPrizeFlag", GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PhysicalPrizeName", GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AssignProgramPrizeCode", GlobalUtilities.DBSafeValue(o.AssignProgramPrizeCode, o.AssignProgramPrizeCode.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PCNotificationSubject", GlobalUtilities.DBSafeValue(o.PCNotificationSubject, o.PCNotificationSubject.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PCNotificationBody", GlobalUtilities.DBSafeValue(o.PCNotificationBody, o.PCNotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
 
-            arrParams[15] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
-            
-            arrParams[25] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode()));
-            arrParams[25].Direction = ParameterDirection.Output;
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_Insert", arrParams);
-            o.BID = int.Parse(arrParams[25].Value.ToString());
+            arrParams.Add(new SqlParameter("@HiddenFromPublic", GlobalUtilities.DBSafeValue(o.HiddenFromPublic, o.HiddenFromPublic.GetTypeCode())));
+
+            var param = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode()));
+            param.Direction = ParameterDirection.Output;
+            arrParams.Add(param);
+
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_Insert", arrParams.ToArray());
+            o.BID = int.Parse(param.Value.ToString());
             return o.BID;
         }
 
@@ -494,45 +386,50 @@ namespace GRA.SRP.DAL
 
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[26];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@AdminName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@UserName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.UserName, o.UserName.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@GenNotificationFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@NotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@NotificationBody", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@CustomEarnedMessage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@IncludesPhysicalPrizeFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@PhysicalPrizeName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@AssignProgramPrizeCode", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AssignProgramPrizeCode, o.AssignProgramPrizeCode.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@PCNotificationSubject", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCNotificationSubject, o.PCNotificationSubject.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@PCNotificationBody", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PCNotificationBody, o.PCNotificationBody.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            
-            arrParams[16] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@BID", GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AdminName", GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@UserName", GlobalUtilities.DBSafeValue(o.UserName, o.UserName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GenNotificationFlag", GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NotificationSubject", GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@NotificationBody", GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CustomEarnedMessage", GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IncludesPhysicalPrizeFlag", GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PhysicalPrizeName", GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AssignProgramPrizeCode", GlobalUtilities.DBSafeValue(o.AssignProgramPrizeCode, o.AssignProgramPrizeCode.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PCNotificationSubject", GlobalUtilities.DBSafeValue(o.PCNotificationSubject, o.PCNotificationSubject.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PCNotificationBody", GlobalUtilities.DBSafeValue(o.PCNotificationBody, o.PCNotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
+
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
+
+            arrParams.Add(new SqlParameter("@HiddenFromPublic", GlobalUtilities.DBSafeValue(o.HiddenFromPublic, o.HiddenFromPublic.GetTypeCode())));
 
             try
             {
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_Update", arrParams);
+                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_Update", arrParams.ToArray());
 
             }
 
             catch (SqlException exx)
             {
+                "GRA.SRP.DAL.Badge".Log().Error("Error updating Badge: {0} - {1}",
+                    exx.Message,
+                    exx.StackTrace);
 
                 System.Diagnostics.Debug.Write(exx.Message);
 
@@ -556,7 +453,7 @@ namespace GRA.SRP.DAL
 
             SqlParameter[] arrParams = new SqlParameter[1];
 
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(o.BID, o.BID.GetTypeCode()));
 
             try
             {
@@ -574,19 +471,19 @@ namespace GRA.SRP.DAL
 
             catch (SqlException exx)
             {
+                "GRA.SRP.DAL.Badge".Log().Error("Error deleting Badge: {0} - {1}",
+                    exx.Message,
+                    exx.StackTrace);
 
                 System.Diagnostics.Debug.Write(exx.Message);
-
             }
-
             return iReturn;
-
         }
 
-        public  static DataSet GetBadgeBranches (int BID)
+        public static DataSet GetBadgeBranches(int BID)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -594,12 +491,11 @@ namespace GRA.SRP.DAL
                             );
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeBranches", arrParams);
         }
-
-        public void UpdateBadgeBranches(string checkedMembers) {UpdateBadgeBranches(this.BID, checkedMembers);}
+        public void UpdateBadgeBranches(string checkedMembers) { UpdateBadgeBranches(this.BID, checkedMembers); }
         public static void UpdateBadgeBranches(int BID, string checkedMembers)
         {
             SqlParameter[] arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -609,11 +505,10 @@ namespace GRA.SRP.DAL
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_UpdateBadgeBranches", arrParams);
         }
 
-
         public static DataSet GetBadgeCategories(int BID)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -625,7 +520,7 @@ namespace GRA.SRP.DAL
         public static void UpdateBadgeCategories(int BID, string checkedMembers)
         {
             SqlParameter[] arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -638,7 +533,7 @@ namespace GRA.SRP.DAL
         public static DataSet GetBadgeAgeGroups(int BID)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -646,11 +541,12 @@ namespace GRA.SRP.DAL
                             );
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeAgeGroups", arrParams);
         }
+
         public void UpdateBadgeAgeGroups(string checkedMembers) { UpdateBadgeAgeGroups(this.BID, checkedMembers); }
         public static void UpdateBadgeAgeGroups(int BID, string checkedMembers)
         {
             SqlParameter[] arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -663,7 +559,7 @@ namespace GRA.SRP.DAL
         public static DataSet GetBadgeLocations(int BID)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -671,11 +567,12 @@ namespace GRA.SRP.DAL
                             );
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeLocations", arrParams);
         }
+
         public void UpdateBadgeLocations(string checkedMembers) { UpdateBadgeLocations(this.BID, checkedMembers); }
         public static void UpdateBadgeLocations(int BID, string checkedMembers)
         {
             SqlParameter[] arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@BID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
+            arrParams[0] = new SqlParameter("@BID", GlobalUtilities.DBSafeValue(BID, BID.GetTypeCode()));
             arrParams[1] = new SqlParameter("@TenID",
                                 (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
                                         -1 :
@@ -711,8 +608,8 @@ namespace GRA.SRP.DAL
                                         -1 :
                                         (int)HttpContext.Current.Session["TenantID"])
                             );
-            arrParams[1] = new SqlParameter("@BID", BID); 
-            arrParams[2] = new SqlParameter("@List", SqlDbType.VarChar, 2000 );
+            arrParams[1] = new SqlParameter("@BID", BID);
+            arrParams[2] = new SqlParameter("@List", SqlDbType.VarChar, 2000);
             arrParams[2].Direction = ParameterDirection.InputOutput;
 
 
@@ -738,7 +635,7 @@ namespace GRA.SRP.DAL
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeBookLists", arrParams);
 
-            return (string)arrParams[2].Value;
+            return arrParams[2].Value == DBNull.Value ? string.Empty : (string)arrParams[2].Value;
         }
 
         public static string GetBadgeReading(int BID)
@@ -756,6 +653,25 @@ namespace GRA.SRP.DAL
 
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeReading", arrParams);
+
+            return (string)arrParams[2].Value;
+        }
+
+        public static string GetBadgeGoal(int BID)
+        {
+            var arrParams = new SqlParameter[3];
+
+            arrParams[0] = new SqlParameter("@TenID",
+                                (HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == "" ?
+                                        -1 :
+                                        (int)HttpContext.Current.Session["TenantID"])
+                            );
+            arrParams[1] = new SqlParameter("@BID", BID);
+            arrParams[2] = new SqlParameter("@List", SqlDbType.VarChar, 2000);
+            arrParams[2].Direction = ParameterDirection.InputOutput;
+
+
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeGoals", arrParams);
 
             return (string)arrParams[2].Value;
         }
@@ -795,9 +711,8 @@ namespace GRA.SRP.DAL
 
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeEvents", arrParams);
 
-            return (string)arrParams[2].Value;
+            return arrParams[2].Value == DBNull.Value ? string.Empty : (string)arrParams[2].Value;
         }
-
         public static string GetBadgeEventIDs(int BID)
         {
             var arrParams = new SqlParameter[3];
@@ -815,6 +730,38 @@ namespace GRA.SRP.DAL
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Badge_GetBadgeEventIDS", arrParams);
 
             return (string)arrParams[2].Value;
+        }
+
+        public static DataSet GetFiltered(string searchText, int branchId)
+        {
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@TenID",
+                                HttpContext.Current.Session["TenantID"] == null
+                                || string.IsNullOrEmpty(HttpContext.Current.Session["TenantID"].ToString())
+                                ? -1
+                                : (int)HttpContext.Current.Session["TenantID"])
+                            );
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (!searchText.StartsWith("%"))
+                {
+                    searchText = string.Format("%{0}", searchText);
+                }
+                if (!searchText.EndsWith("%"))
+                {
+                    searchText = string.Format("{0}%", searchText);
+                }
+                arrParams.Add(new SqlParameter("@SearchText", searchText));
+            }
+            if (branchId > 0)
+            {
+                arrParams.Add(new SqlParameter("@BranchId", branchId));
+            }
+
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_Badge_Filter",
+                arrParams.ToArray());
         }
         #endregion
 

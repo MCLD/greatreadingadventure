@@ -15,10 +15,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
-    <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server"/>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
+    <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
+    <style>
+        .cdBody td, .cdBody th {
+            padding: 0.2em;
+        }
+
+        .cdBody th {
+            padding-left: 0.8em;
+            padding-right: 0.8em;
+        }
+    </style>
     <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.pack.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/moment.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
     </asp:PlaceHolder>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -27,7 +45,7 @@
     <form id="form1" runat="server">
         <center>
             <div id="cdBodyDiv">
-                <div class="cdTop">
+                <div class="cdTop hidden-print">
                     <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
                     <div style="text-align: left;">
                         <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
@@ -36,8 +54,8 @@
                         </div>
                     </div>
                 </div>
-                <div id="cdSeparator"></div>
-                <div class="cdMessage">
+                <div id="cdSeparator" class="hidden-print"></div>
+                <div class="cdMessage hidden-print">
                     <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC"
                         BorderStyle="Solid" BorderWidth="0px" Style="padding: 10px;" Visible="false">
                         <table width="100%" cellpadding="10" cellspacing="0" style="border: solid 1px black;">
@@ -60,10 +78,17 @@
         </center>
         <asp:ContentPlaceHolder ID="scripts" runat="server">
         </asp:ContentPlaceHolder>
-        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
         <script>
-            $(".gra-editor").each(function () {
-                $(this).trumbowyg();
+            $().ready(function () {
+                $(".gra-editor").each(function () {
+                    $(this).trumbowyg({
+                        fullscreenable: false
+                    });
+                });
+                $('.fancybox').fancybox();
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
             });
         </script>
     </form>

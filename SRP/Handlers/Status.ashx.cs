@@ -9,72 +9,73 @@ using System.Text;
 using System.Web;
 using System.Web.SessionState;
 
-namespace GRA.SRP.Handlers {
-    public class JsonStatus : JsonBase {
+namespace GRA.SRP.Handlers
+{
+    public class JsonStatus : JsonBase
+    {
         public int PointsEarned { get; set; }
         public int BadgesAwarded { get; set; }
         public int ChallengesCompleted { get; set; }
         public string Since { get; set; }
     }
 
-    public class Status : IHttpHandler, IRequiresSessionState {
-        public void ProcessRequest(HttpContext context) {
+    public class Status : IHttpHandler, IRequiresSessionState
+    {
+        public void ProcessRequest(HttpContext context)
+        {
             var tenant = context.Session["TenantID"];
             int tenantId = tenant as int? ?? -1;
-            if(tenantId == -1) {
+            if (tenantId == -1)
+            {
                 tenantId = Core.Utilities.Tenant.GetMasterID();
             }
 
-            string cacheKey = string.Format("{0}.{1}", CacheKey.Status, tenantId);
+            var sessionTool = new SessionTools(context.Session);
+            var cachedStatus = sessionTool.GetCache(context.Cache, CacheKey.Feed, tenantId) as JsonStatus;
 
-            try {
-                if(context.Cache[cacheKey] != null) {
-                    var cachedJsonResponse = context.Cache[cacheKey] as JsonStatus;
-                    if(cachedJsonResponse != null) {
-                        context.Response.ContentType = "application/json";
-                        context.Response.Write(JsonConvert.SerializeObject(cachedJsonResponse));
-                        return;
-                    }
+            try
+            {
+                if (cachedStatus != null)
+                {
+                    context.Response.ContentType = "application/json";
+                    context.Response.Write(JsonConvert.SerializeObject(cachedStatus));
+                    return;
                 }
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 this.Log().Error("Error looking up status data in cache: {0}", ex.Message);
             }
 
             var jsonResponse = new JsonStatus();
-            try {
-                DateTime startingOn = DateTime.MinValue;
-                if(!string.IsNullOrEmpty(context.Request.QueryString["StartingOn"])) {
-                    DateTime.TryParse(context.Request.QueryString["StartingOn"], out startingOn);
-                }
-                
-                ProgramStatusReport result = null;
-                if(startingOn == DateTime.MinValue) {
-                    result = new ProgramStatus(tenantId).CurrentStatus();
-                } else {
-                    result = new ProgramStatus(startingOn, tenantId).CurrentStatus();
-                }
+            try
+            {
+                TenantStatusReport result = null;
+                result = new TenantStatus(tenantId).CurrentStatus();
 
                 jsonResponse.PointsEarned = result.PointsEarned;
                 jsonResponse.BadgesAwarded = result.BadgesAwarded;
                 jsonResponse.ChallengesCompleted = result.ChallengesCompleted;
-                if(!string.IsNullOrEmpty(result.Since)) {
-                    jsonResponse.Since = result.Since;
-                } else {
-                    jsonResponse.Since = "All Participants";
-                }
+                jsonResponse.Since = "All Participants";
                 jsonResponse.Success = true;
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 this.Log().Error("Status update error: {0}", ex.Message);
                 jsonResponse.Success = false;
             }
 
-            if(jsonResponse.Success) {
-                try {
+            if (jsonResponse.Success)
+            {
+                try
+                {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
-                    if(context.Cache[cacheKey] == null) {
+                    if (sessionTool.GetCache(context.Cache, CacheKey.Feed, tenantId) == null)
+                    {
                         //this.Log().Debug("Caching status data until {0}",
                         //                 cacheUntil.ToLocalTime().ToLongTimeString());
-                        context.Cache.Insert(cacheKey,
+                        string tenantCacheKey = sessionTool.GetTenantCacheKey(CacheKey.Status, tenantId);
+                        context.Cache.Insert(tenantCacheKey,
                                              jsonResponse,
                                              null,
                                              cacheUntil,
@@ -82,19 +83,18 @@ namespace GRA.SRP.Handlers {
                                              System.Web.Caching.CacheItemPriority.Default,
                                              null);
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     this.Log().Error("Error caching status response: {0}", ex.Message);
                 }
             }
 
-
             context.Response.ContentType = "application/json";
             context.Response.Write(JsonConvert.SerializeObject(jsonResponse));
         }
-        public bool IsReusable
-        {
-            get
-            {
+        public bool IsReusable {
+            get {
                 return false;
             }
         }

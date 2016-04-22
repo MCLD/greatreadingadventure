@@ -18,6 +18,7 @@ namespace GRA.SRP.ControlRooms
         string PageTitle { get; set; }
         bool IsSecure { get; set; }
         long RequiredPermission { get; set; }
+        long AdditionalRequiredPermission { get; set; } 
         bool DisplayMessageOnLoad { get; set; }
     }
 }

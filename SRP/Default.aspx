@@ -5,6 +5,7 @@
 <%@ Register Src="~/Controls/PublicProgramView.ascx" TagName="PublicProgramView" TagPrefix="uc3" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeaderContent">
+    <asp:PlaceHolder runat="server" ID="Metadata"></asp:PlaceHolder>
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
     <div class="row">

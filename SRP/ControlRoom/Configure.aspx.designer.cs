@@ -40,6 +40,24 @@ namespace GRA.SRP.ControlRoom {
         protected global::System.Web.UI.WebControls.Panel step1;
         
         /// <summary>
+        /// InitialStartPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel InitialStartPanel;
+        
+        /// <summary>
+        /// InitialStartMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label InitialStartMessage;
+        
+        /// <summary>
         /// step2 control.
         /// </summary>
         /// <remarks>

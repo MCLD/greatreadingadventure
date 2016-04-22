@@ -31,7 +31,10 @@ WHERE BranchID NOT IN (
 SELECT isnull(w.ID, 0) AS ID,
 	isnull(l.CID, 0) AS BranchID,
 	isnull(w.DistrictID, 0) AS DistrictID,
-	isnull(w.City, '') AS City
+	isnull(w.City, '') AS City,
+	isnull(w.BranchLink, '') AS BranchLink,
+	isnull(w.BranchAddress, '') AS BranchAddress,
+	isnull(w.BranchTelephone, '') AS BranchTelephone
 FROM [LibraryCrosswalk] w
 RIGHT JOIN @Libraries l ON w.BranchID = l.CID
 ORDER BY l.Code

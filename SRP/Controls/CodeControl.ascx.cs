@@ -1,5 +1,6 @@
 ﻿using GRA.SRP.DAL;
 using GRA.Tools;
+using SRPApp.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,10 @@ using System.Web.UI.WebControls;
 namespace GRA.SRP.Controls {
     public partial class CodeControl : System.Web.UI.UserControl {
         protected void Page_Load(object sender, EventArgs e) {
-            if(!IsPostBack) {
+            var wt = new WebTools();
+            codeEntryField.CssClass = wt.CssRemoveClass(codeEntryField.CssClass, "code-glow");
+
+            if (!IsPostBack) {
                 if(Session["Patron"] == null) {
                     Response.Redirect("~");
                 }
@@ -23,37 +27,48 @@ namespace GRA.SRP.Controls {
                 }
                 ViewState["PatronId"] = patron.PID.ToString();
 
+                var storedCode = Session[SessionKey.SecretCode];
+                if(storedCode != null && !string.IsNullOrWhiteSpace(storedCode.ToString()))
+                {
+                    codeEntryField.Text = storedCode.ToString();
+                    codeEntryField.CssClass = wt.CssEnsureClass(codeEntryField.CssClass, "code-glow");
+                
+                    Session.Remove(SessionKey.SecretCode);
+                    new SessionTools(Session).AlertPatron(
+                        StringResources.getString("secret-code-link"),
+                        PatronMessageLevels.Info,
+                        "barcode");
+                }
             }
         }
         protected void submitButton_Click(object sender, EventArgs e) {
-
             #region Event Attendance
             // Logging event attendance
-            string codeValue = codeEntryField.Text;
+            string codeValue = Logic.Code.SanitizeCode(codeEntryField.Text);
+            codeEntryField.Text = codeValue;
             int patronId = ((Patron)Session[SessionKey.Patron]).PID;
             var pointsAward = new AwardPoints(patronId);
 
             if(codeValue.Length == 0) {
-                Session[SessionKey.PatronMessage] = "Please enter a code.";
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
-                Session[SessionKey.PatronMessageGlyphicon] = "remove";
+                new SessionTools(Session).AlertPatron("Please enter a code.",
+                    PatronMessageLevels.Danger,
+                    "remove");
                 return;
             } else { 
                 // verify event code was not previously redeemed
                 if(PatronPoints.HasRedeemedKeywordPoints(patronId, codeValue)) {
-                    Session[SessionKey.PatronMessage] = "You've already redeemed this code!";
-                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                    Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                    new SessionTools(Session).AlertPatron("You've already redeemed this code!",
+                        PatronMessageLevels.Warning,
+                        "exclamation-sign");
                     return;
                 }
 
                 // get event for that code, get the # points
-                var ds = Event.GetEventByEventCode(pointsAward.pgm.StartDate.ToShortDateString(),
-                                                   DateTime.Now.ToShortDateString(), codeValue);
+                var ds = Event.GetEventByEventCode(codeValue);
                 if(ds.Tables[0].Rows.Count == 0) {
-                    Session[SessionKey.PatronMessage] = "Sorry, that's an invalid code.";
-                    Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
-                    Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
+                    new SessionTools(Session).AlertPatron("Sorry, that's an invalid code.",
+                        PatronMessageLevels.Warning,
+                        "exclamation-sign");
                     return;
                 }
                 var EID = (int)ds.Tables[0].Rows[0]["EID"];
@@ -70,16 +85,18 @@ namespace GRA.SRP.Controls {
                     new SessionTools(Session).EarnedBadges(earnedBadges);
                 }
 
+                string userMessage = null;
                 // set message and earned badges
                 string earnedMessage = new PointCalculation().EarnedMessage(earnedBadges, points);
                 if(string.IsNullOrEmpty(earnedMessage)) {
-                    Session[SessionKey.PatronMessage] = "<strong>Excellent!</strong> Your secret code has been recorded.";
+                    userMessage = "<strong>Excellent!</strong> Your secret code has been recorded.";
                 } else {
-                    Session[SessionKey.PatronMessage] = string.Format("<strong>Excellent!</strong> Your secret code has been recorded. <strong>{0}</strong>",
-                                                                      earnedMessage);
+                    userMessage = string.Format("<strong>Excellent!</strong> Your secret code has been recorded. <strong>{0}</strong>",
+                                                earnedMessage);
                 }
-                Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Success;
-                Session[SessionKey.PatronMessageGlyphicon] = "barcode";
+                new SessionTools(Session).AlertPatron(userMessage,
+                    PatronMessageLevels.Success,
+                    "barcode");
                 this.codeEntryField.Text = string.Empty;
             }
             #endregion

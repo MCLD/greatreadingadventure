@@ -10,6 +10,8 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Controls;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
+using GRA.Tools;
+using System.Text;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -23,7 +25,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4900;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Badge Awards List");
+            MasterPage.PageTitle = string.Format("{0}", "Award Triggers List");
 
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
@@ -204,6 +206,49 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             var ds = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "rpt_PatronFilter", arrParams);
 
             return ds;
+        }
+
+        #region search/filter fields and buttons
+        protected void Search(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchText.Text))
+            {
+                SearchText.Text = string.Empty;
+            }
+
+            var wt = new WebTools();
+            if (!string.IsNullOrEmpty(SearchText.Text) || BranchId.SelectedIndex > 0)
+            {
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+            LoadData();
+        }
+
+        protected void ClearSearch(object sender, EventArgs e)
+        {
+            SearchText.Text = string.Empty;
+            BranchId.SelectedIndex = 0;
+            var wt = new WebTools();
+
+            BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+            SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            LoadData();
+        }
+        #endregion search/filter fields and buttons
+
+        protected string DisplayBadgeStatus(object badgeList, object badgesAchieved) {
+            if(!string.IsNullOrEmpty((string)badgeList))
+            {
+                var badgeIdsList = ((string)badgeList).Split(',');
+                return string.Format("{0}/{1}", badgesAchieved, badgeIdsList.Length);
+            }
+            return string.Empty;
         }
     }
 }

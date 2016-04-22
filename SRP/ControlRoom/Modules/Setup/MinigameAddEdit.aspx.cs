@@ -24,8 +24,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            
-                lblPK.Text = Session["PK"] == null ? "" : Session["PK"].ToString(); Session["PK"]= string.Empty;
+
+                lblPK.Text = Session["PK"] == null ? "" : Session["PK"].ToString(); Session["PK"] = string.Empty;
                 dv.ChangeMode(DetailsViewMode.Insert);
                 Page.DataBind();
             }
@@ -75,13 +75,13 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 try
                 {
                     var obj = new Minigame();
-                    obj.MiniGameType = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("MiniGameType")).SelectedValue);
-                    obj.MiniGameTypeName = ((DropDownList) ((DetailsView) sender).FindControl("MiniGameType")).SelectedItem.Text;
+                    obj.MiniGameType = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("MiniGameType")).SelectedValue);
+                    obj.MiniGameTypeName = ((DropDownList)((DetailsView)sender).FindControl("MiniGameType")).SelectedItem.Text;
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
                     obj.GameName = ((TextBox)((DetailsView)sender).FindControl("GameName")).Text;
                     obj.isActive = ((CheckBox)((DetailsView)sender).FindControl("isActive")).Checked;
                     obj.NumberPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumberPoints")).Text);
-                    obj.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("AwardedBadgeID")).SelectedValue);
+                    obj.AwardedBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("AwardedBadgeID")).SelectedValue);
 
                     obj.AddedDate = DateTime.Now;
                     obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
@@ -91,7 +91,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        Cache[CacheKey.AdventuresActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.AdventuresActive);
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);

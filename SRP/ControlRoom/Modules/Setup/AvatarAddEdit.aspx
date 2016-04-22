@@ -24,22 +24,88 @@
         ondatabound="dv_DataBound" Width="100%">
         <Fields>
 
-        <asp:BoundField DataField="AID" HeaderText="Avatar Id: " SortExpression="AID" ReadOnly="True" InsertVisible="False" Visible="False">
+        <asp:BoundField DataField="APID" HeaderText="Avatar Id: " SortExpression="APID" ReadOnly="True" InsertVisible="False" Visible="False">
             <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top"/>
         </asp:BoundField>
 
-        <asp:TemplateField HeaderText="Avatar Name: " SortExpression="Name" HeaderStyle-Width="100px">
+        <asp:TemplateField>
 		    <EditItemTemplate>
-                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="400px"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvName" runat="server" 
-                    ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
-                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+                <table>
+                        <tr>
+                            <td nowrap height="20px"><b>Award Name: </b></td>
+                            <td colspan="3">
+                                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="500px"  CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvName" runat="server" 
+                                    ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
+                                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Ordering: </b></td>
+                            <td colspan="3">
+                                <asp:TextBox ID="Ordering" runat="server" Text='<%# Bind("Ordering") %>' ReadOnly="False" Width="98%"   CssClass="form-control"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Component/Layer: </b></td>
+                            <td colspan="3">
+                               <asp:DropDownList ID="ComponentID" runat="server"  Width="98%"  SelectedValue='<%# Eval("ComponentID") %>' CssClass="form-control">
+                                   <asp:ListItem Value="0" Text="0 (Torso)"></asp:ListItem>
+                                   <asp:ListItem Value="1" Text="1 (Arms)"></asp:ListItem>
+                                   <asp:ListItem Value="2" Text="2 (Head)"></asp:ListItem>
+                               </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Unlock with badge: </b></td>
+                            <td colspan="3">
+                                <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID"
+                                    AppendDataBoundItems="True" Width="98%" CssClass="form-control">
+                                    <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
+                                </asp:DropDownList>
+                                <asp:Label ID="BadgeIDLbl" runat="server" Text='<%# Eval("BadgeID") %>' Visible="False"></asp:Label>
+                            </td>
+                        </tr>
+                </table>
             </EditItemTemplate>
             <InsertItemTemplate>
-                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' Width="400px"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvName" runat="server" 
-                    ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
-                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+               <table>
+                        <tr>
+                            <td nowrap height="20px"><b>Award Name: </b></td>
+                            <td colspan="3">
+                                <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="500px"  CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvName" runat="server" 
+                                    ControlToValidate="Name" Display="Dynamic" ErrorMessage="Name is required" 
+                                    SetFocusOnError="True" Font-Bold="True">* Required</asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Ordering: </b></td>
+                            <td colspan="3">
+                                <asp:TextBox ID="Ordering" runat="server" Text='<%# Bind("Ordering") %>' ReadOnly="False" Width="98%"   CssClass="form-control"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Component/Layer: </b></td>
+                            <td colspan="3">
+                               <asp:DropDownList ID="ComponentID" runat="server"  Width="98%"  CssClass="form-control">
+                                   <asp:ListItem Value="0" Text="0 (Torso)"></asp:ListItem>
+                                   <asp:ListItem Value="1" Text="1 (Arms)"></asp:ListItem>
+                                   <asp:ListItem Value="2" Text="2 (Head)"></asp:ListItem>
+                               </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td nowrap height="20px"><b>Unlock with badge: </b></td>
+                            <td colspan="3">
+                                <asp:DropDownList ID="BadgeID" runat="server" DataSourceID="odsDDBadges" DataTextField="AdminName" DataValueField="BID"
+                                    AppendDataBoundItems="True" Width="98%" CssClass="form-control">
+                                    <asp:ListItem Value="-1" Text="[Select a Badge]"></asp:ListItem>
+                                </asp:DropDownList>
+                                <asp:Label ID="BadgeIDLbl" runat="server" Visible="False"></asp:Label>
+                            </td>
+                        </tr>
+                </table>
             </InsertItemTemplate>
             <ItemTemplate>
                 <asp:Label ID="Name" runat="server" Text='<%# Bind("Name") %>'></asp:Label>
@@ -53,13 +119,11 @@
                 <hr />
                 <div style="padding-left:105px;">
                 <uc1:FileUploadCtl ID="FileUploadCtl" runat="server" 
-                    FileName='<%# Bind("AID") %>'
-                    ImgWidth="200" 
+                    FileName='<%# Bind("APID") %>'
+                    ImgWidth="280" 
                     CreateSmallThumbnail="True" 
-                    CreateMediumThumbnail="True"
                     SmallThumbnailWidth="64" 
-                    MediumThumbnailWidth="128"
-                    Folder="~/Images/Avatars/"
+                    Folder="~/Images/AvatarParts/"
                     Extension="png"
                     Width="400px"
                 />
@@ -167,12 +231,17 @@
         </Fields>
     </asp:DetailsView>
 
+    <asp:ObjectDataSource ID="odsDDBadges" runat="server"
+        SelectMethod="GetAll"
+        TypeName="GRA.SRP.DAL.Badge"></asp:ObjectDataSource>
+
+
 
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
     <asp:ObjectDataSource ID="odsData" runat="server" 
-        SelectMethod="GetAvatar" TypeName="GRA.SRP.DAL.Avatar">
+        SelectMethod="GetAvatarPart" TypeName="GRA.SRP.DAL.AvatarPart">
         <SelectParameters>
-            <asp:ControlParameter ControlID="lblPK" Name="AID" 
+            <asp:ControlParameter ControlID="lblPK" Name="APID" 
                 PropertyName="Text" Type="Int32" />
         </SelectParameters>
     </asp:ObjectDataSource>

@@ -11,7 +11,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.Utilities;
 using GRA.SRP.DAL;
-
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom.Modules.Setup
 {
@@ -25,7 +25,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
         {
             MasterPage.RequiredPermission = 4700;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Badges List");
+            MasterPage.PageTitle = "Badges List";
 
             _mStrSortExp = String.Empty;
 
@@ -90,7 +90,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             string editpage = "~/ControlRoom/Modules/Setup/BadgeAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["BDD"]= string.Empty;
+                Session["BDD"] = string.Empty;
                 Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
@@ -109,7 +109,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
                         Badge.FetchObject(key).Delete();
-
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.BadgesActive);
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;
                         if (masterPage != null) masterPage.PageMessage = SRPResources.DeleteOK;
@@ -138,6 +138,38 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             }
         }
 
+        #region search/filter fields and buttons
+        protected void Search(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchText.Text))
+            {
+                SearchText.Text = string.Empty;
+            }
 
+            var wt = new WebTools();
+            if (!string.IsNullOrEmpty(SearchText.Text) || BranchId.SelectedIndex > 0)
+            {
+                BranchId.CssClass = wt.CssEnsureClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssEnsureClass(SearchText.CssClass, "gra-search-active");
+            }
+            else
+            {
+                BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+                SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            }
+            LoadData();
+        }
+
+        protected void ClearSearch(object sender, EventArgs e)
+        {
+            SearchText.Text = string.Empty;
+            BranchId.SelectedIndex = 0;
+            var wt = new WebTools();
+
+            BranchId.CssClass = wt.CssRemoveClass(BranchId.CssClass, "gra-search-active");
+            SearchText.CssClass = wt.CssRemoveClass(SearchText.CssClass, "gra-search-active");
+            LoadData();
+        }
+        #endregion search/filter fields and buttons
     }
 }

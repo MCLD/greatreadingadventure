@@ -3,7 +3,7 @@
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_CodeType_Insert] (
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,

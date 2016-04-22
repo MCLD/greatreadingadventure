@@ -9,16 +9,14 @@ IF @TenID IS NULL
 
 SELECT TOP 10 pp.PID,
 	isnull(SUM(isnull(convert(BIGINT, NumPoints), 0)), 0) AS TotalPoints,
-	p.Username,
-	p.AvatarID
+	p.Username
 INTO #TempLB
 FROM PatronPoints pp
 INNER JOIN Patron p ON pp.PID = p.PID
 	AND p.TenID = @TenID
 WHERE p.ProgID = @ProgId
 GROUP BY pp.PID,
-	p.Username,
-	p.AvatarID
+	p.Username
 ORDER BY TotalPoints DESC
 
 UPDATE #TempLB
@@ -27,7 +25,6 @@ WHERE TotalPoints > 20000000
 
 SELECT PID,
 	Username,
-	AvatarID,
 	CONVERT(INT, TotalPoints) AS TotalPoints,
 	ROW_NUMBER() OVER (
 		ORDER BY TotalPoints DESC

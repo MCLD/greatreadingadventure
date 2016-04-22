@@ -9,8 +9,12 @@ Reading Adventure wouldn't exist!
 
 - [ASP.NET AJAX Control Toolkit](#aspnet-ajax-control-toolkit)
 - [Bootstrap](#bootstrap)
-- [DocumentFormat.OpenXML](#documentformat.-openxml)
+- [Bootstrap 3 Date/Time Picker](#bootstrap-3-datetime-picker)
+- [CreateExcelFile](#createexcelfile)
+- [DocumentFormat.OpenXML](#documentformatopenxml)
 - [ELMAH](#elmah)
+- [ExcelDataReader](#exceldatareader)
+- [fancyBox](#fancybox)
 - [FormatWith](#formatwith)
 - [FontAwesome](#fontawesome)
 - [Html Agility Pack](#html-agility-pack)
@@ -42,6 +46,20 @@ Reading Adventure wouldn't exist!
 
 * * *
 
+## Bootstrap 3 Date/Time Picker
+- <https://eonasdan.github.io/bootstrap-datetimepicker/>
+- Copyright (c) 2015 Jonathan Peterson (@Eonasdan)
+- License (MIT) <https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE>
+
+* * *
+
+## CreateExcelFile
+- <http://mikesknowledgebase.azurewebsites.net/pages/CSharp/ExportToExcel.htm>
+- Copyright (C) 2015 MikesKnowledgeBase
+- License (MIT) <http://mikesknowledgebase.azurewebsites.net/pages/CSharp/ExportToExcel.htm>
+
+* * *
+
 ## DocumentFormat.OpenXML
 - Unofficial packaging of Microsoft's OpenXML SDK 2.5 - <https://www.nuget.org/packages/DocumentFormat.OpenXml/>
 - Microsoft's OpenXML SDK - <https://github.com/OfficeDev/Open-XML-SDK>
@@ -57,6 +75,20 @@ Reading Adventure wouldn't exist!
 
 * * *
 
+## ExcelDataReader
+- <https://github.com/ExcelDataReader/ExcelDataReader>
+- Copyright (c) 2014 ExcelDataReader
+- License (MIT) <https://github.com/ExcelDataReader/ExcelDataReader/blob/develop/LICENSE>
+
+* * *
+
+## fancyBox
+- <http://fancyapps.com/fancybox/>
+- Copyright (c) 2012 Janis Skarnelis - janis@fancyapps.com
+- License (CC BY-NC 3.0) <http://www.fancyapps.com/fancybox/#license>
+
+* * *
+
 ## FontAwesome
 - <https://fortawesome.github.io/Font-Awesome/>
 - Created by Dave Gandy
@@ -67,7 +99,7 @@ Reading Adventure wouldn't exist!
 ## FormatWith
 - <http://james.newtonking.com/archive/2008/03/29/formatwith-2-0-string-formatting-with-named-variables>
 - Code author: James Newton-King
- 
+
 * * *
 
 ## Glitch public domain game art

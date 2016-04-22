@@ -15,21 +15,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= GRA.SRP.ControlRoom.SRPResources.CRTitle%></title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
     <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
-    <asp:PlaceHolder runat="server">
-        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.js")%>"></script>
-    </asp:PlaceHolder>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
     <style type="text/css">
         #blur {
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
-            /*background-color: black;
-        moz-opacity: 0.75;
-        khtml-opacity: .75;
-        opacity: .75;
-        filter: alpha(opacity=75);*/
             z-index: 120;
             height: 100%;
             position: absolute;
@@ -49,18 +43,31 @@
             text-align: center;
         }
 
-        .gra-editor-container-small > .trumbowyg-box {
-            min-height: 200px;
-            max-height: 200px;
-            height: 200px;
+        .ajax__tab_tab {
+            height: auto !important;
         }
 
-        .gra-editor-container-tiny > .trumbowyg-box {
-            min-height: 150px;
-            max-height: 150px;
-            height: 150px;
+        .ajax__tab_body {
+            margin-bottom: 1em;
+        }
+
+        .ajax__tab_panel td {
+            padding: 0.2em;
+        }
+
+        .cdBody td, .cdBody th {
+            padding: 0.2em;
         }
     </style>
+    <asp:PlaceHolder runat="server">
+        <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.pack.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/moment.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>
+        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
+    </asp:PlaceHolder>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -70,9 +77,9 @@
         <center>
         <div id="cdBodyDiv">
 
-            <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
-            </asp:ToolkitScriptManager>
-            <div class="cdTop">
+            <asp:ScriptManager ID="ToolkitScriptManager1" runat="Server" AsyncPostBackTimeout="300">
+            </asp:ScriptManager>
+            <div class="cdTop hidden-print">
                 <uc3:CRTopMenu ID="CRTopMenu1" runat="server" />
                 <div style="text-align: left; ">				
                     <uc2:CRRibbon ID="CRRibbonCtl" runat="server" />
@@ -82,8 +89,8 @@
                     </div>
                 </div>
             </div>
-            <div id="cdSeparator"></div>
-            <div class="cdMessage">
+            <div id="cdSeparator" class="hidden-print"></div>
+            <div class="cdMessage hidden-print">
                 <asp:Panel ID="pnlMessage" runat="server" BorderColor="#CCCCCC" 
                     BorderStyle="Solid" BorderWidth="0px" style="padding: 10px;" Visible="false">
                     <table width="100%" cellpadding ="10" cellspacing="0" style="border: solid 1px black;">
@@ -142,12 +149,63 @@
         </script>
         <asp:ContentPlaceHolder ID="scripts" runat="server">
         </asp:ContentPlaceHolder>
-        <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.js")%>"></script>
         <script>
             $().ready(function () {
                 $(".gra-editor").each(function () {
-                    $(this).trumbowyg();
+                    $(this).height(200);
+                    $(this).trumbowyg({
+                        fullscreenable: false
+                    });
                 });
+                $('.gra-datetime').datetimepicker({
+                    sideBySide: true
+                });
+                $('.fancybox').fancybox();
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
+            });
+            $('.gra-secret-code').focusout(function () {
+                $('#gra-code-available').removeClass();
+                $('.gra-code-error').first().text("");
+                var potentialCode = $('.gra-secret-code').first().val().toLowerCase();
+                potentialCode = potentialCode.trim();
+                $('.gra-secret-code').first().val(potentialCode);
+                if (potentialCode.length == 0) {
+                    return;
+                }
+                if (potentialCode.length > 50) {
+                    $('#gra-code-available').addClass('glyphicon glyphicon-minus-sign text-danger');
+                    $('.gra-code-error').first().text("The Secret Code must be 50 characters or less.");
+                    return;
+                }
+                if (!/^[a-z0-9]+$/.test(potentialCode)) {
+                    $('#gra-code-available').addClass('glyphicon glyphicon-minus-sign text-danger');
+                    $('.gra-code-error').first().text("The Secret Code can only contain letters and numbers.");
+                    return;
+                }
+                $('#gra-code-available').addClass('glyphicon glyphicon-refresh glyphicon-refresh-animate');
+                var graCodeLookupUrl = '<%=Request.ApplicationPath%>ControlRoom/Handlers/CodeAvailable.ashx?code=' + potentialCode;
+                if (!$(this).hasClass('gra-code-unique')) {
+                    graCodeLookupUrl += '&eid=' + $(this).data('eventid');
+                }
+                var jqxhr = $.ajax(graCodeLookupUrl)
+                    .done(function (data, textStatus, jqXHR) {
+                        $('#gra-code-available').removeClass();
+                        if (typeof data === "undefined" || typeof data.Available === "undefined") {
+
+                        } else {
+                            if (data.Available == true) {
+                                $('#gra-code-available').addClass('glyphicon glyphicon-ok-sign text-success');
+                            } else {
+                                $('#gra-code-available').addClass('glyphicon glyphicon-minus-sign text-danger');
+                                $('.gra-code-error').first().text("The Secret Code you have chosen is already in use.  Please select a different Secret Code.");
+                            }
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        $('#gra-code-available').removeClass();
+                    });
             });
         </script>
     </form>

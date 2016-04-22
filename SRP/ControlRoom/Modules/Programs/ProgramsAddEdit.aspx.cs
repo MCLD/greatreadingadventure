@@ -11,54 +11,79 @@ using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
 using System.Web.UI.HtmlControls;
 
-namespace GRA.SRP.ControlRoom.Modules.Programs {
-    public partial class ProgramsAddEdit : BaseControlRoomPage {
+namespace GRA.SRP.ControlRoom.Modules.Programs
+{
+    public partial class ProgramsAddEdit : BaseControlRoomPage
+    {
 
 
-        protected void Page_Load(object sender, EventArgs e) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
             MasterPage.RequiredPermission = 2200;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Program Add / Edit");
 
-            if(!IsPostBack) {
+            if (!IsPostBack)
+            {
                 SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
 
                 lblPK.Text = Session["PGM"] == null ? "" : Session["PGM"].ToString();
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                string codeName = StringResources.getStringOrNull("myaccount-program-reward-code");
+                if (!string.IsNullOrEmpty(codeName))
+                {
+                    if (!codeName.EndsWith("s"))
+                    {
+                        codeName += "s";
+                    }
+                    var codePanel = dv.FindControl("tc1").FindControl("tp6") as AjaxControlToolkit.TabPanel;
+                    if (codePanel != null)
+                    {
+                        codePanel.HeaderText = codeName;
+                        var generateBtn = codePanel.FindControl("GenerateButtonText") as Label;
+                        if (generateBtn != null)
+                        {
+                            generateBtn.Text = string.Format("Generate {0}", codeName);
+                        }
+                    }
+                }
             }
         }
 
 
-        protected void dv_DataBound(object sender, EventArgs e) {
-            if(dv.CurrentMode == DetailsViewMode.Edit) {
+        protected void dv_DataBound(object sender, EventArgs e)
+        {
+            if (dv.CurrentMode == DetailsViewMode.Edit)
+            {
                 var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("tc1").FindControl("tp1").FindControl("FileUploadCtl");
-                if(control != null)
+                if (control != null)
                     control.ProcessRender();
 
 
                 var ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeID"); //this.FindControlRecursive(this, "BranchId");
                 var lbl = (Label)dv.FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeIDLbl");
                 var i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp2").FindControl("ProgramGameID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp2").FindControl("ProgramGameIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp5").FindControl("PreTestID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp5").FindControl("PreTestIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp5").FindControl("PostTestID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp5").FindControl("PostTestIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
 
@@ -78,47 +103,56 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
             }
         }
 
-        protected void dv_DataBinding(object sender, EventArgs e) {
+        protected void dv_DataBinding(object sender, EventArgs e)
+        {
         }
 
 
-        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e) {
+        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
+        {
             string returnURL = "~/ControlRoom/Modules/Programs/ProgramList.aspx";
-            if(e.CommandName.ToLower() == "back") {
+            if (e.CommandName.ToLower() == "back")
+            {
                 Response.Redirect(returnURL);
             }
-            if(e.CommandName.ToLower() == "refresh") {
-                try {
+            if (e.CommandName.ToLower() == "refresh")
+            {
+                try
+                {
                     odsData.DataBind();
                     dv.DataBind();
                     dv.ChangeMode(DetailsViewMode.Edit);
 
                     var masterPage = (IControlRoomMaster)Master;
-                    if(masterPage != null)
+                    if (masterPage != null)
                         masterPage.PageMessage = SRPResources.RefreshOK;
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback") {
-                try {
-                    var obj = new DAL.Programs();
+            if (e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback")
+            {
+                try
+                {
+                    var program = new DAL.Programs();
                     //obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("GenNotificationFlag")).Checked;
 
-                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
-                    obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
-                    obj.TabName = ((TextBox)((DetailsView)sender).FindControl("TabName")).Text;
+                    program.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text;
+                    program.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
+                    program.TabName = ((TextBox)((DetailsView)sender).FindControl("TabName")).Text;
                     //obj.POrder = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("POrder")).Text);
-                    obj.IsActive = ((CheckBox)((DetailsView)sender).FindControl("IsActive")).Checked;
-                    obj.IsHidden = ((CheckBox)((DetailsView)sender).FindControl("IsHidden")).Checked;
-                    obj.StartDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("StartDate")).Text);
-                    obj.EndDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("EndDate")).Text);
+                    program.IsActive = ((CheckBox)((DetailsView)sender).FindControl("IsActive")).Checked;
+                    program.IsHidden = ((CheckBox)((DetailsView)sender).FindControl("IsHidden")).Checked;
+                    program.StartDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("StartDate")).Text);
+                    program.EndDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("EndDate")).Text);
                     //obj.MaxAge = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MaxAge")).Text);
                     //obj.MaxGrade = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MaxGrade")).Text);
-                    obj.LoggingStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LoggingStart")).Text);
-                    obj.LoggingEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LoggingEnd")).Text);
-                    obj.CompletionPoints = 0;
+                    program.LoggingStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LoggingStart")).Text);
+                    program.LoggingEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("LoggingEnd")).Text);
+                    program.CompletionPoints = 0;
                     //obj.ParentalConsentFlag = ((CheckBox)((DetailsView)sender).FindControl("ParentalConsentFlag")).Checked;
                     //obj.ParentalConsentText = ((HtmlTextArea)((DetailsView)sender).FindControl("ParentalConsentText")).Text;
                     //obj.PatronReviewFlag = ((CheckBox)((DetailsView)sender).FindControl("PatronReviewFlag")).Checked;
@@ -133,28 +167,30 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     //obj.BannerImage = ((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
                     //obj.RegistrationBadgeID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("RegistrationBadgeID")).SelectedValue);
 
-                    obj.AddedDate = DateTime.Now;
-                    obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
-                    obj.LastModDate = obj.AddedDate;
-                    obj.LastModUser = obj.AddedUser;
+                    program.AddedDate = DateTime.Now;
+                    program.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+                    program.LastModDate = program.AddedDate;
+                    program.LastModUser = program.AddedUser;
 
-                    if(obj.IsValid(BusinessRulesValidationMode.INSERT)) {
-                        obj.Insert();
+                    if (program.IsValid(BusinessRulesValidationMode.INSERT))
+                    {
+                        program.Insert();
 
-                        File.Copy(Server.MapPath("~/css/program/default.css"), Server.MapPath("~/css/program/" + obj.PID.ToString() + ".css"), true);
-                        File.Copy(Server.MapPath("~/images/meadow.jpg"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".jpg"), true);
-                        File.Copy(Server.MapPath("~/images/meadow@2x.jpg"), Server.MapPath("~/images/banners/" + obj.PID.ToString() + ".jpg"), true);
-                        File.Copy(Server.MapPath("~/resources/program.default.en-US.txt"), Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"), true);
+                        File.Copy(Server.MapPath("~/css/program/default.css"), Server.MapPath("~/css/program/" + program.PID.ToString() + ".css"), true);
+                        File.Copy(Server.MapPath("~/images/meadow.jpg"), Server.MapPath("~/images/banners/" + program.PID.ToString() + ".jpg"), true);
+                        File.Copy(Server.MapPath("~/images/meadow@2x.jpg"), Server.MapPath("~/images/banners/" + program.PID.ToString() + ".jpg"), true);
+                        File.Copy(Server.MapPath("~/resources/program.default.en-US.txt"), Server.MapPath("~/resources/program." + program.PID.ToString() + ".en-US.txt"), true);
                         //CompileResourceFile(Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"));
 
-                        foreach(ActivityType val in Enum.GetValues(typeof(ActivityType))) {
+                        foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
+                        {
                             var o = new ProgramGamePointConversion();
-                            o.PGID = obj.PID;
+                            o.PGID = program.PID;
                             o.ActivityTypeId = (int)val;
                             o.ActivityCount = 1;
                             o.PointCount = 0;
-                            o.AddedDate = obj.AddedDate;
-                            o.AddedUser = obj.AddedUser;
+                            o.AddedDate = program.AddedDate;
+                            o.AddedUser = program.AddedUser;
                             o.LastModDate = o.AddedDate;
                             o.LastModUser = o.AddedUser;
 
@@ -164,14 +200,15 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                                   CacheKey.PointGameConversionStub,
                                   o.PGID,
                                   o.ActivityTypeId);
-                            Cache.Remove(cacheValue);
+                            new SessionTools(Session).RemoveCache(Cache, cacheValue);
                         }
 
-                        if(e.CommandName.ToLower() == "addandback") {
+                        if (e.CommandName.ToLower() == "addandback")
+                        {
                             Response.Redirect(returnURL);
                         }
 
-                        lblPK.Text = obj.PID.ToString();
+                        lblPK.Text = program.PID.ToString();
 
                         odsData.DataBind();
                         dv.DataBind();
@@ -179,75 +216,92 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
 
                         var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageMessage = SRPResources.AddedOK;
-                    } else {
+                    }
+                    else
+                    {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                        foreach (BusinessRulesValidationMessage m in program.ErrorCodes)
+                        {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
                         message = string.Format("{0}</ul>", message);
                         masterPage.PageError = message;
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback") {
-                try {
-                    var obj = new DAL.Programs();
+            if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
+            {
+                try
+                {
+                    var program = new DAL.Programs();
                     int pk = int.Parse(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("PID")).Text);
-                    obj.Fetch(pk);
+                    program.Fetch(pk);
 
-                    obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("AdminName")).Text;
-                    obj.Title = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("Title")).Text;
-                    obj.TabName = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("TabName")).Text;
+                    program.AdminName = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("AdminName")).Text;
+                    program.Title = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("Title")).Text;
+                    program.TabName = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("TabName")).Text;
                     //obj.POrder = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("POrder")).Text);
-                    obj.IsActive = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("IsActive")).Checked;
-                    obj.IsHidden = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("IsHidden")).Checked;
-                    obj.StartDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("StartDate")).Text);
-                    obj.EndDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("EndDate")).Text);
-                    obj.MaxAge = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("MaxAge")).Text);
-                    obj.MaxGrade = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("MaxGrade")).Text);
-                    obj.LoggingStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LoggingStart")).Text);
-                    obj.LoggingEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LoggingEnd")).Text);
-                    obj.ParentalConsentFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentFlag")).Checked;
-                    obj.ParentalConsentText = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentText")).InnerHtml;
-                    obj.PatronReviewFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("PatronReviewFlag")).Checked;
-                    obj.LogoutURL = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LogoutURL")).Text;
+                    program.IsActive = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("IsActive")).Checked;
+                    program.IsHidden = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("IsHidden")).Checked;
+                    program.StartDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("StartDate")).Text);
+                    program.EndDate = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("EndDate")).Text);
+                    program.MaxAge = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("MaxAge")).Text);
+                    program.MaxGrade = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("MaxGrade")).Text);
+                    program.LoggingStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LoggingStart")).Text);
+                    program.LoggingEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LoggingEnd")).Text);
+                    program.ParentalConsentFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentFlag")).Checked;
+                    program.ParentalConsentText = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("ParentalConsentText")).InnerHtml;
+                    program.PatronReviewFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("PatronReviewFlag")).Checked;
+                    program.RequireBookDetails = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("RequireBookDetails")).Checked;
+                    program.LogoutURL = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("LogoutURL")).Text;
 
-                    obj.CompletionPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("CompletionPoints")).Text);
-                    obj.ProgramGameID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("ProgramGameID")).Text);
+                    program.CompletionPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("CompletionPoints")).Text);
+                    program.ProgramGameID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("ProgramGameID")).Text);
                     //obj.ProgramGameID = 0;
-                    obj.RegistrationBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeID")).Text);
+                    program.RegistrationBadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeID")).Text);
                     //obj.RegistrationBadgeID = 0;
-                    obj.HTML1 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("HTML1")).InnerHtml;
-                    obj.HTML2 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("HTML2")).InnerHtml;
+                    program.HTML1 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("HTML1")).InnerHtml;
+                    program.HTML2 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("HTML2")).InnerHtml;
 
-                    obj.HTML3 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp3").FindControl("HTML3")).InnerHtml;
-                    obj.HTML4 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp3").FindControl("HTML4")).InnerHtml;
+                    program.HTML3 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp3").FindControl("HTML3")).InnerHtml;
+                    program.HTML4 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp3").FindControl("HTML4")).InnerHtml;
 
-                    obj.HTML5 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML5")).InnerHtml;
-                    obj.HTML6 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML6")).InnerHtml;
+                    program.HTML5 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML5")).InnerHtml;
+                    program.HTML6 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML6")).InnerHtml;
 
-                    obj.BannerImage= string.Empty;//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
+                    program.BannerImage = string.Empty;//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
 
-                    obj.PreTestEndDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestEndDate")).Text.SafeToDateTime();
-                    obj.PostTestStartDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestStartDate")).Text.SafeToDateTime();
-                    obj.PreTestID = ((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestID")).SelectedValue.SafeToInt();
-                    obj.PostTestID = ((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestID")).SelectedValue.SafeToInt();
-                    obj.PreTestMandatory = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestMandatory")).Checked;
+                    program.PreTestEndDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestEndDate")).Text.SafeToDateTime();
+                    program.PostTestStartDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestStartDate")).Text.SafeToDateTime();
+                    program.PreTestID = ((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestID")).SelectedValue.SafeToInt();
+                    program.PostTestID = ((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestID")).SelectedValue.SafeToInt();
+                    program.PreTestMandatory = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestMandatory")).Checked;
 
+                    program.GoalDefault = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalDefault")).Text);
+                    program.GoalMin = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalMin")).Text);
+                    program.GoalMax = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalMax")).Text);
+                    program.GoalIntervalId = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalIntervalId")).SelectedValue);
 
-                    obj.LastModDate = DateTime.Now;
-                    obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+                    program.HideSchoolInRegistration = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("HideSchoolInRegistration")).Checked;
 
-                    if(obj.IsValid(BusinessRulesValidationMode.UPDATE)) {
-                        obj.Update();
+                    program.LastModDate = DateTime.Now;
+                    program.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
+
+                    if (program.IsValid(BusinessRulesValidationMode.UPDATE))
+                    {
+                        program.Update();
 
                         var rptr = ((Repeater)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("rptr"));
-                        if(rptr != null) {
-                            foreach(RepeaterItem item in rptr.Items) {
+                        if (rptr != null)
+                        {
+                            foreach (RepeaterItem item in rptr.Items)
+                            {
                                 var PGCID = int.Parse(((TextBox)item.FindControl("PGCID")).Text);
                                 var ActivityCountTxt = ((TextBox)item.FindControl("ActivityCount")).Text;
                                 var PointCountTxt = ((TextBox)item.FindControl("PointCount")).Text;
@@ -256,25 +310,26 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                                 int.TryParse(PointCountTxt, out PointCount);
 
                                 var o = ProgramGamePointConversion.FetchObject(PGCID);
-                                if(o == null)
+                                if (o == null)
                                     continue;
                                 o.ActivityCount = ActivityCount;
                                 o.PointCount = PointCount;
-                                o.LastModDate = obj.LastModDate;
-                                o.LastModUser = obj.LastModUser;
+                                o.LastModDate = program.LastModDate;
+                                o.LastModUser = program.LastModUser;
                                 o.Update();
 
                                 string cacheValue = string.Format("{0}.{1}.{2}",
                                                                   CacheKey.PointGameConversionStub,
                                                                   o.PGID,
                                                                   o.ActivityTypeId);
-                                Cache.Remove(cacheValue);
+                                new SessionTools(Session).RemoveCache(Cache, cacheValue);
                             }
 
                         }
 
 
-                        if(e.CommandName.ToLower() == "saveandback") {
+                        if (e.CommandName.ToLower() == "saveandback")
+                        {
                             Response.Redirect(returnURL);
                         }
 
@@ -284,21 +339,27 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
 
                         var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageMessage = SRPResources.SaveOK;
-                    } else {
+                    }
+                    else
+                    {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                        foreach (BusinessRulesValidationMessage m in program.ErrorCodes)
+                        {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
                         message = string.Format("{0}</ul>", message);
                         masterPage.PageError = message;
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "gen") {
+            if (e.CommandName.ToLower() == "gen")
+            {
 
                 int PK = int.Parse(lblPK.Text);
                 var ds = ProgramCodes.GetProgramStats(PK);
@@ -307,17 +368,18 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                 var txt = (TextBox)dv.FindControl("tc1").FindControl("tp6").FindControl("txtGen");
                 int addl = int.Parse(txt.Text);
 
-                ProgramCodes.Generate(TotalCodes + 1, TotalCodes + addl, PK);
+                string result = ProgramCodes.Generate(TotalCodes + 1, TotalCodes + addl, PK);
 
                 odsData.DataBind();
                 dv.DataBind();
                 dv.ChangeMode(DetailsViewMode.Edit);
 
                 var masterPage = (IControlRoomMaster)Master;
-                masterPage.PageMessage = "Additional codes generated!";
+                masterPage.PageMessage = result;
 
             }
-            if(e.CommandName.ToLower() == "exp") {
+            if (e.CommandName.ToLower() == "exp")
+            {
 
                 int PK = int.Parse(lblPK.Text);
 
@@ -343,7 +405,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
         //protected void CompileResourceFile(string resourceFile)
         //{
         //    Process objProcess = new Process();
-        //    //objProcess.StartInfo.FileName = @"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin\x64\resgen.exe"; 
+        //    //objProcess.StartInfo.FileName = @"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin\x64\resgen.exe";
         //    objProcess.StartInfo.FileName = @"C:\temp\resgen.exe";
         //    objProcess.StartInfo.FileName = (Server.MapPath("~/Resources/") + "\\resgen.exe").Replace("\\\\", "\\");
         //    objProcess.StartInfo.UseShellExecute = false;
@@ -354,4 +416,3 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
         //}
     }
 }
-

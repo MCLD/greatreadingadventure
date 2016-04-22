@@ -20,7 +20,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             
             if (!IsPostBack)
             {
-                MasterPage.PageTitle = string.Format("{0}", "Finisher Statistics Report");
+                MasterPage.PageTitle = string.Format("{0}", "Achiever Statistics Report");
 
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
 

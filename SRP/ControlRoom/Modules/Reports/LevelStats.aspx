@@ -5,7 +5,6 @@ CodeBehind="LevelStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.Le
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {
@@ -112,7 +111,7 @@ CodeBehind="LevelStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.Le
         <tr style="font-weight: bold; border: 0px solid silver; ">
             <th align="left" width="50%">Program</th>        
             <td align="right" width="25%">Level</td>
-            <td align="right" >FinisherCount</td>  
+            <td align="right" >AchieverCount</td>  
         </tr>    
 
         <asp:Repeater runat="server" ID="rptr" >

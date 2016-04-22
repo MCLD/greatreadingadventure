@@ -6,7 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
-    <asp:PlaceHolder ID="MetaDescriptionPlaceholder" runat="server" />
     <title runat="server"></title>
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
@@ -28,21 +27,15 @@
     <meta name="theme-color" content="#ffffff">
     <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
     <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
     <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
-    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.pack.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-        function focusFirstField() {
-            $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
-        }
-    </script>
     <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>
 <body class="page">
@@ -55,7 +48,8 @@
                     </button>
                     <a class="navbar-brand" href="~" runat="server">
                         <%=this.SystemNameText %></a>
-                    <%if(!this.CurrentPage.IsLoggedIn && !string.IsNullOrEmpty(this.SloganText)) { %>
+                    <%if (!this.CurrentPage.IsLoggedIn && !string.IsNullOrEmpty(this.SloganText))
+                        { %>
                     <p class="navbar-text hidden-xs" runat="server" style="margin-left: 3em;">
                         <em><%=this.SloganText%></em>
                     </p>
@@ -63,45 +57,46 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <%if(!this.CurrentPage.IsLoggedIn) { %>
+                        <%if (!this.CurrentPage.IsLoggedIn)
+                            { %>
                         <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
                             <span class="visible-xs-inline">Badges</span></a></li>
+                        <li id="challengesAnonNav" runat="server"><a href="~/Challenges/" class="menu-item" runat="server">Challenges</a></li>
                         <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
-                        <li class="<%=this.RegisterPageActive %>"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
+                        <li runat="server" id="LoggedOutRegister"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
                             <asp:Label runat="server">navigation-button-register</asp:Label></a></li>
-                        <li class="<%=this.LoginPageActive %>"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
+                        <li runat="server" id="LoggedOutLogin"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
                             <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
                         <%
-                            } else {
+                            }
+                            else
+                            {
                         %>
-                        <li class="<%=this.DashboardPageActive %>"><a href="~" class="menu-item" runat="server">
-                            <span class="glyphicon glyphicon-book hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
-                            <span class="glyphicon glyphicon-book visible-xs-inline"></span>
+                        <li runat="server" id="homeNav"><a href="~" class="menu-item" runat="server">
+                            <span class="glyphicon glyphicon-home hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
+                            <span class="glyphicon glyphicon-home visible-xs-inline"></span>
                             <span class="visible-xs-inline">Home</span></a></li>
-                        <li class="<%=this.MailSectionActive %>"><a href="~/Mail/" class="menu-item" runat="server">
+                        <li runat="server" id="mailNav"><a href="~/Mail/" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-envelope hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Mail"></span>
                             <span class="glyphicon glyphicon-envelope visible-xs-inline"></span>
-                            <span class="visible-xs-inline"> Mail</span>
-                            <% if(!string.IsNullOrEmpty(this.Unread) && this.Unread != "0") { %>
-                            <span id="unreadBadge" class="label label-primary label-as-badge text-primary animated bounceIn"><% =this.Unread %></span>
-                            <% } %>
+                            <span class="visible-xs-inline">Mail</span>
+                            <span id="unreadBadge" style="display: none;" class="label label-primary label-as-badge text-primary"></span>
                         </a></li>
                         <li id="badgesNav" runat="server"><a href="~/Badges/MyBadges.aspx" class="menu-item" runat="server">
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
-                            <span class="visible-xs-inline"> Badges</span></a></li>
+                            <span class="visible-xs-inline">Badges</span></a></li>
                         <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" runat="server">Adventures</a></li>
                         <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" runat="server">Challenges</a></li>
                         <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
                         <li id="offersNav" runat="server"><a href="~/Offers/" class="menu-item" runat="server">Offers</a></li>
 
-                        <li class="<%=this.AccountSectionActive %>"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server">
+                        <li runat="server" id="accountNav"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server">
                             <span class="glyphicon glyphicon-user hidden-xs" data-toggle="tooltip" data-placement="bottom" title="My Account"></span>
                             <span class="glyphicon glyphicon-user visible-xs-inline"></span>
-                            <span class="visible-xs-inline"> My Account</span></a></li>
-
+                            <span class="visible-xs-inline">My Account</span></a></li>
                         <li><a href="~/Logout.aspx" id="lnkLogout" runat="server">
                             <asp:Label runat="server">navigation-button-logout</asp:Label></a></li>
                         <% } %>
@@ -114,7 +109,9 @@
                 <div class="col-xs-8">
                     <span class="lead"><%=this.SystemNameText %></span>
                 </div>
-                <div class="col-xs-4"><em><%=this.SloganText%></em></div>
+                <div class="col-xs-4">
+                    <div style="display: inline-block;" class="pull-right"><em><%=this.SloganText%></em></div>
+                </div>
             </div>
         </div>
 
@@ -129,6 +126,7 @@
                             <div class="col-xs-12" id="badgePopupImageContainer">
                             </div>
                             <div id="badgePopupEarn" class="col-sm-10 col-sm-offset-1 margin-1em-top">
+                                <span id="badgePopupEarnWhen" class="text-primary text-center"></span>
                                 Ways to earn this badge:
                                     <div class="margin-halfem-top">
                                         <ul id="badgePopupEarnList">
@@ -139,6 +137,9 @@
                     </div>
                     <div class="modal-footer">
                         <div class="pull-right clearfix">
+                            <button class="btn btn-default" type="button" id="badgePopupShare">
+                                <span class="glyphicon glyphicon-share"></span>
+                                Share this</button>
                             <button class="btn btn-default" type="button" id="badgePopupPrint"><span class="glyphicon glyphicon-print"></span></button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
@@ -230,7 +231,8 @@
             </asp:ContentPlaceHolder>
         </div>
 
-        <% if(!string.IsNullOrEmpty(this.UpsellText)) { %>
+        <% if (!string.IsNullOrEmpty(this.UpsellText))
+            { %>
         <div id="content-below" class="container hidden-print">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 upsell text-center">
@@ -239,7 +241,8 @@
             </div>
         </div>
         <% } %>
-        <% if(!string.IsNullOrEmpty(this.CopyrightStatementText)) { %>
+        <% if (!string.IsNullOrEmpty(this.CopyrightStatementText))
+            { %>
         <footer class="footer hidden-print">
             <div class="container">
                 <p class="text-muted">
@@ -249,22 +252,30 @@
         </footer>
         <% } %>
     </form>
-    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
-    </asp:ContentPlaceHolder>
     <script>
-        $(function () {
-            if ("<%=this.ShowLoginPopup%>" == "True") {
-                showLoginPopup();
-            }
-        });
+        function updateUnreadCount(newUnreadCount) {
+            var oldUnreadCount = $('#unreadBadge').text();
+            $('#unreadBadge').removeClass('animated bounceIn');
 
-        $('#loginPopupPanel').on('shown.bs.modal', function () {
-            if ($('#loginPopupUsername').val().length > 0) {
-                $('#loginPopupPassword').focus();
+            if (newUnreadCount != '' && newUnreadCount != 0 && newUnreadCount != oldUnreadCount) {
+                $('#unreadBadge').text(newUnreadCount);
+                $('#unreadBadge').addClass('animated bounceIn');
+                $('#unreadBadge').show();
             } else {
-                $('#loginPopupUsername').focus();
+                $('#unreadBadge').text('');
+                $('#unreadBadge').hide();
             }
-        });
+        }
+
+        function refreshUnreadCount() {
+            var jqxhr = $.ajax('<%=Request.ApplicationPath%>Handlers/UnreadCount.ashx')
+            .done(function (data, textStatus, jqXHR) {
+                if (data.Success) {
+                    updateUnreadCount(data.UnreadMessages);
+                }
+            });
+            return false;
+        }
 
         function showLoginPopup() {
             var elems = $("div[id$='loginPopupPanel']");
@@ -282,25 +293,6 @@
             $("#loginPopupErrorMessage").hide();
             return false;
         }
-
-        $().ready(function () {
-            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
-                showLoginPopup();
-                $("#loginPopupUsernameErrorGlyph").show();
-                $("#loginPopupPasswordErrorGlyph").show();
-                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
-                    $("#loginPopupLoginGroup").toggleClass("has-error");
-                }
-                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
-                    $("#loginPopupPasswordGroup").toggleClass("has-error");
-                }
-                $("#loginPopupErrorMessage").show();
-            }
-
-            if ('<%=this.EarnedBadges%>'.trim() != '') {
-                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
-            }
-        });
 
         function passwordPopupValidateLogin() {
             var valid = true;
@@ -346,6 +338,7 @@
             }
             return valid;
         }
+
         function HideTooltipShowBadgeInfo(sender, badgeId) {
             if (sender) {
                 if ($(sender).tooltip) {
@@ -361,7 +354,7 @@
                 if (!data.Success) {
                     alert("Couldn't show badge information: " + data.ErrorMessage);
                 } else {
-                    var fullTitle = data.UserName + ' Badge';
+                    var fullTitle = 'Badge: ' + data.UserName;
                     $('#badgePopupTitle').text(fullTitle);
                     var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
                     $('#badgePopupImageContainer').empty();
@@ -375,10 +368,22 @@
                             $('#badgePopupEarnList').append('<li>' + value + '</li>');
                         });
                     }
+                    if (data.DateEarned) {
+                        if (data.DateEarned.length == 0) {
+                            $('#badgePopupEarnWhen').hide();
+                        } else {
+                            $('#badgePopupEarnWhen').html('<p><strong>You earned this badge on ' + data.DateEarned + '!</strong></p>');
+                            $('#badgePopupEarnWhen').show();
+                        }
+                    } else {
+                        $('#badgePopupEarnWhen').hide();
+                    }
                     $('#badgePopupPrint').click(function () {
                         location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId + "&Print=1";
                     });
-
+                    $('#badgePopupShare').click(function () {
+                        location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId;
+                    })
                     $('#badgePopupPanel').modal('show');
                 }
             })
@@ -419,15 +424,22 @@
                         content.push('<div class="' + spacingClass + ' text-center">')
                         content.push('<span class="lead">' + value.UserName + '</span>');
                         content.push('<img src="' + value.ImageUrl + '" class="center-block thumbnail" alt="' + value.UserName + ' Badge" />');
+
+                        if (value.AvatarMessage.trim().length > 0) {
+                            content.push('<p class="text-center"><b>' + value.AvatarMessage + '</b></p>');
+                        }
+
                         if (value.EarnedMessage.trim().length > 0) {
                             content.push('<p class="text-center">' + value.EarnedMessage + '</p>');
                         }
+
                         content.push('</div>');
                     });
                     content.push('</div>');
                     $('#badgeAwardPopupContent').append(content.join(""));
                     content = [];
                     $('#badgeAwardPopupPanel').modal('show');
+                    refreshUnreadCount();
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
@@ -435,6 +447,55 @@
             });
             return false;
         }
+
+        function focusFirstField() {
+            $("#mainForm input:text, #mainForm textarea, #mainForm input:password").first().focus();
+        }
+
+        $(function () {
+            if ("<%=this.ShowLoginPopup%>" == "True") {
+                showLoginPopup();
+            }
+
+            updateUnreadCount('<%=this.Unread %>');
+            $('[data-toggle="tooltip"]').tooltip();
+            $(".fancybox").fancybox({
+                openEffect: "elastic",
+                closeEffect: "fade",
+                helpers: {
+                    overlay: {
+                        locked: false
+                    }
+                }
+            });
+
+            $('#loginPopupPanel').on('shown.bs.modal', function () {
+                if ($('#loginPopupUsername').val().length > 0) {
+                    $('#loginPopupPassword').focus();
+                } else {
+                    $('#loginPopupUsername').focus();
+                }
+            });
+
+            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
+                showLoginPopup();
+                $("#loginPopupUsernameErrorGlyph").show();
+                $("#loginPopupPasswordErrorGlyph").show();
+                if (!$("#loginPopupLoginGroup").hasClass("has-error")) {
+                    $("#loginPopupLoginGroup").toggleClass("has-error");
+                }
+                if (!$("#loginPopupPasswordGroup").hasClass("has-error")) {
+                    $("#loginPopupPasswordGroup").toggleClass("has-error");
+                }
+                $("#loginPopupErrorMessage").show();
+            }
+
+            if ('<%=this.EarnedBadges%>'.trim() != '') {
+                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
+            }
+        });
     </script>
+    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
+    </asp:ContentPlaceHolder>
 </body>
 </html>

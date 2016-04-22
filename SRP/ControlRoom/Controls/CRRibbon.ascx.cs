@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -46,23 +47,32 @@ namespace GRA.SRP.ControlRoom {
         public string GetLinks(List<RibbonLink> links) {
 
             if (links.Count <= 4) {
-                string slinks = "<ul class=\"cntUL0\" style=\"margin-bottom: 0px\">";
-
+                StringBuilder slinks = new StringBuilder("<ul class=\"cntUL0\" style=\"margin-bottom: 0px\">");
                 foreach (RibbonLink l in links) {
-                    slinks = slinks + "<li class=\"cntSqbulletedlist\"><a href=\"" +
-                            l.Url + "\">" + l.Name + "</a></li> ";
+                    if (l.Url.StartsWith("http") || l.NewWindow == true)
+                    {
+                        slinks.AppendFormat("<li class=\"cntSqbulletedlist\"><a href=\"{0}\" target=\"_blank\">{1}</a></li>",
+                        l.Url,
+                        l.Name);
+                    }
+                    else {
+                        slinks.AppendFormat("<li class=\"cntSqbulletedlist\"><a href=\"{0}\">{1}</a></li>",
+                        l.Url,
+                        l.Name);
+                    }
                 }
-                slinks = slinks + "</ul>";
-                return slinks;
+                slinks.Append("</ul>");
+                return slinks.ToString();
             } else {
 
-                string slinks = "&nbsp;<select name='aList' onchange='if (this.options[this.selectedIndex].value != \"\") document.location.href=this.options[this.selectedIndex].value;'><option value=''>[Make a Selection]</option>";
+                StringBuilder slinks = new StringBuilder("&nbsp;<select name='aList' onchange='if (this.options[this.selectedIndex].value != \"\") document.location.href=this.options[this.selectedIndex].value;'><option value=''>[Make a Selection]</option>");
                 foreach (RibbonLink l in links) {
-                    slinks = slinks + "<option   value='" +
-                            l.Url + "'>" + l.Name + "</option> ";
+                    slinks.AppendFormat("<option value='{0}'>{1}</option>",
+                        l.Url,
+                        l.Name);
                 }
-                slinks = slinks + "</select>";
-                return slinks;
+                slinks.Append("</select>");
+                return slinks.ToString();
             }
         }
 

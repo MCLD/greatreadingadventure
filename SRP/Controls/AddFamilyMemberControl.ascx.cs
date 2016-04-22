@@ -237,8 +237,6 @@ namespace GRA.SRP.Controls {
                     ? ((TextBox)rptr.Items[0].FindControl("Custom5")).Text
                     : ((DropDownList)rptr.Items[0].FindControl("Custom5DD")).SelectedValue;
 
-                p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)rptr.Items[0].FindControl("AvatarID")).Value);
-
                 if(p.IsValid(BusinessRulesValidationMode.INSERT)) {
                     p.Insert();
 

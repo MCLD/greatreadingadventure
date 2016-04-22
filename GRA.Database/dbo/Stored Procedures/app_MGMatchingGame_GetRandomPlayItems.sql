@@ -24,13 +24,13 @@ CREATE TABLE #Temp2 (
 	TileImage VARCHAR(255)
 	)
 
-SELECT @SQL = 'insert into #Temp1 
-	select top ' + convert(VARCHAR, @NumItems) + ' NEWID() as ID, 
+SELECT @SQL = 'insert into #Temp1
+	select top ' + convert(VARCHAR, @NumItems) + ' NEWID() as ID,
 		[MAGTID], [MAGID], [MGID], [Tile1UseMedium], [Tile1UseHard], [Tile2UseMedium], [Tile2UseHard], [Tile3UseMedium],[Tile3UseHard]   from  dbo.MGMatchingGameTiles Where MAGID = ' + convert(VARCHAR, @MAGID) + '  order by id'
 
 EXEC (@SQL)
 
---select * from #Temp1 
+--select * from #Temp1
 INSERT INTO #Temp2
 SELECT MAGTID,
 	('t1_' + CONVERT(VARCHAR, MAGTID) + '.png') AS TileImage

@@ -13,6 +13,15 @@ namespace GRA.SRP.Events {
     public partial class Details {
         
         /// <summary>
+        /// Metadata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder Metadata;
+        
+        /// <summary>
         /// eventDetails control.
         /// </summary>
         /// <remarks>
@@ -58,13 +67,22 @@ namespace GRA.SRP.Events {
         protected global::System.Web.UI.WebControls.Label eventWhere;
         
         /// <summary>
-        /// eventShortDescription control.
+        /// eventWhereLink control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label eventShortDescription;
+        protected global::System.Web.UI.WebControls.HyperLink eventWhereLink;
+        
+        /// <summary>
+        /// eventWhereMapLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink eventWhereMapLink;
         
         /// <summary>
         /// eventDescription control.
@@ -157,6 +175,42 @@ namespace GRA.SRP.Events {
         protected global::System.Web.UI.WebControls.Label eventCustomValue3;
         
         /// <summary>
+        /// eventLinkPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel eventLinkPanel;
+        
+        /// <summary>
+        /// ExternalLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink ExternalLink;
+        
+        /// <summary>
+        /// TwitterShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink TwitterShare;
+        
+        /// <summary>
+        /// FacebookShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink FacebookShare;
+        
+        /// <summary>
         /// eventBackLink control.
         /// </summary>
         /// <remarks>
@@ -164,5 +218,14 @@ namespace GRA.SRP.Events {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink eventBackLink;
+        
+        /// <summary>
+        /// Microdata control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Microdata;
     }
 }

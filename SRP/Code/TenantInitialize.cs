@@ -8,6 +8,7 @@ using SRP_DAL;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.Communications;
+using GRA.Tools;
 
 namespace GRA.SRP.ControlRoom {
     public class TenantInitialize {
@@ -36,7 +37,7 @@ namespace GRA.SRP.ControlRoom {
 
             // TODO security - this should not email the password in cleartext
 
-            string baseUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + HttpContext.Current.Request.ApplicationPath.TrimEnd('/');
+            string baseUrl = WebTools.GetBaseUrl(HttpContext.Current.Request);
             var EmailBody =
                 "<h1>Dear " + u.FirstName + ",</h1><br><br>Your account has been created and has full administrative access to your organization's reading rogram. <br>This is your current account information. Please make sure you reset your password as soon as you are able to log back in.<br><br>" +
                 "Username: " + u.Username + "<br>Password: " + newPassword + "<br><br>If you have any questions regarding your account please contact " + SRPSettings.GetSettingValue("ContactName") +
@@ -209,35 +210,32 @@ namespace GRA.SRP.ControlRoom {
         }
 
         public static void InitializeAvatars(int TID, int MTID) {
-            var ds = Avatar.GetAll(MTID);
+            var ds = AvatarPart.GetAll(MTID);
             foreach(DataRow r in ds.Tables[0].Rows) {
-                var SrcPK = Convert.ToInt32(r["AID"]);
+                var SrcPK = Convert.ToInt32(r["APID"]);
 
-                var MappedFolder = HttpContext.Current.Server.MapPath("~/Images/Avatars/");
+                var MappedFolder = HttpContext.Current.Server.MapPath("~/Images/AvatarParts/");
 
-                var MappedPK = GetMappedPKbyOriginalPK("avatar", TID, SrcPK);
+                var MappedPK = GetMappedPKbyOriginalPK("avatarpart", TID, SrcPK);
                 if(MappedPK < 0) {
-                    var srcObj = Avatar.FetchObject(SrcPK);
-                    /* ------------------------------------*/
-                    srcObj.AID = 0;
+                    var srcObj = AvatarPart.FetchObject(SrcPK);
+
+                    srcObj.APID = 0;
                     srcObj.TenID = TID;
-                    /* ------------------------------------*/
-                    srcObj.AddedDate = srcObj.LastModDate = DateTime.Now;
+
+            srcObj.AddedDate = srcObj.LastModDate = DateTime.Now;
                     srcObj.AddedUser = srcObj.LastModUser = ((SRPUser)HttpContext.Current.Session[SessionData.UserProfile.ToString()]).Username;
-                    /* ------------------------------------*/
-                    srcObj.Insert();
+
+            srcObj.Insert();
 
                     if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png")))
                         System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", srcObj.AID, "png"), true);
+                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "", srcObj.APID, "png"), true);
                     if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", SrcPK, "png")))
                         System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", srcObj.AID, "png"), true);
-                    if(File.Exists(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", SrcPK, "png")))
-                        System.IO.File.Copy(string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", SrcPK, "png"),
-                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "md_", srcObj.AID, "png"), true);
+                                        string.Format("{0}{1}{2}{3}.{4}", MappedFolder, "\\", "sm_", srcObj.APID, "png"), true);
 
-                    InsertInitializationTrackingRecord("avatar", TID, srcObj.AID, SrcPK);
+                    InsertInitializationTrackingRecord("avatarpart", TID, srcObj.APID, SrcPK);
                 }
             }
         }
@@ -1054,17 +1052,17 @@ namespace GRA.SRP.ControlRoom {
                 Response.Buffer = false;
                 Response.Write("<!--");
             }
-            var WorkFolder = HttpContext.Current.Server.MapPath("~/Images/Avatars/");
+            var WorkFolder = HttpContext.Current.Server.MapPath("~/Images/AvatarParts/");
+
             foreach(var f in System.IO.Directory.GetFiles(WorkFolder, "sm_*.png")) {
                 var sID = f.Replace(WorkFolder, "").Replace(".png", "").Replace("sm_", "");
                 var ID = -1;
                 int.TryParse(sID, out ID);
                 if(ID > 0) {
-                    var mg = Avatar.FetchObject(ID);
+                    var mg = AvatarPart.FetchObject(ID);
                     if(mg == null) {
                         File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "", ID, "png"));
                         File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "sm_", ID, "png"));
-                        File.Delete(string.Format("{0}{1}{2}{3}.{4}", WorkFolder, "\\", "md_", ID, "png"));
                     }
                 }
                 Response.Write(".");

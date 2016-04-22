@@ -44,7 +44,7 @@
             </div>
             <asp:Panel ID="Panel0" runat="server" Visible="False" CssClass="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
-                    <div class="alert alert-info">
+                    <div class="alert alert-success">
                         <span class="glyphicon glyphicon-info-sign"></span>
                         <asp:Label ID="Label3" runat="server" Text="registration-create-family-accounts"></asp:Label>
                     </div>
@@ -140,6 +140,14 @@
                     </asp:Panel>
 
                     <asp:Panel ID="Panel3" runat="server" Visible="False">
+                        <asp:Panel runat="server" ID="RegistrationEmailNotRequiredNote" CssClass="row">
+                            <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+                                <div class="alert alert-info">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <asp:Label runat="server" Text="registration-email-not-required-note"></asp:Label>
+                                </div>
+                            </div>
+                        </asp:Panel>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
                                 <asp:Label runat="server" Text="registration-form-program"></asp:Label>
@@ -426,7 +434,7 @@
 
                     <asp:Panel ID="Panel5" runat="server" Visible="False">
                         <asp:TextBox ID="Panel5Visibility" runat="server"
-                            Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt")   ? "1" : "0") %>'
+                            Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt") || (bool)Eval("Goal_Prompt")   ? "1" : "0") %>'
                             Visible="false"></asp:TextBox>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("District_Prompt")%>'>
@@ -445,10 +453,10 @@
                             <div class="col-sm-3 form-control-static">
                                 <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DistrictReq"></span>
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:CompareValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                                    ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                                     SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                             </div>
                         </div>
@@ -488,73 +496,77 @@
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
                         </div>
+                        <asp:HiddenField runat="server"
+                            ID="ASchoolFieldIsRequired"
+                            Value='<%# (bool)Eval("SDistrict_Req") || (bool)Eval("SchoolType_Req") || (bool)Eval("SchoolName_Req") %>' />
+                        <asp:Panel runat="server" ID="SchoolArea">
+                            <div class="form-group" runat="server" visible='<%# (bool)Eval("SDistrict_Prompt")%>'>
+                                <label class="col-sm-3 control-label">
+                                    <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
+                                </label>
+                                <div class="col-sm-6">
+                                    <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Description" DataValueField="CID"
+                                        AppendDataBoundItems="True"
+                                        AutoPostBack="true" CssClass="form-control required-asterisk-dropdown" data-asterisk="SDistrictReq"
+                                        OnSelectedIndexChanged="SDistrict_SelectedIndexChanged">
+                                        <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-sm-3 form-control-static">
+                                    <span runat="server" visible='<%# Eval("SDistrict_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SDistrictReq"></span>
+                                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
+                                        ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
+                                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                                    <asp:CompareValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
+                                        ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
+                                        SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
+                                </div>
+                            </div>
 
-                        <div class="form-group" runat="server" visible='<%# (bool)Eval("SDistrict_Prompt")%>'>
-                            <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
-                            </label>
-                            <div class="col-sm-6">
-                                <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Description" DataValueField="CID"
-                                    AppendDataBoundItems="True"
-                                    AutoPostBack="true" CssClass="form-control required-asterisk-dropdown" data-asterisk="SDistrictReq"
-                                    OnSelectedIndexChanged="SDistrict_SelectedIndexChanged">
-                                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                                </asp:DropDownList>
+                            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolType_Prompt")%>'>
+                                <label class="col-sm-3 control-label">
+                                    <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
+                                </label>
+                                <div class="col-sm-6">
+                                    <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
+                                        AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="SchoolTypeReq"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="SchoolType_SelectedIndexChanged">
+                                        <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-sm-3 form-control-static">
+                                    <span runat="server" visible='<%# Eval("SchoolType_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolTypeReq"></span>
+                                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
+                                        ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
+                                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                                    <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
+                                        ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
+                                        SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
+                                </div>
                             </div>
-                            <div class="col-sm-3 form-control-static">
-                                <span runat="server" visible='<%# Eval("SDistrict_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SDistrictReq"></span>
-                                <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
-                                    ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
-                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
-                                <asp:CompareValidator runat="server" Enabled='<%# Eval("SDistrict_Req") %>'
-                                    ControlToValidate="SDistrict" Display="Dynamic" ErrorMessage="School District is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
-                            </div>
-                        </div>
 
-                        <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolType_Prompt")%>'>
-                            <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
-                            </label>
-                            <div class="col-sm-6">
-                                <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
-                                    AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="SchoolTypeReq"
-                                    AutoPostBack="true"
-                                    OnSelectedIndexChanged="SchoolType_SelectedIndexChanged">
-                                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                                </asp:DropDownList>
+                            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolName_Prompt")%>'>
+                                <label class="col-sm-3 control-label">
+                                    <asp:Label runat="server" Text="registration-form-school"></asp:Label>
+                                </label>
+                                <div class="col-sm-6">
+                                    <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Description" DataValueField="CID"
+                                        AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="SchoolNameReq">
+                                        <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-sm-3 form-control-static">
+                                    <span runat="server" visible='<%# Eval("SchoolName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolNameReq"></span>
+                                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
+                                        ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
+                                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                                    <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
+                                        ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
+                                        SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
+                                </div>
                             </div>
-                            <div class="col-sm-3 form-control-static">
-                                <span runat="server" visible='<%# Eval("SchoolType_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolTypeReq"></span>
-                                <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
-                                    ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
-                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
-                                <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolType_Req") %>'
-                                    ControlToValidate="SchoolType" Display="Dynamic" ErrorMessage="School type is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
-                            </div>
-                        </div>
-
-                        <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolName_Prompt")%>'>
-                            <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-school"></asp:Label>
-                            </label>
-                            <div class="col-sm-6">
-                                <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Description" DataValueField="CID"
-                                    AppendDataBoundItems="True" CssClass="form-control required-asterisk-dropdown" data-asterisk="SchoolNameReq">
-                                    <asp:ListItem Value="0" Text="[Select a Value]"></asp:ListItem>
-                                </asp:DropDownList>
-                            </div>
-                            <div class="col-sm-3 form-control-static">
-                                <span runat="server" visible='<%# Eval("SchoolName_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm SchoolNameReq"></span>
-                                <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
-                                    ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
-                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
-                                <asp:CompareValidator runat="server" Enabled='<%# Eval("SchoolName_Req") %>'
-                                    ControlToValidate="SchoolName" Display="Dynamic" ErrorMessage="School name is required"
-                                    SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
-                            </div>
-                        </div>
+                        </asp:Panel>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Teacher_Prompt")%>'>
                             <label class="col-sm-3 control-label">
@@ -584,6 +596,35 @@
                                     ControlToValidate="GroupTeamName" Display="Dynamic" ErrorMessage="Group/team name is required"
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
                             </div>
+                        </div>
+
+                        <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Prompt")%>'>
+                            <label class="col-sm-3 control-label">
+                                <asp:Label ID="GoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Label>
+                            </label>
+                            <div class="col-sm-6">
+                                <asp:TextBox ID="Goal" runat="server" CssClass="form-control required-asterisk" data-asterisk="GoalReq"></asp:TextBox>
+                            </div>
+                            <div class="col-sm-3 form-control-static">
+                                <span runat="server" visible='<%# Eval("Goal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GoalReq"></span>
+                                <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
+                                    ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
+                                    SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                                <asp:RangeValidator
+                                    ID="GoalRangeValidator"
+                                    MinimumValue="0"
+                                    MaximumValue="100"
+                                    ControlToValidate="Goal"
+                                    Display="Dynamic"
+                                    Type="Integer"
+                                    EnableClientScript="true"
+                                    ErrorMessage='Invalid range for Goal'
+                                    runat="server"
+                                    Text='invalid range'
+                                    EnableTheming="True"
+                                    SetFocusOnError="True" />
+                            </div>
+
                         </div>
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("LiteracyLevel1_Prompt")%>'>
@@ -840,11 +881,13 @@
                                     <asp:Label runat="server" Text="registration-form-consent"></asp:Label>
                                 </label>
                                 <label class="col-sm-9 form-control-static">
-                                    <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
-                                    <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
+                                    <div class="row">
+                                        <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
+                                        <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                                        <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
+                                    </div>
                                 </label>
                                 <div class="col-sm-9 col-sm-offset-3">
-                                    <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                     <asp:CustomValidator
                                         ClientValidationFunction="ParentPermFlagValidation"
                                         EnableClientScript="true"
@@ -924,26 +967,6 @@
                                     ClientValidationFunction="ClientValidate">password does not match</asp:CustomValidator>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-avatar"></asp:Label></label>
-                            <div class="col-sm-6">
-                                <select id="ddAvatar"></select>
-                                <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                                <script>
-                                    var ddData = <% =Avatar.GetJSONForSelection(1) %>;
-                                    $('#ddAvatar').ddslick({
-                                        data: ddData,
-                                        background: "transparent",
-                                        selectText: "Select an avatar",
-                                        onSelected: function (data) {
-                                            $('.selected-avatar').first().val(data.selectedData.value);
-                                        }
-                                    });
-                                </script>
-                            </div>
-                        </div>
                     </asp:Panel>
                 </ItemTemplate>
             </asp:Repeater>
@@ -970,7 +993,7 @@
             <asp:Button ID="btnPrev"
                 runat="server"
                 Text="registration-button-previous"
-                CausesValidation="True"
+                CausesValidation="False"
                 CssClass="btn btn-default"
                 Enabled="False"
                 OnClick="btnPrev_Click" />
@@ -1074,7 +1097,7 @@
 </div>
 
 <script>
-    
+
     $('.required-asterisk').focusout(function () {
         var asteriskClass = $(this).data('asterisk');
         if (asteriskClass) {
@@ -1103,7 +1126,7 @@
             showOtherMonths: true,
             selectOtherMonths: true,
             showSpeed: 'fast',
-            onSelect: function(dates) {
+            onSelect: function (dates) {
                 var asteriskClass = $(this).data('asterisk');
                 if (asteriskClass) {
                     if (dates.length == 0) {
@@ -1139,7 +1162,7 @@
 
         $('.required-asterisk-aspcheckbox :input').each(function (index, element) {
             aspCheckClickCheck($(element));
-            $(element).on('click', function(eventData) {
+            $(element).on('click', function (eventData) {
                 aspCheckClickCheck($(eventData.target));
             });
         });

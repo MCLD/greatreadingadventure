@@ -43,7 +43,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             var ds = PatronPoints.GetAll(patron.PID);
 
             gv1.DataSource = ds;
-            gv1.DataBind();            
+            gv1.DataBind();
         }
 
         protected void GvRowCommand(object sender, GridViewCommandEventArgs e)
@@ -51,7 +51,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
             string editpage = "~/ControlRoom/Modules/Patrons/PatronLogAddEdit.aspx";
             if (e.CommandName.ToLower() == "addrecord")
             {
-                Session["PLID"]= string.Empty; Response.Redirect(editpage);
+                Session["PLID"] = string.Empty; Response.Redirect(editpage);
             }
             if (e.CommandName.ToLower() == "editrecord")
             {
@@ -77,7 +77,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                                 PatronReview.Delete(PatronReview.FetchObjectByLogId(pp.LogID));
                                 prl.Delete();
                             }
-                            
+
                         }
 
                         pp.Delete();
@@ -106,7 +106,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
 
-                
+
             }
         }
     }

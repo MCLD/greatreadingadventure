@@ -13,7 +13,7 @@ DECLARE @TenID INT
 SELECT @Lit1 = isnull(LiteracyLevel1, 0),
 	@Lit2 = isnull(LiteracyLevel2, ''),
 	@ProgramId = isnull(ProgID, 0),
-	@BranchId = isnull(PrimaryLibrary, 0),
+	@BranchId = 0,
 	@TenID = TenID
 FROM Patron
 WHERE PID = @PID
@@ -70,8 +70,7 @@ SELECT BLID,
 	ListName,
 	Description
 FROM BookList
-WHERE LibraryID = 0
-	AND ProgID = 0
+WHERE ProgID = 0
 	AND LiteracyLevel1 = 0
 	AND LiteracyLevel2 = 0
 	AND TenID = @TenID

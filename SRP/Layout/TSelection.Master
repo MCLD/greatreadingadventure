@@ -28,7 +28,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
-    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
     <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>
@@ -94,7 +94,7 @@
                                 <asp:Label runat="server" Text="upsell"></asp:Label></span>
                         </div>
                         <div class="col-sm-1 text-center" style="vertical-align: middle;">
-                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                         </div>
                     </div>
                 </div>

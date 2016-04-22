@@ -8,39 +8,64 @@ using GRA.SRP.Utilities.CoreClasses;
 using System.Web.UI.HtmlControls;
 using GRA.Tools;
 
-namespace GRA.SRP.ControlRoom.Modules.Patrons {
-    public partial class NotificationsAddEdit : BaseControlRoomPage {
-        public string DisplayFrom(DAL.Notifications mail) {
-            if(mail.PID_From == 0) {
+namespace GRA.SRP.ControlRoom.Modules.Patrons
+{
+    public partial class NotificationsAddEdit : BaseControlRoomPage
+    {
+        public string DisplayFrom(DAL.Notifications mail)
+        {
+            if (mail.PID_From == 0)
+            {
                 var patron = DAL.Patron.FetchObject(mail.PID_To);
-                if(mail.AddedUser.Equals(patron.Username, StringComparison.OrdinalIgnoreCase)) {
+                if (mail.AddedUser.Equals(patron.Username, StringComparison.OrdinalIgnoreCase))
+                {
                     // sent from system
                     return "System";
-                } else {
+                }
+                else {
                     return string.Format("Administrator (<span class=\"cr-administrator\">{0}</span>)", mail.AddedUser);
                 }
-            } else {
+            }
+            else {
                 var patron = DAL.Patron.FetchObject(mail.PID_From);
                 return DisplayHelper.FormatName(patron.FirstName, patron.LastName, patron.Username);
             }
         }
 
-        public string DisplayTo(DAL.Notifications mail) {
-            if(mail.PID_To == 0) {
+        public string DisplayTo(DAL.Notifications mail)
+        {
+            if (mail.PID_To == 0)
+            {
                 return "System";
-            } else {
+            }
+            else {
                 var patron = DAL.Patron.FetchObject(mail.PID_To);
                 return DisplayHelper.FormatName(patron.FirstName, patron.LastName, patron.Username);
             }
         }
 
-        protected void Page_Load(object sender, EventArgs e) {
+        public string DisplayPatron()
+        {
+            var p = Session["Curr_Patron"] as Patron;
+            if (p == null)
+            {
+                return "Unknown";
+            }
+            else
+            {
+                return DisplayHelper.FormatName(p.FirstName, p.LastName, p.Username);
+            }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
             MasterPage.RequiredPermission = 5100;
             MasterPage.IsSecure = true;
-            if(Session["Curr_Patron"] == null)
+            if (Session["Curr_Patron"] == null)
                 Response.Redirect("Default.aspx");
 
-            if(!IsPostBack) {
+            if (!IsPostBack)
+            {
                 PatronsRibbon.GetByAppContext(this);
 
                 var patron = (Patron)Session["Curr_Patron"];
@@ -48,7 +73,8 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
                                                      DisplayHelper.FormatName(patron.FirstName, patron.LastName, patron.Username));
             }
 
-            if(!IsPostBack) {
+            if (!IsPostBack)
+            {
                 lblPK.Text = Session["NID"] == null ? "" : Session["NID"].ToString();
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
@@ -56,38 +82,49 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
         }
 
 
-        protected void dv_DataBound(object sender, EventArgs e) {
-            if(dv.CurrentMode == DetailsViewMode.Edit) {
+        protected void dv_DataBound(object sender, EventArgs e)
+        {
+            if (dv.CurrentMode == DetailsViewMode.Edit)
+            {
                 //var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 //if (control!=null) control.ProcessRender();
             }
         }
 
-        protected void dv_DataBinding(object sender, EventArgs e) {
+        protected void dv_DataBinding(object sender, EventArgs e)
+        {
         }
 
 
-        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e) {
+        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
+        {
             string returnURL = "~/ControlRoom/Modules/Patrons/PatronNotifications.aspx";
-            if(e.CommandName.ToLower() == "back") {
+            if (e.CommandName.ToLower() == "back")
+            {
                 Response.Redirect(returnURL);
             }
-            if(e.CommandName.ToLower() == "refresh") {
-                try {
+            if (e.CommandName.ToLower() == "refresh")
+            {
+                try
+                {
                     odsData.DataBind();
                     dv.DataBind();
                     dv.ChangeMode(DetailsViewMode.Edit);
 
                     var masterPage = (IControlRoomMaster)Master;
-                    if(masterPage != null)
+                    if (masterPage != null)
                         masterPage.PageMessage = SRPResources.RefreshOK;
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback") {
-                try {
+            if (e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback")
+            {
+                try
+                {
                     var obj = new DAL.Notifications();
 
                     obj.PID_To = FormatHelper.SafeToInt(Session["CURR_PATRON_ID"].ToString());
@@ -101,9 +138,11 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
                     obj.LastModDate = obj.AddedDate;
                     obj.LastModUser = obj.AddedUser;
 
-                    if(obj.IsValid(BusinessRulesValidationMode.INSERT)) {
+                    if (obj.IsValid(BusinessRulesValidationMode.INSERT))
+                    {
                         obj.Insert();
-                        if(e.CommandName.ToLower() == "addandback") {
+                        if (e.CommandName.ToLower() == "addandback")
+                        {
                             Response.Redirect(returnURL);
                         }
 
@@ -115,16 +154,20 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
 
                         var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageMessage = SRPResources.AddedOK;
-                    } else {
+                    }
+                    else {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach(BusinessRulesValidationMessage m in obj.ErrorCodes) {
+                        foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
+                        {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
                         message = string.Format("{0}</ul>", message);
                         masterPage.PageError = message;
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }

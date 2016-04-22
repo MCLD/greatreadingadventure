@@ -132,7 +132,11 @@ namespace GRA.SRP.ControlRoom.Controls
                     DateTime _d;
 
                     p.Username = ((TextBox)(e.Item).FindControl("Username")).Text;
-                    p.NewPassword = ((TextBox)(e.Item).FindControl("Password")).Text;
+                    var password = ((TextBox)(e.Item).FindControl("Password")).Text;
+                    if (password != "********************")
+                    {
+                        p.NewPassword = password;
+                    }
 
                     var DOB = e.Item.FindControl("DOB") as TextBox;
                     if (DOB != null && DOB.Text != "")
@@ -223,7 +227,6 @@ namespace GRA.SRP.ControlRoom.Controls
                     p.Custom4 = cr.DDValues4 == "" ? ((TextBox)(e.Item).FindControl("Custom4")).Text : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
                     p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(e.Item).FindControl("Custom5")).Text : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
 
-                    p.AvatarID = FormatHelper.SafeToInt(((DropDownList)e.Item.FindControl("AvatarID")).SelectedValue);
                     p.ProgID = FormatHelper.SafeToInt(((DropDownList)e.Item.FindControl("ProgID")).SelectedValue);
                     p.IsMasterAccount = ((CheckBox) (e.Item).FindControl("IsMasterAccount")).Checked;
                     // do the save
@@ -307,6 +310,11 @@ namespace GRA.SRP.ControlRoom.Controls
             var i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
+            txt = (TextBox)e.Item.FindControl("Age");
+            if(txt != null && string.IsNullOrWhiteSpace(txt.Text))
+            {
+                txt.Text = "0";
+            }
 
             ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary");
             txt = (TextBox)e.Item.FindControl("PrimaryLibraryTxt");
@@ -316,11 +324,6 @@ namespace GRA.SRP.ControlRoom.Controls
 
             ctl = (DropDownList)e.Item.FindControl("SchoolType");
             txt = (TextBox)e.Item.FindControl("SchoolTypeTxt");
-            i = ctl.Items.FindByValue(txt.Text);
-            if (i != null) ctl.SelectedValue = txt.Text;
-
-            ctl = (DropDownList)e.Item.FindControl("AvatarID");
-            txt = (TextBox)e.Item.FindControl("AvatarIDTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 

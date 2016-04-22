@@ -4,7 +4,9 @@ using System.Web.UI.WebControls;
 using SRPApp.Classes;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using System.Linq;
 using GRA.Tools;
+using System.Web.UI.HtmlControls;
 
 namespace GRA.SRP.Controls
 {
@@ -14,7 +16,8 @@ namespace GRA.SRP.Controls
         private CustomRegistrationFields customFields;
         protected CustomRegistrationFields CustomFields {
             get {
-                if(customFields == null) {
+                if (customFields == null)
+                {
                     customFields = CustomRegistrationFields.FetchObject();
                 }
                 return customFields;
@@ -28,8 +31,38 @@ namespace GRA.SRP.Controls
                 var patron = (Patron)Session["Patron"];
                 rptr.DataSource = Patron.GetPatronForEdit(patron.PID);
                 rptr.DataBind();
-   
+
+                Programs program = Programs.FetchObject(patron.ProgID);
+
+                // Goal needs to be modified by ProgramGamePointConversion
+                /* If daily goal is enabled we need to find what method point system uses. Just select the first item that is relevant.. */
+                foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                {
+                    int activityTypeId = (int)activityTypeValue;
+                    var pgc = ProgramGamePointConversion.FetchObjectByActivityId(patron.ProgID,
+                                                                             activityTypeId);
+
+                    if (pgc != null && pgc.PointCount > 0)
+                    {
+                        var range = (RangeValidator)rptr.Items[0].FindControl("GoalRangeValidator");
+
+                        range.MinimumValue = program.GoalMin.ToString();
+                        range.MaximumValue = program.GoalMax.ToString();
+                        range.Text = $"{range.MinimumValue}-{range.MaximumValue}";
+
+                        /* save the activity type id */
+                        ViewState["ActivityTypeId"] = activityTypeId.ToString();
+
+                        var intervalString = program.GetGoalInterval.ToString();
+
+                        ((Label)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()})";
+                        // found a valid point conversion for goal so break
+                        break;
+                    }
+                }
+
                 basePage.TranslateStrings(rptr);
+                ReloadLibraryDistrict();
             }
             this.SaveButtonText = basePage.GetResourceString("family-member-add-save");
         }
@@ -38,10 +71,10 @@ namespace GRA.SRP.Controls
         {
             if (Page.IsValid)
             {
-                if(e.CommandName == "save")
+                if (e.CommandName == "save")
                 {
 
-                    var p = Patron.FetchObject(((Patron) Session["Patron"]).PID);
+                    var p = Patron.FetchObject(((Patron)Session["Patron"]).PID);
                     DateTime _d;
 
                     var DOB = e.Item.FindControl("DOB") as TextBox;
@@ -60,7 +93,7 @@ namespace GRA.SRP.Controls
                     p.Gender = ((DropDownList)(e.Item).FindControl("Gender")).SelectedValue;
                     p.EmailAddress = ((TextBox)(e.Item).FindControl("EmailAddress")).Text;
                     p.PhoneNumber = ((TextBox)(e.Item).FindControl("PhoneNumber")).Text;
-                        p.PhoneNumber = FormatHelper.FormatPhoneNumber(p.PhoneNumber);
+                    p.PhoneNumber = FormatHelper.FormatPhoneNumber(p.PhoneNumber);
                     p.StreetAddress1 = ((TextBox)(e.Item).FindControl("StreetAddress1")).Text;
                     p.StreetAddress2 = ((TextBox)(e.Item).FindControl("StreetAddress2")).Text;
                     p.City = ((TextBox)(e.Item).FindControl("City")).Text;
@@ -74,6 +107,28 @@ namespace GRA.SRP.Controls
                     p.ParentGuardianLastName = ((TextBox)(e.Item).FindControl("ParentGuardianLastName")).Text;
                     p.ParentGuardianMiddleName = ((TextBox)(e.Item).FindControl("ParentGuardianMiddleName")).Text;
                     p.LibraryCard = ((TextBox)(e.Item).FindControl("LibraryCard")).Text;
+
+                    int goalValue = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("Goal")).Text);
+                    p.Goal = goalValue;
+
+                    if (ViewState["ActivityTypeId"] != null)
+                    {
+
+                        int activityTypeId = 0;
+
+                        if (int.TryParse(ViewState["ActivityTypeId"] as string, out activityTypeId))
+                        {
+                            ProgramGamePointConversion pgc = ProgramGamePointConversion.FetchObjectByActivityId(p.ProgID, activityTypeId);
+
+                            if (pgc != null)
+                            {
+                                Programs program = Programs.FetchObject(p.ProgID);
+
+                                p.RecalculateGoalCache(program, pgc);
+                            }
+                        }
+                    }
+
 
                     //p.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)(e.Item).FindControl("PrimaryLibrary")).SelectedValue);
                     //p.SchoolName = ((DropDownList)(e.Item).FindControl("SchoolName")).SelectedValue;
@@ -116,21 +171,18 @@ namespace GRA.SRP.Controls
                         ? ((TextBox)(e.Item).FindControl("Custom1")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom1DD")).SelectedValue;
                     p.Custom2 = string.IsNullOrEmpty(this.CustomFields.DDValues2)
-                        ? ((TextBox)(e.Item).FindControl("Custom2")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom2")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom2DD")).SelectedValue;
                     p.Custom3 = string.IsNullOrEmpty(this.CustomFields.DDValues3)
-                        ? ((TextBox)(e.Item).FindControl("Custom3")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom3")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom3DD")).SelectedValue;
                     p.Custom4 = string.IsNullOrEmpty(this.CustomFields.DDValues4)
-                        ? ((TextBox)(e.Item).FindControl("Custom4")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom4")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom4DD")).SelectedValue;
                     p.Custom5 = string.IsNullOrEmpty(this.CustomFields.DDValues5)
-                        ? ((TextBox)(e.Item).FindControl("Custom5")).Text 
+                        ? ((TextBox)(e.Item).FindControl("Custom5")).Text
                         : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
-                    
-                    //p.AvatarID = FormatHelper.SafeToInt(((DropDownList)(e.Item).FindControl("AvatarID")).SelectedValue);
-                    p.AvatarID = FormatHelper.SafeToInt(((System.Web.UI.HtmlControls.HtmlInputText)e.Item.FindControl("AvatarID")).Value);
-                    // do the save
+                   // do the save
                     p.Update();
                     Session["Patron"] = p;
 
@@ -178,7 +230,6 @@ namespace GRA.SRP.Controls
 
         protected void ReloadSchoolDistrict()
         {
-            //*
             var sc = (DropDownList)(rptr.Items[0]).FindControl("SchoolName");
             var st = (DropDownList)(rptr.Items[0]).FindControl("SchoolType");
             var sd = (DropDownList)(rptr.Items[0]).FindControl("SDistrict");
@@ -196,12 +247,15 @@ namespace GRA.SRP.Controls
 
             var si = sc.Items.FindByValue(scVal);
             sc.SelectedValue = si != null ? scVal : "0";
-            //*            
+
+            if (sc.Items.Count == 2)
+            {
+                sc.SelectedIndex = 1;
+            }
         }
 
         protected void ReloadLibraryDistrict()
         {
-            //*
             var pl = (DropDownList)(rptr.Items[0]).FindControl("PrimaryLibrary");
             var dt = (DropDownList)(rptr.Items[0]).FindControl("District");
             var plVal = pl.SelectedValue;
@@ -214,22 +268,28 @@ namespace GRA.SRP.Controls
             }
             var il = pl.Items.FindByValue(plVal);
             pl.SelectedValue = il != null ? plVal : "0";
-            //*            
+
+            if (pl.Items.Count == 2)
+            {
+                pl.SelectedIndex = 1;
+            }
         }
         protected void rptr_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
+            var patron = e.Item.DataItem as DataRowView;
+
             var ctl = (DropDownList)e.Item.FindControl("Gender");
             var txt = (TextBox)e.Item.FindControl("GenderTxt");
             var i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
-            ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary"); 
+            ctl = (DropDownList)e.Item.FindControl("PrimaryLibrary");
             txt = (TextBox)e.Item.FindControl("PrimaryLibraryTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
 
 
-            ctl = (DropDownList)e.Item.FindControl("SchoolType"); 
+            ctl = (DropDownList)e.Item.FindControl("SchoolType");
             txt = (TextBox)e.Item.FindControl("SchoolTypeTxt");
             i = ctl.Items.FindByValue(txt.Text);
             if (i != null) ctl.SelectedValue = txt.Text;
@@ -254,41 +314,77 @@ namespace GRA.SRP.Controls
             var familyListButton = e.Item.FindControl("FamilyAccountList");
             var familyAddbutton = e.Item.FindControl("FamilyAccountAdd");
             var showFamilyList = Session[SessionKey.IsMasterAccount] as bool? == true;
-            if(familyListButton != null) {
+            if (familyListButton != null)
+            {
                 familyListButton.Visible = showFamilyList;
             }
-            if(familyAddbutton != null) {
-                var patron = e.Item.DataItem as DataRowView;
-                if(patron != null
+            if (familyAddbutton != null)
+            {
+                if (patron != null
                    && patron["Over18Flag"] as bool? == true
-                   && patron["MasterAcctPID"] as int? == 0) {
+                   && patron["MasterAcctPID"] as int? == 0)
+                {
                     familyAddbutton.Visible = !showFamilyList;
-                } else {
+                }
+                else {
                     familyAddbutton.Visible = false;
                 }
             }
 
 
             var registrationHelper = new RegistrationHelper();
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues1)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues1))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues1));
                 registrationHelper.BindCustomDDL(e, codes, "Custom1DD", "Custom1DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues2)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues2))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues2));
                 registrationHelper.BindCustomDDL(e, codes, "Custom2DD", "Custom2DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues3)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues3))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues3));
                 registrationHelper.BindCustomDDL(e, codes, "Custom3DD", "Custom3DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues4)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues4))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues4));
                 registrationHelper.BindCustomDDL(e, codes, "Custom4DD", "Custom4DDTXT");
             }
-            if(!string.IsNullOrEmpty(this.CustomFields.DDValues5)) {
+            if (!string.IsNullOrEmpty(this.CustomFields.DDValues5))
+            {
                 var codes = Codes.GetAlByTypeID(int.Parse(this.CustomFields.DDValues5));
                 registrationHelper.BindCustomDDL(e, codes, "Custom5DD", "Custom5DDTXT");
+            }
+
+            var rewardPanel = e.Item.FindControl("ProgramRewardCodeDisplay") as Panel;
+            var rewardLabel = e.Item.FindControl("ProgramRewardCodes") as Label;
+            var rewardCodesData = DAL.ProgramCodes.GetAllForPatron((int)patron["PID"]);
+            if (rewardCodesData != null
+                && rewardCodesData.Tables.Count > 0
+                && rewardCodesData.Tables[0].Rows.Count > 0)
+            {
+                var codes = rewardCodesData.Tables[0]
+                    .AsEnumerable()
+                    .Select(r => r.Field<string>("ShortCode"))
+                    .ToArray();
+                rewardLabel.Text = string.Join("<br>", codes);
+                rewardPanel.Visible = true;
+            }
+            else
+            {
+                rewardLabel.Text = string.Empty;
+                rewardPanel.Visible = false;
+            }
+
+            var program = DAL.Programs.FetchObject((int)patron["ProgID"]);
+            if (program.HideSchoolInRegistration)
+            {
+                e.Item.FindControl("SDistrictPanel").Visible = false;
+                e.Item.FindControl("SchoolTypePanel").Visible = false;
+                e.Item.FindControl("SchoolNamePanel").Visible = false;
             }
         }
 
@@ -296,7 +392,7 @@ namespace GRA.SRP.Controls
         {
             var actualAge = 0;
             int.TryParse(age, out actualAge);
-            
+
             if (!string.IsNullOrEmpty(dob))
             {
                 try

@@ -13,18 +13,20 @@ using System.Collections;
 using GRA.SRP.Core.Utilities;
 using GRA.Tools;
 using System.Web.Caching;
+using System.Collections.Generic;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class Programs : EntityBase
+    [Serializable]
+    public class Programs : EntityBase
     {
 
         public static new string Version { get { return "2.0"; } }
 
         #region Private Variables
 
-        private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private static string conn = GlobalUtilities.SRPDB;
 
         private int myPID;
         private string myAdminName;
@@ -40,8 +42,9 @@ namespace GRA.SRP.DAL
         private DateTime myLoggingStart;
         private DateTime myLoggingEnd;
         private bool myParentalConsentFlag;
-        private string myParentalConsentText ="";
+        private string myParentalConsentText = "";
         private bool myPatronReviewFlag;
+        private bool myRequireBookDetails;
         private string myLogoutURL = "";
         private int myProgramGameID;
         private string myHTML1 = "";
@@ -80,252 +83,216 @@ namespace GRA.SRP.DAL
 
         #region Accessors
 
-        public int PID
-        {
+        public int PID {
             get { return myPID; }
             set { myPID = value; }
         }
-        public string AdminName
-        {
+        public string AdminName {
             get { return myAdminName; }
             set { myAdminName = value; }
         }
-        public string Title
-        {
+        public string Title {
             get { return myTitle; }
             set { myTitle = value; }
         }
-        public string TabName
-        {
+        public string TabName {
             get { return myTabName; }
             set { myTabName = value; }
         }
-        public int POrder
-        {
+        public int POrder {
             get { return myPOrder; }
             set { myPOrder = value; }
         }
-        public bool IsActive
-        {
+        public bool IsActive {
             get { return myIsActive; }
             set { myIsActive = value; }
         }
-        public bool IsHidden
-        {
+        public bool IsHidden {
             get { return myIsHidden; }
             set { myIsHidden = value; }
         }
-        public DateTime StartDate
-        {
+        public DateTime StartDate {
             get { return myStartDate; }
             set { myStartDate = value; }
         }
-        public DateTime EndDate
-        {
+        public DateTime EndDate {
             get { return myEndDate; }
             set { myEndDate = value; }
         }
-        public int MaxAge
-        {
+        public int MaxAge {
             get { return myMaxAge; }
             set { myMaxAge = value; }
         }
-        public int MaxGrade
-        {
+        public int MaxGrade {
             get { return myMaxGrade; }
             set { myMaxGrade = value; }
         }
-        public DateTime LoggingStart
-        {
+        public DateTime LoggingStart {
             get { return myLoggingStart; }
             set { myLoggingStart = value; }
         }
-        public DateTime LoggingEnd
-        {
+        public DateTime LoggingEnd {
             get { return myLoggingEnd; }
             set { myLoggingEnd = value; }
         }
-        public bool ParentalConsentFlag
-        {
+        public bool ParentalConsentFlag {
             get { return myParentalConsentFlag; }
             set { myParentalConsentFlag = value; }
         }
-        public string ParentalConsentText
-        {
+        public string ParentalConsentText {
             get { return myParentalConsentText; }
             set { myParentalConsentText = value; }
         }
-        public bool PatronReviewFlag
-        {
+        public bool PatronReviewFlag {
             get { return myPatronReviewFlag; }
             set { myPatronReviewFlag = value; }
         }
-        public string LogoutURL
-        {
+        public bool RequireBookDetails {
+            get { return myRequireBookDetails; }
+            set { myRequireBookDetails = value; }
+        }
+        public string LogoutURL {
             get { return myLogoutURL; }
             set { myLogoutURL = value; }
         }
-        public int ProgramGameID
-        {
+        public int ProgramGameID {
             get { return myProgramGameID; }
             set { myProgramGameID = value; }
         }
-        public string HTML1
-        {
+        public string HTML1 {
             get { return myHTML1; }
             set { myHTML1 = value; }
         }
-        public string HTML2
-        {
+        public string HTML2 {
             get { return myHTML2; }
             set { myHTML2 = value; }
         }
-        public string HTML3
-        {
+        public string HTML3 {
             get { return myHTML3; }
             set { myHTML3 = value; }
         }
-        public string HTML4
-        {
+        public string HTML4 {
             get { return myHTML4; }
             set { myHTML4 = value; }
         }
-        public string HTML5
-        {
+        public string HTML5 {
             get { return myHTML5; }
             set { myHTML5 = value; }
         }
-        public string HTML6
-        {
+        public string HTML6 {
             get { return myHTML6; }
             set { myHTML6 = value; }
         }
-        public string BannerImage
-        {
+        public string BannerImage {
             get { return myBannerImage; }
             set { myBannerImage = value; }
         }
-        public int RegistrationBadgeID
-        {
+        public int RegistrationBadgeID {
             get { return myRegistrationBadgeID; }
             set { myRegistrationBadgeID = value; }
         }
-        public int CompletionPoints
-        {
+        public int CompletionPoints {
             get { return myCompletionPoints; }
             set { myCompletionPoints = value; }
         }
-        public string LastModUser
-        {
+        public string LastModUser {
             get { return myLastModUser; }
             set { myLastModUser = value; }
         }
-        public DateTime AddedDate
-        {
+        public DateTime AddedDate {
             get { return myAddedDate; }
             set { myAddedDate = value; }
         }
-        public string AddedUser
-        {
+        public string AddedUser {
             get { return myAddedUser; }
             set { myAddedUser = value; }
         }
-        public DateTime LastModDate
-        {
+        public DateTime LastModDate {
             get { return myLastModDate; }
             set { myLastModDate = value; }
         }
 
-        public int TenID
-        {
+        public int TenID {
             get { return myTenID; }
             set { myTenID = value; }
         }
 
-        public int FldInt1
-        {
+        public int FldInt1 {
             get { return myFldInt1; }
             set { myFldInt1 = value; }
         }
 
-        public int FldInt2
-        {
+        public int FldInt2 {
             get { return myFldInt2; }
             set { myFldInt2 = value; }
         }
 
-        public int FldInt3
-        {
+        public int FldInt3 {
             get { return myFldInt3; }
             set { myFldInt3 = value; }
         }
 
-        public bool FldBit1
-        {
+        public bool FldBit1 {
             get { return myFldBit1; }
             set { myFldBit1 = value; }
         }
 
-        public bool FldBit2
-        {
+        public bool FldBit2 {
             get { return myFldBit2; }
             set { myFldBit2 = value; }
         }
 
-        public bool FldBit3
-        {
+        public bool FldBit3 {
             get { return myFldBit3; }
             set { myFldBit3 = value; }
         }
 
-        public string FldText1
-        {
+        public string FldText1 {
             get { return myFldText1; }
             set { myFldText1 = value; }
         }
 
-        public string FldText2
-        {
+        public string FldText2 {
             get { return myFldText2; }
             set { myFldText2 = value; }
         }
 
-        public string FldText3
-        {
+        public string FldText3 {
             get { return myFldText3; }
             set { myFldText3 = value; }
         }
 
-        public int PreTestID
-        {
+        public int PreTestID {
             get { return myPreTestID; }
             set { myPreTestID = value; }
         }
 
-        public int PostTestID
-        {
+        public int PostTestID {
             get { return myPostTestID; }
             set { myPostTestID = value; }
         }
 
-        public bool PreTestMandatory
-        {
+        public bool PreTestMandatory {
             get { return myPreTestMandatory; }
             set { myPreTestMandatory = value; }
         }
 
-        public DateTime PreTestEndDate
-        {
+        public DateTime PreTestEndDate {
             get { return myPreTestEndDate; }
             set { myPreTestEndDate = value; }
         }
 
-        public DateTime PostTestStartDate
-        {
+        public DateTime PostTestStartDate {
             get { return myPostTestStartDate; }
             set { myPostTestStartDate = value; }
         }
 
+        public int GoalDefault { get; set; }
+        public int GoalMin { get; set; }
+        public int GoalMax { get; set; }
+        public int GoalIntervalId { get; set; }
+
+        public bool HideSchoolInRegistration { get; set; }
         #endregion
 
         #region Constructors
@@ -382,8 +349,8 @@ namespace GRA.SRP.DAL
 
             return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_Programs_GetAllTabs", arrParams);
         }
-        
-        public static DataSet GetAllActive()        
+
+        public static DataSet GetAllActive()
         {
             var arrParams = new SqlParameter[1];
             arrParams[0] = new SqlParameter("@TenID",
@@ -408,7 +375,7 @@ namespace GRA.SRP.DAL
         public static int GetDefaultProgramID(int tenID)
         {
             var arrParams = new SqlParameter[1];
-            arrParams[0] = new SqlParameter("@TenID",tenID);
+            arrParams[0] = new SqlParameter("@TenID", tenID);
             return (int)SqlHelper.ExecuteScalar(conn, CommandType.StoredProcedure, "app_Programs_GetDefaultProgramID", arrParams);
         }
 
@@ -485,6 +452,7 @@ namespace GRA.SRP.DAL
                 result.ParentalConsentFlag = bool.Parse(dr["ParentalConsentFlag"].ToString());
                 result.ParentalConsentText = dr["ParentalConsentText"].ToString();
                 result.PatronReviewFlag = bool.Parse(dr["PatronReviewFlag"].ToString());
+                result.RequireBookDetails = bool.Parse(dr["RequireBookDetails"].ToString());
                 result.LogoutURL = dr["LogoutURL"].ToString();
                 if (int.TryParse(dr["ProgramGameID"].ToString(), out _int)) result.ProgramGameID = _int;
                 result.HTML1 = dr["HTML1"].ToString();
@@ -517,7 +485,11 @@ namespace GRA.SRP.DAL
                 result.PreTestMandatory = bool.Parse(dr["PreTestMandatory"].ToString());
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) result.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) result.PostTestStartDate = _datetime;
-                
+                if (int.TryParse(dr["GoalDefault"].ToString(), out _int)) result.GoalDefault = _int;
+                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) result.GoalMin = _int;
+                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
+                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
+                result.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
 
                 dr.Close();
 
@@ -575,6 +547,7 @@ namespace GRA.SRP.DAL
                 this.ParentalConsentFlag = bool.Parse(dr["ParentalConsentFlag"].ToString());
                 this.ParentalConsentText = dr["ParentalConsentText"].ToString();
                 this.PatronReviewFlag = bool.Parse(dr["PatronReviewFlag"].ToString());
+                this.RequireBookDetails = bool.Parse(dr["RequireBookDetails"].ToString());
                 this.LogoutURL = dr["LogoutURL"].ToString();
                 if (int.TryParse(dr["ProgramGameID"].ToString(), out _int)) this.ProgramGameID = _int;
                 this.HTML1 = dr["HTML1"].ToString();
@@ -607,6 +580,11 @@ namespace GRA.SRP.DAL
                 this.PreTestMandatory = bool.Parse(dr["PreTestMandatory"].ToString());
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) this.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) this.PostTestStartDate = _datetime;
+                if (int.TryParse(dr["GoalDefault"].ToString(), out _int)) this.GoalDefault = _int;
+                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) result.GoalMin = _int;
+                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
+                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
+                result.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
 
                 dr.Close();
 
@@ -626,7 +604,7 @@ namespace GRA.SRP.DAL
         {
 
             var ds = ProgramGamePointConversion.GetAll(obj.PID);
-            if (ds.Tables[0].Rows.Count ==0)
+            if (ds.Tables[0].Rows.Count == 0)
             {
                 foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
                 {
@@ -641,30 +619,30 @@ namespace GRA.SRP.DAL
                     o.LastModUser = o.AddedUser;
 
                     o.Insert();
-                }                
+                }
             }
             else
             {
                 foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
                 {
                     var o = ProgramGamePointConversion.FetchObjectByActivityId(obj.PID, (int)val);
-                    if (o==null)
+                    if (o == null)
                     {
                         o = new ProgramGamePointConversion
-                                {
-                                    PGID = obj.PID,
-                                    ActivityTypeId = (int) val,
-                                    ActivityCount = 1,
-                                    PointCount = 0,
-                                    AddedDate = obj.AddedDate,
-                                    AddedUser = obj.AddedUser
-                                };
+                        {
+                            PGID = obj.PID,
+                            ActivityTypeId = (int)val,
+                            ActivityCount = 1,
+                            PointCount = 0,
+                            AddedDate = obj.AddedDate,
+                            AddedUser = obj.AddedUser
+                        };
                         o.LastModDate = o.AddedDate;
                         o.LastModUser = o.AddedUser;
 
                         o.Insert();
                     }
-                }   
+                }
             }
         }
 
@@ -679,62 +657,73 @@ namespace GRA.SRP.DAL
         public static int Insert(Programs o)
         {
 
-            SqlParameter[] arrParams = new SqlParameter[46];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@AdminName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@TabName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TabName, o.TabName.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@POrder", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.POrder, o.POrder.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@IsActive", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsActive, o.IsActive.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@IsHidden", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsHidden, o.IsHidden.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@StartDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StartDate, o.StartDate.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@EndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@MaxAge", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxAge, o.MaxAge.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@MaxGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxGrade, o.MaxGrade.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@LoggingStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingStart, o.LoggingStart.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LoggingEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingEnd, o.LoggingEnd.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@ParentalConsentFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentalConsentFlag, o.ParentalConsentFlag.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@ParentalConsentText", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentalConsentText, o.ParentalConsentText.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@PatronReviewFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronReviewFlag, o.PatronReviewFlag.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@LogoutURL", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogoutURL, o.LogoutURL.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@ProgramGameID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgramGameID, o.ProgramGameID.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@HTML1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML1, o.HTML1.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@HTML2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML2, o.HTML2.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@HTML3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML3, o.HTML3.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@HTML4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML4, o.HTML4.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@HTML5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML5, o.HTML5.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@HTML6", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML6, o.HTML6.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@BannerImage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BannerImage, o.BannerImage.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@RegistrationBadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RegistrationBadgeID, o.RegistrationBadgeID.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@CompletionPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CompletionPoints, o.CompletionPoints.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@AdminName", GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Title", GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@TabName", GlobalUtilities.DBSafeValue(o.TabName, o.TabName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@POrder", GlobalUtilities.DBSafeValue(o.POrder, o.POrder.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IsActive", GlobalUtilities.DBSafeValue(o.IsActive, o.IsActive.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IsHidden", GlobalUtilities.DBSafeValue(o.IsHidden, o.IsHidden.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@StartDate", GlobalUtilities.DBSafeValue(o.StartDate, o.StartDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndDate", GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@MaxAge", GlobalUtilities.DBSafeValue(o.MaxAge, o.MaxAge.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@MaxGrade", GlobalUtilities.DBSafeValue(o.MaxGrade, o.MaxGrade.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LoggingStart", GlobalUtilities.DBSafeValue(o.LoggingStart, o.LoggingStart.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LoggingEnd", GlobalUtilities.DBSafeValue(o.LoggingEnd, o.LoggingEnd.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ParentalConsentFlag", GlobalUtilities.DBSafeValue(o.ParentalConsentFlag, o.ParentalConsentFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ParentalConsentText", GlobalUtilities.DBSafeValue(o.ParentalConsentText, o.ParentalConsentText.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PatronReviewFlag", GlobalUtilities.DBSafeValue(o.PatronReviewFlag, o.PatronReviewFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@RequireBookDetails", GlobalUtilities.DBSafeValue(o.RequireBookDetails, o.RequireBookDetails.GetTypeCode())));
 
-            arrParams[30] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[31] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@LogoutURL", GlobalUtilities.DBSafeValue(o.LogoutURL, o.LogoutURL.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ProgramGameID", GlobalUtilities.DBSafeValue(o.ProgramGameID, o.ProgramGameID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML1", GlobalUtilities.DBSafeValue(o.HTML1, o.HTML1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML2", GlobalUtilities.DBSafeValue(o.HTML2, o.HTML2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML3", GlobalUtilities.DBSafeValue(o.HTML3, o.HTML3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML4", GlobalUtilities.DBSafeValue(o.HTML4, o.HTML4.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML5", GlobalUtilities.DBSafeValue(o.HTML5, o.HTML5.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML6", GlobalUtilities.DBSafeValue(o.HTML6, o.HTML6.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BannerImage", GlobalUtilities.DBSafeValue(o.BannerImage, o.BannerImage.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@RegistrationBadgeID", GlobalUtilities.DBSafeValue(o.RegistrationBadgeID, o.RegistrationBadgeID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CompletionPoints", GlobalUtilities.DBSafeValue(o.CompletionPoints, o.CompletionPoints.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
 
-            arrParams[40] = new SqlParameter("@PreTestID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestID, o.PreTestID.GetTypeCode()));
-            arrParams[41] = new SqlParameter("@PostTestID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PostTestID, o.PostTestID.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@PreTestMandatory", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@PreTestEndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode()));
-            arrParams[44] = new SqlParameter("@PostTestStartDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode()));
-            
-            arrParams[45] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[45].Direction = ParameterDirection.Output;
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_Insert", arrParams);
+            arrParams.Add(new SqlParameter("@PreTestID", GlobalUtilities.DBSafeValue(o.PreTestID, o.PreTestID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PostTestID", GlobalUtilities.DBSafeValue(o.PostTestID, o.PostTestID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PreTestMandatory", GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PreTestEndDate", GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PostTestStartDate", GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalDefault", GlobalUtilities.DBSafeValue(o.GoalDefault, o.GoalDefault.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMin", GlobalUtilities.DBSafeValue(o.GoalMin, o.GoalMin.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HideSchoolInRegistration", GlobalUtilities.DBSafeValue(o.HideSchoolInRegistration, o.HideSchoolInRegistration.GetTypeCode())));
 
-            o.PID = int.Parse(arrParams[45].Value.ToString());
+            var newIdParam = new SqlParameter("@PID", GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
+            newIdParam.Direction = ParameterDirection.Output;
+            arrParams.Add(newIdParam);
+
+            SqlHelper.ExecuteNonQuery(conn,
+                CommandType.StoredProcedure,
+                "app_Programs_Insert",
+                arrParams.ToArray());
+
+            o.PID = int.Parse(newIdParam.Value.ToString());
 
             return o.PID;
 
@@ -752,80 +741,79 @@ namespace GRA.SRP.DAL
 
             int iReturn = -1; //assume the worst
 
-            SqlParameter[] arrParams = new SqlParameter[46];
+            var arrParams = new List<SqlParameter>();
 
-            arrParams[0] = new SqlParameter("@PID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
-            arrParams[1] = new SqlParameter("@AdminName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode()));
-            arrParams[2] = new SqlParameter("@Title", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode()));
-            arrParams[3] = new SqlParameter("@TabName", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TabName, o.TabName.GetTypeCode()));
-            arrParams[4] = new SqlParameter("@POrder", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.POrder, o.POrder.GetTypeCode()));
-            arrParams[5] = new SqlParameter("@IsActive", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsActive, o.IsActive.GetTypeCode()));
-            arrParams[6] = new SqlParameter("@IsHidden", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.IsHidden, o.IsHidden.GetTypeCode()));
-            arrParams[7] = new SqlParameter("@StartDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.StartDate, o.StartDate.GetTypeCode()));
-            arrParams[8] = new SqlParameter("@EndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode()));
-            arrParams[9] = new SqlParameter("@MaxAge", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxAge, o.MaxAge.GetTypeCode()));
-            arrParams[10] = new SqlParameter("@MaxGrade", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.MaxGrade, o.MaxGrade.GetTypeCode()));
-            arrParams[11] = new SqlParameter("@LoggingStart", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingStart, o.LoggingStart.GetTypeCode()));
-            arrParams[12] = new SqlParameter("@LoggingEnd", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LoggingEnd, o.LoggingEnd.GetTypeCode()));
-            arrParams[13] = new SqlParameter("@ParentalConsentFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentalConsentFlag, o.ParentalConsentFlag.GetTypeCode()));
-            arrParams[14] = new SqlParameter("@ParentalConsentText", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ParentalConsentText, o.ParentalConsentText.GetTypeCode()));
-            arrParams[15] = new SqlParameter("@PatronReviewFlag", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PatronReviewFlag, o.PatronReviewFlag.GetTypeCode()));
-            arrParams[16] = new SqlParameter("@LogoutURL", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LogoutURL, o.LogoutURL.GetTypeCode()));
-            arrParams[17] = new SqlParameter("@ProgramGameID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.ProgramGameID, o.ProgramGameID.GetTypeCode()));
-            arrParams[18] = new SqlParameter("@HTML1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML1, o.HTML1.GetTypeCode()));
-            arrParams[19] = new SqlParameter("@HTML2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML2, o.HTML2.GetTypeCode()));
-            arrParams[20] = new SqlParameter("@HTML3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML3, o.HTML3.GetTypeCode()));
-            arrParams[21] = new SqlParameter("@HTML4", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML4, o.HTML4.GetTypeCode()));
-            arrParams[22] = new SqlParameter("@HTML5", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML5, o.HTML5.GetTypeCode()));
-            arrParams[23] = new SqlParameter("@HTML6", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.HTML6, o.HTML6.GetTypeCode()));
-            arrParams[24] = new SqlParameter("@BannerImage", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.BannerImage, o.BannerImage.GetTypeCode()));
-            arrParams[25] = new SqlParameter("@RegistrationBadgeID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.RegistrationBadgeID, o.RegistrationBadgeID.GetTypeCode()));
-            arrParams[26] = new SqlParameter("@CompletionPoints", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.CompletionPoints, o.CompletionPoints.GetTypeCode()));
-            arrParams[27] = new SqlParameter("@LastModUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode()));
-            arrParams[28] = new SqlParameter("@AddedDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode()));
-            arrParams[29] = new SqlParameter("@AddedUser", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode()));
-            arrParams[30] = new SqlParameter("@LastModDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@PID", GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AdminName", GlobalUtilities.DBSafeValue(o.AdminName, o.AdminName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@Title", GlobalUtilities.DBSafeValue(o.Title, o.Title.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@TabName", GlobalUtilities.DBSafeValue(o.TabName, o.TabName.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@POrder", GlobalUtilities.DBSafeValue(o.POrder, o.POrder.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IsActive", GlobalUtilities.DBSafeValue(o.IsActive, o.IsActive.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@IsHidden", GlobalUtilities.DBSafeValue(o.IsHidden, o.IsHidden.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@StartDate", GlobalUtilities.DBSafeValue(o.StartDate, o.StartDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@EndDate", GlobalUtilities.DBSafeValue(o.EndDate, o.EndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@MaxAge", GlobalUtilities.DBSafeValue(o.MaxAge, o.MaxAge.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@MaxGrade", GlobalUtilities.DBSafeValue(o.MaxGrade, o.MaxGrade.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LoggingStart", GlobalUtilities.DBSafeValue(o.LoggingStart, o.LoggingStart.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LoggingEnd", GlobalUtilities.DBSafeValue(o.LoggingEnd, o.LoggingEnd.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ParentalConsentFlag", GlobalUtilities.DBSafeValue(o.ParentalConsentFlag, o.ParentalConsentFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ParentalConsentText", GlobalUtilities.DBSafeValue(o.ParentalConsentText, o.ParentalConsentText.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PatronReviewFlag", GlobalUtilities.DBSafeValue(o.PatronReviewFlag, o.PatronReviewFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@RequireBookDetails", GlobalUtilities.DBSafeValue(o.RequireBookDetails, o.RequireBookDetails.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LogoutURL", GlobalUtilities.DBSafeValue(o.LogoutURL, o.LogoutURL.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@ProgramGameID", GlobalUtilities.DBSafeValue(o.ProgramGameID, o.ProgramGameID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML1", GlobalUtilities.DBSafeValue(o.HTML1, o.HTML1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML2", GlobalUtilities.DBSafeValue(o.HTML2, o.HTML2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML3", GlobalUtilities.DBSafeValue(o.HTML3, o.HTML3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML4", GlobalUtilities.DBSafeValue(o.HTML4, o.HTML4.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML5", GlobalUtilities.DBSafeValue(o.HTML5, o.HTML5.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HTML6", GlobalUtilities.DBSafeValue(o.HTML6, o.HTML6.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@BannerImage", GlobalUtilities.DBSafeValue(o.BannerImage, o.BannerImage.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@RegistrationBadgeID", GlobalUtilities.DBSafeValue(o.RegistrationBadgeID, o.RegistrationBadgeID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CompletionPoints", GlobalUtilities.DBSafeValue(o.CompletionPoints, o.CompletionPoints.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModUser", GlobalUtilities.DBSafeValue(o.LastModUser, o.LastModUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedDate", GlobalUtilities.DBSafeValue(o.AddedDate, o.AddedDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@AddedUser", GlobalUtilities.DBSafeValue(o.AddedUser, o.AddedUser.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@LastModDate", GlobalUtilities.DBSafeValue(o.LastModDate, o.LastModDate.GetTypeCode())));
 
-            arrParams[31] = new SqlParameter("@TenID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode()));
-            arrParams[32] = new SqlParameter("@FldInt1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode()));
-            arrParams[33] = new SqlParameter("@FldInt2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode()));
-            arrParams[34] = new SqlParameter("@FldInt3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode()));
-            arrParams[35] = new SqlParameter("@FldBit1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode()));
-            arrParams[36] = new SqlParameter("@FldBit2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode()));
-            arrParams[37] = new SqlParameter("@FldBit3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode()));
-            arrParams[38] = new SqlParameter("@FldText1", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode()));
-            arrParams[39] = new SqlParameter("@FldText2", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode()));
-            arrParams[40] = new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@TenID", GlobalUtilities.DBSafeValue(o.TenID, o.TenID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt1", GlobalUtilities.DBSafeValue(o.FldInt1, o.FldInt1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt2", GlobalUtilities.DBSafeValue(o.FldInt2, o.FldInt2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldInt3", GlobalUtilities.DBSafeValue(o.FldInt3, o.FldInt3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit1", GlobalUtilities.DBSafeValue(o.FldBit1, o.FldBit1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit2", GlobalUtilities.DBSafeValue(o.FldBit2, o.FldBit2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldBit3", GlobalUtilities.DBSafeValue(o.FldBit3, o.FldBit3.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText1", GlobalUtilities.DBSafeValue(o.FldText1, o.FldText1.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText2", GlobalUtilities.DBSafeValue(o.FldText2, o.FldText2.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@FldText3", GlobalUtilities.DBSafeValue(o.FldText3, o.FldText3.GetTypeCode())));
 
-            arrParams[41] = new SqlParameter("@PreTestID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestID, o.PreTestID.GetTypeCode()));
-            arrParams[42] = new SqlParameter("@PostTestID", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PostTestID, o.PostTestID.GetTypeCode()));
-            arrParams[43] = new SqlParameter("@PreTestMandatory", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode()));
-            arrParams[44] = new SqlParameter("@PreTestEndDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode()));
-            arrParams[45] = new SqlParameter("@PostTestStartDate", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode()));
+            arrParams.Add(new SqlParameter("@PreTestID", GlobalUtilities.DBSafeValue(o.PreTestID, o.PreTestID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PostTestID", GlobalUtilities.DBSafeValue(o.PostTestID, o.PostTestID.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PreTestMandatory", GlobalUtilities.DBSafeValue(o.PreTestMandatory, o.PreTestMandatory.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PreTestEndDate", GlobalUtilities.DBSafeValue(o.PreTestEndDate, o.PreTestEndDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@PostTestStartDate", GlobalUtilities.DBSafeValue(o.PostTestStartDate, o.PostTestStartDate.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalDefault", GlobalUtilities.DBSafeValue(o.GoalDefault, o.GoalDefault.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMin", GlobalUtilities.DBSafeValue(o.GoalMin, o.GoalMin.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HideSchoolInRegistration", GlobalUtilities.DBSafeValue(o.HideSchoolInRegistration, o.HideSchoolInRegistration.GetTypeCode())));
 
             try
             {
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_Update", arrParams);
+                iReturn = SqlHelper.ExecuteNonQuery(conn,
+                    CommandType.StoredProcedure,
+                    "app_Programs_Update",
+                    arrParams.ToArray());
             }
 
             catch (SqlException exx)
             {
-
                 System.Diagnostics.Debug.Write(exx.Message);
-
             }
 
             return iReturn;
-
         }
-
-        //public int Delete()
-        //{
-
-        //    return Delete(this);
-
-        //}
 
         public static int Delete(int PID, int PatronProgram, int PrizeProgram, int OfferProgram, int BookListProgram)
         {
@@ -845,25 +833,29 @@ namespace GRA.SRP.DAL
 
                 iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_Delete", arrParams);
                 var fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".png");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.png");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + ".jpg");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
                 fileName = (HttpContext.Current.Server.MapPath("~/Images/Banners/") + "\\" + PID.ToString() + "@2x.jpg");
-                if(File.Exists(fileName)) {
+                if (File.Exists(fileName))
+                {
                     File.Delete(fileName);
                 }
 
                 fileName = (HttpContext.Current.Server.MapPath("~/css/program/") + "\\" + PID.ToString() + ".css");
                 File.Delete(fileName);
-                 fileName = (HttpContext.Current.Server.MapPath("~/resources/") + "\\program." + PID.ToString() + "en-US.txt");
+                fileName = (HttpContext.Current.Server.MapPath("~/resources/") + "\\program." + PID.ToString() + "en-US.txt");
                 File.Delete(fileName);
 
             }
@@ -893,9 +885,8 @@ namespace GRA.SRP.DAL
             SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_Programs_MoveDn", arrParams);
         }
 
-        public bool IsOpen
-        {
-            get { 
+        public bool IsOpen {
+            get {
                 bool open = false;
 
                 DateTime now = DateTime.Now;
@@ -907,9 +898,31 @@ namespace GRA.SRP.DAL
             }
         }
 
+        public bool IsRegistrationOpen {
+            get {
+                return DateTime.Now < StartDate || DateTime.Now > EndDate
+                    ? false
+                    : true;
+            }
+        }
+
+        public GoalInterval GetGoalInterval
+        {
+            get
+            {
+                return (GoalInterval)Enum.ToObject(typeof(GoalInterval), this.GoalIntervalId);
+            }
+        }
+
         #endregion
 
     }//end class
 
-}//end namespace
+    public enum GoalInterval
+    {
+        Daily = 0,
+        Weekly = 1,
+        Program = 2 /* over the duration of the entire program */
+    }
 
+}//end namespace

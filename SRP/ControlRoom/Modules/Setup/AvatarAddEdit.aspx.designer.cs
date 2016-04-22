@@ -31,6 +31,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         protected global::System.Web.UI.WebControls.DetailsView dv;
         
         /// <summary>
+        /// odsDDBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource odsDDBadges;
+        
+        /// <summary>
         /// lblPK control.
         /// </summary>
         /// <remarks>

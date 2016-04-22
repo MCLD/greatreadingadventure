@@ -9,7 +9,8 @@
     </div>
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 text-center margin-1em-bottom">
-            <em><asp:Label runat="server" Text="secret-code-description"></asp:Label></em>
+            <em>
+                <asp:Label runat="server" Text="secret-code-description"></asp:Label></em>
         </div>
     </div>
     <div class="row">
@@ -25,8 +26,7 @@
                         <asp:TextBox ID="codeEntryField"
                             runat="server"
                             CssClass="form-control"
-                            MaxLength="50"
-                            Width="10em"></asp:TextBox>
+                            MaxLength="50"></asp:TextBox>
                     </div>
                     <asp:LinkButton runat="server"
                         CssClass="btn btn-default btn-sm btn-success code-submit"

@@ -101,12 +101,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.AwardName = ((TextBox)((DetailsView)sender).FindControl("AwardName")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.NumPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumPoints")).Text);
+                    obj.GoalPercent = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("GoalPercent")).Text);
+
                     obj.BranchID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BranchID")).SelectedValue);
                     obj.ProgramID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ProgramID")).SelectedValue);
 
                     obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
                     obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
 
+                    obj.BadgesAchieved = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("BadgesAchieved")).Text);
                     obj.BadgeList = CoalesceBadges((DetailsView)sender);// ((TextBox)((DetailsView)sender).FindControl("BadgeList")).Text;
 
                     obj.AddedDate = DateTime.Now;
@@ -151,12 +154,15 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
                     obj.AwardName = ((TextBox)((DetailsView)sender).FindControl("AwardName")).Text;
                     obj.BadgeID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BadgeID")).SelectedValue);
                     obj.NumPoints = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumPoints")).Text);
+                    obj.GoalPercent = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("GoalPercent")).Text);
+    
                     obj.BranchID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("BranchID")).SelectedValue);
                     obj.ProgramID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ProgramID")).SelectedValue);
 
                     obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
                     obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
 
+                    obj.BadgesAchieved = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("BadgesAchieved")).Text);
                     obj.BadgeList = CoalesceBadges((DetailsView)sender);// ((TextBox)((DetailsView)sender).FindControl("BadgeList")).Text;
 
                     obj.LastModDate = DateTime.Now;

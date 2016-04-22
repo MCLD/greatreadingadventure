@@ -37,7 +37,7 @@
             <asp:RadioButton ID="rbAns" runat="server" Text='<%# Eval("ChoiceText") %>' 
                 Cssclass='<%# string.Format("ch{0}", Eval("QID")) %>'
                 Checked='<%# ((int)Eval("ChoiceOrder") == 1 ? true : false) %>' 
-                AutoPostBack='True'
+                AutoPostBack='False'
 
                 oncheckedchanged="rbAns_CheckedChanged"
             />
@@ -74,7 +74,7 @@ $(document).ready(function () {
 </script>
 
     <asp:DropDownList ID="ddMultipleChoice" runat="server" Visible="false" 
-        Width="98%" AutoPostBack="true" 
+        Width="98%" AutoPostBack="false" 
         onselectedindexchanged="ddMultipleChoice_SelectedIndexChanged">
     </asp:DropDownList>
     <asp:CompareValidator ID="rfvddMultipleChoice" runat="server" Enabled='false'

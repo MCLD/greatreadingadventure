@@ -15,6 +15,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@ParentalConsentFlag BIT,
 	@ParentalConsentText TEXT,
 	@PatronReviewFlag BIT,
+	@RequireBookDetails BIT,
 	@LogoutURL VARCHAR(150),
 	@ProgramGameID INT,
 	@HTML1 TEXT,
@@ -45,6 +46,11 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
 	@PostTestStartDate DATETIME,
+	@GoalDefault INT = 0,
+	@GoalMin INT = 0,
+	@GoalMax INT = 0,
+	@GoalIntervalId INT = 0,
+	@HideSchoolInRegistration BIT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -65,6 +71,7 @@ BEGIN
 		ParentalConsentFlag,
 		ParentalConsentText,
 		PatronReviewFlag,
+		RequirebookDetails,
 		LogoutURL,
 		ProgramGameID,
 		HTML1,
@@ -94,7 +101,12 @@ BEGIN
 		PostTestID,
 		PreTestMandatory,
 		PretestEndDate,
-		PostTestStartDate
+		PostTestStartDate,
+		GoalDefault,
+		GoalMin,
+		GoalMax,
+		GoalIntervalId,
+		HideSchoolInRegistration
 		)
 	VALUES (
 		@AdminName,
@@ -115,6 +127,7 @@ BEGIN
 		@ParentalConsentFlag,
 		@ParentalConsentText,
 		@PatronReviewFlag,
+		@RequireBookDetails,
 		@LogoutURL,
 		@ProgramGameID,
 		@HTML1,
@@ -144,7 +157,12 @@ BEGIN
 		@PostTestID,
 		@PreTestMandatory,
 		@PretestEndDate,
-		@PostTestStartDate
+		@PostTestStartDate,
+		@GoalDefault,
+		@GoalMin,
+		@GoalMax,
+		@GoalIntervalId,
+		@HideSchoolInRegistration
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()

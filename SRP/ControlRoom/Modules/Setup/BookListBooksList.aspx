@@ -5,7 +5,7 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.0.min.js")%>"></script>
+    <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Label ID="lblPK" runat="server" Text="" Visible="False"></asp:Label>
@@ -19,8 +19,10 @@
     </asp:ObjectDataSource>
 
     <ul style="font-size: larger;">
-        <li>If title and author are blank, entering an ISBN and pressing tab will trigger a lookup for title, author, and cover image from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li><br />
-        <li>For entering challenge tasks rather than books, just leave the ISBN and Author fields blank. You may still put a URL in the URL field to link to a Web page.</li><br />
+        <li>If title and author are blank, entering an ISBN and pressing tab will trigger a lookup for title, author, and cover image from <a href="http://openlibrary.org/" target="_blank">openlibrary.org</a>.</li>
+        <br />
+        <li>For entering challenge tasks rather than books, just leave the ISBN and Author fields blank. You may still put a URL in the URL field to link to a Web page.</li>
+        <br />
         <li>ISBN is not required.</li>
     </ul>
 
@@ -29,27 +31,27 @@
             <td colspan="4" style="background-color: #ddd;"><b>Add To Challenge</b></td>
         </tr>
         <tr>
-            <td valign="top" width="150px"><b>ISBN</b><br />
-                <asp:TextBox ID="ISBN" runat="server" Width="150px" CssClass="book-isbn"></asp:TextBox><br />
+            <td valign="top" style="width: 10em;"><b>ISBN</b><br />
+                <asp:TextBox ID="ISBN" runat="server" Width="9 em" CssClass="book-isbn form-control"></asp:TextBox><br />
                 <img src="../../Images/spacer.gif" class="book-image" alt="Cover image on Open Library" /><span class="lookup-message"></span>
             </td>
 
-            <td valign="top" width="300px"><b>Title/Task</b><br />
-                <asp:TextBox ID="Title" runat="server" Width="300px" CssClass="book-title"></asp:TextBox>
+            <td valign="top" style="width: 25em;"><b>Title/Task</b><br />
+                <asp:TextBox ID="Title" runat="server" CssClass="book-title form-control"></asp:TextBox>
             </td>
-            <td valign="top" width="150px"><b>Author</b><br />
-                <asp:TextBox ID="Author" runat="server" Width="150px" CssClass="book-author"></asp:TextBox>
+            <td valign="top"><b>Author</b><br />
+                <asp:TextBox ID="Author" runat="server" CssClass="book-author form-control"></asp:TextBox>
             </td>
-            <td valign="top" width="100%"><b>URL</b><br />
-                <asp:TextBox ID="URL" runat="server" Width="85%" CssClass="ils-link"></asp:TextBox>
+            <td valign="top"><b>URL</b><br />
+                <asp:TextBox ID="URL" runat="server" CssClass="ils-link form-control"></asp:TextBox>
                 <a href="#" onclick="return testLink();">Test URL</a>
                 <br />
-                (The URL should be available to users not logged in to the ILS)
+                (Book URLs should be available to users not logged in to the ILS)
             </td>
         </tr>
         <tr>
             <td colspan="4">
-                <asp:Button ID="btnSave" runat="server" Text="Add Book/Task"
+                <asp:Button ID="btnSave" runat="server" Text="Add Book/Task and Save"
                     CssClass="btn-sm btn-green" OnClick="btnSave_Click" />
 
                 &nbsp;&nbsp;            
@@ -167,7 +169,8 @@
         $('.book-isbn').focusout(function () {
             if ($('.book-isbn').val().length > 0) {
                 $('.lookup-message').html("Looking up book...");
-                var isbn = $('.book-isbn').val().trim();
+                var isbn = $('.book-isbn').val().trim().replace(/-/g, '').replace(/\s+/g, '');
+                $('.book-isbn').val(isbn);
                 var olIsbn = 'ISBN:{0}'.replace('{0}', isbn);
                 $('.book-image').attr('src', 'http://covers.openlibrary.org/b/isbn/{0}-S.jpg'.replace('{0}', isbn));
 

@@ -144,26 +144,6 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-avatar"></asp:Label></label>
-                <div class="col-sm-9">
-                    <select id="ddAvatar"></select>
-                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                    <script>
-                        var ddData = <% =Avatar.GetJSONForSelection(1) %>;
-                        $('#ddAvatar').ddslick({
-                            data: ddData,
-                            background: "transparent",
-                            selectText: "Select an avatar",
-                            onSelected: function (data) {
-                                $('.selected-avatar').first().val(data.selectedData.value);
-                            }
-                        });
-                    </script>
-                </div>
-            </div>
-
             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolGrade_Prompt")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-grade"></asp:Label>
@@ -455,10 +435,10 @@
                 <div class="col-sm-3 form-control-static">
                     <span runat="server" visible='<%# Eval("District_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm DistrictReq"></span>
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                     <asp:CompareValidator runat="server" Enabled='<%# Eval("District_Req") %>'
-                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library district is required"
+                        ControlToValidate="District" Display="Dynamic" ErrorMessage="Library system is required"
                         SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">required</asp:CompareValidator>
                 </div>
             </div>

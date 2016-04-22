@@ -18,11 +18,11 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             MasterPage.RequiredPermission = 4600;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Offer Add / Edit");
-            
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.SetupRibbon());
-            
+
                 lblPK.Text = Session["OFF"] == null ? "" : Session["OFF"].ToString(); //Session["OFF"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
@@ -36,7 +36,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("FileUploadCtl");
                 if (control != null) control.ProcessRender();
-            
+
                 var ctl = (DropDownList)dv.FindControl("BranchId");
                 var lbl = (Label)dv.FindControl("BranchIdLbl");
                 var i = ctl.Items.FindByValue(lbl.Text);
@@ -106,7 +106,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                     {
                         obj.Insert();
-                        Cache[CacheKey.OffersActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.OffersActive);
                         if (e.CommandName.ToLower() == "addandback")
                         {
                             Response.Redirect(returnURL);

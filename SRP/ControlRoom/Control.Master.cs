@@ -24,58 +24,58 @@ namespace GRA.SRP.ControlRoom
                     FormsAuthentication.RedirectToLoginPage();
                 }
             }
-            if(Session[CRSessionKey.CRMessage] != null) {
-                this.PageTitle = "Great Reading Adventure - Control Room<BR> &nbsp;Notification";
+            if (Session[CRSessionKey.CRMessage] != null)
+            {
+                var sysName = Session[CRSessionKey.SystemName];
+                if (sysName == null || string.IsNullOrWhiteSpace(sysName.ToString()))
+                {
+                    sysName = "Great Reading Adventure - Control Room";
+                }
+                else
+                {
+                    sysName = string.Format("{0} - Control Room", sysName);
+                }
+                this.PageTitle = sysName.ToString();
                 this.PageError = Session[CRSessionKey.CRMessage].ToString();
                 this.DisplayMessageOnLoad = true;
                 Session.Remove(CRSessionKey.CRMessage);
             }
 
-            CheckPermissions();
+            CheckPermissions(this.RequiredPermission);
             lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             pnlMessage.Visible = DisplayMessageOnLoad;
         }
-        public CRRibbon PageRibbon
-        {
-            get
-            {
+        public CRRibbon PageRibbon {
+            get {
                 return CRRibbonCtl;
             }
         }
 
-        public  bool DisplayMessageOnLoad
-        {
+        public bool DisplayMessageOnLoad {
             get;
             set;
         }
 
-        public  string PageTitle
-        {
-            get
-            {
+        public string PageTitle {
+            get {
                 return lblPageTitle.Text;
             }
-            set
-            {
+            set {
                 lblPageTitle.Text = value;
                 lblPageTitle.Visible = (lblPageTitle.Text.Length > 0);
             }
         }
 
-        public   string PageError
-        {
-            set
-            {
+        public string PageError {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.Red); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
                 imgMessage.ImageUrl = "~/ControlRoom/Images/Error.png";
             }
         }
-        public   string PageWarning
-        {
-            set
-            {
+        public string PageWarning {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.DarkGray); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
@@ -83,10 +83,8 @@ namespace GRA.SRP.ControlRoom
             }
 
         }
-        public   string PageMessage
-        {
-            set
-            {
+        public string PageMessage {
+            set {
                 lblMessage.Text = value.Replace("\n", "<BR/>");
                 lblMessage.ForeColor = Color.FromKnownColor(KnownColor.Black); ;
                 pnlMessage.Visible = (lblMessage.Text.Length > 0);
@@ -96,14 +94,11 @@ namespace GRA.SRP.ControlRoom
         }
 
         private bool _isSecurePage = true;
-        public virtual bool IsSecure
-        {
-            get
-            {
+        public virtual bool IsSecure {
+            get {
                 return _isSecurePage;
             }
-            set
-            {
+            set {
                 _isSecurePage = value;
                 if (_isSecurePage)
                 {
@@ -116,35 +111,43 @@ namespace GRA.SRP.ControlRoom
         }
 
         private long _requiredPermission = 0;
-        public long RequiredPermission
-        {
-            get
-            { return _requiredPermission; }
-            set
-            {
+        public long RequiredPermission {
+            get { return _requiredPermission; }
+            set {
                 _requiredPermission = value;
-                CheckPermissions();
+                CheckPermissions(_requiredPermission);
             }
         }
 
-        protected void CheckPermissions()
+        private long _additionalRequiredPermission = 0;
+        public long AdditionalRequiredPermission {
+            get {
+                return _additionalRequiredPermission;
+            }
+            set {
+                _additionalRequiredPermission = value;
+                CheckPermissions(_additionalRequiredPermission);
+            }
+        }
+
+        protected void CheckPermissions(long permissionValue)
         {
-            if (_requiredPermission != 0)
+            if (permissionValue != 0)
             {
                 try
                 {
                     string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
-                    if (!permList.Contains(_requiredPermission.ToString()))
+                    if (!permList.Contains(permissionValue.ToString()))
                     {
-                        Response.Redirect("~/ControlRoom/NoAccess.aspx",false);
+                        Response.Redirect("~/ControlRoom/NoAccess.aspx", false);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     this.Log().Error("Error checking permissions: {0}", ex.Message);
                     Response.Redirect("~/ControlRoom/Login.aspx");
                 }
             }
         }
-
     }
 }

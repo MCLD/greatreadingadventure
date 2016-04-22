@@ -15,7 +15,7 @@
                     <ItemTemplate>
                         <tr>
                             <td><%# Eval("Rank") %></td>
-                            <td><asp:Image runat="server" Width="24" Height="24" ImageUrl='<%#Eval("AvatarId", "~/Images/Avatars/sm_{0}.png") %>' id="SmallAvatar"/></td>
+                            <td><asp:Image runat="server" Width="24" Height="24" ImageUrl='<%#Eval("AvatarState", "~/Images/AvatarCache/sm_{0}.png") %>' id="SmallAvatar"/></td>
                             <td><%# Eval("Username") %></td>
                             <td><%# String.Format("{0:#,##0}", (int)Eval("TotalPoints"))%></td>
                         </tr>

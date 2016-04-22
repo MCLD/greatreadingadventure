@@ -13,7 +13,6 @@
 
     <uc1:PatronContext ID="pcCtl" runat="server" />
 
-
     <asp:GridView ID="gv1" runat="server"  
         AutoGenerateColumns="False" 
         AllowSorting="False"

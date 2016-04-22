@@ -25,7 +25,8 @@ CREATE PROCEDURE [dbo].[app_Badge_Update] (
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@HiddenFromPublic BIT
 	)
 AS
 UPDATE Badge
@@ -53,6 +54,7 @@ SET AdminName = @AdminName,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	HiddenFromPublic = @HiddenFromPublic
 WHERE BID = @BID
 	AND TenID = @TenID

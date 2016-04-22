@@ -1,7 +1,7 @@
 ﻿;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Master page and front page text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-system-name=Great Reading Adventure 
+system-name=Great Reading Adventure
 slogan=Reimagining Summer Reading
 upsell=All of what you are seeing can be easily customized for your library!
 footer-copyright=<a href="http://www.greatreadingadventure.com/" target="_blank">The Great Reading Adventure</a> was developed by the <a href="http://www.mcldaz.org/" target="_blank">Maricopa County Library District</a> with support by the <a href="http://www.azlibrary.gov/" target="_blank">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, with federal funds from the <a href="http://www.imls.gov/" target="_blank">Institute of Museum and Library Services</a>.
@@ -12,6 +12,13 @@ navigation-button-login=Login
 navigation-button-logout=Logout
 frontpage-button-register=Register Now
 frontpage-button-login=Login Now
+program-not-started=The program starts on {0}!
+program-already-over=The program ended {0}<br/>See you next year!
+twitter-description=I'm participating in a reading program because books are awesome!
+;facebook-description=I'm on a journey with The Great Reading Adventure to face adventures and challenges, learn secret codes, attend events, earn badges, and (of course) read!
+;facebook-appid=
+;twitter-username=
+;socialmedia-hashtags=hashtag1,hashtag2
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Login form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -33,8 +40,8 @@ password-recovery-expired=Your password change request has expired. Please gener
 ;;  Change password form text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 change-password-title=Change Password
-change-password-current=Current password:  
-change-password-new=New password: 
+change-password-current=Current password:
+change-password-new=New password:
 change-password-verify=Verify new password:
 change-password-submit=Change my password
 change-password-rules=Please select a new password.<ul><li>The new password should be at least 7 characters long and contain at least one letter and one number.</li></ul>
@@ -59,8 +66,12 @@ family-list-log=Enter activity
 ;;  Family Member Add
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 family-member-add-title=Add Family Member
-family-member-add-instructions=<p>Create an additional account for a family member.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
-family-member-add-username-password-details=Please a username and password for the new account. The username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
+family-member-add-description=Adding a family member to your account allows you to record reading, enter codes, and log in as that user.
+family-member-add-register-new=Register a new family member
+family-member-add-has-account=My family member already has an account
+family-member-add-instructions=<p>Create a new account for a family member.</p>
+family-member-add-existing-instructions=<p>Add an existing account as a family member. Enter your family member's username and password below.</p>
+family-member-add-username-password-details=Enter details to create an account for a family member.<br><br><ul><li>The <strong>username</strong> can be anything you like as long as it is 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see the username in the activity feed</strong> so consider that while you select your username.</li><br><li>The <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li><br><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
 family-member-add-save=Save
 family-member-add-cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,18 +97,26 @@ myaccount-family-title=Family Account Settings
 myaccount-save=Save
 myaccount-family=Manage Family Members
 myaccount-add-family-member=Add Family Member
+myaccount-program-reward-code=Reward Code
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Avatar Screen
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+avatar-title=Avatar
+avatar-description=Customize your avatar by selecting pieces using the arrows. Additional avatar pieces may be unlocked during the program by earning badges.
+avatar-return=Back
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Registration Screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 registration-title=Register and Create Account
-registration-instructions=<p>Please sign up to paricipate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
+registration-instructions=<p>Please sign up to participate! If you are the head of a household, you can add other family members after your account is created.</p><p class="text-danger" style="font-weight: bold;">Required fields are marked with an asterisk (<span class="glyphicon glyphicon-asterisk"></span>).</p>
 registration-create-family-accounts=You have completed your account registration and are now creating accounts for your household members. <strong>Please enter their information in the form.</strong>
 registration-processing=Creating your account...
-registration-success=Your account has been succesfully created!
-registration-success-family-account=<p>Your Account has been succesfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
+registration-success=Your account has been successfully created!
+registration-success-family-account=<p>Your Account has been successfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
 registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
 registration-privacy-details=You may show my username (but not my real name) and achievements (adventures, badges, challenges, etc.) to other participants.
-registration-form-username-password-details=Please select your username and password for the program. Your username may be shown to other participants on the leaderboard.<ul><li>Your <strong>username</strong> should be between 5 and 25 characters and contain no spaces.</li><li>Your <strong>password</strong> should be at least 7 characters long and contain at least one letter and one number.</li></ul>
+registration-form-username-password-details=You may now select your username and password for the program!<br><br><ul><li>Your <strong>username</strong> can be anything you like as long as it is 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see your username in the activity feed</strong> so consider that while you select your username.</li><br><li>Your <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li></ul>
+registration-email-not-required-note=Email address is not required but the easiest way to recover a forgotten password is for the system to email you.
 registration-button-previous=< Previous
 registration-button-next=Next >
 registration-button-done=Done
@@ -125,7 +144,7 @@ registration-form-county=County:
 registration-form-guardian-name-first=Parent/guardian first name:
 registration-form-guardian-name-middle=Parent/guardian middle name:
 registration-form-guardian-name-last=Parent/guardian last name:
-registration-form-library-district=Library district:
+registration-form-library-district=Library system:
 registration-form-library=Library:
 registration-form-library-card=Library card #:
 registration-form-school-district=School district:
@@ -171,13 +190,16 @@ offers-serial=Offer Serial #
 ;;  Events text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 events-title=Events
+events-instructions=Attend library and community events, learn secret codes, and earn points and badges!
 events-header-when=When
 events-header-where=Where
 events-header-what=What
 events-header-summary=Summary
-events-filter-button=Filter
-events-filter-clear-button=Clear
-events-prompt=Event: 
+events-filter-button=Search Events
+events-return=View All Events
+events-filter-clear-button=Show All Events
+events-thisweek-button=Events This Week
+events-prompt=Event:
 events-none-available=No events found.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Notifications text
@@ -190,12 +212,15 @@ notifications-message-sent=Your message has been sent!
 ;;  Reading Lists text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 challenges-title=Challenges
-challenges-instructions=Complete Challenges to earn points and win badges!
+challenges-instructions=Take on a Challenge by participating in activities or read books on a book list to earn badges and points!
 challenges-no-challenges=There are currently no Challenges. Check back soon!
-challenges-prompt=Challenge: 
+challenges-no-match=Couldn't find any Challenges matching the text you entered.
+challenges-prompt=Challenge:
 challenges-close=Close
 challenges-save=Save
-challenges-return=Back
+challenges-return=View All Challenges
+challenges-search-button=Search Challenges
+challenges-search-clear-button=Show All Challenges
 challenges-progress-saved=Your progress has been saved!
 challenges-completed=<strong>Good work</strong>, you've completed a Challenge!
 challenges-completed-badge=<strong>Congratulations</strong>, you completed a Challenge and were awarded a badge!
@@ -213,15 +238,17 @@ badges-my-badges=My Badges
 badges-gallery=Badge Gallery
 badges-none-earned=You have not earned any badges yet.
 badges-none-available=No badges found.
-badges-filter-button=Filter
-badges-filter-clear-button=Clear
+badges-filter-button=Search Badges
+badges-filter-clear-button=Show All Badges
 badges-mybadges-button=My Badges
 badges-badgegallery-button=Badge Gallery
+badges-return=View All Badges
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Reading log
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 readinglog-reading-log=Reading log
 readinglog-description=Log your reading below. If you want to enter book details, check the "I want to enter book details" checkbox first!
+readinglog-description-required-details=Log your reading below.
 readinglog-reading-prompt=I read
 readinglog-submit=Submit
 readinglog-read-a-book=I read a book!
@@ -234,6 +261,7 @@ secret-code-header=Secret code
 secret-code-description=Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!
 secret-code-prompt=Code:
 secret-code-submit=Submit
+secret-code-link=<strong>We've received a secret code for you!</strong>  Click the "Submit" button in the <em>Secret Code</em> section!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Books read
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -9,7 +9,15 @@
     </div>
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 text-center margin-1em-bottom">
-            <em><asp:Label runat="server" Text="readinglog-description"></asp:Label></em>
+            <em>
+             <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
+                <asp:Label runat="server" Text="readinglog-description"></asp:Label>
+             <% } else { %>
+                 <asp:Label runat="server" Text="readinglog-description-required-details"></asp:Label>
+             <% } %>
+            </em>
+
+           
         </div>
     </div>
     <div class="row">
@@ -41,14 +49,18 @@
                         OnClick="submitButton_Click"></asp:LinkButton>
                 </div>
             </div>
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <asp:CheckBox runat="server"
-                        ID="enterBookDetails"
-                        Text="I want to enter book details"
-                        CssClass="readinglog-checkbox checkbox-inline"></asp:CheckBox>
+
+            <% if (ViewState[RequireBookDetailsKey] as bool? != true) { %>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <asp:CheckBox runat="server"
+                            ID="enterBookDetails"
+                            Text="I want to enter book details"
+                            CssClass="readinglog-checkbox checkbox-inline"></asp:CheckBox>
+                    </div>
                 </div>
-            </div>
+            <% } %>
+
         </div>
     </div>
 

@@ -127,9 +127,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     {
                         obj.Update();
                         obj2.Update();
-                        Cache[CacheKey.AdventuresActive] = true;
+                        new SessionTools(Session).RemoveCache(Cache, CacheKey.AdventuresActive);
 
-                        if(e.CommandName.ToLower() == "saveandback")
+                        if (e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);
                         }

@@ -19,6 +19,14 @@
     <asp:Repeater ID="rptr" runat="server" OnItemDataBound="rptr_ItemDataBound" OnItemCommand="rptr_ItemCommand">
         <ItemTemplate>
             <div class="margin-halfem-top row">
+                <asp:HyperLink CausesValidation="false"
+                    ID="Avatar"
+                    CssClass="btn btn-default margin-halfem-bottom"
+                    runat="server"
+                    NavigateUrl="~/Avatar/">
+                    <span class="glyphicon glyphicon-picture margin-halfem-right"></span>
+                    <asp:Label runat="server" Text="avatar-title"></asp:Label>
+                </asp:HyperLink>
                 <asp:HyperLink ID="FamilyAccountList"
                     CausesValidation="false"
                     CommandName="familyAccountList"
@@ -32,7 +40,7 @@
                     ID="FamilyAccountAdd"
                     CssClass="btn btn-default margin-halfem-bottom"
                     runat="server"
-                    NavigateUrl="~/Account/AddFamilyMemberAccount.aspx">
+                    NavigateUrl="~/Account/AddFamilyMember.aspx">
                     <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
                     <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
                 </asp:HyperLink>
@@ -108,26 +116,6 @@
                     <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LastName_Req") %>'
                         ControlToValidate="LastName" Display="Dynamic" ErrorMessage="Last name is required"
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-avatar"></asp:Label>
-                </label>
-                <div class="col-sm-9">
-                    <select id="ddAvatar"></select>
-                    <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                    <script>
-                        var ddData = <%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>;
-                        $('#ddAvatar').ddslick({
-                            data: ddData,
-                            background: "transparent",
-                            selectText: "Select an avatar",
-                            onSelected: function (data) {
-                                $('.selected-avatar').first().val(data.selectedData.value);
-                            }
-                        });
-                    </script>
                 </div>
             </div>
             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolGrade_Show")%>'>
@@ -407,7 +395,7 @@
             </div>
             <div class="form-group" runat="server" visible='<%# (bool)Eval("District_Show")%>'>
                 <label class="col-sm-3 control-label">
-                    <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
+                    <asp:Label runat="server" Text="registration-form-library-district"></asp:Label>
                 </label>
                 <div class="col-sm-6">
                     <asp:DropDownList
@@ -479,7 +467,7 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolType_Show")%>'>
+            <div class="form-group" id="SchoolTypePanel" runat="server" visible='<%# (bool)Eval("SchoolType_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
                 </label>
@@ -511,7 +499,7 @@
                 </div>
             </div>
 
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SDistrict_Show")%>'>
+            <div class="form-group" id="SDistrictPanel" runat="server" visible='<%# (bool)Eval("SDistrict_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
                 </label>
@@ -541,7 +529,7 @@
                         SetFocusOnError="True" Operator="GreaterThan" ValueToCompare="0">* required</asp:CompareValidator>
                 </div>
             </div>
-            <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolName_Show")%>'>
+            <div class="form-group" id="SchoolNamePanel" runat="server" visible='<%# (bool)Eval("SchoolName_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <asp:Label runat="server" Text="registration-form-school"></asp:Label>
                 </label>
@@ -600,6 +588,39 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
+
+
+            <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Show")%>'>
+                <label class="col-sm-3 control-label">
+                    <asp:Label ID="GoalLabel" runat="server"></asp:Label>
+                </label>
+                <div class="col-sm-6">
+                    <asp:TextBox ID="Goal" runat="server" CssClass="form-control"
+                        Text='<%# Eval("Goal") %>'
+                        Enabled='<%# (bool)Eval("Goal_Edit") %>'></asp:TextBox>
+
+                </div>
+                <div class="col-sm-3 form-control-static">
+                    <span runat="server" visible='<%# Eval("Goal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GoalReq"></span>
+                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
+                        ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
+                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                    <asp:RangeValidator
+                        ID="GoalRangeValidator"
+                        MinimumValue="0"
+                        MaximumValue="100"
+                        ControlToValidate="Goal"
+                        Display="Dynamic"
+                        Type="Integer"
+                        EnableClientScript="true"
+                        ErrorMessage='Invalid range for Goal'
+                        runat="server"
+                        Text='invalid range'
+                        EnableTheming="True"
+                        SetFocusOnError="True" />
+                </div>
+            </div>
+
             <div class="form-group" runat="server" visible='<%# (bool)Eval("LiteracyLevel1_Show")%>'>
                 <label class="col-sm-3 control-label">
                     <%# Eval("Literacy1Label")%>:
@@ -824,6 +845,15 @@
                         SetFocusOnError="True">* required</asp:RequiredFieldValidator>
                 </div>
             </div>
+
+            <asp:Panel CssClass="form-group" runat="server" ID="ProgramRewardCodeDisplay">
+                <label class="col-sm-3 control-label">
+                    <asp:Label runat="server" Text="myaccount-program-reward-code"></asp:Label>:</label>
+                <div class="col-sm-9 form-control-static">
+                    <asp:Label ID="ProgramRewardCodes" runat="server"></asp:Label>
+                </div>
+            </asp:Panel>
+
             <div class="form-group clearfix">
                 <div class="col-sm-9">
                     <div class="pull-right">

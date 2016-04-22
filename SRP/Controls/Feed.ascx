@@ -9,7 +9,8 @@
 </div>
 
 <script>
-    var feedRootPath= '<%=Request.ApplicationPath%>';
+    var feedRootPath = '<%=Request.ApplicationPath%>';
+    var feedCurrentPatronProgram = <%=CurrentPatronProgram%>;
     var firstFeedLoad = true;
     var feedUpdateId = 0;
     var feedLatest = 0;
@@ -43,19 +44,32 @@
                         $.each(data.Entries, function (index, entry) {
                             if (entry["ID"] > feedLatest) {
                                 addedRows++;
-                                html.push('<tr class="animated bounceInLeft"><td class="feed-avatar">');
-                                html.push('<img Width="24" Height="24" src="' + feedRootPath + 'Images/Avatars/sm_' + entry.AvatarId + '.png" class="margin-1em-right"/></td>');
-                                html.push('<td><strong>' + entry.Username + '</strong>');
+                                html.push('<tr class="animated bounceInLeft">');
+                                if (entry.AvatarState) {
+                                    html.push('<td class="feed-avatar">');
+                                    html.push('<a href="' + feedRootPath + 'Images/AvatarCache/' + entry.AvatarState + '.png" class="fancybox">');
+                                    html.push('<img style="height: 42px; width: 42px;" src="' + feedRootPath + 'Images/AvatarCache/sm_' + entry.AvatarState + '.png" class="margin-1em-right"/></td>');
+                                    html.push('</a><td>');
+                                } else {
+                                    html.push('<td colspan="2">')
+                                }
+                                html.push('<strong>' + entry.Username + '</strong>');
                                 switch (entry.AwardReasonId) {
                                     case 1:
                                         // badge
-                                        html.push(' earned the <a href="' + feedRootPath + 'Badges/Details.aspx?BadgeId=' + entry.BadgeId + '"');
-                                        html.push('onClick="return HideTooltipShowBadgeInfo(this.parentElement, ' + entry.BadgeId + ');">' + entry.AchievementName + ' badge</a>.');
+                                        html.push(' earned the badge: <a href="' + feedRootPath + 'Badges/Details.aspx?BadgeId=' + entry.BadgeId + '"');
+                                        html.push('onClick="return HideTooltipShowBadgeInfo(this.parentElement, ' + entry.BadgeId + ');">' + entry.AchievementName + '</a>.');
                                         break;
                                     case 2:
                                         // challenge
-                                        html.push(' completed the <a href="' + feedRootPath + 'Challenges/Details.aspx?blid=' + entry.ChallengeId + '">');
-                                        html.push(entry.AchievementName + ' challenge</a>');
+                                        html.push(' completed the challenge: ');
+                                        if(entry.ChallengeProgramId == 0
+                                           || entry.ChallengeProgramId == feedCurrentPatronProgram) {
+                                            html.push('<a href="' + feedRootPath + 'Challenges/Details.aspx?ChallengeId=' + entry.ChallengeId + '">');
+                                            html.push(entry.AchievementName + '</a>');
+                                        } else {
+                                            html.push(entry.AchievementName);
+                                        }
                                         if (entry.BadgeId && entry.BadgeId > 0) {
                                             html.push(' and <a href="' + feedRootPath + 'Badges/Details.aspx?BadgeId=' + entry.BadgeId + '"');
                                             html.push('onClick="return HideTooltipShowBadgeInfo(this.parentElement, ' + entry.BadgeId + ');">earned a badge</a>.');

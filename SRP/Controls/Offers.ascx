@@ -38,7 +38,7 @@
                 <asp:Label runat="server" Text="offers-serial"></asp:Label><asp:Label ID="lblSerial" runat="server"></asp:Label></div>
         </div>
         <div class="col-xs-12 margin-1em-top hidden-print">
-            <div class="text-center"><asp:Button runat="server" Text="offers-back" OnClick="btnList_Click" CssClass="btn btn-default btn-lg"></asp:Button></div>
+            <div class="text-center"><button class="btn btn-default btn-lg margin-halfem-right" onclick="window.print();"><span class="glyphicon glyphicon-print"></span></button><asp:Button runat="server" Text="offers-back" OnClick="btnList_Click" CssClass="btn btn-default btn-lg"></asp:Button></div>
         </div>
     </div>
 </asp:Panel>

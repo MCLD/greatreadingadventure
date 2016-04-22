@@ -110,7 +110,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	2200,
-	'Modify  Program Permission',
+	'Modify Program Permission',
 	'Allows a user to create a new Program',
 	NULL
 	)
@@ -194,7 +194,7 @@ INSERT INTO SRPPermissionsMaster (
 	)
 VALUES (
 	4400,
-	'Book Lists Management',
+	'Challenges Management',
 	'Allows access to the respective maintenance screens.',
 	NULL
 	)
@@ -305,6 +305,20 @@ INSERT INTO SRPPermissionsMaster (
 	[MODID]
 	)
 VALUES (
+	5150,
+	'Patron Notifications',
+	'Allows access notifications to specific patrons.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
 	5200,
 	'Test Management',
 	'Allows access to the respective maintenance screens.',
@@ -322,6 +336,20 @@ VALUES (
 	5300,
 	'Reviews Management',
 	'Allows access to the respective maintenance screens.',
+	NULL
+	)
+GO
+
+INSERT INTO SRPPermissionsMaster (
+	[PermissionID],
+	[PermissionName],
+	[PermissionDesc],
+	[MODID]
+	)
+VALUES (
+	5400,
+	'Import/Export Management',
+	'Allows access to import/export of program management items.',
 	NULL
 	)
 GO
@@ -802,15 +830,15 @@ INSERT INTO SRPSettings (
 	[FldText3]
 	)
 VALUES (
-	'DupEvtCodes',
-	'False',
-	'int',
-	'Checkbox',
+	'CRLoginHtml',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
+	'Text',
+	'TextBox',
 	0,
-	'Duplicate Secret Codes',
-	'Whether or not duplicate secret codes are allowed',
+	'CR Login HTML',
+	'HTML to show CR users upon login',
 	'',
-	'',
+	'<p class="lead">For information on setting up your summer reading program, you can visit the <a href="http://manual.greatreadingadventure.com/" target="_blank">manual</a>.</p>',
 	1,
 	0,
 	0,
@@ -1164,8 +1192,8 @@ INSERT INTO CustomRegistrationFields (
 	)
 VALUES (
 	0,
-	'Custom 1',
-	'1',
+	'',
+	'',
 	0,
 	0,
 	0,
@@ -1354,6 +1382,10 @@ INSERT INTO RegistrationSettings (
 	[SDistrict_Req],
 	[SDistrict_Show],
 	[SDistrict_Edit],
+	[Goal_Prompt],
+	[Goal_Req],
+	[Goal_Show],
+	[Goal_Edit],
 	[TenID],
 	[FldInt1],
 	[FldInt2],
@@ -1388,45 +1420,6 @@ VALUES (
 	0,
 	0,
 	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	0,
-	1,
-	0,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
 	0,
 	0,
 	0,
@@ -1462,7 +1455,9 @@ VALUES (
 	0,
 	0,
 	0,
-	1,
+	0,
+	0,
+	0,
 	0,
 	0,
 	0,
@@ -1499,7 +1494,44 @@ VALUES (
 	0,
 	0,
 	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
 	1,
+	0,
+	1,
+	0,
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
 	0,
 	0,
 	0,
@@ -1520,6 +1552,10 @@ VALUES (
 	'sysadmin',
 	GETDATE(),
 	'N/A',
+	0,
+	0,
+	0,
+	0,
 	0,
 	0,
 	0,
@@ -1683,6 +1719,7 @@ INSERT [dbo].[Programs] (
 	[ParentalConsentFlag],
 	[ParentalConsentText],
 	[PatronReviewFlag],
+	[RequireBookDetails],
 	[LogoutURL],
 	[ProgramGameID],
 	[HTML1],
@@ -1712,7 +1749,12 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId],
+	[HideSchoolInRegistration]
 	)
 VALUES (
 	1,
@@ -1731,6 +1773,7 @@ VALUES (
 	0,
 	N'',
 	0,
+	0,
 	N'',
 	0,
 	N'<p>Welcome to the Great Reading Adventure! Sign up and log your reading to enjoy adventures, take on challenges, earn badges, and attend events!</p>',
@@ -1738,7 +1781,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1760,7 +1803,12 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	0,
+	120,
+	0,
+	1
 	)
 GO
 
@@ -1781,6 +1829,7 @@ INSERT [dbo].[Programs] (
 	[ParentalConsentFlag],
 	[ParentalConsentText],
 	[PatronReviewFlag],
+	[RequireBookDetails],
 	[LogoutURL],
 	[ProgramGameID],
 	[HTML1],
@@ -1810,7 +1859,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	2,
@@ -1829,6 +1882,7 @@ VALUES (
 	0,
 	N'',
 	0,
+	0,
 	N'',
 	0,
 	N'<p>Welcome to the Great Reading Adventure! Sign up and log your reading to enjoy adventures, take on challenges, earn badges, and attend events!</p>',
@@ -1836,7 +1890,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1858,7 +1912,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	0,
+	120,
+	0
 	)
 GO
 
@@ -1879,6 +1937,7 @@ INSERT [dbo].[Programs] (
 	[ParentalConsentFlag],
 	[ParentalConsentText],
 	[PatronReviewFlag],
+	[RequireBookDetails],
 	[LogoutURL],
 	[ProgramGameID],
 	[HTML1],
@@ -1908,7 +1967,11 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId]
 	)
 VALUES (
 	3,
@@ -1927,6 +1990,7 @@ VALUES (
 	0,
 	N'',
 	0,
+	0,
 	N'',
 	0,
 	N'<p>Welcome to the Great Reading Adventure! Sign up and log your reading to enjoy adventures, take on challenges, earn badges, and attend events!</p>',
@@ -1934,7 +1998,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -1956,7 +2020,11 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	0,
+	120,
+	0
 	)
 GO
 
@@ -1977,6 +2045,7 @@ INSERT [dbo].[Programs] (
 	[ParentalConsentFlag],
 	[ParentalConsentText],
 	[PatronReviewFlag],
+	[RequireBookDetails],
 	[LogoutURL],
 	[ProgramGameID],
 	[HTML1],
@@ -2006,7 +2075,12 @@ INSERT [dbo].[Programs] (
 	[PostTestID],
 	[PreTestMandatory],
 	[PretestEndDate],
-	[PostTestStartDate]
+	[PostTestStartDate],
+	[GoalDefault],
+	[GoalMin],
+	[GoalMax],
+	[GoalIntervalId],
+	[HideSchoolInRegistration]
 	)
 VALUES (
 	4,
@@ -2025,6 +2099,7 @@ VALUES (
 	0,
 	N'',
 	0,
+	0,
 	N'',
 	0,
 	N'<p>Welcome to the Great Reading Adventure! Sign up and log your reading to enjoy adventures, take on challenges, earn badges, and attend events!</p>',
@@ -2032,7 +2107,7 @@ VALUES (
 	N'<p>For more information about this reading program, visit your local library!</p><p>While you''re there, go on a journey of discovery! Visit fabulous destinations such as Hogwarts, Narnia, Oz, and Middle Earth!</p>',
 	N'<p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p><p>Reading is fundamental for developing literacy skills!</p>',
 	N'',
-	N'<p>Our reading program has not started yet! Sign up now and you''ll be ready to log your reading the day the program starts!</p>',
+	N'<p>The reading program hasn''t started yet.<br/>You can log your reading starting on {0}!</p>',
 	N'',
 	0,
 	0,
@@ -2054,7 +2129,12 @@ VALUES (
 	0,
 	0,
 	NULL,
-	NULL
+	NULL,
+	0,
+	0,
+	120,
+	0,
+	1
 	)
 GO
 
@@ -2355,250 +2435,598 @@ GO
 SET IDENTITY_INSERT [dbo].[ProgramGamePointConversion] OFF
 GO
 
-SET IDENTITY_INSERT [dbo].[Avatar] ON
+SET IDENTITY_INSERT [dbo].[AvatarPart] ON
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	1,
-	N'Percy',
+	N'Bottom1',
 	N'O',
-	GetDate(),
+	0,
+	- 1,
+	0,
+	GETDATE(),
 	N'sysadmin',
-	GetDate(),
+	GETDATE(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	2,
-	N'Katniss',
+	N'Bottom2',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
+	0,
+	- 1,
 	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	3,
-	N'Othello',
+	N'Bottom3',
 	N'O',
-	GetDate(),
+	0,
+	- 1,
+	2,
+	GETDATE(),
 	N'sysadmin',
-	GetDate(),
+	GETDATE(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	4,
-	N'Hester',
+	N'Bottom4',
 	N'O',
-	GetDate(),
+	0,
+	- 1,
+	3,
+	GETDATE(),
 	N'sysadmin',
-	GetDate(),
+	GETDATE(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	5,
-	N'Gandalf',
+	N'Bottom5',
 	N'O',
-	GetDate(),
+	0,
+	- 1,
+	4,
+	GETDATE(),
 	N'sysadmin',
-	GetDate(),
+	GETDATE(),
 	N'sysadmin',
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	1
 	)
 GO
 
-INSERT [dbo].[Avatar] (
-	[AID],
+INSERT [dbo].[AvatarPart] (
+	[APID],
 	[Name],
 	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
 	[LastModDate],
 	[LastModUser],
 	[AddedDate],
 	[AddedUser],
-	[TenID],
-	[FldInt1],
-	[FldInt2],
-	[FldInt3],
-	[FldBit1],
-	[FldBit2],
-	[FldBit3],
-	[FldText1],
-	[FldText2],
-	[FldText3]
+	[TenID]
 	)
 VALUES (
 	6,
-	N'Cersei',
+	N'Top1',
 	N'O',
-	GetDate(),
-	N'sysadmin',
-	GetDate(),
-	N'sysadmin',
 	1,
+	- 1,
 	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	N'',
-	N'',
-	N''
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
 	)
 GO
 
-SET IDENTITY_INSERT [dbo].[Avatar] OFF
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	7,
+	N'Top2',
+	N'O',
+	1,
+	- 1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	8,
+	N'Top3',
+	N'O',
+	1,
+	- 1,
+	2,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	9,
+	N'Top4',
+	N'O',
+	1,
+	- 1,
+	3,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	10,
+	N'Top5',
+	N'O',
+	1,
+	- 1,
+	4,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	11,
+	N'Top6',
+	N'O',
+	1,
+	- 1,
+	5,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	12,
+	N'Top7',
+	N'O',
+	1,
+	- 1,
+	6,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	13,
+	N'Top8',
+	N'O',
+	1,
+	- 1,
+	7,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	14,
+	N'BoyHead',
+	N'O',
+	2,
+	- 1,
+	0,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	15,
+	N'GirlHead',
+	N'O',
+	2,
+	- 1,
+	1,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	16,
+	N'Man1Head',
+	N'O',
+	2,
+	- 1,
+	2,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	17,
+	N'Man2Head',
+	N'O',
+	2,
+	- 1,
+	3,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	18,
+	N'Man3Head',
+	N'O',
+	2,
+	- 1,
+	4,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	19,
+	N'Woman1Head',
+	N'O',
+	2,
+	- 1,
+	5,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	20,
+	N'Woman2Head',
+	N'O',
+	2,
+	- 1,
+	6,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+INSERT [dbo].[AvatarPart] (
+	[APID],
+	[Name],
+	[Gender],
+	[ComponentID],
+	[BadgeID],
+	[Ordering],
+	[LastModDate],
+	[LastModUser],
+	[AddedDate],
+	[AddedUser],
+	[TenID]
+	)
+VALUES (
+	21,
+	N'Woman3Head',
+	N'O',
+	2,
+	- 1,
+	7,
+	GETDATE(),
+	N'sysadmin',
+	GETDATE(),
+	N'sysadmin',
+	1
+	)
+GO
+
+SET IDENTITY_INSERT [dbo].[AvatarPart] OFF
 GO
 
 IF (
@@ -2624,8 +3052,8 @@ BEGIN
 		N'sysadmin',
 		'Initial configuration',
 		3,
+		1,
 		0,
-		3,
 		'Performed initial configuration of multiple programs'
 		)
 END

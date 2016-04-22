@@ -5,34 +5,40 @@ using System.Web;
 using System.Web.UI;
 using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
-using GRA.SRP.Utilities;
 using GRA.Tools;
 using GRA;
 
-namespace SRPApp.Classes {
-    public class BaseControlRoomPage : System.Web.UI.Page {
+namespace SRPApp.Classes
+{
+    public class BaseControlRoomPage : System.Web.UI.Page
+    {
         #region Properties
         protected static string DbConn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
         public IControlRoomMaster MasterPage;
         protected SRPUser SRPUser;
-        protected List<SRPPermission> UserPermissions;
+        protected List<GRA.SRP.Utilities.SRPPermission> UserPermissions;
         protected string UserPermissionList = string.Empty;
         #endregion
 
-        public BaseControlRoomPage() {
-            this.Load += (s, e) => {
+        public BaseControlRoomPage()
+        {
+            this.Load += (s, e) =>
+            {
                 var tenantIdSession = Session["TenantID"];
                 int? tenantId = tenantIdSession as int?;
                 int? crTenantId = CRTenantID;
 
-                if(tenantId != crTenantId) {
+                if (tenantId != crTenantId)
+                {
                     // tenant mismatch between user's TenantID and CR login tenant id
                     // log out user
-                    try {
+                    try
+                    {
                         SRPUser user = Session[SessionData.UserProfile.ToString()] as SRPUser;
                         string who = "Unknown user";
-                        if(user != null) {
+                        if (user != null)
+                        {
                             who = user.Username;
                         }
 
@@ -40,7 +46,9 @@ namespace SRPApp.Classes {
                                          who,
                                          tenantId,
                                          crTenantId);
-                    } catch(Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         this.Log()
                             .Debug("Unknown user has mismatched tenants ({0} public and {1} CR) - error occurred: {2} - performing logout",
                                    tenantId,
@@ -57,22 +65,22 @@ namespace SRPApp.Classes {
 
         protected string PageTitle {
             //get { return masterPage.PageMessage; }
-            set { if(MasterPage != null) MasterPage.PageTitle = value; }
+            set { if (MasterPage != null) MasterPage.PageTitle = value; }
         }
 
         protected string PageMessage {
             //get { return masterPage.PageMessage; }
-            set { if(MasterPage != null) MasterPage.PageMessage = value; }
+            set { if (MasterPage != null) MasterPage.PageMessage = value; }
         }
 
         protected string PageError {
             //get { return masterPage.PageMessage; }
-            set { if(MasterPage != null) MasterPage.PageError = value; }
+            set { if (MasterPage != null) MasterPage.PageError = value; }
         }
 
         protected string PageWarning {
             //get { return masterPage.PageMessage; }
-            set { if(MasterPage != null) MasterPage.PageWarning = value; }
+            set { if (MasterPage != null) MasterPage.PageWarning = value; }
         }
 
         protected string BaseUrl {
@@ -95,16 +103,19 @@ namespace SRPApp.Classes {
         //    return returnValue;
         //}
 
-        public void SetPageRibbon(List<RibbonPanel> moduleRibbonPanels) {
-            foreach(var moduleRibbonPanel in moduleRibbonPanels) {
+        public void SetPageRibbon(List<RibbonPanel> moduleRibbonPanels)
+        {
+            foreach (var moduleRibbonPanel in moduleRibbonPanels)
+            {
                 MasterPage.PageRibbon.Add(moduleRibbonPanel);
             }
             MasterPage.PageRibbon.DataBind();
         }
 
-        protected override void OnPreLoad(EventArgs e) {
+        protected override void OnPreLoad(EventArgs e)
+        {
             MasterPage = (IControlRoomMaster)Master;
-            if(MasterPage != null)
+            if (MasterPage != null)
                 MasterPage.IsSecure = true;
             SRPUser = (SRPUser)Session[SessionData.UserProfile.ToString()];
             //UserPermissions = (List<SRPPermission>)Session[SessionData.PermissionList.ToString()];
@@ -113,36 +124,47 @@ namespace SRPApp.Classes {
             base.OnPreLoad(e);
         }
 
-        protected override void OnLoadComplete(EventArgs e) {
+        protected override void OnLoadComplete(EventArgs e)
+        {
             base.OnInit(e);
         }
 
-        protected Control FindControlRecursive(Control rootControl, string controlID) {
-            if(rootControl.ID == controlID)
+        protected Control FindControlRecursive(Control rootControl, string controlID)
+        {
+            if (rootControl.ID == controlID)
                 return rootControl;
 
-            foreach(Control controlToSearch in rootControl.Controls) {
+            foreach (Control controlToSearch in rootControl.Controls)
+            {
                 Control controlToReturn =
                     FindControlRecursive(controlToSearch, controlID);
-                if(controlToReturn != null)
+                if (controlToReturn != null)
                     return controlToReturn;
             }
             return null;
         }
 
-        protected bool? SafeSessionReturnBool(string sessionKey) {
+        protected bool? SafeSessionReturnBool(string sessionKey)
+        {
             var sessionValue = Session[sessionKey];
-            try {
+            try
+            {
                 return (bool)sessionValue;
-            } catch(Exception) {
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }
 
-        protected int? SafeSessionReturnInt(string sessionKey) {
-            try {
+        protected int? SafeSessionReturnInt(string sessionKey)
+        {
+            try
+            {
                 return (int)Session[sessionKey];
-            } catch(Exception) {
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }

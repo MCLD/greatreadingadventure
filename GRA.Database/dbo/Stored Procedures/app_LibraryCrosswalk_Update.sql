@@ -13,7 +13,10 @@ CREATE PROCEDURE [dbo].[app_LibraryCrosswalk_Update] (
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@BranchLink NVARCHAR(255) = '',
+	@BranchAddress NVARCHAR(255) = '',
+	@BranchTelephone NVARCHAR(255) = ''
 	)
 AS
 UPDATE LibraryCrosswalk
@@ -29,6 +32,9 @@ SET BranchID = @BranchID,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	BranchLink = @BranchLink,
+	BranchAddress = @BranchAddress,
+	BranchTelephone = @BranchTelephone
 WHERE ID = @ID
 	AND TenID = @TenID

@@ -10,6 +10,8 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
+using GRA.Tools;
 
 namespace GRA.SRP.DAL
 {
@@ -207,22 +209,30 @@ namespace GRA.SRP.DAL
 
         #region stored procedure wrappers
 
-        public static DataSet GetForDisplay(int PID)
+        public static DataSet GetForDisplay(int PID, string searchText)
         {
             var TenID =
                 (HttpContext.Current.Session["TenantID"] == null ||
                  HttpContext.Current.Session["TenantID"].ToString() == ""
                      ? -1
                      : (int)HttpContext.Current.Session["TenantID"]);
-            return GetForDisplay(PID, TenID);
+            return GetForDisplay(PID, TenID, searchText);
         }
 
-        public static DataSet GetForDisplay(int PID, int TenID)
+        public static DataSet GetForDisplay(int PID, int TenID, string searchText)
         {
-            SqlParameter[] arrParams = new SqlParameter[2];
-            arrParams[0] = new SqlParameter("@PID", PID);
-            arrParams[1] = new SqlParameter("@TenID", TenID);
-            return SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_BookList_GetForDisplay", arrParams);
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@PID", PID));
+            arrParams.Add(new SqlParameter("@TenID", TenID));
+            if(!string.IsNullOrWhiteSpace(searchText))
+            {
+                arrParams.Add(new SqlParameter("@SearchText",
+                    new DatabaseTools().PrepareSearchString(searchText.Trim())));
+            }
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_BookList_GetForDisplay",
+                arrParams.ToArray());
         }
 
 
@@ -532,6 +542,37 @@ namespace GRA.SRP.DAL
         }
 
         #endregion
+
+        public static DataSet GetFiltered(string searchText, int branchId)
+        {
+            var arrParams = new List<SqlParameter>();
+            var tenantId = HttpContext.Current.Session["TenantID"];
+            arrParams.Add(new SqlParameter("@TenID",
+                            tenantId == null || string.IsNullOrEmpty(tenantId.ToString())
+                                ? -1
+                                : (int)tenantId));
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (!searchText.StartsWith("%"))
+                {
+                    searchText = string.Format("%{0}", searchText);
+                }
+                if (!searchText.EndsWith("%"))
+                {
+                    searchText = string.Format("{0}%", searchText);
+                }
+                arrParams.Add(new SqlParameter("@SearchText", searchText));
+            }
+            if (branchId > 0)
+            {
+                arrParams.Add(new SqlParameter("@BranchId", branchId));
+            }
+
+            return SqlHelper.ExecuteDataset(conn,
+                CommandType.StoredProcedure,
+                "app_BookList_Filter",
+                arrParams.ToArray());
+        }
 
     }//end class
 

@@ -13,7 +13,16 @@ namespace GRA.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             IsSecure = true;
-            if (!IsPostBack) TranslateStrings(this);
+            if (!IsPostBack)
+            {
+                TranslateStrings(this);
+            }
+            var master = this.MasterPage as BaseSRPMaster;
+            if (master != null)
+            {
+                master.PatronTakingTest = true;
+            }
         }
+
     }
 }

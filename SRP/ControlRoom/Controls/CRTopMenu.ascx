@@ -37,6 +37,7 @@
     <div id="cdnavcont">
 	    <div id="cdnavheader">
 		    <ul>
+                <li><asp:HyperLink runat="server" ID="CRHome" NavigateUrl="~/ControlRoom/"><span class="glyphicon glyphicon-home""></span></asp:HyperLink></li>
 		        <asp:Repeater ID="rptTabs" runat="server">
                 <ItemTemplate>
                 <li id='<%# ((bool)Eval("isSelected") ? "current" : "") %>'><a  href='<%# Eval("URL") %>'><span><%# Eval("Name") %></span></a></li>

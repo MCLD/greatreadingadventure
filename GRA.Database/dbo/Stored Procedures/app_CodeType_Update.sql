@@ -4,7 +4,7 @@
 CREATE PROCEDURE [dbo].[app_CodeType_Update] (
 	@CTID INT,
 	@isSystem BIT,
-	@CodeTypeName VARCHAR(50),
+	@CodeTypeName VARCHAR(255),
 	@Description TEXT,
 	@TenID INT = 0,
 	@FldInt1 INT = 0,

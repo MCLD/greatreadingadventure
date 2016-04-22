@@ -327,7 +327,7 @@ namespace GRA.SRP.Controls {
                         var rewardCode= string.Empty;
                         // get the Code value
                         // save the code value for the patron
-                        rewardCode = ProgramCodes.AssignCodeForPatron(patron.ProgID, patron.ProgID);
+                        rewardCode = ProgramCodes.AssignCodeForPatron(patron.ProgID, patron.PID);
 
                         // generate the notification
                         var not = new Notifications {

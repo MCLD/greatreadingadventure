@@ -61,25 +61,6 @@
                         <tr />
 
 
-                    <tr>
-                        <td>Avatar:</td>
-                        <td>
-                            <select id="ddAvatar"></select>
-                            <input id="AvatarID" class="avatar selected-avatar" runat="server" visible="true" type="text" style="display: none;" value="1" />
-                            <script>
-                                var ddData = <%# Avatar.GetJSONForSelection((int)Eval("AvatarID")) %>;
-                                $('#ddAvatar').ddslick({
-                                    data: ddData,
-                                    background: "transparent",
-                                    selectText: "Select an avatar",
-                                    onSelected: function (data) {
-                                        $('.selected-avatar').first().val(data.selectedData.value);
-                                    }
-                                });
-                            </script>
-                        </td>
-                    </tr>
-
                     <tr style='display: <%# ((bool)Eval("SchoolGrade_Show")? "normal" : "none") %>'>
                         <td>School Grade:&nbsp;&nbsp;&nbsp;</td>
                         <td>

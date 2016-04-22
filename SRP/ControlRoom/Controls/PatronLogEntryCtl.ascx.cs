@@ -152,8 +152,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
                     if ((PointAwardReason)o.AwardReasonCd == PointAwardReason.EventAttendance)
                     {
-                        var ds = Event.GetEventByEventCode(pa.pgm.StartDate.ToShortDateString(),
-                                                   DateTime.Now.ToShortDateString(), EventCode.Text);
+                        var ds = Event.GetEventByEventCode(EventCode.Text);
                         var EID = 0;
                         if (ds.Tables[0].Rows.Count == 0)
                         {

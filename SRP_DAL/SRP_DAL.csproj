@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -49,7 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Avatar.cs" />
+    <Compile Include="AvatarPart.cs" />
     <Compile Include="Award.cs" />
     <Compile Include="Badge.cs" />
     <Compile Include="BookList.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="SRPGroup.cs" />
     <Compile Include="SRPReport.cs" />
     <Compile Include="SRPSettings.cs" />
-    <Compile Include="ProgramStatus.cs" />
+    <Compile Include="TenantStatus.cs" />
     <Compile Include="Survey.cs" />
     <Compile Include="SurveyAnswers.cs" />
     <Compile Include="SurveyQuestion.cs" />

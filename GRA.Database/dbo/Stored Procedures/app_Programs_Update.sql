@@ -16,6 +16,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@ParentalConsentFlag BIT,
 	@ParentalConsentText TEXT,
 	@PatronReviewFlag BIT,
+	@RequireBookDetails BIT,
 	@LogoutURL VARCHAR(150),
 	@ProgramGameID INT,
 	@HTML1 TEXT,
@@ -45,7 +46,12 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@PostTestID INT = 0,
 	@PreTestMandatory INT = 0,
 	@PretestEndDate DATETIME,
-	@PostTestStartDate DATETIME
+	@PostTestStartDate DATETIME,
+	@GoalDefault INT = 0,
+	@GoalMin INT = 0,
+	@GoalMax INT = 0,
+	@GoalIntervalId INT = 0,
+	@HideSchoolInRegistration BIT = 0
 	)
 AS
 UPDATE Programs
@@ -64,6 +70,7 @@ SET AdminName = @AdminName,
 	ParentalConsentFlag = @ParentalConsentFlag,
 	ParentalConsentText = @ParentalConsentText,
 	PatronReviewFlag = @PatronReviewFlag,
+	RequireBookDetails = @RequireBookDetails,
 	LogoutURL = @LogoutURL,
 	ProgramGameID = @ProgramGameID,
 	HTML1 = @HTML1,
@@ -93,6 +100,11 @@ SET AdminName = @AdminName,
 	PostTestID = @PostTestID,
 	PreTestMandatory = @PreTestMandatory,
 	PretestEndDate = @PretestEndDate,
-	PostTestStartDate = @PostTestStartDate
+	PostTestStartDate = @PostTestStartDate,
+	GoalDefault = @GoalDefault,
+	GoalMin = @GoalMin,
+	GoalMax = @GoalMax,
+	GoalIntervalId = @GoalIntervalId,
+	HideSchoolInRegistration = @HideSchoolInRegistration
 WHERE PID = @PID
 	AND TenID = @TenID

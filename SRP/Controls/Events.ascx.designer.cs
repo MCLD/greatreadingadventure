@@ -40,6 +40,15 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.TextBox EndDate;
         
         /// <summary>
+        /// SystemId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList SystemId;
+        
+        /// <summary>
         /// BranchId control.
         /// </summary>
         /// <remarks>
@@ -47,6 +56,24 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList BranchId;
+        
+        /// <summary>
+        /// SearchText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SearchText;
+        
+        /// <summary>
+        /// ThisWeek control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ThisWeek;
         
         /// <summary>
         /// btnFilter control.
@@ -67,13 +94,31 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Button btnClear;
         
         /// <summary>
-        /// whatsShowing control.
+        /// WhatsShowingPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label whatsShowing;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl WhatsShowingPanel;
+        
+        /// <summary>
+        /// WhatsShowing control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label WhatsShowing;
+        
+        /// <summary>
+        /// WhatsShowingPrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label WhatsShowingPrint;
         
         /// <summary>
         /// rptr control.
@@ -85,12 +130,21 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Repeater rptr;
         
         /// <summary>
-        /// odsDDBranch control.
+        /// DistrictDataSource control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ObjectDataSource odsDDBranch;
+        protected global::System.Web.UI.WebControls.ObjectDataSource DistrictDataSource;
+        
+        /// <summary>
+        /// BranchDataSource control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource BranchDataSource;
     }
 }

@@ -38,7 +38,6 @@
                     </table>
 
                     <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" ActiveTabIndex="0"
-                        Height="500px"
                         Width="100%"
                         AutoPostBack="false"
                         TabStripPlacement="Top"

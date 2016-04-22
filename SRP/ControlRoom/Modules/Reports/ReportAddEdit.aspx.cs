@@ -24,7 +24,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             MasterPage.RequiredPermission = 4200;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Ad-Hoc Report");
-            
+
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
@@ -33,6 +33,21 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 lblPK.Text = Session["RID"] == null ? "" : Session["RID"].ToString();
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                ViewState["RegistrationData"] = DAL.RegistrationSettings.GetAll();
+            }
+        }
+
+        protected string ShowField(string fieldKey)
+        {
+            var row = ((DataSet)ViewState["RegistrationData"]).Tables[0].Rows[0];
+            if (row[string.Format("{0}_Prompt", fieldKey)] as bool? != true
+                && row[string.Format("{0}_Show", fieldKey)] as bool? != true)
+            {
+                return "class=\"hidden\"";
+            } else
+            {
+                return string.Empty;
             }
         }
 
@@ -110,7 +125,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             if (e.CommandName.ToLower() == "refresh")
             {
                 try
-                {          
+                {
                     odsData.DataBind();
                     dv.DataBind();
                     dv.ChangeMode(DetailsViewMode.Edit);
@@ -124,7 +139,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-#region Save report 
+            #region Save report 
             if (e.CommandName.ToLower() == "savereport")
             {
                 if (lblPK.Text == "")
@@ -367,148 +382,148 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         int pk = int.Parse(lblPK.Text);
                         obj.Fetch(pk);
 
-                        obj.RTID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("RTID")).SelectedValue);
-                        obj.ProgId = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ProgId")).SelectedValue);
-                        obj.ReportName = ((TextBox) ((DetailsView) sender).FindControl("ReportName")).Text;
-                        obj.DisplayFilters = ((CheckBox) ((DetailsView) sender).FindControl("DisplayFilters")).Checked;
-                        obj.ReportFormat = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("ReportFormat")).SelectedValue);
+                        obj.RTID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("RTID")).SelectedValue);
+                        obj.ProgId = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ProgId")).SelectedValue);
+                        obj.ReportName = ((TextBox)((DetailsView)sender).FindControl("ReportName")).Text;
+                        obj.DisplayFilters = ((CheckBox)((DetailsView)sender).FindControl("DisplayFilters")).Checked;
+                        obj.ReportFormat = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("ReportFormat")).SelectedValue);
                         obj.DOBFrom =
-                            FormatHelper.SafeToDateTime(((TextBox) ((DetailsView) sender).FindControl("DOBFrom")).Text);
+                            FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("DOBFrom")).Text);
                         obj.DOBTo =
-                            FormatHelper.SafeToDateTime(((TextBox) ((DetailsView) sender).FindControl("DOBTo")).Text);
+                            FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("DOBTo")).Text);
                         obj.AgeFrom =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("AgeFrom")).Text);
-                        obj.AgeTo = FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("AgeTo")).Text);
-                        obj.SchoolGrade = ((TextBox) ((DetailsView) sender).FindControl("SchoolGrade")).Text;
-                        obj.FirstName = ((TextBox) ((DetailsView) sender).FindControl("FirstName")).Text;
-                        obj.LastName = ((TextBox) ((DetailsView) sender).FindControl("LastName")).Text;
-                        obj.Gender = ((DropDownList) ((DetailsView) sender).FindControl("Gender")).SelectedValue;
-                        obj.EmailAddress = ((TextBox) ((DetailsView) sender).FindControl("EmailAddress")).Text;
-                        obj.PhoneNumber = ((TextBox) ((DetailsView) sender).FindControl("PhoneNumber")).Text;
-                        obj.City = ((TextBox) ((DetailsView) sender).FindControl("City")).Text;
-                        obj.State = ((TextBox) ((DetailsView) sender).FindControl("State")).Text;
-                        obj.ZipCode = ((TextBox) ((DetailsView) sender).FindControl("ZipCode")).Text;
-                        obj.County = ((TextBox) ((DetailsView) sender).FindControl("County")).Text;
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("AgeFrom")).Text);
+                        obj.AgeTo = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("AgeTo")).Text);
+                        obj.SchoolGrade = ((TextBox)((DetailsView)sender).FindControl("SchoolGrade")).Text;
+                        obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
+                        obj.LastName = ((TextBox)((DetailsView)sender).FindControl("LastName")).Text;
+                        obj.Gender = ((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue;
+                        obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("EmailAddress")).Text;
+                        obj.PhoneNumber = ((TextBox)((DetailsView)sender).FindControl("PhoneNumber")).Text;
+                        obj.City = ((TextBox)((DetailsView)sender).FindControl("City")).Text;
+                        obj.State = ((TextBox)((DetailsView)sender).FindControl("State")).Text;
+                        obj.ZipCode = ((TextBox)((DetailsView)sender).FindControl("ZipCode")).Text;
+                        obj.County = ((TextBox)((DetailsView)sender).FindControl("County")).Text;
 
-                        obj.PrimaryLibrary =    FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("PrimaryLibrary")).SelectedValue);
+                        obj.PrimaryLibrary = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("PrimaryLibrary")).SelectedValue);
                         obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
                         obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
-                        obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("SDistrict")).SelectedValue; 
+                        obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("SDistrict")).SelectedValue;
 
-                        obj.Teacher = ((TextBox) ((DetailsView) sender).FindControl("Teacher")).Text;
-                        obj.GroupTeamName = ((TextBox) ((DetailsView) sender).FindControl("GroupTeamName")).Text;
-                        obj.SchoolType = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("SchoolType")).SelectedValue);
+                        obj.Teacher = ((TextBox)((DetailsView)sender).FindControl("Teacher")).Text;
+                        obj.GroupTeamName = ((TextBox)((DetailsView)sender).FindControl("GroupTeamName")).Text;
+                        obj.SchoolType = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("SchoolType")).SelectedValue);
                         obj.LiteracyLevel1 =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("LiteracyLevel1")).Text);
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel1")).Text);
                         obj.LiteracyLevel2 =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("LiteracyLevel2")).Text);
-                        obj.Custom1 = ((TextBox) ((DetailsView) sender).FindControl("Custom1")).Text;
-                        obj.Custom2 = ((TextBox) ((DetailsView) sender).FindControl("Custom2")).Text;
-                        obj.Custom3 = ((TextBox) ((DetailsView) sender).FindControl("Custom3")).Text;
-                        obj.Custom4 = ((TextBox) ((DetailsView) sender).FindControl("Custom4")).Text;
-                        obj.Custom5 = ((TextBox) ((DetailsView) sender).FindControl("Custom5")).Text;
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("LiteracyLevel2")).Text);
+                        obj.Custom1 = ((TextBox)((DetailsView)sender).FindControl("Custom1")).Text;
+                        obj.Custom2 = ((TextBox)((DetailsView)sender).FindControl("Custom2")).Text;
+                        obj.Custom3 = ((TextBox)((DetailsView)sender).FindControl("Custom3")).Text;
+                        obj.Custom4 = ((TextBox)((DetailsView)sender).FindControl("Custom4")).Text;
+                        obj.Custom5 = ((TextBox)((DetailsView)sender).FindControl("Custom5")).Text;
                         obj.RegistrationDateStart =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("RegistrationDateStart")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("RegistrationDateStart")).Text);
                         obj.RegistrationDateEnd =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("RegistrationDateEnd")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("RegistrationDateEnd")).Text);
                         obj.PointsMin =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("PointsMin")).Text);
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PointsMin")).Text);
                         obj.PointsMax =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("PointsMax")).Text);
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("PointsMax")).Text);
                         obj.PointsStart =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("PointsStart")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("PointsStart")).Text);
                         obj.PointsEnd =
-                            FormatHelper.SafeToDateTime(((TextBox) ((DetailsView) sender).FindControl("PointsEnd")).Text);
-                        obj.EventCode = ((TextBox) ((DetailsView) sender).FindControl("EventCode")).Text;
-                        obj.EarnedBadge = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("EarnedBadge")).SelectedValue);
+                            FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("PointsEnd")).Text);
+                        obj.EventCode = ((TextBox)((DetailsView)sender).FindControl("EventCode")).Text;
+                        obj.EarnedBadge = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("EarnedBadge")).SelectedValue);
                         obj.PhysicalPrizeEarned =
-                            ((TextBox) ((DetailsView) sender).FindControl("PhysicalPrizeEarned")).Text;
+                            ((TextBox)((DetailsView)sender).FindControl("PhysicalPrizeEarned")).Text;
                         obj.PhysicalPrizeRedeemed =
-                            ((CheckBox) ((DetailsView) sender).FindControl("PhysicalPrizeRedeemed")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("PhysicalPrizeRedeemed")).Checked;
                         obj.PhysicalPrizeStartDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("PhysicalPrizeStartDate")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("PhysicalPrizeStartDate")).Text);
                         obj.PhysicalPrizeEndDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("PhysicalPrizeEndDate")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("PhysicalPrizeEndDate")).Text);
                         obj.ReviewsMin =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("ReviewsMin")).Text);
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("ReviewsMin")).Text);
                         obj.ReviewsMax =
-                            FormatHelper.SafeToInt(((TextBox) ((DetailsView) sender).FindControl("ReviewsMax")).Text);
-                        obj.ReviewTitle = ((TextBox) ((DetailsView) sender).FindControl("ReviewTitle")).Text;
-                        obj.ReviewAuthor = ((TextBox) ((DetailsView) sender).FindControl("ReviewAuthor")).Text;
+                            FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("ReviewsMax")).Text);
+                        obj.ReviewTitle = ((TextBox)((DetailsView)sender).FindControl("ReviewTitle")).Text;
+                        obj.ReviewAuthor = ((TextBox)((DetailsView)sender).FindControl("ReviewAuthor")).Text;
                         obj.ReviewStartDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("ReviewStartDate")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("ReviewStartDate")).Text);
                         obj.ReviewEndDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("ReviewEndDate")).Text);
-                        obj.RandomDrawingName = ((TextBox) ((DetailsView) sender).FindControl("RandomDrawingName")).Text;
+                                ((TextBox)((DetailsView)sender).FindControl("ReviewEndDate")).Text);
+                        obj.RandomDrawingName = ((TextBox)((DetailsView)sender).FindControl("RandomDrawingName")).Text;
                         obj.RandomDrawingNum =
                             FormatHelper.SafeToInt(
-                                ((TextBox) ((DetailsView) sender).FindControl("RandomDrawingNum")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("RandomDrawingNum")).Text);
                         obj.RandomDrawingStartDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("RandomDrawingStartDate")).Text);
+                                ((TextBox)((DetailsView)sender).FindControl("RandomDrawingStartDate")).Text);
                         obj.RandomDrawingEndDate =
                             FormatHelper.SafeToDateTime(
-                                ((TextBox) ((DetailsView) sender).FindControl("RandomDrawingEndDate")).Text);
-                        obj.HasBeenDrawn = ((CheckBox) ((DetailsView) sender).FindControl("HasBeenDrawn")).Checked;
-                        obj.HasRedeemend = ((CheckBox) ((DetailsView) sender).FindControl("HasRedeemend")).Checked;
-                        obj.PIDInc = ((CheckBox) ((DetailsView) sender).FindControl("PIDInc")).Checked;
-                        obj.UsernameInc = ((CheckBox) ((DetailsView) sender).FindControl("UsernameInc")).Checked;
-                        obj.DOBInc = ((CheckBox) ((DetailsView) sender).FindControl("DOBInc")).Checked;
-                        obj.AgeInc = ((CheckBox) ((DetailsView) sender).FindControl("AgeInc")).Checked;
-                        obj.SchoolGradeInc = ((CheckBox) ((DetailsView) sender).FindControl("SchoolGradeInc")).Checked;
-                        obj.FirstNameInc = ((CheckBox) ((DetailsView) sender).FindControl("FirstNameInc")).Checked;
-                        obj.LastNameInc = ((CheckBox) ((DetailsView) sender).FindControl("LastNameInc")).Checked;
-                        obj.GenderInc = ((CheckBox) ((DetailsView) sender).FindControl("GenderInc")).Checked;
-                        obj.EmailAddressInc = ((CheckBox) ((DetailsView) sender).FindControl("EmailAddressInc")).Checked;
-                        obj.PhoneNumberInc = ((CheckBox) ((DetailsView) sender).FindControl("PhoneNumberInc")).Checked;
-                        obj.CityInc = ((CheckBox) ((DetailsView) sender).FindControl("CityInc")).Checked;
-                        obj.StateInc = ((CheckBox) ((DetailsView) sender).FindControl("StateInc")).Checked;
-                        obj.ZipCodeInc = ((CheckBox) ((DetailsView) sender).FindControl("ZipCodeInc")).Checked;
-                        obj.CountyInc = ((CheckBox) ((DetailsView) sender).FindControl("CountyInc")).Checked;
+                                ((TextBox)((DetailsView)sender).FindControl("RandomDrawingEndDate")).Text);
+                        obj.HasBeenDrawn = ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawn")).Checked;
+                        obj.HasRedeemend = ((CheckBox)((DetailsView)sender).FindControl("HasRedeemend")).Checked;
+                        obj.PIDInc = ((CheckBox)((DetailsView)sender).FindControl("PIDInc")).Checked;
+                        obj.UsernameInc = ((CheckBox)((DetailsView)sender).FindControl("UsernameInc")).Checked;
+                        obj.DOBInc = ((CheckBox)((DetailsView)sender).FindControl("DOBInc")).Checked;
+                        obj.AgeInc = ((CheckBox)((DetailsView)sender).FindControl("AgeInc")).Checked;
+                        obj.SchoolGradeInc = ((CheckBox)((DetailsView)sender).FindControl("SchoolGradeInc")).Checked;
+                        obj.FirstNameInc = ((CheckBox)((DetailsView)sender).FindControl("FirstNameInc")).Checked;
+                        obj.LastNameInc = ((CheckBox)((DetailsView)sender).FindControl("LastNameInc")).Checked;
+                        obj.GenderInc = ((CheckBox)((DetailsView)sender).FindControl("GenderInc")).Checked;
+                        obj.EmailAddressInc = ((CheckBox)((DetailsView)sender).FindControl("EmailAddressInc")).Checked;
+                        obj.PhoneNumberInc = ((CheckBox)((DetailsView)sender).FindControl("PhoneNumberInc")).Checked;
+                        obj.CityInc = ((CheckBox)((DetailsView)sender).FindControl("CityInc")).Checked;
+                        obj.StateInc = ((CheckBox)((DetailsView)sender).FindControl("StateInc")).Checked;
+                        obj.ZipCodeInc = ((CheckBox)((DetailsView)sender).FindControl("ZipCodeInc")).Checked;
+                        obj.CountyInc = ((CheckBox)((DetailsView)sender).FindControl("CountyInc")).Checked;
                         obj.PrimaryLibraryInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("PrimaryLibraryInc")).Checked;
-                        obj.SchoolNameInc = ((CheckBox) ((DetailsView) sender).FindControl("SchoolNameInc")).Checked;
-                        obj.DistrictInc = ((CheckBox) ((DetailsView) sender).FindControl("DistrictInc")).Checked;
-                        obj.TeacherInc = ((CheckBox) ((DetailsView) sender).FindControl("TeacherInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("PrimaryLibraryInc")).Checked;
+                        obj.SchoolNameInc = ((CheckBox)((DetailsView)sender).FindControl("SchoolNameInc")).Checked;
+                        obj.DistrictInc = ((CheckBox)((DetailsView)sender).FindControl("DistrictInc")).Checked;
+                        obj.TeacherInc = ((CheckBox)((DetailsView)sender).FindControl("TeacherInc")).Checked;
                         obj.GroupTeamNameInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("GroupTeamNameInc")).Checked;
-                        obj.SchoolTypeInc = ((CheckBox) ((DetailsView) sender).FindControl("SchoolTypeInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("GroupTeamNameInc")).Checked;
+                        obj.SchoolTypeInc = ((CheckBox)((DetailsView)sender).FindControl("SchoolTypeInc")).Checked;
                         obj.LiteracyLevel1Inc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("LiteracyLevel1Inc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("LiteracyLevel1Inc")).Checked;
                         obj.LiteracyLevel2Inc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("LiteracyLevel2Inc")).Checked;
-                        obj.Custom1Inc = ((CheckBox) ((DetailsView) sender).FindControl("Custom1Inc")).Checked;
-                        obj.Custom2Inc = ((CheckBox) ((DetailsView) sender).FindControl("Custom2Inc")).Checked;
-                        obj.Custom3Inc = ((CheckBox) ((DetailsView) sender).FindControl("Custom3Inc")).Checked;
-                        obj.Custom4Inc = ((CheckBox) ((DetailsView) sender).FindControl("Custom4Inc")).Checked;
-                        obj.Custom5Inc = ((CheckBox) ((DetailsView) sender).FindControl("Custom5Inc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("LiteracyLevel2Inc")).Checked;
+                        obj.Custom1Inc = ((CheckBox)((DetailsView)sender).FindControl("Custom1Inc")).Checked;
+                        obj.Custom2Inc = ((CheckBox)((DetailsView)sender).FindControl("Custom2Inc")).Checked;
+                        obj.Custom3Inc = ((CheckBox)((DetailsView)sender).FindControl("Custom3Inc")).Checked;
+                        obj.Custom4Inc = ((CheckBox)((DetailsView)sender).FindControl("Custom4Inc")).Checked;
+                        obj.Custom5Inc = ((CheckBox)((DetailsView)sender).FindControl("Custom5Inc")).Checked;
                         obj.RegistrationDateInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("RegistrationDateInc")).Checked;
-                        obj.PointsInc = ((CheckBox) ((DetailsView) sender).FindControl("PointsInc")).Checked;
-                        obj.EarnedBadgeInc = ((CheckBox) ((DetailsView) sender).FindControl("EarnedBadgeInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("RegistrationDateInc")).Checked;
+                        obj.PointsInc = ((CheckBox)((DetailsView)sender).FindControl("PointsInc")).Checked;
+                        obj.EarnedBadgeInc = ((CheckBox)((DetailsView)sender).FindControl("EarnedBadgeInc")).Checked;
                         obj.PhysicalPrizeNameInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("PhysicalPrizeNameInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("PhysicalPrizeNameInc")).Checked;
                         obj.PhysicalPrizeDateInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("PhysicalPrizeDateInc")).Checked;
-                        obj.NumReviewsInc = ((CheckBox) ((DetailsView) sender).FindControl("NumReviewsInc")).Checked;
-                        obj.ReviewAuthorInc = ((CheckBox) ((DetailsView) sender).FindControl("ReviewAuthorInc")).Checked;
-                        obj.ReviewTitleInc = ((CheckBox) ((DetailsView) sender).FindControl("ReviewTitleInc")).Checked;
-                        obj.ReviewDateInc = ((CheckBox) ((DetailsView) sender).FindControl("ReviewDateInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("PhysicalPrizeDateInc")).Checked;
+                        obj.NumReviewsInc = ((CheckBox)((DetailsView)sender).FindControl("NumReviewsInc")).Checked;
+                        obj.ReviewAuthorInc = ((CheckBox)((DetailsView)sender).FindControl("ReviewAuthorInc")).Checked;
+                        obj.ReviewTitleInc = ((CheckBox)((DetailsView)sender).FindControl("ReviewTitleInc")).Checked;
+                        obj.ReviewDateInc = ((CheckBox)((DetailsView)sender).FindControl("ReviewDateInc")).Checked;
                         obj.RandomDrawingNameInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("RandomDrawingNameInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("RandomDrawingNameInc")).Checked;
                         obj.RandomDrawingNumInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("RandomDrawingNumInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("RandomDrawingNumInc")).Checked;
                         obj.RandomDrawingDateInc =
-                            ((CheckBox) ((DetailsView) sender).FindControl("RandomDrawingDateInc")).Checked;
-                        obj.HasBeenDrawnInc = ((CheckBox) ((DetailsView) sender).FindControl("HasBeenDrawnInc")).Checked;
-                        obj.HasRedeemendInc = ((CheckBox) ((DetailsView) sender).FindControl("HasRedeemendInc")).Checked;
+                            ((CheckBox)((DetailsView)sender).FindControl("RandomDrawingDateInc")).Checked;
+                        obj.HasBeenDrawnInc = ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawnInc")).Checked;
+                        obj.HasRedeemendInc = ((CheckBox)((DetailsView)sender).FindControl("HasRedeemendInc")).Checked;
 
                         obj.Score1From =
                             FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1From")).Text);
@@ -536,23 +551,23 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         obj.Score2PctInc = ((CheckBox)((DetailsView)sender).FindControl("Score2PctInc")).Checked;
 
                         obj.LastModDate = DateTime.Now;
-                        obj.LastModUser = ((SRPUser) Session[SessionData.UserProfile.ToString()]).Username;
-                            //"N/A";  // Get from session
+                        obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;
+                        //"N/A";  // Get from session
 
                         if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                         {
                             obj.Update();
-                           
+
                             odsData.DataBind();
                             dv.DataBind();
                             dv.ChangeMode(DetailsViewMode.Edit);
 
-                            var masterPage = (IControlRoomMaster) Master;
+                            var masterPage = (IControlRoomMaster)Master;
                             masterPage.PageMessage = SRPResources.SaveOK;
                         }
                         else
                         {
-                            var masterPage = (IControlRoomMaster) Master;
+                            var masterPage = (IControlRoomMaster)Master;
                             string message = String.Format(SRPResources.ApplicationError1, "<ul>");
                             foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
                             {
@@ -564,22 +579,22 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     }
                     catch (Exception ex)
                     {
-                        var masterPage = (IControlRoomMaster) Master;
+                        var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                     }
                 }
             }
-#endregion
+            #endregion
 
-#region save as template
+            #region save as template
             if (e.CommandName.ToLower() == "savetemplate")
             {
                 var templateName = ((TextBox)((DetailsView)sender).FindControl("TemplateName")).Text.Trim();
-                if (templateName=="")
+                if (templateName == "")
                 {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format("To create a report template from the current report format, you need to enter a Template Name.");
-                    ((TextBox) ((DetailsView) sender).FindControl("TemplateName")).Focus();
+                    ((TextBox)((DetailsView)sender).FindControl("TemplateName")).Focus();
                     return;
                 }
                 try
@@ -592,7 +607,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                             ((DropDownList)((DetailsView)sender).FindControl("ProgId")).SelectedValue);
                     obj.ReportName = ((TextBox)((DetailsView)sender).FindControl("TemplateName")).Text;
                     obj.DisplayFilters = ((CheckBox)((DetailsView)sender).FindControl("DisplayFilters")).Checked;
-                    
+
                     obj.DOBFrom =
                         FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("DOBFrom")).Text);
                     obj.DOBTo =
@@ -610,14 +625,14 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     obj.State = ((TextBox)((DetailsView)sender).FindControl("State")).Text;
                     obj.ZipCode = ((TextBox)((DetailsView)sender).FindControl("ZipCode")).Text;
                     obj.County = ((TextBox)((DetailsView)sender).FindControl("County")).Text;
-                    
+
                     obj.PrimaryLibrary =
                         FormatHelper.SafeToInt(
                             ((DropDownList)((DetailsView)sender).FindControl("PrimaryLibrary")).SelectedValue);
                     obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
                     obj.District = ((DropDownList)((DetailsView)sender).FindControl("District")).SelectedValue;
                     obj.SDistrict = ((DropDownList)((DetailsView)sender).FindControl("SDistrict")).SelectedValue;
-                    
+
                     obj.Teacher = ((TextBox)((DetailsView)sender).FindControl("Teacher")).Text;
                     obj.GroupTeamName = ((TextBox)((DetailsView)sender).FindControl("GroupTeamName")).Text;
                     obj.SchoolType =
@@ -691,8 +706,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     obj.HasBeenDrawn = ((CheckBox)((DetailsView)sender).FindControl("HasBeenDrawn")).Checked;
                     obj.HasRedeemend = ((CheckBox)((DetailsView)sender).FindControl("HasRedeemend")).Checked;
 
-                    
-                    
+
+
                     obj.Score1From =
                         FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("Score1From")).Text);
                     obj.Score1To =
@@ -806,12 +821,12 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            
-                
 
-#endregion
 
-#region load from template
+
+            #endregion
+
+            #region load from template
             if (e.CommandName.ToLower() == "loadtemplate")
             {
                 try
@@ -824,7 +839,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
                     var obj = ReportTemplate.FetchObject(RTID);
 
-                    var dd = ((DropDownList) ((DetailsView) sender).FindControl("ProgId"));
+                    var dd = ((DropDownList)((DetailsView)sender).FindControl("ProgId"));
                     var i = dd.Items.FindByValue(obj.ProgId.ToString());
                     if (i != null) dd.SelectedValue = (obj.ProgId.ToString());
 
@@ -975,20 +990,20 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-#endregion
+            #endregion
 
 
-#region RUN REPORT
+            #region RUN REPORT
             if (e.CommandName.ToLower() == "runreport")
             {
                 try
                 {
                     SqlParameter[] arrParams = null;
-                    var retColumns= string.Empty;
-                    var whereClause= string.Empty;
+                    var retColumns = string.Empty;
+                    var whereClause = string.Empty;
                     var fromClause = "Patron p ";
 
-                    var filterStr= string.Empty;
+                    var filterStr = string.Empty;
                     //var tmpFilter= string.Empty;
                     var minorSep = "~";
                     var majorSep = "|";
@@ -1036,7 +1051,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         fromClause = Coalesce(fromClause, "left outer join Code C4 on C4.CID = p.District", " ");
                         retColumns = Coalesce(retColumns, "C4.Code as District", ",");
                     }
-                    
+
                     if (((CheckBox)((DetailsView)sender).FindControl("PrimaryLibraryInc")).Checked)
                     {
                         // CODE Translate
@@ -1072,15 +1087,15 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     {
                         //CODE Translate1
                         fromClause = Coalesce(fromClause, "left outer join Code C2 on C2.CID = p.SchoolType", " ");
-                        retColumns = Coalesce(retColumns, "C2.Code as SchoolType", ","); 
-                    }             
-                        
+                        retColumns = Coalesce(retColumns, "C2.Code as SchoolType", ",");
+                    }
+
                     if (((CheckBox)((DetailsView)sender).FindControl("LiteracyLevel1Inc")).Checked)
                         retColumns = Coalesce(retColumns, "case when LiteracyLevel1 > 0 then LiteracyLevel1 else null end as LiteracyLevel1", ",");
                     if (((CheckBox)((DetailsView)sender).FindControl("LiteracyLevel2Inc")).Checked)
                         retColumns = Coalesce(retColumns, "case when LiteracyLevel2 > 0 then LiteracyLevel2 else null end as LiteracyLevel2", ",");
-                    
-                    if (((CheckBox)((DetailsView)sender).FindControl("Custom1Inc")).Checked)                
+
+                    if (((CheckBox)((DetailsView)sender).FindControl("Custom1Inc")).Checked)
                         retColumns = Coalesce(retColumns, "Custom1", ",");
                     if (((CheckBox)((DetailsView)sender).FindControl("Custom2Inc")).Checked)
                         retColumns = Coalesce(retColumns, "Custom2", ",");
@@ -1131,7 +1146,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     }
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                     
+
                     txt = ((DropDownList)((DetailsView)sender).FindControl("Gender")).SelectedValue.Trim();
                     if (txt.Length > 0)
                     {
@@ -1326,7 +1341,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
                     filterField = "AgeFrom";
                     parmField = "Age";
-                    txt = ((TextBox) (((DetailsView) sender).FindControl(filterField))).Text.Trim();
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
                     if (txt.Length > 0)
                     {
                         AddSqlParameter(ref arrParams, new SqlParameter("@" + filterField, int.Parse(txt)));
@@ -1456,7 +1471,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                     filterField = "EventCode";
-                    txt = ((TextBox) (((DetailsView) sender).FindControl(filterField))).Text.Trim();
+                    txt = ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim();
                     if (txt.Length > 0)
                     {
                         retColumns = Coalesce(retColumns, "pp1.EventCode", ",");
@@ -1476,7 +1491,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     var needBadges = false;
                     if (((CheckBox)((DetailsView)sender).FindControl("EarnedBadgeInc")).Checked)
                     {
-                        needBadges = true;                      
+                        needBadges = true;
                         retColumns = Coalesce(retColumns, "b.AdminName as BadgeName", ",");
                     }
 
@@ -1496,7 +1511,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     {
                         fromClause = Coalesce(fromClause, "left join PatronBadges pb on pb.PID = p.PID left outer join Badge b on pb.BadgeID = b.BID", " ");
                     }
-                    
+
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1544,7 +1559,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
                         filterStr = Coalesce(filterStr, string.Format("{0}{1} = {2}", filterField, minorSep, ((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim()), majorSep);
                     }
-                    
+
                     filterField = "PhysicalPrizeEndDate";
                     _dt = FormatHelper.SafeToDateTime(((TextBox)(((DetailsView)sender).FindControl(filterField))).Text.Trim());
                     if (_dt != DateTime.MinValue)
@@ -1790,12 +1805,12 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
 
 
-                    
+
                     //lblSQl.Text = SQL;
                     var ds = SqlHelper.ExecuteDataset(conn, CommandType.Text, SQL, arrParams);
 
                     Session["rptSql"] = ds;
-                    
+
 
                     //gv.DataSource = ds;
                     //gv.DataBind();
@@ -1814,7 +1829,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                     if (_int == 2)
                     {
                         string excelFilename = Server.MapPath("~/Adhocreport.xlsx");
-                        CreateExcelFile.CreateExcelDocument(ds, excelFilename, filterStr.Replace(minorSep, " ").Replace(majorSep, "\n"));
+                        //CreateExcelFile.CreateExcelDocument(ds, excelFilename, filterStr.Replace(minorSep, " ").Replace(majorSep, "\n"));
+                        CreateExcelFile.CreateExcelDocument(ds, excelFilename);
 
                         Response.ContentType = "application/vnd.ms-excel";
                         Response.AppendHeader("Content-Disposition", "attachment; filename=Adhocreport.xlsx");
@@ -1823,12 +1839,6 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         File.Delete(excelFilename);
                         Response.End();
                     }
-
-                    
-
-                    
-
-
                 }
                 catch (Exception ex)
                 {
@@ -1837,8 +1847,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 }
             }
 
-            
-            
+
+
 
             #endregion
         }
@@ -1878,7 +1888,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         //    }
         //}
 
-        private string Coalesce (string startingString, string additionalString, string separator= "")
+        private string Coalesce(string startingString, string additionalString, string separator = "")
         {
             if (startingString.Length == 0) return additionalString;
             return string.Format("{0} {1} {2}", startingString, separator, additionalString);

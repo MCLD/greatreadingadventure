@@ -127,7 +127,7 @@
     <value>Invalid User Name or Password</value>
   </data>
   <data name="CRTitle" xml:space="preserve">
-    <value>Great Reading Adventure - Control Room</value>
+    <value>Control Room</value>
   </data>
   <data name="DeleteOK" xml:space="preserve">
     <value>Record deleted successfully.</value>
