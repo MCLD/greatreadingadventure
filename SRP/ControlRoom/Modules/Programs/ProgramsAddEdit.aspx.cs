@@ -11,54 +11,79 @@ using GRA.SRP.Utilities.CoreClasses;
 using GRA.Tools;
 using System.Web.UI.HtmlControls;
 
-namespace GRA.SRP.ControlRoom.Modules.Programs {
-    public partial class ProgramsAddEdit : BaseControlRoomPage {
+namespace GRA.SRP.ControlRoom.Modules.Programs
+{
+    public partial class ProgramsAddEdit : BaseControlRoomPage
+    {
 
 
-        protected void Page_Load(object sender, EventArgs e) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
             MasterPage.RequiredPermission = 2200;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Program Add / Edit");
 
-            if(!IsPostBack) {
+            if (!IsPostBack)
+            {
                 SetPageRibbon(StandardModuleRibbons.ProgramRibbon());
 
                 lblPK.Text = Session["PGM"] == null ? "" : Session["PGM"].ToString();
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
                 Page.DataBind();
+
+                string codeName = StringResources.getStringOrNull("myaccount-program-reward-code");
+                if (!string.IsNullOrEmpty(codeName))
+                {
+                    if (!codeName.EndsWith("s"))
+                    {
+                        codeName += "s";
+                    }
+                    var codePanel = dv.FindControl("tc1").FindControl("tp6") as AjaxControlToolkit.TabPanel;
+                    if (codePanel != null)
+                    {
+                        codePanel.HeaderText = codeName;
+                        var generateBtn = codePanel.FindControl("GenerateButtonText") as Label;
+                        if (generateBtn != null)
+                        {
+                            generateBtn.Text = string.Format("Generate {0}", codeName);
+                        }
+                    }
+                }
             }
         }
 
 
-        protected void dv_DataBound(object sender, EventArgs e) {
-            if(dv.CurrentMode == DetailsViewMode.Edit) {
+        protected void dv_DataBound(object sender, EventArgs e)
+        {
+            if (dv.CurrentMode == DetailsViewMode.Edit)
+            {
                 var control = (GRA.SRP.Classes.FileDownloadCtl)dv.FindControl("tc1").FindControl("tp1").FindControl("FileUploadCtl");
-                if(control != null)
+                if (control != null)
                     control.ProcessRender();
 
 
                 var ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeID"); //this.FindControlRecursive(this, "BranchId");
                 var lbl = (Label)dv.FindControl("tc1").FindControl("tp2").FindControl("RegistrationBadgeIDLbl");
                 var i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp2").FindControl("ProgramGameID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp2").FindControl("ProgramGameIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp5").FindControl("PreTestID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp5").FindControl("PreTestIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
                 ctl = (DropDownList)dv.FindControl("tc1").FindControl("tp5").FindControl("PostTestID");
                 lbl = (Label)dv.FindControl("tc1").FindControl("tp5").FindControl("PostTestIDLbl");
                 i = ctl.Items.FindByValue(lbl.Text);
-                if(i != null)
+                if (i != null)
                     ctl.SelectedValue = lbl.Text;
 
 
@@ -78,31 +103,40 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
             }
         }
 
-        protected void dv_DataBinding(object sender, EventArgs e) {
+        protected void dv_DataBinding(object sender, EventArgs e)
+        {
         }
 
 
-        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e) {
+        protected void DvItemCommand(object sender, DetailsViewCommandEventArgs e)
+        {
             string returnURL = "~/ControlRoom/Modules/Programs/ProgramList.aspx";
-            if(e.CommandName.ToLower() == "back") {
+            if (e.CommandName.ToLower() == "back")
+            {
                 Response.Redirect(returnURL);
             }
-            if(e.CommandName.ToLower() == "refresh") {
-                try {
+            if (e.CommandName.ToLower() == "refresh")
+            {
+                try
+                {
                     odsData.DataBind();
                     dv.DataBind();
                     dv.ChangeMode(DetailsViewMode.Edit);
 
                     var masterPage = (IControlRoomMaster)Master;
-                    if(masterPage != null)
+                    if (masterPage != null)
                         masterPage.PageMessage = SRPResources.RefreshOK;
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback") {
-                try {
+            if (e.CommandName.ToLower() == "add" || e.CommandName.ToLower() == "addandback")
+            {
+                try
+                {
                     var program = new DAL.Programs();
                     //obj.GenNotificationFlag = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp2").FindControl("GenNotificationFlag")).Checked;
 
@@ -138,7 +172,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     program.LastModDate = program.AddedDate;
                     program.LastModUser = program.AddedUser;
 
-                    if (program.IsValid(BusinessRulesValidationMode.INSERT)) {
+                    if (program.IsValid(BusinessRulesValidationMode.INSERT))
+                    {
                         program.Insert();
 
                         File.Copy(Server.MapPath("~/css/program/default.css"), Server.MapPath("~/css/program/" + program.PID.ToString() + ".css"), true);
@@ -147,7 +182,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                         File.Copy(Server.MapPath("~/resources/program.default.en-US.txt"), Server.MapPath("~/resources/program." + program.PID.ToString() + ".en-US.txt"), true);
                         //CompileResourceFile(Server.MapPath("~/resources/program." + obj.PID.ToString() + ".en-US.txt"));
 
-                        foreach(ActivityType val in Enum.GetValues(typeof(ActivityType))) {
+                        foreach (ActivityType val in Enum.GetValues(typeof(ActivityType)))
+                        {
                             var o = new ProgramGamePointConversion();
                             o.PGID = program.PID;
                             o.ActivityTypeId = (int)val;
@@ -167,7 +203,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                             new SessionTools(Session).RemoveCache(Cache, cacheValue);
                         }
 
-                        if(e.CommandName.ToLower() == "addandback") {
+                        if (e.CommandName.ToLower() == "addandback")
+                        {
                             Response.Redirect(returnURL);
                         }
 
@@ -179,22 +216,29 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
 
                         var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageMessage = SRPResources.AddedOK;
-                    } else {
+                    }
+                    else
+                    {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach(BusinessRulesValidationMessage m in program.ErrorCodes) {
+                        foreach (BusinessRulesValidationMessage m in program.ErrorCodes)
+                        {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
                         message = string.Format("{0}</ul>", message);
                         masterPage.PageError = message;
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback") {
-                try {
+            if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
+            {
+                try
+                {
                     var program = new DAL.Programs();
                     int pk = int.Parse(((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("PID")).Text);
                     program.Fetch(pk);
@@ -231,7 +275,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     program.HTML5 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML5")).InnerHtml;
                     program.HTML6 = ((HtmlTextArea)((DetailsView)sender).FindControl("tc1").FindControl("tp4").FindControl("HTML6")).InnerHtml;
 
-                    program.BannerImage= string.Empty;//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
+                    program.BannerImage = string.Empty;//((TextBox)((DetailsView)sender).FindControl("BannerImage")).Text;
 
                     program.PreTestEndDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PreTestEndDate")).Text.SafeToDateTime();
                     program.PostTestStartDate = ((TextBox)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("PostTestStartDate")).Text.SafeToDateTime();
@@ -249,12 +293,15 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                     program.LastModDate = DateTime.Now;
                     program.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 
-                    if(program.IsValid(BusinessRulesValidationMode.UPDATE)) {
+                    if (program.IsValid(BusinessRulesValidationMode.UPDATE))
+                    {
                         program.Update();
 
                         var rptr = ((Repeater)((DetailsView)sender).FindControl("tc1").FindControl("tp5").FindControl("rptr"));
-                        if(rptr != null) {
-                            foreach(RepeaterItem item in rptr.Items) {
+                        if (rptr != null)
+                        {
+                            foreach (RepeaterItem item in rptr.Items)
+                            {
                                 var PGCID = int.Parse(((TextBox)item.FindControl("PGCID")).Text);
                                 var ActivityCountTxt = ((TextBox)item.FindControl("ActivityCount")).Text;
                                 var PointCountTxt = ((TextBox)item.FindControl("PointCount")).Text;
@@ -263,7 +310,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                                 int.TryParse(PointCountTxt, out PointCount);
 
                                 var o = ProgramGamePointConversion.FetchObject(PGCID);
-                                if(o == null)
+                                if (o == null)
                                     continue;
                                 o.ActivityCount = ActivityCount;
                                 o.PointCount = PointCount;
@@ -281,7 +328,8 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                         }
 
 
-                        if(e.CommandName.ToLower() == "saveandback") {
+                        if (e.CommandName.ToLower() == "saveandback")
+                        {
                             Response.Redirect(returnURL);
                         }
 
@@ -291,21 +339,27 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
 
                         var masterPage = (IControlRoomMaster)Master;
                         masterPage.PageMessage = SRPResources.SaveOK;
-                    } else {
+                    }
+                    else
+                    {
                         var masterPage = (IControlRoomMaster)Master;
                         string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                        foreach(BusinessRulesValidationMessage m in program.ErrorCodes) {
+                        foreach (BusinessRulesValidationMessage m in program.ErrorCodes)
+                        {
                             message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
                         message = string.Format("{0}</ul>", message);
                         masterPage.PageError = message;
                     }
-                } catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     var masterPage = (IControlRoomMaster)Master;
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            if(e.CommandName.ToLower() == "gen") {
+            if (e.CommandName.ToLower() == "gen")
+            {
 
                 int PK = int.Parse(lblPK.Text);
                 var ds = ProgramCodes.GetProgramStats(PK);
@@ -314,17 +368,18 @@ namespace GRA.SRP.ControlRoom.Modules.Programs {
                 var txt = (TextBox)dv.FindControl("tc1").FindControl("tp6").FindControl("txtGen");
                 int addl = int.Parse(txt.Text);
 
-                ProgramCodes.Generate(TotalCodes + 1, TotalCodes + addl, PK);
+                string result = ProgramCodes.Generate(TotalCodes + 1, TotalCodes + addl, PK);
 
                 odsData.DataBind();
                 dv.DataBind();
                 dv.ChangeMode(DetailsViewMode.Edit);
 
                 var masterPage = (IControlRoomMaster)Master;
-                masterPage.PageMessage = "Additional codes generated!";
+                masterPage.PageMessage = result;
 
             }
-            if(e.CommandName.ToLower() == "exp") {
+            if (e.CommandName.ToLower() == "exp")
+            {
 
                 int PK = int.Parse(lblPK.Text);
 

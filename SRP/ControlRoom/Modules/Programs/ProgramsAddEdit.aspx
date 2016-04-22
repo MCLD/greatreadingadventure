@@ -510,11 +510,11 @@
                                                 title="The interval is the duration the goal spans over. For example the goal be configured for a certain number of minutes per day, or several books for an entire program."></span>
                                         </td>
                                         <td colspan="3">
-                                           <asp:DropDownList ID="GoalIntervalId" runat="server"  Width="98%"  SelectedValue='<%# Eval("GoalIntervalId") %>' CssClass="form-control">
-                                               <asp:ListItem Value="0" Text="Daily"></asp:ListItem>
-                                               <asp:ListItem Value="1" Text="Weekly"></asp:ListItem>
-                                               <asp:ListItem Value="2" Text="Program"></asp:ListItem>
-                                           </asp:DropDownList>
+                                            <asp:DropDownList ID="GoalIntervalId" runat="server" Width="98%" SelectedValue='<%# Eval("GoalIntervalId") %>' CssClass="form-control">
+                                                <asp:ListItem Value="0" Text="Daily"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Weekly"></asp:ListItem>
+                                                <asp:ListItem Value="2" Text="Program"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </td>
                                         <td></td>
                                     </tr>
@@ -910,7 +910,16 @@
                                                 SetFocusOnError="True" />
                                         </td>
                                         <td colspan="4">
-                                            <asp:Button ID="btnGen" runat="server" Text="Generate Codes" CommandName="gen" />
+
+                                            <asp:LinkButton
+                                                ID="btnGen"
+                                                runat="server"
+                                                CommandName="gen"
+                                                CssClass="btn btn-sm btn-primary generate-codes-button"
+                                                ForeColor="White"
+                                                data-loading-text="Generating..."><span class="glyphicon glyphicon-qrcode"></span>
+                                                <asp:Label runat="server" ID="GenerateButtonText">Generate Codes</asp:Label>
+                                            </asp:LinkButton>
                                         </td>
                                     </tr>
                                     <tr>
@@ -920,8 +929,11 @@
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-
-                                            <asp:Button ID="btnExport" runat="server" Text="Export Codes" CommandName="exp" />
+                                            <asp:LinkButton ID="btnExport" ForeColor="White" CommandName="exp"
+                                                CssClass="btn btn-sm btn-success download-codes-button"
+                                                runat="server"><span class="glyphicon glyphicon-download"></span>
+                                                Download Excel file
+                                            </asp:LinkButton>
 
                                         </td>
                                     </tr>
@@ -1061,4 +1073,15 @@
     <asp:ObjectDataSource ID="odsDDTests" runat="server"
         SelectMethod="GetAllFinalized"
         TypeName="GRA.SRP.DAL.Survey"></asp:ObjectDataSource>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderID="scripts" runat="server">
+    <script>
+        $(function () {
+            $('.generate-codes-button').on('click', function () {
+                var $btn = $(this).button('loading');
+                $('.download-codes-button').attr('disabled', true);
+            });
+        });
+    </script>
 </asp:Content>
