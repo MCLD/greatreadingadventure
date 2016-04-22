@@ -61,7 +61,12 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             {
                 ProgramCodesDiv.Visible = true;
                 var redeemed = result.SecretCodesRedeemed.ToString();
-                ProgramRewardCodeLabel.Text = StringResources.getString("myaccount-program-reward-code");
+                string codeName = StringResources.getString("myaccount-program-reward-code");
+                if (!codeName.EndsWith("s"))
+                {
+                    codeName += "s";
+                }
+                ProgramRewardCodeLabel.Text = codeName;
             }
             else
             {

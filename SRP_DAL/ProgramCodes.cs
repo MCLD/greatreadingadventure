@@ -10,6 +10,8 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GRA.SRP.DAL
 {
@@ -340,30 +342,91 @@ namespace GRA.SRP.DAL
 
         }
 
-
-        public static int Generate(int start, int end, int PID)
+        private const string SelectExistingCodesCommand = "SELECT [ShortCode] FROM [ProgramCodes]";
+        public static string Generate(int start, int end, int PID)
         {
-
-            int iReturn = -1; //assume the worst
-            SqlParameter[] arrParams = new SqlParameter[3];
-            arrParams[0] = new SqlParameter("@start", start);
-            arrParams[1] = new SqlParameter("@end", end);
-            arrParams[2] = new SqlParameter("@PID", PID);
-
-            try
+            int inserted = 0;
+            var existingCodes = new HashSet<string>();
+            using (var sqlConnection = new SqlConnection(conn))
             {
+                sqlConnection.Open();
 
-                iReturn = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "app_ProgramCodes_Generate", arrParams);
+                Stopwatch s = new Stopwatch();
+                s.Start();
+                using (var sqlCmd = new SqlCommand(SelectExistingCodesCommand, sqlConnection))
+                {
+                    using (var reader = sqlCmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            existingCodes.Add(reader.GetString(0));
+                        }
+                        reader.Close();
+                    }
+                }
+                s.Stop();
+                "ProgramCodes".Log().Info("Loaded {0} existing codes in {1:c}",
+                    existingCodes.Count,
+                    s.Elapsed);
 
+                s.Reset();
+                s.Start();
+                using (var codeTool = new Tools.ProgramCode(15))
+                {
+                    using (var sqlCmd = new SqlCommand("app_ProgramCodes_Insert", sqlConnection))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.Add(new SqlParameter()
+                        {
+                            ParameterName = "PCID",
+                            SqlDbType = SqlDbType.Int,
+                            Direction = ParameterDirection.Output
+                        });
+                        sqlCmd.Parameters.AddWithValue("PID", PID);
+                        sqlCmd.Parameters.Add("CodeNumber", SqlDbType.Int);
+                        sqlCmd.Parameters.AddWithValue("CodeValue", DBNull.Value);
+                        sqlCmd.Parameters.AddWithValue("isUsed", false);
+                        sqlCmd.Parameters.AddWithValue("DateCreated", DateTime.Now);
+                        sqlCmd.Parameters.AddWithValue("DateUsed", DBNull.Value);
+                        sqlCmd.Parameters.AddWithValue("PatronId", 0);
+                        sqlCmd.Parameters.Add("ShortCode", SqlDbType.VarChar, 20);
+                        for (int count = start; count < end + 1; count++)
+                        {
+                            string code = null;
+                            do
+                            {
+                                code = codeTool.Generate();
+                            } while (existingCodes.Contains(code));
+                            existingCodes.Add(code);
+                            sqlCmd.Parameters["CodeNumber"].Value = count;
+                            sqlCmd.Parameters["ShortCode"].Value = code;
+                            inserted += sqlCmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                s.Stop();
+
+                if (sqlConnection != null && sqlConnection.State != ConnectionState.Closed)
+                {
+                    try
+                    {
+                        sqlConnection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        "ProgramCodes".Log().Error("Problem closing SQL connection in Generate: {0} - {1}",
+                            ex.Message,
+                            ex.StackTrace);
+                    }
+                }
+
+                string result = string.Format("Inserted {0} new codes in {1:mm\\:ss} ({2:f0} codes per second)",
+                    inserted,
+                    s.Elapsed,
+                    inserted / s.Elapsed.TotalSeconds);
+                "ProgramCodes".Log().Info(result);
+                return result;
             }
-
-            catch (SqlException ex)
-            {
-                "GRA.SRP.DAL.ProgramCodes".Log().Error("Error in Generate: {0} - {1}",
-                    ex.Message,
-                    ex.StackTrace);
-            }
-            return iReturn;
         }
 
         public static int GetCountByTenantId(int tenantId)

@@ -18,8 +18,8 @@ namespace GRA.SRP.Avatar
             AvatarBackLink.NavigateUrl = "~/";
 
             SystemName.Text = SystemNamePrint.Text = StringResources.getString("system-name");
-            SystemSlogan.Text = StringResources.getString("slogan");
-            SystemSlogan.Visible = SystemSlogan.Text != "slogan";
+            SystemSlogan.Text = SystemSloganPrint.Text = StringResources.getString("slogan");
+            SystemSlogan.Visible = SystemSloganPrint.Visible = SystemSlogan.Text != "slogan";
             string programId = null;
 
             AvatarBackLink.Text = StringResources.getString("avatar-return");
