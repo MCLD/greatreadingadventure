@@ -59,6 +59,9 @@
                     <h1>
                         <asp:Label runat="server" ID="SystemNamePrint"></asp:Label></h1>
                 </div>
+                <div class="col-xs-12">
+                    <em style="font-size: medium;"><asp:Label runat="server" ID="SystemSloganPrint"></asp:Label></em>
+                </div>
                 <div class="col-xs-12" style="margin-top: 2em;">
                     <asp:Image runat="server" ID="BannerImagePrint" />
                 </div>

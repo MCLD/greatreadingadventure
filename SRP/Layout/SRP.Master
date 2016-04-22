@@ -109,7 +109,9 @@
                 <div class="col-xs-8">
                     <span class="lead"><%=this.SystemNameText %></span>
                 </div>
-                <div class="col-xs-4"><em><%=this.SloganText%></em></div>
+                <div class="col-xs-4">
+                    <div style="display: inline-block;" class="pull-right"><em><%=this.SloganText%></em></div>
+                </div>
             </div>
         </div>
 
