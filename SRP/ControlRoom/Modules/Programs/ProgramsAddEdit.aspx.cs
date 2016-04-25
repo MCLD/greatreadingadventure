@@ -38,14 +38,18 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
                     {
                         codeName += "s";
                     }
-                    var codePanel = dv.FindControl("tc1").FindControl("tp6") as AjaxControlToolkit.TabPanel;
-                    if (codePanel != null)
+                    var tabContainer = dv.FindControl("tc1"); // only visible on edit screen
+                    if (tabContainer != null)
                     {
-                        codePanel.HeaderText = codeName;
-                        var generateBtn = codePanel.FindControl("GenerateButtonText") as Label;
-                        if (generateBtn != null)
+                        var codePanel = tabContainer.FindControl("tp6") as AjaxControlToolkit.TabPanel;
+                        if (codePanel != null)
                         {
-                            generateBtn.Text = string.Format("Generate {0}", codeName);
+                            codePanel.HeaderText = codeName;
+                            var generateBtn = codePanel.FindControl("GenerateButtonText") as Label;
+                            if (generateBtn != null)
+                            {
+                                generateBtn.Text = string.Format("Generate {0}", codeName);
+                            }
                         }
                     }
                 }

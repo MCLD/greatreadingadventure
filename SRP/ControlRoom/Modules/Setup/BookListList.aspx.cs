@@ -142,10 +142,19 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 var challengeRow = e.Row.DataItem as System.Data.DataRowView;
                 if (challengeRow != null)
                 {
+                    bool danger = false;
                     if (challengeRow["TotalTasks"] == null
                         || challengeRow["TotalTasks"] as int? == 0)
                     {
-                        e.Row.CssClass = new WebTools().CssEnsureClass("text-danger", 
+                        danger = true;
+                    } else if((challengeRow["TotalTasks"] as int? ?? 0 )
+                        < (challengeRow["NumBooksToComplete"] as int? ?? 0))
+                    {
+                        danger = true;
+                    }
+                    if(danger)
+                    {
+                        e.Row.CssClass = new WebTools().CssEnsureClass("text-danger",
                             e.Row.CssClass);
                     }
                 }
