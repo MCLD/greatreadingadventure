@@ -147,6 +147,7 @@
                 <ItemTemplate>
                     <%# Eval("NumBooksToComplete") %>/<%# Eval("TotalTasks") %>
                     <%# Eval("TotalTasks") as int? == 0 ? "<span class=\"glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" title=\"This challenge needs tasks or it will not be visible!\"></span>" : string.Empty %>
+                    <%# (Eval("TotalTasks") as int? ?? 0) < (Eval("NumBooksToComplete") as int? ?? 0) ? "<span class=\"glyphicon glyphicon-exclamation-sign\" data-toggle=\"tooltip\" title=\"This challenge needs more tasks or less required tasks to complete or it cannot be completed!\"></span>" : string.Empty %>
                 </ItemTemplate>
             </asp:TemplateField>
 
