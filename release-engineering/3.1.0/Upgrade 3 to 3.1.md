@@ -1,14 +1,22 @@
-**Version 3.1.0 of the [Great Reading Adventure](http://greatreadingadventure.com/) was released on April 27th, 2016**. It fixes a number of issues and includes a ton of enhancements. You can view the [release notes](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0) at GitHub.
+# The Great Reading Adventure
+
+## Upgrading to version 3.1
+
+**Version 3.1.0 of the [Great Reading Adventure](http://greatreadingadventure.com/) was released on April 27th, 2016**. It fixes a number of issues and includes a ton of enhancements. You can view the [change log](https://github.com/MCLD/greatreadingadventure/blob/master/CHANGELOG.md) and [release notes](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0) at GitHub.
+
+This archive contains the files necessary to upgrade The Great Reading Adventure from version 3.* to version 3.1. This upgrade package only supports upgrading from version 3. *If you attempt to use this to upgrade a version 2 installation you will have a bad time.*
 
 If your current installation does not have a ton of content you are probably going to find it easier to just do a clean install from scratch. This upgrade process involves multiple steps including replacing files and running a database update script.
 
 **This process has been tested to the best of our ability but there is always a chance that we have missed something or that our environment is not the same as yours. Please, please, *please* take backups of the GRA files and the database prior to taking any steps after number 6 below!**
 
-As part of this update process, your existing avatars will no longer function. The avatar system has been upgraded and features customizable avatars. Bear this in mind if you've customized your avatar artwork.
+- As part of this update process, your existing avatars will no longer function. The avatar system has been upgraded and features customizable avatars. Bear this in mind if you've customized your avatar artwork.
 
-Here are the steps required to perform the upgrade:
+- If you have customized your favicon/site shortcut icons note that they'll be overwritten with the Great Reading Adventure logo icons.
 
-1. Download and unzip the [`GRA-v3-to-v3.1-upgrade.zip`](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0) file.
+## Instructions
+
+1. Download and unzip the [GRA-v3-to-v3.1-upgrade.zip](https://github.com/MCLD/greatreadingadventure/releases/tag/v3.1.0) file.
 
 2. Locate your current GRA installation. The folder will contain files such as `Web.config` and `Dashboard.aspx`.
 
@@ -20,11 +28,9 @@ Here are the steps required to perform the upgrade:
 
 6. Back up your current database and ensure the backup file is placed somewhere safe. Again, this process will vary depending upon your configuration and whether or not you are using [SQL Server Management Studio to perform the backup](https://msdn.microsoft.com/en-us/library/ms187510.aspx#Anchor_1).
 
-  *__NOTE: from this step on, program patrons and Control Room users may see an interruption in service as we progress through the upgrade - consider making this change at a time when few users are accessing the site.__*
+    *__NOTE: from this step on, program patrons and Control Room users may see an interruption in service as we progress through the upgrade - consider making this change at a time when few users are accessing the site.__*
 
 7. Copy the files from the `GRA Upgrade` folder into the folder of your current GRA installation. This will overwrite most of the files and folders.
-
-  **NOTE:** If you have customized your favicon/site shortcut icons note that they'll be overwritten with the Great Reading Adventure logo icons.
 
 8. Modify the existing `Web.config` file - change the line that says:
 
@@ -46,23 +52,19 @@ Here are the steps required to perform the upgrade:
 
 14. Log in to the Control Room and verify that you are able to navigate without seeing any errors. We'd suggest at least checking the `Patrons` tab (search and view a Patron's profile) and the `Management` tab (view some content like Badges and Challenges).
 
-15. Navigate to the `Programs` tab.
+15. Navigate to the `Programs` tab. Select `Static Text` from the ribbon at the top of the screen.
 
 16. Open the `GRA Upgrade Resource Text.txt` file in the upgrade folder. This is a normal text file that you can open in Notepad.
 
 17. Repeat the following steps for each of your programs:
 
-  a. Click the `Edit Record` icon next to your program.
+    a. Select the program from the drop-down list and click `Load Program Text Resources`.
 
-  b. Select `Static Text` at the top of the screen.
+    b. Scroll down to the bottom of the Program Text Resources (the large text field).
 
-  c. Scroll down to the bottom of the Program Text Resources (the large text field).
+    c. Copy the contents of the `GRA Upgrade Resource Text.txt` to the end of the text in the text field.
 
-  d. Copy the contents of the `GRA Upgrade Resource Text.txt` to the end of the text in the text field.
-
-  e. Click `Save Program Text Resources`.
-
-  f. Use the `Program List` link at the top of the screen to navigate back to the `Programs` tab to repeat this process.
+    d. Click `Save Program Text Resources`.
 
 18. If your program is available for registration, log out of the Control Room and log into the patron side to verify that everything is working.
 
