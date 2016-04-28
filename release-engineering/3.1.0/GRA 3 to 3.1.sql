@@ -8271,6 +8271,14 @@ UPDATE [Event]
 SET [HiddenFromPublic] = 0;
 GO
 
+PRINT N'Updating Badges...';
+
+SET NOCOUNT ON
+
+UPDATE [Badge]
+SET [HiddenFromPublic] = 0;
+GO
+
 PRINT N'Updating Registration Settings...';
 GO
 
