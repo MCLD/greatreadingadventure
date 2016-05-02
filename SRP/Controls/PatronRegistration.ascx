@@ -28,13 +28,13 @@
 
 <asp:Panel runat="server" class="panel panel-default" DefaultButton="btnNext">
     <div class="panel-heading">
-        <asp:Label runat="server" CssClass="lead" Text="registration-title"></asp:Label>
+        <span class="lead"><asp:Literal runat="server" Text="registration-title"></asp:Literal></span>
     </div>
     <div class="panel-body">
         <div class="form-horizontal">
             <div class="row">
                 <div class="col-xs-12 margin-1em-bottom">
-                    <asp:Label runat="server" Text="registration-instructions"></asp:Label>
+                    <asp:Literal runat="server" Text="registration-instructions"></asp:Literal>
                 </div>
 
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -46,7 +46,7 @@
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
                     <div class="alert alert-success">
                         <span class="glyphicon glyphicon-info-sign"></span>
-                        <asp:Label ID="Label3" runat="server" Text="registration-create-family-accounts"></asp:Label>
+                        <asp:Literal ID="Label3" runat="server" Text="registration-create-family-accounts"></asp:Literal>
                     </div>
                 </div>
             </asp:Panel>
@@ -55,7 +55,7 @@
                     <asp:Panel ID="Panel1" runat="server" Visible="True">
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolGrade_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-grade"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-grade"></asp:Literal>
                             </label>
 
                             <div class="col-sm-6">
@@ -72,7 +72,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("DOB_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-dob"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-dob"></asp:Literal>
                             </label>
 
                             <div class="col-sm-6">
@@ -92,7 +92,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Age_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-age"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-age"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="2"
@@ -122,13 +122,13 @@
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
                                 <div class="alert alert-info">
                                     <span class="glyphicon glyphicon-info-sign"></span>
-                                    <asp:Label runat="server" Text="registration-form-family-details"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-family-details"></asp:Literal>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-6 control-label">
-                                <asp:Label runat="server" Text="registration-form-family-account"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-family-account"></asp:Literal>
                             </label>
                             <div class="col-sm-3">
                                 <asp:DropDownList ID="FamilyAccount" runat="server" CssClass="form-control">
@@ -144,13 +144,13 @@
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
                                 <div class="alert alert-info">
                                     <span class="glyphicon glyphicon-info-sign"></span>
-                                    <asp:Label runat="server" Text="registration-email-not-required-note"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-email-not-required-note"></asp:Literal>
                                 </div>
                             </div>
                         </asp:Panel>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-program"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-program"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" DataTextField="TabName" DataValueField="PID"
@@ -171,7 +171,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("FirstName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-name-first"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-name-first"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="FirstName" runat="server" CssClass="form-control required-asterisk" data-asterisk="FirstNameReq"></asp:TextBox>
@@ -186,7 +186,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("MiddleName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-name-middle"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-name-middle"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="MiddleName" runat="server" CssClass="form-control required-asterisk" data-asterisk="MiddleNameReq"></asp:TextBox>
@@ -201,7 +201,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("LastName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-name-last"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-name-last"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="LastName" runat="server" CssClass="form-control required-asterisk" data-asterisk="LastNameReq"></asp:TextBox>
@@ -216,7 +216,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Gender_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-gender"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-gender"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="Gender" runat="server" CssClass="form-control required-asterisk-dropdown" data-asterisk="GenderReq"
@@ -237,7 +237,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("EmailAddress_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-email"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-email"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="EmailAddress" runat="server" CssClass="form-control required-asterisk" data-asterisk="EmailAddressReq"></asp:TextBox>
@@ -255,7 +255,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("PhoneNumber_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-phone"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-phone"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="PhoneNumber" runat="server" CssClass="form-control required-asterisk" data-asterisk="PhoneNumberReq" placeholder="602-555-1212"></asp:TextBox>
@@ -274,7 +274,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("StreetAddress1_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-address1"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-address1"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="StreetAddress1" runat="server" CssClass="form-control required-asterisk" data-asterisk="StreetAddress1Req"></asp:TextBox>
@@ -289,7 +289,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("StreetAddress2_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-address2"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-address2"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="StreetAddress2" runat="server" CssClass="form-control required-asterisk" data-asterisk="StreetAddress2Req"></asp:TextBox>
@@ -304,7 +304,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("City_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-city"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-city"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="City" runat="server" CssClass="form-control required-asterisk" data-asterisk="CityReq"></asp:TextBox>
@@ -319,7 +319,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("State_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-state"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-state"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="State" runat="server" CssClass="form-control required-asterisk" data-asterisk="StateReq"></asp:TextBox>
@@ -334,7 +334,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ZipCode_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-zip"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-zip"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="ZipCode" runat="server" CssClass="form-control required-asterisk" data-asterisk="ZipCodeReq" placeholder="85004 or 85004-1140"></asp:TextBox>
@@ -353,7 +353,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Country_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-country"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-country"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Country" runat="server" CssClass="form-control required-asterisk" data-asterisk="CountryReq"></asp:TextBox>
@@ -368,7 +368,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("County_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-county"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-county"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="County" runat="server" CssClass="form-control required-asterisk" data-asterisk="CountyReq"></asp:TextBox>
@@ -389,7 +389,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentGuardianFirstName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-guardian-name-first"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-guardian-name-first"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="ParentGuardianFirstName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentGuardianFirstnameReq"></asp:TextBox>
@@ -404,7 +404,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentGuardianMiddleName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-guardian-name-middle"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-guardian-name-middle"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="ParentGuardianMiddleName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentGuardianMiddleNameReq"></asp:TextBox>
@@ -418,7 +418,7 @@
                         </div>
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentGuardianLastName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-guardian-name-last"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-guardian-name-last"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="ParentGuardianLastName" runat="server" CssClass="form-control required-asterisk" data-asterisk="ParentGuardianLastNameReq"></asp:TextBox>
@@ -449,7 +449,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("District_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-library-district"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-library-district"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="District" runat="server" DataSourceID="odsDDDistrict" DataTextField="Description" DataValueField="CID"
@@ -473,7 +473,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("PrimaryLibrary_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-library"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-library"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:DropDownList ID="PrimaryLibrary" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
@@ -494,7 +494,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("LibraryCard_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-library-card"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-library-card"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="LibraryCard" runat="server" CssClass="form-control required-asterisk" data-asterisk="LibraryCardReq"></asp:TextBox>
@@ -512,7 +512,7 @@
                         <asp:Panel runat="server" ID="SchoolArea">
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("SDistrict_Prompt")%>'>
                                 <label class="col-sm-3 control-label">
-                                    <asp:Label runat="server" Text="registration-form-school-district"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-school-district"></asp:Literal>
                                 </label>
                                 <div class="col-sm-6">
                                     <asp:DropDownList ID="SDistrict" runat="server" DataSourceID="odsDDSDistrict" DataTextField="Description" DataValueField="CID"
@@ -535,7 +535,7 @@
 
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolType_Prompt")%>'>
                                 <label class="col-sm-3 control-label">
-                                    <asp:Label runat="server" Text="registration-form-school-type"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-school-type"></asp:Literal>
                                 </label>
                                 <div class="col-sm-6">
                                     <asp:DropDownList ID="SchoolType" runat="server" DataSourceID="odsDDSchoolType" DataTextField="Description" DataValueField="CID"
@@ -558,7 +558,7 @@
 
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("SchoolName_Prompt")%>'>
                                 <label class="col-sm-3 control-label">
-                                    <asp:Label runat="server" Text="registration-form-school"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-school"></asp:Literal>
                                 </label>
                                 <div class="col-sm-6">
                                     <asp:DropDownList ID="SchoolName" runat="server" DataSourceID="odsDDSchool" DataTextField="Description" DataValueField="CID"
@@ -581,7 +581,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Teacher_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-teacher"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-teacher"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Teacher" runat="server" CssClass="form-control required-asterisk" data-asterisk="TeacherReq"></asp:TextBox>
@@ -596,7 +596,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("GroupTeamName_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-group"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-group"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="GroupTeamName" runat="server" CssClass="form-control required-asterisk" data-asterisk="GroupTeamNameReq"></asp:TextBox>
@@ -611,7 +611,7 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Prompt")%>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label ID="GoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Label>
+                                <asp:Literal ID="GoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
                                 <asp:TextBox ID="Goal" runat="server" CssClass="form-control required-asterisk" data-asterisk="GoalReq"></asp:TextBox>
@@ -856,13 +856,13 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("TermsOfUseflag_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-terms"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-terms"></asp:Literal>
                             </label>
                             <label class="col-sm-9 form-control-static">
                                 <div class="row">
                                     <asp:CheckBox ID="TermsOfUseflag" runat="server" ReadOnly="False" data-asterisk="TermsOfUseflagReq" CssClass="col-xs-1 gra-registration-checkbox gra-terms-of-use-container required-asterisk-aspcheckbox"></asp:CheckBox>
                                     <span runat="server" visible='<%# Eval("TermsOfUseflag_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm TermsOfUseflagReq"></span>
-                                    <asp:Label runat="server" Text="registration-terms-agreement" CssClass="col-xs-10"></asp:Label>
+                                    <div class="col-xs-10"><asp:Literal runat="server" Text="registration-terms-agreement"></asp:Literal></div>
                                 </div>
                             </label>
                             <div class="col-sm-9 col-sm-offset-3">
@@ -876,12 +876,12 @@
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("ShareFlag_Prompt") %>'>
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="registration-form-information-sharing"></asp:Label>
+                                <asp:Literal runat="server" Text="registration-form-information-sharing"></asp:Literal>
                             </label>
                             <label class="col-sm-9 form-control-static">
                                 <div class="row">
                                     <asp:CheckBox ID="ShareFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox"></asp:CheckBox>
-                                    <asp:Label runat="server" Text="registration-privacy-details" CssClass="col-xs-10"></asp:Label>
+                                    <div class="col-xs-10"><asp:Literal runat="server" Text="registration-privacy-details"></asp:Literal></div>
                                 </div>
                             </label>
                         </div>
@@ -889,13 +889,13 @@
                         <asp:Panel ID="pnlConsent" runat="server" Visible="False">
                             <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length==0 ? "0" : RegistrationAge.Text) < 18 %>'>
                                 <label class="col-sm-3 control-label">
-                                    <asp:Label runat="server" Text="registration-form-consent"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-consent"></asp:Literal>
                                 </label>
                                 <label class="col-sm-9 form-control-static">
                                     <div class="row">
                                         <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
                                         <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
-                                        <asp:Label ID="lblConsent" runat="server" CssClass="col-xs-10"></asp:Label>
+                                        <div class="col-xs-10"><asp:Literal ID="lblConsent" runat="server"></asp:Literal></div>
                                     </div>
                                 </label>
                                 <div class="col-sm-9 col-sm-offset-3">
@@ -914,7 +914,7 @@
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
                                 <div class="alert alert-info">
                                     <span class="glyphicon glyphicon-info-sign"></span>
-                                    <asp:Label runat="server" Text="registration-form-username-password-details"></asp:Label>
+                                    <asp:Literal runat="server" Text="registration-form-username-password-details"></asp:Literal>
                                 </div>
                             </div>
                         </div>
@@ -985,7 +985,7 @@
             <asp:Panel ID="Panel8" runat="server" Visible="False">
                 <div class="row">
                     <div class="col-xs-12">
-                        <asp:Label runat="server" Text="registration-success"></asp:Label>
+                        <asp:Literal runat="server" Text="registration-success"></asp:Literal>
                     </div>
                 </div>
             </asp:Panel>
@@ -993,7 +993,7 @@
             <asp:Panel ID="Panel9" runat="server" Visible="False">
                 <div class="row">
                     <div class="col-xs-12">
-                        <asp:Label runat="server" Text="registration-success-family-account"></asp:Label>
+                        <asp:Literal runat="server" Text="registration-success-family-account"></asp:Literal>
                     </div>
                 </div>
             </asp:Panel>
@@ -1089,7 +1089,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <asp:Label runat="server" CssClass="lead" Text="registration-processing"></asp:Label>
+                <span class="lead"><asp:Literal runat="server" Text="registration-processing"></asp:Literal></span>
             </div>
             <div class="modal-body text-center">
                 <div class="progress">

@@ -270,6 +270,12 @@ namespace SRPApp.Classes {
                 LoadLabels(c);
                 if(c is Label) {
                     ((Label)c).Text = GetResourceString(((Label)c).Text);
+                } else
+                {
+                    if(c is Literal)
+                    {
+                        ((Literal)c).Text = GetResourceString(((Literal)c).Text);
+                    }
                 }
             }
         }
