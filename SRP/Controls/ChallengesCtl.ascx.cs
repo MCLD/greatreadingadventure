@@ -94,7 +94,7 @@ namespace GRA.SRP.Controls
             }
             else
             {
-                if(amount > total)
+                if (amount > total)
                 {
                     return 100;
                 }
@@ -133,6 +133,21 @@ namespace GRA.SRP.Controls
         {
             if (!IsPostBack)
             {
+                if (Request.QueryString.Count > 0)
+                {
+                    var querySearch = Request.QueryString["Search"];
+                    if (!string.IsNullOrWhiteSpace(querySearch))
+                    {
+                        if (querySearch.Length > 255)
+                        {
+                            SearchText.Text = querySearch.Substring(0, 255);
+                        }
+                        else
+                        {
+                            SearchText.Text = querySearch;
+                        }
+                    }
+                }
                 PopulateChallengeList();
                 this.ShowModal = false;
             }

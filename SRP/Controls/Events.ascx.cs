@@ -19,6 +19,10 @@ namespace GRA.SRP.Controls
         public string LastAvailableDate { get; set; }
         public string NoneAvailableText { get; set; }
         public bool Filtered { get; set; }
+        public string SelectLibrary { get; set; }
+        public string SelectSystem { get; set; }
+        public bool InitialFilter { get; set; }
+
         protected string DisplayEventDateTime(DateTime? eventDate)
         {
             if (eventDate != null)
@@ -38,7 +42,20 @@ namespace GRA.SRP.Controls
         {
             if (!IsPostBack)
             {
-                DoFilter();
+                InitialFilter = false;
+                if (Request.QueryString.Count > 0)
+                {
+                    InitialFilter = PrepareFilter();
+                    Page.PreRenderComplete += (s, args) =>
+                    {
+                        EnactFilter();
+                    };
+                }
+
+                if (!InitialFilter)
+                {
+                    DoFilter();
+                }
             }
 
             int programId;
@@ -56,6 +73,79 @@ namespace GRA.SRP.Controls
 
             var basePage = (BaseSRPPage)Page;
             this.NoneAvailableText = basePage.GetResourceString("events-none-available");
+        }
+
+        protected void EnactFilter()
+        {
+            if (!IsPostBack && InitialFilter)
+            {
+                if (!string.IsNullOrWhiteSpace(SelectLibrary))
+                {
+                    var branchItem = BranchId.Items.FindByValue(SelectLibrary);
+                    if (branchItem != null)
+                    {
+                        BranchId.SelectedValue = SelectLibrary;
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(SelectSystem))
+                {
+                    var systemItem = SystemId.Items.FindByValue(SelectSystem);
+                    if (systemItem != null)
+                    {
+                        SystemId.SelectedValue = SelectSystem;
+                    }
+                }
+                DoFilter();
+            }
+        }
+
+        protected bool PrepareFilter()
+        {
+            bool filter = false;
+            var qs = new Logic.QueryString();
+            var querySystem = Request.QueryString["System"];
+            if (!string.IsNullOrWhiteSpace(querySystem))
+            {
+                SelectSystem = qs.GetSystemIdString(Server.UrlDecode(querySystem));
+                if(!string.IsNullOrEmpty(SelectSystem))
+                {
+                    filter = true;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(SelectSystem))
+            {
+                var queryBranch = Request.QueryString["Branch"];
+                if (!string.IsNullOrWhiteSpace(queryBranch))
+                {
+                    var sysBranchId = qs.GetSystemBranchIdStrings(queryBranch);
+                    if (sysBranchId != null)
+                    {
+                        SelectSystem = sysBranchId.Item1;
+                        SelectLibrary = sysBranchId.Item2;
+                        if(!string.IsNullOrEmpty(SelectSystem)
+                           || !string.IsNullOrEmpty(SelectLibrary))
+                        {
+                            filter = true;
+                        }
+                    }
+                }
+            }
+
+            var querySearch = Request.QueryString["Search"];
+            if (!string.IsNullOrWhiteSpace(querySearch))
+            {
+                filter = true;
+                if (querySearch.Length > 255)
+                {
+                    SearchText.Text = querySearch.Substring(0, 255);
+                }
+                else
+                {
+                    SearchText.Text = querySearch;
+                }
+            }
+            return filter;
         }
 
         protected void DoFilter()

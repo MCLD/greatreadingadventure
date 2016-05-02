@@ -19,8 +19,6 @@ namespace GRA.SRP.Badges
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            bool badgeEarned = false;
-            string dateEarned = null;
             if (!String.IsNullOrEmpty(Request["PID"]))
             {
                 Session["ProgramID"] = Request["PID"].ToString();
@@ -43,198 +41,135 @@ namespace GRA.SRP.Badges
             TranslateStrings(this);
 
             badgeBackLink.NavigateUrl = "~/Badges/";
-            
-            Badge badge = null;
+
             TwitterShare.Visible = false;
             FacebookShare.Visible = false;
 
-            int badgeId = 0;
-            string displayBadge = Request.QueryString["BadgeId"];
-            if (!string.IsNullOrEmpty(displayBadge)
-                && int.TryParse(displayBadge.ToString(), out badgeId))
+            try
             {
-                badge = DAL.Badge.FetchObject(badgeId);
-                if (badge != null)
+                int badgeId = 0;
+                string displayBadge = Request.QueryString["BadgeId"];
+                if (!int.TryParse(displayBadge, out badgeId))
                 {
-                    var patron = Session[SessionKey.Patron] as DAL.Patron;
-                    DataSet patronBadges = null;
-                    if (patron != null)
-                    {
-                        patronBadges = DAL.PatronBadges.GetAll(patron.PID);
-                        if (patronBadges.Tables.Count > 0)
-                        {
-                            var filterExpression = string.Format("BadgeID = {0}", badge.BID);
-                            var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
-                            if (patronHasBadge.Count() > 0)
-                            {
-                                badgeEarned = true;
-                                var earned = patronHasBadge[0]["DateEarned"] as DateTime?;
-                                if (earned != null)
-                                {
-                                    dateEarned = ((DateTime)earned).ToShortDateString();
-                                }
-                            }
-                        }
-                    }
-
-                    if (badge.HiddenFromPublic && !badgeEarned)
-                    {
-                        badge = null;
-                    }
+                    throw new Exception("Invalid badge id provided.");
                 }
 
-                if (badge != null)
+                int patronId = 0;
+                var patron = Session[SessionKey.Patron] as DAL.Patron;
+                if (patron != null)
                 {
-                    badgeTitle.Text = badge.UserName;
-                    this.Title = string.Format("Badge: {0}", badgeTitle.Text);
-                    this.MetaDescription = string.Format("All about the {0} badge - {1}",
-                                                         badgeTitle.Text,
-                                                         GetResourceString("system-name"));
-                    string badgePath = NoBadgePath;
-                    string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
-                                                              badgeId);
-                    if (System.IO.File.Exists(Server.MapPath(potentialBadgePath)))
-                    {
-                        badgePath = potentialBadgePath;
-                    }
+                    patronId = patron.PID;
+                }
 
-                    this.badgeImage.ImageUrl = badgePath;
-                    this.badgeImage.AlternateText = string.Format("Badge: {0}", badge.UserName);
+                var badgeDetailData = new Logic.Badge().GetForDisplay(Server, badgeId, patronId);
 
-                    if (!string.IsNullOrEmpty(dateEarned))
-                    {
-                        badgeEarnWhen.Text = string.Format("<p><strong>You earned this badge on {0}!</strong></p>",
-                            dateEarned);
-                        badgeEarnWhen.Visible = true;
-                    }
-                    else
-                    {
-                        badgeEarnWhen.Visible = false;
-                    }
 
-                    StringBuilder earn = new StringBuilder();
+                if (badgeDetailData.Hidden == true && badgeDetailData.Earned == false)
+                {
+                    throw new Exception("Secret badge must be earned to be revealed.");
+                }
 
-                    string earnText = Badge.GetBadgeReading(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Earn points by reading: {0}.</li>", earnText);
-                    }
+                badgeTitle.Text = badgeDetailData.DisplayName;
+                this.Title = string.Format("Badge: {0}", badgeTitle.Text);
+                this.MetaDescription = string.Format("All about the {0} badge - {1}",
+                                                     badgeTitle.Text,
+                                                     GetResourceString("system-name"));
+                badgeImage.ImageUrl = badgeDetailData.ImageUrl;
+                badgeImage.AlternateText = badgeDetailData.AlternateText;
+                if (!string.IsNullOrEmpty(badgeDetailData.DateEarned))
+                {
+                    badgeEarnWhen.Text = string.Format("<p><strong>You earned this badge on {0}!</strong></p>",
+                        badgeDetailData.DateEarned);
+                    badgeEarnWhen.Visible = true;
+                }
+                else
+                {
+                    badgeEarnWhen.Visible = false;
+                }
 
-                    earnText = Badge.GetBadgeGoal(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Achieve part of your personal reading goal: {0}.</li>", earnText);
-                    }
+                badgeEarnPanel.Visible = true;
+                badgeDetails.Visible = true;
 
-                    earnText = Badge.GetEnrollmentPrograms(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Enroll in a reading program: {0}</li>", earnText);
-                    }
+                StringBuilder sb = new StringBuilder();
+                foreach(var line in badgeDetailData.HowToEarn)
+                {
+                    sb.AppendFormat("<li>{0}</li>", line);
+                }
+                badgeEarnLabel.Text = sb.ToString();
 
-                    earnText = Badge.GetBadgeBookLists(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Complete a Challenge: {0}</li>", earnText);
-                    }
+                /* metadata */
+                string systemName = GetResourceString("system-name");
+                var fbDescription = StringResources.getStringOrNull("facebook-description");
+                var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
 
-                    earnText = Badge.GetBadgeGames(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Unlock and complete an Adventure: {0}</li>", earnText);
-                    }
+                string title = string.Format("{0} badge: {1}",
+                    systemName,
+                    badgeDetailData.DisplayName);
+                string description = null;
+                string twitDescrip = null;
 
-                    earnText = Badge.GetBadgeEvents(badgeId);
-                    if (earnText.Length > 0)
-                    {
-                        earn.AppendFormat("<li>Attend an Event: {0}</li>", earnText);
-                    }
-
-                    if (earn.Length > 0)
-                    {
-                        badgeEarnLabel.Text = earn.ToString();
-                    }
-                    else
-                    {
-                        badgeEarnLabel.Text = "<li>Learn the secret code to unlock it.</li>";
-                    }
-                    badgeEarnPanel.Visible = true;
-                    badgeDetails.Visible = true;
-
-                    /* metadata */
-                    string systemName = GetResourceString("system-name");
-                    var fbDescription = StringResources.getStringOrNull("facebook-description");
-                    var hashtags = StringResources.getStringOrNull("socialmedia-hashtags");
-
-                    string title = string.Format("{0} badge: {1}",
+                if (badgeDetailData.Earned)
+                {
+                    description = string.Format("By participating in {0} I earned this badge: {1}!",
                         systemName,
-                        badge.UserName);
-                    string description = null;
-                    string twitDescrip = null;
-
-                    if (badgeEarned)
+                        badgeDetailData.DisplayName);
+                    twitDescrip = string.Format("I earned this {0} badge: {1}!",
+                        systemName,
+                        badgeDetailData.DisplayName);
+                    if (twitDescrip.Length > 118)
                     {
-                        description = string.Format("By participating in {0} I earned this badge: {1}!",
-                            systemName,
-                            badge.UserName);
-                        twitDescrip = string.Format("I earned this {0} badge: {1}!",
-                            systemName,
-                            badge.UserName);
-                        if (twitDescrip.Length > 118)
-                        {
-                            // if it's longer than this it won't fit with the url, shorten it
-                            twitDescrip = string.Format("I earned this badge: {0}!",
-                                badge.UserName);
-                        }
+                        // if it's longer than this it won't fit with the url, shorten it
+                        twitDescrip = string.Format("I earned this badge: {0}!",
+                            badgeDetailData.DisplayName);
                     }
-                    else
-                    {
-                        description = string.Format("By participating in {0} you can earn this badge: {1}!",
-                            systemName,
-                            badge.UserName);
-                        twitDescrip = string.Format("Check out this {0} badge: {1}!",
-                            systemName,
-                            badge.UserName);
-                        if (twitDescrip.Length > 118)
-                        {
-                            // if it's longer than this it won't fit with the url, shorten it
-                            twitDescrip = string.Format("Check out this badge: {0}!",
-                                badge.UserName);
-                        }
-                    }
-
-                    var wt = new WebTools();
-                    var baseUrl = WebTools.GetBaseUrl(Request);
-                    var badgeDetailsUrl = string.Format("{0}/Badges/Details.aspx?BadgeId={1}",
-                        baseUrl,
-                        badge.BID);
-                    var badgeImagePath = string.Format("{0}{1}", baseUrl,
-                        VirtualPathUtility.ToAbsolute(badgePath));
-
-                    wt.AddOgMetadata(Metadata,
-                        title,
-                        wt.BuildFacebookDescription(description, hashtags, fbDescription),
-                        badgeImagePath,
-                        badgeDetailsUrl,
-                        GetResourceString("facebook-appid"));
-
-                    wt.AddTwitterMetadata(Metadata,
-                        title, 
-                        twitDescrip, 
-                        badgeImagePath, 
-                        twitterUsername: GetResourceString("twitter-username"));
-
-                        TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
-                            Server.UrlEncode(badgeDetailsUrl),
-                            hashtags);
-                    TwitterShare.Visible = true;
-                    FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(badgeDetailsUrl));
-                    FacebookShare.Visible = true;
-                    // end social
                 }
+                else
+                {
+                    description = string.Format("By participating in {0} you can earn this badge: {1}!",
+                        systemName,
+                        badgeDetailData.DisplayName);
+                    twitDescrip = string.Format("Check out this {0} badge: {1}!",
+                        systemName,
+                        badgeDetailData.DisplayName);
+                    if (twitDescrip.Length > 118)
+                    {
+                        // if it's longer than this it won't fit with the url, shorten it
+                        twitDescrip = string.Format("Check out this badge: {0}!",
+                            badgeDetailData.DisplayName);
+                    }
+                }
+
+                var wt = new WebTools();
+                var baseUrl = WebTools.GetBaseUrl(Request);
+                var badgeDetailsUrl = string.Format("{0}/Badges/Details.aspx?BadgeId={1}",
+                    baseUrl,
+                    badgeDetailData.BadgeId);
+                var badgeImagePath = string.Format("{0}{1}", baseUrl,
+                    VirtualPathUtility.ToAbsolute(badgeDetailData.ImageUrl));
+
+                wt.AddOgMetadata(Metadata,
+                    title,
+                    wt.BuildFacebookDescription(description, hashtags, fbDescription),
+                    badgeImagePath,
+                    badgeDetailsUrl,
+                    GetResourceString("facebook-appid"));
+
+                wt.AddTwitterMetadata(Metadata,
+                    title,
+                    twitDescrip,
+                    badgeImagePath,
+                    twitterUsername: GetResourceString("twitter-username"));
+
+                TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
+                    Server.UrlEncode(badgeDetailsUrl),
+                    hashtags);
+                TwitterShare.Visible = true;
+                FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(badgeDetailsUrl));
+                FacebookShare.Visible = true;
+                // end social
                 badgeDetails.Visible = true;
             }
-            if (badge == null)
+            catch (Exception ex)
             {
                 badgeDetails.Visible = false;
                 var cph = Page.Master.FindControl("HeaderContent") as ContentPlaceHolder;
@@ -248,7 +183,7 @@ namespace GRA.SRP.Badges
                 }
                 new SessionTools(Session).AlertPatron("Could not find details on that badge.",
                     PatronMessageLevels.Warning,
-                    "exclamation-sign");
+                                                    "exclamation-sign");
             }
         }
     }
