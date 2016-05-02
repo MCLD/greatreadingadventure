@@ -36,6 +36,42 @@ namespace GRA.SRP.Controls
         {
             if (!IsPostBack)
             {
+                var sessionProgramId = Session["ProgramID"];
+                int programId;
+                if (sessionProgramId != null)
+                {
+                    try
+                    {
+                        programId = sessionProgramId.ToString().SafeToInt();
+                    }
+                    catch (Exception)
+                    {
+                        programId = Programs.GetDefaultProgramID();
+                    }
+                }
+                else
+                {
+                    programId = Programs.GetDefaultProgramID();
+
+                }
+                var currentProgram = Programs.FetchObject(programId);
+
+                DateTime startDate = currentProgram.StartDate < currentProgram.LoggingStart
+                    ? currentProgram.StartDate
+                    : currentProgram.LoggingStart;
+
+                DateTime endDate = currentProgram.EndDate > currentProgram.LoggingEnd
+                    ? currentProgram.EndDate
+                    : currentProgram.LoggingEnd;
+
+                if (DateTime.Now < startDate)
+                {
+                    Response.Redirect("~");
+                }
+                else if (DateTime.Now > endDate)
+                {
+                    Response.Redirect("~");
+                }
                 var dataSource = RegistrationSettings.GetAll();
                 rptr.DataSource = dataSource;
                 rptr.DataBind();
@@ -133,7 +169,8 @@ namespace GRA.SRP.Controls
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
                 }
-                else {
+                else
+                {
                     int.TryParse(sAge, out age);
                 }
 
@@ -171,7 +208,8 @@ namespace GRA.SRP.Controls
 
                     Step.Text = (curStep + 2).ToString();
                 }
-                else {
+                else
+                {
                     if (age > 17 && SRPSettings.GetSettingValue("AllowFamilyAccounts").SafeToBoolYes())
                     {
                         // Ask about adult
@@ -183,7 +221,8 @@ namespace GRA.SRP.Controls
 
                         Step.Text = (curStep + 1).ToString();
                     }
-                    else {
+                    else
+                    {
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep + 2).ToString());
 
@@ -234,7 +273,7 @@ namespace GRA.SRP.Controls
                 }
 
                 var goal = rptr.Items[0].FindControl("Goal") as TextBox;
-                if(goal != null
+                if (goal != null
                    && selectedProgram.GoalDefault > 0)
                 {
                     goal.Text = selectedProgram.GoalDefault.ToString();
@@ -381,7 +420,8 @@ namespace GRA.SRP.Controls
                     btnDone.Visible = true;
                     return;
                 }
-                else {
+                else
+                {
                     // we're done with registration, we can just jump right in
                     TestingBL.CheckPatronNeedsPreTest();
                     TestingBL.CheckPatronNeedsPostTest();
@@ -553,7 +593,8 @@ namespace GRA.SRP.Controls
 
                     Step.Text = (curStep - 2).ToString();
                 }
-                else {
+                else
+                {
                     if (Age > 17)
                     {
                         // Ask about adult
@@ -565,7 +606,8 @@ namespace GRA.SRP.Controls
 
                         Step.Text = (curStep - 1).ToString();
                     }
-                    else {
+                    else
+                    {
                         var curPanel = rptr.Items[0].FindControl("Panel" + curStep.ToString());
                         var newPanel = rptr.Items[0].FindControl("Panel" + (curStep - 2).ToString());
 
@@ -593,7 +635,8 @@ namespace GRA.SRP.Controls
                     var DOB = DateTime.Parse(sDOB);
                     age = DateTime.Now.Year - DOB.Year;
                 }
-                else {
+                else
+                {
                     int.TryParse(sAge, out age);
                 }
 
@@ -699,7 +742,8 @@ namespace GRA.SRP.Controls
                         ? ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue
                         : lc.DistrictID.ToString();
                 }
-                else {
+                else
+                {
                     p.District = ((DropDownList)(rptr.Items[0]).FindControl("District")).SelectedValue;
                 }
                 var sc = SchoolCrosswalk.FetchObjectBySchoolID(p.SchoolName.SafeToInt());
@@ -713,7 +757,8 @@ namespace GRA.SRP.Controls
                         ? FormatHelper.SafeToInt(((DropDownList)(rptr.Items[0]).FindControl("SchoolType")).SelectedValue)
                         : sc.SchTypeID;
                 }
-                else {
+                else
+                {
                     p.SDistrict = ((DropDownList)(rptr.Items[0]).FindControl("SDistrict")).SelectedValue.SafeToInt();
                 }
 
@@ -796,7 +841,8 @@ namespace GRA.SRP.Controls
                         new SessionTools(Session).EstablishPatron(p);
                     }
                 }
-                else {
+                else
+                {
                     StringBuilder message = new StringBuilder("<strong>");
                     message.AppendFormat(SRPResources.ApplicationError1, "<ul>");
                     foreach (BusinessRulesValidationMessage m in p.ErrorCodes)
