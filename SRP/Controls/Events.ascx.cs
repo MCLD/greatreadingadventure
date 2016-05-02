@@ -77,20 +77,20 @@ namespace GRA.SRP.Controls
 
         protected void EnactFilter()
         {
-            if(!IsPostBack && InitialFilter)
+            if (!IsPostBack && InitialFilter)
             {
-                if(!string.IsNullOrWhiteSpace(SelectLibrary))
+                if (!string.IsNullOrWhiteSpace(SelectLibrary))
                 {
                     var branchItem = BranchId.Items.FindByValue(SelectLibrary);
-                    if(branchItem != null)
+                    if (branchItem != null)
                     {
                         BranchId.SelectedValue = SelectLibrary;
                     }
                 }
-                if(!string.IsNullOrWhiteSpace(SelectSystem))
+                if (!string.IsNullOrWhiteSpace(SelectSystem))
                 {
                     var systemItem = SystemId.Items.FindByValue(SelectSystem);
-                    if(systemItem != null)
+                    if (systemItem != null)
                     {
                         SystemId.SelectedValue = SelectSystem;
                     }
@@ -102,28 +102,14 @@ namespace GRA.SRP.Controls
         protected bool PrepareFilter()
         {
             bool filter = false;
+            var qs = new Logic.QueryString();
             var querySystem = Request.QueryString["System"];
             if (!string.IsNullOrWhiteSpace(querySystem))
             {
-                int systemId = -1;
-                if (int.TryParse(querySystem, out systemId) && systemId != -1)
+                SelectSystem = qs.GetSystemIdString(Server.UrlDecode(querySystem));
+                if(!string.IsNullOrEmpty(SelectSystem))
                 {
-                    var branch = DAL.Codes.GetAllLibrarySystems();
-                    if (branch != null 
-                        && branch.Tables != null 
-                        && branch.Tables.Count > 0
-                        && branch.Tables[0].Columns.Contains("LibSys"))
-                    {
-                        var rows = branch.Tables[0].Select(string.Format("LibSys = {0}", systemId));
-                        if (rows.Count() > 0)
-                        {
-                            SelectSystem = rows[0]["LibSys"].ToString();
-                            if (!string.IsNullOrWhiteSpace(SelectSystem))
-                            {
-                                filter = true;
-                            }
-                        }
-                    }
+                    filter = true;
                 }
             }
 
@@ -132,15 +118,14 @@ namespace GRA.SRP.Controls
                 var queryBranch = Request.QueryString["Branch"];
                 if (!string.IsNullOrWhiteSpace(queryBranch))
                 {
-                    int branchId = -1;
-                    if (int.TryParse(queryBranch, out branchId) && branchId != -1)
+                    var sysBranchId = qs.GetSystemBranchIdStrings(queryBranch);
+                    if (sysBranchId != null)
                     {
-
-                        var branch = DAL.LibraryCrosswalk.FetchObjectByLibraryID(branchId);
-                        if (branch != null)
+                        SelectSystem = sysBranchId.Item1;
+                        SelectLibrary = sysBranchId.Item2;
+                        if(!string.IsNullOrEmpty(SelectSystem)
+                           || !string.IsNullOrEmpty(SelectLibrary))
                         {
-                            SelectLibrary = branch.BranchID.ToString();
-                            SelectSystem = branch.DistrictID.ToString();
                             filter = true;
                         }
                     }

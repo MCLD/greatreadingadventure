@@ -1,6 +1,14 @@
 # Change log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Add QueryString capabilities to events index
+  - `/Events/?Branch=<branch name>` shows events for that branch
+  - `/Events/?System=<system name>` shows events for that library system
+  - `/Events?Search=<search string>` shows events with the provided search string
+  - `/Challenges?Search=<search string>` shows challenges with the provided search string
+
 ## [3.1.0] - 2016-04-27
 ### Added
 - Feature for optionally requiring users to enter book details
