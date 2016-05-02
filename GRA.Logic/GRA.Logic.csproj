@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Badge.cs" />
+    <Compile Include="BadgeDisplayDetails.cs" />
     <Compile Include="Banner.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="Game.cs" />

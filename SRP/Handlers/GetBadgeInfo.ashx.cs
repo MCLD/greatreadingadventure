@@ -26,7 +26,7 @@ namespace GRA.SRP.Handlers
 
         public void ProcessRequest(HttpContext context)
         {
-            var jsonResponse = new JsonBadge();
+            JsonBadge jsonResponse = null;
             try
             {
                 if (context.Request.QueryString["BadgeId"] == null)
@@ -40,105 +40,31 @@ namespace GRA.SRP.Handlers
                     throw new Exception("Invalid badge id provided.");
                 }
 
-                var badge = DAL.Badge.FetchObject(badgeId);
-                if (badge == null)
-                {
-                    throw new Exception("Badge not found.");
-                }
-
-                // if the badge is flagged as hidden from the public, ensure the user has earned it
-                bool hideBadge = badge.HiddenFromPublic == true;
-                bool earnedBadge = false;
-
+                int patronId = 0;
                 var patron = context.Session[SessionKey.Patron] as DAL.Patron;
                 if (patron != null)
                 {
-                    var patronBadges = DAL.PatronBadges.GetAll(patron.PID);
-                    if (patronBadges != null && patronBadges.Tables.Count > 0)
-                    {
-                        var filterExpression = string.Format("BadgeID = {0}", badge.BID);
-                        var patronHasBadge = patronBadges.Tables[0].Select(filterExpression);
-                        if (patronHasBadge.Count() > 0)
-                        {
-                            earnedBadge = true;
-                            var earned = patronHasBadge[0]["DateEarned"] as DateTime?;
-                            if (earned != null)
-                            {
-                                jsonResponse.DateEarned = ((DateTime)earned).ToShortDateString();
-                            }
-                        }
-                    }
+                    patronId = patron.PID;
                 }
 
 
-                if (hideBadge == true && earnedBadge == true)
-                {
-                    hideBadge = false;
-                }
+                var badgeDetails = new Logic.Badge().GetForDisplay(context.Server, 
+                    badgeId,
+                    patronId);
 
-                if (hideBadge == true)
+                if (badgeDetails.Hidden == true && badgeDetails.Earned == false)
                 {
                     throw new Exception("Secret badge must be earned to be revealed.");
                 }
 
-                jsonResponse.UserName = badge.UserName;
-
-                string badgePath = NoBadgePath;
-                string potentialBadgePath = string.Format("~/Images/Badges/{0}.png",
-                                                          badgeId);
-                if (System.IO.File.Exists(context.Server.MapPath(potentialBadgePath)))
+                jsonResponse = new JsonBadge()
                 {
-                    badgePath = potentialBadgePath;
-                }
-
-                jsonResponse.ImageUrl = VirtualPathUtility.ToAbsolute(badgePath);
-
-                List<string> earn = new List<string>();
-
-                string earnText = DAL.Badge.GetBadgeReading(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Earn points by reading: {0}.", earnText));
-                }
-
-                        earnText = DAL.Badge.GetBadgeGoal(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Achieve part of your personal reading goal: {0}.", earnText));
-                        }
-
-                        earnText = DAL.Badge.GetEnrollmentPrograms(badgeId);
-                        if (earnText.Length > 0)
-                        {
-                            earn.Add(string.Format("Enroll in a reading program: {0}.", earnText));
-                        }
-
-                earnText = DAL.Badge.GetBadgeBookLists(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Complete a Challenge: {0}.", earnText));
-                }
-
-                earnText = DAL.Badge.GetBadgeGames(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Unlock and complete an Adventure: {0}.",
-                                           earnText));
-                }
-
-                earnText = DAL.Badge.GetBadgeEvents(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Attend an Event: {0}.", earnText));
-                }
-
-                if (earn.Count == 0)
-                {
-                    earn.Add("Learn the secret code to unlock it.");
-                }
-
-                jsonResponse.Earn = earn.ToArray();
-                jsonResponse.Success = true;
+                    UserName = badgeDetails.DisplayName,
+                    ImageUrl = badgeDetails.ImageUrl,
+                    Earn = badgeDetails.HowToEarn,
+                    DateEarned = badgeDetails.DateEarned,
+                    Success = true
+                };
             }
             catch (Exception ex)
             {
@@ -150,8 +76,11 @@ namespace GRA.SRP.Handlers
                     context.Request.Url,
                     context.Request.QueryString,
                     ex.Message);
-                jsonResponse.Success = false;
-                jsonResponse.ErrorMessage = ex.Message;
+                jsonResponse = new JsonBadge()
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
             }
 
             context.Response.ContentType = "application/json";
