@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Link from badges to search events which can earn them
 - Add QueryString capabilities to events index
   - `/Events/?Branch=<branch name>` shows events for that branch
   - `/Events/?System=<system name>` shows events for that library system
