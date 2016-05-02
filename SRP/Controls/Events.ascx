@@ -65,6 +65,7 @@
             <label for="<%=SearchText.ClientID %>">Search:</label>
             <asp:TextBox
                 ID="SearchText"
+                MaxLength="255"
                 runat="server"
                 placeholder="Enter text here to search events, try a word or phrase"
                 CssClass="form-control"></asp:TextBox>
