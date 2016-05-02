@@ -23,6 +23,11 @@ INNER JOIN (
 				FROM PatronPoints pp
 				WHERE pp.PID = pt.PID
 				), 0) AS Points,
+		isnull((
+				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
+				FROM PatronPoints pp
+				WHERE pp.PID = pt.PID AND pp.AwardReasonCd = 0
+				), 0) AS ReadingPoints,
 		@TenID AS TenID
 	FROM Patron pt
 	WHERE pt.PID = @PID
@@ -46,7 +51,7 @@ INNER JOIN (
 	AND (award.NumPoints <= patron.Points)
 	AND (
 		TotalGoal < 1
-		OR award.GoalPercent <= (patron.points * 100) / TotalGoal
+		OR award.GoalPercent <= (patron.ReadingPoints * 100) / TotalGoal
 		)
 	AND (
 		BadgeList = ''

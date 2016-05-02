@@ -32,6 +32,8 @@ namespace GRA.SRP.Controls {
                 }
             }
 
+
+            int readingPoints = PatronPoints.GetPatronReadingPoints(patron.PID);
             RegistrationSettings settings = RegistrationSettings.FetchObject(patron.TenID);
 
             if (settings.Goal_Show) {
@@ -43,7 +45,7 @@ namespace GRA.SRP.Controls {
                 /* avoid divide by zero */
                 if (totalGoal > 0)
                 {
-                    percent = (totalPoints * 100) / totalGoal;
+                    percent = (readingPoints * 100) / totalGoal;
                 }                    
 
                 String percentString = $"{percent}%";

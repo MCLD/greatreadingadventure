@@ -15,6 +15,9 @@ namespace GRA.SRP.Controls
     public partial class ReadingLogControl : System.Web.UI.UserControl
     {
         protected const string RequireBookDetailsKey = "RequireBookDetails";
+        protected const string PatronCanReviewKey = "PatronReviewFlag";
+        protected const string ProgramGameIdKey = "ProgramGameId";
+
 
         protected bool ShowModal { get; set; }
         protected void Page_Load(object sender, EventArgs e)
@@ -30,6 +33,7 @@ namespace GRA.SRP.Controls
                 var program = Programs.FetchObject(patron.ProgID);
 
                 ViewState[RequireBookDetailsKey] = program.RequireBookDetails;
+                ViewState[PatronCanReviewKey] = program.PatronReviewFlag;
 
                 if (program == null || !program.IsOpen)
                 {
@@ -37,7 +41,7 @@ namespace GRA.SRP.Controls
                     return;
                 }
 
-                ViewState["ProgramGameId"] = program.PID.ToString();
+                ViewState[ProgramGameIdKey] = program.PID.ToString();
 
                 if (Request.Cookies[CookieKey.LogBookDetails] != null)
                 {
@@ -105,7 +109,7 @@ namespace GRA.SRP.Controls
             var intCount = 0;
             if (txtCount.Length == 0 || !int.TryParse(txtCount, out intCount) || intCount < 0)
             {
-                Session[SessionKey.PatronMessage] = "You must enter how much you've read as a positive whole number.";
+                Session[SessionKey.PatronMessage] = StringResources.getString("readinglog-entry-invalid");
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
                 Session[SessionKey.PatronMessageGlyphicon] = "remove";
                 return;
@@ -134,7 +138,7 @@ namespace GRA.SRP.Controls
             }
             if (intCount > maxAmountForLogging)
             {
-                Session[SessionKey.PatronMessage] = string.Format("That's an awful lot of reading! You can only submit {0} {1} at a time.",
+                Session[SessionKey.PatronMessage] = string.Format(StringResources.getString("readinglog-entry-limit"),
                                                                   maxAmountForLogging,
                                                                   ((ActivityType)int.Parse(selectedActivityType)).ToString());
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
@@ -143,7 +147,7 @@ namespace GRA.SRP.Controls
             }
 
             var patronId = ((Patron)Session[SessionKey.Patron]).PID;
-            var programGameId = int.Parse(ViewState["ProgramGameId"].ToString());
+            var programGameId = int.Parse(ViewState[ProgramGameIdKey].ToString());
 
             var pa = new AwardPoints(patronId);
             var points = 0;
@@ -157,14 +161,21 @@ namespace GRA.SRP.Controls
 
 
             // ensure they aren't over teh day total
-            var allPointsToday = PatronPoints.GetTotalPatronPoints(patronId, DateTime.Now);
+            var allPointsToday = PatronPoints.GetTotalPatronPointsOnDate(patronId, DateTime.Now);
             int maxPointsPerDayForLogging = SRPSettings.GetSettingValue("MaxPtsDay").SafeToInt();
             if (intCount + allPointsToday > maxPointsPerDayForLogging)
             {
-                Session[SessionKey.PatronMessage] = "Sorry but you have already reached the maximum amount of points that you can log in a day. Keep reading and come back tomorrow!";
+                Session[SessionKey.PatronMessage] = StringResources.getString("readinglog-daily-limit");
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
                 Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                 return;
+            }
+
+            var review = "";
+
+            if (ViewState[PatronCanReviewKey] as bool? == true)
+            {
+                review = reviewField.Text;
             }
 
             var earnedBadges = pa.AwardPointsToPatron(points: points,
@@ -173,7 +184,8 @@ namespace GRA.SRP.Controls
                 readingActivity: (ActivityType)pc.ActivityTypeId,
                 readingAmount: intCount,
                 author: authorField.Text,
-                title: titleField.Text);
+                title: titleField.Text,
+                review: review);
 
             // clear out the form
             var bookButton = activityTypeSelector.Items.Count == 1

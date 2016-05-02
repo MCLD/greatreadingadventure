@@ -156,6 +156,8 @@ registration-form-terms=Terms of use:
 registration-form-information-sharing=Information sharing:
 registration-form-consent=Parental consent:
 registration-form-avatar=Avatar:
+registration-goal-limits-note=The goal for this program requires a minimum of {0} and a maximum of {1}.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Adventures text
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,6 +256,10 @@ readinglog-submit=Submit
 readinglog-read-a-book=I read a book!
 readinglog-details-header=Enter book details
 readinglog-details-cancel=Cancel
+readinglog-entry-limit=That's an awful lot of reading! You can only submit {0} {1} at a time.
+readinglog-daily-limit=Sorry but you have already reached the maximum amount of points that you can log in a day. Keep reading and come back tomorrow!
+readinglog-entry-invalid=You must enter how much you've read as a positive whole number.
+readinglog-entry-incomplete=You must complete all fields to record your reading.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Code entry
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
