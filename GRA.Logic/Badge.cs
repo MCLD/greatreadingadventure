@@ -131,7 +131,7 @@ namespace GRA.Logic
                 {
                     stringWithLinks = new StringBuilder();
                 }
-                stringWithLinks.AppendFormat("<a href=\"{0}\">{1}</a>",
+                stringWithLinks.AppendFormat("<a href=\"{0}\" target=\"_blank\">{1} <small><span class=\"glyphicon glyphicon-new-window\"></span></small></a>",
                    VirtualPathUtility.ToAbsolute(link),
                    stringItem.Trim());
             }
