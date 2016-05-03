@@ -169,7 +169,7 @@ namespace GRA.SRP.Badges
                 // end social
                 badgeDetails.Visible = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 badgeDetails.Visible = false;
                 var cph = Page.Master.FindControl("HeaderContent") as ContentPlaceHolder;

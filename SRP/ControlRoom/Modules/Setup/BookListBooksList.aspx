@@ -37,7 +37,7 @@
             </td>
 
             <td valign="top" style="width: 25em;"><b>Title/Task</b><br />
-                <asp:TextBox ID="Title" runat="server" CssClass="book-title form-control"></asp:TextBox>
+                <asp:TextBox ID="BookTitle" runat="server" CssClass="book-title form-control"></asp:TextBox>
             </td>
             <td valign="top"><b>Author</b><br />
                 <asp:TextBox ID="Author" runat="server" CssClass="book-author form-control"></asp:TextBox>

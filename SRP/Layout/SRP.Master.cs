@@ -233,7 +233,7 @@ namespace GRA.SRP
                 var earnedBadges = Session[SessionKey.EarnedBadges];
                 if (earnedBadges != null)
                 {
-                    this.EarnedBadges = earnedBadges.ToString().Replace('|', ',');
+                    EarnedBadges = earnedBadges.ToString().Replace('|', ',');
                     new SessionTools(Session).ClearEarnedBadges();
                 }
             }
@@ -242,28 +242,28 @@ namespace GRA.SRP
         protected void Page_Load(object sender, EventArgs e)
         {
             base.PageLoad(sender, e);
-            this.CurrentPage = (BaseSRPPage)Page;
+            CurrentPage = (BaseSRPPage)Page;
 
-            if (string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(this.SystemNameText))
+            if (string.IsNullOrEmpty(Page.Title) && !string.IsNullOrEmpty(SystemNameText))
             {
-                Page.Title = this.SystemNameText.Trim();
+                Page.Title = SystemNameText.Trim();
             }
 
             Control ctl = LoadControl("~/Controls/ProgramCSS.ascx");
             var plc = FindControl("ProgramCSS");
             plc.Controls.Add(ctl);
 
-            if (this.CurrentPage.IsSecure && !this.CurrentPage.IsLoggedIn)
+            if (CurrentPage.IsSecure && !CurrentPage.IsLoggedIn)
             {
                 Response.Redirect("~/Logout.aspx");
             }
 
-            if (string.IsNullOrEmpty(this.CurrentPage.MetaDescription))
+            if (string.IsNullOrEmpty(CurrentPage.MetaDescription))
             {
-                this.CurrentPage.MetaDescription = this.DefaultMetaDescription;
+                CurrentPage.MetaDescription = DefaultMetaDescription;
             }
 
-            Page.MetaDescription = this.CurrentPage.MetaDescription;
+            Page.MetaDescription = CurrentPage.MetaDescription;
 
             var currentTenant = HttpContext.Current.Session["TenantID"] == null || HttpContext.Current.Session["TenantID"].ToString() == ""
                 ? -1
@@ -272,7 +272,7 @@ namespace GRA.SRP
 
             var sessionTool = new SessionTools(Session);
 
-            if (this.PatronTakingTest)
+            if (PatronTakingTest)
             {
                 adventuresNav.Visible = false;
                 challengesNav.Visible = false;
@@ -286,13 +286,13 @@ namespace GRA.SRP
             else
             {
                 homeNav.Visible = true;
-                homeNav.Attributes.Add("class", this.DashboardPageActive);
+                homeNav.Attributes.Add("class", DashboardPageActive);
                 mailNav.Visible = true;
-                mailNav.Attributes.Add("class", this.MailSectionActive);
+                mailNav.Attributes.Add("class", MailSectionActive);
                 accountNav.Visible = true;
-                accountNav.Attributes.Add("class", this.AccountSectionActive);
-                LoggedOutRegister.Attributes.Add("class", this.RegisterPageActive);
-                LoggedOutLogin.Attributes.Add("class", this.LoginPageActive);
+                accountNav.Attributes.Add("class", AccountSectionActive);
+                LoggedOutRegister.Attributes.Add("class", RegisterPageActive);
+                LoggedOutLogin.Attributes.Add("class", LoginPageActive);
 
                 var adventuresActive = sessionTool.GetCache(Cache, CacheKey.AdventuresActive) as bool?;
                 if (adventuresActive == null)
@@ -302,7 +302,7 @@ namespace GRA.SRP
                     sessionTool.SetCache(Cache, CacheKey.AdventuresActive, adventuresActive);
                 }
                 adventuresNav.Visible = adventuresActive == true;
-                adventuresNav.Attributes.Add("class", this.AdventuresSectionActive);
+                adventuresNav.Attributes.Add("class", AdventuresSectionActive);
 
                 var challengesActive = sessionTool.GetCache(Cache, CacheKey.ChallengesActive) as bool?;
                 if (challengesActive == null)
@@ -313,8 +313,8 @@ namespace GRA.SRP
                 }
                 challengesNav.Visible = challengesActive == true;
                 challengesAnonNav.Visible = challengesActive == true;
-                challengesNav.Attributes.Add("class", this.ChallengesSectionActive);
-                challengesAnonNav.Attributes.Add("class", this.ChallengesSectionActive);
+                challengesNav.Attributes.Add("class", ChallengesSectionActive);
+                challengesAnonNav.Attributes.Add("class", ChallengesSectionActive);
 
                 var offersActive = sessionTool.GetCache(Cache, CacheKey.OffersActive) as bool?;
                 if (offersActive == null)
@@ -324,7 +324,7 @@ namespace GRA.SRP
                     sessionTool.SetCache(Cache, CacheKey.OffersActive, offersActive);
                 }
                 offersNav.Visible = offersActive == true;
-                offersNav.Attributes.Add("class", this.OffersPageActive);
+                offersNav.Attributes.Add("class", OffersPageActive);
 
                 var badgesActive = sessionTool.GetCache(Cache, CacheKey.BadgesActive) as bool?;
                 if (badgesActive == null)
@@ -334,8 +334,8 @@ namespace GRA.SRP
                 }
                 badgesNav.Visible = badgesActive == true;
                 badgesAnonNav.Visible = badgesActive == true;
-                badgesNav.Attributes.Add("class", this.BadgesSectionActive);
-                badgesAnonNav.Attributes.Add("class", this.BadgesSectionActive);
+                badgesNav.Attributes.Add("class", BadgesSectionActive);
+                badgesAnonNav.Attributes.Add("class", BadgesSectionActive);
 
                 var eventsActive = sessionTool.GetCache(Cache, CacheKey.EventsActive) as bool?;
                 if (eventsActive == null)
@@ -346,20 +346,20 @@ namespace GRA.SRP
                 }
                 eventsNav.Visible = eventsActive == true;
                 eventsAnonNav.Visible = eventsActive == true;
-                eventsNav.Attributes.Add("class", this.EventsSectionActive);
-                eventsAnonNav.Attributes.Add("class", this.EventsSectionActive);
+                eventsNav.Attributes.Add("class", EventsSectionActive);
+                eventsAnonNav.Attributes.Add("class", EventsSectionActive);
             }
 
             if (!IsPostBack)
             {
-                if (this.CurrentPage.IsLoggedIn)
+                if (CurrentPage.IsLoggedIn)
                 {
                     //f.Visible = ((Patron) Session["Patron"]).IsMasterAccount;
                     if (Session[SessionKey.IsMasterAccount] as bool? == true)
                     {
                         a.Title = "My Account & Family";
                     }
-                    this.Unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
+                    Unread = Notifications.GetAllUnreadToPatron(((Patron)Session["Patron"]).PID).Tables[0].Rows.Count.ToString();
                     if (!(Page is AddlSurvey || Page is Register || Page is Login || Page is Logout || Page is Recover))
                     {
                         if (Session["PreTestMandatory"] != null && (bool)Session["PreTestMandatory"])
@@ -370,10 +370,10 @@ namespace GRA.SRP
                 }
                 else
                 {
-                    this.loginPopupPanel.Visible = true;
+                    loginPopupPanel.Visible = true;
                     if (Session[SessionKey.RequestedPath] != null)
                     {
-                        this.ShowLoginPopup = true;
+                        ShowLoginPopup = true;
                         ViewState[SessionKey.RequestedPath] = Session[SessionKey.RequestedPath];
                         Session.Remove(SessionKey.RequestedPath);
                     }
@@ -496,7 +496,7 @@ namespace GRA.SRP
                 }
                 else
                 {
-                    this.LoginPopupErrorMessage = "Invalid username or password.";
+                    LoginPopupErrorMessage = "Invalid username or password.";
                     new SessionTools(Session).ClearPatron();
                 }
             }

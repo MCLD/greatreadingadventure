@@ -1,18 +1,14 @@
-﻿using System;
+﻿using GRA.SRP.Core.Utilities;
+using GRA.SRP.Utilities.CoreClasses;
+using GRA.Tools;
+using GRA.Tools.PasswordHash;
+using Microsoft.ApplicationBlocks.Data;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using Microsoft.ApplicationBlocks.Data;
-using System.Collections.Generic;
-using GRA.SRP.Core.Utilities;
-using GRA.SRP.Utilities.CoreClasses;
-using GRA.Tools.PasswordHash;
 using System.Text;
-using System.Collections.Generic;
-using GRA.Tools;
+using System.Web;
 
 namespace GRA.SRP.DAL
 {
