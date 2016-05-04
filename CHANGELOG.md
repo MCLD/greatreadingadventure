@@ -18,6 +18,10 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - #153 Control room avatar editor now syas "Avatar name", instead of "Award NAme"
 
+### Fixed
+- Took steps to minimize ViewState size on patron pages
+- Patrons can no longer register early by guessing the registration page url (#149)
+
 ## [3.1.0] - 2016-04-27
 ### Added
 - Feature for optionally requiring users to enter book details
