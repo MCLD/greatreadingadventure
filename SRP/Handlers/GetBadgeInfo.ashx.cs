@@ -60,7 +60,7 @@ namespace GRA.SRP.Handlers
                 jsonResponse = new JsonBadge()
                 {
                     UserName = badgeDetails.DisplayName,
-                    ImageUrl = badgeDetails.ImageUrl,
+                    ImageUrl = VirtualPathUtility.ToAbsolute(badgeDetails.ImageUrl),
                     Earn = badgeDetails.HowToEarn,
                     DateEarned = badgeDetails.DateEarned,
                     Success = true
