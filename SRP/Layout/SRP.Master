@@ -165,7 +165,7 @@
             </div>
         </div>
 
-        <asp:Panel ID="loginPopupPanel" runat="server" Visible="false" CssClass="modal fade" EnableViewState="false">
+        <asp:Panel ID="loginPopupPanel" runat="server" Visible="false" CssClass="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
