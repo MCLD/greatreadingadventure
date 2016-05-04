@@ -42,6 +42,7 @@
                     </td>
                     <td style="vertical-align: middle;">
                         <%# Eval("FirstName") + " " + Eval("LastName")%> (<%# Eval("username") %>)
+                        <br /><em><asp:Label runat="server" ID="CurrentScore"></asp:Label></em>
                     </td>
                     <td style="vertical-align: middle;">
                         <asp:Label runat="server" ID="ProgramRewardCodes"></asp:Label>
@@ -49,20 +50,20 @@
                     <td class="clearfix" style="vertical-align: middle;">
                         <div class="pull-right margin-halfem-top">
                             <asp:Button runat="server"
-                                CommandName="login"
-                                CommandArgument='<%# Eval("PID") %>'
-                                Text="family-list-login"
-                                CssClass="btn btn-default margin-halfem-bottom margin-halfem-left" />
-                            <asp:Button runat="server"
                                 CommandName="log"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-log"
-                                CssClass="btn btn-default margin-halfem-bottom" />
+                                CssClass="btn btn-info margin-halfem-bottom" />
+                            <asp:Button runat="server"
+                                CommandName="login"
+                                CommandArgument='<%# Eval("PID") %>'
+                                Text="family-list-login"
+                                CssClass="btn btn-success margin-halfem-bottom" />
                             <asp:Button runat="server"
                                 CommandName="pwd"
                                 CommandArgument='<%# Eval("PID") %>'
                                 Text="family-list-password"
-                                CssClass="btn btn-default margin-halfem-bottom" />
+                                CssClass="btn btn-warning margin-halfem-bottom" />
                         </div>
                     </td>
                 </tr>

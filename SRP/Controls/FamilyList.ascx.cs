@@ -88,6 +88,13 @@ namespace GRA.SRP.Controls
                     avatarLink.NavigateUrl = avatarPathLg;
                 }
 
+                var scoreControl = e.Item.FindControl("CurrentScore") as Label;
+                if(scoreControl != null)
+                {
+                    var points = PatronPoints.GetTotalPatronPoints((int)patronRecord["PID"]);
+                    scoreControl.Text = string.Format("{0} points", points);
+                }
+
                 var rewardLabel = e.Item.FindControl("ProgramRewardCodes") as Label;
                 var rewardCodesData = DAL.ProgramCodes.GetAllForPatron((int)patronRecord["PID"]);
                 if (rewardCodesData != null
