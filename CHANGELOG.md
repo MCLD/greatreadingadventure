@@ -18,9 +18,18 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - #153 Control room avatar editor now syas "Avatar name", instead of "Award NAme"
 
+### Changed
+- Award Triggers no longer require a point value to be entered
+- Reorder and colorize buttons on profile and family list to make them more logical
+- Show family point values on family list
+
 ### Fixed
 - Took steps to minimize ViewState size on patron pages
 - Patrons can no longer register early by guessing the registration page url (#149)
+- Removed 50 character length requirement on Challenge names
+
+### Removed
+- Remove sharing buttons from hidden badges (they can't be shared anyway!)
 
 ## [3.1.0] - 2016-04-27
 ### Added
