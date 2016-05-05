@@ -1714,8 +1714,8 @@ GO
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 01/05/2015 14:43:20 ******/
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_BookList_Insert] (
-	@AdminName VARCHAR(50),
-	@ListName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@ListName VARCHAR(255),
 	@AdminDescription TEXT,
 	@Description TEXT,
 	@LiteracyLevel1 INT,
@@ -1813,8 +1813,8 @@ GO
 --Create the Update Proc
 CREATE PROCEDURE [dbo].[app_BookList_Update] (
 	@BLID INT,
-	@AdminName VARCHAR(50),
-	@ListName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@ListName VARCHAR(255),
 	@AdminDescription TEXT,
 	@Description TEXT,
 	@LiteracyLevel1 INT,
