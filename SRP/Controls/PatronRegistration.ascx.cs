@@ -117,6 +117,12 @@ namespace GRA.SRP.Controls
                     registrationInfo["EmailAddress_Prompt"] as bool? == true
                     && registrationInfo["EmailAddress_Req"] as bool? != true;
             }
+
+            var goalNotePanel = e.Item.FindControl("RegistrationGoalInfoNote") as Panel;
+            if (goalNotePanel != null && registrationInfo != null)
+            {
+                goalNotePanel.Visible = registrationInfo["Goal_Prompt"] as bool? == true;
+            }
         }
 
         protected void btnPrev_Click(object sender, EventArgs e)
@@ -337,12 +343,16 @@ namespace GRA.SRP.Controls
                         range.MaximumValue = selectedProgram.GoalMax.ToString();
                         range.Text = $"{range.MinimumValue}-{range.MaximumValue}";
 
+                        var limitsInfoText = StringResources.getString("registration-goal-limits-note");
+                        ((Label)rptr.Items[0].FindControl("RegistrationGoalInfoNoteLabel")).Text = String.Format(limitsInfoText, range.MinimumValue, range.MaximumValue);
+
                         /* save the activity type id */
                         ViewState["ActivityTypeId"] = activityTypeId.ToString();
 
                         var intervalString = selectedProgram.GetGoalInterval.ToString();
 
                         ((Label)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()}):";
+
                         // found a valid point conversion for goal so break
                         break;
                     }

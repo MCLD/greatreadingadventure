@@ -433,6 +433,16 @@
                     </asp:Panel>
 
                     <asp:Panel ID="Panel5" runat="server" Visible="False">
+
+                         <asp:Panel runat="server" ID="RegistrationGoalInfoNote" CssClass="row"  visible='<%# (bool)Eval("Goal_Prompt")%>'>
+                            <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
+                                <div class="alert alert-info">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    <asp:Label runat="server" ID="RegistrationGoalInfoNoteLabel" Text="registration-goal-limits-note"></asp:Label>
+                                </div>
+                            </div>
+                        </asp:Panel>
+
                         <asp:TextBox ID="Panel5Visibility" runat="server"
                             Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt") || (bool)Eval("Goal_Prompt")   ? "1" : "0") %>'
                             Visible="false"></asp:TextBox>
@@ -567,6 +577,7 @@
                                 </div>
                             </div>
                         </asp:Panel>
+
 
                         <div class="form-group" runat="server" visible='<%# (bool)Eval("Teacher_Prompt")%>'>
                             <label class="col-sm-3 control-label">

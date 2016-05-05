@@ -21,143 +21,32 @@ namespace GRA.SRP.DAL
 
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
-        private int myPPID;
-        private int myPID;
-        private int myNumPoints;
-        private DateTime myAwardDate;
-        private string myAwardReason;
-        private int myAwardReasonCd;
-        private bool myBadgeAwardedFlag;
-        private int myBadgeID;
-        private int myPBID;
-        private bool myisReading;
-        private int myLogID;
-        private bool myisEvent;
-        private int myEventID;
-        private string myEventCode="";
-        private bool myisBookList;
-        private int myBookListID;
-        private bool myisGame;
-        private bool myisGameLevelActivity;
-        private int myGameID;
-        private int myGameLevel;
-        private int myGameLevelID;
-        private int myGameLevelActivityID;
-
         #endregion
 
         #region Accessors
 
-        public int PPID
-        {
-            get { return myPPID; }
-            set { myPPID = value; }
-        }
-        public int PID
-        {
-            get { return myPID; }
-            set { myPID = value; }
-        }
-        public int NumPoints
-        {
-            get { return myNumPoints; }
-            set { myNumPoints = value; }
-        }
-        public DateTime AwardDate
-        {
-            get { return myAwardDate; }
-            set { myAwardDate = value; }
-        }
-        public string AwardReason
-        {
-            get { return myAwardReason; }
-            set { myAwardReason = value; }
-        }
-        public int AwardReasonCd
-        {
-            get { return myAwardReasonCd; }
-            set { myAwardReasonCd = value; }
-        }
-        public bool BadgeAwardedFlag
-        {
-            get { return myBadgeAwardedFlag; }
-            set { myBadgeAwardedFlag = value; }
-        }
-        public int BadgeID
-        {
-            get { return myBadgeID; }
-            set { myBadgeID = value; }
-        }
-        public int PBID
-        {
-            get { return myPBID; }
-            set { myPBID = value; }
-        }
-        public bool isReading
-        {
-            get { return myisReading; }
-            set { myisReading = value; }
-        }
-        public int LogID
-        {
-            get { return myLogID; }
-            set { myLogID = value; }
-        }
-        public bool isEvent
-        {
-            get { return myisEvent; }
-            set { myisEvent = value; }
-        }
-        public int EventID
-        {
-            get { return myEventID; }
-            set { myEventID = value; }
-        }
-        public string EventCode
-        {
-            get { return myEventCode; }
-            set { myEventCode = value; }
-        }
-        public bool isBookList
-        {
-            get { return myisBookList; }
-            set { myisBookList = value; }
-        }
-        public int BookListID
-        {
-            get { return myBookListID; }
-            set { myBookListID = value; }
-        }
-        public bool isGame
-        {
-            get { return myisGame; }
-            set { myisGame = value; }
-        }
-        public bool isGameLevelActivity
-        {
-            get { return myisGameLevelActivity; }
-            set { myisGameLevelActivity = value; }
-        }
-        public int GameID
-        {
-            get { return myGameID; }
-            set { myGameID = value; }
-        }
-        public int GameLevel
-        {
-            get { return myGameLevel; }
-            set { myGameLevel = value; }
-        }
-        public int GameLevelID
-        {
-            get { return myGameLevelID; }
-            set { myGameLevelID = value; }
-        }
-        public int GameLevelActivityID
-        {
-            get { return myGameLevelActivityID; }
-            set { myGameLevelActivityID = value; }
-        }
+        public int PPID { get; set; }
+        public int PID { get; set; }
+        public int NumPoints { get; set; }
+        public DateTime AwardDate { get; set; }
+        public string AwardReason { get; set; }
+        public int AwardReasonCd { get; set; }
+        public bool BadgeAwardedFlag { get; set; }
+        public int BadgeID { get; set; }
+        public int PBID { get; set; }
+        public bool isReading { get; set; }
+        public int LogID { get; set; }
+        public bool isEvent { get; set; }
+        public int EventID { get; set; }
+        public string EventCode { get; set; }
+        public bool isBookList { get; set; }
+        public int BookListID { get; set; }
+        public bool isGame { get; set; }
+        public bool isGameLevelActivity { get; set; }
+        public int GameID { get; set; }
+        public int GameLevel { get; set; }
+        public int GameLevelID { get; set; }
+        public int GameLevelActivityID { get; set; }
 
         #endregion
 
@@ -194,12 +83,19 @@ namespace GRA.SRP.DAL
             return Convert.ToInt32(SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_PatronPoints_GetTotalPatronPoints", arrParams).Tables[0].Rows[0][0]);
         }
 
-        public static int GetTotalPatronPoints(int PID, DateTime now)
+        public static int GetTotalPatronPointsOnDate(int PID, DateTime now)
         {
             SqlParameter[] arrParams = new SqlParameter[2];
             arrParams[0] = new SqlParameter("@PID", PID);
             arrParams[1] = new SqlParameter("@Date", now);
             return Convert.ToInt32(SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_PatronPoints_GetTotalPatronPointsOnDate", arrParams).Tables[0].Rows[0][0]);
+        }
+
+        public static int GetPatronReadingPoints(int PID)
+        {
+            SqlParameter[] arrParams = new SqlParameter[1];
+            arrParams[0] = new SqlParameter("@PID", PID);
+            return Convert.ToInt32(SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "app_PatronPoints_GetPatronReadingPoints", arrParams).Tables[0].Rows[0][0]);
         }
 
         public static bool HasRedeemedKeywordPoints(int PID, string key)
@@ -513,12 +409,12 @@ namespace GRA.SRP.DAL
 
     public enum PointAwardReason
     {
-         Reading = 0
-        ,EventAttendance = 1
-        ,BookListCompletion = 2
-        ,GameCompletion = 3
-        ,MiniGameCompletion = 4
-        ,Other = 99
+        Reading = 0,
+        EventAttendance = 1,
+        BookListCompletion = 2,
+        GameCompletion = 3,
+        MiniGameCompletion = 4,
+        Other = 99
     }
 
 }//end namespace

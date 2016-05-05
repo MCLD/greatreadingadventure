@@ -32,7 +32,7 @@
 		    <EditItemTemplate>
                 <table>
                         <tr>
-                            <td nowrap height="20px"><b>Award Name: </b></td>
+                            <td nowrap height="20px"><b>Avatar Name: </b></td>
                             <td colspan="3">
                                 <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="500px"  CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvName" runat="server" 
@@ -71,7 +71,7 @@
             <InsertItemTemplate>
                <table>
                         <tr>
-                            <td nowrap height="20px"><b>Award Name: </b></td>
+                            <td nowrap height="20px"><b>Avatar Name: </b></td>
                             <td colspan="3">
                                 <asp:TextBox ID="Name" runat="server" Text='<%# Bind("Name") %>' ReadOnly="False" Width="500px"  CssClass="form-control"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="rfvName" runat="server" 

@@ -9,6 +9,14 @@ All notable changes to this project will be documented in this file.
   - `/Events/?System=<system name>` shows events for that library system
   - `/Events?Search=<search string>` shows events with the provided search string
   - `/Challenges?Search=<search string>` shows challenges with the provided search string
+- #52 Add field to enter book details for book review. The field's visibilty is controlled by a program flag.
+- Patron registration process now informs users about goal range.
+
+### Changed
+- #151 Reading goal now only accounts for points earned through reading instead of all point methods
+
+### Fixed
+- #153 Control room avatar editor now syas "Avatar name", instead of "Award NAme"
 
 ## [3.1.0] - 2016-04-27
 ### Added

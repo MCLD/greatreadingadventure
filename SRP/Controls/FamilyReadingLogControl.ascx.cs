@@ -16,6 +16,9 @@ namespace GRA.SRP.Controls
     public partial class FamilyReadingLogControl : System.Web.UI.UserControl
     {
         protected const string RequireBookDetailsKey = "RequireBookDetails";
+        protected const string PatronCanReviewKey = "PatronReviewFlag";
+        protected const string ProgramGameIdKey = "ProgramGameId";
+        protected const string SubmitAsPatronIdKey = "SubmitAsPatronId";
 
         protected bool ShowModal { get; set; }
         protected void Page_Load(object sender, EventArgs e)
@@ -29,7 +32,7 @@ namespace GRA.SRP.Controls
                     Response.Redirect("~");
                 }
 
-                ViewState["SubmitAsPatronId"] = familyRelationship.PatronId;
+                ViewState[SubmitAsPatronIdKey] = familyRelationship.PatronId;
 
                 var patron = Patron.FetchObject(familyRelationship.PatronId);
                 var program = Programs.FetchObject(patron.ProgID);
@@ -45,8 +48,9 @@ namespace GRA.SRP.Controls
                 }
 
                 ViewState[RequireBookDetailsKey] = program.RequireBookDetails;
+                ViewState[PatronCanReviewKey] = program.PatronReviewFlag;
 
-                ViewState["ProgramGameId"] = program.PID.ToString();
+                ViewState[ProgramGameIdKey] = program.PID.ToString();
 
                 if (Request.Cookies[CookieKey.LogBookDetails] != null)
                 {
@@ -113,7 +117,7 @@ namespace GRA.SRP.Controls
             var intCount = 0;
             if (txtCount.Length == 0 || !int.TryParse(txtCount, out intCount) || intCount < 0)
             {
-                Session[SessionKey.PatronMessage] = "You must enter how much was read as a positive whole number.";
+                Session[SessionKey.PatronMessage] = StringResources.getString("readinglog-entry-invalid");
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Danger;
                 Session[SessionKey.PatronMessageGlyphicon] = "remove";
                 return;
@@ -142,7 +146,7 @@ namespace GRA.SRP.Controls
             }
             if (intCount > maxAmountForLogging)
             {
-                Session[SessionKey.PatronMessage] = string.Format("That's an awful lot of reading! You can only submit {0} {1} at a time.",
+                Session[SessionKey.PatronMessage] = string.Format(StringResources.getString("readinglog-entry-limit"),
                                                                   maxAmountForLogging,
                                                                   ((ActivityType)int.Parse(selectedActivityType)).ToString());
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
@@ -150,8 +154,8 @@ namespace GRA.SRP.Controls
                 return;
             }
 
-            var patronId = int.Parse(ViewState["SubmitAsPatronId"].ToString());
-            var programGameId = int.Parse(ViewState["ProgramGameId"].ToString());
+            var patronId = int.Parse(ViewState[SubmitAsPatronIdKey].ToString());
+            var programGameId = int.Parse(ViewState[ProgramGameIdKey].ToString());
             var patron = Patron.FetchObject(patronId);
             var patronName = DisplayHelper.FormatName(patron.FirstName, patron.LastName, patron.Username);
             var pa = new AwardPoints(patronId);
@@ -165,7 +169,7 @@ namespace GRA.SRP.Controls
             points = (int)Math.Ceiling(computedPoints);
 
             // ensure they aren't over teh day total
-            var allPointsToday = PatronPoints.GetTotalPatronPoints(patronId, DateTime.Now);
+            var allPointsToday = PatronPoints.GetTotalPatronPointsOnDate(patronId, DateTime.Now);
             int maxPointsPerDayForLogging = SRPSettings.GetSettingValue("MaxPtsDay").SafeToInt();
             if (intCount + allPointsToday > maxPointsPerDayForLogging)
             {
@@ -173,6 +177,13 @@ namespace GRA.SRP.Controls
                 Session[SessionKey.PatronMessageLevel] = PatronMessageLevels.Warning;
                 Session[SessionKey.PatronMessageGlyphicon] = "exclamation-sign";
                 return;
+            }
+
+            var review = "";
+
+            if (ViewState[PatronCanReviewKey] as bool? == true)
+            {
+                review = reviewField.Text;
             }
 
             var earnedBadges = pa.AwardPointsToPatron(points: points,
@@ -193,6 +204,7 @@ namespace GRA.SRP.Controls
             }
             authorField.Text = string.Empty;
             titleField.Text = string.Empty;
+            reviewField.Text = string.Empty;
 
             // set message and earned badges
             string earnedMessage = new PointCalculation().EarnedMessage(earnedBadges, points, patronName);
@@ -232,6 +244,7 @@ namespace GRA.SRP.Controls
                 }
                 authorField.Text = string.Empty;
                 titleField.Text = string.Empty;
+                reviewField.Text = string.Empty;
                 SubmitActivity();
             }
         }
@@ -242,6 +255,7 @@ namespace GRA.SRP.Controls
             familyReadingLogPopup.Visible = false;
             authorField.Text = string.Empty;
             titleField.Text = string.Empty;
+            reviewField.Text = string.Empty;
         }
         protected void submitDetailsButton_Click(object sender, EventArgs e)
         {

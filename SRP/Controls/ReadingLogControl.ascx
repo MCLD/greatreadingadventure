@@ -107,6 +107,21 @@
                             </div>
                         </div>
                     </div>
+
+                     <% if (ViewState[PatronCanReviewKey] as bool? == true) { %>
+                    <div class="row">
+                         <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <label for="authorField">Review</label>
+                                <asp:TextBox runat="server"
+                                    ID="reviewField"
+                                    TextMode="MultiLine"
+                                    CssClass="form-control"
+                                    style="resize: none;"></asp:TextBox>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
                 </div>
                 <div class="modal-footer hidden-print">
                     <div class="pull-right clearfix">
