@@ -197,6 +197,7 @@ namespace GRA.SRP.Controls
             }
             authorField.Text = string.Empty;
             titleField.Text = string.Empty;
+            reviewField.Text = string.Empty;
 
             // set message and earned badges
             string earnedMessage = new PointCalculation().EarnedMessage(earnedBadges, points);
@@ -234,6 +235,7 @@ namespace GRA.SRP.Controls
                 }
                 authorField.Text = string.Empty;
                 titleField.Text = string.Empty;
+                reviewField.Text = string.Empty;
                 SubmitActivity();
             }
         }
@@ -244,6 +246,7 @@ namespace GRA.SRP.Controls
             readingLogPopup.Visible = false;
             authorField.Text = string.Empty;
             titleField.Text = string.Empty;
+            reviewField.Text = string.Empty;
         }
         protected void submitDetailsButton_Click(object sender, EventArgs e)
         {

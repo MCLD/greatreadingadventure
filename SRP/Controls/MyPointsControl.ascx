@@ -5,7 +5,7 @@
 <br />
 
 <div id="divGoalProgress" runat="server" >
-    <span><asp:Label ID="lblGoal" runat="server" Text="Reading Goal"></asp:Label></span>
+    <span><asp:Label ID="lblGoal" runat="server" Text="points-goal-label"></asp:Label></span>
     <div class="progress" style="margin-left: 8px; margin-right: 8px">
         <div ID="divGoalProgressBar" runat="server" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%; min-width: 2em;">
             <asp:Label ID="lblPercentGoal" runat="server" Text="Label"></asp:Label>

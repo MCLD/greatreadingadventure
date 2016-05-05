@@ -274,3 +274,7 @@ secret-code-link=<strong>We've received a secret code for you!</strong>  Click t
 books-read-title=Book List
 books-read-other-family=View another family member:
 books-read-none=No book title and author information logged. If you wish to see a list of books you've read, be sure to enter the title and author when you log your reading!
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Points display 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+points-goal-label=Reading Goal

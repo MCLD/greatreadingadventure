@@ -434,8 +434,7 @@
 
                     <asp:Panel ID="Panel5" runat="server" Visible="False">
 
-
-                         <asp:Panel runat="server" ID="RegistrationGoalInfoNote" CssClass="row">
+                         <asp:Panel runat="server" ID="RegistrationGoalInfoNote" CssClass="row"  visible='<%# (bool)Eval("Goal_Prompt")%>'>
                             <div class="col-xs-12 col-sm-8 col-sm-offset-2 margin-1em-bottom">
                                 <div class="alert alert-info">
                                     <span class="glyphicon glyphicon-info-sign"></span>
@@ -443,7 +442,6 @@
                                 </div>
                             </div>
                         </asp:Panel>
-
 
                         <asp:TextBox ID="Panel5Visibility" runat="server"
                             Text='<%# ((bool)Eval("PrimaryLibrary_Prompt") || (bool)Eval("LibraryCard_Prompt") || (bool)Eval("SchoolName_Prompt") || (bool)Eval("District_Prompt")  || (bool)Eval("SDistrict_Prompt") || (bool)Eval("Teacher_Prompt") || (bool)Eval("GroupTeamName_Prompt") || (bool)Eval("SchoolType_Prompt") || (bool)Eval("LiteracyLevel1_Prompt") || (bool)Eval("LiteracyLevel2_Prompt") || (bool)Eval("Goal_Prompt")   ? "1" : "0") %>'
@@ -506,11 +504,6 @@
                                 <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("LibraryCard_Req") %>'
                                     ControlToValidate="LibraryCard" Display="Dynamic" ErrorMessage="Library card # is required"
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
-
-                                <asp:RegularExpressionValidator runat="server" ControlToValidate="LibraryCard" Display="Dynamic"
-                                    ErrorMessage="Library card number is invalid."
-                                    SetFocusOnError="True"
-                                    ValidationExpression="^((21391|23005)(\d{9}))($|\s*)">invalid</asp:RegularExpressionValidator>
                             </div>
                         </div>
                         <asp:HiddenField runat="server"
