@@ -657,6 +657,12 @@
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                 </td>
             </tr>
+            <tr>
+                <td>Suppress from feed?:</td>
+                <td>
+                    <asp:CheckBox ID="SuppressFromFeed" runat="server" Checked='<%# Bind("SuppressFromFeed") %>' Visible="True"></asp:CheckBox>
+                </td>
+            </tr>
 
 
             <tr>

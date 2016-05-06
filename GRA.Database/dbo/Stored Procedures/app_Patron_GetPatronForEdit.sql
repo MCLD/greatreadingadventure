@@ -53,6 +53,7 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Goal, 0) AS [Goal],
 	isNull(p.AvatarState, '') AS [AvatarState],
 	isNull(p.GoalCache, '') AS [GoalCache],
+	isNull(p.SuppressFromFeed, 0) as [SuppressFromFeed],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
