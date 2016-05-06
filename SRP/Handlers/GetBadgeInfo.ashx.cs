@@ -15,6 +15,7 @@ namespace GRA.SRP.Handlers
         public string ImageUrl { get; set; }
         public string[] Earn { get; set; }
         public string DateEarned { get; set; }
+        public bool Hidden { get; set; }
     }
 
     /// <summary>
@@ -60,9 +61,10 @@ namespace GRA.SRP.Handlers
                 jsonResponse = new JsonBadge()
                 {
                     UserName = badgeDetails.DisplayName,
-                    ImageUrl = badgeDetails.ImageUrl,
+                    ImageUrl = VirtualPathUtility.ToAbsolute(badgeDetails.ImageUrl),
                     Earn = badgeDetails.HowToEarn,
                     DateEarned = badgeDetails.DateEarned,
+                    Hidden = badgeDetails.Hidden,
                     Success = true
                 };
             }

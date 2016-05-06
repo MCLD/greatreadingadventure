@@ -85,15 +85,6 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl LoggedOutRegister;
         
         /// <summary>
-        /// lnkRegister control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkRegister;
-        
-        /// <summary>
         /// LoggedOutLogin control.
         /// </summary>
         /// <remarks>
@@ -101,24 +92,6 @@ namespace GRA.SRP {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl LoggedOutLogin;
-        
-        /// <summary>
-        /// lnkLogin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkLogin;
-        
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
         /// homeNav control.
@@ -202,15 +175,6 @@ namespace GRA.SRP {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor a;
         
         /// <summary>
-        /// lnkLogout control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkLogout;
-        
-        /// <summary>
         /// loginPopupPanel control.
         /// </summary>
         /// <remarks>
@@ -226,7 +190,7 @@ namespace GRA.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label loginPopupTitle;
+        protected global::System.Web.UI.WebControls.Literal loginPopupTitle;
         
         /// <summary>
         /// loginPopupUsername control.
@@ -307,7 +271,7 @@ namespace GRA.SRP {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label alertMessage;
+        protected global::System.Web.UI.WebControls.Literal alertMessage;
         
         /// <summary>
         /// Content control.

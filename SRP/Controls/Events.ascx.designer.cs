@@ -109,7 +109,7 @@ namespace GRA.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label WhatsShowing;
+        protected global::System.Web.UI.WebControls.Literal WhatsShowing;
         
         /// <summary>
         /// WhatsShowingPrint control.
@@ -118,7 +118,7 @@ namespace GRA.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label WhatsShowingPrint;
+        protected global::System.Web.UI.WebControls.Literal WhatsShowingPrint;
         
         /// <summary>
         /// rptr control.

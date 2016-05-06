@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-sm-12">
             <span class="h1">
-                <asp:Label runat="server" Text="badges-gallery"></asp:Label></span>
+                <asp:Literal runat="server" Text="badges-gallery"></asp:Literal></span>
         </div>
     </div>
     <div class="row">
@@ -45,22 +45,23 @@
         </div>
     </div>
     <div class="row margin-1em-top">
-        <asp:Repeater runat="server" ID="rptr" DataSourceID="odsBadges">
+        <asp:Repeater runat="server" ID="rptr" DataSourceID="odsBadges" EnableViewState="false">
             <ItemTemplate>
                 <div class="col-xs-6 col-sm-3 col-md-2">
                     <a href='<%# Eval("BID", "~/Badges/Details.aspx?BadgeId={0}") %>'
                         runat="server"
+                        enableviewstate="false"
                         onclick='<%# Eval("BID", "return ShowBadgeInfo({0});") %>'
                         class="thumbnail no-underline badge-without-info-height">
                         <div class="text-center caption thumbnail-side-padding" style="padding-left: 2px; padding-right: 2px;"><small><%#Eval("Name") %></small></div>
-                        <asp:Image runat="server"
+                        <asp:Image runat="server" EnableViewState="false"
                             ImageUrl='<%# Eval("BID", "~/images/badges/sm_{0}.png") %>'
                             CssClass="center-block" />
                     </a>
                 </div>
             </ItemTemplate>
             <FooterTemplate>
-                <div class="col-xs-12" runat="server" visible="<%#rptr.Items.Count == 0 %>">
+                <div class="col-xs-12" runat="server" enableviewstate="false" visible="<%#rptr.Items.Count == 0 %>">
                     <strong><%=this.NoneAvailableText %></strong>
                 </div>
             </FooterTemplate>

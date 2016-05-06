@@ -49,9 +49,6 @@
                                 <td nowrap valign="top"><b>Must have earned this many points: </b></td>
                                 <td colspan="3" valign="top">
                                     <asp:TextBox ID="NumPoints" runat="server" Text='' Width="50px" CssClass="form-control"></asp:TextBox>
-                                    <asp:RequiredFieldValidator ID="rfvNumPoints" runat="server"
-                                        ControlToValidate="NumPoints" Display="Dynamic" ErrorMessage="<font color='red'>Num Points is required"
-                                        SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
                                     <asp:RegularExpressionValidator ID="revNumPoints"
                                         ControlToValidate="NumPoints"
                                         ValidationExpression="\d+"

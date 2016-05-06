@@ -163,13 +163,18 @@ namespace GRA.SRP.Badges
                 TwitterShare.NavigateUrl = wt.GetTwitterLink(twitDescrip,
                     Server.UrlEncode(badgeDetailsUrl),
                     hashtags);
-                TwitterShare.Visible = true;
+
                 FacebookShare.NavigateUrl = wt.GetFacebookLink(Server.UrlEncode(badgeDetailsUrl));
-                FacebookShare.Visible = true;
+
+                if (!badgeDetailData.Hidden)
+                {
+                    TwitterShare.Visible = true;
+                    FacebookShare.Visible = true;
+                }
                 // end social
                 badgeDetails.Visible = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 badgeDetails.Visible = false;
                 var cph = Page.Master.FindControl("HeaderContent") as ContentPlaceHolder;

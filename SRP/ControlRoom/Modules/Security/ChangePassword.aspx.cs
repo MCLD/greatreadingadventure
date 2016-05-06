@@ -34,11 +34,11 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
                 this.Username.Text = user.Username;
             }
 
-            Error.Visible = !string.IsNullOrEmpty(Error.Text);
+            PasswordChangeError.Visible = !string.IsNullOrEmpty(PasswordChangeError.Text);
         }
 
         protected void ResetPassword_Click(object sender, EventArgs e) {
-            Error.Text = string.Empty;
+            PasswordChangeError.Text = string.Empty;
             object userIdObject = Session["UID"];
 
             int userId = 0;
@@ -66,7 +66,7 @@ namespace GRA.SRP.ControlRoom.Modules.Security {
                 this.Log().Error("Admin user unable to change password for user {0}: {1}",
                                  userId,
                                  ex.Message);
-                Error.Text = string.Format("An error occurred: {0}", ex.Message);
+                PasswordChangeError.Text = string.Format("An error occurred: {0}", ex.Message);
             }
             Response.Redirect("UserAddEdit.aspx");
         }

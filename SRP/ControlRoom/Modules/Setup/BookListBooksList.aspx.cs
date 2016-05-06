@@ -147,7 +147,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 //obj.BLID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("BLID")).SelectedValue);
                 obj.BLID = FormatHelper.SafeToInt(lblPK.Text);
                 obj.Author = Author.Text;
-                obj.Title = Title.Text;
+                obj.Title = BookTitle.Text;
                 obj.ISBN = ISBN.Text.Trim();
                 obj.URL = URL.Text;
 
@@ -159,7 +159,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 if (obj.IsValid(BusinessRulesValidationMode.INSERT))
                 {
                     obj.Insert();
-                    Author.Text = Title.Text = ISBN.Text = URL.Text= string.Empty;
+                    Author.Text = BookTitle.Text = ISBN.Text = URL.Text= string.Empty;
 
                     odsData.DataBind();
                     gv.DataBind();

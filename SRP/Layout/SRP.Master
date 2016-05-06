@@ -25,16 +25,16 @@
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" />
-    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
-    <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" />
-    <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/jquery.datepick.css" rel="stylesheet" runat="server" enableviewstate="false" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" runat="server" enableviewstate="false" />
+    <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" enableviewstate="false" />
+    <link href="~/Content/odometer-theme-default.css" rel="stylesheet" runat="server" enableviewstate="false" />
+    <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" enableviewstate="false" />
     <script src="<%=ResolveUrl("~/Scripts/jquery-2.2.3.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.fancybox.pack.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/jquery.ddslick.min.js")%>"></script>
     <script src="<%=ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
-    <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/gra.css" rel="stylesheet" runat="server" enableviewstate="false" />
     <asp:PlaceHolder ID="ProgramCSS" runat="server" />
     <asp:ContentPlaceHolder ID="HeaderContent" runat="server"></asp:ContentPlaceHolder>
 </head>
@@ -47,58 +47,58 @@
                         <span>Menu</span>
                     </button>
                     <a class="navbar-brand" href="~" runat="server">
-                        <%=this.SystemNameText %></a>
-                    <%if (!this.CurrentPage.IsLoggedIn && !string.IsNullOrEmpty(this.SloganText))
+                        <%=SystemNameText %></a>
+                    <%if (!CurrentPage.IsLoggedIn && !string.IsNullOrEmpty(SloganText))
                         { %>
-                    <p class="navbar-text hidden-xs" runat="server" style="margin-left: 3em;">
-                        <em><%=this.SloganText%></em>
+                    <p class="navbar-text hidden-xs" runat="server" style="margin-left: 3em;" enableviewstate="false">
+                        <em><%=SloganText%></em>
                     </p>
                     <% } %>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <%if (!this.CurrentPage.IsLoggedIn)
+                        <%if (!CurrentPage.IsLoggedIn)
                             { %>
-                        <li id="badgesAnonNav" runat="server"><a href="~/Badges/" class="menu-item" runat="server">
+                        <li id="badgesAnonNav" runat="server"><a href="<%=ResolveUrl("~/Badges/") %>" class="menu-item">
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
                             <span class="visible-xs-inline">Badges</span></a></li>
-                        <li id="challengesAnonNav" runat="server"><a href="~/Challenges/" class="menu-item" runat="server">Challenges</a></li>
-                        <li id="eventsAnonNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
-                        <li runat="server" id="LoggedOutRegister"><a href="~/RegisterILS.aspx" runat="server" id="lnkRegister">
-                            <asp:Label runat="server">navigation-button-register</asp:Label></a></li>
-                        <li runat="server" id="LoggedOutLogin"><a href="~/Login.aspx" runat="server" id="lnkLogin" onclick="return showLoginPopup();">
-                            <asp:Label ID="Label1" runat="server">navigation-button-login</asp:Label></a></li>
+                        <li id="challengesAnonNav" runat="server"><a href="<%=ResolveUrl("~/Challenges/")%>" class="menu-item">Challenges</a></li>
+                        <li id="eventsAnonNav" runat="server"><a href="<%=ResolveUrl("~/Events/")%>" class="menu-item">Events</a></li>
+                        <li runat="server" id="LoggedOutRegister"><a href="<%=ResolveUrl("~/RegisterILS.aspx")%>">
+                            <asp:Literal runat="server">navigation-button-register</asp:Literal></a></li>
+                        <li runat="server" id="LoggedOutLogin"><a href="<%=ResolveUrl("~/Login.aspx")%>" onclick="return showLoginPopup();">
+                            <asp:Literal runat="server">navigation-button-login</asp:Literal></a></li>
                         <%
                             }
                             else
                             {
                         %>
-                        <li runat="server" id="homeNav"><a href="~" class="menu-item" runat="server">
+                        <li runat="server" id="homeNav"><a href="<%=ResolveUrl("~")%>" class="menu-item">
                             <span class="glyphicon glyphicon-home hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Home"></span>
                             <span class="glyphicon glyphicon-home visible-xs-inline"></span>
                             <span class="visible-xs-inline">Home</span></a></li>
-                        <li runat="server" id="mailNav"><a href="~/Mail/" class="menu-item" runat="server">
+                        <li runat="server" id="mailNav"><a href="<%=ResolveUrl("~/Mail/")%>" class="menu-item">
                             <span class="glyphicon glyphicon-envelope hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Mail"></span>
                             <span class="glyphicon glyphicon-envelope visible-xs-inline"></span>
                             <span class="visible-xs-inline">Mail</span>
                             <span id="unreadBadge" style="display: none;" class="label label-primary label-as-badge text-primary"></span>
                         </a></li>
-                        <li id="badgesNav" runat="server"><a href="~/Badges/MyBadges.aspx" class="menu-item" runat="server">
+                        <li id="badgesNav" runat="server"><a href="<%=ResolveUrl("~/Badges/MyBadges.aspx")%>" class="menu-item">
                             <span class="glyphicon glyphicon-certificate hidden-xs" data-toggle="tooltip" data-placement="bottom" title="Badges"></span>
                             <span class="glyphicon glyphicon-certificate visible-xs-inline"></span>
                             <span class="visible-xs-inline">Badges</span></a></li>
-                        <li id="adventuresNav" runat="server"><a href="~/Adventures/" class="menu-item" runat="server">Adventures</a></li>
-                        <li id="challengesNav" runat="server"><a href="~/Challenges/" class="menu-item" runat="server">Challenges</a></li>
-                        <li id="eventsNav" runat="server"><a href="~/Events/" class="menu-item" runat="server">Events</a></li>
-                        <li id="offersNav" runat="server"><a href="~/Offers/" class="menu-item" runat="server">Offers</a></li>
+                        <li id="adventuresNav" runat="server"><a href="<%=ResolveUrl("~/Adventures/")%>" class="menu-item">Adventures</a></li>
+                        <li id="challengesNav" runat="server"><a href="<%=ResolveUrl("~/Challenges/")%>" class="menu-item">Challenges</a></li>
+                        <li id="eventsNav" runat="server"><a href="<%=ResolveUrl("~/Events/")%>" class="menu-item">Events</a></li>
+                        <li id="offersNav" runat="server"><a href="<%=ResolveUrl("~/Offers/")%>" class="menu-item">Offers</a></li>
 
                         <li runat="server" id="accountNav"><a href="~/Account/" class="menu-item myAccountItem" id="a" runat="server">
                             <span class="glyphicon glyphicon-user hidden-xs" data-toggle="tooltip" data-placement="bottom" title="My Account"></span>
                             <span class="glyphicon glyphicon-user visible-xs-inline"></span>
                             <span class="visible-xs-inline">My Account</span></a></li>
-                        <li><a href="~/Logout.aspx" id="lnkLogout" runat="server">
-                            <asp:Label runat="server">navigation-button-logout</asp:Label></a></li>
+                        <li><a href="<%=ResolveUrl("~/Logout.aspx")%>">
+                            <asp:Literal runat="server">navigation-button-logout</asp:Literal></a></li>
                         <% } %>
                     </ul>
                 </div>
@@ -107,10 +107,10 @@
         <div class="container-fluid visible-print-block print-header">
             <div class="row">
                 <div class="col-xs-8">
-                    <span class="lead"><%=this.SystemNameText %></span>
+                    <span class="lead"><%=SystemNameText %></span>
                 </div>
                 <div class="col-xs-4">
-                    <div style="display: inline-block;" class="pull-right"><em><%=this.SloganText%></em></div>
+                    <div style="display: inline-block;" class="pull-right"><em><%=SloganText%></em></div>
                 </div>
             </div>
         </div>
@@ -170,13 +170,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <span class="modal-title lead">
-                            <asp:Label ID="loginPopupTitle" runat="server" Text="loginform-title"></asp:Label></span>
+                            <asp:Literal ID="loginPopupTitle" runat="server" Text="loginform-title"></asp:Literal></span>
                     </div>
                     <div class="modal-body form-horizontal">
-                        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" id="loginPopupErrorMessage"><%=this.LoginPopupErrorMessage%></p>
+                        <p class="text-danger margin-1em-bottom" style="font-weight: bold; display: none;" id="loginPopupErrorMessage"><%=LoginPopupErrorMessage%></p>
                         <div class="form-group form-group-lg has-feedback" id="loginPopupLoginGroup">
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="loginform-username"></asp:Label></label>
+                                <asp:Literal runat="server" Text="loginform-username"></asp:Literal></label>
                             <div class="col-sm-9">
                                 <asp:TextBox ID="loginPopupUsername" runat="server" CssClass="form-control"></asp:TextBox>
                                 <span id="loginPopupUsernameErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none;"></span>
@@ -184,7 +184,7 @@
                         </div>
                         <div class="form-group form-group-lg has-feeback" id="loginPopupPasswordGroup">
                             <label class="col-sm-3 control-label">
-                                <asp:Label runat="server" Text="loginform-password"></asp:Label></label>
+                                <asp:Literal runat="server" Text="loginform-password"></asp:Literal></label>
                             <div class="col-sm-9">
                                 <asp:TextBox ID="loginPopupPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox>
                                 <span id="loginPopupPasswordErrorGlyph" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" style="display: none; right: 15px;"></span>
@@ -204,10 +204,10 @@
                         <div class="pull-right">
                             <a href="~/Recover.aspx" runat="server" class="btn btn-default margin-halfem-bottom margin-halfem-top"
                                 id="loginPopupRecoverButton">
-                                <asp:Label runat="server" Text="loginform-recover" /></a>
+                                <asp:Literal runat="server" Text="loginform-recover" /></a>
                             <a href="~/RegisterILS.aspx" runat="server" class="btn btn-info margin-halfem-bottom"
                                 id="loginPopupRegisterButton" style="display: inline-block;">
-                                <asp:Label runat="server" Text="loginform-register" /></a>
+                                <asp:Literal runat="server" Text="loginform-register" /></a>
                             <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-success margin-halfem-bottom"
                                 Text="loginform-submit-button" OnClientClick="return passwordPopupValidateLogin();"
                                 OnClick="loginPopupClick" data-loading-text="Verifying..." />
@@ -222,7 +222,7 @@
                 <div class="col-sm-8 col-sm-offset-2">
                     <asp:Panel ID="alertContainer" CssClass="alert" runat="server" Visible="false">
                         <asp:Label ID="alertGlyphicon" runat="server"></asp:Label>
-                        <asp:Label ID="alertMessage" runat="server"></asp:Label>
+                        <asp:Literal ID="alertMessage" runat="server"></asp:Literal>
                     </asp:Panel>
                 </div>
             </div>
@@ -231,22 +231,22 @@
             </asp:ContentPlaceHolder>
         </div>
 
-        <% if (!string.IsNullOrEmpty(this.UpsellText))
+        <% if (!string.IsNullOrEmpty(UpsellText))
             { %>
         <div id="content-below" class="container hidden-print">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 upsell text-center">
-                    <%=this.UpsellText %>
+                    <%=UpsellText %>
                 </div>
             </div>
         </div>
         <% } %>
-        <% if (!string.IsNullOrEmpty(this.CopyrightStatementText))
+        <% if (!string.IsNullOrEmpty(CopyrightStatementText))
             { %>
         <footer class="footer hidden-print">
             <div class="container">
                 <p class="text-muted">
-                    <%=this.CopyrightStatementText %>
+                    <%=CopyrightStatementText %>
                 </p>
             </div>
         </footer>
@@ -378,6 +378,11 @@
                     } else {
                         $('#badgePopupEarnWhen').hide();
                     }
+                    if (data.Hidden) {
+                        $('#badgePopupShare').hide();
+                    } else {
+                        $('#badgePopupShare').show();
+                    }
                     $('#badgePopupPrint').click(function () {
                         location.href = "<%=Request.ApplicationPath%>Badges/Details.aspx?BadgeId=" + badgeId + "&Print=1";
                     });
@@ -453,11 +458,11 @@
         }
 
         $(function () {
-            if ("<%=this.ShowLoginPopup%>" == "True") {
+            if ("<%=ShowLoginPopup%>" == "True") {
                 showLoginPopup();
             }
 
-            updateUnreadCount('<%=this.Unread %>');
+            updateUnreadCount('<%=Unread %>');
             $('[data-toggle="tooltip"]').tooltip();
             $(".fancybox").fancybox({
                 openEffect: "elastic",
@@ -477,7 +482,7 @@
                 }
             });
 
-            if ('<%=this.LoginPopupErrorMessage%>'.trim() != '') {
+            if ('<%=LoginPopupErrorMessage%>'.trim() != '') {
                 showLoginPopup();
                 $("#loginPopupUsernameErrorGlyph").show();
                 $("#loginPopupPasswordErrorGlyph").show();
@@ -490,12 +495,12 @@
                 $("#loginPopupErrorMessage").show();
             }
 
-            if ('<%=this.EarnedBadges%>'.trim() != '') {
-                ShowEarnedBadges('<%=this.EarnedBadges%>'.trim());
+            if ('<%=EarnedBadges%>'.trim() != '') {
+                ShowEarnedBadges('<%=EarnedBadges%>'.trim());
             }
         });
     </script>
-    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server">
+    <asp:ContentPlaceHolder ID="BottomOfPage" runat="server" EnableViewState="false">
     </asp:ContentPlaceHolder>
 </body>
 </html>

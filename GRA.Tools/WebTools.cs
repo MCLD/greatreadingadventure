@@ -117,7 +117,7 @@ namespace GRA.Tools
                     new JProperty("name", evt.Name),
                     new JProperty("url", evt.Url),
                     new JProperty("location", location),
-                    new JProperty("startDate", evt.StartDate.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                    new JProperty("startDate", evt.StartDate.ToString("yyyy-MM-ddTHH:mm:sszzz"))
                     );
             }
             else
@@ -127,7 +127,7 @@ namespace GRA.Tools
                     new JProperty("@type", "Event"),
                     new JProperty("name", evt.Name),
                     new JProperty("location", location),
-                    new JProperty("startDate", evt.StartDate.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                    new JProperty("startDate", evt.StartDate.ToString("yyyy-MM-ddTHH:mm:sszzz"))
                     );
             }
             return string.Format("<script type=\"application/ld+json\">{0}</script>",

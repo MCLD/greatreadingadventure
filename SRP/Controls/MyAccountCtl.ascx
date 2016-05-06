@@ -36,6 +36,9 @@
                         <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                         <asp:Label runat="server" Text="myaccount-family"></asp:Label>
                 </asp:HyperLink>
+                <a href="ActivityHistory.aspx" class="btn btn-default margin-halfem-bottom">
+                    <span class="glyphicon glyphicon-folder-open margin-halfem-right"></span>
+                    Activity History</a>
                 <asp:HyperLink CausesValidation="false"
                     ID="FamilyAccountAdd"
                     CssClass="btn btn-default margin-halfem-bottom"
@@ -44,12 +47,9 @@
                     <span class="glyphicon glyphicon-plus-sign margin-halfem-right"></span>
                     <asp:Label runat="server" Text="myaccount-add-family-member"></asp:Label>
                 </asp:HyperLink>
-                <a href="ChangePassword.aspx" class="btn btn-default margin-halfem-bottom">
+                <a href="ChangePassword.aspx" class="btn btn-warning margin-halfem-bottom">
                     <span class="glyphicon glyphicon-lock margin-halfem-right"></span>
                     Change Password</a>
-                <a href="ActivityHistory.aspx" class="btn btn-default margin-halfem-bottom">
-                    <span class="glyphicon glyphicon-folder-open margin-halfem-right"></span>
-                    Activity History</a>
                 <asp:LinkButton runat="server"
                     CommandName="save"
                     CausesValidation="true"
