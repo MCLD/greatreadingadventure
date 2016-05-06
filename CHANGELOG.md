@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Patron registration process now informs users about goal range.
 
 ### Changed
+- Add ability to suppress a patron from the feed (#159)
 - Reading goal now only accounts for points earned through reading instead of all point methods (#151)
 - Award Triggers no longer require a point value to be entered
 - Reorder and colorize buttons on profile and family list to make them more logical

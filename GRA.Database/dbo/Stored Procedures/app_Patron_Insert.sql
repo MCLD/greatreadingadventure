@@ -62,6 +62,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Score2Pct DECIMAL(18, 2) = 0,
 	@Score1Date DATETIME,
 	@Score2Date DATETIME,
+	@SuppressFromFeed BIT,
 	@PID INT OUTPUT
 	)
 AS
@@ -128,7 +129,8 @@ BEGIN
 		Score1Pct,
 		Score2Pct,
 		Score1Date,
-		Score2Date
+		Score2Date,
+		SuppressFromFeed
 		)
 	VALUES (
 		@IsMasterAccount,
@@ -192,7 +194,8 @@ BEGIN
 		@Score1Pct,
 		@Score2Pct,
 		@Score1Date,
-		@Score2Date
+		@Score2Date,
+		@SuppressFromFeed
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()

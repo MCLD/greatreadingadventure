@@ -17,15 +17,13 @@ namespace GRA.SRP.ControlRoom.Controls
     public partial class PatronCtl : System.Web.UI.UserControl
     {
 
-        public string PatronID
-        {
+        public string PatronID {
             get { return ViewState["PatronID"].ToString(); }
             set { ViewState["PatronID"] = value; }
         }
 
-        public string MasterPatronID
-        {
-            get { return (ViewState["MasterPatronID"].ToString()=="" ? "0" : ViewState["MasterPatronID"].ToString()) ; }
+        public string MasterPatronID {
+            get { return (ViewState["MasterPatronID"].ToString() == "" ? "0" : ViewState["MasterPatronID"].ToString()); }
             set { ViewState["MasterPatronID"] = value; }
         }
 
@@ -60,13 +58,13 @@ namespace GRA.SRP.ControlRoom.Controls
                 if (!p1.IsMasterAccount && p1.MasterAcctPID > 0)
                 {
                     var p2 = Patron.FetchObject(p1.MasterAcctPID);
-                    PatronID= string.Empty;
+                    PatronID = string.Empty;
                     MasterPatronID = p2.PID.ToString();
                 }
                 else
                 {
-                    PatronID= string.Empty;
-                    MasterPatronID = PID1.ToString();                    
+                    PatronID = string.Empty;
+                    MasterPatronID = PID1.ToString();
                 }
 
             }
@@ -86,12 +84,12 @@ namespace GRA.SRP.ControlRoom.Controls
             rptr.DataBind();
             if (!IsAdd())
             {
-                ((TextBox) rptr.Items[0].FindControl("Username")).Enabled = false;
+                ((TextBox)rptr.Items[0].FindControl("Username")).Enabled = false;
                 ((RequiredFieldValidator)rptr.Items[0].FindControl("rfvUsername")).Enabled = false;
             }
             if (Session["CURR_PATRON_MODE"].ToString() == "ADDSUB")
             {
-                var ima = ((CheckBox) (rptr.Items[0]).FindControl("IsMasterAccount"));
+                var ima = ((CheckBox)(rptr.Items[0]).FindControl("IsMasterAccount"));
                 ima.Enabled = false;
                 ima.Checked = false;
             }
@@ -105,7 +103,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
         protected void rptr_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            var masterPage = (IControlRoomMaster)((BaseControlRoomPage)Page).Master; 
+            var masterPage = (IControlRoomMaster)((BaseControlRoomPage)Page).Master;
             if (e.CommandName.ToLower() == "back")
             {
                 Response.Redirect("Default.aspx");
@@ -117,7 +115,7 @@ namespace GRA.SRP.ControlRoom.Controls
                 return;
             }
 
-            lblError.Text= string.Empty;
+            lblError.Text = string.Empty;
             Page.Validate();
             if (Page.IsValid)
             {
@@ -144,7 +142,7 @@ namespace GRA.SRP.ControlRoom.Controls
                         if (DateTime.TryParse(DOB.Text, out _d)) p.DOB = _d;
                     }
 
-                    
+
 
                     p.Age = FormatHelper.SafeToInt(((TextBox)(e.Item).FindControl("Age")).Text);
                     //p.Custom2 = (((TextBox)(e.Item).FindControl("Custom2")).Text);
@@ -178,7 +176,7 @@ namespace GRA.SRP.ControlRoom.Controls
                     //p.District = ((DropDownList)(e.Item).FindControl("District")).SelectedValue;
                     //p.SDistrict = ((DropDownList)(e.Item).FindControl("SDistrict")).SelectedValue.SafeToInt();
                     //p.SchoolType = ((DropDownList)(e.Item).FindControl("SchoolType")).SelectedValue.SafeToInt();
-                   
+
                     p.PrimaryLibrary = ((DropDownList)(e.Item).FindControl("PrimaryLibrary")).SelectedValue.SafeToInt();
                     p.SchoolName = ((DropDownList)(e.Item).FindControl("SchoolName")).SelectedValue;
                     p.SchoolType = ((DropDownList)(e.Item).FindControl("SchoolType")).SelectedValue.SafeToInt();
@@ -206,11 +204,12 @@ namespace GRA.SRP.ControlRoom.Controls
 
 
                     p.Teacher = ((TextBox)(e.Item).FindControl("Teacher")).Text;
-                    
+
                     p.GroupTeamName = ((TextBox)(e.Item).FindControl("GroupTeamName")).Text;
                     p.LiteracyLevel1 = ((TextBox)(e.Item).FindControl("LiteracyLevel1")).Text.SafeToInt();
                     p.LiteracyLevel2 = ((TextBox)(e.Item).FindControl("LiteracyLevel2")).Text.SafeToInt();
-                    try {
+                    try
+                    {
                         p.ParentPermFlag = ((CheckBox)(e.Item).FindControl("ParentPermFlag")).Checked;
                         p.Over18Flag = ((CheckBox)(e.Item).FindControl("Over18Flag")).Checked;
                         p.ShareFlag = ((CheckBox)(e.Item).FindControl("ShareFlag")).Checked;
@@ -228,12 +227,12 @@ namespace GRA.SRP.ControlRoom.Controls
                     p.Custom5 = cr.DDValues5 == "" ? ((TextBox)(e.Item).FindControl("Custom5")).Text : ((DropDownList)(e.Item).FindControl("Custom5DD")).SelectedValue;
 
                     p.ProgID = FormatHelper.SafeToInt(((DropDownList)e.Item.FindControl("ProgID")).SelectedValue);
-                    p.IsMasterAccount = ((CheckBox) (e.Item).FindControl("IsMasterAccount")).Checked;
+                    p.IsMasterAccount = ((CheckBox)(e.Item).FindControl("IsMasterAccount")).Checked;
                     // do the save
 
-                    
-                        
-                    if (IsAdd())                 
+                    p.SuppressFromFeed = ((CheckBox)(e.Item).FindControl("SuppressFromFeed")).Checked;
+
+                    if (IsAdd())
                     {
                         if (p.IsValid(BusinessRulesValidationMode.INSERT))
                         {
@@ -242,7 +241,7 @@ namespace GRA.SRP.ControlRoom.Controls
                             SA.Text = PatronID;
                             Session["CURR_PATRON_MODE"] = "EDIT";
                             LoadControl();
-                            
+
                             masterPage.PageMessage = SRPResources.AddedOK;
 
                             if (e.CommandName.ToLower() == "saveandback")
@@ -258,7 +257,7 @@ namespace GRA.SRP.ControlRoom.Controls
                                 message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                             }
                             message = string.Format("{0}</ul>", message);
-                            masterPage.PageError = message;                            
+                            masterPage.PageError = message;
                         }
 
                         var parent = Patron.FetchObject(p.MasterAcctPID);
@@ -296,7 +295,7 @@ namespace GRA.SRP.ControlRoom.Controls
                             message = string.Format("{0}</ul>", message);
                             masterPage.PageError = message;
                         }
-                            
+
                     }
 
                 }
@@ -311,7 +310,7 @@ namespace GRA.SRP.ControlRoom.Controls
             if (i != null) ctl.SelectedValue = txt.Text;
 
             txt = (TextBox)e.Item.FindControl("Age");
-            if(txt != null && string.IsNullOrWhiteSpace(txt.Text))
+            if (txt != null && string.IsNullOrWhiteSpace(txt.Text))
             {
                 txt.Text = "0";
             }

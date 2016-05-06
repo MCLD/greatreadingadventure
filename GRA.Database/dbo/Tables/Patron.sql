@@ -63,6 +63,7 @@
     [Score2Pct]                DECIMAL (18, 2) CONSTRAINT [DF_Patron_Score2Pct] DEFAULT ((0)) NULL,
     [Score1Date]               DATETIME        NULL,
     [Score2Date]               DATETIME        NULL,
+	[SuppressFromFeed]         BIT             NULL,
     CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED ([PID] ASC)
 );
 
