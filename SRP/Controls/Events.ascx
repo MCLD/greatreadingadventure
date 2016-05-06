@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Events.ascx.cs" Inherits="GRA.SRP.Controls.Events" %>
 <%@ Import Namespace="GRA.SRP.Utilities.CoreClasses" %>
-<asp:Panel ID="pnlList" runat="server" Visible="true" DefaultButton="btnFilter" EnableViewState="false">
+<asp:Panel ID="pnlList" runat="server" Visible="true" DefaultButton="btnFilter">
     <div class="row">
         <div class="col-sm-12">
             <span class="h1">
