@@ -174,6 +174,7 @@
     <Content Include="ControlRoom\Images\CircularProgressAnimation2.gif" />
     <Content Include="ControlRoom\Modules\About\Default.aspx" />
     <Content Include="ControlRoom\Modules\Patrons\PatronProgramRewardCodes.aspx" />
+    <Content Include="ControlRoom\Modules\Reports\EventCodes.aspx" />
     <Content Include="ControlRoom\Modules\Reports\ProgramByBranch.aspx" />
     <Content Include="ControlRoom\Modules\Settings\TestEmail.aspx" />
     <Content Include="ControlRoom\Modules\Setup\IEEvents.aspx" />
@@ -1124,6 +1125,13 @@
     </Compile>
     <Compile Include="ControlRoom\Modules\Patrons\PatronSurveys.aspx.designer.cs">
       <DependentUpon>PatronSurveys.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\EventCodes.aspx.cs">
+      <DependentUpon>EventCodes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ControlRoom\Modules\Reports\EventCodes.aspx.designer.cs">
+      <DependentUpon>EventCodes.aspx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\Reports\PatronActivityReport.aspx.cs">
       <DependentUpon>PatronActivityReport.aspx</DependentUpon>
