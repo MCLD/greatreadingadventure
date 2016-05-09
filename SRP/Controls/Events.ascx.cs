@@ -15,6 +15,14 @@ namespace GRA.SRP.Controls
 {
     public partial class Events : System.Web.UI.UserControl
     {
+        protected class EventSearchCriteria
+        {
+            public string StartDate { get; set; }
+            public string EndDate { get; set; }
+            public int SystemId { get; set; }
+            public int BranchId { get; set; }
+            public string SearchText { get; set; }
+        }
         public string FirstAvailableDate { get; set; }
         public string LastAvailableDate { get; set; }
         public string NoneAvailableText { get; set; }
@@ -54,7 +62,9 @@ namespace GRA.SRP.Controls
 
                 if (!InitialFilter)
                 {
-                    DoFilter();
+                    var criteria = new EventSearchCriteria();
+                    SaveFilter(criteria);
+                    DoFilter(criteria);
                 }
             }
 
@@ -95,7 +105,9 @@ namespace GRA.SRP.Controls
                         SystemId.SelectedValue = SelectSystem;
                     }
                 }
-                DoFilter();
+                var criteria = CreateCriteriaObject();
+                SaveFilter(criteria);
+                DoFilter(criteria);
             }
         }
 
@@ -107,7 +119,7 @@ namespace GRA.SRP.Controls
             if (!string.IsNullOrWhiteSpace(querySystem))
             {
                 SelectSystem = qs.GetSystemIdString(Server.UrlDecode(querySystem));
-                if(!string.IsNullOrEmpty(SelectSystem))
+                if (!string.IsNullOrEmpty(SelectSystem))
                 {
                     filter = true;
                 }
@@ -123,7 +135,7 @@ namespace GRA.SRP.Controls
                     {
                         SelectSystem = sysBranchId.Item1;
                         SelectLibrary = sysBranchId.Item2;
-                        if(!string.IsNullOrEmpty(SelectSystem)
+                        if (!string.IsNullOrEmpty(SelectSystem)
                            || !string.IsNullOrEmpty(SelectLibrary))
                         {
                             filter = true;
@@ -148,17 +160,17 @@ namespace GRA.SRP.Controls
             return filter;
         }
 
-        protected void DoFilter()
+        protected void DoFilter(EventSearchCriteria criteria)
         {
             StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(StartDate.Text))
+            if (!string.IsNullOrEmpty(criteria.StartDate))
             {
                 sb.Append("Start Date: ");
                 sb.Append("<strong>");
-                sb.Append(StartDate.Text);
+                sb.Append(criteria.StartDate);
                 sb.Append("</strong>");
             }
-            if (!string.IsNullOrEmpty(EndDate.Text))
+            if (!string.IsNullOrEmpty(criteria.EndDate))
             {
                 if (sb.Length > 0)
                 {
@@ -166,10 +178,10 @@ namespace GRA.SRP.Controls
                 }
                 sb.Append("End date: ");
                 sb.Append("<strong>");
-                sb.Append(EndDate.Text);
+                sb.Append(criteria.EndDate);
                 sb.Append("</strong>");
             }
-            if (SystemId.SelectedIndex > 0)
+            if (criteria.SystemId > 0)
             {
                 if (sb.Length > 0)
                 {
@@ -177,10 +189,10 @@ namespace GRA.SRP.Controls
                 }
                 sb.Append("System: ");
                 sb.Append("<strong>");
-                sb.Append(SystemId.SelectedItem.Text);
+                sb.Append(SystemId.Items.FindByValue(criteria.SystemId.ToString()).Text);
                 sb.Append("</strong>");
             }
-            if (BranchId.SelectedIndex > 0)
+            if (criteria.BranchId > 0)
             {
                 if (sb.Length > 0)
                 {
@@ -188,10 +200,10 @@ namespace GRA.SRP.Controls
                 }
                 sb.Append("Branch/library: ");
                 sb.Append("<strong>");
-                sb.Append(BranchId.SelectedItem.Text);
+                sb.Append(BranchId.Items.FindByValue(criteria.BranchId.ToString()).Text);
                 sb.Append("</strong>");
             }
-            if (SearchText.Text.Length > 0)
+            if (!string.IsNullOrWhiteSpace(criteria.SearchText))
             {
                 if (sb.Length > 0)
                 {
@@ -199,20 +211,51 @@ namespace GRA.SRP.Controls
                 }
                 sb.Append("Search text: ");
                 sb.Append("<strong>");
-                sb.Append(SearchText.Text);
+                sb.Append(criteria.SearchText);
                 sb.Append("</strong>");
             }
 
             WhatsShowing.Text = WhatsShowingPrint.Text = sb.ToString();
             WhatsShowingPanel.Visible = Filtered = !string.IsNullOrEmpty(WhatsShowing.Text);
 
-            rptr.DataSource = Event.GetUpcomingDisplay(
-                StartDate.Text,
-                EndDate.Text,
-                int.Parse(SystemId.SelectedValue),
-                int.Parse(BranchId.SelectedValue),
-                SearchText.Text
-                );
+            if(string.IsNullOrEmpty(WhatsShowing.Text))
+            {
+                // no filter criteria, use cache if possible
+                var st = new SessionTools(Session);
+                var cachedEvents = st.GetCache(Cache, CacheKey.AllEvents) as System.Data.DataSet;
+                if(cachedEvents != null)
+                {
+                    rptr.DataSource = cachedEvents;
+                }
+                else
+                {
+                    var allEvents = Event.GetUpcomingDisplay(
+                        criteria.StartDate,
+                        criteria.EndDate,
+                        criteria.SystemId,
+                        criteria.BranchId,
+                        criteria.SearchText);
+                    rptr.DataSource = allEvents;
+
+                    string tenantCacheKey = st.GetTenantCacheKey(CacheKey.AllEvents);
+                    Cache.Insert(tenantCacheKey,
+                        allEvents,
+                        null,
+                        DateTime.UtcNow.AddHours(2),
+                        System.Web.Caching.Cache.NoSlidingExpiration,
+                        System.Web.Caching.CacheItemPriority.Default,
+                        null);
+                }
+            }
+            else
+            {
+                rptr.DataSource = Event.GetUpcomingDisplay(
+                    criteria.StartDate,
+                    criteria.EndDate,
+                    criteria.SystemId,
+                    criteria.BranchId,
+                    criteria.SearchText);
+            }
             rptr.DataBind();
 
             var wt = new WebTools();
@@ -234,9 +277,28 @@ namespace GRA.SRP.Controls
             }
         }
 
+        protected void SaveFilter(EventSearchCriteria criteria)
+        {
+            Session[SessionKey.EventFilter] = criteria;
+        }
+
+        protected EventSearchCriteria CreateCriteriaObject()
+        {
+            return new EventSearchCriteria
+            {
+                StartDate = StartDate.Text,
+                EndDate = EndDate.Text,
+                SystemId = int.Parse(SystemId.SelectedValue),
+                BranchId = int.Parse(BranchId.SelectedValue),
+                SearchText = SearchText.Text.Trim()
+            };
+        }
+
         protected void btnFilter_Click(object sender, EventArgs e)
         {
-            DoFilter();
+            var criteria = CreateCriteriaObject();
+            SaveFilter(criteria);
+            DoFilter(criteria);
         }
 
         protected void ClearSelections()
@@ -255,7 +317,9 @@ namespace GRA.SRP.Controls
         protected void btnClear_Click(object sender, EventArgs e)
         {
             ClearSelections();
-            DoFilter();
+            var criteria = new EventSearchCriteria();
+            SaveFilter(criteria);
+            DoFilter(criteria);
         }
 
         protected void btnList_Click(object sender, EventArgs e)
@@ -355,6 +419,11 @@ namespace GRA.SRP.Controls
             {
                 BranchId.SelectedIndex = 1;
             }
+            var criteria = Session[SessionKey.EventFilter] as EventSearchCriteria;
+            if(criteria != null)
+            {
+                DoFilter(criteria);
+            }
         }
 
         protected void SystemId_SelectedIndexChanged(object sender, EventArgs e)
@@ -367,7 +436,9 @@ namespace GRA.SRP.Controls
             ClearSelections();
             StartDate.Text = DateTime.Now.ToShortDateString();
             EndDate.Text = DateTime.Now.AddDays(7).ToShortDateString();
-            DoFilter();
+            var criteria = CreateCriteriaObject();
+            SaveFilter(criteria);
+            DoFilter(criteria);
         }
 
         protected void ThisWeek_Click(object sender, EventArgs e)

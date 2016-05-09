@@ -84,10 +84,10 @@
     </div>
     <div class="row">
         <div class="col-xs-12 hidden-print alert alert-success" runat="server" id="WhatsShowingPanel">
-            <asp:Literal ID="WhatsShowing" runat="server"></asp:Literal>
+            <asp:Literal ID="WhatsShowing" runat="server" EnableViewState="false"></asp:Literal>
         </div>
         <div class="col-xs-12 visible-print-block">
-            <asp:Literal ID="WhatsShowingPrint" runat="server"></asp:Literal>
+            <asp:Literal ID="WhatsShowingPrint" runat="server" EnableViewState="false"></asp:Literal>
         </div>
     </div>
 </asp:Panel>
@@ -111,7 +111,7 @@
             <ItemTemplate>
                 <tr>
                     <td>
-                        <asp:Literal runat="server" ID="Microdata" />
+                        <asp:Literal runat="server" ID="Microdata" EnableViewState="false" />
                         <a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
                             runat="server"
                             enableviewstate="false"
@@ -125,7 +125,7 @@
                 </tr>
             </ItemTemplate>
             <FooterTemplate>
-                <tr runat="server" visible="<%#rptr.Items.Count == 0 %>" enableviewstate="false">
+                <tr runat="server" visible="<%# rptr.Items.Count == 0 %>" enableviewstate="false">
                     <td colspan="3">
                         <strong><%=this.NoneAvailableText %></strong>
                     </td>

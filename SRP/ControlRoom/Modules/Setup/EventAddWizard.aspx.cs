@@ -42,7 +42,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
             {
                 var e = Event.GetEvent(int.Parse(lblPK.Text));
                 e.Delete();
-                new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                var st = new SessionTools(Session);
+                st.RemoveCache(Cache, CacheKey.EventsActive);
+                st.RemoveCache(Cache, CacheKey.AllEvents);
             }
             catch { }
         }
@@ -182,7 +184,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     // No Badge Awarded
 
                     eventObj.Insert();
-                    new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                    var st = new SessionTools(Session);
+                    st.RemoveCache(Cache, CacheKey.EventsActive);
+                    st.RemoveCache(Cache, CacheKey.AllEvents);
                     Session["EID"] = eventObj.EID;
                     Response.Redirect("EventAddEdit.aspx?M=K");
                 }
@@ -191,7 +195,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     // Existing Badge Awarded
                     eventObj.BadgeID = int.Parse(BadgeID.SelectedValue);
                     eventObj.Insert();
-                    new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                    var st = new SessionTools(Session);
+                    st.RemoveCache(Cache, CacheKey.EventsActive);
+                    st.RemoveCache(Cache, CacheKey.AllEvents);
                     Session["EID"] = eventObj.EID;
                     Response.Redirect("EventAddEdit.aspx?M=K");
                 }
@@ -199,7 +205,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 {
                     // Start creation of new badge
                     eventObj.Insert();
-                    new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                    var st = new SessionTools(Session);
+                    st.RemoveCache(Cache, CacheKey.EventsActive);
+                    st.RemoveCache(Cache, CacheKey.AllEvents);
                     lblPK.Text = eventObj.EID.ToString();
 
                     pnlBadgeMore.Visible = true;
@@ -333,7 +341,8 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 masterPage.PageError = message;
                 masterPage.DisplayMessageOnLoad = true;
             }
-            else {
+            else
+            {
                 Session["EID"] = int.Parse(lblPK.Text);
                 Response.Redirect("EventAddEdit.aspx?M=K");
             }
