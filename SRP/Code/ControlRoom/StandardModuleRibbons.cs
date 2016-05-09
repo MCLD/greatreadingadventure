@@ -91,7 +91,7 @@ namespace GRA.SRP.Core.Utilities
                 returnList.Add(pnl);
             }
 
-            if(permList.Contains("1000"))
+            if (permList.Contains("1000"))
             {
                 pnl = new RibbonPanel()
                 {
@@ -139,16 +139,18 @@ namespace GRA.SRP.Core.Utilities
             pnl.Add(new RibbonLink { Name = "Achiever Stats", Url = "/ControlRoom/Modules/Reports/FinishStats.aspx" });
             returnList.Add(pnl);
 
-            //pnl = new RibbonPanel {
-            //    Name = "Special Reports",
-            //    ImageAlt = "Special Reports",
-            //    ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
-            //    ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
-            //};
+            pnl = new RibbonPanel
+            {
+                Name = "Program Activity Reports",
+                ImageAlt = "Program Activity Reports",
+                ImagePath = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports.png"),
+                ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
+            };
+            pnl.Add(new RibbonLink { Name = "Event Codes", Url = "/ControlRoom/Modules/Reports/EventCodes.aspx" });
             //pnl.Add(new RibbonLink { Name = "Game Level Stats", Url = "/ControlRoom/Modules/Reports/LevelStats.aspx" });
             //pnl.Add(new RibbonLink { Name = "Prizes Stats", Url = "/ControlRoom/Modules/Reports/PrizesStats.aspx" });
             //pnl.Add(new RibbonLink { Name = "MiniGame Play Stats", Url = "/ControlRoom/Modules/Reports/MiniGameStats.aspx" });
-            //returnList.Add(pnl);
+            returnList.Add(pnl);
 
             //pnl = new RibbonPanel {
             //    Name = "Special Reports",

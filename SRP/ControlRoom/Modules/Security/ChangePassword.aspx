@@ -18,7 +18,7 @@
         BorderColor="Black" BorderStyle="Solid" BorderWidth="1px"
         CssClass="ValidationSummary" Font-Bold="True" Font-Size="11px"
         HeaderText="There are errors, and no action was taken" Font-Names="Verdana" />
-    <asp:Label ID="Error" runat="server" Color="red"></asp:Label>
+    <asp:Label ID="PasswordChangeError" runat="server" Color="red"></asp:Label>
 
     <table style="" width="600px" border="0">
         <tr>

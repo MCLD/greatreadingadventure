@@ -1714,8 +1714,8 @@ GO
 /****** Object:  StoredProcedure [dbo].[app_BookList_Insert]    Script Date: 01/05/2015 14:43:20 ******/
 --Create the Insert Proc
 CREATE PROCEDURE [dbo].[app_BookList_Insert] (
-	@AdminName VARCHAR(50),
-	@ListName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@ListName VARCHAR(255),
 	@AdminDescription TEXT,
 	@Description TEXT,
 	@LiteracyLevel1 INT,
@@ -1813,8 +1813,8 @@ GO
 --Create the Update Proc
 CREATE PROCEDURE [dbo].[app_BookList_Update] (
 	@BLID INT,
-	@AdminName VARCHAR(50),
-	@ListName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@ListName VARCHAR(255),
 	@AdminDescription TEXT,
 	@Description TEXT,
 	@LiteracyLevel1 INT,
@@ -7694,6 +7694,7 @@ SELECT isNull(p.[PID], 0) AS PID,
 	isNull(p.Goal, 0) AS [Goal],
 	isNull(p.AvatarState, '') AS [AvatarState],
 	isNull(p.GoalCache, '') AS [GoalCache],
+	isNull(p.SuppressFromFeed, 0) AS [SuppressFromFeed],
 	rs.*
 FROM dbo.Patron p
 RIGHT JOIN RegistrationSettings rs ON p.PID = @PID
@@ -7861,6 +7862,7 @@ CREATE PROCEDURE [dbo].[app_Patron_Insert] (
 	@Score2Pct DECIMAL(18, 2) = 0,
 	@Score1Date DATETIME,
 	@Score2Date DATETIME,
+	@SuppressFromFeed BIT,
 	@PID INT OUTPUT
 	)
 AS
@@ -7927,7 +7929,8 @@ BEGIN
 		Score1Pct,
 		Score2Pct,
 		Score1Date,
-		Score2Date
+		Score2Date,
+		SuppressFromFeed
 		)
 	VALUES (
 		@IsMasterAccount,
@@ -7991,7 +7994,8 @@ BEGIN
 		@Score1Pct,
 		@Score2Pct,
 		@Score1Date,
-		@Score2Date
+		@Score2Date,
+		@SuppressFromFeed
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -8068,7 +8072,8 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@Score1Pct DECIMAL(18, 2) = 0,
 	@Score2Pct DECIMAL(18, 2) = 0,
 	@Score1Date DATETIME,
-	@Score2Date DATETIME
+	@Score2Date DATETIME,
+	@SuppressFromFeed BIT
 	)
 AS
 UPDATE Patron
@@ -8133,7 +8138,8 @@ SET IsMasterAccount = @IsMasterAccount,
 	Score1Pct = @Score1Pct,
 	Score2Pct = @Score2Pct,
 	Score1Date = @Score1Date,
-	Score2Date = @Score2Date
+	Score2Date = @Score2Date,
+	SuppressFromFeed = @SuppressFromFeed
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -23272,6 +23278,7 @@ CREATE TABLE [dbo].[Patron] (
 	[Score2Pct] [decimal](18, 2) NULL,
 	[Score1Date] [datetime] NULL,
 	[Score2Date] [datetime] NULL,
+	[SuppressFromFeed] [bit] NULL,
 	CONSTRAINT [PK_Patron] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,

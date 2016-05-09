@@ -62,7 +62,8 @@ CREATE PROCEDURE [dbo].[app_Patron_Update] (
 	@Score1Pct DECIMAL(18, 2) = 0,
 	@Score2Pct DECIMAL(18, 2) = 0,
 	@Score1Date DATETIME,
-	@Score2Date DATETIME
+	@Score2Date DATETIME,
+	@SuppressFromFeed BIT
 	)
 AS
 UPDATE Patron
@@ -127,6 +128,7 @@ SET IsMasterAccount = @IsMasterAccount,
 	Score1Pct = @Score1Pct,
 	Score2Pct = @Score2Pct,
 	Score1Date = @Score1Date,
-	Score2Date = @Score2Date
+	Score2Date = @Score2Date,
+	SuppressFromFeed = @SuppressFromFeed
 WHERE PID = @PID
 	AND TenID = @TenID

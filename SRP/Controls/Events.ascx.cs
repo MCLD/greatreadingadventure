@@ -273,7 +273,7 @@ namespace GRA.SRP.Controls
                 var branchAddress = eventRow["BranchAddress"];
                 var branchTelephone = eventRow["BranchTelephone"];
                 var branchLink = eventRow["BranchLink"];
-                var label = e.Item.FindControl("BranchName") as Label;
+                var label = e.Item.FindControl("BranchName") as Literal;
 
                 bool haveLink = branchLink != null
                     && !string.IsNullOrWhiteSpace(branchLink.ToString());
@@ -327,7 +327,7 @@ namespace GRA.SRP.Controls
                             StartDate = eventDate
                         };
 
-                        var md = e.Item.FindControl("Microdata") as Label;
+                        var md = e.Item.FindControl("Microdata") as Literal;
 
                         if (md != null)
                         {

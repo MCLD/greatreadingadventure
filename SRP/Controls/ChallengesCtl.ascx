@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-sm-12">
             <span class="h1">
-                <asp:Label runat="server" Text="challenges-title"></asp:Label></span>
+                <asp:Literal runat="server" Text="challenges-title"></asp:Literal></span>
         </div>
     </div>
     <div class="row margin-halfem-top">
         <div class="col-sm-12">
-            <asp:Label runat="server" Text="challenges-instructions"></asp:Label>
+            <asp:Literal runat="server" Text="challenges-instructions"></asp:Literal>
         </div>
     </div>
     <div class="row hidden-print margin-1em-top margin-1em-bottom">
@@ -41,10 +41,10 @@
     </div>
     <div class="row">
         <asp:Panel CssClass="col-xs-12 hidden-print alert" runat="server" ID="WhatsShowingPanel">
-            <asp:Label ID="WhatsShowing" runat="server"></asp:Label>
+            <asp:Literal ID="WhatsShowing" runat="server"></asp:Literal>
         </asp:Panel>
         <div class="col-xs-12 visible-print-block">
-            <asp:Label ID="WhatsShowingPrint" runat="server"></asp:Label>
+            <asp:Literal ID="WhatsShowingPrint" runat="server"></asp:Literal>
         </div>
     </div>
     <div class="row" runat="server" id="ChallengesContainer">

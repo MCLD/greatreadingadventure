@@ -7,108 +7,90 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GRA.SRP.ControlRoom.Modules.Security {
+namespace GRA.SRP.ControlRoom.Modules.Reports {
     
     
-    public partial class ChangePassword {
+    public partial class EventCodesByBranch {
         
         /// <summary>
-        /// ValidationSummaryMain control.
+        /// LibraryDistrictList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummaryMain;
+        protected global::System.Web.UI.WebControls.DropDownList LibraryDistrictList;
         
         /// <summary>
-        /// PasswordChangeError control.
+        /// LibraryBranchList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label PasswordChangeError;
+        protected global::System.Web.UI.WebControls.DropDownList LibraryBranchList;
         
         /// <summary>
-        /// Username control.
+        /// AlertPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Username;
+        protected global::System.Web.UI.WebControls.Panel AlertPanel;
         
         /// <summary>
-        /// uxPassword control.
+        /// AlertMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox uxPassword;
+        protected global::System.Web.UI.WebControls.Label AlertMessage;
         
         /// <summary>
-        /// rfvPassword control.
+        /// PrintHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
+        protected global::System.Web.UI.WebControls.Literal PrintHeader;
         
         /// <summary>
-        /// revStrength control.
+        /// ReportPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revStrength;
+        protected global::System.Web.UI.WebControls.Panel ReportPanel;
         
         /// <summary>
-        /// uxReEnter control.
+        /// EventRepeater control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox uxReEnter;
+        protected global::System.Web.UI.WebControls.Repeater EventRepeater;
         
         /// <summary>
-        /// rfvReenter control.
+        /// LibraryDistrictData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvReenter;
+        protected global::System.Web.UI.WebControls.ObjectDataSource LibraryDistrictData;
         
         /// <summary>
-        /// cvMatch control.
+        /// LibraryBranchData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CompareValidator cvMatch;
-        
-        /// <summary>
-        /// ResetPassword control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ResetPassword;
-        
-        /// <summary>
-        /// Cancel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Cancel;
+        protected global::System.Web.UI.WebControls.ObjectDataSource LibraryBranchData;
     }
 }

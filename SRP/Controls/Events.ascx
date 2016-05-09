@@ -4,12 +4,12 @@
     <div class="row">
         <div class="col-sm-12">
             <span class="h1">
-                <asp:Label runat="server" Text="events-title"></asp:Label></span>
+                <asp:Literal runat="server" Text="events-title"></asp:Literal></span>
         </div>
     </div>
     <div class="row margin-halfem-top">
         <div class="col-sm-12">
-            <asp:Label runat="server" Text="events-instructions"></asp:Label>
+            <asp:Literal runat="server" Text="events-instructions"></asp:Literal>
         </div>
     </div>
     <div class="row hidden-print margin-1em-top margin-1em-bottom">
@@ -84,60 +84,63 @@
     </div>
     <div class="row">
         <div class="col-xs-12 hidden-print alert alert-success" runat="server" id="WhatsShowingPanel">
-            <asp:Label ID="WhatsShowing" runat="server"></asp:Label>
+            <asp:Literal ID="WhatsShowing" runat="server"></asp:Literal>
         </div>
         <div class="col-xs-12 visible-print-block">
-            <asp:Label ID="WhatsShowingPrint" runat="server"></asp:Label>
+            <asp:Literal ID="WhatsShowingPrint" runat="server"></asp:Literal>
         </div>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>
-                    <asp:Label runat="server" Text="events-header-what"></asp:Label></th>
-                <th>
-                    <asp:Label runat="server" Text="events-header-when"></asp:Label></th>
-                <th>
-                    <asp:Label runat="server" Text="events-header-where"></asp:Label></th>
-            </tr>
-        </thead>
-        <tbody>
-            <asp:Repeater runat="server"
-                ID="rptr"
-                OnItemDataBound="rptr_ItemDataBound">
-                <ItemTemplate>
-                    <tr>
-                        <td>
-                            <asp:Label runat="server" ID="Microdata" CssClass="hidden"></asp:Label>
-                            <a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
-                                runat="server"
-                                onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
-                        </td>
-                        <td>
-                            <%# DisplayEventDateTime(Eval("EventDate") as DateTime?) %>
-                        </td>
-                        <td>
-                            <asp:Label ID="BranchName" runat="server" Text='<%# Eval("Branch")%>'></asp:Label></td>
-                    </tr>
-                </ItemTemplate>
-                <FooterTemplate>
-                    <tr runat="server" visible="<%#rptr.Items.Count == 0 %>">
-                        <td colspan="3">
-                            <strong><%=this.NoneAvailableText %></strong>
-                        </td>
-                    </tr>
-                </FooterTemplate>
-            </asp:Repeater>
-        </tbody>
-    </table>
 </asp:Panel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <asp:Literal runat="server" Text="events-header-what"></asp:Literal></th>
+            <th>
+                <asp:Literal runat="server" Text="events-header-when"></asp:Literal></th>
+            <th>
+                <asp:Literal runat="server" Text="events-header-where"></asp:Literal></th>
+        </tr>
+    </thead>
+    <tbody>
+        <asp:Repeater runat="server"
+            ID="rptr"
+            OnItemDataBound="rptr_ItemDataBound"
+            EnableViewState="false">
+            <ItemTemplate>
+                <tr>
+                    <td>
+                        <asp:Literal runat="server" ID="Microdata" />
+                        <a href='<%# Eval("EID", "~/Events/Details.aspx?EventId={0}") %>'
+                            runat="server"
+                            enableviewstate="false"
+                            onclick='<%# Eval("EID", "return ShowEventInfo({0});") %>'><%# Eval("EventTitle") %></a>
+                    </td>
+                    <td>
+                        <%# DisplayEventDateTime(Eval("EventDate") as DateTime?) %>
+                    </td>
+                    <td>
+                        <asp:Literal ID="BranchName" runat="server" Text='<%# Eval("Branch")%>'></asp:Literal></td>
+                </tr>
+            </ItemTemplate>
+            <FooterTemplate>
+                <tr runat="server" visible="<%#rptr.Items.Count == 0 %>" enableviewstate="false">
+                    <td colspan="3">
+                        <strong><%=this.NoneAvailableText %></strong>
+                    </td>
+                </tr>
+            </FooterTemplate>
+        </asp:Repeater>
+    </tbody>
+</table>
 
 <div id="eventPopupPanel" style="display: none;" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <span class="lead">
-                    <asp:Label runat="server" Text="events-prompt"></asp:Label>
+                    <asp:Literal runat="server" Text="events-prompt"></asp:Literal>
                     <span class="modal-title" id="eventPopupTitle"></span></span>
             </div>
             <div class="modal-body">

@@ -17,6 +17,25 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - #153 Control room avatar editor now syas "Avatar name", instead of "Award NAme"
+- Add field to enter book details for book review. The field's visibility is controlled by a program flag. (#52)
+- Patron registration process now informs users about goal range.
+
+### Changed
+- Add ability to suppress a patron from the feed (#159)
+- Reading goal now only accounts for points earned through reading instead of all point methods (#151)
+- Award Triggers no longer require a point value to be entered
+- Reorder and colorize buttons on profile and family list to make them more logical
+- Show family point values on family list
+- Show event structured data in the configured time zone rather than UTC
+
+### Fixed
+- Control room avatar editor now says "Avatar name", instead of "Award Name" (#153)
+- Took steps to minimize ViewState size on patron pages
+- Patrons can no longer register early by guessing the registration page url (#149)
+- Removed 50 character length requirement on Challenge names
+
+### Removed
+- Remove sharing buttons from hidden badges (they can't be shared anyway!)
 
 ## [3.1.0] - 2016-04-27
 ### Added
