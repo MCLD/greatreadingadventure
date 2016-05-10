@@ -20014,6 +20014,63 @@ GROUP BY AdminName
 ORDER BY AdminName
 GO
 
+/****** Object:  StoredProcedure [dbo].[rpt_EventIssues]    Script Date: 5/10/2016 12:41:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_EventIssues] @TenID INT = 0
+AS
+SET NOCOUNT ON;
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'visible with no associated branch' [Issue]
+FROM [Event]
+WHERE (
+		[HiddenFromPublic] = 0
+		AND (
+			[BranchId] IS NULL
+			OR [BranchId] = 0
+			)
+		)
+	AND [TenID] = @TenID
+
+UNION
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'invalid badge (none or deleted)' [Issue]
+FROM [Event]
+WHERE (
+		[BadgeId] NOT IN (
+			SELECT [BID]
+			FROM [Badge]
+			)
+		)
+	AND [TenID] = @TenID
+
+UNION
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'no secret code' [Issue]
+FROM [Event]
+WHERE (
+		[SecretCode] IS NULL
+		OR [SecretCode] = ''
+		)
+	AND [TenID] = @TenID;
+GO
+
 /****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
