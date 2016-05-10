@@ -6,8 +6,10 @@ using System.Linq;
 using System.Web;
 using System.Web.SessionState;
 
-namespace GRA.SRP.Code {
-    public class FamilyTools {
+namespace GRA.SRP.Code
+{
+    public class FamilyTools
+    {
         /// <summary>
         /// Usess the request or session SA value along with the session MasterAcctPID value to
         /// determine if the logged in patron can impersonate the patron with the SA patron id.
@@ -15,26 +17,42 @@ namespace GRA.SRP.Code {
         /// <param name="request"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public FamilyRelationship ValidImpersonation(HttpRequest request, HttpSessionState session) {
+        public FamilyRelationship ValidImpersonation(HttpRequest request, HttpSessionState session)
+        {
             string sa;
-            if(string.IsNullOrEmpty(request[SessionKey.SA])
-               && (session[SessionKey.SA] == null || string.IsNullOrEmpty(session[SessionKey.SA].ToString()))) {
+            if (string.IsNullOrEmpty(request[SessionKey.SA])
+               && (session[SessionKey.SA] == null || string.IsNullOrEmpty(session[SessionKey.SA].ToString())))
+            {
                 return null;
             }
-            if(!string.IsNullOrEmpty(request[SessionKey.SA])) {
+            if (!string.IsNullOrEmpty(request[SessionKey.SA]))
+            {
                 sa = request[SessionKey.SA];
                 session[SessionKey.SA] = sa;
-            } else {
+            }
+            else
+            {
                 sa = session[SessionKey.SA].ToString();
             }
 
             var parent = Patron.FetchObject((int)session[SessionKey.MasterAcctPID]);
-            if(!parent.IsMasterAccount
-               || !Patron.CanManageSubAccount(parent.PID, int.Parse(sa))) {
+            if (parent == null)
+            {
+                this.Log().Error("Attempting to verify family relationship failed: session MasterAcctPID = {0}, parent object is null",
+                    session[SessionKey.MasterAcctPID]);
                 return null;
             }
+            else
+            {
+                if (!parent.IsMasterAccount
+                   || !Patron.CanManageSubAccount(parent.PID, int.Parse(sa)))
+                {
+                    return null;
+                }
+            }
 
-            return new FamilyRelationship {
+            return new FamilyRelationship
+            {
                 PatronId = int.Parse(sa),
                 ParentPatronId = parent.PID
             };
