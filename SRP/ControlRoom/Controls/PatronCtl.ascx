@@ -35,7 +35,7 @@
             <tr>
                 <td>Password:</td>
                 <td>
-                    <asp:TextBox ID="Password" runat="server" Text='********************' TextMode="Password" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="Password" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvPassword" runat="server"
                         ControlToValidate="Password" Display="Dynamic" ErrorMessage="Password is required"
                         SetFocusOnError="True" Font-Bold="True"><font color='red'> * Required </font></asp:RequiredFieldValidator>
