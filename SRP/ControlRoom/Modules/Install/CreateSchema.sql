@@ -1215,8 +1215,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[app_Badge_Insert] (
-	@AdminName VARCHAR(50),
-	@UserName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@UserName VARCHAR(255),
 	@GenNotificationFlag BIT,
 	@NotificationSubject VARCHAR(150),
 	@NotificationBody TEXT,
@@ -1315,8 +1315,8 @@ GO
 
 CREATE PROCEDURE [dbo].[app_Badge_Update] (
 	@BID INT,
-	@AdminName VARCHAR(50),
-	@UserName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@UserName VARCHAR(255),
 	@GenNotificationFlag BIT,
 	@NotificationSubject VARCHAR(150),
 	@NotificationBody TEXT,
@@ -6712,8 +6712,8 @@ GO
 CREATE PROCEDURE [dbo].[app_Minigame_Insert] (
 	@MiniGameType INT,
 	@MiniGameTypeName VARCHAR(50),
-	@AdminName VARCHAR(50),
-	@GameName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@GameName VARCHAR(255),
 	@isActive BIT,
 	@NumberPoints INT,
 	@AwardedBadgeID INT,
@@ -6800,8 +6800,8 @@ CREATE PROCEDURE [dbo].[app_Minigame_Update] (
 	@MGID INT,
 	@MiniGameType INT,
 	@MiniGameTypeName VARCHAR(50),
-	@AdminName VARCHAR(50),
-	@GameName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@GameName VARCHAR(255),
 	@isActive BIT,
 	@NumberPoints INT,
 	@AwardedBadgeID INT,
@@ -23131,7 +23131,7 @@ CREATE TABLE [dbo].[Minigame] (
 	[MiniGameType] [int] NULL,
 	[MiniGameTypeName] [nvarchar](255) NULL,
 	[AdminName] [nvarchar](255) NULL,
-	[GameName] [varchar](50) NULL,
+	[GameName] [varchar](255) NULL,
 	[isActive] [bit] NULL,
 	[NumberPoints] [int] NULL,
 	[AwardedBadgeID] [int] NULL,

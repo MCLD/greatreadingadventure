@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Show event structured data in the configured time zone rather than UTC
 
 ### Fixed
+- Allow badge and adventure names to be longer than 50 characters (#169)
 - Disallow adding patron from the control room without specifying password (#166)
 - Control room avatar editor now says "Avatar name", instead of "Award Name" (#153)
 - Took steps to minimize ViewState size on patron pages
