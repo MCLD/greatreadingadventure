@@ -315,7 +315,7 @@ namespace GRA.SRP.DAL
                 result.Custom3 = dr["Custom3"].ToString();
                 result.Custom4 = dr["Custom4"].ToString();
                 result.Custom5 = dr["Custom5"].ToString();
-                if(int.TryParse(dr["SDistrict"].ToString(), out _int))
+                if (int.TryParse(dr["SDistrict"].ToString(), out _int))
                     result.SDistrict = _int;
                 if (int.TryParse(dr["Goal"].ToString(), out _int))
                     result.Goal = _int;
@@ -616,7 +616,8 @@ namespace GRA.SRP.DAL
                 passwordHash = PasswordHash.CreateHash(this.NewPassword,
                                                        pbkdf2Iterations);
             }
-            else {
+            else
+            {
                 string passwordHashQuery = "SELECT [Password] FROM [Patron] WHERE [Pid] = @pid";
                 SqlParameter parameter = new SqlParameter("pid", this.PID);
                 passwordHash = (string)SqlHelper.ExecuteScalar(conn,
@@ -782,7 +783,8 @@ namespace GRA.SRP.DAL
             {
                 return p;
             }
-            else {
+            else
+            {
                 return null;
             }
         }
@@ -870,8 +872,17 @@ namespace GRA.SRP.DAL
                 Patron obj = GetObjectByUsername(Username);
                 if (obj != null)
                 {
-                    AddErrorCode(new BusinessRulesValidationMessage("Username", "Username", "The Username you have chosen is already in use.  Please select a different Username.",
-                      BusinessRulesValidationCode.UNSPECIFIED));
+                    AddErrorCode(new BusinessRulesValidationMessage("Username",
+                        "Username",
+                        "The Username you have chosen is already in use.  Please select a different Username.",
+                        BusinessRulesValidationCode.UNSPECIFIED));
+                }
+                if (string.IsNullOrEmpty(this.NewPassword))
+                {
+                    AddErrorCode(new BusinessRulesValidationMessage("NewPassword",
+                        "Password",
+                        "You must supply a password for a new user",
+                        BusinessRulesValidationCode.REQUIRED_FIELD));
                 }
             }
             return (ErrorCodes.Count == 0);

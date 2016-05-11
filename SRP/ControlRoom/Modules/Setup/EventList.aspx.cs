@@ -143,7 +143,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
                         obj.FetchObject(key).Delete();
-                        new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                        var st = new SessionTools(Session);
+                        st.RemoveCache(Cache, CacheKey.EventsActive);
+                        st.RemoveCache(Cache, CacheKey.AllEvents);
                         LoadData();
                         var masterPage = (IControlRoomMaster)Master;
                         if (masterPage != null) masterPage.PageMessage = SRPResources.DeleteOK;

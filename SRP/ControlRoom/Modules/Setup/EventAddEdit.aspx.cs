@@ -206,7 +206,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
                         obj.Update();
-                        new SessionTools(Session).RemoveCache(Cache, CacheKey.EventsActive);
+                        var st = new SessionTools(Session);
+                        st.RemoveCache(Cache, CacheKey.EventsActive);
+                        st.RemoveCache(Cache, CacheKey.AllEvents);
                         if (e.CommandName.ToLower() == "saveandback")
                         {
                             Response.Redirect(returnURL);

@@ -1,8 +1,8 @@
 ﻿
 CREATE PROCEDURE [dbo].[app_Badge_Update] (
 	@BID INT,
-	@AdminName VARCHAR(50),
-	@UserName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@UserName VARCHAR(255),
 	@GenNotificationFlag BIT,
 	@NotificationSubject VARCHAR(150),
 	@NotificationBody TEXT,
