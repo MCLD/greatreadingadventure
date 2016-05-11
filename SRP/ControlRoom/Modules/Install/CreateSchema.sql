@@ -1215,8 +1215,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE PROCEDURE [dbo].[app_Badge_Insert] (
-	@AdminName VARCHAR(50),
-	@UserName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@UserName VARCHAR(255),
 	@GenNotificationFlag BIT,
 	@NotificationSubject VARCHAR(150),
 	@NotificationBody TEXT,
@@ -1315,8 +1315,8 @@ GO
 
 CREATE PROCEDURE [dbo].[app_Badge_Update] (
 	@BID INT,
-	@AdminName VARCHAR(50),
-	@UserName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@UserName VARCHAR(255),
 	@GenNotificationFlag BIT,
 	@NotificationSubject VARCHAR(150),
 	@NotificationBody TEXT,
@@ -6712,8 +6712,8 @@ GO
 CREATE PROCEDURE [dbo].[app_Minigame_Insert] (
 	@MiniGameType INT,
 	@MiniGameTypeName VARCHAR(50),
-	@AdminName VARCHAR(50),
-	@GameName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@GameName VARCHAR(255),
 	@isActive BIT,
 	@NumberPoints INT,
 	@AwardedBadgeID INT,
@@ -6800,8 +6800,8 @@ CREATE PROCEDURE [dbo].[app_Minigame_Update] (
 	@MGID INT,
 	@MiniGameType INT,
 	@MiniGameTypeName VARCHAR(50),
-	@AdminName VARCHAR(50),
-	@GameName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@GameName VARCHAR(255),
 	@isActive BIT,
 	@NumberPoints INT,
 	@AwardedBadgeID INT,
@@ -20014,6 +20014,63 @@ GROUP BY AdminName
 ORDER BY AdminName
 GO
 
+/****** Object:  StoredProcedure [dbo].[rpt_EventIssues]    Script Date: 5/10/2016 12:41:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_EventIssues] @TenID INT = 0
+AS
+SET NOCOUNT ON;
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'visible with no associated branch' [Issue]
+FROM [Event]
+WHERE (
+		[HiddenFromPublic] = 0
+		AND (
+			[BranchId] IS NULL
+			OR [BranchId] = 0
+			)
+		)
+	AND [TenID] = @TenID
+
+UNION
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'invalid badge (none or deleted)' [Issue]
+FROM [Event]
+WHERE (
+		[BadgeId] NOT IN (
+			SELECT [BID]
+			FROM [Badge]
+			)
+		)
+	AND [TenID] = @TenID
+
+UNION
+
+SELECT [EventTitle],
+	[EventDate],
+	[AddedUser],
+	[LastModUser],
+	'no secret code' [Issue]
+FROM [Event]
+WHERE (
+		[SecretCode] IS NULL
+		OR [SecretCode] = ''
+		)
+	AND [TenID] = @TenID;
+GO
+
 /****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
 GO
@@ -23074,7 +23131,7 @@ CREATE TABLE [dbo].[Minigame] (
 	[MiniGameType] [int] NULL,
 	[MiniGameTypeName] [nvarchar](255) NULL,
 	[AdminName] [nvarchar](255) NULL,
-	[GameName] [varchar](50) NULL,
+	[GameName] [varchar](255) NULL,
 	[isActive] [bit] NULL,
 	[NumberPoints] [int] NULL,
 	[AwardedBadgeID] [int] NULL,

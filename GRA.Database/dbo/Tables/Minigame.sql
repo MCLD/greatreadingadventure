@@ -3,7 +3,7 @@
     [MiniGameType]     INT          NULL,
     [MiniGameTypeName] NVARCHAR(255) NULL,
     [AdminName]        NVARCHAR(255) NULL,
-    [GameName]         VARCHAR (50) NULL,
+    [GameName]         VARCHAR (255) NULL,
     [isActive]         BIT          NULL,
     [NumberPoints]     INT          NULL,
     [AwardedBadgeID]   INT          NULL,

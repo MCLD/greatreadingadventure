@@ -16,6 +16,7 @@ namespace GRA.SRP.ControlRoom.Controls
 {
     public partial class PatronCtl : System.Web.UI.UserControl
     {
+        private const string PasswordFiller = "***************";
 
         public string PatronID {
             get { return ViewState["PatronID"].ToString(); }
@@ -86,6 +87,7 @@ namespace GRA.SRP.ControlRoom.Controls
             {
                 ((TextBox)rptr.Items[0].FindControl("Username")).Enabled = false;
                 ((RequiredFieldValidator)rptr.Items[0].FindControl("rfvUsername")).Enabled = false;
+                ((TextBox)rptr.Items[0].FindControl("Password")).Text = PasswordFiller;
             }
             if (Session["CURR_PATRON_MODE"].ToString() == "ADDSUB")
             {
@@ -131,7 +133,7 @@ namespace GRA.SRP.ControlRoom.Controls
 
                     p.Username = ((TextBox)(e.Item).FindControl("Username")).Text;
                     var password = ((TextBox)(e.Item).FindControl("Password")).Text;
-                    if (password != "********************")
+                    if (!password.StartsWith(PasswordFiller) && !password.EndsWith(PasswordFiller))
                     {
                         p.NewPassword = password;
                     }

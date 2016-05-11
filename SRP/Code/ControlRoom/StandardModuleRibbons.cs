@@ -147,6 +147,8 @@ namespace GRA.SRP.Core.Utilities
                 ImagePath2x = VirtualPathUtility.ToAbsolute("~/ControlRoom/RibbonImages/SpecialReports@2x.png")
             };
             pnl.Add(new RibbonLink { Name = "Event Codes", Url = "/ControlRoom/Modules/Reports/EventCodes.aspx" });
+            pnl.Add(new RibbonLink { Name = "Event Issues", Url = "/ControlRoom/Modules/Reports/EventIssues.aspx" });
+
             //pnl.Add(new RibbonLink { Name = "Game Level Stats", Url = "/ControlRoom/Modules/Reports/LevelStats.aspx" });
             //pnl.Add(new RibbonLink { Name = "Prizes Stats", Url = "/ControlRoom/Modules/Reports/PrizesStats.aspx" });
             //pnl.Add(new RibbonLink { Name = "MiniGame Play Stats", Url = "/ControlRoom/Modules/Reports/MiniGameStats.aspx" });

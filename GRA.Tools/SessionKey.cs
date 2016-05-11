@@ -17,6 +17,7 @@ namespace GRA.Tools {
         public const string SA = "SA";
         public const string TenantID = "TenantID";
         public const string SecretCode = "SecretCode";
+        public const string EventFilter = "EvtFilter";
     }
 
     public static class PatronMessageLevels {

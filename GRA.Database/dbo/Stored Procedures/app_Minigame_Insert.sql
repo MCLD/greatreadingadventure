@@ -2,8 +2,8 @@
 CREATE PROCEDURE [dbo].[app_Minigame_Insert] (
 	@MiniGameType INT,
 	@MiniGameTypeName VARCHAR(50),
-	@AdminName VARCHAR(50),
-	@GameName VARCHAR(50),
+	@AdminName VARCHAR(255),
+	@GameName VARCHAR(255),
 	@isActive BIT,
 	@NumberPoints INT,
 	@AwardedBadgeID INT,

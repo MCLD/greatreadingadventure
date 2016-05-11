@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Event Issues report with Excel export
+- Event Codes report with Excel export
 - Link from badges to search events which can earn them
 - Add QueryString capabilities to events index
   - `/Events/?Branch=<branch name>` shows events for that branch
@@ -21,6 +23,8 @@ All notable changes to this project will be documented in this file.
 - Show event structured data in the configured time zone rather than UTC
 
 ### Fixed
+- Allow badge and adventure names to be longer than 50 characters (#169)
+- Disallow adding patron from the control room without specifying password (#166)
 - Control room avatar editor now says "Avatar name", instead of "Award Name" (#153)
 - Took steps to minimize ViewState size on patron pages
 - Patrons can no longer register early by guessing the registration page url (#149)

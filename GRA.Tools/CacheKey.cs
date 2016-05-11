@@ -14,5 +14,7 @@ namespace GRA.Tools {
         public const string OffersActive = "OffAct";
         public const string EventsActive = "EvAct";
         public const string BadgesActive = "BadAct";
+
+        public const string AllEvents = "AllEvts";
     }
 }
