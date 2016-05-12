@@ -339,7 +339,8 @@ INNER JOIN (
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
-				WHERE pp.PID = pt.PID AND pp.AwardReasonCd = 0
+				WHERE pp.PID = pt.PID
+					AND pp.AwardReasonCd = 0
 				), 0) AS ReadingPoints,
 		pt.TenID
 	FROM Patron pt
@@ -406,7 +407,8 @@ INNER JOIN (
 		isnull((
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0)
 				FROM PatronPoints pp
-				WHERE pp.PID = pt.PID AND pp.AwardReasonCd = 0
+				WHERE pp.PID = pt.PID
+					AND pp.AwardReasonCd = 0
 				), 0) AS ReadingPoints,
 		@TenID AS TenID
 	FROM Patron pt
@@ -8608,17 +8610,13 @@ BEGIN
 END
 GO
 
-
-
 /****** Object:  StoredProcedure [dbo].[app_PatronPoints_GetPatronReadingPoints]    Script Date: 01/05/2015 14:43:23 ******/
 --Create the Insert Proc
-
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
 
 CREATE PROCEDURE [dbo].[app_PatronPoints_GetPatronReadingPoints] (@PID INT)
 AS
@@ -8627,18 +8625,18 @@ BEGIN
 			EXISTS (
 				SELECT isnull(SUM(isnull(NumPoints, 0)), 0) AS TotalPoints
 				FROM PatronPoints
-				WHERE PID = @PID AND AwardReasonCd = 0
+				WHERE PID = @PID
+					AND AwardReasonCd = 0
 				)
 			)
 		SELECT isnull(SUM(isnull(NumPoints, 0)), 0) AS TotalPoints
 		FROM PatronPoints
-		WHERE PID = @PID AND AwardReasonCd = 0
+		WHERE PID = @PID
+			AND AwardReasonCd = 0
 	ELSE
 		SELECT 0 AS TotalPoints
 END
-
 GO
-
 
 /****** Object:  StoredProcedure [dbo].[app_PatronPoints_Insert]    Script Date: 2/4/2016 13:18:40 ******/
 SET ANSI_NULLS ON
@@ -19451,6 +19449,61 @@ FROM Patron p ' + CASE len(@Filter)
 
 EXEC (@SQL1)
 	--select @SQL1
+GO
+
+/****** Object:  StoredProcedure [dbo].[rpt_ChallengeIssues]    Script Date: 5/12/2016 13:54:08 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_ChallengeIssues] @TenID INT = 0
+AS
+SET NOCOUNT ON;
+
+SELECT bl.[BLID],
+	bl.[AdminName],
+	bl.[AddedUser],
+	bl.[LastModUser],
+	bl.[NumBooksToComplete] [TasksToComplete],
+	COUNT(DISTINCT blb.[BLBID]) AS [AvailableTasks],
+	'invalid badge (none or deleted)' [Issue]
+FROM [BookList] bl
+LEFT OUTER JOIN [BookListBooks] blb ON bl.[BLID] = blb.[BLID]
+WHERE (
+		bl.[AwardBadgeID] NOT IN (
+			SELECT [BID]
+			FROM [Badge]
+			)
+		OR bl.[AwardBadgeID] = 0
+		OR bl.[AwardBadgeID] IS NULL
+		)
+	AND bl.[TenID] = @TenID
+GROUP BY bl.[BLID],
+	bl.[AdminName],
+	bl.[AddedUser],
+	bl.[LastModUser],
+	bl.[NumBooksToComplete]
+
+UNION
+
+SELECT bl.[BLID],
+	bl.[AdminName],
+	bl.[AddedUser],
+	bl.[LastModUser],
+	bl.[NumBooksToComplete] [TasksToComplete],
+	COUNT(DISTINCT blb.[BLBID]) AS [AvailableTasks],
+	'not enough tasks' [Issue]
+FROM [BookList] bl
+LEFT OUTER JOIN [BookListBooks] blb ON bl.[BLID] = blb.[BLID]
+WHERE bl.[TenID] = @TenID
+GROUP BY bl.[BLID],
+	bl.[AdminName],
+	bl.[AddedUser],
+	bl.[LastModUser],
+	bl.[NumBooksToComplete]
+HAVING COUNT(DISTINCT blb.[BLBID]) < bl.[NumBooksToComplete]
 GO
 
 /****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 2/4/2016 13:18:40 ******/
