@@ -112,6 +112,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="zxing, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.14.0.1\lib\net40\zxing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.14.0.1\lib\net40\zxing.presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Account\AddFamilyMember.aspx" />
@@ -313,6 +321,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="ControlRoom\Handlers\CodeAvailable.ashx" />
     <Content Include="Handlers\UnreadCount.ashx" />
+    <Content Include="ControlRoom\Handlers\QRCode.ashx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1091,6 +1100,9 @@
     </Compile>
     <Compile Include="ControlRoom\Handlers\CodeAvailable.ashx.cs">
       <DependentUpon>CodeAvailable.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Handlers\QRCode.ashx.cs">
+      <DependentUpon>QRCode.ashx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\About\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
