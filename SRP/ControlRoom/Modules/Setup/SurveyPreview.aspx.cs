@@ -22,7 +22,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                 var s = DAL.Survey.FetchObject(int.Parse(SID.Text));
                 lblSurvey.Text = s.LongName;
-                lblPreamble.Text = s.Preamble;
+                lblPreamble.Text = Server.HtmlDecode(s.Preamble);
 
                 MasterPage.RequiredPermission = 5200;
                 MasterPage.IsSecure = true;
