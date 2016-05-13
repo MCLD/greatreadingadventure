@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Reorder and colorize buttons on profile and family list to make them more logical
 - Show family point values on family list
 - Show event structured data in the configured time zone rather than UTC
+- CYA stories can now have steps with only one choice instead of two
 
 ### Fixed
 - Resolve issue with ViewState being too large (#175)
