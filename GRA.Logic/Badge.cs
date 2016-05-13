@@ -6,10 +6,25 @@ using System.Web;
 
 namespace GRA.Logic
 {
+    /// <summary>
+    /// Provide unified logic for displaying information about Badges
+    /// </summary>
     public class Badge
     {
+        /// <summary>
+        /// Path to the image to display if no badge image is provided or when a badge is created.
+        /// </summary>
         private const string NoBadgePath = "~/images/Badges/no_badge.png";
 
+        /// <summary>
+        /// Return an object containing information about the badge, typically for when badge
+        /// details are to be displayed.
+        /// </summary>
+        /// <param name="server">An <see cref="HttpServerUtility"/> for context information</param>
+        /// <param name="badgeId">The ID number of the badge</param>
+        /// <param name="patronId">The ID number of the patron - 0 or below if we don't know the
+        /// patron's ID</param>
+        /// <returns>A populated <see cref="BadgeDisplayDetails"/> with badge details</returns>
         public BadgeDisplayDetails GetForDisplay(HttpServerUtility server,
             int badgeId,
             int patronId)
@@ -105,6 +120,15 @@ namespace GRA.Logic
             return badgeDetails;
         }
 
+        /// <summary>
+        /// Take a comma-separated length of text and create links from it
+        /// </summary>
+        /// <param name="server">An <see cref="HttpServerUtility"/> for context information</param>
+        /// <param name="stringCsvList">The comma-separated list of strings</param>
+        /// <param name="urlFormat">a string.Format where {0} will be replaced with the search
+        /// terms</param>
+        /// <returns>A string containing search links to each of the comma-separated search values
+        /// </returns>
         private string CreateSearchLinks(HttpServerUtility server,
             string stringCsvList,
             string urlFormat)
@@ -136,6 +160,28 @@ namespace GRA.Logic
                    stringItem.Trim());
             }
             return stringWithLinks.ToString();
+        }
+
+        /// <summary>
+        /// Truncate badge names so that they are less than 70 characters for display in the badge
+        /// gallery
+        /// </summary>
+        /// <param name="fullNameObject">The full name of the badge - we accept an object in case
+        /// it needs to be done during data binding (in <see cref="Eval"/>)</param>
+        /// <returns>The full text of the name if it is less than 71 characters, otherwise the name
+        /// truncated to the last space prior to 70 characters with an elipsis appended.</returns>
+        public static string GalleryLengthName(object fullNameObject)
+        {
+            string fullName = (string)fullNameObject;
+            if (fullName.Length <= 70)
+            {
+                return fullName;
+            }
+            else
+            {
+                return string.Format("{0}...",
+                    fullName.Substring(0, fullName.Substring(0, 70).LastIndexOf(' ')));
+            }
         }
     }
 }

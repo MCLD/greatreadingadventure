@@ -53,7 +53,7 @@
                         enableviewstate="false"
                         onclick='<%# Eval("BID", "return ShowBadgeInfo({0});") %>'
                         class="thumbnail no-underline badge-without-info-height">
-                        <div class="text-center caption thumbnail-side-padding" style="padding-left: 2px; padding-right: 2px;"><small><%#Eval("Name") %></small></div>
+                        <div class="text-center caption thumbnail-side-padding" style="padding-left: 2px; padding-right: 2px;"><small><%#GRA.Logic.Badge.GalleryLengthName(Eval("Name")) %></small></div>
                         <asp:Image runat="server" EnableViewState="false"
                             ImageUrl='<%# Eval("BID", "~/images/badges/sm_{0}.png") %>'
                             CssClass="center-block" />
