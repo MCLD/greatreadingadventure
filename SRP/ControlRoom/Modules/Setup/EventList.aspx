@@ -83,6 +83,17 @@
                 <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
+            <asp:TemplateField HeaderText="QR">
+                <ItemTemplate>
+                    <asp:HyperLink runat="server"
+                        NavigateUrl='<%#Eval("SecretCode", "../../Handlers/QRCode.ashx?code={0}") %>'
+                        AlternateText="Create QR code for this Secret Code"
+                        ToolTip="Create QR code for this Secret Code"
+                        Visible='<%#!string.IsNullOrEmpty(Eval("SecretCode") as string) %>'
+                        Target="_blank"><span class="glyphicon glyphicon-qrcode"></span></asp:HyperLink>
+
+                </ItemTemplate>
+            </asp:TemplateField>
 
             <asp:TemplateField HeaderText="Visible"
                 SortExpression="HiddenFromPublic">

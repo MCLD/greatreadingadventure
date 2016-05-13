@@ -82,7 +82,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPreamble;
+        protected global::System.Web.UI.WebControls.Literal lblPreamble;
         
         /// <summary>
         /// SurveyQLst control.

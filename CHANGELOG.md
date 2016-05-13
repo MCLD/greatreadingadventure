@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Challenge Issues report with Excel export
+- QR Code generation in the Control Room for Events with secret codes
 - Event Issues report with Excel export
 - Event Codes report with Excel export
 - Link from badges to search events which can earn them

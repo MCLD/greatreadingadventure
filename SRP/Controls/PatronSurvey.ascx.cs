@@ -48,10 +48,11 @@ namespace GRA.SRP.Controls {
         public bool SaveTestPage() {
             var sr = new SurveyResults();
             var p = (Patron)Session["Patron"];
+            int srid;
             if(SRID.Text != "0") {
                 sr = SurveyResults.FetchObject(int.Parse(SRID.Text));
+                srid = sr.SRID;
             } else {
-
                 sr.TenID = p.TenID;
                 sr.PID = p.PID;
                 sr.SID = int.Parse(SID.Text);
@@ -63,13 +64,15 @@ namespace GRA.SRP.Controls {
 
                 sr.Insert();
                 Session["SRID"] = sr.SRID;
+                srid = sr.SRID;
                 SRID.Text = sr.SRID.ToString();
             }
+
             // Save answers, in a loop;
             foreach(RepeaterItem i in SurveyQLst.Items) {
                 var qp = i.FindControl("qp") as QuestionPreview;
                 if(qp != null) {
-                    qp.Save((int)Session["SRID"]);
+                    qp.Save(srid);
                     sr.LastAnswered = int.Parse(qp.QNumber);
                     sr.Update();
                 }
