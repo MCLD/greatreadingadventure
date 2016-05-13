@@ -176,12 +176,18 @@ input#loginPopupRememberMe {
 
 /* badge display spacing */
 .badge-with-info-height {
-    min-height: 12em;
+    min-height: 13.5em;
     display: block;
 }
 
+.badge-earned-caption {
+    position: absolute;
+    bottom: 1.2em;
+    right: 1.5em;
+}
+
 .badge-without-info-height {
-    min-height: 11em;
+    min-height: 12.5em;
     display: block;
 }
 
@@ -419,9 +425,11 @@ div.ataglance {
     .ataglance {
         font-size: 2em !important;
     }
+
     .ataglance-orgname {
         font-size: 1.5em !important;
     }
+
     .ataglance-stat {
         font-size: 2em !important;
     }
@@ -475,4 +483,32 @@ div.ataglance span.glyphicon {
     background: -webkit-linear-gradient(-45deg, #eaecf2 0%,#bac8f4 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(135deg, #eaecf2 0%,#bac8f4 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaecf2', endColorstr='#bac8f4',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.adventure-title {
+    color: #307fe2;
+    font-weight: bold;
+    font-size: 2.5em;
+    margin-bottom: 0.2em;
+}
+
+.adventure-instruction {
+    font-style: italic;
+    margin-bottom: 2em;
+    font-size: 0.9em;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid rgba(48, 127, 226, 0.5);
+}
+
+.cyo-choose-text {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-top: 1em;
+    color:  #307fe2;
+}
+
+.cyo-image:hover {
+    -webkit-box-shadow: 0 0 30px 0 rgba(48, 127, 226, 0.5);
+    -moz-box-shadow: 0 0 30px 0 rgba(48, 127, 226, 0.5);
+    box-shadow: 0 0 30px 0 rgba(48, 127, 226, 0.5);
 }

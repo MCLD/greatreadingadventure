@@ -54,7 +54,7 @@ BEGIN
 	SELECT @PointsEarned = sum(pp.[NumPoints]),
 		@PointsEarnedReading = sum(CASE pp.[AwardReasonCd]
 				WHEN 0
-					THEN 1
+					THEN pp.[NumPoints]
 				ELSE 0
 				END),
 		@ChallengesCompleted = sum(CASE pp.[IsBookList]

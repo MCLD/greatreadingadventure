@@ -2,7 +2,7 @@
     [SQCID]                 INT          IDENTITY (1, 1) NOT NULL,
     [QID]                   INT          NULL,
     [ChoiceOrder]           INT          NULL,
-    [ChoiceText]            VARCHAR (50) NULL,
+    [ChoiceText]            VARCHAR (255) NULL,
     [Score]                 INT          NULL,
     [JumpToQuestion]        INT          NULL,
     [AskClarification]      BIT          NULL,

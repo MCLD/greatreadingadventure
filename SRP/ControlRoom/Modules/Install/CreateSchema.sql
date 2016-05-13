@@ -14001,7 +14001,7 @@ GO
 CREATE PROCEDURE [dbo].[app_SQChoices_Insert] (
 	@QID INT,
 	@ChoiceOrder INT,
-	@ChoiceText VARCHAR(50),
+	@ChoiceText VARCHAR(255),
 	@Score INT,
 	@JumpToQuestion INT,
 	@AskClarification BIT,
@@ -14179,7 +14179,7 @@ CREATE PROCEDURE [dbo].[app_SQChoices_Update] (
 	@SQCID INT,
 	@QID INT,
 	@ChoiceOrder INT,
-	@ChoiceText VARCHAR(50),
+	@ChoiceText VARCHAR(255),
 	@Score INT,
 	@JumpToQuestion INT,
 	@AskClarification BIT,
@@ -21160,7 +21160,7 @@ BEGIN
 	SELECT @PointsEarned = sum(pp.[NumPoints]),
 		@PointsEarnedReading = sum(CASE pp.[AwardReasonCd]
 				WHEN 0
-					THEN 1
+					THEN pp.[NumPoints]
 				ELSE 0
 				END),
 		@ChallengesCompleted = sum(CASE pp.[IsBookList]
@@ -24444,7 +24444,7 @@ CREATE TABLE [dbo].[SQChoices] (
 	[SQCID] [int] IDENTITY(1, 1) NOT NULL,
 	[QID] [int] NULL,
 	[ChoiceOrder] [int] NULL,
-	[ChoiceText] [varchar](50) NULL,
+	[ChoiceText] [varchar](255) NULL,
 	[Score] [int] NULL,
 	[JumpToQuestion] [int] NULL,
 	[AskClarification] [bit] NULL,

@@ -3,7 +3,7 @@
 CREATE PROCEDURE [dbo].[app_SQChoices_Insert] (
 	@QID INT,
 	@ChoiceOrder INT,
-	@ChoiceText VARCHAR(50),
+	@ChoiceText VARCHAR(255),
 	@Score INT,
 	@JumpToQuestion INT,
 	@AskClarification BIT,

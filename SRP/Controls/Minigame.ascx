@@ -18,10 +18,10 @@
         <asp:Label ID="PID" runat="server" Text="" Visible="false"></asp:Label>
         <div class="row">
             <div class="col-sm-12">
-                <h2>
+                <h2 class="adventure-title">
                     <asp:Label ID="MGName" runat="server" Text=""></asp:Label>
                 </h2>
-                <p>
+                <p class="adventure-instruction">
                     <asp:Label ID="lbl_mg1" runat="server" Text="adventures-instructions-onlinebook" Visible="False"></asp:Label>
                     <asp:Label ID="lbl_mg2" runat="server" Text="adventures-instructions-mixandmatch" Visible="False"></asp:Label>
                     <asp:Label ID="lbl_mg3" runat="server" Text="adventures-instructions-codebreaker" Visible="False"></asp:Label>
@@ -60,11 +60,11 @@
             <div class="row">
                 <div class="col-sm-12">
                     <asp:Button ID="CompleteButton"
-                                runat="server"
-                                Text="Done"
-                                CssClass="btn btn-success btn-lg"
-                                OnClick="CompleteButton_Click"
-                                Visible="false" />
+                        runat="server"
+                        Text="Done"
+                        CssClass="btn btn-success btn-lg"
+                        OnClick="CompleteButton_Click"
+                        Visible="false" />
                 </div>
             </div>
         </asp:Panel>

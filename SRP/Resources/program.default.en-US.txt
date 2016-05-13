@@ -165,6 +165,7 @@ adventures-instructions-onlinebook=Read an exciting story.
 adventures-instructions-mixandmatch=Choose the correct picture.
 adventures-instructions-codebreaker=Decode the secret message using the code key.
 adventures-instructions-cyoa=Read a story and decide which path you want to take.
+adventures-instructions-cyoa-choose=Choose your path:
 adventures-instructions-difficulty=Choose your difficulty:
 adventures-instructions-button-easy=Easy
 adventures-instructions-button-medium=Medium
