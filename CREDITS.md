@@ -29,6 +29,7 @@ Reading Adventure wouldn't exist!
 - [this.Log Logging Extension](#thislog-logging-extension)
 - [Trumbowyg](#trumbowyg)
 - [SRP_DAL](#srp_dal)
+- [ZXing.Net](#zxingnet)
 
 * * *
 
@@ -183,5 +184,12 @@ Reading Adventure wouldn't exist!
 ## SRP_DAL
 - Copyright (c) 2014 Systems Technology Group
 - License (MIT) <http://opensource.org/licenses/MIT>
+
+* * *
+
+## ZXing.Net
+- <https://zxingnet.codeplex.com/>
+- Copyright (c) 2013 ZXing.Net authors
+- License (Apache) <https://zxingnet.codeplex.com/license>
 
 * * *
