@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Patron registration process now informs users about goal range.
 
 ### Changed
+- Truncate names in the badge gallery so they don't wrap in an ugly way
 - Add ability to suppress a patron from the feed (#159)
 - Reading goal now only accounts for points earned through reading instead of all point methods (#151)
 - Award Triggers no longer require a point value to be entered
@@ -25,6 +26,9 @@ All notable changes to this project will be documented in this file.
 - Show event structured data in the configured time zone rather than UTC
 
 ### Fixed
+- Resolve issue with ViewState being too large (#175)
+- Fix exception throwing on survey/test saving (#173)
+- Properly render survey/test in Control Room preview (#172)
 - Allow badge and adventure names to be longer than 50 characters (#169)
 - Disallow adding patron from the control room without specifying password (#166)
 - Control room avatar editor now says "Avatar name", instead of "Award Name" (#153)
