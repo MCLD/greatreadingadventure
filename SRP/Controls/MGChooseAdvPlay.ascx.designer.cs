@@ -46,7 +46,7 @@ namespace GRA.SRP.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSlideText;
+        protected global::System.Web.UI.WebControls.Literal lblSlideText;
         
         /// <summary>
         /// lblSound control.
@@ -58,6 +58,15 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Label lblSound;
         
         /// <summary>
+        /// cyoContainer1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cyoContainer1;
+        
+        /// <summary>
         /// btn1 control.
         /// </summary>
         /// <remarks>
@@ -65,6 +74,15 @@ namespace GRA.SRP.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ImageButton btn1;
+        
+        /// <summary>
+        /// cyoContainer2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl cyoContainer2;
         
         /// <summary>
         /// btn2 control.

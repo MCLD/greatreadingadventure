@@ -29,11 +29,11 @@
                     runat="server"
                     onclick='<%# Eval("BadgeId", "return ShowBadgeInfo({0});") %>'
                     class="thumbnail no-underline badge-with-info-height">
-                    <div class="thumbnail-side-padding text-center caption"><small><%#Eval("Title") %></small></div>
+                    <div class="thumbnail-side-padding text-center caption"><small><%#GRA.Logic.Badge.GalleryLengthName(Eval("Title")) %></small></div>
                     <asp:Image runat="server"
                         ImageUrl='<%# Eval("BadgeId", "~/images/badges/sm_{0}.png")%>'
                         CssClass="center-block" />
-                    <div class="thumbnail-side-padding text-center caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
+                    <div class="thumbnail-side-padding text-center caption badge-earned-caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
                 </a>
             </div>
         </ItemTemplate>
