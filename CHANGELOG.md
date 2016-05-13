@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - Took steps to minimize ViewState size on patron pages
 - Patrons can no longer register early by guessing the registration page url (#149)
 - Removed 50 character length requirement on Challenge names
+- Fix broken computation of points earned by reading in the at-a-glance report (#176)
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)
