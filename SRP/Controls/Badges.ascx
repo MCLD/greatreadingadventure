@@ -33,7 +33,7 @@
                     <asp:Image runat="server"
                         ImageUrl='<%# Eval("BadgeId", "~/images/badges/sm_{0}.png")%>'
                         CssClass="center-block" />
-                    <div class="thumbnail-side-padding text-center caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
+                    <div class="thumbnail-side-padding text-center caption badge-earned-caption"><small><em>earned <%#((DateTime)Eval("DateEarned")).ToShortDateString() %></em></small></div>
                 </a>
             </div>
         </ItemTemplate>

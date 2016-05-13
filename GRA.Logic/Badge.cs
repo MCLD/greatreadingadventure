@@ -17,6 +17,11 @@ namespace GRA.Logic
         private const string NoBadgePath = "~/images/Badges/no_badge.png";
 
         /// <summary>
+        /// The badge name length to truncate at in the gallery
+        /// </summary>
+        private const int BadgeGalleryNameLength = 70;
+
+        /// <summary>
         /// Return an object containing information about the badge, typically for when badge
         /// details are to be displayed.
         /// </summary>
@@ -170,18 +175,31 @@ namespace GRA.Logic
         /// it needs to be done during data binding (in <see cref="Eval"/>)</param>
         /// <returns>The full text of the name if it is less than 71 characters, otherwise the name
         /// truncated to the last space prior to 70 characters with an elipsis appended.</returns>
-        public static string GalleryLengthName(object fullNameObject)
+        public static object GalleryLengthName(object fullNameObject)
         {
-            string fullName = (string)fullNameObject;
-            if (fullName.Length <= 70)
+            string fullName = fullNameObject as string;
+            if (!string.IsNullOrEmpty(fullName))
             {
-                return fullName;
+                if (fullName.Length <= BadgeGalleryNameLength)
+                {
+                    return fullName;
+                }
+                else
+                {
+                    if (fullName.Contains(" "))
+                    {
+                        return string.Format("{0}...",
+                            fullName.Substring(0, fullName.Substring(0, BadgeGalleryNameLength)
+                            .LastIndexOf(' ')));
+                    }
+                    else
+                    {
+                        return string.Format("{0}...",
+                            fullName.Substring(0, BadgeGalleryNameLength));
+                    }
+                }
             }
-            else
-            {
-                return string.Format("{0}...",
-                    fullName.Substring(0, fullName.Substring(0, 70).LastIndexOf(' ')));
-            }
+            return fullNameObject;
         }
     }
 }

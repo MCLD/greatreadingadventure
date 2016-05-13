@@ -176,12 +176,18 @@ input#loginPopupRememberMe {
 
 /* badge display spacing */
 .badge-with-info-height {
-    min-height: 12em;
+    min-height: 13.5em;
     display: block;
 }
 
+.badge-earned-caption {
+    position: absolute;
+    bottom: 1.2em;
+    right: 1.5em;
+}
+
 .badge-without-info-height {
-    min-height: 11em;
+    min-height: 12.5em;
     display: block;
 }
 
