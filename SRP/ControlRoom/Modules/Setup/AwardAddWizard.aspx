@@ -118,14 +118,14 @@
                                     <asp:RangeValidator
                                         ControlToValidate="GoalPercent"
                                         MinimumValue="0"
-                                        MaximumValue="200"
+                                        MaximumValue="1000"
                                         Display="Dynamic"
                                         Type="Integer"
                                         EnableClientScript="true"
-                                        ErrorMessage="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                        ErrorMessage="<font color='red'> * GoalPercent must be 0-1000.</font>"
                                         runat="server"
                                         Font-Bold="True" Font-Italic="True"
-                                        Text="<font color='red'> * GoalPercent must be 0-100.</font>"
+                                        Text="<font color='red'> * GoalPercent must be 0-1000.</font>"
                                         EnableTheming="True"
                                         SetFocusOnError="True" />
                                 </td>

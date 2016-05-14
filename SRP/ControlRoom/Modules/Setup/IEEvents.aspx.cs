@@ -225,16 +225,21 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                                     try
                                     {
                                         var branchString = excelReader.GetString(7);
-                                        if (branchMap.ContainsKey(branchString.ToLower()))
+                                        
+                                        if (branchString != null && branchString.Length > 0)
                                         {
-                                            branchId = branchMap[branchString.ToLower()];
+                                            if (branchMap.ContainsKey(branchString.ToLower()))
+                                            {
+                                                branchId = branchMap[branchString.ToLower()];
+                                            }
+                                            else
+                                            {
+                                                problems.Add(string.Format("Skipping branch - couldn't find branch {0} specified for event {1}",
+                                                    branchString,
+                                                    name));
+                                            }
                                         }
-                                        else
-                                        {
-                                            problems.Add(string.Format("Skipping branch - couldn't find branch {0} specified for event {1}",
-                                                branchString,
-                                                name));
-                                        }
+
                                     }
                                     catch (Exception)
                                     {

@@ -76,6 +76,7 @@ namespace GRA.SRP.Badges
                                                      GetResourceString("system-name"));
                 badgeImage.ImageUrl = badgeDetailData.ImageUrl;
                 badgeImage.AlternateText = badgeDetailData.AlternateText;
+
                 if (!string.IsNullOrEmpty(badgeDetailData.DateEarned))
                 {
                     badgeEarnWhen.Text = string.Format("<p><strong>You earned this badge on {0}!</strong></p>",
@@ -87,15 +88,27 @@ namespace GRA.SRP.Badges
                     badgeEarnWhen.Visible = false;
                 }
 
-                badgeEarnPanel.Visible = true;
                 badgeDetails.Visible = true;
 
-                StringBuilder sb = new StringBuilder();
-                foreach(var line in badgeDetailData.HowToEarn)
+                if (badgeDetailData.HowToEarn.Length > 0)
                 {
-                    sb.AppendFormat("<li>{0}</li>", line);
+                    badgeDesriptionLabel.Visible = false;
+                    badgeEarnPanel.Visible = true;
+
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var line in badgeDetailData.HowToEarn)
+                    {
+                        sb.AppendFormat("<li>{0}</li>", line);
+                    }
+                    badgeEarnLabel.Text = sb.ToString();
                 }
-                badgeEarnLabel.Text = sb.ToString();
+                else
+                {
+                    badgeDesriptionLabel.Visible = true;
+                    badgeEarnPanel.Visible = false;
+
+                    badgeDesriptionLabel.Text = this.Server.HtmlDecode(badgeDetailData.Description);
+                }
 
                 /* metadata */
                 string systemName = GetResourceString("system-name");

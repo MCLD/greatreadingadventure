@@ -30,6 +30,8 @@ namespace GRA.SRP.DAL
         public string NotificationSubject { get; set; }
         public string NotificationBody { get; set; }
         public string CustomEarnedMessage { get; set; }
+        public bool HideDefaultDescriptionFlag { get; set; }
+        public string CustomDescription { get; set; }
         public bool IncludesPhysicalPrizeFlag { get; set; }
         public string PhysicalPrizeName { get; set; }
         public bool AssignProgramPrizeCode { get; set; }
@@ -60,6 +62,7 @@ namespace GRA.SRP.DAL
             this.NotificationSubject = string.Empty;
             this.NotificationBody = string.Empty;
             this.CustomEarnedMessage = string.Empty;
+            this.CustomDescription = string.Empty;
             this.PhysicalPrizeName = string.Empty;
             this.PCNotificationSubject = string.Empty;
             this.PCNotificationBody = string.Empty;
@@ -154,6 +157,8 @@ namespace GRA.SRP.DAL
                 result.NotificationSubject = dr["NotificationSubject"].ToString();
                 result.NotificationBody = dr["NotificationBody"].ToString();
                 result.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
+                result.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
+                result.CustomDescription = dr["CustomDescription"].ToString();
                 result.IncludesPhysicalPrizeFlag = bool.Parse(dr["IncludesPhysicalPrizeFlag"].ToString());
                 result.PhysicalPrizeName = dr["PhysicalPrizeName"].ToString();
                 result.AssignProgramPrizeCode = bool.Parse(dr["AssignProgramPrizeCode"].ToString());
@@ -223,6 +228,8 @@ namespace GRA.SRP.DAL
                 result.NotificationSubject = dr["NotificationSubject"].ToString();
                 result.NotificationBody = dr["NotificationBody"].ToString();
                 result.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
+                result.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
+                result.CustomDescription = dr["CustomDescription"].ToString();
                 result.IncludesPhysicalPrizeFlag = bool.Parse(dr["IncludesPhysicalPrizeFlag"].ToString());
                 result.PhysicalPrizeName = dr["PhysicalPrizeName"].ToString();
                 result.AssignProgramPrizeCode = bool.Parse(dr["AssignProgramPrizeCode"].ToString());
@@ -275,8 +282,6 @@ namespace GRA.SRP.DAL
 
                 // declare return value
 
-                Badge result = new Badge();
-
                 DateTime _datetime;
 
                 int _int;
@@ -287,6 +292,8 @@ namespace GRA.SRP.DAL
                 this.AdminName = dr["AdminName"].ToString();
                 this.UserName = dr["UserName"].ToString();
                 this.GenNotificationFlag = bool.Parse(dr["GenNotificationFlag"].ToString());
+                this.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
+                this.CustomDescription = dr["CustomDescription"].ToString();
                 this.NotificationSubject = dr["NotificationSubject"].ToString();
                 this.NotificationBody = dr["NotificationBody"].ToString();
                 this.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
@@ -341,6 +348,8 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@GenNotificationFlag", GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NotificationSubject", GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NotificationBody", GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HideDefaultDescriptionFlag", GlobalUtilities.DBSafeValue(o.HideDefaultDescriptionFlag, o.HideDefaultDescriptionFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CustomDescription", GlobalUtilities.DBSafeValue(o.CustomDescription, o.CustomDescription.GetTypeCode())));
             arrParams.Add(new SqlParameter("@CustomEarnedMessage", GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode())));
             arrParams.Add(new SqlParameter("@IncludesPhysicalPrizeFlag", GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PhysicalPrizeName", GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode())));
@@ -394,6 +403,8 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@GenNotificationFlag", GlobalUtilities.DBSafeValue(o.GenNotificationFlag, o.GenNotificationFlag.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NotificationSubject", GlobalUtilities.DBSafeValue(o.NotificationSubject, o.NotificationSubject.GetTypeCode())));
             arrParams.Add(new SqlParameter("@NotificationBody", GlobalUtilities.DBSafeValue(o.NotificationBody, o.NotificationBody.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@HideDefaultDescriptionFlag", GlobalUtilities.DBSafeValue(o.HideDefaultDescriptionFlag, o.HideDefaultDescriptionFlag.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@CustomDescription", GlobalUtilities.DBSafeValue(o.CustomDescription, o.CustomDescription.GetTypeCode())));
             arrParams.Add(new SqlParameter("@CustomEarnedMessage", GlobalUtilities.DBSafeValue(o.CustomEarnedMessage, o.CustomEarnedMessage.GetTypeCode())));
             arrParams.Add(new SqlParameter("@IncludesPhysicalPrizeFlag", GlobalUtilities.DBSafeValue(o.IncludesPhysicalPrizeFlag, o.IncludesPhysicalPrizeFlag.GetTypeCode())));
             arrParams.Add(new SqlParameter("@PhysicalPrizeName", GlobalUtilities.DBSafeValue(o.PhysicalPrizeName, o.PhysicalPrizeName.GetTypeCode())));

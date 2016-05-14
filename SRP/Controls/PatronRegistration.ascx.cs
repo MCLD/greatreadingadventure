@@ -351,7 +351,7 @@ namespace GRA.SRP.Controls
 
                         var intervalString = selectedProgram.GetGoalInterval.ToString();
 
-                        ((Label)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()}):";
+                        ((Literal)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()}):";
                         // found a valid point conversion for goal so break
                         break;
                     }

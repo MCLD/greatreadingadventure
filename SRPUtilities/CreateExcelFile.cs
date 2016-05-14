@@ -363,7 +363,7 @@ namespace ExportToExcel
                         DateTime dtValue;
                         string strValue = "";
                         if (DateTime.TryParse(cellValue, out dtValue))
-                            strValue = dtValue.ToShortDateString();
+                            strValue = dtValue.ToString("MM/dd/yy hh:mm:ss");
                         AppendTextCell(excelColumnNames[colInx] + rowIndex.ToString(), strValue, ref writer);
                     }
                     else

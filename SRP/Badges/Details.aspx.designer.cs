@@ -49,15 +49,6 @@ namespace GRA.SRP.Badges {
         protected global::System.Web.UI.WebControls.Image badgeImage;
         
         /// <summary>
-        /// badgeEarnPanel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel badgeEarnPanel;
-        
-        /// <summary>
         /// badgeEarnWhen control.
         /// </summary>
         /// <remarks>
@@ -65,6 +56,24 @@ namespace GRA.SRP.Badges {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label badgeEarnWhen;
+        
+        /// <summary>
+        /// badgeDesriptionLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label badgeDesriptionLabel;
+        
+        /// <summary>
+        /// badgeEarnPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel badgeEarnPanel;
         
         /// <summary>
         /// badgeEarnLabel control.

@@ -13,13 +13,18 @@
                 </div>
                 <div class="panel-body">
                     <asp:Image ID="badgeImage" runat="server" CssClass="center-block" />
-                    <asp:Panel ID="badgeEarnPanel" runat="server" CssClass="margin-1em-top">
-                        <asp:Label runat="server" id="badgeEarnWhen" CssClass="text-primary text-center"></asp:Label>
-                        Ways to earn this badge:
-                    <div class="margin-halfem-top">
-                        <asp:Label ID="badgeEarnLabel" runat="server" Text=""></asp:Label>
+                    <asp:Label runat="server" id="badgeEarnWhen" CssClass="text-primary text-center"></asp:Label>
+
+                    <div class="margin-1em-top">
+                        <asp:Label ID="badgeDesriptionLabel" runat="server" Text=""></asp:Label>
+
+                        <asp:Panel ID="badgeEarnPanel" runat="server">
+                            Ways to earn this badge:
+                            <ul class="margin-halfem-top">
+                                <asp:Label ID="badgeEarnLabel" runat="server" Text=""></asp:Label>
+                            </ul>
+                        </asp:Panel>
                     </div>
-                    </asp:Panel>
                 </div>
                 <div class="panel-footer clearfix hidden-print">
                     <div class="pull-right">

@@ -13,6 +13,7 @@ namespace GRA.SRP.Handlers
     {
         public string UserName { get; set; }
         public string ImageUrl { get; set; }
+        public string Description { get; set; }
         public string[] Earn { get; set; }
         public string DateEarned { get; set; }
         public bool Hidden { get; set; }
@@ -63,6 +64,7 @@ namespace GRA.SRP.Handlers
                     UserName = badgeDetails.DisplayName,
                     ImageUrl = VirtualPathUtility.ToAbsolute(badgeDetails.ImageUrl),
                     Earn = badgeDetails.HowToEarn,
+                    Description = context.Server.HtmlDecode(badgeDetails.Description),
                     DateEarned = badgeDetails.DateEarned,
                     Hidden = badgeDetails.Hidden,
                     Success = true

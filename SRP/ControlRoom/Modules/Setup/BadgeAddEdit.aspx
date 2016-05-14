@@ -77,6 +77,15 @@
                         </tr>
 
                         <tr>
+                            <td colspan="3" style="padding-top: 1em;">
+                                <b>Custom description of badge:</b>
+                                <div class="gra-editor-container-tiny">
+                                    <textarea id="CustomDescription" runat="server" class="gra-editor"><%# Eval("CustomDescription") %></textarea>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td colspan="2" style="padding-top: 1em;">
                                 <b>Pop-up message when badge is earned:</b><br />
                                 <textarea id="CustomEarnedMessage" runat="server" class="gra-editor" rows="5" style="height: 150px;"></textarea>
@@ -183,6 +192,24 @@
                                         </td>
                                         <td valign="top">
                                             <asp:TextBox ID="PhysicalPrizeName" runat="server" Text='<%# Eval("PhysicalPrizeName") %>' Width="285px" CssClass="form-control"></asp:TextBox>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td nowrap valign="top">
+                                        <b>Hide default description:</b>
+                                        </td>
+                                        <td valign="top">
+                                            <asp:CheckBox ID="HideDefaultDescription" runat="server" Checked='<%# (bool)Eval("HideDefaultDescription") %>'></asp:CheckBox>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3" style="padding-top: 1em;">
+                                            <b>Custom description of badge:</b>
+                                            <div class="gra-editor-container-tiny">
+                                                <textarea id="CustomDescription" runat="server" class="gra-editor"><%# Eval("CustomDescription") %></textarea>
+                                            </div>
                                         </td>
                                     </tr>
 
