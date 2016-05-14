@@ -90,9 +90,19 @@ namespace GRA.SRP.Badges
 
                 badgeDetails.Visible = true;
 
+
                 if (badgeDetailData.HowToEarn.Length > 0)
                 {
+                    badgeDesriptionLabel.Visible = true;
+                    badgeDesriptionLabel.Text = this.Server.HtmlDecode(badgeDetailData.Description);
+                }
+                else
+                {
                     badgeDesriptionLabel.Visible = false;
+                }
+
+                if (!badgeDetailData.HideDefaultDescription)
+                {
                     badgeEarnPanel.Visible = true;
 
                     StringBuilder sb = new StringBuilder();
@@ -104,10 +114,7 @@ namespace GRA.SRP.Badges
                 }
                 else
                 {
-                    badgeDesriptionLabel.Visible = true;
                     badgeEarnPanel.Visible = false;
-
-                    badgeDesriptionLabel.Text = this.Server.HtmlDecode(badgeDetailData.Description);
                 }
 
                 /* metadata */

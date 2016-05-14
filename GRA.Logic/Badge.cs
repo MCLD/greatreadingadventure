@@ -43,6 +43,7 @@ namespace GRA.Logic
 
             badgeDetails.BadgeId = badge.BID;
             badgeDetails.DisplayName = badge.UserName;
+            badgeDetails.HideDefaultDescription = badge.HideDefaultDescriptionFlag;
             badgeDetails.Description = badge.CustomDescription;
             badgeDetails.Hidden = badge.HiddenFromPublic == true;
 
@@ -79,50 +80,47 @@ namespace GRA.Logic
 
             var earn = new HashSet<string>();
 
-            if (badgeDetails.Description.Length < 1)
+            string earnText = SRP.DAL.Badge.GetBadgeReading(badgeId);
+            if (earnText.Length > 0)
             {
-                string earnText = SRP.DAL.Badge.GetBadgeReading(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Earn points by reading: {0}.", earnText));
-                }
+                earn.Add(string.Format("Earn points by reading: {0}.", earnText));
+            }
 
-                earnText = SRP.DAL.Badge.GetBadgeGoal(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Achieve part of your personal reading goal: {0}.",
-                        earnText));
-                }
+            earnText = SRP.DAL.Badge.GetBadgeGoal(badgeId);
+            if (earnText.Length > 0)
+            {
+                earn.Add(string.Format("Achieve part of your personal reading goal: {0}.",
+                    earnText));
+            }
 
-                earnText = SRP.DAL.Badge.GetEnrollmentPrograms(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Enroll in a reading program: {0}.", earnText));
-                }
+            earnText = SRP.DAL.Badge.GetEnrollmentPrograms(badgeId);
+            if (earnText.Length > 0)
+            {
+                earn.Add(string.Format("Enroll in a reading program: {0}.", earnText));
+            }
 
-                earnText = SRP.DAL.Badge.GetBadgeBookLists(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Complete a Challenge: {0}.", earnText));
-                }
+            earnText = SRP.DAL.Badge.GetBadgeBookLists(badgeId);
+            if (earnText.Length > 0)
+            {
+                earn.Add(string.Format("Complete a Challenge: {0}.", earnText));
+            }
 
-                earnText = SRP.DAL.Badge.GetBadgeGames(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Unlock and complete an Adventure: {0}.", earnText));
-                }
+            earnText = SRP.DAL.Badge.GetBadgeGames(badgeId);
+            if (earnText.Length > 0)
+            {
+                earn.Add(string.Format("Unlock and complete an Adventure: {0}.", earnText));
+            }
 
-                earnText = SRP.DAL.Badge.GetBadgeEvents(badgeId);
-                if (earnText.Length > 0)
-                {
-                    earn.Add(string.Format("Attend an Event: {0}.",
-                        CreateSearchLinks(server, earnText, "~/Events/?Search={0}")));
-                }
+            earnText = SRP.DAL.Badge.GetBadgeEvents(badgeId);
+            if (earnText.Length > 0)
+            {
+                earn.Add(string.Format("Attend an Event: {0}.",
+                    CreateSearchLinks(server, earnText, "~/Events/?Search={0}")));
+            }
 
-                if (earn.Count == 0)
-                {
-                    earn.Add("Learn the secret code to unlock it.");
-                }
+            if (earn.Count == 0)
+            {
+                earn.Add("Learn the secret code to unlock it.");
             }
 
             badgeDetails.HowToEarn = earn.OrderBy(x => x).ToArray();

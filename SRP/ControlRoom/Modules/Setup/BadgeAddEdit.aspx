@@ -197,10 +197,10 @@
 
                                     <tr>
                                         <td nowrap valign="top">
-                                        <b>Hide default description:</b>
+                                        <b>Hide default description (Ways to earn text):</b>
                                         </td>
                                         <td valign="top">
-                                            <asp:CheckBox ID="HideDefaultDescription" runat="server" Checked='<%# (bool)Eval("HideDefaultDescription") %>'></asp:CheckBox>
+                                            <asp:CheckBox ID="HideDefaultDescription" runat="server" Checked='<%# (bool)Eval("HideDefaultDescriptionFlag") %>'></asp:CheckBox>
                                         </td>
                                     </tr>
 

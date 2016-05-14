@@ -364,20 +364,26 @@
                     var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
                     $('#badgePopupImageContainer').empty();
                     $('#badgePopupImageContainer').append(imageTag);
-                    if (data.Earn.length == 0) {
-                        $('#badgePopupEarn').hide();
-                        $('#badgePopupDescription').show();
-                        $('#badgePopupDescription').empty();
-                        $('#badgePopupDescription').append(data.Description);
-                    } else {
+
+                    if (!data.HideEarn) {
                         $('#badgePopupEarn').show();
-                        $('#badgePopupDescription').hide();
 
                         $('#badgePopupEarnList').empty();
                         $.each(data.Earn, function (index, value) {
                             $('#badgePopupEarnList').append('<li>' + value + '</li>');
                         });
+                    } else {
+                        $('#badgePopupEarn').hide();
                     }
+
+                    if (data.Earn.length > 0) {
+                        $('#badgePopupDescription').show();
+                        $('#badgePopupDescription').empty();
+                        $('#badgePopupDescription').append(data.Description);
+                    } else {
+                        $('#badgePopupDescription').hide();
+                    }
+
                     if (data.DateEarned) {
                         if (data.DateEarned.length == 0) {
                             $('#badgePopupEarnWhen').hide();
