@@ -43,6 +43,8 @@ namespace GRA.Logic
 
             badgeDetails.BadgeId = badge.BID;
             badgeDetails.DisplayName = badge.UserName;
+            badgeDetails.HideDefaultDescription = badge.HideDefaultDescriptionFlag;
+            badgeDetails.Description = badge.CustomDescription;
             badgeDetails.Hidden = badge.HiddenFromPublic == true;
 
             // if the badge is flagged as hidden from the public, ensure the user has earned it
@@ -74,6 +76,7 @@ namespace GRA.Logic
             }
             badgeDetails.ImageUrl = badgePath;
             badgeDetails.AlternateText = string.Format("Badge: {0}", badge.UserName);
+
 
             var earn = new HashSet<string>();
 

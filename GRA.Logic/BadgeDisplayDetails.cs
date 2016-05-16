@@ -11,6 +11,8 @@ namespace GRA.Logic
         public string DisplayName { get; set; }
         public string ImageUrl { get; set; }
         public string AlternateText { get; set; }
+        public string Description { get; set; }
+        public bool HideDefaultDescription { get; set; } /* whether to hide "HowToEarn" or not */
         public string[] HowToEarn { get; set; }
         public string DateEarned { get; set; }
         public bool Hidden { get; set; }

@@ -75,6 +75,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                     var obj = new Badge();
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("AdminName")).Text.Trim();
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("UserName")).Text.Trim();
+                    obj.CustomDescription = ((HtmlTextArea)((DetailsView)sender).FindControl("CustomDescription")).InnerHtml;
                     obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("CustomEarnedMessage")).InnerHtml;
                     obj.HiddenFromPublic = ((DropDownList)((DetailsView)sender).FindControl("HiddenFromPublic")).SelectedIndex > 0;
 
@@ -147,6 +148,9 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
                     obj.AdminName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("AdminName")).Text.Trim();
                     obj.UserName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("UserName")).Text.Trim();
+
+                    obj.HideDefaultDescriptionFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("HideDefaultDescription")).Checked;
+                    obj.CustomDescription = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomDescription")).InnerHtml;
                     obj.CustomEarnedMessage = ((HtmlTextArea)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("CustomEarnedMessage")).InnerHtml;
                     obj.IncludesPhysicalPrizeFlag = ((CheckBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("IncludesPhysicalPrizeFlag")).Checked;
                     obj.PhysicalPrizeName = ((TextBox)((DetailsView)sender).FindControl("TabContainer1").FindControl("TabPanel1").FindControl("PhysicalPrizeName")).Text;

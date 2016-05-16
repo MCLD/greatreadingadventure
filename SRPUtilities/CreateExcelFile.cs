@@ -264,8 +264,23 @@ namespace ExportToExcel
 
             //  If we don't add a "WorkbookStylesPart", OLEDB will refuse to connect to this .xlsx file !
             WorkbookStylesPart workbookStylesPart = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>("rIdStyles");
-            Stylesheet stylesheet = new Stylesheet();
-            workbookStylesPart.Stylesheet = stylesheet;
+
+            // http://stackoverflow.com/questions/2792304/how-to-insert-a-date-to-an-open-xml-worksheet 
+            workbookStylesPart.Stylesheet = new Stylesheet
+            {
+                Fonts = new Fonts(new Font()),
+                Fills = new Fills(new Fill()),
+                Borders = new Borders(new Border()),
+                CellStyleFormats = new CellStyleFormats(new CellFormat()),
+                CellFormats =
+            new CellFormats(
+                new CellFormat(),
+                new CellFormat
+                {
+                    NumberFormatId = 22, // http://closedxml.codeplex.com/wikipage?title=NumberFormatId%20Lookup%20Table
+                    ApplyNumberFormat = true
+                })
+            };
 
 
             //  Loop through each of the DataTables in our DataSet, and create a new Excel Worksheet for each.
@@ -278,7 +293,10 @@ namespace ExportToExcel
 
                 //  Create worksheet part, and add it to the sheets collection in workbook
                 WorksheetPart newWorksheetPart = spreadsheet.WorkbookPart.AddNewPart<WorksheetPart>();
+
+
                 Sheet sheet = new Sheet() { Id = spreadsheet.WorkbookPart.GetIdOfPart(newWorksheetPart), SheetId = worksheetNumber, Name = worksheetName };
+
 
                 // If you want to define the Column Widths for a Worksheet, you need to do this *before* appending the SheetData
                 // http://social.msdn.microsoft.com/Forums/en-US/oxmlsdk/thread/1d93eca8-2949-4d12-8dd9-15cc24128b10/
@@ -299,6 +317,7 @@ namespace ExportToExcel
             OpenXmlWriter writer = OpenXmlWriter.Create(worksheetPart, Encoding.ASCII);
             writer.WriteStartElement(new Worksheet());
             writer.WriteStartElement(new SheetData());
+
 
             string cellValue = "";
 
@@ -362,9 +381,13 @@ namespace ExportToExcel
                         //  This is a date value.
                         DateTime dtValue;
                         string strValue = "";
+
                         if (DateTime.TryParse(cellValue, out dtValue))
-                            strValue = dtValue.ToShortDateString();
-                        AppendTextCell(excelColumnNames[colInx] + rowIndex.ToString(), strValue, ref writer);
+                        {
+                            strValue = dtValue.ToOADate().ToString();
+
+                        }
+                        AppendDateTimeCell(excelColumnNames[colInx] + rowIndex.ToString(), strValue, ref writer);
                     }
                     else
                     {
@@ -378,6 +401,17 @@ namespace ExportToExcel
             writer.WriteEndElement(); //  End of worksheet
 
             writer.Close();
+        }
+
+        private static void AppendDateTimeCell(string cellReference, string cellDateString, ref OpenXmlWriter writer)
+        {
+            writer.WriteElement(new Cell
+            {
+                CellValue = new CellValue(cellDateString),
+                CellReference = cellReference,
+                DataType = CellValues.Number,
+                StyleIndex = 1
+            });
         }
 
         private static void AppendTextCell(string cellReference, string cellStringValue, ref OpenXmlWriter writer)

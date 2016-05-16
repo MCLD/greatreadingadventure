@@ -13,6 +13,17 @@ All notable changes to this project will be documented in this file.
   - `/Events/?System=<system name>` shows events for that library system
   - `/Events?Search=<search string>` shows events with the provided search string
   - `/Challenges?Search=<search string>` shows challenges with the provided search string
+- #52 Add field to enter book details for book review. The field's visibilty is controlled by a program flag.
+- Patron registration process now informs users about goal range.
+- Added a field for adding a custom badge description.
+- Changed event excel import/export to include times
+
+### Changed
+- #151 Reading goal now only accounts for points earned through reading instead of all point methods
+- Award triggers now have a goal percentage range of up to 1000%
+
+### Fixed
+- #153 Control room avatar editor now syas "Avatar name", instead of "Award Name"
 - Add field to enter book details for book review. The field's visibility is controlled by a program flag. (#52)
 - Patron registration process now informs users about goal range.
 

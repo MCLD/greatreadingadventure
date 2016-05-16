@@ -125,13 +125,18 @@
                         <div class="row">
                             <div class="col-xs-12" id="badgePopupImageContainer">
                             </div>
-                            <div id="badgePopupEarn" class="col-sm-10 col-sm-offset-1 margin-1em-top">
-                                <span id="badgePopupEarnWhen" class="text-primary text-center"></span>
-                                Ways to earn this badge:
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <span id="badgePopupEarnWhen" class="text-primary text-center badge-description"></span>
+                                <div id="badgePopupDescription">
+                                    No Description
+                                </div>
+                                <div id="badgePopupEarn" class="badge-earn">
+                                    Ways to earn this badge:
                                     <div class="margin-halfem-top">
                                         <ul id="badgePopupEarnList">
                                         </ul>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -359,15 +364,26 @@
                     var imageTag = '<img src="' + data.ImageUrl + '" class="center-block thumbnail" alt="' + fullTitle + '" />';
                     $('#badgePopupImageContainer').empty();
                     $('#badgePopupImageContainer').append(imageTag);
-                    if (data.Earn.length == 0) {
-                        $('#badgePopupEarn').hide();
-                    } else {
+
+                    if (!data.HideEarn) {
                         $('#badgePopupEarn').show();
+
                         $('#badgePopupEarnList').empty();
                         $.each(data.Earn, function (index, value) {
                             $('#badgePopupEarnList').append('<li>' + value + '</li>');
                         });
+                    } else {
+                        $('#badgePopupEarn').hide();
                     }
+
+                    if (data.Earn.length > 0) {
+                        $('#badgePopupDescription').show();
+                        $('#badgePopupDescription').empty();
+                        $('#badgePopupDescription').append(data.Description);
+                    } else {
+                        $('#badgePopupDescription').hide();
+                    }
+
                     if (data.DateEarned) {
                         if (data.DateEarned.length == 0) {
                             $('#badgePopupEarnWhen').hide();
