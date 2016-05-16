@@ -15,12 +15,14 @@ namespace GRA.SRP.Controls
 {
     public partial class Events : System.Web.UI.UserControl
     {
+        [Serializable()]
         protected class EventSearchCriteria
         {
             public string StartDate { get; set; }
             public string EndDate { get; set; }
             public int SystemId { get; set; }
             public int BranchId { get; set; }
+            public string BranchName { get; set; }
             public string SearchText { get; set; }
         }
         public string FirstAvailableDate { get; set; }
@@ -200,7 +202,7 @@ namespace GRA.SRP.Controls
                 }
                 sb.Append("Branch/library: ");
                 sb.Append("<strong>");
-                sb.Append(BranchId.Items.FindByValue(criteria.BranchId.ToString()).Text);
+                sb.Append(criteria.BranchName);
                 sb.Append("</strong>");
             }
             if (!string.IsNullOrWhiteSpace(criteria.SearchText))
@@ -218,12 +220,12 @@ namespace GRA.SRP.Controls
             WhatsShowing.Text = WhatsShowingPrint.Text = sb.ToString();
             WhatsShowingPanel.Visible = Filtered = !string.IsNullOrEmpty(WhatsShowing.Text);
 
-            if(string.IsNullOrEmpty(WhatsShowing.Text))
+            if (string.IsNullOrEmpty(WhatsShowing.Text))
             {
                 // no filter criteria, use cache if possible
                 var st = new SessionTools(Session);
                 var cachedEvents = st.GetCache(Cache, CacheKey.AllEvents) as System.Data.DataSet;
-                if(cachedEvents != null)
+                if (cachedEvents != null)
                 {
                     rptr.DataSource = cachedEvents;
                 }
@@ -290,6 +292,7 @@ namespace GRA.SRP.Controls
                 EndDate = EndDate.Text,
                 SystemId = int.Parse(SystemId.SelectedValue),
                 BranchId = int.Parse(BranchId.SelectedValue),
+                BranchName = BranchId.SelectedItem.Text,
                 SearchText = SearchText.Text.Trim()
             };
         }
@@ -420,7 +423,7 @@ namespace GRA.SRP.Controls
                 BranchId.SelectedIndex = 1;
             }
             var criteria = Session[SessionKey.EventFilter] as EventSearchCriteria;
-            if(criteria != null)
+            if (criteria != null)
             {
                 DoFilter(criteria);
             }
