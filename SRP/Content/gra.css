@@ -191,6 +191,15 @@ input#loginPopupRememberMe {
     display: block;
 }
 
+.badge-description {
+    display: block;
+    margin-top: 0.5em;
+}
+
+.badge-earn {
+    margin-top: 0.5em;
+}
+
 /* challenge display */
 .challenge-checkbox-container > input {
     width: 1.5em;
@@ -504,7 +513,7 @@ div.ataglance span.glyphicon {
     font-weight: bold;
     font-size: 1.5em;
     margin-top: 1em;
-    color:  #307fe2;
+    color: #307fe2;
 }
 
 .cyo-image:hover {
