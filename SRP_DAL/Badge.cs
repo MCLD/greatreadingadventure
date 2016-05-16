@@ -157,8 +157,8 @@ namespace GRA.SRP.DAL
                 result.NotificationSubject = dr["NotificationSubject"].ToString();
                 result.NotificationBody = dr["NotificationBody"].ToString();
                 result.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
-                result.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
-                result.CustomDescription = dr["CustomDescription"].ToString();
+                result.HideDefaultDescriptionFlag = dr["HideDefaultDescriptionFlag"] as bool? ?? false;
+                result.CustomDescription = dr["CustomDescription"] as string;
                 result.IncludesPhysicalPrizeFlag = bool.Parse(dr["IncludesPhysicalPrizeFlag"].ToString());
                 result.PhysicalPrizeName = dr["PhysicalPrizeName"].ToString();
                 result.AssignProgramPrizeCode = bool.Parse(dr["AssignProgramPrizeCode"].ToString());
