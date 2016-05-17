@@ -11480,6 +11480,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@GoalMax INT = 0,
 	@GoalIntervalId INT = 0,
 	@HideSchoolInRegistration BIT = 0,
+	@DisplayDailyImage BIT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -11535,7 +11536,8 @@ BEGIN
 		GoalMin,
 		GoalMax,
 		GoalIntervalId,
-		HideSchoolInRegistration
+		HideSchoolInRegistration,
+		DisplayDailyImage
 		)
 	VALUES (
 		@AdminName,
@@ -11591,7 +11593,8 @@ BEGIN
 		@GoalMin,
 		@GoalMax,
 		@GoalIntervalId,
-		@HideSchoolInRegistration
+		@HideSchoolInRegistration,
+		@DisplayDailyImage
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()
@@ -11767,7 +11770,8 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@GoalMin INT = 0,
 	@GoalMax INT = 0,
 	@GoalIntervalId INT = 0,
-	@HideSchoolInRegistration BIT = 0
+	@HideSchoolInRegistration BIT = 0,
+	@DisplayDailyImage BIT = 0
 	)
 AS
 UPDATE Programs
@@ -11821,7 +11825,8 @@ SET AdminName = @AdminName,
 	GoalMin = @GoalMin,
 	GoalMax = @GoalMax,
 	GoalIntervalId = @GoalIntervalId,
-	HideSchoolInRegistration = @HideSchoolInRegistration
+	HideSchoolInRegistration = @HideSchoolInRegistration,
+	DisplayDailyImage = @DisplayDailyImage
 WHERE PID = @PID
 	AND TenID = @TenID
 GO
@@ -24017,6 +24022,7 @@ CREATE TABLE [dbo].[Programs] (
 	[GoalMax] [int] NULL,
 	[GoalIntervalId] [int] NULL,
 	[HideSchoolInRegistration] [bit] NULL,
+	[DisplayDailyImage] [bit] NULL,
 	CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC) WITH (
 		PAD_INDEX = OFF,
 		STATISTICS_NORECOMPUTE = OFF,

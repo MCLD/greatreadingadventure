@@ -245,6 +245,7 @@
     <Content Include="ControlRoom\RibbonImages\TenantSummary.png" />
     <Content Include="ControlRoom\RibbonImages\TestsSurveys%402x.png" />
     <Content Include="ControlRoom\RibbonImages\TestsSurveys.png" />
+    <Content Include="Controls\DailyImage.ascx" />
     <Content Include="Controls\Feed.ascx" />
     <Content Include="Controls\MyAvatarControl.ascx" />
     <Content Include="Controls\Status.ascx" />
@@ -2214,6 +2215,13 @@
     <Compile Include="Controls\ChangePassword.ascx.designer.cs">
       <DependentUpon>ChangePassword.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DailyImage.ascx.cs">
+      <DependentUpon>DailyImage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\DailyImage.ascx.designer.cs">
+      <DependentUpon>DailyImage.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FamilyCodeControl.ascx.cs">
       <DependentUpon>FamilyCodeControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2721,6 +2729,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\DailyImage\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GRA.Communications\GRA.Communications.csproj">

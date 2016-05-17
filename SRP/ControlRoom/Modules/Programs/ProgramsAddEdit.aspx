@@ -455,6 +455,18 @@
                                         <td>&nbsp;</td>
                                     </tr>
                                     <tr>
+                                        <td align="right"><strong>Display daily image:</strong>
+                                            <span class="glyphicon glyphicon-info-sign"
+                                                data-toggle="tooltip"
+                                                data-placement="right"
+                                                title="Display a daily image such as a literacy tip"></span>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:CheckBox ID="DisplayDailyImage" runat="server" Checked='<%# (bool)Eval("DisplayDailyImage") %>' ReadOnly="False"></asp:CheckBox>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
                                         <td align="right">
                                             <b>Minimum goal:</b>
                                         </td>

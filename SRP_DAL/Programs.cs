@@ -293,6 +293,7 @@ namespace GRA.SRP.DAL
         public int GoalIntervalId { get; set; }
 
         public bool HideSchoolInRegistration { get; set; }
+        public bool DisplayDailyImage { get; set; }
         #endregion
 
         #region Constructors
@@ -490,6 +491,7 @@ namespace GRA.SRP.DAL
                 if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
                 if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
                 result.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
+                result.DisplayDailyImage = dr["DisplayDailyImage"] as bool? == true;
 
                 dr.Close();
 
@@ -585,6 +587,7 @@ namespace GRA.SRP.DAL
                 if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
                 if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
                 result.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
+                result.DisplayDailyImage = dr["DisplayDailyImage"] as bool? == true;
 
                 dr.Close();
 
@@ -713,6 +716,7 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
             arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
             arrParams.Add(new SqlParameter("@HideSchoolInRegistration", GlobalUtilities.DBSafeValue(o.HideSchoolInRegistration, o.HideSchoolInRegistration.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@DisplayDailyImage", GlobalUtilities.DBSafeValue(o.DisplayDailyImage, o.DisplayDailyImage.GetTypeCode())));
 
             var newIdParam = new SqlParameter("@PID", GlobalUtilities.DBSafeValue(o.PID, o.PID.GetTypeCode()));
             newIdParam.Direction = ParameterDirection.Output;
@@ -797,6 +801,7 @@ namespace GRA.SRP.DAL
             arrParams.Add(new SqlParameter("@GoalMax", GlobalUtilities.DBSafeValue(o.GoalMax, o.GoalMax.GetTypeCode())));
             arrParams.Add(new SqlParameter("@GoalIntervalId", GlobalUtilities.DBSafeValue(o.GoalIntervalId, o.GoalIntervalId.GetTypeCode())));
             arrParams.Add(new SqlParameter("@HideSchoolInRegistration", GlobalUtilities.DBSafeValue(o.HideSchoolInRegistration, o.HideSchoolInRegistration.GetTypeCode())));
+            arrParams.Add(new SqlParameter("@DisplayDailyImage", GlobalUtilities.DBSafeValue(o.DisplayDailyImage, o.DisplayDailyImage.GetTypeCode())));
 
             try
             {

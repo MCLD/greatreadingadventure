@@ -13,19 +13,11 @@ All notable changes to this project will be documented in this file.
   - `/Events/?System=<system name>` shows events for that library system
   - `/Events?Search=<search string>` shows events with the provided search string
   - `/Challenges?Search=<search string>` shows challenges with the provided search string
-- #52 Add field to enter book details for book review. The field's visibilty is controlled by a program flag.
+- #52 Add field to enter book details for book review. The field's visibility is controlled by a program flag.
 - Patron registration process now informs users about goal range.
 - Added a field for adding a custom badge description.
 - Changed event excel import/export to include times
-
-### Changed
-- #151 Reading goal now only accounts for points earned through reading instead of all point methods
-- Award triggers now have a goal percentage range of up to 1000%
-
-### Fixed
-- #153 Control room avatar editor now syas "Avatar name", instead of "Award Name"
-- Add field to enter book details for book review. The field's visibility is controlled by a program flag. (#52)
-- Patron registration process now informs users about goal range.
+- Add ability to show a daily image in a pop-up on the dashboard (#183)
 
 ### Changed
 - Truncate names in the badge gallery so they don't wrap in an ugly way
@@ -36,6 +28,8 @@ All notable changes to this project will be documented in this file.
 - Show family point values on family list
 - Show event structured data in the configured time zone rather than UTC
 - CYA stories can now have steps with only one choice instead of two
+- #151 Reading goal now only accounts for points earned through reading instead of all point methods
+- Award triggers now have a goal percentage range of up to 1000%
 
 ### Fixed
 - Resolve issue with ViewState being too large (#175)
@@ -49,6 +43,9 @@ All notable changes to this project will be documented in this file.
 - Removed 50 character length requirement on Challenge names
 - Fix broken computation of points earned by reading in the at-a-glance report (#176)
 - Fix survey/test answer length to support 255 characters (#178)
+- #153 Control room avatar editor now syas "Avatar name", instead of "Award Name"
+- Add field to enter book details for book review. The field's visibility is controlled by a program flag. (#52)
+- Patron registration process now informs users about goal range.
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)
