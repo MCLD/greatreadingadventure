@@ -228,8 +228,8 @@ namespace GRA.SRP.DAL
                 result.NotificationSubject = dr["NotificationSubject"].ToString();
                 result.NotificationBody = dr["NotificationBody"].ToString();
                 result.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
-                result.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
-                result.CustomDescription = dr["CustomDescription"].ToString();
+                result.HideDefaultDescriptionFlag = dr["HideDefaultDescriptionFlag"] as bool? ?? false;
+                result.CustomDescription = dr["CustomDescription"] as string;
                 result.IncludesPhysicalPrizeFlag = bool.Parse(dr["IncludesPhysicalPrizeFlag"].ToString());
                 result.PhysicalPrizeName = dr["PhysicalPrizeName"].ToString();
                 result.AssignProgramPrizeCode = bool.Parse(dr["AssignProgramPrizeCode"].ToString());
@@ -292,8 +292,8 @@ namespace GRA.SRP.DAL
                 this.AdminName = dr["AdminName"].ToString();
                 this.UserName = dr["UserName"].ToString();
                 this.GenNotificationFlag = bool.Parse(dr["GenNotificationFlag"].ToString());
-                this.HideDefaultDescriptionFlag = bool.Parse(dr["HideDefaultDescriptionFlag"].ToString());
-                this.CustomDescription = dr["CustomDescription"].ToString();
+                this.HideDefaultDescriptionFlag = dr["HideDefaultDescriptionFlag"] as bool? ?? false;
+                this.CustomDescription = dr["CustomDescription"] as string;
                 this.NotificationSubject = dr["NotificationSubject"].ToString();
                 this.NotificationBody = dr["NotificationBody"].ToString();
                 this.CustomEarnedMessage = dr["CustomEarnedMessage"].ToString();
