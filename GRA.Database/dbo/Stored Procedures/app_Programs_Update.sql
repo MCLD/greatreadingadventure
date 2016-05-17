@@ -51,7 +51,8 @@ CREATE PROCEDURE [dbo].[app_Programs_Update] (
 	@GoalMin INT = 0,
 	@GoalMax INT = 0,
 	@GoalIntervalId INT = 0,
-	@HideSchoolInRegistration BIT = 0
+	@HideSchoolInRegistration BIT = 0,
+	@DisplayDailyImage BIT = 0
 	)
 AS
 UPDATE Programs
@@ -105,6 +106,7 @@ SET AdminName = @AdminName,
 	GoalMin = @GoalMin,
 	GoalMax = @GoalMax,
 	GoalIntervalId = @GoalIntervalId,
-	HideSchoolInRegistration = @HideSchoolInRegistration
+	HideSchoolInRegistration = @HideSchoolInRegistration,
+	DisplayDailyImage = @DisplayDailyImage
 WHERE PID = @PID
 	AND TenID = @TenID

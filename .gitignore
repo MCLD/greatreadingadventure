@@ -224,6 +224,7 @@ SRP/Images/AvatarParts/*.png
 SRP/Images/AvatarCache/*.png
 SRP/Images/Badges/*.png
 SRP/Images/Banners/*.png
+SRP/Images/DailyImage/*/*.png
 SRP/Images/Games/*.png
 SRP/Images/Games/Board/*.png
 SRP/Images/Games/Books/*.png
@@ -245,6 +246,7 @@ SRP/Images/Offers/*.png
 SRP/Images/AvatarParts/*.jpg
 SRP/Images/Badges/*.jpg
 SRP/Images/Banners/*.jpg
+SRP/Images/DailyImage/*/*.jpg
 SRP/Images/Games/Board/*.jpg
 SRP/Images/Games/Books/*.jpg
 SRP/Images/Games/ChooseAdv/*.jpg

@@ -51,6 +51,7 @@
     [GoalMax]                  INT            NULL,
     [GoalIntervalId]           INT            NULL,
     [HideSchoolInRegistration] BIT            NULL,
+    [DisplayDailyImage] BIT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_Programs] PRIMARY KEY CLUSTERED ([PID] ASC)
 );
 

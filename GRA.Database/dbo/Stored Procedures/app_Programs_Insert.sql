@@ -51,6 +51,7 @@ CREATE PROCEDURE [dbo].[app_Programs_Insert] (
 	@GoalMax INT = 0,
 	@GoalIntervalId INT = 0,
 	@HideSchoolInRegistration BIT = 0,
+	@DisplayDailyImage BIT = 0,
 	@PID INT OUTPUT
 	)
 AS
@@ -106,7 +107,8 @@ BEGIN
 		GoalMin,
 		GoalMax,
 		GoalIntervalId,
-		HideSchoolInRegistration
+		HideSchoolInRegistration,
+		DisplayDailyImage
 		)
 	VALUES (
 		@AdminName,
@@ -162,7 +164,8 @@ BEGIN
 		@GoalMin,
 		@GoalMax,
 		@GoalIntervalId,
-		@HideSchoolInRegistration
+		@HideSchoolInRegistration,
+		@DisplayDailyImage
 		)
 
 	SELECT @PID = SCOPE_IDENTITY()

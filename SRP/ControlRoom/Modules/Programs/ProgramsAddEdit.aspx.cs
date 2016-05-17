@@ -293,6 +293,7 @@ namespace GRA.SRP.ControlRoom.Modules.Programs
                     program.GoalIntervalId = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("GoalIntervalId")).SelectedValue);
 
                     program.HideSchoolInRegistration = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("HideSchoolInRegistration")).Checked;
+                    program.DisplayDailyImage = ((CheckBox)((DetailsView)sender).FindControl("tc1").FindControl("tp1").FindControl("DisplayDailyImage")).Checked;
 
                     program.LastModDate = DateTime.Now;
                     program.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
