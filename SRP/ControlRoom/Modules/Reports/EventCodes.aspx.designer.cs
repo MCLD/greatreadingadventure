@@ -31,6 +31,15 @@ namespace GRA.SRP.ControlRoom.Modules.Reports {
         protected global::System.Web.UI.WebControls.DropDownList LibraryBranchList;
         
         /// <summary>
+        /// ShowAllDropdown control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ShowAllDropdown;
+        
+        /// <summary>
         /// AlertPanel control.
         /// </summary>
         /// <remarks>
