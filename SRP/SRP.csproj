@@ -151,6 +151,7 @@
     <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
     <Content Include="browserconfig.xml" />
+    <Content Include="Certificate\Default.aspx" />
     <Content Include="Challenges\Default.aspx" />
     <Content Include="Challenges\Details.aspx" />
     <Content Include="Account\ChangeFamMemberPwd.aspx" />
@@ -938,6 +939,13 @@
     </Compile>
     <Compile Include="Blank.aspx.designer.cs">
       <DependentUpon>Blank.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Certificate\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Certificate\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Challenges\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

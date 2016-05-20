@@ -283,3 +283,11 @@ points-goal-label=Reading Goal
 ;; Daily Image control
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 daily-image-button=<span class="glyphicon glyphicon-picture"></span> Daily literacy tip!
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Certificate
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+certificate-program=Reading Program
+certificate-award=Reading Achievement Award
+certificate-summary=The Great Reading Adventure Reading Program!
+certificate-not-yet=You haven't earned a certificate yet. You have <strong>{0:n0}</strong> out of a required <strong>{1:n0}</strong> points. You'll receive the certificate after earning <strong>{2:n0}</strong> more points.
+certificate-keep-reading-button=<span class="glyphicon glyphicon-bookmark"></span> Keep reading!
