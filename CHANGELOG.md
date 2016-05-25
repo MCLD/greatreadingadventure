@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Added a field for adding a custom badge description.
 - Changed event excel import/export to include times
 - Add ability to show a daily image in a pop-up on the dashboard (#183)
+- Indicator for new mail in the Control Room (#189)
 
 ### Changed
 - Truncate names in the badge gallery so they don't wrap in an ugly way
