@@ -11,5 +11,6 @@ namespace GRA.SRP.ControlRoom
         public const string IsMaster = "CR.IsMaster";
         public const string CRMessage = "CR.Message";
         public const string SystemName = "CR.SysNam";
+        public const string UnreadMail = "CR.UnreadMail";
     }
 }

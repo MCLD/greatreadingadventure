@@ -133,6 +133,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
                     if (masterPage != null)
                         masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
+                new Code.ControlRoom.Mail().ClearUnreadCrMailCache(this.Context);
             }
         }
     }

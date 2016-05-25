@@ -101,6 +101,8 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications {
                             Session["CURR_PATRON_MODE"]= string.Empty;
                             Session["Curr_Notification_ID"]= string.Empty;
 
+                            new Code.ControlRoom.Mail().ClearUnreadCrMailCache(this.Context);
+
                             Response.Redirect(returnURL);
                         }
 
