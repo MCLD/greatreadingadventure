@@ -19220,7 +19220,7 @@ WHERE UID IN (
 	AND IsDeleted = 0
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 3/25/2016 14:15:26 ******/
+/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 5/27/2016 16:18:00 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19327,10 +19327,10 @@ FROM
 Select p.*, c.[Code] as [Branch], pg.AdminName as Program
 , ROW_NUMBER() OVER (ORDER BY ' + @sortString + ' ) AS RowRank
 FROM Patron p
-left outer join [Code] c on p.[PrimaryLibrary] = c.[CID]
+left outer join [Code] c on p.[PrimaryLibrary] = c.[CID] AND c.[TenID] = p.[TenID]
 left outer join Programs pg
-on p.ProgID = pg.PID
-WHERE (c.[CTID] = 1 OR c.[CTID] is NULL)
+on p.ProgID = pg.PID and pg.[TenID] = p.[TenID]
+WHERE (c.[CTID] in (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = ''Branch'' AND [TenID] = c.[TenID]) OR c.[CTID] is NULL)
 ' + CASE len(@Filter)
 		WHEN 0
 			THEN ''
@@ -20822,11 +20822,11 @@ BEGIN
 		FROM [code] b
 		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
 		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
-			AND s.[CTID] = 2
+			AND s.[CTID] IN (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = 'Library District' AND [TenID] = @TenID)
 		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
 			AND p.[ProgID] = @ProgramId
 			AND p.[TenID] = @TenID
-		WHERE b.[CTID] = 1
+		WHERE b.[CTID] IN (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = 'Branch' AND [TenID] = @TenID)
 		GROUP BY s.[Description],
 			b.[description]
 		ORDER BY s.[Description],

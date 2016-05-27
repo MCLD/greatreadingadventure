@@ -47,11 +47,11 @@ BEGIN
 		FROM [code] b
 		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
 		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
-			AND s.[CTID] = 2
+			AND s.[CTID] IN (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = 'Library District' AND [TenID] = @TenID)
 		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
 			AND p.[ProgID] = @ProgramId
 			AND p.[TenID] = @TenID
-		WHERE b.[CTID] = 1
+		WHERE b.[CTID] IN (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = 'Branch' AND [TenID] = @TenID)
 		GROUP BY s.[Description],
 			b.[description]
 		ORDER BY s.[Description],

@@ -99,10 +99,10 @@ FROM
 Select p.*, c.[Code] as [Branch], pg.AdminName as Program
 , ROW_NUMBER() OVER (ORDER BY ' + @sortString + ' ) AS RowRank
 FROM Patron p
-left outer join [Code] c on p.[PrimaryLibrary] = c.[CID]
+left outer join [Code] c on p.[PrimaryLibrary] = c.[CID] AND c.[TenID] = p.[TenID]
 left outer join Programs pg
-on p.ProgID = pg.PID
-WHERE (c.[CTID] = 1 OR c.[CTID] is NULL)
+on p.ProgID = pg.PID and pg.[TenID] = p.[TenID]
+WHERE (c.[CTID] in (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = ''Branch'' AND [TenID] = c.[TenID]) OR c.[CTID] is NULL)
 ' + CASE len(@Filter)
 		WHEN 0
 			THEN ''
