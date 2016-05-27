@@ -10,10 +10,10 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-<table width="100%"  style="border:double 3px #A3C0E8;">
+<table style="border:double 3px #A3C0E8; width: 100%;">
 <tr>
     <th class="style2" colspan=2>This screen will help you generate the appropriate HTML tags to insert in a badge message or notification, and perhaps in other configurable HTML areas
-    so that the user will be able to take a surver you have created.  This is advanced functionality and requires some minimal knowldge of HTML coding concepts. 
+    so that the user will be able to take a survey you have created.  This is advanced functionality and requires some minimal knowldge of HTML coding concepts. 
     <hr />
     </th>
 

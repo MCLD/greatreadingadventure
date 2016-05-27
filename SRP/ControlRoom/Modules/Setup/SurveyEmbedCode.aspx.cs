@@ -23,7 +23,7 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
 
             MasterPage.RequiredPermission = 5200;
             MasterPage.IsSecure = true;
-            MasterPage.PageTitle = string.Format("{0}", "Test/Survey Results");
+            MasterPage.PageTitle = "Survey Embed Code";
         }
 
         protected void DDSourceType_SelectedIndexChanged(object sender, EventArgs e)
