@@ -156,7 +156,7 @@
 
                             <asp:RegularExpressionValidator ID="revEM" runat="server" ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email Address is not valid"
                                 SetFocusOnError="True" Font-Bold="True"
-                                ValidationExpression="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"><font color='red'> * Not valid </font></asp:RegularExpressionValidator>
+                                ValidationExpression="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"><font color='red'> * Not valid </font></asp:RegularExpressionValidator>
 
                         </td>
                         <tr />
