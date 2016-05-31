@@ -13,9 +13,14 @@ namespace GRA.SRP.Handlers
 {
     public class JsonStatus : JsonBase
     {
+        public int RegisteredPatrons { get; set; }
         public int PointsEarned { get; set; }
-        public int BadgesAwarded { get; set; }
+        public int PointsEarnedReading { get; set; }
         public int ChallengesCompleted { get; set; }
+        public int SecretCodesRedeemed { get; set; }
+        public int AdventuresCompleted { get; set; }
+        public int BadgesAwarded { get; set; }
+        public int RedeemedProgramCodes { get; set; }
         public string Since { get; set; }
     }
 
@@ -31,7 +36,7 @@ namespace GRA.SRP.Handlers
             }
 
             var sessionTool = new SessionTools(context.Session);
-            var cachedStatus = sessionTool.GetCache(context.Cache, CacheKey.Feed, tenantId) as JsonStatus;
+            var cachedStatus = sessionTool.GetCache(context.Cache, CacheKey.Status, tenantId) as JsonStatus;
 
             try
             {
@@ -50,12 +55,15 @@ namespace GRA.SRP.Handlers
             var jsonResponse = new JsonStatus();
             try
             {
-                TenantStatusReport result = null;
-                result = new TenantStatus(tenantId).CurrentStatus();
-
+                var result = new TenantStatus(tenantId).CurrentStatus();
+                jsonResponse.RegisteredPatrons = result.RegisteredPatrons;
                 jsonResponse.PointsEarned = result.PointsEarned;
-                jsonResponse.BadgesAwarded = result.BadgesAwarded;
+                jsonResponse.PointsEarnedReading = result.PointsEarnedReading;
                 jsonResponse.ChallengesCompleted = result.ChallengesCompleted;
+                jsonResponse.SecretCodesRedeemed = result.SecretCodesRedeemed;
+                jsonResponse.AdventuresCompleted = result.AdventuresCompleted;
+                jsonResponse.BadgesAwarded = result.BadgesAwarded;
+                jsonResponse.RedeemedProgramCodes = result.RedeemedProgramCodes;
                 jsonResponse.Since = "All Participants";
                 jsonResponse.Success = true;
             }
@@ -70,7 +78,7 @@ namespace GRA.SRP.Handlers
                 try
                 {
                     DateTime cacheUntil = DateTime.UtcNow.AddSeconds(30);
-                    if (sessionTool.GetCache(context.Cache, CacheKey.Feed, tenantId) == null)
+                    if (sessionTool.GetCache(context.Cache, CacheKey.Status, tenantId) == null)
                     {
                         //this.Log().Debug("Caching status data until {0}",
                         //                 cacheUntil.ToLocalTime().ToLongTimeString());
