@@ -81,7 +81,8 @@
         DataSourceID="odsData"
         OnRowCreated="GvRowCreated"
         OnSorting="GvSorting"
-        OnRowCommand="GvRowCommand">
+        OnRowCommand="GvRowCommand"
+        Width="100%">
 
         <Columns>
             <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
@@ -129,15 +130,13 @@
             </asp:BoundField>
             <asp:BoundField ReadOnly="True" HeaderText="Control Room Name"
                 DataField="AdminName" SortExpression="AdminName" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
-                <ControlStyle Width="250px" />
-                <ItemStyle VerticalAlign="Middle" Wrap="False" Width="250px"></ItemStyle>
+                ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemStyle VerticalAlign="Middle"></ItemStyle>
             </asp:BoundField>
             <asp:BoundField ReadOnly="True" HeaderText="Public Name"
                 DataField="UserName" SortExpression="UserName" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
-                <ControlStyle Width="250px" />
-                <ItemStyle VerticalAlign="Middle" Wrap="False" Width="250px"></ItemStyle>
+                ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemStyle VerticalAlign="Middle"></ItemStyle>
             </asp:BoundField>
 
             <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
