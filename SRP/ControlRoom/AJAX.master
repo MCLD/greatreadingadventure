@@ -68,7 +68,7 @@
         <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
     </asp:PlaceHolder>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
