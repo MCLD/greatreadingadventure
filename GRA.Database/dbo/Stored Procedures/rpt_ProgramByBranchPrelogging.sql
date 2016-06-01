@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT
+﻿CREATE PROCEDURE [dbo].[rpt_ProgramByBranchPrelogging] @TenID INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -13,6 +13,7 @@ BEGIN
 		pgm.[CompletionPoints] AS [Achiever Points]
 	FROM [Programs] pgm
 	LEFT OUTER JOIN [patron] p ON p.[ProgID] = pgm.[PID]
+		AND p.[RegistrationDate] < pgm.[LoggingStart]
 	WHERE p.[TenId] = @TenID
 	GROUP BY pgm.[TabName],
 		pgm.[PID],
@@ -20,10 +21,12 @@ BEGIN
 	ORDER BY pgm.[PID]
 
 	DECLARE @ProgramId INT
+	DECLARE @LoggingStart DATETIME
 
 	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
 	FOR
-	SELECT [PID]
+	SELECT [PID],
+		[LoggingStart]
 	FROM [Programs]
 	ORDER BY [PID]
 
@@ -31,7 +34,8 @@ BEGIN
 
 	FETCH NEXT
 	FROM PGM_CURSOR
-	INTO @ProgramId
+	INTO @ProgramId,
+		@LoggingStart
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
@@ -55,6 +59,7 @@ BEGIN
 		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
 			AND p.[ProgID] = @ProgramId
 			AND p.[TenID] = @TenID
+			AND p.[RegistrationDate] < @LoggingStart
 		WHERE b.[CTID] IN (
 				SELECT [CTID]
 				FROM [CodeType]
@@ -68,7 +73,8 @@ BEGIN
 
 		FETCH NEXT
 		FROM PGM_CURSOR
-		INTO @ProgramId
+		INTO @ProgramId,
+			@LoggingStart
 	END
 
 	CLOSE PGM_CURSOR

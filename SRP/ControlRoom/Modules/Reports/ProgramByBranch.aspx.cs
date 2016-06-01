@@ -18,6 +18,11 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         // reluctantly following the reporting pattern from the rest of the CR
         // TODO move all reporting database stuff to the DAL!
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private const string ReportName = "Program By Branch";
+        private const string AltReportName = "Program By Branch Pre-logging";
+
+        private const string ReportStoredProcedure = "rpt_ProgramByBranch";
+        private const string AltReportStoredProcedure = "rpt_ProgramByBranchPreLogging";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,10 +30,13 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             MasterPage.IsSecure = true;
             AlertPanel.Visible = false;
 
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
             }
+
+            string reportName = ReportName;
+            string reportSproc = ReportStoredProcedure;
 
             string tenantName = "Summary";
 
@@ -38,9 +46,15 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 tenantName = tenant.LandingName;
             }
 
+            if (!string.IsNullOrEmpty(Request.QueryString["prelogging"]))
+            {
+                reportName = AltReportName;
+                reportSproc = AltReportStoredProcedure;
+            }
+
             var ds = SqlHelper.ExecuteDataset(conn,
                 CommandType.StoredProcedure,
-                "rpt_ProgramByBranch",
+                reportSproc,
                 new SqlParameter[]
                     {
                         new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID)
@@ -93,7 +107,9 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
                 CreateExcelFile.CreateExcelDocument(
                     ds,
-                    string.Format("{0}-ProgramByBranch.xlsx", DateTime.Now.ToString("yyyyMMdd")),
+                    string.Format("{0}-{1}.xlsx",
+                        DateTime.Now.ToString("yyyyMMdd"),
+                        reportName.Replace(" ", string.Empty)),
                     Response);
             }
             else

@@ -691,6 +691,7 @@
     <Build Include="dbo\Stored Procedures\app_PatronPoints_GetPatronReadingPoints.sql" />
     <Build Include="dbo\Stored Procedures\rpt_EventIssues.sql" />
     <Build Include="dbo\Stored Procedures\rpt_ChallengeIssues.sql" />
+    <Build Include="dbo\Stored Procedures\rpt_ProgramByBranchPrelogging.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\GRA-2.2.1.dacpac" />
