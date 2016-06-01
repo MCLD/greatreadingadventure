@@ -384,7 +384,7 @@ namespace GRA.SRP.Controls
 
 
 
-            Response.Redirect("~/Adventures/");
+            Response.Redirect("~/Adventures/", false);
         }
 
         protected void Button2_Click(object sender, EventArgs e)
