@@ -146,10 +146,10 @@ namespace GRA.SRP.ControlRoom.Modules.Setup
                 
                 //obj.BLID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("BLID")).SelectedValue);
                 obj.BLID = FormatHelper.SafeToInt(lblPK.Text);
-                obj.Author = Author.Text;
-                obj.Title = BookTitle.Text;
+                obj.Author = Author.Text.Trim();
+                obj.Title = BookTitle.Text.Trim();
                 obj.ISBN = ISBN.Text.Trim();
-                obj.URL = URL.Text;
+                obj.URL = URL.Text.Trim();
 
                 obj.AddedDate = DateTime.Now;
                 obj.AddedUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
