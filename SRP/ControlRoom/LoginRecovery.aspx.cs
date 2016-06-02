@@ -18,6 +18,10 @@ namespace GRA.SRP.ControlRoom {
         protected void Button1_Click(object sender, EventArgs e) {
             string userId = new SRPUser().GetUsernameByEmail(uxEmailaddress.Text);
             string remoteAddress = Request.UserHostAddress;
+            if(!string.IsNullOrEmpty(Request.ServerVariables["HTTP_X_FORWARDED_FOR"]))
+            {
+                remoteAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            }
 
             if(string.IsNullOrEmpty(userId)) {
                 // user requested a password for an email address that is not in the database

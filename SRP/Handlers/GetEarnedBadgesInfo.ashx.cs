@@ -49,15 +49,16 @@ namespace GRA.SRP.Handlers {
                 foreach(var badgeIdString in badgeIdsStringArray) {
                     int badgeId;
                     if(!int.TryParse(badgeIdString, out badgeId)) {
-                        this.Log().Error(string.Format("Badge {0} requested from {1}?{2} is not numeric.",
+                        this.Log().Info(string.Format("Badge '{0}' requested from {1}?{2} - {3} is not numeric.",
                                                        badgeIdString,
                                                        context.Request.Url,
-                                                       context.Request.QueryString));
+                                                       context.Request.QueryString,
+                                                       context.Request.UrlReferrer));
 
                     } else {
                         var badge = DAL.Badge.FetchObject(badgeId);
                         if(badge == null) {
-                            this.Log().Error(string.Format("Requested badge {0} from {1}?{2} - not found",
+                            this.Log().Info(string.Format("Requested badge '{0}' from {1}?{2} - not found",
                                                            badgeId,
                                                            context.Request.Url,
                                                            context.Request.QueryString));

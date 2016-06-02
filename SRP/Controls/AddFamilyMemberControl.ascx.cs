@@ -245,9 +245,6 @@ namespace GRA.SRP.Controls {
                     if(prog.RegistrationBadgeID != 0) {
                         AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref list);
                     }
-                    try {
-                        this.Log().Debug("Running AwardBadgeToPatronViaMatchingAwards on patron ", p.PID);
-                    } catch(Exception) { }
 
                     try {
                         AwardPoints.AwardBadgeToPatronViaMatchingAwards(p, ref list);
