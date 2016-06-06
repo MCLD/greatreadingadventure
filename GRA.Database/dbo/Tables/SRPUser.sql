@@ -18,6 +18,7 @@
     [AddedDate]         DATETIME      CONSTRAINT [DF_SRPUser_AddedDate] DEFAULT (getdate()) NULL,
     [AddedUser]         VARCHAR (50)  CONSTRAINT [DF_SRPUser_AddedUser] DEFAULT ('N/A') NULL,
     [TenID]             INT           NULL,
+    [MailSignature]     NVARCHAR(255) NULL,
     [FldInt1]           INT           NULL,
     [FldInt2]           INT           NULL,
     [FldInt3]           INT           NULL,

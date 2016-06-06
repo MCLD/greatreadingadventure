@@ -18560,7 +18560,8 @@ CREATE PROCEDURE [dbo].[cbspSRPUser_Insert] @Username VARCHAR(50),
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@MailSignature NVARCHAR(255) = NULL
 AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -18592,7 +18593,8 @@ INSERT INTO dbo.SRPUser (
 	FldBit3,
 	FldText1,
 	FldText2,
-	FldText3
+	FldText3,
+	MailSignature
 	)
 VALUES (
 	@Username,
@@ -18621,7 +18623,8 @@ VALUES (
 	@FldBit3,
 	@FldText1,
 	@FldText2,
-	@FldText3
+	@FldText3,
+	@MailSignature
 	)
 
 SELECT @@IDENTITY
@@ -18808,7 +18811,8 @@ CREATE PROCEDURE [dbo].[cbspSRPUser_Update] @UID INT,
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@MailSignature NVARCHAR(255) = NULL
 AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -18837,7 +18841,8 @@ SET Username = @Username,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	MailSignature = @MailSignature
 WHERE UID = @UID
 	AND TenID = @TenID
 GO
@@ -24963,7 +24968,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Table [dbo].[SRPUser]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  Table [dbo].[SRPUser]    Script Date: 6/6/2016 15:29:59 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -24993,6 +24998,7 @@ CREATE TABLE [dbo].[SRPUser] (
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
+	[MailSignature] [nvarhcar](255) NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,
 	[FldInt3] [int] NULL,
