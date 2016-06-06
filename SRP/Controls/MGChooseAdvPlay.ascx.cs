@@ -75,16 +75,11 @@ namespace GRA.SRP.Controls
             var nextStep = int.Parse(e.CommandArgument.ToString());
             if (nextStep == 0)
             {
-                try
+                var game = Parent.Parent.Parent.Parent as Minigame;
+                if (game != null)
                 {
-                    ((Minigame)Parent.Parent.Parent.Parent).CompleteGamePlay();
+                    game.CompleteGamePlay();
                     return;
-                }
-                catch (Exception ex)
-                {
-                    this.Log().Error("Error in completing MGChooseAdvPlay step 0: {0} - {1}",
-                        ex.Message,
-                        ex.StackTrace);
                 }
                 try
                 {

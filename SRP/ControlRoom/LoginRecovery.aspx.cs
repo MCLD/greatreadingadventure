@@ -21,6 +21,10 @@ namespace GRA.SRP.ControlRoom {
             if(!string.IsNullOrEmpty(Request.ServerVariables["HTTP_X_FORWARDED_FOR"]))
             {
                 remoteAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                if(remoteAddress.Contains(":"))
+                {
+                    remoteAddress = remoteAddress.Substring(0, remoteAddress.LastIndexOf(':'));
+                }
             }
 
             if(string.IsNullOrEmpty(userId)) {
