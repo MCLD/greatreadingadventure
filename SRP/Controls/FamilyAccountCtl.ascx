@@ -113,14 +113,14 @@
                             <asp:RangeValidator ID="rvAge"
                                 ControlToValidate="Age"
                                 MinimumValue="0"
-                                MaximumValue="99"
+                                MaximumValue="200"
                                 Display="Dynamic"
                                 Type="Integer"
                                 EnableClientScript="true"
-                                ErrorMessage="<font color='red'>Age must be from 0 to 99!</font>"
+                                ErrorMessage="<font color='red'>Age must be from 0 to 200!</font>"
                                 runat="server"
                                 Font-Bold="True" Font-Italic="True"
-                                Text="<font color='red'> * Age must be from 0 to 99! </font>"
+                                Text="<font color='red'> * Age must be from 0 to 200! </font>"
                                 EnableTheming="True"
                                 SetFocusOnError="True" />
                         </td>

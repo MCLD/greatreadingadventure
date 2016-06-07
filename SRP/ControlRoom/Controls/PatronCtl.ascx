@@ -152,14 +152,14 @@
                     <asp:RangeValidator ID="rvAge"
                         ControlToValidate="Age"
                         MinimumValue="0"
-                        MaximumValue="99"
+                        MaximumValue="200"
                         Display="Dynamic"
                         Type="Integer"
                         EnableClientScript="true"
-                        ErrorMessage="<font color='red'>Age must be from 0 to 99!</font>"
+                        ErrorMessage="<font color='red'>Age must be from 0 to 200!</font>"
                         runat="server"
                         Font-Bold="True" Font-Italic="True"
-                        Text="<font color='red'> * Age must be from 0 to 99! </font>"
+                        Text="<font color='red'> * Age must be from 0 to 200! </font>"
                         EnableTheming="True"
                         SetFocusOnError="True" />
                 </td>
@@ -485,14 +485,14 @@
                     <asp:RangeValidator ID="rvLiteracyLevel1"
                         ControlToValidate="LiteracyLevel1"
                         MinimumValue="0"
-                        MaximumValue="99"
+                        MaximumValue="200"
                         Display="Dynamic"
                         Type="Integer"
                         EnableClientScript="true"
-                        ErrorMessage='<%# String.Format("<font color=\"red\">{0}must be from 0 to 99!</font>", Eval("Literacy1Label")) %>'
+                        ErrorMessage='<%# String.Format("<font color=\"red\">{0}must be from 0 to 200!</font>", Eval("Literacy1Label")) %>'
                         runat="server"
                         Font-Bold="True" Font-Italic="True"
-                        Text='<%# String.Format("<font color=\"red\"> * {0} must be from 0 to 99!</font>", Eval("Literacy1Label")) %>'
+                        Text='<%# String.Format("<font color=\"red\"> * {0} must be from 0 to 200!</font>", Eval("Literacy1Label")) %>'
                         EnableTheming="True"
                         SetFocusOnError="True" />
                 </td>
@@ -520,14 +520,14 @@
                     <asp:RangeValidator ID="rvLiteracyLevel2"
                         ControlToValidate="LiteracyLevel2"
                         MinimumValue="0"
-                        MaximumValue="99"
+                        MaximumValue="200"
                         Display="Dynamic"
                         Type="Integer"
                         EnableClientScript="true"
-                        ErrorMessage='<%# String.Format("<font color=\"red\">{0}must be from 0 to 99!</font>", Eval("Literacy2Label")) %>'
+                        ErrorMessage='<%# String.Format("<font color=\"red\">{0}must be from 0 to 200!</font>", Eval("Literacy2Label")) %>'
                         runat="server"
                         Font-Bold="True" Font-Italic="True"
-                        Text='<%# String.Format("<font color=\"red\"> * {0} must be from 0 to 99!</font>", Eval("Literacy2Label")) %>'
+                        Text='<%# String.Format("<font color=\"red\"> * {0} must be from 0 to 200!</font>", Eval("Literacy2Label")) %>'
                         EnableTheming="True"
                         SetFocusOnError="True" />
                 </td>

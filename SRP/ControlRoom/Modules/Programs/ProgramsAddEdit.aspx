@@ -319,14 +319,14 @@
                                             <asp:RangeValidator ID="rvMaxAge"
                                                 ControlToValidate="MaxAge"
                                                 MinimumValue="0"
-                                                MaximumValue="9999"
+                                                MaximumValue="200"
                                                 Display="Dynamic"
                                                 Type="Integer"
                                                 EnableClientScript="true"
-                                                ErrorMessage="<font color='red'>MaxAge must be from 0 to 99!</font>"
+                                                ErrorMessage="<font color='red'>MaxAge must be from 0 to 200!</font>"
                                                 runat="server"
                                                 Font-Bold="True" Font-Italic="True"
-                                                Text="<font color='red'> * MaxAge must be from 0 to 99! </font>"
+                                                Text="<font color='red'> * MaxAge must be from 0 to 200! </font>"
                                                 EnableTheming="True"
                                                 SetFocusOnError="True" />
                                         </td>
@@ -355,10 +355,10 @@
                                                 Display="Dynamic"
                                                 Type="Integer"
                                                 EnableClientScript="true"
-                                                ErrorMessage="<font color='red'>MaxGrade must be from 0 to 99!</font>"
+                                                ErrorMessage="<font color='red'>MaxGrade must be from 0 to 9999!</font>"
                                                 runat="server"
                                                 Font-Bold="True" Font-Italic="True"
-                                                Text="<font color='red'> * MaxGrade must be from 0 to 99! </font>"
+                                                Text="<font color='red'> * MaxGrade must be from 0 to 9999! </font>"
                                                 EnableTheming="True"
                                                 SetFocusOnError="True" />
                                         </td>

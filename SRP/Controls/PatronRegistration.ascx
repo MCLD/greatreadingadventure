@@ -95,7 +95,7 @@
                                 <asp:Literal runat="server" Text="registration-form-age"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="2"
+                                <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="3"
                                     Enabled='<%# (bool)Eval("Age_Prompt") %>'></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
