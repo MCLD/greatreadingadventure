@@ -83,6 +83,17 @@ namespace GRA.SRP.DAL
                         "You must provide an event description",
                         BusinessRulesValidationCode.REQUIRED_FIELD));
                 }
+                if (!string.IsNullOrWhiteSpace(ExternalLinkToEvent))
+                {
+                    if (!ExternalLinkToEvent.StartsWith("http://")
+                        && !ExternalLinkToEvent.StartsWith("https://"))
+                    {
+                        AddErrorCode(new BusinessRulesValidationMessage("ExternalLinkToEvent",
+                            "Link to more information",
+                            "The link to more information must start with http:// or https://",
+                            BusinessRulesValidationCode.FIELD_VALIDATION));
+                    }
+                }
                 SecretCode = SecretCode.ToLower();
                 if (!string.IsNullOrEmpty(SecretCode))
                 {
