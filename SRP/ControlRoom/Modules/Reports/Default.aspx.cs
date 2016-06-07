@@ -83,18 +83,11 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 selectedProgram = DAL.Programs.GetDefaultProgramID().ToString();
             }
 
-            var defaultBannerPath = string.Format("~/images/Banners/{0}.png", selectedProgram);
-            var defaultBannerFilePath = Server.MapPath(defaultBannerPath);
-            if (System.IO.File.Exists(defaultBannerFilePath))
-            {
-                ProgramImage.ImageUrl = defaultBannerPath;
-                ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded", ProgramImage.CssClass);
-            }
-            else
-            {
-                ProgramImage.ImageUrl = "~/images/meadow.jpg";
-                ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded", ProgramImage.CssClass);
-            }
+            var bannerPath = new Logic.Banner().GetBannerPath(selectedProgram, Server);
+
+            ProgramImage.ImageUrl = bannerPath.Item1;
+            ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded",
+                ProgramImage.CssClass);
         }
 
         protected void DropDownDataBound(object sender, EventArgs e)
