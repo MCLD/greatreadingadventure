@@ -103,6 +103,15 @@ namespace GRA.SRP.Controls {
         protected global::System.Web.UI.WebControls.Panel pnlAsk;
         
         /// <summary>
+        /// SendMessageButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton SendMessageButton;
+        
+        /// <summary>
         /// Label2 control.
         /// </summary>
         /// <remarks>

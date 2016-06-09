@@ -17,6 +17,8 @@ namespace GRA.SRP.ControlRoom.Controls
                 var PID1 = int.Parse(Session["CURR_PATRON_ID"].ToString());
                 var p = Patron.FetchObject(PID1);
 
+                PatronNavigation.NavigateUrl = string.Format("~/ControlRoom/Modules/Patrons/PatronDetails.aspx?pid={0}", PID1);
+
                 txtUsername.Text = p.Username;
                 txtEmail.Text = p.EmailAddress;
 

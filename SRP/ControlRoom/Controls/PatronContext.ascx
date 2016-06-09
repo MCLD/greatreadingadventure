@@ -11,7 +11,8 @@
             <asp:Label ID="txtLastName" runat="server"></asp:Label></td>
         <th>Username/Login ID: </th>
         <td>
-            <asp:Label ID="txtUsername" runat="server"></asp:Label></td>
+            <asp:HyperLink runat="server" Target="_blank" ID="PatronNavigation"><asp:Label ID="txtUsername" runat="server"></asp:Label></asp:HyperLink>
+            </td>
     </tr>
 
     <tr>

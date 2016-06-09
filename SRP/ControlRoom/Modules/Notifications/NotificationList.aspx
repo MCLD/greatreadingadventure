@@ -5,6 +5,13 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .CRListText {
+            text-align: left;
+            font-size:  0.5em;
+        }
+        
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:ObjectDataSource ID="odsData" runat="server"
@@ -26,7 +33,7 @@
         OnRowCommand="GvRowCommand"
         Width="100%">
         <Columns>
-            <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
+            <asp:TemplateField ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
                 <HeaderTemplate>
                     <!--
                     &nbsp;
@@ -46,37 +53,41 @@
                         ImageUrl="~/ControlRoom/Images/delete.png" Width="20px" OnClientClick="return confirm('Are you sure you want to delete this record?');" />
                     &nbsp;
                 </ItemTemplate>
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
 
             <asp:BoundField ReadOnly="True" HeaderText="NID" DataField="NID"
                 SortExpression="NID" Visible="False" ItemStyle-Wrap="False"
-                ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 
             <asp:TemplateField SortExpression="From" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left"
                 HeaderText="From">
                 <ItemTemplate>
-                    <%# Eval("FromUsername")%> (<%# Eval("FromFistName")%>  <%# Eval("FromLastName")%>)
+                    <asp:HyperLink runat="server" Target="_blank" NavigateUrl='<%#Eval("PID_From", "~/ControlRoom/Modules/Patrons/PatronDetails.aspx?pid={0}") %>'><%# Eval("FromUsername")%></asp:HyperLink><br />
+                    (<%# Eval("FromFistName")%>  <%# Eval("FromLastName")%>)
                 </ItemTemplate>
-                <ControlStyle Width="350px" />
-                <ItemStyle Width="350px" VerticalAlign="Top" Wrap="False"></ItemStyle>
+                <ControlStyle />
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:TemplateField>
 
-            <asp:BoundField ReadOnly="True" HeaderText="Subject"
-                DataField="Subject" SortExpression="Subject" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
-                <ControlStyle Width="650px" />
-                <ItemStyle Width="650px" VerticalAlign="Top" Wrap="False"></ItemStyle>
-            </asp:BoundField>
+            <asp:TemplateField HeaderText="Subject/Message" HeaderStyle-Width="650px"
+                SortExpression="Subject" Visible="True" ItemStyle-CssClass="CRListText"
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle" ItemStyle-HorizontalAlign="Left" HeaderStyle-HorizontalAlign="Left">
+                <ItemTemplate>
+                    <asp:LinkButton runat="server" CommandName="EditRecord" ID="SubjectField" CommandArgument='<%#Bind("NID") %>' CssClass="btn btn-link"><%#DisplaySubjectMessage(Container.DataItem) %></asp:LinkButton>
+                </ItemTemplate>
+                <ControlStyle />
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
+            </asp:TemplateField>
 
             <asp:BoundField ReadOnly="True" HeaderText="Date"
                 DataField="AddedDate" SortExpression="AddedDate" Visible="True"
-                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Top">
-                <ItemStyle VerticalAlign="Top" Wrap="False"></ItemStyle>
+                ItemStyle-Wrap="False" ItemStyle-VerticalAlign="Middle">
+                <ItemStyle VerticalAlign="Middle" Wrap="False"></ItemStyle>
             </asp:BoundField>
 
 

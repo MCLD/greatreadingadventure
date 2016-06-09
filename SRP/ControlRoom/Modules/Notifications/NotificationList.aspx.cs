@@ -11,6 +11,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
 {
     public partial class NotificationList : BaseControlRoomPage
     {
+        private const int MaxLengthInList = 100;
         private String _mStrSortExp;
         private SortDirection _mSortDirection = SortDirection.Ascending;
 
@@ -20,8 +21,8 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
             MasterPage.RequiredPermission = 5000;
             MasterPage.IsSecure = true;
             MasterPage.PageTitle = string.Format("{0}", "Patron Questions");
-           
- 
+
+
             _mStrSortExp = String.Empty;
             if (!IsPostBack)
             {
@@ -34,7 +35,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
                 {
                     _mStrSortExp = ViewState["_SortExp_"] as String;
                 }
- 
+
                 if (null != ViewState["_Direction_"])
                 {
                     _mSortDirection = (SortDirection)ViewState["_Direction_"];
@@ -92,7 +93,7 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
 
                 var n = DAL.Notifications.FetchObject(key);
                 var pid = n.PID_From;
-                
+
 
                 Session["CURR_PATRON_ID"] = pid;
                 Session["CURR_PATRON"] = Patron.FetchObject(pid);
@@ -135,6 +136,38 @@ namespace GRA.SRP.ControlRoom.Modules.Notifications
                 }
                 new Code.ControlRoom.Mail().ClearUnreadCrMailCache(this.Context);
             }
+        }
+
+        protected string DisplaySubjectMessage(object repeaterObject)
+        {
+            var dataView = repeaterObject as System.Data.DataRowView;
+            string subject = dataView["Subject"] as string;
+            string body = dataView["Body"] as string;
+            if (!string.IsNullOrEmpty(subject))
+            {
+                if (subject.Length <= MaxLengthInList - 10)
+                {
+                    if (!string.IsNullOrEmpty(body))
+                    {
+                        string shortBody = body.Substring(0,
+                            Math.Min(body.Length, MaxLengthInList - subject.Length));
+                        return string.Format("<strong>{0}</strong> / {1}{2}",
+                            subject,
+                            shortBody,
+                            body.Length > shortBody.Length ? "..." : string.Empty);
+                    }
+                }
+                return string.Format("<strong>{0}</strong>{1}",
+                    subject.Substring(0, Math.Min(subject.Length, MaxLengthInList)),
+                    subject.Length > MaxLengthInList ? "..." : string.Empty);
+            }
+            if (!string.IsNullOrEmpty(body))
+            {
+                return string.Format("{0}{1}",
+                    body.Substring(0, Math.Min(body.Length, MaxLengthInList)),
+                    body.Length > MaxLengthInList ? "..." : string.Empty);
+            }
+            return "<strong>** Unknown Message Content **</strong>";
         }
     }
 }
