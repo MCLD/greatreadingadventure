@@ -22,7 +22,7 @@ CodeBehind="RegStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.RegS
     <td colspan="2" width="50%">
         <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" 
             DataTextField="AdminName" DataValueField="PID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="0" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -30,7 +30,7 @@ CodeBehind="RegStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.RegS
     <td>
         <asp:DropDownList ID="LibSys" runat="server" DataSourceID="odsDDLibSys" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -44,7 +44,7 @@ CodeBehind="RegStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.RegS
     <td colspan="2" width="50%">
         <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="0" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -52,7 +52,7 @@ CodeBehind="RegStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.RegS
     <td>
         <asp:DropDownList ID="School" runat="server" DataSourceID="odsDDSchool" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>

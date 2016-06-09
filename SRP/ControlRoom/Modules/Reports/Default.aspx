@@ -1,6 +1,15 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ControlRoom/Control.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Reports.Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .gra-spinner {
+            display: inline-block;
+            -webkit-transition: opacity 0.25s, width 0.25s;
+            -moz-transition: opacity 0.25s, width 0.25s;
+            -o-transition: opacity 0.25s, width 0.25s;
+            transition: opacity 0.25s, width 0.25s;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid" style="width: 1024px;">
@@ -12,7 +21,7 @@
                     DataTextField="AdminName"
                     DataValueField="PID"
                     AppendDataBoundItems="True"
-                    CssClass="form-control"
+                    CssClass="form-control ataglance-report-dropdown"
                     AutoPostBack="true">
                     <asp:ListItem Value="0" Text="All programs"></asp:ListItem>
                 </asp:DropDownList>
@@ -24,7 +33,7 @@
                     DataTextField="Code"
                     DataValueField="CID"
                     AppendDataBoundItems="True"
-                    CssClass="form-control"
+                    CssClass="form-control ataglance-report-dropdown"
                     AutoPostBack="true"
                     OnDataBound="DropDownDataBound"
                     OnSelectedIndexChanged="SelectedDistrict">
@@ -38,7 +47,7 @@
                     DataTextField="Code"
                     DataValueField="CID"
                     AppendDataBoundItems="True"
-                    CssClass="form-control"
+                    CssClass="form-control ataglance-report-dropdown"
                     AutoPostBack="true"
                     OnDataBound="DropDownDataBound">
                     <asp:ListItem Value="0" Text="All library branches"></asp:ListItem>
@@ -80,7 +89,9 @@
                 <div class="ataglance ataglance-participants">
                     <span class="glyphicon glyphicon-user"></span>
                     <br />
-                    Patrons:<div class="visible-print-block"><br /></div>
+                    Patrons:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="RegisteredPatrons" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -88,7 +99,9 @@
                 <div class="ataglance ataglance-points">
                     <span class="glyphicon glyphicon-dashboard"></span>
                     <br />
-                    Points:<div class="visible-print-block"><br /></div>
+                    Points:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="PointsEarned" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -96,7 +109,9 @@
                 <div class="ataglance ataglance-points-books">
                     <span class="glyphicon glyphicon-book"></span>
                     <br />
-                    Reading points:<div class="visible-print-block"><br /></div>
+                    Reading points:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="PointsEarnedReading" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -104,7 +119,9 @@
                 <div class="ataglance ataglance-challenges">
                     <span class="glyphicon glyphicon-star"></span>
                     <br />
-                    Challenges:<div class="visible-print-block"><br /></div>
+                    Challenges:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="ChallengesCompleted" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -124,7 +141,9 @@
                 <div class="ataglance ataglance-adventures">
                     <span class="glyphicon glyphicon-picture"></span>
                     <br />
-                    Adventures:<div class="visible-print-block"><br /></div>
+                    Adventures:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="AdventuresCompleted" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -132,7 +151,9 @@
                 <div class="ataglance ataglance-badges">
                     <span class="glyphicon glyphicon-certificate"></span>
                     <br />
-                    Badges:<div class="visible-print-block"><br /></div>
+                    Badges:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="BadgesAwarded" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -140,7 +161,9 @@
                 <div class="ataglance ataglance-codes">
                     <span class="glyphicon glyphicon-barcode"></span>
                     <br />
-                    Secret Codes:<div class="visible-print-block"><br /></div>
+                    Secret Codes:<div class="visible-print-block">
+                        <br />
+                    </div>
                     <asp:Label runat="server" ID="SecretCodesRedeemed" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
@@ -148,8 +171,10 @@
                 <div class="ataglance ataglance-program-rewards">
                     <span class="glyphicon glyphicon-qrcode"></span>
                     <br />
-                    <asp:Literal runat="server" ID="ProgramRewardCodeLabel"></asp:Literal>:<div class="visible-print-block"><br /></div>
-                        <asp:Label runat="server" ID="ProgramCodesRedeemed" CssClass="ataglance-stat"></asp:Label>
+                    <asp:Literal runat="server" ID="ProgramRewardCodeLabel"></asp:Literal>:<div class="visible-print-block">
+                        <br />
+                    </div>
+                    <asp:Label runat="server" ID="ProgramCodesRedeemed" CssClass="ataglance-stat"></asp:Label>
                 </div>
             </div>
         </div>
@@ -177,4 +202,27 @@
             <asp:Parameter Name="city" DefaultValue="" />
         </SelectParameters>
     </asp:ObjectDataSource>
+</asp:Content>
+<asp:Content ContentPlaceHolderID="scripts" runat="server">
+    <div class="modal fade" tabindex="-1" role="dialog" id="loadingModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span class="lead"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                        &nbsp;Updating at-a-glance stats...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showLoadingModal() {
+            $('#loadingModal').modal();
+        }
+        $(function () {
+            $('.ataglance-report-dropdown').on('change', function () {
+                showLoadingModal();
+            });
+
+        });
+    </script>
 </asp:Content>

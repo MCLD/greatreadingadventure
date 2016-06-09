@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [dbo].[rpt_FinisherStats] @ProgId INT = NULL,
+﻿CREATE PROCEDURE [dbo].[rpt_FinisherStats] @ProgId INT = NULL,
 	@BranchID INT = NULL,
 	@School VARCHAR(50) = NULL,
 	@LibSys VARCHAR(50) = NULL,
@@ -45,6 +44,17 @@ SELECT ProgID,
 			END) AS NA
 FROM Patron
 LEFT JOIN Programs pg ON ProgID = pg.PID --AND Patron.TenID = pg.TenID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON Patron.[pid] = pp.[pid]
 WHERE Patron.TenID = @TenID
 	AND ProgID > 0
 	AND (
@@ -63,7 +73,7 @@ WHERE Patron.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher](Patron.PID, Pg.PID) = 1
+	AND pp.[PID] IS NOT NULL
 GROUP BY ProgID,
 	AdminName,
 	CASE 

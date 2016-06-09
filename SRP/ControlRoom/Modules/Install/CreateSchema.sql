@@ -19526,7 +19526,10 @@ GROUP BY bl.[BLID],
 HAVING COUNT(DISTINCT blb.[BLBID]) < bl.[NumBooksToComplete]
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 2/4/2016 13:18:40 ******/
+USE [summerreading16]
+GO
+
+/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 6/9/2016 08:29:41 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19570,6 +19573,17 @@ IF EXISTS (
 			isnull(count(*), 0) AS FinisherCount
 		FROM Patron p
 		RIGHT JOIN Programs pg ON p.ProgId = pg.PID
+		LEFT OUTER JOIN (
+			SELECT pp.[PID]
+			FROM [PatronPoints] pp
+			INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+				AND p.[TenID] = @TenID
+			INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+				AND prg.[TenID] = @TenID
+			GROUP BY pp.[PID],
+				prg.[CompletionPoints]
+			HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+			) pp ON p.[pid] = pp.[pid]
 		WHERE p.TenID = @TenID
 			AND p.ProgID > 0
 			AND (
@@ -19588,13 +19602,24 @@ IF EXISTS (
 				rtrim(ltrim(isnull(District, ''))) = @LibSys
 				OR @LibSys IS NULL
 				)
-			AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+			AND pp.[PID] IS NOT NULL
 		GROUP BY AdminName
 		)
 	SELECT AdminName AS Program,
 		isnull(count(*), 0) AS FinisherCount
 	FROM Patron p
 	RIGHT JOIN Programs pg ON p.ProgId = pg.PID
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
 	WHERE p.TenID = @TenID
 		AND p.ProgID > 0
 		AND (
@@ -19613,7 +19638,7 @@ IF EXISTS (
 			rtrim(ltrim(isnull(District, ''))) = @LibSys
 			OR @LibSys IS NULL
 			)
-		AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+		AND pp.[PID] IS NOT NULL
 	GROUP BY AdminName
 ELSE
 	SELECT AdminName AS Program,
@@ -19808,6 +19833,17 @@ SELECT AdminName AS Program,
 INTO #Temp2
 FROM Patron p
 LEFT JOIN Programs pg ON p.ProgId = pg.PID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON p.[pid] = pp.[pid]
 WHERE p.TenID = @TenID
 	AND p.ProgID > 0
 	AND (
@@ -19826,7 +19862,7 @@ WHERE p.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+	AND pp.[pid] IS NOT NULL
 GROUP BY p.ProgId,
 	AdminName,
 	CASE 
@@ -20064,6 +20100,17 @@ SELECT pg.AdminName,
 			END) AS TotalFinisher
 FROM Patron
 LEFT JOIN Programs pg ON ProgID = pg.PID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON patron.[pid] = pp.[pid]
 WHERE Patron.TenID = @TenID
 	AND ProgID > 0
 	AND (
@@ -20082,7 +20129,7 @@ WHERE Patron.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher2](Patron.PID, Pg.PID, @Level) = 1
+	AND pp.[PID] IS NOT NULL
 GROUP BY AdminName
 ORDER BY AdminName
 GO
@@ -20144,7 +20191,10 @@ WHERE (
 	AND [TenID] = @TenID;
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 2/4/2016 13:18:40 ******/
+USE [summerreading16]
+GO
+
+/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 6/9/2016 08:51:27 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -20197,6 +20247,17 @@ SELECT ProgID,
 			END) AS NA
 FROM Patron
 LEFT JOIN Programs pg ON ProgID = pg.PID --AND Patron.TenID = pg.TenID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON Patron.[pid] = pp.[pid]
 WHERE Patron.TenID = @TenID
 	AND ProgID > 0
 	AND (
@@ -20215,7 +20276,7 @@ WHERE Patron.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher](Patron.PID, Pg.PID) = 1
+	AND pp.[PID] IS NOT NULL
 GROUP BY ProgID,
 	AdminName,
 	CASE 

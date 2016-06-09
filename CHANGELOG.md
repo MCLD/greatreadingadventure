@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - #151 Reading goal now only accounts for points earned through reading instead of all point methods
 - Award triggers now have a goal percentage range of up to 1000%
 - Cache event list to make event page display faster with less database queries
+- Improve mail list and message display in the CR including links back to patron information
 
 ### Fixed
 - Resolve issue with ViewState being too large (#175)
@@ -60,6 +61,7 @@ All notable changes to this project will be documented in this file.
 - In password recovery emails put proper IP address if operating behind a reverse proxy
 - Trim challenge URLs to avoid leading and trailing whitespace
 - Fix ProgramByBranch report to work properly in a multi-tenancy environment (similar to #193)
+- Resolve issue with slow-running reports which aggregate "achievers"
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)
