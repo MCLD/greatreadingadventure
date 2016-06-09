@@ -86,7 +86,7 @@ namespace GRA.SRP.Controls
                         componentState2.Value,
                         ex.Message,
                         ex.StackTrace);
-                    throw ex;
+                    throw;
                 }
                 string state = Patron.WriteAvatarStateString(avatarState);
                 patron.AvatarState = state;
