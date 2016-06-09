@@ -157,7 +157,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     obj.MaxReviews = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("MaxReviews")).Text);
                     obj.ReviewDateStart = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ReviewDateStart")).Text);
                     obj.ReviewDateEnd = FormatHelper.SafeToDateTime(((TextBox)((DetailsView)sender).FindControl("ReviewDateEnd")).Text);
-
+                    obj.SchoolName = ((DropDownList)((DetailsView)sender).FindControl("SchoolName")).SelectedValue;
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 

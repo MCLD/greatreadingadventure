@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Adding `?prelogging=1` to the ProgramByBranch report will make it show info for pre-logging dates
 - Change the CR to load assets via `https` to avoid mixed-security messages/errors
 - Add certificate for completion (currently needs to be linked in a mail, it's at /certificate/)
+- Add a count of eligible patrons to the Manage Prize Drawing page
 
 ### Changed
 - Truncate names in the badge gallery so they don't wrap in an ugly way
@@ -62,9 +63,11 @@ All notable changes to this project will be documented in this file.
 - Trim challenge URLs to avoid leading and trailing whitespace
 - Fix ProgramByBranch report to work properly in a multi-tenancy environment (similar to #193)
 - Resolve issue with slow-running reports which aggregate "achievers"
+- Fix prize drawing template to save when a school is selected
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)
+- Remove "gender" from prize drawing templates (it didn't work anyways)
 
 ## [3.1.0] - 2016-04-27
 ### Added

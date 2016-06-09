@@ -13,6 +13,15 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings {
     public partial class PrizeDrawingAddEdit {
         
         /// <summary>
+        /// EligibleCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField EligibleCount;
+        
+        /// <summary>
         /// ValidationSummaryMain control.
         /// </summary>
         /// <remarks>

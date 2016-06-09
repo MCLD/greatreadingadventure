@@ -6,6 +6,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <asp:HiddenField ID="EligibleCount" runat="server" />
     <asp:ValidationSummary ID="ValidationSummaryMain" runat="server"
         BorderColor="Black" BorderStyle="Solid" BorderWidth="1px"
         CssClass="ValidationSummary" Font-Bold="True" Font-Size="11px"
@@ -131,8 +132,12 @@
                 </ItemTemplate>
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
-
-
+            
+            <asp:TemplateField HeaderText="Eligible patrons: " HeaderStyle-Font-Bold="true" HeaderStyle-Wrap="False" InsertVisible="false">
+                <EditItemTemplate>
+                    <asp:Label runat="server" ID="EligiblePatronCount"></asp:Label>
+                </EditItemTemplate>
+            </asp:TemplateField>
 
             <asp:TemplateField HeaderText="Drawing Date Time: " SortExpression="DrawingDateTime" HeaderStyle-Wrap="False" InsertVisible="false">
                 <EditItemTemplate>
@@ -248,7 +253,6 @@
                 </ItemTemplate>
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
-
 
             <asp:BoundField DataField="LastModDate" HeaderText=" Modified Date: " HeaderStyle-Wrap="False" Visible="false"
                 SortExpression="LastModDate" InsertVisible="False" ReadOnly="True">

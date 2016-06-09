@@ -146,7 +146,7 @@
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Gender: " SortExpression="Gender" HeaderStyle-Wrap="False" InsertVisible="False">
+            <asp:TemplateField HeaderText="Gender: " SortExpression="Gender" HeaderStyle-Wrap="False" Visible="false" InsertVisible="False">
                 <EditItemTemplate>
                     <asp:DropDownList ID="Gender" CssClass="form-control" runat="server">
                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
@@ -171,7 +171,7 @@
                         <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
                     </asp:DropDownList>
 
-                    <asp:Label ID="SchoolNameLbl" runat="server" Text='<%# Eval("SchoolName") %>' ReadOnly="False" Width="400px"></asp:Label>
+                    <asp:Label ID="SchoolNameLbl" runat="server" Text='<%# Eval("SchoolName") %>' ReadOnly="False" Visible="false" Width="400px"></asp:Label>
                 </EditItemTemplate>
                 <InsertItemTemplate></InsertItemTemplate>
                 <ItemTemplate>
