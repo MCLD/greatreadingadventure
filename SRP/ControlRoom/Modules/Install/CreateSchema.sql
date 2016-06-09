@@ -20772,41 +20772,74 @@ ORDER BY AdminName,
 	RedeemedFlag DESC
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranch]    Script Date: 6/1/2016 13:44:00 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranch]    Script Date: 6/8/2016 18:49:42 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT
+CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT,
+	@EndDate DATETIME = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT pgm.[TabName] AS [Program],
-		count(p.[pid]) AS [Signups],
-		sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-				WHEN 1
-					THEN 1
-				ELSE 0
-				END) AS [Achievers],
-		pgm.[CompletionPoints] AS [Achiever Points]
-	FROM [Programs] pgm
-	LEFT OUTER JOIN [patron] p ON p.[ProgID] = pgm.[PID]
-	WHERE p.[TenId] = @TenID
-	GROUP BY pgm.[TabName],
-		pgm.[PID],
-		pgm.[CompletionPoints]
-	ORDER BY pgm.[PID]
+	IF (@EndDate IS NULL)
+	BEGIN
+		SET @EndDate = GETDATE()
+	END
+
+	CREATE TABLE #BranchStats (
+		[BranchId] INT,
+		[ProgId] INT,
+		[SignUps] INT,
+		[Achievers] INT
+		)
+
+	INSERT INTO #BranchStats
+	SELECT p.[PrimaryLibrary] AS [BranchId],
+		p.[ProgId] AS [ProgId],
+		COUNT(p.[PID]) AS [Signups],
+		COUNT(pp.[pid]) AS [Achievers]
+	FROM [Patron] p
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		WHERE p.[RegistrationDate] < @EndDate
+			AND pp.[AwardDate] < @EndDate
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
+	WHERE p.[RegistrationDate] < @EndDate
+	GROUP BY p.[PrimaryLibrary],
+		p.[ProgID]
+
+	SELECT p.[TabName] AS [Program],
+		bs.Signups,
+		bs.Achievers,
+		p.[CompletionPoints] AS [Achiever Points]
+	FROM [Programs] p
+	INNER JOIN (
+		SELECT ProgId,
+			SUM(Signups) AS [Signups],
+			SUM([Achievers]) AS [Achievers]
+		FROM #BranchStats
+		GROUP BY ProgId
+		) AS bs ON bs.[ProgId] = p.[PID]
 
 	DECLARE @ProgramId INT
 
 	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
 	FOR
-	SELECT [PID]
-	FROM [Programs]
-	ORDER BY [PID]
+	SELECT DISTINCT [ProgId]
+	FROM #BranchStats
+	ORDER BY [ProgId]
 
 	OPEN PGM_CURSOR
 
@@ -20816,49 +20849,30 @@ BEGIN
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		SELECT coalesce(s.[Description], 'No System') AS [Library System],
-			coalesce(b.[description], 'No Branch') AS [Library],
-			count(p.[pid]) AS [Signups],
-			sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-					WHEN 1
-						THEN 1
-					ELSE 0
-					END) AS [Achievers]
-		FROM [code] b
-		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
-		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
-			AND s.[CTID] IN (
-				SELECT [CTID]
-				FROM [CodeType]
-				WHERE [CodeTypeName] = 'Library District'
-					AND [TenID] = @TenID
-				)
-		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
-			AND p.[ProgID] = @ProgramId
-			AND p.[TenID] = @TenID
-		WHERE b.[CTID] IN (
-				SELECT [CTID]
-				FROM [CodeType]
-				WHERE [CodeTypeName] = 'Branch'
-					AND [TenID] = @TenID
-				)
-		GROUP BY s.[Description],
-			b.[description]
-		ORDER BY s.[Description],
-			b.[description]
+		SELECT libsys.[Description] AS [Library System],
+			library.[Description] AS [Library],
+			COALESCE(bs.[Signups], 0) AS [Signups],
+			COALESCE(bs.[Achievers], 0) AS [Achievers]
+		FROM [LibraryCrosswalk] lx
+		INNER JOIN [Code] library ON lx.[BranchID] = library.[CID]
+			AND library.[TenID] = @TenId
+		INNER JOIN [Code] libsys ON lx.[DistrictID] = libsys.[CID]
+			AND libsys.[TenID] = @TenId
+		LEFT OUTER JOIN #BranchStats bs ON bs.[BranchId] = lx.[BranchId]
+			AND bs.[ProgId] = @ProgramId
+		ORDER BY lx.[DistrictId],
+			lx.[BranchId]
 
 		FETCH NEXT
 		FROM PGM_CURSOR
 		INTO @ProgramId
 	END
 
-	CLOSE PGM_CURSOR
-
-	DEALLOCATE PGM_CURSOR
+	DROP TABLE #BranchStats
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranchPrelogging]    Script Date: 6/1/2016 13:44:00 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranchPrelogging]    Script Date: 6/8/2016 18:49:42 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -20870,83 +20884,87 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT pgm.[TabName] AS [Program],
-		count(p.[pid]) AS [Signups],
-		sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-				WHEN 1
-					THEN 1
-				ELSE 0
-				END) AS [Achievers],
-		pgm.[CompletionPoints] AS [Achiever Points]
-	FROM [Programs] pgm
-	LEFT OUTER JOIN [patron] p ON p.[ProgID] = pgm.[PID]
-		AND p.[RegistrationDate] < pgm.[LoggingStart]
-	WHERE p.[TenId] = @TenID
-	GROUP BY pgm.[TabName],
-		pgm.[PID],
-		pgm.[CompletionPoints]
-	ORDER BY pgm.[PID]
+	CREATE TABLE #BranchStats (
+		[BranchId] INT,
+		[ProgId] INT,
+		[SignUps] INT,
+		[Achievers] INT
+		)
+
+	INSERT INTO #BranchStats
+	SELECT p.[PrimaryLibrary] AS [BranchId],
+		p.[ProgId] AS [ProgId],
+		COUNT(p.[PID]) AS [Signups],
+		COUNT(pp.[pid]) AS [Achievers]
+	FROM [Patron] p
+	INNER JOIN [Programs] pgm ON pgm.[PID] = p.[ProgID]
+		AND pgm.[TenID] = @TenID
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		WHERE p.[RegistrationDate] < prg.[LoggingStart]
+			AND pp.[AwardDate] < prg.[LoggingStart]
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
+	WHERE p.[RegistrationDate] < pgm.[LoggingStart]
+	GROUP BY p.[PrimaryLibrary],
+		p.[ProgID]
+
+	SELECT p.[TabName] AS [Program],
+		bs.Signups,
+		bs.Achievers,
+		p.[CompletionPoints] AS [Achiever Points]
+	FROM [Programs] p
+	INNER JOIN (
+		SELECT ProgId,
+			SUM(Signups) AS [Signups],
+			SUM([Achievers]) AS [Achievers]
+		FROM #BranchStats
+		GROUP BY ProgId
+		) AS bs ON bs.[ProgId] = p.[PID]
 
 	DECLARE @ProgramId INT
-	DECLARE @LoggingStart DATETIME
 
 	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
 	FOR
-	SELECT [PID],
-		[LoggingStart]
-	FROM [Programs]
-	ORDER BY [PID]
+	SELECT DISTINCT [ProgId]
+	FROM #BranchStats
+	ORDER BY [ProgId]
 
 	OPEN PGM_CURSOR
 
 	FETCH NEXT
 	FROM PGM_CURSOR
-	INTO @ProgramId,
-		@LoggingStart
+	INTO @ProgramId
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		SELECT coalesce(s.[Description], 'No System') AS [Library System],
-			coalesce(b.[description], 'No Branch') AS [Library],
-			count(p.[pid]) AS [Signups],
-			sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-					WHEN 1
-						THEN 1
-					ELSE 0
-					END) AS [Achievers]
-		FROM [code] b
-		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
-		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
-			AND s.[CTID] IN (
-				SELECT [CTID]
-				FROM [CodeType]
-				WHERE [CodeTypeName] = 'Library District'
-					AND [TenID] = @TenID
-				)
-		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
-			AND p.[ProgID] = @ProgramId
-			AND p.[TenID] = @TenID
-			AND p.[RegistrationDate] < @LoggingStart
-		WHERE b.[CTID] IN (
-				SELECT [CTID]
-				FROM [CodeType]
-				WHERE [CodeTypeName] = 'Branch'
-					AND [TenID] = @TenID
-				)
-		GROUP BY s.[Description],
-			b.[description]
-		ORDER BY s.[Description],
-			b.[description]
+		SELECT libsys.[Description] AS [Library System],
+			library.[Description] AS [Library],
+			COALESCE(bs.[Signups], 0) AS [Signups],
+			COALESCE(bs.[Achievers], 0) AS [Achievers]
+		FROM [LibraryCrosswalk] lx
+		INNER JOIN [Code] library ON lx.[BranchID] = library.[CID]
+			AND library.[TenID] = @TenId
+		INNER JOIN [Code] libsys ON lx.[DistrictID] = libsys.[CID]
+			AND libsys.[TenID] = @TenId
+		LEFT OUTER JOIN #BranchStats bs ON bs.[BranchId] = lx.[BranchId]
+			AND bs.[ProgId] = @ProgramId
+		ORDER BY lx.[DistrictId],
+			lx.[BranchId]
 
 		FETCH NEXT
 		FROM PGM_CURSOR
-		INTO @ProgramId,
-			@LoggingStart
+		INTO @ProgramId
 	END
 
-	CLOSE PGM_CURSOR
-
-	DEALLOCATE PGM_CURSOR
+	DROP TABLE #BranchStats
 END
 GO
 
@@ -24998,7 +25016,7 @@ CREATE TABLE [dbo].[SRPUser] (
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
-	[MailSignature] [nvarhcar](255) NULL,
+	[MailSignature] [nvarchar](255) NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,
 	[FldInt3] [int] NULL,
