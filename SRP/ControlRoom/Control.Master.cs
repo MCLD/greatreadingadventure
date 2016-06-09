@@ -136,7 +136,11 @@ namespace GRA.SRP.ControlRoom
             {
                 try
                 {
-                    string permList = Session[SessionData.StringPermissionList.ToString()].ToString();
+                    string permList = Session[SessionData.StringPermissionList.ToString()] as string;
+                    if(string.IsNullOrEmpty(permList))
+                    {
+                        Response.Redirect("~/ControlRoom/Login.aspx");
+                    }
                     if (!permList.Contains(permissionValue.ToString()))
                     {
                         Response.Redirect("~/ControlRoom/NoAccess.aspx", false);

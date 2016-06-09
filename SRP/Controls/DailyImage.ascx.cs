@@ -22,7 +22,7 @@ namespace GRA.SRP.Controls
                 }
 
                 var program = DAL.Programs.FetchObject(patron.ProgID);
-                if(program == null
+                if (program == null
                     || !program.IsOpen
                     || !program.DisplayDailyImage
                     || DateTime.Now < program.LoggingStart
@@ -35,10 +35,21 @@ namespace GRA.SRP.Controls
                     program.PID,
                     (DateTime.Now - program.LoggingStart).Days + 1);
 
-                if(System.IO.File.Exists(Server.MapPath(imagePath)))
+                if (System.IO.File.Exists(Server.MapPath(imagePath)))
                 {
                     DailyImageButton.HRef = Page.ResolveUrl(imagePath);
                     DailyImageButton.Visible = true;
+                }
+                else
+                {
+                    var sessionTools = new SessionTools(Session);
+                    var cached = sessionTools.GetCache(Cache, "LoggedAboutDailyImage");
+                    if (cached == null)
+                    {
+                        this.Log().Warn("Unable to show daily image - file doesn't exist: {0}",
+                            Server.MapPath(imagePath));
+                        sessionTools.SetCache(Cache, "LoggedAboutDailyImage", true);
+                    }
                 }
             }
         }
