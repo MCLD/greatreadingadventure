@@ -57,7 +57,7 @@ namespace GRA.SRP {
                     SystemName = SRPSettings.GetSettingValue("SysName", user.TenID),
                     ContactName = SRPSettings.GetSettingValue("ContactName", user.TenID),
                     ContactEmail = SRPSettings.GetSettingValue("ContactEmail", user.TenID),
-                    RemoteAddress = Request.UserHostAddress,
+                    RemoteAddress = new WebTools().RemoteUserAddress(Request),
                     UserEmail = user.EmailAddress,
                     Username = user.Username,
                     LoginLink = string.Format("{0}{1}",

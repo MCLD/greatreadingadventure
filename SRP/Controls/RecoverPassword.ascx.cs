@@ -32,15 +32,7 @@ namespace GRA.SRP.Classes
                 else {
                     try
                     {
-                        string remoteAddress = Request.UserHostAddress;
-                        if (!string.IsNullOrEmpty(Request.ServerVariables["HTTP_X_FORWARDED_FOR"]))
-                        {
-                            remoteAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-                            if (remoteAddress.Contains(":"))
-                            {
-                                remoteAddress = remoteAddress.Substring(0, remoteAddress.LastIndexOf(':'));
-                            }
-                        }
+                        string remoteAddress = new WebTools().RemoteUserAddress(Request);
 
                         string passwordResetToken = patron.GeneratePasswordResetToken();
                         if (string.IsNullOrEmpty(passwordResetToken))
