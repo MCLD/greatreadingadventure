@@ -503,8 +503,12 @@ namespace GRA.SRP.ControlRoom.Controls
 
         protected void rptr_PreRender(object sender, EventArgs e)
         {
-            var pwd = (TextBox)((Repeater)sender).Items[0].FindControl("Password");
-            pwd.Attributes.Add("Value", pwd.Text);
+            var repeater = sender as Repeater;
+            if (repeater != null && repeater.Items.Count > 0)
+            {
+                var pwd = (TextBox)repeater.Items[0].FindControl("Password");
+                pwd.Attributes.Add("Value", pwd.Text);
+            }
         }
 
     }
