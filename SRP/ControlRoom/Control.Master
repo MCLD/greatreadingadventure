@@ -86,6 +86,9 @@
                         fullscreenable: false
                     });
                 });
+                $('.gra-datetime').datetimepicker({
+                    sideBySide: true
+                });
                 $('.fancybox').fancybox();
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip()

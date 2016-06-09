@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - Add ability to show a daily image in a pop-up on the dashboard (#183)
 - Indicator for new mail in the Control Room (#189)
 - Add mail signature for CR users when sending in-software mail
-- Adding `?prelogging=1` to the ProgramByBranch report will make it show info for pre-logging dates
+- Add date selection and pre-logging option to ProgramByBranch report
 - Change the CR to load assets via `https` to avoid mixed-security messages/errors
 - Add certificate for completion (currently needs to be linked in a mail, it's at /certificate/)
 - Add a count of eligible patrons to the Manage Prize Drawing page

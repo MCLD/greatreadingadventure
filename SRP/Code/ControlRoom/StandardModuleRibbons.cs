@@ -87,7 +87,7 @@ namespace GRA.SRP.Core.Utilities
                 pnl.Add(new RibbonLink { Name = "At-a-glance Report", Url = "/ControlRoom/Modules/Reports/Default.aspx" });
                 pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
                 pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
-                pnl.Add(new RibbonLink { Name = "Program by Branch Report <span class=\"glyphicon glyphicon-download\"></span>", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
+                pnl.Add(new RibbonLink { Name = "Program by Branch Report", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
                 returnList.Add(pnl);
             }
 
@@ -124,7 +124,7 @@ namespace GRA.SRP.Core.Utilities
             pnl.Add(new RibbonLink { Name = "At-a-glance Report", Url = "/ControlRoom/Modules/Reports/Default.aspx" });
             pnl.Add(new RibbonLink { Name = "New AdHoc Report", Url = "/ControlRoom/Modules/Reports/ReportAddEdit.aspx?RID=new" });
             pnl.Add(new RibbonLink { Name = "Existing Reports", Url = "/ControlRoom/Modules/Reports/ReportList.aspx" });
-            pnl.Add(new RibbonLink { Name = "Program by Branch Report <span class=\"glyphicon glyphicon-download\"></span>", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
+            pnl.Add(new RibbonLink { Name = "Program by Branch Report", Url = "/ControlRoom/Modules/Reports/ProgramByBranch.aspx", NewWindow = true });
             returnList.Add(pnl);
 
             pnl = new RibbonPanel
