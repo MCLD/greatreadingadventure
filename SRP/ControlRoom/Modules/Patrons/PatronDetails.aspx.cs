@@ -59,8 +59,7 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons
                 {
                     PatronCtl1.PatronID = string.Empty;
                     PatronCtl1.MasterPatronID = string.Empty;
-                    //PatronCtl1.LoadControl();
-                    Response.Redirect("~/ControlRoom/Modules/Patrons/", false);
+                    PatronCtl1.LoadControl();
                 }
                 else
                 {
