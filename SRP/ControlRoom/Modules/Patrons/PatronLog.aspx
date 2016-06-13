@@ -44,7 +44,7 @@
             </asp:TemplateField>
 
             <asp:TemplateField  Visible="True"  
-                ItemStyle-Wrap="False" ItemStyle-HorizontalAlign ="Right" HeaderStyle-HorizontalAlign="Right" 
+                ItemStyle-Wrap="False" ItemStyle-HorizontalAlign ="Left" HeaderStyle-HorizontalAlign="Left" 
                 HeaderStyle-Wrap="False"
                 HeaderText="# Points Earned">              
                 <ItemTemplate> 

@@ -144,9 +144,27 @@ namespace GRA.SRP.Controls
 
                 var newPatron = Patron.FetchObject(newPID);
                 new SessionTools(Session).EstablishPatron(newPatron);
-                //Session["Patron"] = bp;
-                //Session["ProgramID"] = bp.ProgID;
-                //Session["TenantID"] = bp.TenID;
+
+
+                var pgm = DAL.Programs.FetchObject(newPatron.ProgID);
+
+                /* recalulate goal cache to accomdate changes in program length and point multipliers */
+                ProgramGamePointConversion pgc = null;
+                foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                {
+                    int activityTypeId = (int)activityTypeValue;
+                    var temp = ProgramGamePointConversion.FetchObjectByActivityId(pgm.PID,
++activityTypeId);
+                    if (temp != null && temp.PointCount > 0)
+                    {
+                        pgc = temp;
+                    }
+                }
+                if (pgc != null)
+                {
+                    newPatron.RecalculateGoalCache(pgm, pgc);
+                    newPatron.Update();
+                }
 
                 TestingBL.CheckPatronNeedsPreTest();
                 TestingBL.CheckPatronNeedsPreTest();

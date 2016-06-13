@@ -38,6 +38,7 @@ All notable changes to this project will be documented in this file.
 - Award triggers now have a goal percentage range of up to 1000%
 - Cache event list to make event page display faster with less database queries
 - Improve mail list and message display in the CR including links back to patron information
+- Parental consent is now tied only to the program flag and registration settings, no age info. (#186)
 
 ### Fixed
 - Resolve issue with ViewState being too large (#175)
@@ -64,6 +65,10 @@ All notable changes to this project will be documented in this file.
 - Fix ProgramByBranch report to work properly in a multi-tenancy environment (similar to #193)
 - Resolve issue with slow-running reports which aggregate "achievers"
 - Fix prize drawing template to save when a school is selected
+- Goal field now shows on "Add a Family Member" to prevent registering patrons without a goal. (#199)
+- Goal calculation now takes into account "Activity Points" conversions. (#198)
+- Fix program DAL assigns values to empty objects. (#195, #188).
+- Branch/Library label is now hidden when dropdown is hidden (#190).
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)

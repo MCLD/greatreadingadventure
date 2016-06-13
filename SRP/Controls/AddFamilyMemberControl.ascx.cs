@@ -189,6 +189,7 @@ namespace GRA.SRP.Controls {
                 p.ParentGuardianLastName = ((TextBox)rptr.Items[0].FindControl("ParentGuardianLastName")).Text;
                 p.ParentGuardianMiddleName = ((TextBox)rptr.Items[0].FindControl("ParentGuardianMiddleName")).Text;
                 p.LibraryCard = ((TextBox)rptr.Items[0].FindControl("LibraryCard")).Text;
+                p.Goal = FormatHelper.SafeToInt(((TextBox)(rptr.Items[0]).FindControl("Goal")).Text);
 
                 //p.District = ((DropDownList)rptr.Items[0].FindControl("District")).SelectedValue;
                 //p.SDistrict = ((DropDownList)rptr.Items[0].FindControl("SDistrict")).SelectedValue.SafeToInt();
@@ -238,9 +239,27 @@ namespace GRA.SRP.Controls {
                     : ((DropDownList)rptr.Items[0].FindControl("Custom5DD")).SelectedValue;
 
                 if(p.IsValid(BusinessRulesValidationMode.INSERT)) {
-                    p.Insert();
 
                     var prog = Programs.FetchObject(p.ProgID);
+
+                    /* recalulate goal cache to accomodate changes in program length and point multipliers */
+                    ProgramGamePointConversion pgc = null;
+                    foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+                    {
+                        int activityTypeId = (int)activityTypeValue;
+                        var temp = ProgramGamePointConversion.FetchObjectByActivityId(prog.PID, activityTypeId);
+                        if (temp != null && temp.PointCount > 0)
+                        {
+                            pgc = temp;
+                        }
+                    }
+                    if (pgc != null)
+                    {
+                        p.RecalculateGoalCache(prog, pgc);
+                    }
+
+                    p.Insert();
+
                     var list = new List<Badge>();
                     if(prog.RegistrationBadgeID != 0) {
                         AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID, p, ref list);
@@ -286,6 +305,56 @@ namespace GRA.SRP.Controls {
                 return false;
             }
             return true;
+        }
+
+        protected void Program_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int progID = FormatHelper.SafeToInt(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
+
+            if (progID == 0)
+            {
+                return; // no selection
+            }
+
+            var selectedProgram = Programs.FetchObject(progID);
+
+            var goal = rptr.Items[0].FindControl("Goal") as TextBox;
+            if (goal != null
+               && selectedProgram.GoalDefault > 0)
+            {
+                goal.Text = selectedProgram.GoalDefault.ToString();
+            }
+
+            // disable goal field when the user has a set goal 
+            ((TextBox)rptr.Items[0].FindControl("Goal")).Enabled = (selectedProgram.GoalMin != selectedProgram.GoalMax);
+
+
+            // Goal needs to be modified by ProgramGamePointConversion
+            /* If daily goal is enabled we need to find what method point system uses. Just select the first item that is relevant.. */
+            foreach (ActivityType activityTypeValue in Enum.GetValues(typeof(ActivityType)))
+            {
+                int activityTypeId = (int)activityTypeValue;
+                var pgc = ProgramGamePointConversion.FetchObjectByActivityId(progID,
+                                                                         activityTypeId);
+
+                if (pgc != null && pgc.PointCount > 0)
+                {
+                    var range = (RangeValidator)rptr.Items[0].FindControl("GoalRangeValidator");
+
+                    range.MinimumValue = selectedProgram.GoalMin.ToString();
+                    range.MaximumValue = selectedProgram.GoalMax.ToString();
+                    range.Text = $"{range.MinimumValue}-{range.MaximumValue}";
+
+                    /* save the activity type id */
+                    ViewState["ActivityTypeId"] = activityTypeId.ToString();
+
+                    var intervalString = selectedProgram.GetGoalInterval.ToString();
+
+                    ((Literal)rptr.Items[0].FindControl("GoalLabel")).Text = $"{intervalString} Goal ({activityTypeValue.ToString()}):";
+                    // found a valid point conversion for goal so break
+                    break;
+                }
+            }
         }
 
         protected void City_TextChanged(object sender, EventArgs e) {

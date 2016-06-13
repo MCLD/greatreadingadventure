@@ -82,7 +82,14 @@ namespace GRA.SRP
         {
             var dd = sender as DropDownList;
             if (dd.Items.Count < 2)
+            {
                 dd.Visible = false;
+            }
+
+            if (dd == BranchId)
+            {
+                BranchLabel.Visible = dd.Visible;
+            }
         }
     }
 }
