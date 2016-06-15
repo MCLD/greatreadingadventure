@@ -38,7 +38,7 @@ namespace GRA.SRP.ControlRoom.Controls
             //Session["CURR_PATRON_ID"] = key;
             //Session["CURR_PATRON"] = Patron.FetchObject(key);
 
-            if (Session["CURR_PATRON_MODE"].ToString() == "ADDSUB")
+            if (Session["CURR_PATRON_MODE"] as string == "ADDSUB")
             {
                 // Need to adda sub
 
