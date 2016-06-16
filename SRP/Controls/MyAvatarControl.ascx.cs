@@ -13,14 +13,17 @@ using System.IO;
 using System.Data;
 using System.Web.UI.WebControls;
 
-namespace GRA.SRP.Controls {
-    public partial class MyAvatarControl : System.Web.UI.UserControl {
+namespace GRA.SRP.Controls
+{
+    public partial class MyAvatarControl : System.Web.UI.UserControl
+    {
         protected System.Web.Script.Serialization.JavaScriptSerializer json = new System.Web.Script.Serialization.JavaScriptSerializer();
 
         public Dictionary<string, List<int>> jsAvatarComponents = new Dictionary<string, List<int>>();
 
 
-        protected void Page_Load(object sender, EventArgs e) {
+        protected void Page_Load(object sender, EventArgs e)
+        {
             var patron = (Patron)Session["Patron"];
 
             var avatarPartData = AvatarPart.GetQualifiedByPatron(patron.PID);
@@ -69,10 +72,22 @@ namespace GRA.SRP.Controls {
 
                 var avatarState = new List<int>();
 
-                avatarState.Add(int.Parse(componentState0.Value));
-                avatarState.Add(int.Parse(componentState1.Value));
-                avatarState.Add(int.Parse(componentState2.Value));
-
+                try
+                {
+                    avatarState.Add(int.Parse(componentState0.Value));
+                    avatarState.Add(int.Parse(componentState1.Value));
+                    avatarState.Add(int.Parse(componentState2.Value));
+                }
+                catch (Exception ex)
+                {
+                    this.Log().Error("Error parsing avatar component states: componentState0 = {0}, componentState1 = {1}, componentState2 = {2}: {3} - {4}",
+                        componentState0.Value,
+                        componentState1.Value,
+                        componentState2.Value,
+                        ex.Message,
+                        ex.StackTrace);
+                    throw;
+                }
                 string state = Patron.WriteAvatarStateString(avatarState);
                 patron.AvatarState = state;
                 patron.Update();

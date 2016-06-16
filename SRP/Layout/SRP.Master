@@ -104,7 +104,7 @@
                 </div>
             </div>
         </nav>
-        <div class="container-fluid visible-print-block print-header">
+        <div class="container-fluid visible-print-block print-header" runat="server" id="printHeader">
             <div class="row">
                 <div class="col-xs-8">
                     <span class="lead"><%=SystemNameText %></span>

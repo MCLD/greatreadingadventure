@@ -19,6 +19,7 @@
     <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" runat="server" />
     <link href="~/Content/jquery.fancybox.css?v=2.1.5" rel="stylesheet" runat="server" />
     <link href="~/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" runat="server" />
+    <link href="~/Content/animate.min.css" rel="stylesheet" runat="server" enableviewstate="false" />
     <link href="~/Content/gra.css" rel="stylesheet" runat="server" />
     <style type="text/css">
         #blur {
@@ -67,7 +68,7 @@
         <script src="<%=ResolveUrl("~/Scripts/bootstrap-datetimepicker.min.js")%>"></script>
         <script src="<%=ResolveUrl("~/trumbowyg/trumbowyg.min.js")%>"></script>
     </asp:PlaceHolder>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -208,6 +209,10 @@
                     });
             });
         </script>
+        <script>
+            var graUnreadLookupUrl = '<%=Request.ApplicationPath%>ControlRoom/Handlers/UnreadMail.ashx';
+        </script>
+        <script src="<%=ResolveUrl("~/ControlRoom/UnreadBadge.js")%>"></script>
     </form>
 </body>
 </html>

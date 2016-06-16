@@ -187,7 +187,7 @@ CodeBehind="AwardManual.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Setup.Awa
         <asp:Label ID="lblAwards" runat="server" Font-Size="Medium" ForeColor="#009933"></asp:Label>
     </asp:Panel>
     <br />
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script language='javascript' type='text/javascript'>
     $(function () {
         $(".datepicker").datepicker();

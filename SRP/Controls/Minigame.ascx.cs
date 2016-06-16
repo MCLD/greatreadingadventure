@@ -382,8 +382,6 @@ namespace GRA.SRP.Controls
                     glyphicon);
             }
 
-
-
             Response.Redirect("~/Adventures/");
         }
 

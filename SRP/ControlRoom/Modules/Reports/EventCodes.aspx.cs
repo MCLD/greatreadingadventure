@@ -21,6 +21,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         // TODO move all reporting database stuff to the DAL!
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
 
+        protected string HiddenColumnStyle { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             MasterPage.PageTitle = "Event Codes Report";
@@ -46,7 +48,7 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             }
         }
 
-        private DataSet PrepareReport()
+        private DataSet PrepareReport(bool forExport = false)
         {
             var branches = new List<int>();
             int branchId = 0;
@@ -58,7 +60,8 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
             {
                 throw new Exception("Please choose a system or branch.");
             }
-            PrintHeader.Text = string.Format("Visible events with secret codes for {0}, {1}",
+            PrintHeader.Text = string.Format("{0} events with secret codes for {1}, {2}",
+                ShowAllDropdown.SelectedValue == "1" ? "All" : "Visible",
                 LibraryDistrictList.SelectedItem.Text,
                 LibraryBranchList.SelectedItem.Text);
 
@@ -88,7 +91,20 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 branches.Add(branchId);
             }
 
-            var query = new StringBuilder("SELECT [EventTitle], [EventDate], [SecretCode] FROM [Event] WHERE [TenID] = @TenID AND [BranchID] IN (");
+            var query = new StringBuilder("SELECT");
+            if (ShowAllDropdown.SelectedValue == "1")
+            {
+                query.Append(" [HiddenFromPublic],");
+            }
+            else
+            {
+                if (!forExport)
+                {
+                    query.Append(" '' [HiddenFromPublic],");
+                }
+            }
+
+            query.Append(" [EventTitle], [EventDate], [SecretCode] FROM [Event] WHERE [TenID] = @TenID AND [BranchID] IN (");
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID));
 
@@ -108,7 +124,12 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 branchCount++;
             }
 
-            query.Append(") AND (HiddenFromPublic IS NULL OR HiddenFromPublic != 1) ORDER BY [EventDate]");
+            query.Append(")");
+            if (ShowAllDropdown.SelectedValue == "0")
+            {
+                query.Append(" AND (HiddenFromPublic IS NULL OR HiddenFromPublic != 1)");
+            }
+            query.Append(" ORDER BY [EventDate]");
 
             var eventData = SqlHelper.ExecuteDataset(conn,
                 CommandType.Text,
@@ -136,6 +157,10 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 var dataSource = PrepareReport();
                 EventRepeater.DataSource = dataSource;
                 EventRepeater.DataBind();
+                if (ShowAllDropdown.SelectedValue == "0")
+                {
+                    HiddenColumnStyle = "display: none;";
+                }
             }
             catch (Exception ex)
             {
@@ -152,10 +177,11 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
             try
             {
-                var ds = PrepareReport();
+                var ds = PrepareReport(true);
                 if (ds.Tables != null && ds.Tables.Count >= 1 && ds.Tables[0].Rows.Count != 0)
                 {
-                    ds.Tables[0].TableName = "Events+Codes";
+                    ds.Tables[0].TableName = string.Format("{0}+Events+Codes",
+                        ShowAllDropdown.SelectedValue == "1" ? "All" : "Visible");
 
                     CreateExcelFile.CreateExcelDocument(
                         ds,

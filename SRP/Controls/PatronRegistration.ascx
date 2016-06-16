@@ -95,7 +95,7 @@
                                 <asp:Literal runat="server" Text="registration-form-age"></asp:Literal>
                             </label>
                             <div class="col-sm-6">
-                                <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="2"
+                                <asp:TextBox ID="Age" runat="server" CssClass="form-control required-asterisk" data-asterisk="AgeReq" MaxLength="3"
                                     Enabled='<%# (bool)Eval("Age_Prompt") %>'></asp:TextBox>
                             </div>
                             <div class="col-sm-3 form-control-static">
@@ -249,7 +249,7 @@
                                     SetFocusOnError="True">required</asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator runat="server" ControlToValidate="EmailAddress" Display="Dynamic" ErrorMessage="Email address is not valid"
                                     SetFocusOnError="True"
-                                    ValidationExpression="[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?">invalid</asp:RegularExpressionValidator>
+                                    ValidationExpression="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$">invalid</asp:RegularExpressionValidator>
                             </div>
                         </div>
 
@@ -887,14 +887,14 @@
                         </div>
 
                         <asp:Panel ID="pnlConsent" runat="server" Visible="False">
-                            <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length==0 ? "0" : RegistrationAge.Text) < 18 %>'>
+                            <div class="form-group" runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") %>'>
                                 <label class="col-sm-3 control-label">
                                     <asp:Literal runat="server" Text="registration-form-consent"></asp:Literal>
                                 </label>
                                 <label class="col-sm-9 form-control-static">
                                     <div class="row">
-                                        <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="true" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
-                                        <span runat="server" visible='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
+                                        <asp:CheckBox ID="ParentPermFlag" runat="server" ReadOnly="False" Checked="false" CssClass="col-xs-1 gra-registration-checkbox gra-parent-perm-container"></asp:CheckBox>
+                                        <span runat="server" class="text-danger glyphicon glyphicon-asterisk glyphicon-sm"></span>
                                         <div class="col-xs-10"><asp:Literal ID="lblConsent" runat="server"></asp:Literal></div>
                                     </div>
                                 </label>
@@ -902,8 +902,8 @@
                                     <asp:CustomValidator
                                         ClientValidationFunction="ParentPermFlagValidation"
                                         EnableClientScript="true"
-                                        runat="server" Enabled='<%# (bool)Eval("ParentPermFlag_Prompt") && int.Parse(RegistrationAge.Text.Length == 0 ? "0": RegistrationAge.Text) < 18 %>'
-                                        ErrorMessage="You must have parental consent." SetFocusOnError="True">must have parental consent</asp:CustomValidator>
+                                        runat="server" Enabled='<%# (bool)Eval("ParentPermFlag_Prompt") %>'
+                                        ErrorMessage="registration-form-consent-error" SetFocusOnError="True">must have parental consent</asp:CustomValidator>
                                 </div>
                             </div>
                         </asp:Panel>

@@ -22,12 +22,29 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.DrawingsRibbon());
-            }
 
-            if (!IsPostBack)
-            {
                 lblPK.Text = Session["DID"] == null ? "" : Session["DID"].ToString(); //Session["DID"]= string.Empty;
                 dv.ChangeMode(lblPK.Text.Length == 0 ? DetailsViewMode.Insert : DetailsViewMode.Edit);
+
+                if (!string.IsNullOrEmpty(lblPK.Text))
+                {
+                    // look up eligible patrons for this drawing
+                    int pdid = 0;
+                    if (int.TryParse(lblPK.Text, out pdid))
+                    {
+                        try
+                        {
+                            EligibleCount.Value = PrizeDrawing.EligiblePatronCount(pdid).ToString();
+                        } catch (Exception ex)
+                        {
+                            this.Log().Error("Unable to look up PrizeDrawing.EligiblePatronCount for {0}: {1} - {2}",
+                                pdid,
+                                ex.Message,
+                                ex.StackTrace);
+                        }
+                    }
+                }
+
                 Page.DataBind();
             }
         }
@@ -41,6 +58,14 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                 var lbl = (Label)dv.FindControl("TIDLbl");
                 var i = ctl.Items.FindByValue(lbl.Text);
                 if (i != null) ctl.SelectedValue = lbl.Text;
+
+                var count = ((DetailsView)sender).FindControl("EligiblePatronCount") as Label;
+                if (count != null)
+                {
+                    count.Text = string.IsNullOrEmpty(EligibleCount.Value)
+                        ? "Unknown"
+                        : EligibleCount.Value;
+                }
             }
         }
 
@@ -79,7 +104,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                 {
                     var obj = new PrizeDrawing();
                     obj.PrizeName = ((TextBox)((DetailsView)sender).FindControl("PrizeName")).Text;
-                    obj.TID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("TID")).SelectedValue);
+                    obj.TID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("TID")).SelectedValue);
                     obj.DrawingDateTime = FormatHelper.SafeToDateTime("");
                     obj.NumWinners = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumWinners")).Text);
 
@@ -123,7 +148,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     masterPage.PageError = String.Format(SRPResources.ApplicationError1, ex.Message);
                 }
             }
-            
+
             if (e.CommandName.ToLower() == "save" || e.CommandName.ToLower() == "saveandback")
             {
                 try
@@ -133,8 +158,8 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     obj.Fetch(pk);
 
                     obj.PrizeName = ((TextBox)((DetailsView)sender).FindControl("PrizeName")).Text;
-                    obj.TID = FormatHelper.SafeToInt(((DropDownList) ((DetailsView) sender).FindControl("TID")).SelectedValue);
-                   //obj.DrawingDateTime = FormatHelper.SafeToDateTime("");
+                    obj.TID = FormatHelper.SafeToInt(((DropDownList)((DetailsView)sender).FindControl("TID")).SelectedValue);
+                    //obj.DrawingDateTime = FormatHelper.SafeToDateTime("");
                     obj.NumWinners = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("NumWinners")).Text);
 
                     obj.LastModDate = DateTime.Now;
@@ -183,13 +208,13 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     obj.Fetch(pk);
 
                     obj.DrawingDateTime = DateTime.Now;
-                    
+
                     obj.LastModDate = DateTime.Now;
                     obj.LastModUser = ((SRPUser)Session[SessionData.UserProfile.ToString()]).Username;  //"N/A";  // Get from session
 
                     if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
                     {
-                        obj.Update();          
+                        obj.Update();
 
                         var num = PrizeDrawing.DrawWinners(pk, obj.NumWinners);
 
@@ -241,7 +266,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
 
                         var addl = FormatHelper.SafeToInt(((TextBox)((DetailsView)sender).FindControl("addl")).Text);
 
-                        if (addl==0)
+                        if (addl == 0)
                         {
                             var mp = (IControlRoomMaster)Master;
                             mp.PageMessage = string.Format("Must enter a value greater than 0 for the Additional # To Draw!", addl);
@@ -253,7 +278,7 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                         dv.DataBind();
                         odsWinners.DataBind();
                         var gv2 = (GridView)((DetailsView)sender).FindControl("gv2");
-                        gv2.DataBind(); 
+                        gv2.DataBind();
                         dv.ChangeMode(DetailsViewMode.Edit);
 
 
@@ -291,8 +316,8 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
                     if (obj.IsValid(BusinessRulesValidationMode.DELETE))
                     {
 
-                        try{DAL.Notifications.Delete(DAL.Notifications.FetchObject(obj.NotificationID));}catch{}
-                        try { PatronPrizes.Delete(PatronPrizes.FetchObjectByDrawing(key)); }catch { }
+                        try { DAL.Notifications.Delete(DAL.Notifications.FetchObject(obj.NotificationID)); } catch { }
+                        try { PatronPrizes.Delete(PatronPrizes.FetchObjectByDrawing(key)); } catch { }
                         obj.Delete();
 
                         odsWinners.DataBind();
@@ -343,7 +368,9 @@ namespace GRA.SRP.ControlRoom.Modules.Drawings
 
                         try { DAL.Notifications.Delete(DAL.Notifications.FetchObject(prizeDrawingWinner.NotificationID)); }
                         catch { }
-                        try { var pp = PatronPrizes.FetchObjectByDrawing(key);
+                        try
+                        {
+                            var pp = PatronPrizes.FetchObjectByDrawing(key);
                             pp.RedeemedFlag = true;
                             pp.LastModDate = now;
                             pp.LastModUser = currentUser;

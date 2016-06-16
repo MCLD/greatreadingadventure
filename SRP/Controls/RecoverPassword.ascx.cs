@@ -32,7 +32,7 @@ namespace GRA.SRP.Classes
                 else {
                     try
                     {
-                        string remoteAddress = Request.UserHostAddress;
+                        string remoteAddress = new WebTools().RemoteUserAddress(Request);
 
                         string passwordResetToken = patron.GeneratePasswordResetToken();
                         if (string.IsNullOrEmpty(passwordResetToken))

@@ -83,6 +83,17 @@ namespace GRA.SRP.DAL
                         "You must provide an event description",
                         BusinessRulesValidationCode.REQUIRED_FIELD));
                 }
+                if (!string.IsNullOrWhiteSpace(ExternalLinkToEvent))
+                {
+                    if (!ExternalLinkToEvent.StartsWith("http://")
+                        && !ExternalLinkToEvent.StartsWith("https://"))
+                    {
+                        AddErrorCode(new BusinessRulesValidationMessage("ExternalLinkToEvent",
+                            "Link to more information",
+                            "The link to more information must start with http:// or https://",
+                            BusinessRulesValidationCode.FIELD_VALIDATION));
+                    }
+                }
                 SecretCode = SecretCode.ToLower();
                 if (!string.IsNullOrEmpty(SecretCode))
                 {
@@ -430,11 +441,6 @@ namespace GRA.SRP.DAL
 
             if (dr.Read())
             {
-
-                // declare return value
-
-                Event result = new Event();
-
                 DateTime _datetime;
 
                 int _int;
@@ -445,10 +451,10 @@ namespace GRA.SRP.DAL
                 this.EventTitle = dr["EventTitle"].ToString();
                 if (DateTime.TryParse(dr["EventDate"].ToString(), out _datetime)) this.EventDate = _datetime;
                 this.EventTime = dr["EventTime"].ToString();
-                result.HTML = dr["HTML"].ToString();
-                if (!string.IsNullOrWhiteSpace(result.HTML) && result.HTML.EndsWith(TrailingBr))
+                this.HTML = dr["HTML"].ToString();
+                if (!string.IsNullOrWhiteSpace(this.HTML) && this.HTML.EndsWith(TrailingBr))
                 {
-                    result.HTML = result.HTML.Substring(0, result.HTML.Length - TrailingBr.Length);
+                    this.HTML = this.HTML.Substring(0, this.HTML.Length - TrailingBr.Length);
                 }
                 this.SecretCode = dr["SecretCode"].ToString();
                 if (int.TryParse(dr["NumberPoints"].ToString(), out _int)) this.NumberPoints = _int;
@@ -472,7 +478,6 @@ namespace GRA.SRP.DAL
                 this.FldText1 = dr["FldText1"].ToString();
                 this.FldText2 = dr["FldText2"].ToString();
                 this.FldText3 = dr["FldText3"].ToString();
-
 
                 this.ShortDescription = dr["ShortDescription"].ToString();
                 if (DateTime.TryParse(dr["EndDate"].ToString(), out _datetime)) this.EndDate = _datetime;

@@ -3,10 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Challenge Issues report with Excel export
+- Challenge Issues report with Excel export to show possible problems with Challenges
 - QR Code generation in the Control Room for Events with secret codes
-- Event Issues report with Excel export
-- Event Codes report with Excel export
+- Event Issues report with Excel export to show possible problems with Events
+- Event Codes report (hidden and visible events) with Excel export
 - Link from badges to search events which can earn them
 - Add QueryString capabilities to events index
   - `/Events/?Branch=<branch name>` shows events for that branch
@@ -18,6 +18,12 @@ All notable changes to this project will be documented in this file.
 - Added a field for adding a custom badge description.
 - Changed event excel import/export to include times
 - Add ability to show a daily image in a pop-up on the dashboard (#183)
+- Indicator for new mail in the Control Room (#189)
+- Add mail signature for CR users when sending in-software mail
+- Add date selection and pre-logging option to ProgramByBranch report
+- Change the CR to load assets via `https` to avoid mixed-security messages/errors
+- Add certificate for completion (currently needs to be linked in a mail, it's at /certificate/)
+- Add a count of eligible patrons to the Manage Prize Drawing page
 
 ### Changed
 - Truncate names in the badge gallery so they don't wrap in an ugly way
@@ -30,6 +36,9 @@ All notable changes to this project will be documented in this file.
 - CYA stories can now have steps with only one choice instead of two
 - #151 Reading goal now only accounts for points earned through reading instead of all point methods
 - Award triggers now have a goal percentage range of up to 1000%
+- Cache event list to make event page display faster with less database queries
+- Improve mail list and message display in the CR including links back to patron information
+- Parental consent is now tied only to the program flag and registration settings, no age info. (#186)
 
 ### Fixed
 - Resolve issue with ViewState being too large (#175)
@@ -46,9 +55,24 @@ All notable changes to this project will be documented in this file.
 - #153 Control room avatar editor now syas "Avatar name", instead of "Award Name"
 - Add field to enter book details for book review. The field's visibility is controlled by a program flag. (#52)
 - Patron registration process now informs users about goal range.
+- Use a proper email address validation technique (email addresses couldn't start with capital letters?!) (#192)
+- Fix CR patron lookup in multi-tenant environments (#193)
+- Accept ages over 99 (accepting up to 200 for now) (#201)
+- External event links must start with http:// or https:// (#202)
+- Fix error upon CYA completion (was writing to the log about an aborted thread)
+- In password recovery emails put proper IP address if operating behind a reverse proxy
+- Trim challenge URLs to avoid leading and trailing whitespace
+- Fix ProgramByBranch report to work properly in a multi-tenancy environment (similar to #193)
+- Resolve issue with slow-running reports which aggregate "achievers"
+- Fix prize drawing template to save when a school is selected
+- Goal field now shows on "Add a Family Member" to prevent registering patrons without a goal. (#199)
+- Goal calculation now takes into account "Activity Points" conversions. (#198)
+- Fix program DAL assigns values to empty objects. (#195, #188).
+- Branch/Library label is now hidden when dropdown is hidden (#190).
 
 ### Removed
 - Remove sharing buttons from hidden badges (they can't be shared anyway!)
+- Remove "gender" from prize drawing templates (it didn't work anyways)
 
 ## [3.1.0] - 2016-04-27
 ### Added

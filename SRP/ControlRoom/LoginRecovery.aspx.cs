@@ -17,9 +17,9 @@ namespace GRA.SRP.ControlRoom {
         }
         protected void Button1_Click(object sender, EventArgs e) {
             string userId = new SRPUser().GetUsernameByEmail(uxEmailaddress.Text);
-            string remoteAddress = Request.UserHostAddress;
+            string remoteAddress = new Tools.WebTools().RemoteUserAddress(Request);
 
-            if(string.IsNullOrEmpty(userId)) {
+            if (string.IsNullOrEmpty(userId)) {
                 // user requested a password for an email address that is not in the database
                 // if account doesn't exist, send an email saying so
 

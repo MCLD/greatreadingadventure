@@ -20,7 +20,8 @@
             <p>Do you have questions about the reading program or prizes? Ask here by writing a message!</p>
         </div>
 
-        <%if(this.UserHasMessages) { %>
+        <%if (this.UserHasMessages)
+            { %>
         <div class="col-sm-12 margin-1em-top">
             <table class="table table-bordered table-striped">
                 <thead>
@@ -49,7 +50,9 @@
                 </tbody>
             </table>
         </div>
-        <% } else { %>
+        <% }
+            else
+            { %>
         <div class="col-sm-12 margin-1em-top">
             <p><em>You currently have no messages.</em></p>
         </div>
@@ -94,15 +97,15 @@
     </div>
 </asp:Panel>
 
-<asp:Panel ID="pnlAsk" runat="server" Visible="false">
+<asp:Panel ID="pnlAsk" runat="server" Visible="false" DefaultButton="SendMessageButton">
     <div class="row">
         <div class="col-sm-12 hidden-print margin-halfem-top">
             <button runat="server" onserverclick="btnList_Click" class="btn btn-default margin-halfem-bottom">
                 <span class="glyphicon glyphicon-th-list margin-halfem-right"></span>
                 Go back</button>
-            <button runat="server" onserverclick="btnAskSubmit_Click" class="btn btn-success margin-halfem-bottom">
+            <asp:LinkButton runat="server" id="SendMessageButton" data-loading-text="Sending..." onclick="btnAskSubmit_Click" class="btn btn-success margin-halfem-bottom">
                 <span class="glyphicon glyphicon-send margin-halfem-right"></span>
-                Send message</button>
+                Send message</asp:LinkButton>
         </div>
         <div class="col-sm-12">
             <div class="lead margin-1em-top margin-1em-bottom">
@@ -110,14 +113,16 @@
             </div>
             <div class="form-group <%= this.SubjectHasError %>">
                 <asp:Label AssociatedControlID="txtSubject" runat="server" CssClass="control-label">Subject</asp:Label>
-                <%if(!string.IsNullOrWhiteSpace(this.SubjectHasError)) { %>
+                <%if (!string.IsNullOrWhiteSpace(this.SubjectHasError))
+                    { %>
                 <span class="help-block"><strong>Please enter a subject for your message.</strong></span>
                 <% } %>
                 <asp:TextBox ID="txtSubject" runat="server" Text="" CssClass="form-control"></asp:TextBox>
             </div>
             <div class="form-group margin-1em-top <%= this.BodyHasError %>">
                 <asp:Label AssociatedControlID="txtBody" runat="server" CssClass="control-label">Question</asp:Label>
-                <%if(!string.IsNullOrWhiteSpace(this.BodyHasError)) { %>
+                <%if (!string.IsNullOrWhiteSpace(this.BodyHasError))
+                    { %>
                 <span class="help-block"><strong>Please enter your question below.</strong></span>
                 <% } %>
                 <asp:TextBox ID="txtBody" runat="server" Text="" Rows="10"
@@ -125,4 +130,13 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $('#<%=SendMessageButton.ClientID%>').on('click', function () {
+                var $btn = $(this).button('loading');
+                return true;
+            });
+            $('#<%=txtSubject.ClientID%>').focus();
+        });
+    </script>
 </asp:Panel>

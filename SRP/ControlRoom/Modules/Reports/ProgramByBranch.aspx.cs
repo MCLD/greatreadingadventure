@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -18,17 +19,30 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
         // reluctantly following the reporting pattern from the rest of the CR
         // TODO move all reporting database stuff to the DAL!
         private static string conn = GRA.SRP.Core.Utilities.GlobalUtilities.SRPDB;
+        private const string ReportName = "Program By Branch";
+        private const string AltReportName = "Program By Branch Pre-logging";
+
+        private const string ReportStoredProcedure = "rpt_ProgramByBranch";
+        private const string AltReportStoredProcedure = "rpt_ProgramByBranchPreLogging";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             MasterPage.RequiredPermission = 4200;
             MasterPage.IsSecure = true;
-            AlertPanel.Visible = false;
+            MasterPage.PageTitle = "Program By Branch Report";
+            AlertPanel.Visible = !string.IsNullOrEmpty(AlertMessage.Text);
 
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.ReportsRibbon());
             }
+        }
+
+        protected void DownloadReport_Click(object sender, EventArgs e)
+        {
+            AlertMessage.Text = string.Empty;
+            string reportName = ReportName;
+            string reportSproc = ReportStoredProcedure;
 
             string tenantName = "Summary";
 
@@ -38,14 +52,35 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                 tenantName = tenant.LandingName;
             }
 
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID));
+
+            var dataAsOf = new StringBuilder();
+            dataAsOf.AppendFormat("This report was run on {0}", DateTime.Now);
+
+            if (PreloggingOnly.Checked)
+            {
+                reportName = AltReportName;
+                reportSproc = AltReportStoredProcedure;
+                dataAsOf.Append(" and contains data up to each program's Logging Start Date");
+            }
+            else if (!string.IsNullOrWhiteSpace(EndDate.Text))
+            {
+                DateTime endDate = DateTime.MinValue;
+                if (DateTime.TryParse(EndDate.Text, out endDate))
+                {
+                    parameters.Add(new SqlParameter("@EndDate", endDate));
+                    reportName = string.Format("{0}Upto{1:yyyyMMddhhmmtt}",
+                        reportName,
+                        endDate);
+                    dataAsOf.AppendFormat(" and contains data up to {0}", endDate);
+                }
+            }
+
             var ds = SqlHelper.ExecuteDataset(conn,
                 CommandType.StoredProcedure,
-                "rpt_ProgramByBranch",
-                new SqlParameter[]
-                    {
-                        new SqlParameter("@TenID", CRTenantID == null ? -1 : CRTenantID)
-                    }
-            );
+                reportSproc,
+                parameters.ToArray());
 
             // fix table names
             if (ds.Tables != null && ds.Tables.Count >= 1 && ds.Tables[0].Rows.Count != 0)
@@ -84,16 +119,21 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
                         completionRate = string.Format("{0:N2}%",
                             Convert.ToDouble(achieverTotal) * 100 / Convert.ToDouble(signupTotal));
                     }
-                    var completionRow = table.NewRow();
-                    completionRow[0] = string.Format("Completion rate: {0}", completionRate);
-                    table.Rows.Add(completionRow);
+                    var additionalRow = table.NewRow();
+                    additionalRow[0] = string.Format("Completion rate: {0}", completionRate);
+                    table.Rows.Add(additionalRow);
+
+                    additionalRow = table.NewRow();
+                    additionalRow[0] = dataAsOf.ToString();
+                    table.Rows.Add(additionalRow);
 
                     count++;
                 }
 
                 CreateExcelFile.CreateExcelDocument(
                     ds,
-                    string.Format("{0}-ProgramByBranch.xlsx", DateTime.Now.ToString("yyyyMMdd")),
+                    string.Format("{0}.xlsx",
+                        reportName.Replace(" ", string.Empty)),
                     Response);
             }
             else

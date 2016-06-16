@@ -168,7 +168,7 @@ namespace GRA.SRP.ControlRoom
 
         protected bool CheckIPListForMatch(string List)
         {
-            string browserIP = Request.UserHostAddress;
+            string browserIP = new Tools.WebTools().RemoteUserAddress(Request);
             List = string.Format("|{0}|", List);
             if (List.Contains(browserIP))
                 return true;

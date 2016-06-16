@@ -24,7 +24,8 @@
                 AppendDataBoundItems="True" Width="200px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="Age"></asp:ListItem>
             </asp:DropDownList>
-            <label>Branch/library:</label>
+
+            <asp:Label ID="BranchLabel" runat="server" Text="Branch/Library:" AssociatedControlID="BranchId"></asp:Label>
             <asp:DropDownList ID="BranchId" runat="server" DataSourceID="odsDDBranch" DataTextField="Description" DataValueField="CID"
                 AppendDataBoundItems="True" Width="300px" OnDataBound="dd_DataBound" CssClass="form-control margin-1em-right">
                 <asp:ListItem Value="0" Text="All libraries/branches"></asp:ListItem>

@@ -37,14 +37,20 @@ namespace GRA.SRP.ControlRoom.Modules.Patrons {
                 }
             }
 
-            gv1.PageSize = int.Parse(SRPSettings.GetSettingValue("PageSize"));
-
-            if(!IsPostBack) {
-                PatronsRibbon.GetByAppContext(this);
+            int pageSize = 10;
+            if (int.TryParse(SRPSettings.GetSettingValue("PageSize"), out pageSize))
+            {
+                gv1.PageSize = pageSize;
+            } else
+            {
+                this.Log().Error("CR Patron Default couldn't parse page size: {0}",
+                    SRPSettings.GetSettingValue("PageSize"));
             }
 
             if(!IsPostBack) {
-                if(Filter.WasFiltered()) {
+                PatronsRibbon.GetByAppContext(this);
+
+                if (Filter.WasFiltered()) {
                     //Filter.LoadDropdowns();
                     Filter.GetFilterSessionValues();
                     DoFilter();

@@ -98,6 +98,7 @@ namespace GRA.SRP.Core.Utilities {
         public string FldText1 { get; set; }
         public string FldText2 { get; set; }
         public string FldText3 { get; set; }
+        public string MailSignature { get; set; }
         #endregion Properties
 
         #region Methods (27)
@@ -248,7 +249,7 @@ namespace GRA.SRP.Core.Utilities {
                 returnVal.FldText1 = reader["FldText1"].ToString();
                 returnVal.FldText2 = reader["FldText2"].ToString();
                 returnVal.FldText3 = reader["FldText3"].ToString();
-
+                returnVal.MailSignature = reader["MailSignature"] as string;
             }
             reader.Close();
             return returnVal;
@@ -340,7 +341,7 @@ namespace GRA.SRP.Core.Utilities {
                 aUser.FldText1 = reader["FldText1"].ToString();
                 aUser.FldText2 = reader["FldText2"].ToString();
                 aUser.FldText3 = reader["FldText3"].ToString();
-
+                aUser.MailSignature = reader["MailSignature"] as string;
                 retValue.Add(aUser);
             }
             return retValue;
@@ -406,6 +407,7 @@ namespace GRA.SRP.Core.Utilities {
             if(!string.IsNullOrEmpty(this.FldText3)) {
                 parameters.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode())));
             }
+            parameters.Add(new SqlParameter("@MailSignature", this.MailSignature));
 
 
             SqlParameter returnValue = new SqlParameter("@Return_Value", -1);
@@ -546,6 +548,7 @@ namespace GRA.SRP.Core.Utilities {
             if(!string.IsNullOrEmpty(this.FldText3)) {
                 parameters.Add(new SqlParameter("@FldText3", GRA.SRP.Core.Utilities.GlobalUtilities.DBSafeValue(this.FldText3, this.FldText3.GetTypeCode())));
             }
+            parameters.Add(new SqlParameter("@MailSignature", this.MailSignature));
             try {
                 using(var connection = new SqlConnection(conn)) {
                     connection.Open();
@@ -736,7 +739,8 @@ namespace GRA.SRP.Core.Utilities {
             dataColumn.Caption = "FldText2";
             dataColumn = dataTable.Columns.Add("FldText3", typeof(string));
             dataColumn.Caption = "FldText3";
-
+            dataColumn = dataTable.Columns.Add("MailSignature", typeof(string));
+            dataColumn.Caption = "MailSignature";
             return dataTable;
         }
 

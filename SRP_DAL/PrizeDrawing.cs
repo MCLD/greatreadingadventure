@@ -10,11 +10,13 @@ using System.Web.UI.HtmlControls;
 using Microsoft.ApplicationBlocks.Data;
 using System.Collections;
 using GRA.SRP.Core.Utilities;
+using System.Collections.Generic;
 
 namespace GRA.SRP.DAL
 {
 
-[Serializable]    public class PrizeDrawing : EntityBase
+    [Serializable]
+    public class PrizeDrawing : EntityBase
     {
 
         public static new string Version { get { return "2.0"; } }
@@ -48,108 +50,89 @@ namespace GRA.SRP.DAL
 
         #region Accessors
 
-        public int PDID
-        {
+        public int PDID {
             get { return myPDID; }
             set { myPDID = value; }
         }
-        public string PrizeName
-        {
+        public string PrizeName {
             get { return myPrizeName; }
             set { myPrizeName = value; }
         }
-        public int TID
-        {
+        public int TID {
             get { return myTID; }
             set { myTID = value; }
         }
-        public DateTime DrawingDateTime
-        {
+        public DateTime DrawingDateTime {
             get { return myDrawingDateTime; }
             set { myDrawingDateTime = value; }
         }
-        public int NumWinners
-        {
+        public int NumWinners {
             get { return myNumWinners; }
             set { myNumWinners = value; }
         }
-        public DateTime LastModDate
-        {
+        public DateTime LastModDate {
             get { return myLastModDate; }
             set { myLastModDate = value; }
         }
-        public string LastModUser
-        {
+        public string LastModUser {
             get { return myLastModUser; }
             set { myLastModUser = value; }
         }
-        public DateTime AddedDate
-        {
+        public DateTime AddedDate {
             get { return myAddedDate; }
             set { myAddedDate = value; }
         }
-        public string AddedUser
-        {
+        public string AddedUser {
             get { return myAddedUser; }
             set { myAddedUser = value; }
         }
 
-        public int TenID
-        {
+        public int TenID {
             get { return myTenID; }
             set { myTenID = value; }
         }
 
-        public int FldInt1
-        {
+        public int FldInt1 {
             get { return myFldInt1; }
             set { myFldInt1 = value; }
         }
 
-        public int FldInt2
-        {
+        public int FldInt2 {
             get { return myFldInt2; }
             set { myFldInt2 = value; }
         }
 
-        public int FldInt3
-        {
+        public int FldInt3 {
             get { return myFldInt3; }
             set { myFldInt3 = value; }
         }
 
-        public bool FldBit1
-        {
+        public bool FldBit1 {
             get { return myFldBit1; }
             set { myFldBit1 = value; }
         }
 
-        public bool FldBit2
-        {
+        public bool FldBit2 {
             get { return myFldBit2; }
             set { myFldBit2 = value; }
         }
 
-        public bool FldBit3
-        {
+        public bool FldBit3 {
             get { return myFldBit3; }
             set { myFldBit3 = value; }
         }
 
-        public string FldText1
-        {
+        public string FldText1 {
             get { return myFldText1; }
             set { myFldText1 = value; }
         }
 
-        public string FldText2
-        {
+        public string FldText2 {
             get { return myFldText2; }
             set { myFldText2 = value; }
         }
 
-        public string FldText3
-        {
+        public string FldText3 {
             get { return myFldText3; }
             set { myFldText3 = value; }
         }
@@ -212,7 +195,7 @@ namespace GRA.SRP.DAL
         }
 
 
-        public static int DrawWinners(int PDID, int numWinners, int additional=0)
+        public static int DrawWinners(int PDID, int numWinners, int additional = 0)
         {
             SqlParameter[] arrParams = new SqlParameter[3];
             arrParams[0] = new SqlParameter("@PDID", PDID);
@@ -226,9 +209,9 @@ namespace GRA.SRP.DAL
             var pt = PrizeTemplate.FetchObject(pd.TID);
             var now = DateTime.Now;
 
-            for (var i = 0; i < ds.Tables[0].Rows.Count; i++ )
+            for (var i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                int PID = (int) ds.Tables[0].Rows[i]["PatronID"];
+                int PID = (int)ds.Tables[0].Rows[i]["PatronID"];
                 int NID = (int)ds.Tables[0].Rows[i]["NotificationID"];
                 int PDWID = (int)ds.Tables[0].Rows[i]["PDWID"];
 
@@ -539,6 +522,16 @@ namespace GRA.SRP.DAL
 
         }
 
+        public static int EligiblePatronCount(int PDID)
+        {
+            var arrParams = new List<SqlParameter>();
+            arrParams.Add(new SqlParameter("@PDID", PDID));
+
+            return SqlHelper.ExecuteScalar(conn,
+                CommandType.StoredProcedure,
+                "app_PrizeDrawing_CheckEligibility",
+                arrParams.ToArray()) as int? ?? 0;
+        }
         #endregion
 
     }//end class

@@ -16,10 +16,10 @@ namespace GRA.SRP.ControlRoom
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!Page.IsPostBack)
+            if (!Page.IsPostBack)
             {
                 var crLoginHtml = DAL.SRPSettings.GetSettingValue("CRLoginHtml");
-                if(!string.IsNullOrEmpty(crLoginHtml))
+                if (!string.IsNullOrEmpty(crLoginHtml))
                 {
                     CRLoginHtml.Text = crLoginHtml;
                     CRLoginHtml.Visible = true;
@@ -30,7 +30,7 @@ namespace GRA.SRP.ControlRoom
                 }
 
                 var defaultRibbon = StandardModuleRibbons.DefaultRibbon();
-                if(defaultRibbon.Count > 0)
+                if (defaultRibbon.Count > 0)
                 {
                     SetPageRibbon(defaultRibbon);
                 }
@@ -52,7 +52,7 @@ namespace GRA.SRP.ControlRoom
                     ProgramCodesDiv.Visible = true;
                     var redeemed = result.SecretCodesRedeemed.ToString();
                     string codeName = StringResources.getString("myaccount-program-reward-code");
-                    if(!codeName.EndsWith("s"))
+                    if (!codeName.EndsWith("s"))
                     {
                         codeName += "s";
                     }
@@ -66,21 +66,14 @@ namespace GRA.SRP.ControlRoom
 
                 var tenant = GRA.SRP.Core.Utilities.Tenant.FetchObject((int)CRTenantID);
                 OrganizationName.Text = tenant.LandingName;
-                var defaultBannerPath = string.Format("~/images/Banners/{0}.png",
-                    DAL.Programs.GetDefaultProgramID());
-                var defaultBannerFilePath = Server.MapPath(defaultBannerPath);
-                if (System.IO.File.Exists(defaultBannerFilePath))
-                {
-                    ProgramImage.ImageUrl = defaultBannerPath;
-                    ProgramImage.CssClass = new WebTools().CssRemoveClass("img-rounded",
-                        ProgramImage.CssClass);
-                }
-                else
-                {
-                    ProgramImage.ImageUrl = "~/images/meadow.jpg";
-                    ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded",
-                        ProgramImage.CssClass);
-                }
+
+                var bannerPath = new Logic.Banner().GetBannerPath(
+                    DAL.Programs.GetDefaultProgramID().ToString(),
+                    Server);
+
+                ProgramImage.ImageUrl = bannerPath.Item1;
+                ProgramImage.CssClass = new WebTools().CssEnsureClass("img-rounded",
+                    ProgramImage.CssClass);
 
                 StatusPanel.Visible = true;
             }

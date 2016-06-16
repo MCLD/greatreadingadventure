@@ -25,7 +25,8 @@ namespace GRA.SRP
                 {
                     Session["MasterAcctPID"] = patron.PID;
                 }
-                else {
+                else
+                {
                     Session["MasterAcctPID"] = 0;
                 }
                 return true;
@@ -49,7 +50,7 @@ namespace GRA.SRP
         {
             var newBadges = badgeIds;
             var currentlyEarnedBadges = Session[SessionKey.EarnedBadges];
-            if(currentlyEarnedBadges != null)
+            if (currentlyEarnedBadges != null)
             {
                 newBadges = string.Format("{0}|{1}", currentlyEarnedBadges, newBadges);
             }
@@ -117,10 +118,28 @@ namespace GRA.SRP
             return cache[key];
         }
 
-        public void SetCache(Cache cache, string cacheKey, object value, int? tenantId = null)
+        public void SetCache(Cache cache,
+            string cacheKey,
+            object value,
+            int? tenantId = null,
+            int expirationSeconds = 0)
         {
             string key = GetTenantCacheKey(cacheKey, tenantId);
-            cache[key] = value;
+            if (expirationSeconds == 0)
+            {
+                cache[key] = value;
+            }
+            else
+            {
+                DateTime cacheUntil = DateTime.UtcNow.AddSeconds(expirationSeconds);
+                cache.Insert(key,
+                     value,
+                     null,
+                     cacheUntil,
+                     System.Web.Caching.Cache.NoSlidingExpiration,
+                     System.Web.Caching.CacheItemPriority.Default,
+                     null);
+            }
         }
     }
 }

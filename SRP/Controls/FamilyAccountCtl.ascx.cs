@@ -16,7 +16,7 @@ namespace GRA.SRP.Controls
             {
                 if (string.IsNullOrEmpty(Request["SA"]) && (Session["SA"] == null || Session["SA"].ToString() == ""))
                 {
-                    Response.Redirect("~/FamilyAccountList.aspx");
+                    Response.Redirect("~/Account/FamilyAccountList.aspx");
                 }
                 if (!string.IsNullOrEmpty(Request["SA"]))
                 {
@@ -65,7 +65,7 @@ namespace GRA.SRP.Controls
         {
             if (e.CommandName == "cancel")
             {
-                Response.Redirect("~/FamilyAccountList.aspx");
+                Response.Redirect("~/Account/FamilyAccountList.aspx");
             }
 
             lblError.Text= string.Empty;

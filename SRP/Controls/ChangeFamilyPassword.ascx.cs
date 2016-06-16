@@ -13,7 +13,7 @@ namespace GRA.SRP.Classes {
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
                 if(string.IsNullOrEmpty(Request["SA"]) && (Session["SA"] == null || Session["SA"].ToString() == "")) {
-                    Response.Redirect("~/FamilyAccountList.aspx");
+                    Response.Redirect("~/Account/FamilyAccountList.aspx");
                 }
                 if(!string.IsNullOrEmpty(Request["SA"])) {
                     SA.Text = Request["SA"];
@@ -78,7 +78,7 @@ namespace GRA.SRP.Classes {
         }
 
         protected void btnCancel_Click(object sender, EventArgs e) {
-            Response.Redirect("~/FamilyAccountList.aspx");
+            Response.Redirect("~/Account/FamilyAccountList.aspx");
         }
 
     }

@@ -235,6 +235,19 @@ namespace GRA.SRP
                 {
                     EarnedBadges = earnedBadges.ToString().Replace('|', ',');
                     new SessionTools(Session).ClearEarnedBadges();
+                    if (EarnedBadges.Contains("?")) {
+                        var currentPatron = Session[SessionKey.Patron] as Patron;
+                        if(currentPatron != null)
+                        {
+                            this.Log().Warn("Invalid EarnedBadges value for {0} contains ?: {1}",
+                                currentPatron.PID,
+                                EarnedBadges);
+                        }
+                        else
+                        {
+                            this.Log().Warn("Invalid EarnedBadges value - contains ?: {0}", EarnedBadges);
+                        }
+                    }
                 }
             }
         }
@@ -440,14 +453,9 @@ namespace GRA.SRP
                         var temp = ProgramGamePointConversion.FetchObjectByActivityId(pgm.PID,
                                                                                  activityTypeId);
 
-
                         if (temp != null && temp.PointCount > 0)
                         {
-                            if (activityTypeValue == ActivityType.Minutes || activityTypeValue == ActivityType.Pages)
-                            {
-                                pgc = temp;
-                                break;
-                            }
+                            pgc = temp;
                         }
                     }
 

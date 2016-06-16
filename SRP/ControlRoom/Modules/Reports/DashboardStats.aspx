@@ -22,7 +22,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
     <td colspan="2" width="50%">
         <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" 
             DataTextField="AdminName" DataValueField="PID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="0" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -30,7 +30,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
     <td>
         <asp:DropDownList ID="LibSys" runat="server" DataSourceID="odsDDLibSys" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -44,7 +44,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
     <td colspan="2" width="50%">
         <asp:DropDownList ID="BranchID" runat="server" DataSourceID="odsDDBranch" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="0" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -52,7 +52,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
     <td>
         <asp:DropDownList ID="School" runat="server" DataSourceID="odsDDSchool" 
             DataTextField="Code" DataValueField="CID" 
-            AppendDataBoundItems="True"  Width="97%"
+            AppendDataBoundItems="True"  Width="97%" CssClass="form-control"
             >
             <asp:ListItem Value="" Text="[All Defined]"></asp:ListItem>
         </asp:DropDownList>
@@ -71,7 +71,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
     
 </td>
 <td>
-    <b>Game Level to Report On:</b>&nbsp;
+    <!--<b>Game Level to Report On:</b>&nbsp;
             <asp:TextBox ID="Level" runat="server" Text='' 
                                      ReadOnly="False" Width="75px" CssClass="align-right"></asp:TextBox>
                                 <asp:RegularExpressionValidator id="revLevel"
@@ -97,7 +97,7 @@ CodeBehind="DashboardStats.aspx.cs" Inherits="GRA.SRP.ControlRoom.Modules.Report
                                     Font-Bold="True" Font-Italic="True" 
                                     Text="<font color='red'> * Level must be from 0 to 9999! </font>" 
                                     EnableTheming="True" 
-                                    SetFocusOnError="True" />
+                                    SetFocusOnError="True" />-->
 
 </td>
 </tr>

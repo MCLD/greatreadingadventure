@@ -23,7 +23,8 @@ CREATE PROCEDURE [dbo].[cbspSRPUser_Update] @UID INT,
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@MailSignature NVARCHAR(255) = NULL
 AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -52,6 +53,7 @@ SET Username = @Username,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	MailSignature = @MailSignature
 WHERE UID = @UID
 	AND TenID = @TenID

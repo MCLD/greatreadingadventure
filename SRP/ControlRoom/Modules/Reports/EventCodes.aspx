@@ -5,7 +5,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid">
         <div class="row hidden-print">
-            <div class="col-xs-4">
+            <div class="col-xs-3">
                 <asp:DropDownList ID="LibraryDistrictList"
                     runat="server"
                     DataSourceID="LibraryDistrictData"
@@ -18,7 +18,7 @@
                     <asp:ListItem Value="0" Text="All library districts"></asp:ListItem>
                 </asp:DropDownList>
             </div>
-            <div class="col-xs-4">
+            <div class="col-xs-3">
                 <asp:DropDownList ID="LibraryBranchList"
                     runat="server"
                     DataSourceID="LibraryBranchData"
@@ -30,7 +30,13 @@
                     <asp:ListItem Value="0" Text="All library branches"></asp:ListItem>
                 </asp:DropDownList>
             </div>
-            <div class="col-xs-4">
+            <div class="col-xs-3">
+                <asp:DropDownList runat="server" ID="ShowAllDropdown" CssClass="form-control">
+                    <asp:ListItem Value="1">Show Hidden Events</asp:ListItem>
+                    <asp:ListItem Value="0">Only Visible Events</asp:ListItem>
+                </asp:DropDownList>
+            </div>
+            <div class="col-xs-3">
                 <asp:LinkButton runat="server"
                     CssClass="btn btn-info"
                     OnClick="ShowReport_Click"
@@ -64,6 +70,7 @@
             <div class="col-xs-12">
                 <table class="table table-condensed table-striped table-bordered table-hover">
                     <tr class="info">
+                        <th style="<%=HiddenColumnStyle%>">Visible</th>
                         <th>Event Name</th>
                         <th>Event Date</th>
                         <th>Secret Code</th>
@@ -78,6 +85,12 @@
                         </HeaderTemplate>
                         <ItemTemplate>
                             <tr>
+                                <td style="<%=HiddenColumnStyle%>"><span style="font-size: 1.5em;" class='glyphicon <%# Eval("HiddenFromPublic") as bool? != true 
+                                    ? "glyphicon-ok-circle text-success"
+                                    : "glyphicon-ban-circle text-danger" %>'
+                                    title=' <%# Eval("HiddenFromPublic") as bool? != true 
+                                    ? "Shown in the event list"
+                                    : "Hidden from the event list" %>'></span></td>
                                 <td><%#Eval("EventTitle") %></td>
                                 <td><%#Eval("EventDate", "{0:M/d/yy h:mm tt}")%></td>
                                 <td><%#Eval("SecretCode") %></td>

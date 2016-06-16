@@ -1257,7 +1257,7 @@ BEGIN
 		NotificationBody,
 		CustomEarnedMessage,
 		HideDefaultDescriptionFlag,
-	    CustomDescription,
+		CustomDescription,
 		IncludesPhysicalPrizeFlag,
 		PhysicalPrizeName,
 		AssignProgramPrizeCode,
@@ -1360,7 +1360,7 @@ SET AdminName = @AdminName,
 	NotificationSubject = @NotificationSubject,
 	NotificationBody = @NotificationBody,
 	CustomEarnedMessage = @CustomEarnedMessage,
-    HideDefaultDescriptionFlag = @HideDefaultDescriptionFlag,
+	HideDefaultDescriptionFlag = @HideDefaultDescriptionFlag,
 	CustomDescription = @CustomDescription,
 	IncludesPhysicalPrizeFlag = @IncludesPhysicalPrizeFlag,
 	PhysicalPrizeName = @PhysicalPrizeName,
@@ -9362,6 +9362,136 @@ SET PID = @PID,
 	AddedDate = @AddedDate,
 	AddedUser = @AddedUser
 WHERE PRCID = @PRCID
+GO
+
+/****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_CheckEligibility]    Script Date: 6/9/2016 12:55:59 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[app_PrizeDrawing_CheckEligibility] @PDID INT = 0
+AS
+DECLARE @TID INT
+DECLARE @TenID INT
+
+SELECT @TID = TID,
+	@TenID = TenID
+FROM dbo.PrizeDrawing
+WHERE PDID = @PDID
+
+DECLARE @Gender VARCHAR(1),
+	@SchoolName VARCHAR(50)
+DECLARE @ProgID INT,
+	@PrimaryLibrary INT
+DECLARE @IncPrevWinnersFlag BIT
+DECLARE @MinP INT,
+	@MaxP INT,
+	@MinR INT,
+	@MaxR INT
+
+SELECT @ProgID = ProgID,
+	@PrimaryLibrary = PrimaryLibrary,
+	@Gender = Gender,
+	@SchoolName = SchoolName,
+	@IncPrevWinnersFlag = IncPrevWinnersFlag,
+	@MinP = MinPoints,
+	@MaxP = MaxPoints,
+	@MinR = MinReviews,
+	@MaxR = MaxReviews
+FROM dbo.PrizeTemplate
+WHERE TID = @TID
+
+SELECT PID,
+	p.ProgID,
+	p.PrimaryLibrary,
+	p.SchoolName,
+	p.Gender,
+	isnull((
+			SELECT SUM(NumPoints)
+			FROM dbo.PatronPoints pp
+			WHERE pp.PID = p.PID
+				AND (
+					AwardDate >= t.LogDateStart
+					OR t.LogDateStart IS NULL
+					)
+				AND (
+					AwardDate <= t.LogDateEnd
+					OR t.LogDateEnd IS NULL
+					)
+			), 0) AS PatronPoints,
+	isnull((
+			SELECT count(PRID)
+			FROM dbo.PatronReview pr
+			WHERE pr.PID = p.PID
+				AND (
+					ReviewDate >= t.ReviewDateStart
+					OR t.ReviewDateStart IS NULL
+					)
+				AND (
+					ReviewDate <= t.ReviewDateEnd
+					OR t.ReviewDateEnd IS NULL
+					)
+			), 0) AS PatronReviews,
+	NEWID() AS Random
+INTO #TEMP
+FROM Patron p
+INNER JOIN dbo.PrizeTemplate t ON t.TID = @TID
+WHERE p.TenID = @TenID
+
+IF (@ProgID <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE ProgID <> @ProgID
+
+IF (@PrimaryLibrary <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE PrimaryLibrary <> @PrimaryLibrary
+
+IF (@Gender <> '')
+	DELETE
+	FROM #TEMP
+	WHERE Gender <> @Gender
+
+IF (@SchoolName <> '')
+	DELETE
+	FROM #TEMP
+	WHERE SchoolName <> @SchoolName
+
+IF (@MinP <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE PatronPoints < @MinP
+
+IF (@MaxP <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE PatronPoints > @MaxP
+
+IF (@MinR <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE PatronReviews < @MinR
+
+IF (@MaxR <> 0)
+	DELETE
+	FROM #TEMP
+	WHERE PatronReviews > @MaxR
+
+IF (@IncPrevWinnersFlag = 0)
+	DELETE
+	FROM #TEMP
+	WHERE PID IN (
+			SELECT DISTINCT PatronID
+			FROM dbo.PrizeDrawingWinners
+			)
+
+SELECT COUNT(*) AS EligibleForDrawing
+FROM #TEMP
+
+DROP TABLE #TEMP
 GO
 
 /****** Object:  StoredProcedure [dbo].[app_PrizeDrawing_Delete]    Script Date: 2/4/2016 13:18:40 ******/
@@ -18560,7 +18690,8 @@ CREATE PROCEDURE [dbo].[cbspSRPUser_Insert] @Username VARCHAR(50),
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@MailSignature NVARCHAR(255) = NULL
 AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -18592,7 +18723,8 @@ INSERT INTO dbo.SRPUser (
 	FldBit3,
 	FldText1,
 	FldText2,
-	FldText3
+	FldText3,
+	MailSignature
 	)
 VALUES (
 	@Username,
@@ -18621,7 +18753,8 @@ VALUES (
 	@FldBit3,
 	@FldText1,
 	@FldText2,
-	@FldText3
+	@FldText3,
+	@MailSignature
 	)
 
 SELECT @@IDENTITY
@@ -18808,7 +18941,8 @@ CREATE PROCEDURE [dbo].[cbspSRPUser_Update] @UID INT,
 	@FldBit3 BIT = 0,
 	@FldText1 TEXT = '',
 	@FldText2 TEXT = '',
-	@FldText3 TEXT = ''
+	@FldText3 TEXT = '',
+	@MailSignature NVARCHAR(255) = NULL
 AS
 SET NOCOUNT ON
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -18837,7 +18971,8 @@ SET Username = @Username,
 	FldBit3 = @FldBit3,
 	FldText1 = @FldText1,
 	FldText2 = @FldText2,
-	FldText3 = @FldText3
+	FldText3 = @FldText3,
+	MailSignature = @MailSignature
 WHERE UID = @UID
 	AND TenID = @TenID
 GO
@@ -19220,7 +19355,7 @@ WHERE UID IN (
 	AND IsDeleted = 0
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 3/25/2016 14:15:26 ******/
+/****** Object:  StoredProcedure [dbo].[GetPatronsPaged]    Script Date: 5/27/2016 16:18:00 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19327,10 +19462,10 @@ FROM
 Select p.*, c.[Code] as [Branch], pg.AdminName as Program
 , ROW_NUMBER() OVER (ORDER BY ' + @sortString + ' ) AS RowRank
 FROM Patron p
-left outer join [Code] c on p.[PrimaryLibrary] = c.[CID]
+left outer join [Code] c on p.[PrimaryLibrary] = c.[CID] AND c.[TenID] = p.[TenID]
 left outer join Programs pg
-on p.ProgID = pg.PID
-WHERE (c.[CTID] = 1 OR c.[CTID] is NULL)
+on p.ProgID = pg.PID and pg.[TenID] = p.[TenID]
+WHERE (c.[CTID] in (SELECT [CTID] from [CodeType] WHERE [CodeTypeName] = ''Branch'' AND [TenID] = c.[TenID]) OR c.[CTID] is NULL)
 ' + CASE len(@Filter)
 		WHEN 0
 			THEN ''
@@ -19521,7 +19656,7 @@ GROUP BY bl.[BLID],
 HAVING COUNT(DISTINCT blb.[BLBID]) < bl.[NumBooksToComplete]
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 6/9/2016 08:29:41 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -19565,6 +19700,17 @@ IF EXISTS (
 			isnull(count(*), 0) AS FinisherCount
 		FROM Patron p
 		RIGHT JOIN Programs pg ON p.ProgId = pg.PID
+		LEFT OUTER JOIN (
+			SELECT pp.[PID]
+			FROM [PatronPoints] pp
+			INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+				AND p.[TenID] = @TenID
+			INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+				AND prg.[TenID] = @TenID
+			GROUP BY pp.[PID],
+				prg.[CompletionPoints]
+			HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+			) pp ON p.[pid] = pp.[pid]
 		WHERE p.TenID = @TenID
 			AND p.ProgID > 0
 			AND (
@@ -19583,13 +19729,24 @@ IF EXISTS (
 				rtrim(ltrim(isnull(District, ''))) = @LibSys
 				OR @LibSys IS NULL
 				)
-			AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+			AND pp.[PID] IS NOT NULL
 		GROUP BY AdminName
 		)
 	SELECT AdminName AS Program,
 		isnull(count(*), 0) AS FinisherCount
 	FROM Patron p
 	RIGHT JOIN Programs pg ON p.ProgId = pg.PID
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
 	WHERE p.TenID = @TenID
 		AND p.ProgID > 0
 		AND (
@@ -19608,7 +19765,7 @@ IF EXISTS (
 			rtrim(ltrim(isnull(District, ''))) = @LibSys
 			OR @LibSys IS NULL
 			)
-		AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+		AND pp.[PID] IS NOT NULL
 	GROUP BY AdminName
 ELSE
 	SELECT AdminName AS Program,
@@ -19803,6 +19960,17 @@ SELECT AdminName AS Program,
 INTO #Temp2
 FROM Patron p
 LEFT JOIN Programs pg ON p.ProgId = pg.PID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON p.[pid] = pp.[pid]
 WHERE p.TenID = @TenID
 	AND p.ProgID > 0
 	AND (
@@ -19821,7 +19989,7 @@ WHERE p.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher2](p.PID, pg.PID, @Level) = 1
+	AND pp.[pid] IS NOT NULL
 GROUP BY p.ProgId,
 	AdminName,
 	CASE 
@@ -20059,6 +20227,17 @@ SELECT pg.AdminName,
 			END) AS TotalFinisher
 FROM Patron
 LEFT JOIN Programs pg ON ProgID = pg.PID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON patron.[pid] = pp.[pid]
 WHERE Patron.TenID = @TenID
 	AND ProgID > 0
 	AND (
@@ -20077,7 +20256,7 @@ WHERE Patron.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher2](Patron.PID, Pg.PID, @Level) = 1
+	AND pp.[PID] IS NOT NULL
 GROUP BY AdminName
 ORDER BY AdminName
 GO
@@ -20139,7 +20318,7 @@ WHERE (
 	AND [TenID] = @TenID;
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 6/9/2016 08:51:27 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -20192,6 +20371,17 @@ SELECT ProgID,
 			END) AS NA
 FROM Patron
 LEFT JOIN Programs pg ON ProgID = pg.PID --AND Patron.TenID = pg.TenID
+LEFT OUTER JOIN (
+	SELECT pp.[PID]
+	FROM [PatronPoints] pp
+	INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+		AND p.[TenID] = @TenID
+	INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+		AND prg.[TenID] = @TenID
+	GROUP BY pp.[PID],
+		prg.[CompletionPoints]
+	HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+	) pp ON Patron.[pid] = pp.[pid]
 WHERE Patron.TenID = @TenID
 	AND ProgID > 0
 	AND (
@@ -20210,7 +20400,7 @@ WHERE Patron.TenID = @TenID
 		rtrim(ltrim(isnull(District, ''))) = @LibSys
 		OR @LibSys IS NULL
 		)
-	AND [dbo].[fx_IsFinisher](Patron.PID, Pg.PID) = 1
+	AND pp.[PID] IS NOT NULL
 GROUP BY ProgID,
 	AdminName,
 	CASE 
@@ -20767,41 +20957,74 @@ ORDER BY AdminName,
 	RedeemedFlag DESC
 GO
 
-/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranch]    Script Date: 4/12/2016 12:46:51 ******/
+/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranch]    Script Date: 6/8/2016 18:49:42 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT
+CREATE PROCEDURE [dbo].[rpt_ProgramByBranch] @TenID INT,
+	@EndDate DATETIME = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT pgm.[TabName] AS [Program],
-		count(p.[pid]) AS [Signups],
-		sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-				WHEN 1
-					THEN 1
-				ELSE 0
-				END) AS [Achievers],
-		pgm.[CompletionPoints] AS [Achiever Points]
-	FROM [Programs] pgm
-	LEFT OUTER JOIN [patron] p ON p.[ProgID] = pgm.[PID]
-	WHERE p.[TenId] = @TenID
-	GROUP BY pgm.[TabName],
-		pgm.[PID],
-		pgm.[CompletionPoints]
-	ORDER BY pgm.[PID]
+	IF (@EndDate IS NULL)
+	BEGIN
+		SET @EndDate = GETDATE()
+	END
+
+	CREATE TABLE #BranchStats (
+		[BranchId] INT,
+		[ProgId] INT,
+		[SignUps] INT,
+		[Achievers] INT
+		)
+
+	INSERT INTO #BranchStats
+	SELECT p.[PrimaryLibrary] AS [BranchId],
+		p.[ProgId] AS [ProgId],
+		COUNT(p.[PID]) AS [Signups],
+		COUNT(pp.[pid]) AS [Achievers]
+	FROM [Patron] p
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		WHERE p.[RegistrationDate] < @EndDate
+			AND pp.[AwardDate] < @EndDate
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
+	WHERE p.[RegistrationDate] < @EndDate
+	GROUP BY p.[PrimaryLibrary],
+		p.[ProgID]
+
+	SELECT p.[TabName] AS [Program],
+		bs.Signups,
+		bs.Achievers,
+		p.[CompletionPoints] AS [Achiever Points]
+	FROM [Programs] p
+	INNER JOIN (
+		SELECT ProgId,
+			SUM(Signups) AS [Signups],
+			SUM([Achievers]) AS [Achievers]
+		FROM #BranchStats
+		GROUP BY ProgId
+		) AS bs ON bs.[ProgId] = p.[PID]
 
 	DECLARE @ProgramId INT
 
 	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
 	FOR
-	SELECT [PID]
-	FROM [Programs]
-	ORDER BY [PID]
+	SELECT DISTINCT [ProgId]
+	FROM #BranchStats
+	ORDER BY [ProgId]
 
 	OPEN PGM_CURSOR
 
@@ -20811,35 +21034,122 @@ BEGIN
 
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		SELECT coalesce(s.[Description], 'No System') AS [Library System],
-			coalesce(b.[description], 'No Branch') AS [Library],
-			count(p.[pid]) AS [Signups],
-			sum(CASE [dbo].[fx_IsFinisher2](p.PID, p.ProgID, NULL)
-					WHEN 1
-						THEN 1
-					ELSE 0
-					END) AS [Achievers]
-		FROM [code] b
-		INNER JOIN [librarycrosswalk] lxw ON lxw.[BranchId] = b.[CID]
-		INNER JOIN [code] s ON lxw.[DistrictId] = s.[CID]
-			AND s.[CTID] = 2
-		LEFT OUTER JOIN [patron] p ON p.[PrimaryLibrary] = b.[CID]
-			AND p.[ProgID] = @ProgramId
-			AND p.[TenID] = @TenID
-		WHERE b.[CTID] = 1
-		GROUP BY s.[Description],
-			b.[description]
-		ORDER BY s.[Description],
-			b.[description]
+		SELECT libsys.[Description] AS [Library System],
+			library.[Description] AS [Library],
+			COALESCE(bs.[Signups], 0) AS [Signups],
+			COALESCE(bs.[Achievers], 0) AS [Achievers]
+		FROM [LibraryCrosswalk] lx
+		INNER JOIN [Code] library ON lx.[BranchID] = library.[CID]
+			AND library.[TenID] = @TenId
+		INNER JOIN [Code] libsys ON lx.[DistrictID] = libsys.[CID]
+			AND libsys.[TenID] = @TenId
+		LEFT OUTER JOIN #BranchStats bs ON bs.[BranchId] = lx.[BranchId]
+			AND bs.[ProgId] = @ProgramId
+		ORDER BY lx.[DistrictId],
+			lx.[BranchId]
 
 		FETCH NEXT
 		FROM PGM_CURSOR
 		INTO @ProgramId
 	END
 
-	CLOSE PGM_CURSOR
+	DROP TABLE #BranchStats
+END
+GO
 
-	DEALLOCATE PGM_CURSOR
+/****** Object:  StoredProcedure [dbo].[rpt_ProgramByBranchPrelogging]    Script Date: 6/8/2016 18:49:42 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[rpt_ProgramByBranchPrelogging] @TenID INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	CREATE TABLE #BranchStats (
+		[BranchId] INT,
+		[ProgId] INT,
+		[SignUps] INT,
+		[Achievers] INT
+		)
+
+	INSERT INTO #BranchStats
+	SELECT p.[PrimaryLibrary] AS [BranchId],
+		p.[ProgId] AS [ProgId],
+		COUNT(p.[PID]) AS [Signups],
+		COUNT(pp.[pid]) AS [Achievers]
+	FROM [Patron] p
+	INNER JOIN [Programs] pgm ON pgm.[PID] = p.[ProgID]
+		AND pgm.[TenID] = @TenID
+	LEFT OUTER JOIN (
+		SELECT pp.[PID]
+		FROM [PatronPoints] pp
+		INNER JOIN [Patron] p ON p.[PID] = pp.[PID]
+			AND p.[TenID] = @TenID
+		INNER JOIN [Programs] prg ON prg.[PID] = p.[ProgID]
+			AND prg.[TenID] = @TenID
+		WHERE p.[RegistrationDate] < prg.[LoggingStart]
+			AND pp.[AwardDate] < prg.[LoggingStart]
+		GROUP BY pp.[PID],
+			prg.[CompletionPoints]
+		HAVING SUM(pp.[NumPoints]) >= prg.[CompletionPoints]
+		) pp ON p.[pid] = pp.[pid]
+	WHERE p.[RegistrationDate] < pgm.[LoggingStart]
+	GROUP BY p.[PrimaryLibrary],
+		p.[ProgID]
+
+	SELECT p.[TabName] AS [Program],
+		bs.Signups,
+		bs.Achievers,
+		p.[CompletionPoints] AS [Achiever Points]
+	FROM [Programs] p
+	INNER JOIN (
+		SELECT ProgId,
+			SUM(Signups) AS [Signups],
+			SUM([Achievers]) AS [Achievers]
+		FROM #BranchStats
+		GROUP BY ProgId
+		) AS bs ON bs.[ProgId] = p.[PID]
+
+	DECLARE @ProgramId INT
+
+	DECLARE PGM_CURSOR CURSOR LOCAL STATIC READ_ONLY FORWARD_ONLY
+	FOR
+	SELECT DISTINCT [ProgId]
+	FROM #BranchStats
+	ORDER BY [ProgId]
+
+	OPEN PGM_CURSOR
+
+	FETCH NEXT
+	FROM PGM_CURSOR
+	INTO @ProgramId
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SELECT libsys.[Description] AS [Library System],
+			library.[Description] AS [Library],
+			COALESCE(bs.[Signups], 0) AS [Signups],
+			COALESCE(bs.[Achievers], 0) AS [Achievers]
+		FROM [LibraryCrosswalk] lx
+		INNER JOIN [Code] library ON lx.[BranchID] = library.[CID]
+			AND library.[TenID] = @TenId
+		INNER JOIN [Code] libsys ON lx.[DistrictID] = libsys.[CID]
+			AND libsys.[TenID] = @TenId
+		LEFT OUTER JOIN #BranchStats bs ON bs.[BranchId] = lx.[BranchId]
+			AND bs.[ProgId] = @ProgramId
+		ORDER BY lx.[DistrictId],
+			lx.[BranchId]
+
+		FETCH NEXT
+		FROM PGM_CURSOR
+		INTO @ProgramId
+	END
+
+	DROP TABLE #BranchStats
 END
 GO
 
@@ -24861,7 +25171,7 @@ GO
 SET ANSI_PADDING ON
 GO
 
-/****** Object:  Table [dbo].[SRPUser]    Script Date: 2/4/2016 13:18:40 ******/
+/****** Object:  Table [dbo].[SRPUser]    Script Date: 6/6/2016 15:29:59 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -24891,6 +25201,7 @@ CREATE TABLE [dbo].[SRPUser] (
 	[AddedDate] [datetime] NULL,
 	[AddedUser] [varchar](50) NULL,
 	[TenID] [int] NULL,
+	[MailSignature] [nvarchar](255) NULL,
 	[FldInt1] [int] NULL,
 	[FldInt2] [int] NULL,
 	[FldInt3] [int] NULL,

@@ -71,7 +71,7 @@ family-member-add-register-new=Register a new family member
 family-member-add-has-account=My family member already has an account
 family-member-add-instructions=<p>Create a new account for a family member.</p>
 family-member-add-existing-instructions=<p>Add an existing account as a family member. Enter your family member's username and password below.</p>
-family-member-add-username-password-details=Enter details to create an account for a family member.<br><br><ul><li>The <strong>username</strong> can be anything you like as long as it is 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see the username in the activity feed</strong> so consider that while you select your username.</li><br><li>The <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li><br><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
+family-member-add-username-password-details=Enter details to create an account for a family member.<br><br><ul><li>The <strong>username</strong> can be anything you like as long as it is between 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see the username in the activity feed</strong> so consider that while you select your username.</li><br><li>The <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li><br><li>Required fields are marked with an asterisk (<span class="text-danger glyphicon glyphicon-asterisk"></span>).</li></ul>
 family-member-add-save=Save
 family-member-add-cancel=Cancel
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,7 +115,7 @@ registration-success=Your account has been successfully created!
 registration-success-family-account=<p>Your Account has been successfully created.</p><p>You also indicated you want to create accounts for other members of your household: click "Next" to add a another account, or click "Done" if you are done adding family member accounts.</p>
 registration-terms-agreement=I agree that by participating in this summer reading program I will be honest about my reading activities.
 registration-privacy-details=You may show my username (but not my real name) and achievements (adventures, badges, challenges, etc.) to other participants.
-registration-form-username-password-details=You may now select your username and password for the program!<br><br><ul><li>Your <strong>username</strong> can be anything you like as long as it is 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see your username in the activity feed</strong> so consider that while you select your username.</li><br><li>Your <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li></ul>
+registration-form-username-password-details=You may now select your username and password for the program!<br><br><ul><li>Your <strong>username</strong> can be anything you like as long as it is between 5 and 25 characters long and contains no spaces. <strong>Other people in the program may see your username in the activity feed</strong> so consider that while you select your username.</li><br><li>Your <strong>password</strong> must be at least 7 characters long and contain at least one letter and one number.</li></ul>
 registration-email-not-required-note=Email address is not required but the easiest way to recover a forgotten password is for the system to email you.
 registration-button-previous=< Previous
 registration-button-next=Next >
@@ -155,6 +155,7 @@ registration-form-group=Group/team name:
 registration-form-terms=Terms of use:
 registration-form-information-sharing=Information sharing:
 registration-form-consent=Parental consent:
+registration-form-consent-error=You, or a parent/guardian must accept the agreement to participate.
 registration-form-avatar=Avatar:
 registration-goal-limits-note=The goal for this program requires a minimum of {0} and a maximum of {1}.
 
@@ -283,3 +284,11 @@ points-goal-label=Reading Goal
 ;; Daily Image control
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 daily-image-button=<span class="glyphicon glyphicon-picture"></span> Daily literacy tip!
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Certificate
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+certificate-program=Reading Program
+certificate-award=Reading Achievement Award
+certificate-summary=The Great Reading Adventure Reading Program!
+certificate-not-yet=You haven't earned a certificate yet. You have <strong>{0:n0}</strong> out of a required <strong>{1:n0}</strong> points. You'll receive the certificate after earning <strong>{2:n0}</strong> more points.
+certificate-keep-reading-button=<span class="glyphicon glyphicon-bookmark"></span> Keep reading!

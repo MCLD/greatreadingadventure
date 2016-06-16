@@ -522,16 +522,9 @@ namespace GRA.SRP.DAL
 
             if (dr.Read())
             {
-
-                // declare return value
-
-                Programs result = new Programs();
-
                 DateTime _datetime;
 
                 int _int;
-
-                //decimal _decimal;
 
                 if (int.TryParse(dr["PID"].ToString(), out _int)) this.PID = _int;
                 this.AdminName = dr["AdminName"].ToString();
@@ -583,11 +576,11 @@ namespace GRA.SRP.DAL
                 if (DateTime.TryParse(dr["PreTestEndDate"].ToString(), out _datetime)) this.PreTestEndDate = _datetime;
                 if (DateTime.TryParse(dr["PostTestStartDate"].ToString(), out _datetime)) this.PostTestStartDate = _datetime;
                 if (int.TryParse(dr["GoalDefault"].ToString(), out _int)) this.GoalDefault = _int;
-                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) result.GoalMin = _int;
-                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) result.GoalMax = _int;
-                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) result.GoalIntervalId = _int;
-                result.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
-                result.DisplayDailyImage = dr["DisplayDailyImage"] as bool? == true;
+                if (int.TryParse(dr["GoalMin"].ToString(), out _int)) this.GoalMin = _int;
+                if (int.TryParse(dr["GoalMax"].ToString(), out _int)) this.GoalMax = _int;
+                if (int.TryParse(dr["GoalIntervalId"].ToString(), out _int)) this.GoalIntervalId = _int;
+                this.HideSchoolInRegistration = dr["HideSchoolInRegistration"] as bool? == true;
+                this.DisplayDailyImage = dr["DisplayDailyImage"] as bool? == true;
 
                 dr.Close();
 

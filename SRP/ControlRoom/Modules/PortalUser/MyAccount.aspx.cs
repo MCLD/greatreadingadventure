@@ -20,8 +20,15 @@ namespace GRA.SRP.ControlRoom.Modules.PortalUser
             if (!IsPostBack)
             {
                 SetPageRibbon(StandardModuleRibbons.MyAccountRibbon());
-                lblUID.Text = SRPUser.Uid.ToString();
-                dv.ChangeMode(DetailsViewMode.Edit);
+                if (SRPUser == null)
+                {
+                    Response.Redirect("~/ControlRoom/", false);
+                }
+                else
+                {
+                    lblUID.Text = SRPUser.Uid.ToString();
+                    dv.ChangeMode(DetailsViewMode.Edit);
+                }
             }
         }
 
@@ -62,50 +69,55 @@ namespace GRA.SRP.ControlRoom.Modules.PortalUser
             {
                 try
                 {
-                        SRPUser obj = new SRPUser();
-                        int pk = (int)SRPUser.Uid;
-                        obj = SRPUser.Fetch(pk);
+                    SRPUser updateSrpUser = new SRPUser();
+                    int pk = (int)SRPUser.Uid;
+                    updateSrpUser = SRPUser.Fetch(pk);
 
-                        obj.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
-                        obj.LastName = ((TextBox)((DetailsView)sender).FindControl("Lastname")).Text;
-                        obj.LastName = ((TextBox)((DetailsView)sender).FindControl("Lastname")).Text;
-                        obj.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("Emailaddress")).Text;
-                        obj.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
-                        obj.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
-                        obj.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
-                        obj.LastModDate = DateTime.Now;
-                        obj.LastModUser = "N/A";  // Get from session
+                    updateSrpUser.FirstName = ((TextBox)((DetailsView)sender).FindControl("FirstName")).Text;
+                    updateSrpUser.LastName = ((TextBox)((DetailsView)sender).FindControl("Lastname")).Text;
+                    updateSrpUser.LastName = ((TextBox)((DetailsView)sender).FindControl("Lastname")).Text;
+                    updateSrpUser.EmailAddress = ((TextBox)((DetailsView)sender).FindControl("Emailaddress")).Text;
+                    updateSrpUser.Title = ((TextBox)((DetailsView)sender).FindControl("Title")).Text;
+                    updateSrpUser.Department = ((TextBox)((DetailsView)sender).FindControl("Department")).Text;
+                    updateSrpUser.Division = ((TextBox)((DetailsView)sender).FindControl("Division")).Text;
+                    updateSrpUser.LastModDate = DateTime.Now;
+                    updateSrpUser.LastModUser = "N/A";  // Get from session
+                    string signature = ((TextBox)((DetailsView)sender).FindControl("MailSignature")).Text;
+                    if(!string.IsNullOrWhiteSpace(signature.Trim()))
+                    {
+                        updateSrpUser.MailSignature = signature.Trim();
+                    }
 
-                        if (obj.IsValid(BusinessRulesValidationMode.UPDATE))
+                    if (updateSrpUser.IsValid(BusinessRulesValidationMode.UPDATE))
+                    {
+                        updateSrpUser.Update();
+                        SRPUser = updateSrpUser;
+                        Session[SessionData.UserProfile.ToString()] = updateSrpUser;
+
+                        if (e.CommandName.ToLower() == "saveandback")
                         {
-                            obj.Update();
-                            SRPUser = obj;
-                            Session[SessionData.UserProfile.ToString()] = obj;
-
-                            if (e.CommandName.ToLower() == "saveandback")
-                            {
-                                Response.Redirect(returnURL);
-                            }
-                            odsCMSUser.DataBind();
-                            dv.DataBind();
-                            dv.ChangeMode(DetailsViewMode.Edit);
-
-                            //ICMSMasterPage masterPage = (ICMSMasterPage)Master;
-                            //masterPage.
-                            PageMessage = SRPResources.SaveOK;
+                            Response.Redirect(returnURL);
                         }
-                        else
+                        odsCMSUser.DataBind();
+                        dv.DataBind();
+                        dv.ChangeMode(DetailsViewMode.Edit);
+
+                        //ICMSMasterPage masterPage = (ICMSMasterPage)Master;
+                        //masterPage.
+                        PageMessage = SRPResources.SaveOK;
+                    }
+                    else
+                    {
+                        //ICMSMasterPage masterPage = (ICMSMasterPage)Master;
+                        string message = String.Format(SRPResources.ApplicationError1, "<ul>");
+                        foreach (BusinessRulesValidationMessage m in updateSrpUser.ErrorCodes)
                         {
-                            //ICMSMasterPage masterPage = (ICMSMasterPage)Master;
-                            string message = String.Format(SRPResources.ApplicationError1, "<ul>");
-                            foreach (BusinessRulesValidationMessage m in obj.ErrorCodes)
-                            {
-                                message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
-                            }
-                            message = string.Format("{0}</ul>", message);
-                            //masterPage.
-                            PageError = message;
+                            message = string.Format(String.Format("{0}<li>{{0}}</li>", message), m.ErrorMessage);
                         }
+                        message = string.Format("{0}</ul>", message);
+                        //masterPage.
+                        PageError = message;
+                    }
                 }
                 catch (Exception ex)
                 {

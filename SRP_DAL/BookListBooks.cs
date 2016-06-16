@@ -241,7 +241,7 @@ namespace GRA.SRP.DAL
                 result.Author = dr["Author"].ToString();
                 result.Title = dr["Title"].ToString();
                 result.ISBN = dr["ISBN"].ToString();
-                result.URL = dr["URL"].ToString();
+                result.URL = dr["URL"].ToString().Trim();
                 if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) result.LastModDate = _datetime;
                 result.LastModUser = dr["LastModUser"].ToString();
                 if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) result.AddedDate = _datetime;
@@ -301,7 +301,7 @@ namespace GRA.SRP.DAL
                 this.Author = dr["Author"].ToString();
                 this.Title = dr["Title"].ToString();
                 this.ISBN = dr["ISBN"].ToString();
-                this.URL = dr["URL"].ToString();
+                this.URL = dr["URL"].ToString().Trim();
                 if (DateTime.TryParse(dr["LastModDate"].ToString(), out _datetime)) this.LastModDate = _datetime;
                 this.LastModUser = dr["LastModUser"].ToString();
                 if (DateTime.TryParse(dr["AddedDate"].ToString(), out _datetime)) this.AddedDate = _datetime;

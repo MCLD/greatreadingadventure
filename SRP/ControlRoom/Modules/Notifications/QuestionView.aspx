@@ -10,6 +10,10 @@
             font-size: larger;
             padding: 0.5em;
         }
+        .gra-message-header-padded {
+            margin-top: 1em;
+            display: inline-block;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -28,17 +32,14 @@
         OnDataBound="dv_DataBound"
         Width="100%">
         <Fields>
-
             <asp:BoundField DataField="NID" HeaderText="NID: " SortExpression="NID" ReadOnly="True" InsertVisible="False" Visible="false">
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
                 <ItemStyle Width="100%" />
             </asp:BoundField>
 
-
-
             <asp:TemplateField HeaderText="Subject:" SortExpression="Subject" HeaderStyle-Wrap="False" HeaderStyle-CssClass="gra-message-header" ItemStyle-CssClass="gra-message-field">
                 <EditItemTemplate>
-                    <%# Eval("Subject") %>
+                    <div class="margin-1em-left"><%# Eval("Subject") %></div>
                 </EditItemTemplate>
                 <InsertItemTemplate>
                     <asp:TextBox ID="Subject" runat="server" Text='' Width="500px"></asp:TextBox>
@@ -53,9 +54,11 @@
                 <ItemStyle Width="100%" />
             </asp:TemplateField>
 
-            <asp:TemplateField HeaderText="Message:" SortExpression="Body" HeaderStyle-Wrap="False" HeaderStyle-CssClass="gra-message-header" ItemStyle-CssClass="gra-message-field">
+            <asp:TemplateField HeaderText="Message:" SortExpression="Body" HeaderStyle-Wrap="False" HeaderStyle-CssClass="gra-message-header gra-message-header-padded" ItemStyle-CssClass="gra-message-field">
                 <EditItemTemplate>
-                    <%# Eval("Body") %><br />
+                    <div style="padding: 1em;">
+                        <%# Eval("Body") %>
+                    </div>
                 </EditItemTemplate>
                 <InsertItemTemplate>
                     <textarea runat="server" id="Body" class="gra-editor"></textarea>
@@ -68,7 +71,7 @@
 
             <asp:TemplateField HeaderText="Reply:" HeaderStyle-CssClass="gra-message-header">
                 <EditItemTemplate>
-                    <textarea runat="server" id="Reply" class="gra-editor"></textarea>
+                    <textarea runat="server" id="Reply" class="gra-editor" style="height: 10em;"></textarea>
                 </EditItemTemplate>
                 <HeaderStyle Font-Bold="True" HorizontalAlign="Right" VerticalAlign="Top" />
             </asp:TemplateField>

@@ -151,6 +151,7 @@
     <Content Include="Badges\Details.aspx" />
     <Content Include="Blank.aspx" />
     <Content Include="browserconfig.xml" />
+    <Content Include="Certificate\Default.aspx" />
     <Content Include="Challenges\Default.aspx" />
     <Content Include="Challenges\Details.aspx" />
     <Content Include="Account\ChangeFamMemberPwd.aspx" />
@@ -245,6 +246,7 @@
     <Content Include="ControlRoom\RibbonImages\TenantSummary.png" />
     <Content Include="ControlRoom\RibbonImages\TestsSurveys%402x.png" />
     <Content Include="ControlRoom\RibbonImages\TestsSurveys.png" />
+    <Content Include="ControlRoom\UnreadBadge.js" />
     <Content Include="Controls\DailyImage.ascx" />
     <Content Include="Controls\Feed.ascx" />
     <Content Include="Controls\MyAvatarControl.ascx" />
@@ -324,6 +326,7 @@
     <Content Include="ControlRoom\Handlers\CodeAvailable.ashx" />
     <Content Include="Handlers\UnreadCount.ashx" />
     <Content Include="ControlRoom\Handlers\QRCode.ashx" />
+    <Content Include="ControlRoom\Handlers\UnreadMail.ashx" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -937,6 +940,13 @@
     <Compile Include="Blank.aspx.designer.cs">
       <DependentUpon>Blank.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Certificate\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Certificate\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Challenges\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -973,6 +983,7 @@
     </Compile>
     <Compile Include="Code\ControlRoom\ControlRoomAccessPermission.cs" />
     <Compile Include="Code\ControlRoom\IControlRoomMaster.cs" />
+    <Compile Include="Code\ControlRoom\Mail.cs" />
     <Compile Include="Code\ControlRoom\RibbonLink.cs" />
     <Compile Include="Code\ControlRoom\SRPTopMenuItem.cs" />
     <Compile Include="Code\ControlRoom\StandardModuleRibbons.cs" />
@@ -1105,6 +1116,9 @@
     </Compile>
     <Compile Include="ControlRoom\Handlers\QRCode.ashx.cs">
       <DependentUpon>QRCode.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="ControlRoom\Handlers\UnreadMail.ashx.cs">
+      <DependentUpon>UnreadMail.ashx</DependentUpon>
     </Compile>
     <Compile Include="ControlRoom\Modules\About\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

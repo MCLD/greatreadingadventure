@@ -55,9 +55,8 @@
                     DataSourceID="BranchDataSource"
                     DataTextField="Description"
                     DataValueField="CID"
-                    AppendDataBoundItems="True"
+                    OnDataBound="BranchId_DataBound"
                     CssClass="form-control">
-                    <asp:ListItem Value="0">All libraries/branches</asp:ListItem>
                 </asp:DropDownList>
             </div>
         </div>

@@ -35,8 +35,9 @@
             <div class="col-xs-12">
                 <table class="table table-condensed table-striped table-bordered table-hover">
                     <tr class="info">
-                        <th>Event Name</th>
-                        <th>Event Date</th>
+                        <th>Challenge Name</th>
+                        <th>Available Tasks</th>
+                        <th>Tasks to Complete</th>
                         <th>Added by</th>
                         <th>Modified by</th>
                         <th>Possible issue</th>
@@ -51,8 +52,9 @@
                         </HeaderTemplate>
                         <ItemTemplate>
                             <tr>
-                                <td><%#Eval("EventTitle") %></td>
-                                <td><%#Eval("EventDate", "{0:M/d/yy h:mm tt}")%></td>
+                                <td><%#Eval("AdminName") %></td>
+                                <td><%#Eval("AvailableTasks")%></td>
+                                <td><%#Eval("TasksToComplete")%></td>
                                 <td><%#Eval("AddedUser") %></td>
                                 <td><%#Eval("LastModUser") %></td>
                                 <td><%#Eval("Issue") %></td>

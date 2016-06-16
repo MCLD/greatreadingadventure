@@ -416,7 +416,6 @@ namespace GRA.SRP.Controls
         {
             BranchDataSource.Select();
             BranchId.Items.Clear();
-            BranchId.Items.Add(new ListItem("All libraries/branches", "0"));
             BranchId.DataBind();
             if (BranchId.Items.Count == 2)
             {
@@ -447,6 +446,11 @@ namespace GRA.SRP.Controls
         protected void ThisWeek_Click(object sender, EventArgs e)
         {
             ShowThisWeek();
+        }
+
+        protected void BranchId_DataBound(object sender, EventArgs e)
+        {
+            BranchId.Items.Insert(0, new ListItem("All libraries/branches", "0"));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace SRPApp.Classes
                 int? tenantId = tenantIdSession as int?;
                 int? crTenantId = CRTenantID;
 
-                if (tenantId != crTenantId)
+                if (crTenantId != null && tenantId != crTenantId)
                 {
                     // tenant mismatch between user's TenantID and CR login tenant id
                     // log out user
@@ -59,7 +59,10 @@ namespace SRPApp.Classes
                     return;
                 }
 
-                this.ViewState["TenantID"] = crTenantId;
+                if (crTenantId != null)
+                {
+                    this.ViewState["TenantID"] = crTenantId;
+                }
             };
         }
 

@@ -21,6 +21,20 @@ namespace GRA.Tools
         private const string TwitterStubTextUrl = "http://twitter.com/share?text={0}&url={1}";
         private const string FacebookStubUrl = "http://www.facebook.com/sharer.php?u={0}";
 
+        public string RemoteUserAddress(HttpRequest request)
+        {
+            string ip = request.UserHostAddress;
+            if (!string.IsNullOrEmpty(request.ServerVariables["HTTP_X_FORWARDED_FOR"]))
+            {
+                ip = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                if (ip.Contains(":"))
+                {
+                    ip = ip.Substring(0, ip.LastIndexOf(':'));
+                }
+            }
+            return ip;
+        }
+
         /// <summary>
         /// Provided an <see cref="HttpRequest"/>, returns the URL to the current path minus the
         /// trailing slash.

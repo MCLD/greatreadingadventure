@@ -45,7 +45,7 @@ namespace GRA.SRP.ControlRoom {
                 SystemName = SRPSettings.GetSettingValue("SysName", user.TenID),
                 ContactName = SRPSettings.GetSettingValue("ContactName", user.TenID),
                 ContactEmail = SRPSettings.GetSettingValue("ContactEmail", user.TenID),
-                RemoteAddress = Request.UserHostAddress,
+                RemoteAddress = new Tools.WebTools().RemoteUserAddress(Request),
                 UserEmail = user.EmailAddress,
                 ControlRoomLink = string.Format("{0}{1}",
                                                 BaseUrl,
