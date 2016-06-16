@@ -453,14 +453,9 @@ namespace GRA.SRP
                         var temp = ProgramGamePointConversion.FetchObjectByActivityId(pgm.PID,
                                                                                  activityTypeId);
 
-
                         if (temp != null && temp.PointCount > 0)
                         {
-                            if (activityTypeValue == ActivityType.Minutes || activityTypeValue == ActivityType.Pages)
-                            {
-                                pgc = temp;
-                                break;
-                            }
+                            pgc = temp;
                         }
                     }
 

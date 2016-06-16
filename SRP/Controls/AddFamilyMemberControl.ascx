@@ -128,8 +128,15 @@
                     <asp:Label runat="server" Text="registration-form-program"></asp:Label>
                 </label>
                 <div class="col-sm-6">
-                    <asp:DropDownList ID="ProgID" runat="server" DataSourceID="odsDDPrograms" DataTextField="TabName" DataValueField="PID"
-                        AppendDataBoundItems="True" CssClass="form-control required-asterisk program-dropdown" data-asterisk="ProgramReq">
+                    <asp:DropDownList ID="ProgID" runat="server"
+                        DataSourceID="odsDDPrograms" 
+                        DataTextField="TabName" 
+                        DataValueField="PID"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="Program_SelectedIndexChanged"
+                        AppendDataBoundItems="True" 
+                        CssClass="form-control required-asterisk program-dropdown" 
+                        data-asterisk="ProgramReq">
                         <asp:ListItem Value="" Text="[Select a Value]"></asp:ListItem>
                     </asp:DropDownList>
                 </div>
@@ -584,6 +591,35 @@
                         SetFocusOnError="True">required</asp:RequiredFieldValidator>
                 </div>
             </div>
+
+            <div class="form-group" runat="server" visible='<%# (bool)Eval("Goal_Prompt")%>'>
+                <label class="col-sm-3 control-label">
+                    <asp:Literal ID="GoalLabel" runat="server" Text="registration-form-daily-goal"></asp:Literal>
+                </label>
+                <div class="col-sm-6">
+                    <asp:TextBox ID="Goal" runat="server" CssClass="form-control required-asterisk" data-asterisk="GoalReq"></asp:TextBox>
+                </div>
+                <div class="col-sm-3 form-control-static">
+                    <span runat="server" visible='<%# Eval("Goal_Req") %>' class="text-danger glyphicon glyphicon-asterisk glyphicon-sm GoalReq"></span>
+                    <asp:RequiredFieldValidator runat="server" Enabled='<%# Eval("Goal_Req") %>'
+                        ControlToValidate="Goal" Display="Dynamic" ErrorMessage="Goal is required"
+                        SetFocusOnError="True">required</asp:RequiredFieldValidator>
+                    <asp:RangeValidator
+                        ID="GoalRangeValidator"
+                        MinimumValue="0"
+                        MaximumValue="100"
+                        ControlToValidate="Goal"
+                        Display="Dynamic"
+                        Type="Integer"
+                        EnableClientScript="true"
+                        ErrorMessage='Invalid range for Goal'
+                        runat="server"
+                        Text='invalid range'
+                        EnableTheming="True"
+                        SetFocusOnError="True" />
+                </div>
+            </div>
+
 
             <div class="form-group" runat="server" visible='<%# (bool)Eval("LiteracyLevel1_Prompt")%>'>
                 <label class="col-sm-3 control-label">

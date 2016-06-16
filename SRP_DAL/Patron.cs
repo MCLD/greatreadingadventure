@@ -919,6 +919,9 @@ namespace GRA.SRP.DAL
             if (conversion != null)
             {
                 goal *= conversion.PointCount;
+
+                if (conversion.ActivityCount != 0)
+                    goal /= conversion.ActivityCount;
             }
 
             /* protect against divide by zero error */

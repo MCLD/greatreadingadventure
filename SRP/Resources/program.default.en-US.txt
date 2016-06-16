@@ -155,6 +155,7 @@ registration-form-group=Group/team name:
 registration-form-terms=Terms of use:
 registration-form-information-sharing=Information sharing:
 registration-form-consent=Parental consent:
+registration-form-consent-error=You, or a parent/guardian must accept the agreement to participate.
 registration-form-avatar=Avatar:
 registration-goal-limits-note=The goal for this program requires a minimum of {0} and a maximum of {1}.
 

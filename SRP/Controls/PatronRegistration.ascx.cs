@@ -326,6 +326,9 @@ namespace GRA.SRP.Controls
                 var PID = int.Parse(((DropDownList)rptr.Items[0].FindControl("ProgID")).SelectedValue);
                 var selectedProgram = DAL.Programs.FetchObject(PID);
 
+                // disable goal field when the user has a set goal 
+                ((TextBox)rptr.Items[0].FindControl("Goal")).Enabled = (selectedProgram.GoalMin != selectedProgram.GoalMax);
+
 
                 // Goal needs to be modified by ProgramGamePointConversion
                 /* If daily goal is enabled we need to find what method point system uses. Just select the first item that is relevant.. */
