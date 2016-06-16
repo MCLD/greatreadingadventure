@@ -24,6 +24,7 @@ using System.Xml;
 using System.Data.SqlClient;
 using System.Collections;
 using SQLHelper;
+using System.Collections.Generic;
 
 namespace Microsoft.ApplicationBlocks.Data
 {
@@ -268,6 +269,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
             // detach the SqlParameters from the command object, so they can be used again.
@@ -359,6 +361,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -548,6 +551,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
             // detach the SqlParameters from the command object, so they can be used again.			
@@ -577,6 +581,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -673,6 +678,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -777,6 +783,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -833,13 +840,8 @@ namespace Microsoft.ApplicationBlocks.Data
                 }
                 catch (Exception ex)
                 {
-                    "SQLHelper".Log().Error("Error in ExecuteReader: `{0}`: {1} - {2}",
-                        commandText,
-                        ex.Message,
-                        ex.StackTrace);
                     cn.Close();
                     throw;
-
                 }
             }
             catch (Exception)
@@ -1158,6 +1160,7 @@ namespace Microsoft.ApplicationBlocks.Data
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -1244,12 +1247,14 @@ namespace Microsoft.ApplicationBlocks.Data
             try
             {
                 retval = cmd.ExecuteScalar();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 "SQLHelper".Log().Error("Error in ExecuteScalar: `{0}`: {1} - {2}",
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -1339,12 +1344,14 @@ namespace Microsoft.ApplicationBlocks.Data
             try
             {
                 retval = cmd.ExecuteXmlReader();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 "SQLHelper".Log().Error("Error in ExecuteXmlReader: `{0}`: {1} - {2}",
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -1431,12 +1438,14 @@ namespace Microsoft.ApplicationBlocks.Data
             try
             {
                 retval = cmd.ExecuteXmlReader();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 "SQLHelper".Log().Error("Error in ExecuteXmlReader: `{0}`: {1} - {2}",
                     commandText,
                     ex.Message,
                     ex.StackTrace);
+                ErrorLogParameters(commandText, commandParameters);
                 throw;
             }
 
@@ -1483,6 +1492,34 @@ namespace Microsoft.ApplicationBlocks.Data
 
 
         #endregion ExecuteXmlReader
+
+        /// <summary>
+        /// Log command parameters for tracking down SQL errors
+        /// </summary>
+        /// <param name="command">The name of the stored procedure or a name to associate the 
+        /// parameters with the query</param>
+        /// <param name="parameters">An <see cref="IEnmerable"/> of the query's parameters</param>
+        public static void ErrorLogParameters(string command, IEnumerable<SqlParameter> parameters)
+        {
+            try
+            {
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                    {
+                        "SQLHelper".Log().Error("{0} parameter {1} = {2}",
+                            command,
+                            parameter.ParameterName,
+                            parameter.Value);
+                    }
+                }
+            } catch (Exception ex)
+            {
+                "SQLHelper".Log().Error("Error logging SQL parameters: {0} - {1}",
+                    ex.Message,
+                    ex.StackTrace);
+            }
+        }
     }
 
     /// <summary>

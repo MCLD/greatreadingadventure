@@ -174,4 +174,7 @@
   <data name="ProductName" xml:space="preserve">
     <value>Great Reading Adventure Control Room</value>
   </data>
+  <data name="PatronAddedOkWithBadges" xml:space="preserve">
+    <value>Patron added successfully, earned the following badges: </value>
+  </data>
 </root>

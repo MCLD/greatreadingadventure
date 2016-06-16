@@ -772,9 +772,9 @@ namespace GRA.SRP.DAL
             if (pidObject == null
                || !int.TryParse(pidObject.ToString(), out pid))
             {
-                "SRPUser".Log().Error("Unable parse to parse PID {0}, returned value: {0}",
-                                      pidObject,
-                                      pid);
+                "SRPUser".Log().Info("Password recovery lookup failed: patron looked up = {0}, token was {1}",
+                                     pidObject ?? "NULL",
+                                     token);
                 return null;
             }
 

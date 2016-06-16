@@ -169,6 +169,15 @@ namespace GRA.SRP.ControlRoom {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Patron added successfully, earned the following badges: .
+        /// </summary>
+        public static string PatronAddedOkWithBadges {
+            get {
+                return ResourceManager.GetString("PatronAddedOkWithBadges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Great Reading Adventure Control Room.
         /// </summary>
         public static string ProductName {

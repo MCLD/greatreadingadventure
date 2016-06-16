@@ -11,6 +11,7 @@ using GRA.SRP.ControlRooms;
 using GRA.SRP.Core.Utilities;
 using GRA.SRP.DAL;
 using GRA.SRP.Utilities.CoreClasses;
+using GRA.SRP.Controls;
 
 namespace GRA.SRP.ControlRoom.Controls
 {
@@ -89,7 +90,7 @@ namespace GRA.SRP.ControlRoom.Controls
                 ((RequiredFieldValidator)rptr.Items[0].FindControl("rfvUsername")).Enabled = false;
                 ((TextBox)rptr.Items[0].FindControl("Password")).Text = PasswordFiller;
             }
-            if (Session["CURR_PATRON_MODE"].ToString() == "ADDSUB")
+            if (Session["CURR_PATRON_MODE"] as string == "ADDSUB")
             {
                 var ima = ((CheckBox)(rptr.Items[0]).FindControl("IsMasterAccount"));
                 ima.Enabled = false;
@@ -244,7 +245,26 @@ namespace GRA.SRP.ControlRoom.Controls
                             Session["CURR_PATRON_MODE"] = "EDIT";
                             LoadControl();
 
+                            // award any required sign-up badges
+                            var prog = Programs.FetchObject(p.ProgID);
+                            var earnedBadgesList = new List<Badge>();
+                            if (prog.RegistrationBadgeID != 0)
+                            {
+                                AwardPoints.AwardBadgeToPatron(prog.RegistrationBadgeID,
+                                                               p,
+                                                               ref earnedBadgesList);
+                            }
+                            AwardPoints.AwardBadgeToPatronViaMatchingAwards(p,
+                                ref earnedBadgesList);
+
                             masterPage.PageMessage = SRPResources.AddedOK;
+
+                            if (earnedBadgesList.Count > 0)
+                            {
+                                masterPage.PageMessage = string.Format("{0}{1}",
+                                    SRPResources.PatronAddedOkWithBadges,
+                                    string.Join(", ", earnedBadgesList.Select(b => b.UserName)));
+                            }
 
                             if (e.CommandName.ToLower() == "saveandback")
                             {

@@ -45,22 +45,17 @@ namespace SRPApp.Classes
         {
             if (permissionValue != 0)
             {
-                try
+                string permList = Session[SessionData.StringPermissionList.ToString()] as string;
+                if (string.IsNullOrEmpty(permList))
                 {
-                    string permList = Session[SessionData.StringPermissionList.ToString()] as string;
-                    if (string.IsNullOrEmpty(permList))
-                    {
-                        Response.Redirect("~/ControlRoom/Login.aspx", false);
-                    }
+                    Response.Redirect("~/ControlRoom/Login.aspx", false);
+                }
+                else
+                {
                     if (!permList.Contains(permissionValue.ToString()))
                     {
                         Response.Redirect("~/ControlRoom/NoAccess.aspx", false);
                     }
-                }
-                catch (Exception ex)
-                {
-                    this.Log().Error("Error checking permissions: {0}", ex.Message);
-                    Response.Redirect("~/ControlRoom/Login.aspx", false);
                 }
             }
         }

@@ -31,6 +31,11 @@ namespace GRA.SRP.ControlRoom.Modules.Reports
 
         protected void UpdateReport()
         {
+            if(CRTenantID == null)
+            {
+                this.Log().Error("CRTenantID is null, unable to call UpdateReport()");
+                return;
+            }
             var ts = new TenantStatus((int)CRTenantID);
             if (ProgramList.SelectedValue != "0")
             {
