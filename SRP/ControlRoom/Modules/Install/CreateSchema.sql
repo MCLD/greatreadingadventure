@@ -19656,9 +19656,6 @@ GROUP BY bl.[BLID],
 HAVING COUNT(DISTINCT blb.[BLBID]) < bl.[NumBooksToComplete]
 GO
 
-USE [summerreading16]
-GO
-
 /****** Object:  StoredProcedure [dbo].[rpt_DashboardStats]    Script Date: 6/9/2016 08:29:41 ******/
 SET ANSI_NULLS ON
 GO
@@ -20319,9 +20316,6 @@ WHERE (
 		OR [SecretCode] = ''
 		)
 	AND [TenID] = @TenID;
-GO
-
-USE [summerreading16]
 GO
 
 /****** Object:  StoredProcedure [dbo].[rpt_FinisherStats]    Script Date: 6/9/2016 08:51:27 ******/
