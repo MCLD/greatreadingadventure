@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GRA.Web.Controllers
+namespace GRA.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : GRABaseController
     {
+        public HomeController(Domain.GRAService service) : base(service) { }
+
         public IActionResult Index()
         {
             return View();
