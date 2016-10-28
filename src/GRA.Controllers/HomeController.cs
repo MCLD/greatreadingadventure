@@ -10,8 +10,10 @@ namespace GRA.Controllers
     {
         public HomeController(Domain.GRAService service) : base(service) { }
 
-        public IActionResult Index()
+        public IActionResult Index(string site = null)
         {
+            var siteList = service.GetSitePaths();
+
             return View();
         }
 

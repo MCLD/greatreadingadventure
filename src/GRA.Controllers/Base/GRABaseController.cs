@@ -8,7 +8,7 @@ namespace GRA.Controllers
 {
     public class GRABaseController : Controller
     {
-        private readonly Domain.GRAService srv;
+        protected readonly Domain.GRAService service;
 
         public GRABaseController(Domain.GRAService service)
         {
@@ -16,7 +16,7 @@ namespace GRA.Controllers
             {
                 throw new ArgumentNullException("service");
             }
-            this.srv = service;
+            this.service = service;
         }
     }
 }

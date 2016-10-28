@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain
 {
-    public interface IGRARepository : IDisposable
+    public class Site
     {
-        IEnumerable<Site> GetSites();
+        public string Path { get; set; }
     }
 }

@@ -7,14 +7,19 @@ namespace GRA.Domain
 {
     public class GRAService
     {
-        private readonly GRARepository repo;
-        public GRAService(GRARepository repository)
+        private readonly IGRARepository repo;
+        public GRAService(IGRARepository repository)
         {
             if(repository == null)
             {
                 throw new ArgumentNullException("repository");
             }
             repo = repository;
+        }
+
+        public IEnumerable<Domain.Site> GetSitePaths()
+        {
+            return repo.GetSites();
         }
     }
 }

@@ -19,6 +19,7 @@ namespace GRA.Web
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -29,12 +30,14 @@ namespace GRA.Web
         {
             // Add framework services.
             services.AddMvc();
-            services.AddScoped<Domain.GRARepository, Data.SqlServer.GRARepositorySqlServer>();
+            services.AddScoped<Domain.IGRARepository, Data.SqlServer.GRARepositorySqlServer>();
             services.AddScoped<Domain.GRAService, Domain.GRAService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -54,7 +57,12 @@ namespace GRA.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
+                    name: null,
+                    template: "{sitePath}/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" },
+                    constraints: new { site = new RouteConstraints.SiteRouteConstraint() });
+                routes.MapRoute(
+                    name: null,
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
