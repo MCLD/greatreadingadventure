@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +32,7 @@ namespace GRA.Web
             // Add framework services.
             services.AddSingleton(_ => Configuration);
             services.AddMvc();
+            services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
             services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
             services.AddScoped<Domain.IRepository, Data.Repository>();

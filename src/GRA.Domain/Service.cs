@@ -1,15 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Domain
 {
     public class Service
     {
+        private readonly ILogger<Service> logger;
         private readonly IRepository repo;
-        public Service(IRepository repository)
+        public Service(ILogger<Service> logger, IRepository repository)
         {
+            if(logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+            this.logger = logger;
             if(repository == null)
             {
                 throw new ArgumentNullException("repository");

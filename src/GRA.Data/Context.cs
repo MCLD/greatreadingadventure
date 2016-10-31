@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data
 {
@@ -12,6 +9,10 @@ namespace GRA.Data
         protected readonly IConfigurationRoot config;
         public Context(IConfigurationRoot config)
         {
+            if (config == null)
+            {
+                throw new ArgumentNullException("config");
+            }
             this.config = config;
         }
 

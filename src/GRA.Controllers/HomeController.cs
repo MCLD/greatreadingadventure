@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GRA.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
-        public HomeController(Domain.Service service) : base(service) { }
+        private readonly ILogger<HomeController> logger;
+        public HomeController(ILogger<HomeController> logger, ServiceFacade.Controller context) 
+            : base(context)
+        {
+            this.logger = logger;
+        }
 
         public IActionResult Index(string site = null)
         {
             var siteList = service.GetSitePaths();
+            if (siteList.Count() == 0)
+            {
+                logger.LogInformation("Site list from database is empty");
+            }
             return View();
         }
 
