@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace GRA.Data
     {
         private readonly ILogger<Repository> logger;
         private readonly Context context;
-        public Repository(ILogger<Repository> logger, Context context)
+        private readonly AutoMapper.IMapper mapper;
+        public Repository(ILogger<Repository> logger, Context context, AutoMapper.IMapper mapper)
         {
             if(logger == null)
             {
@@ -21,14 +23,16 @@ namespace GRA.Data
                 throw new ArgumentNullException("context");
             }
             this.context = context;
+            if(mapper == null)
+            {
+                throw new ArgumentNullException("mapper");
+            }
+            this.mapper = mapper;
         }
 
         public IEnumerable<Domain.Model.Site> GetSites()
         {
-            return context.Sites.Select(s => new Domain.Model.Site
-            {
-                Path = s.Path
-            });
+            return context.Sites.ProjectTo<Domain.Model.Site>();
         }
     }
 }

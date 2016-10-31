@@ -8,7 +8,6 @@ namespace GRA.Controllers
     {
         protected readonly IConfigurationRoot config;
         protected readonly Service service;
-
         public Controller(ServiceFacade.Controller context)
         {
             if (context == null)

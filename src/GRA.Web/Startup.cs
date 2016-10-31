@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,7 @@ namespace GRA.Web
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
             services.AddScoped<Domain.IRepository, Data.Repository>();
             services.AddScoped<Domain.Service, Domain.Service>();
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
