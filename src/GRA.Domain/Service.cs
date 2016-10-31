@@ -17,7 +17,7 @@ namespace GRA.Domain
             repo = repository;
         }
 
-        public IEnumerable<Site> GetSitePaths()
+        public IEnumerable<Model.Site> GetSitePaths()
         {
             return repo.GetSites();
         }

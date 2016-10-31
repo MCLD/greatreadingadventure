@@ -7,16 +7,15 @@ namespace GRA.Data
 {
     public class Repository : Domain.IRepository
     {
-        private Context context;
+        private readonly Context context;
         public Repository(Context context)
         {
-            //context = new Data.Context();
             this.context = context;
         }
-
-        public IEnumerable<Domain.Site> GetSites()
+        
+        public IEnumerable<Domain.Model.Site> GetSites()
         {
-            return context.Sites.Select(s => new Domain.Site
+            return context.Sites.Select(s => new Domain.Model.Site
             {
                 Path = s.Path
             });

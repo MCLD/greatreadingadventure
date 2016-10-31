@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA.Domain
+namespace GRA.Domain.Model
 {
     public class Site
     {

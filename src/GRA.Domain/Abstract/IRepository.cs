@@ -7,6 +7,6 @@ namespace GRA.Domain
 {
     public interface IRepository : IDisposable
     {
-        IEnumerable<Site> GetSites();
+        IEnumerable<Model.Site> GetSites();
     }
 }

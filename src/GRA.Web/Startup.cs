@@ -24,6 +24,7 @@ namespace GRA.Web
             if (env.IsDevelopment())
             {
                 Configuration["ConnectionStrings:DefaultConnection"] = @"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true";
+                //Configuration["ConnectionStrings:DefaultConnection"] = @"Filename=./gra4.db";
             }
         }
 
@@ -33,8 +34,10 @@ namespace GRA.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddSingleton(_ => Configuration);
             services.AddMvc();
             services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
+            //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
             services.AddScoped<Domain.IRepository, Data.Repository>();
             services.AddScoped<Domain.Service, Domain.Service>();
         }

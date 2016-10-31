@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA.Data.SqlServer
+namespace GRA.Data.SQLite
 {
-    public class SqlServerContext : Context
+    public class SQLiteContext : Context
     {
-        public SqlServerContext(IConfigurationRoot config) : base(config) { }
+        public SQLiteContext(IConfigurationRoot config) : base(config) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(config["ConnectionStrings:DefaultConnection"]);
+            optionsBuilder.UseSqlite(config["ConnectionStrings:DefaultConnection"]);
         }
     }
 }

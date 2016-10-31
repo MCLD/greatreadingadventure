@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
-    public class GRABaseController : Controller
+    public class BaseController : Controller
     {
         protected readonly Domain.Service service;
 
-        public GRABaseController(Domain.Service service)
+        public BaseController(Domain.Service service)
         {
             if (service == null)
             {

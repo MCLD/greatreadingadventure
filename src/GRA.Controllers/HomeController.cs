@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GRA.Controllers
 {
-    public class HomeController : GRABaseController
+    public class HomeController : BaseController
     {
         public HomeController(Domain.Service service) : base(service) { }
 
