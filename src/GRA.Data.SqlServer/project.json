@@ -2,8 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "GRA.Data.Model": "1.0.0-*",
-    "GRA.Domain": "1.0.0-*",
+    "GRA.Data": "1.0.0-*",
     "Microsoft.EntityFrameworkCore": "1.0.1",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "NETStandard.Library": "1.6.0"

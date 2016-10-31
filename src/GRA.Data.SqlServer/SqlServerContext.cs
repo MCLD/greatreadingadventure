@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace GRA.Data.SqlServer
 {
-    public class GRARepositorySqlContext : DbContext
+    public class SqlServerContext : Context
     {
-        public DbSet<Model.Site> Sites { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true");
         }
+
     }
 }

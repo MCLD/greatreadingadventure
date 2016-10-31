@@ -8,12 +8,11 @@ namespace GRA.Controllers
 {
     public class HomeController : GRABaseController
     {
-        public HomeController(Domain.GRAService service) : base(service) { }
+        public HomeController(Domain.Service service) : base(service) { }
 
         public IActionResult Index(string site = null)
         {
             var siteList = service.GetSitePaths();
-
             return View();
         }
 

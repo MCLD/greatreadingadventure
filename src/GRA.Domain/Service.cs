@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain
 {
-    public class GRAService
+    public class Service
     {
-        private readonly IGRARepository repo;
-        public GRAService(IGRARepository repository)
+        private readonly IRepository repo;
+        public Service(IRepository repository)
         {
             if(repository == null)
             {
@@ -17,7 +17,7 @@ namespace GRA.Domain
             repo = repository;
         }
 
-        public IEnumerable<Domain.Site> GetSitePaths()
+        public IEnumerable<Site> GetSitePaths()
         {
             return repo.GetSites();
         }

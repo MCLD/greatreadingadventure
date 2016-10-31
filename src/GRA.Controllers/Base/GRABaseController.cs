@@ -8,9 +8,9 @@ namespace GRA.Controllers
 {
     public class GRABaseController : Controller
     {
-        protected readonly Domain.GRAService service;
+        protected readonly Domain.Service service;
 
-        public GRABaseController(Domain.GRAService service)
+        public GRABaseController(Domain.Service service)
         {
             if (service == null)
             {

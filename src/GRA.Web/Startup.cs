@@ -21,6 +21,10 @@ namespace GRA.Web
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            if (env.IsDevelopment())
+            {
+                Configuration["ConnectionStrings:DefaultConnection"] = @"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true";
+            }
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -30,8 +34,9 @@ namespace GRA.Web
         {
             // Add framework services.
             services.AddMvc();
-            services.AddScoped<Domain.IGRARepository, Data.SqlServer.GRARepositorySqlServer>();
-            services.AddScoped<Domain.GRAService, Domain.GRAService>();
+            services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
+            services.AddScoped<Domain.IRepository, Data.Repository>();
+            services.AddScoped<Domain.Service, Domain.Service>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
