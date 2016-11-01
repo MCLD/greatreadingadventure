@@ -4,12 +4,23 @@
   "dependencies": {
     "GRA.Data": "1.0.0-*",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Design": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final",
     "NETStandard.Library": "1.6.0"
   },
 
   "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0-*"
+        }
+      }
     }
+  },
+
+  "tools": {
+    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final"
   }
 }
