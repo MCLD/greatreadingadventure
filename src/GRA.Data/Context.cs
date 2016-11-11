@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GRA.Data
 {
-    public abstract class Context : DbContext
+    public abstract class Context : IdentityDbContext<Domain.Model.Participant>
     {
         protected readonly string devConnectionString;
         protected readonly IConfigurationRoot config;

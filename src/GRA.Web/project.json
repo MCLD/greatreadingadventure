@@ -27,7 +27,8 @@
     "GRA.Data.SqlServer": "1.0.0-*",
     "GRA.Data.SQLite": "1.0.0-*",
     "AutoMapper": "5.1.1",
-    "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2"
+    "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0"
   },
 
   "tools": {

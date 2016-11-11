@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -13,12 +15,28 @@ namespace GRA.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index(string site = null)
+        public async Task<IActionResult> Index(string site = null)
         {
             var siteList = service.GetSitePaths();
             if (siteList.Count() == 0)
             {
                 logger.LogInformation("Site list from database is empty");
+                var user = new Domain.Model.Participant
+                {
+                    UserName = "admin"
+                };
+                IdentityResult result = await userManager.CreateAsync(user, "changeMe06!");
+                if (result.Succeeded)
+                {
+                    logger.LogInformation("Created admin account");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        logger.LogError($"Problem creating admin account: {error.Description}");
+                    }
+                }
             }
             return View();
         }
