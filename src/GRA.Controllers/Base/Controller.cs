@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace GRA.Controllers
+namespace GRA.Controllers.Base
 {
     public class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
@@ -19,6 +19,9 @@ namespace GRA.Controllers
             this.config = context.config;
             this.service = context.service;
             this.userManager = context.userManager;
+
+            // sensible default
+            ViewData["Title"] = "Great Reading Adventure";
         }
     }
 }

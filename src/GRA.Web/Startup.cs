@@ -72,6 +72,9 @@ namespace GRA.Web
             {
                 routes.MapRoute(
                     name: null,
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: null,
                     template: "{sitePath}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" },
                     constraints: new { site = new RouteConstraints.SiteRouteConstraint() });
