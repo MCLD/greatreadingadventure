@@ -33,10 +33,10 @@ Ensure the following lines are uncommented in the `GRA.Web/Startup.cs`
 Initial database setup and configuration can be done utilizing the `dotnet` commandline tool.
 
 1. Navigate to the appropriate project directory for your database provider (e.g. `GRA.Data.SqlServer` or `GRA.Data.SQLite`).
-2. Set up the database by running `dotnet ef --startup-project ../GRA.Web database update`
-3. If there are no migrations (`dotnet ef --startup-project ../GRA.Web database update`):
-    a. Create an initial migration: `dotnet ef --startup-project ../GRA.Web migrations add initial` (You don't have to name it "initial").
-    b. Update the database again (`dotnet ef --startup-project ../GRA.Web database update`)
+2. Set up the database by running: `dotnet ef --startup-project ../GRA.Web database update`
+3. If there are no migrations (`dotnet ef --startup-project ../GRA.Web migrations list`):
+  1. Create an initial migration: `dotnet ef --startup-project ../GRA.Web migrations add initial` (You don't have to name it "initial").
+  2. Update the database again (`dotnet ef --startup-project ../GRA.Web database update`)
 
 ## Run the application
 

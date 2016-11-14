@@ -25,13 +25,15 @@ In addition to the [open source components](CREDITS.md) used to develop The Grea
 ## Services and software
 
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
-- [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break the build
+- [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
 - [dmarcian](https://dmarcian.com/) - helps keep email spam-free
 - [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
+- [GitMagic](https://gitmagic.io/) - enforces revision control guidelines
 - [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art which can be seen in the default banner and avatars
 - [Mailtrap](https://mailtrap.io/) - painless email testing during development
 - [MyKnowledgeMap](https://www.myknowledgemap.com/) - creators and maintainers of [OpenBadges.me](https://www.openbadges.me/), our integrated badge maker
 - [Open Library](https://openlibrary.org/) - book cover images, title, and author lookups for challenges
 - [Read The Docs](https://readthedocs.org/) - powers [the online manual](http://manual.greatreadingadventure.com)
 - [Slack](https://slack.com/) - team communications
+- [Travis CI](https://travis-ci.org/) - continuous integration, ensuring code check-ins don't break Linux and macOS builds

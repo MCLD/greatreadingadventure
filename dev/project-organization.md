@@ -1,5 +1,6 @@
 # GRA 4 Developer Documentation - Project organization
 
+- `GRA` - constants for used throughout the solution
 - `GRA.Controllers` - controllers for the MVC application - they are kept out of the `GRA.Web` project to keep all program logic removed from the UI and to make them easily testable
 - `GRA.Data` - main data project
   - `Model` - model files that match the database schema, used by EF for [database CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
