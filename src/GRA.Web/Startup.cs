@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,7 @@ namespace GRA.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddSession(_ => _.IdleTimeout = System.TimeSpan.FromMinutes(30));
             services.AddSingleton(_ => Configuration);
             services.AddMvc();
             services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
@@ -42,8 +44,11 @@ namespace GRA.Web
             services.AddIdentity<Domain.Model.Participant, IdentityRole>()
                 .AddEntityFrameworkStores<Data.Context>();
             services.AddAutoMapper();
-
-
+            services.AddAuthorization(_ =>
+            {
+                _.AddPolicy(PolicyName.MissionControlAccess,
+                    policy => policy.RequireClaim(ClaimType.Privilege, ClaimName.MissionControlUser));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +71,7 @@ namespace GRA.Web
 
             app.UseStaticFiles();
 
+            app.UseSession();
             app.UseIdentity();
 
             app.UseMvc(routes =>

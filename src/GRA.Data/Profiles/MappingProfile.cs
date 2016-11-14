@@ -9,7 +9,7 @@ namespace GRA.Data.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Model.Site, Domain.Model.Site>();
+            CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
         }
     }
 }

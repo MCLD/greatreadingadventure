@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData[GRA.ViewDataName.Title]</title>
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -17,28 +17,22 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" />
     </environment>
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
     @RenderSection("styles", required: false)
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><span class="fa fa-book"></span> Great Reading Adventure</a>
-            </div>
-            <div class="navbar-collapse navbar-right collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                </ul>
+    <div class="container body-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <img class="center-block"
+                     src="~/images/great-reading-adventure-logo@1x.png"
+                     width="250" height="250" />
             </div>
         </div>
-    </div>
-    <div class="container body-content">
         @if (TempData[GRA.TempDataName.AlertDanger] != null)
         {
             <div class="row">
@@ -72,10 +66,6 @@
             </div>
         }
         @RenderBody()
-        <hr />
-        <footer>
-            <p>This site is running the open source <a href="https://github.com/mcld/greatreadingadventure/">Great Reading Adventure</a> software.</p>
-        </footer>
     </div>
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

@@ -1,11 +1,12 @@
 ﻿using GRA.Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 
 namespace GRA.Controllers.Base
 {
-    public class Controller : Microsoft.AspNetCore.Mvc.Controller
+    public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot config;
         protected readonly Service service;
@@ -21,7 +22,40 @@ namespace GRA.Controllers.Base
             this.userManager = context.userManager;
 
             // sensible default
-            ViewData["Title"] = "Great Reading Adventure";
+            PageTitle = "Great Reading Adventure";
+        }
+
+        protected string PageTitle {
+            set {
+                ViewData[GRA.ViewDataName.Title] = value;
+            }
+        }
+
+        protected string AlertDanger {
+            set {
+                TempData[GRA.TempDataName.AlertDanger] = value;
+            }
+        }
+
+        protected string AlertWarning {
+            set {
+                TempData[GRA.TempDataName.AlertWarning] = value;
+            }
+        }
+        protected string AlertInfo {
+            set {
+                TempData[GRA.TempDataName.AlertInfo] = value;
+            }
+        }
+        protected string AlertSuccess {
+            set {
+                TempData[GRA.TempDataName.AlertSuccess] = value;
+            }
+        }
+
+        public IActionResult Error()
+        {
+            return View();
         }
     }
 }

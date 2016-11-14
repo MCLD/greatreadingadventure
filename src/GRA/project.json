@@ -1,11 +1,7 @@
-{
+﻿{
   "version": "1.0.0-*",
 
   "dependencies": {
-    "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-    "GRA": "1.0.0-*",
-    "GRA.Domain": "1.0.0-*",
-    "Microsoft.AspNetCore.Mvc": "1.0.1",
     "NETStandard.Library": "1.6.0"
   },
 

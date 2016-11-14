@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -10,54 +9,36 @@ namespace GRA.Controllers.MissionControl
     public class HomeController : Base.Controller
     {
         private readonly ILogger<HomeController> logger;
-        public HomeController(ILogger<HomeController> logger, ServiceFacade.Controller context)
+        public HomeController(ILogger<HomeController> logger,
+            ServiceFacade.Controller context)
             : base(context)
         {
             this.logger = logger;
         }
 
-        public async Task<IActionResult> Index(string site = null)
+        //[Authorize(Policy = PolicyName.MissionControlAccess)]
+        public IActionResult Index()
         {
-            var siteList = service.GetSitePaths();
-            if (siteList.Count() == 0)
+            if (User.Claims.Count() == 0)
             {
-                logger.LogInformation("Site list from database is empty");
-                var user = new Domain.Model.Participant
-                {
-                    UserName = "admin"
-                };
-                IdentityResult result = await userManager.CreateAsync(user, "changeMe06!");
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("Created admin account");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        logger.LogError($"Problem creating admin account: {error.Description}");
-                    }
-                }
+                // not logged in
+                return RedirectToRoute(new { controller = "Login" });
             }
-            return View();
-        }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+            if (User.Claims
+                .Where(c => c.Type == ClaimType.Privilege && c.Value == ClaimName.MissionControlUser)
+                .FirstOrDefault() == null)
+            {
+                // not authorized for Mission Control
+                return RedirectToRoute(new { area = string.Empty });
+            }
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Error()
-        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var blah in User.Claims)
+            {
+                sb.Append($"<li>{blah.Value}</li>");
+            }
+            AlertInfo = $"Claims:<ul>{sb.ToString()}</ul>";
             return View();
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Data
 {
@@ -13,7 +14,7 @@ namespace GRA.Data
         private readonly AutoMapper.IMapper mapper;
         public Repository(ILogger<Repository> logger, Context context, AutoMapper.IMapper mapper)
         {
-            if(logger == null)
+            if (logger == null)
             {
                 throw new ArgumentNullException("logger");
             }
@@ -23,7 +24,7 @@ namespace GRA.Data
                 throw new ArgumentNullException("context");
             }
             this.context = context;
-            if(mapper == null)
+            if (mapper == null)
             {
                 throw new ArgumentNullException("mapper");
             }
@@ -33,6 +34,13 @@ namespace GRA.Data
         public IEnumerable<Domain.Model.Site> GetSites()
         {
             return context.Sites.ProjectTo<Domain.Model.Site>();
+        }
+
+        public bool AddSite(Domain.Model.Site site)
+        {
+            var addSite = mapper.Map<Domain.Model.Site, Data.Model.Site>(site);
+            context.Sites.Add(addSite);
+            return context.SaveChanges() == 1;
         }
     }
 }
