@@ -16,7 +16,7 @@ Everyone is invited to contribute.
 - Format code using the default Visual Studio code formatting (`^E^D`).
 - Format any T-SQL with the [Poor Man's T-SQL Formatter](http://architectshack.com/PoorMansTSqlFormatter.ashx).
 - Right-click in C# files and *Organize Usings* -> *Remove and Sort*
-- Follow this guide for commit messages: [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/)
+- Follow this guide for commit messages: [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/) ([GitMagic](https://gitmagic.io/) should inform you if you violate these once you open a pull request on GitHub).
 
 ### Areas we need help
 - Automated tests

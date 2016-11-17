@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,11 +36,24 @@ namespace GRA.Web
             services.AddSingleton(_ => Configuration);
             services.AddMvc();
             services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
+
+            // database
             services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
-            services.AddScoped<Domain.IRepository, Data.Repository>();
-            services.AddScoped<Domain.Service, Domain.Service>();
-            services.AddIdentity<Domain.Model.Participant, IdentityRole>()
+
+            // services
+            services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
+            services.AddScoped<Domain.Service.ConfigurationService, Domain.Service.ConfigurationService>();
+            services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
+
+            // repositories
+            services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
+            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
+            services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
+            services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
+
+            services.AddIdentity<Domain.Model.User, IdentityRole>()
                 .AddEntityFrameworkStores<Data.Context>();
             services.AddAutoMapper();
             services.AddAuthorization(_ =>
@@ -68,6 +80,8 @@ namespace GRA.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.ApplicationServices.GetService<Data.Context>().Migrate();
 
             app.UseStaticFiles();
 

@@ -1,24 +1,24 @@
-﻿using GRA.Domain;
+﻿using System;
+
+using GRA.Domain.Service;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace GRA.Controllers.Base
 {
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot config;
-        protected readonly Service service;
-        protected readonly UserManager<Domain.Model.Participant> userManager;
+        protected readonly UserManager<Domain.Model.User> userManager;
         public Controller(ServiceFacade.Controller context)
         {
             if (context == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             }
             this.config = context.config;
-            this.service = context.service;
             this.userManager = context.userManager;
 
             // sensible default

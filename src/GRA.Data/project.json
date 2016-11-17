@@ -3,7 +3,8 @@
 
   "dependencies": {
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-    "GRA.Domain": "1.0.0-*",
+    "GRA.Domain.Model": "1.0.0-*",
+    "GRA.Domain.Repository": "1.0.0-*",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
     "Microsoft.EntityFrameworkCore": "1.0.1",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",

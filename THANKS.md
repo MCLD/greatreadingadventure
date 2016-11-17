@@ -13,16 +13,20 @@ In addition to the [open source components](CREDITS.md) used to develop The Grea
 
 - [Caris O'Malley](http://carisomalley.com/) &#9734;
 - Brianna King
+- [Dan Wilcox](https://github.com/iafb/)
 - Danette Barton
 - [Daniel Messer](http://cyberpunklibrarian.com/)
 - [Harald Nagel](https://haraldnagel.com/)
 - [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
+- [Ian Griffin](https://github.com/iangriffin/)
 - [Justin Meiners](https://justinmeiners.github.io/)
 - [Lucas Gonzalez](http://diffracted.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
 
 ## Services and software
+
+*For open source software included in application please see the [CREDITS](Credits.md) file.*
 
 - [AppHarbor](https://appharbor.com/) - free hosting tier that will run the GRA for testing
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds

@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "GRA.Domain.Model": "1.0.0-*",
+    "GRA.Domain.Repository": "1.0.0-*",
+    "NETStandard.Library": "1.6.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

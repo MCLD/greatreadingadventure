@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GRA.Data.Model
 {
-    public class Site
+    public class Site : Abstract.BaseDbEntity
     {
-        public int Id { get; set; }
         [Required]
         [MaxLength(255)]
         public string Path { get; set; }
@@ -15,11 +14,14 @@ namespace GRA.Data.Model
         public string Name { get; set; }
         [MaxLength(255)]
         public string Domain { get; set; }
-        [Required]
-        public DateTime CreatedAt { get; set; }
-        [Required]
-        public string CreatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public string UpdatedBy { get; set; }
+
+        public DateTime? RegistrationOpens { get; set; }
+        public DateTime? ProgramStarts { get; set; }
+        public DateTime? ProgramEnds { get; set; }
+        public DateTime? AccessClosed { get; set; }
+
+        public virtual ICollection<Challenge> Challenges { get; set; }
+        public virtual ICollection<Program> Programs { get; set; }
+        public virtual ICollection<System> Systems { get; set; }
     }
 }

@@ -33,12 +33,6 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToRoute(new { area = string.Empty });
             }
 
-            var sb = new System.Text.StringBuilder();
-            foreach (var blah in User.Claims)
-            {
-                sb.Append($"<li>{blah.Value}</li>");
-            }
-            AlertInfo = $"Claims:<ul>{sb.ToString()}</ul>";
             return View();
         }
     }
