@@ -1,6 +1,5 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Data.Abstract;
-using GRA.Data.Extension;
 using GRA.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

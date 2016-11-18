@@ -3,19 +3,16 @@
 
   "dependencies": {
     "GRA.Data": "1.0.0-*",
-    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.1",
-    "Microsoft.EntityFrameworkCore.Design": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Design": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.1.0",
     "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final",
-    "NETStandard.Library": "1.6.0"
+    "Microsoft.NETCore.App": "1.1.0",
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
       "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.0.0-*"
-        }
       }
     }
   },
