@@ -59,17 +59,24 @@ namespace GRA.Data.Repository
             return genericRepo.AddSave(userId, dbEntity);
         }
 
-        public IQueryable<Domain.Model.Challenge> GetPagedChallengeList(int userId,
-            int skip,
-            int take)
+        public IQueryable<Domain.Model.Challenge> GetPagedChallengeList(int skip, int take)
         {
             // todo: add logic to filter for user
             return genericRepo.DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false)
+                .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Domain.Model.Challenge>();
+        }
+
+        public int GetChallengeCount()
+        {
+            return genericRepo.DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false)
+                .Count();
         }
 
         public Domain.Model.Challenge GetById(int id)

@@ -8,7 +8,7 @@ namespace GRA.Domain.Model
 {
     public class Challenge
     {
-        private ICollection<ChallengeTask> tasks { get; set; }
+        public ICollection<ChallengeTask> tasks { get; set; }
 
         public int Id { get; set; }
         [Required]
@@ -33,7 +33,9 @@ namespace GRA.Domain.Model
         [MaxLength(500)]
         public string Description { get; set; }
 
+        [Required]
         public int PointsAwarded { get; set; }
+        [Required]
         public int TasksToComplete { get; set; }
 
         public void AddTask(int userId, ChallengeTask task)

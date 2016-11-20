@@ -10,7 +10,8 @@ namespace GRA.Data.Model
     {
         [Required]
         public int ChallengeId { get; set; }
-
+        [Required]
+        public int Position { get; set; }
         [Required]
         [MaxLength(500)]
         public string Title { get; set; }

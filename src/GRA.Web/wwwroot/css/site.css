@@ -19,6 +19,7 @@
 
 .rowlink:hover::before {
     background-color: rgba(51, 51, 51, .1);
+    cursor: pointer;
 }
 
 a.rowlink {

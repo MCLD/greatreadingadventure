@@ -134,22 +134,26 @@ namespace GRA.Domain.Service
                 RelatedBranchId = branch.Id
             };
 
+            int positionCounter = 1;
             challenge.AddTask(creatorUserId, new Model.ChallengeTask
             {
                 Title = "Be excellent to each other",
-                ChallengeTaskType = Model.ChallengeTaskType.Action
+                ChallengeTaskType = Model.ChallengeTaskType.Action,
+                Position = positionCounter++
             });
             challenge.AddTask(creatorUserId, new Model.ChallengeTask
             {
                 Title = "Party on, dudes!",
-                ChallengeTaskType = Model.ChallengeTaskType.Action
+                ChallengeTaskType = Model.ChallengeTaskType.Action,
+                Position = positionCounter++
             });
             challenge.AddTask(creatorUserId, new Model.ChallengeTask
             {
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",
                 Author = "Kurt Vonnegut",
                 Isbn = "978-0385333849",
-                ChallengeTaskType = Model.ChallengeTaskType.Book
+                ChallengeTaskType = Model.ChallengeTaskType.Book,
+                Position = positionCounter++
             });
 
             challengeRepository.AddSave(creatorUserId, challenge);

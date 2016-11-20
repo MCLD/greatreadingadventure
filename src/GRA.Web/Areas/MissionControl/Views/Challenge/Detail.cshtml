@@ -16,9 +16,12 @@
     </div>
 </div>
 
-<form asp-controller="Challenge" asp-action="Create" method="post" class="form-horizontal" role="form">
+<form asp-controller="Challenge" asp-action="@(Model.Exists ? "Edit" : "Create")" method="post" class="form-horizontal" role="form">
 
-    <input asp-for="Challenge.Id" type="hidden" />
+    @if (Model.Exists)
+    {
+        <input asp-for="Challenge.Id" type="hidden" />
+    }
 
     <div class="form-group">
         <label asp-for="Challenge.Name" class="control-label col-sm-2"></label>
@@ -52,16 +55,28 @@
         </div>
     </div>
 
+    @if (Model.Exists)
+    {
+        <h3>Tasks</h3>
+        @if (Model.Challenge.Tasks != null)
+        {
+            <table class="">
+                @foreach (var task in Model.Challenge.Tasks)
+                {
+                <tr></tr>
+                }
+            </table>
+        }
+    }
+
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
-                <span class="buttonText">@(Model.Exists ? "Edit" : "Create")</span>
+                <span class="buttonText">@(Model.Exists ? "Save Changes" : "Create")</span>
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
         </div>
     </div>
-
-
 </form>
 
 @section scripts {

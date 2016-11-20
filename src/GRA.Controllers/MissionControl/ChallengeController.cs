@@ -1,5 +1,6 @@
 ﻿using GRA.Controllers.ViewModel.Challenge;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Identity;
@@ -34,20 +35,22 @@ namespace GRA.Controllers.MissionControl
 
         public IActionResult Index(string Search, string FilterBy, int? page)
         {
-            PaginateViewModel paginateModel = new PaginateViewModel();
-
             int currentPage = page ?? 1;
             int take = 15;
             int skip = take * (currentPage - 1);
 
-            var challengeList = challengeService.GetPaginatedChallengeList(null, 0, 50);
+            var challengeList = challengeService.GetPaginatedChallengeList(null, skip, take);
 
             ChallengeListViewModel viewModel = new ChallengeListViewModel();
 
-            viewModel.Challenges = challengeList.Skip(skip).Take(take).ToList();
-            paginateModel.ItemCount = challengeList.Count();
-            paginateModel.CurrentPage = currentPage;
-            paginateModel.ItemsPerPage = take;
+            viewModel.Challenges = challengeList.Data;
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
+            {
+                ItemCount = challengeList.Count,
+                CurrentPage = currentPage,
+                ItemsPerPage = take
+            };
 
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -58,37 +61,109 @@ namespace GRA.Controllers.MissionControl
                     });
             }
             viewModel.PaginateModel = paginateModel;
+
             return View(viewModel);
         }
 
         public IActionResult Create()
         {
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel();
-            return View("Detail", viewModel);
+            return View("Create", viewModel);
         }
 
         [HttpPost]
         public IActionResult Create(ChallengeDetailViewModel viewModel)
         {
-            
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                int challengeId;
+                try
+                {
+                    challengeId = challengeService.AddChallenge(null, viewModel.Challenge).Id;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"Error creating challenge: {ex}");
+                    AlertDanger = $"Error creating challenge: {ex}";
+                    return RedirectToAction("Index");
+                }
+                AlertSuccess = $"{viewModel.Challenge.Name} was successfully created";
+                return RedirectToAction("Edit", new { id = challengeId });
+            }
+            else
+            {
+                return View(viewModel);
+            }
         }
 
         public IActionResult Edit(int id)
         {
-            return View("Detail");
+            var challenge = challengeService.GetChallengeDetails(null, id);
+            if (challenge == null)
+            {
+                TempData["AlertDanger"] = "The requested challenge could not be accessed or does not exist";
+                return RedirectToAction("Index");
+            }
+            ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
+            {
+                Challenge = challenge
+            };
+            return View("Edit", viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(ChallengeDetailViewModel viewModel)
+        public IActionResult Edit(ChallengeDetailViewModel viewModel, bool taskChange)
         {
-            return RedirectToAction("Index");
+            if (!taskChange)
+            {
+                challengeService.EditChallenge(null, viewModel.Challenge);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(viewModel);
+            }
+            
         }
 
         [HttpPost]
         public IActionResult Delete(int id)
         {
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult AddTask(ChallengeDetailViewModel viewModel)
+        {
+            var blah = viewModel.Task.Title;
+            challengeService.AddTask(null, viewModel.Task, viewModel.Challenge.Id);
+            return View("Edit", viewModel.Challenge.Id);
+        }
+
+        [HttpPost]
+        public IActionResult ModifyTask(ChallengeDetailViewModel viewModel)
+        {
+            return RedirectToAction("Edit", viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteTask(ChallengeDetailViewModel viewModel, int id)
+        {
+            challengeService.RemoveTask(null, id);
+            return View("Edit", viewModel.Challenge.Id);
+        }
+
+        [HttpPost]
+        IActionResult DecreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
+        {
+            challengeService.DecreaseTaskPosition(null, id);
+            return View("Edit", viewModel.Challenge.Id);
+        }
+
+        [HttpPost] IActionResult IncreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
+        {
+            challengeService.IncreaseTaskPosition(null, id);
+            return View("Edit", viewModel.Challenge.Id);
         }
     }
 }

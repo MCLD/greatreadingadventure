@@ -11,6 +11,8 @@ namespace GRA.Domain.Model
         public int Id { get; set; }
         [Required]
         public int ChallengeId { get; set; }
+        [Required]
+        public int Position { get; set; }
 
         [Required]
         [MaxLength(500)]

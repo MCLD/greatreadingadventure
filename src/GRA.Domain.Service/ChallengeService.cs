@@ -27,14 +27,18 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="skip">The number of elements to skip before returning the remaining elements</param>
         /// <param name="take">The number of elements to return</param>
-        /// <returns></returns>
-        public IEnumerable<Challenge> GetPaginatedChallengeList(User user,
+        /// <returns><see cref="DataWithCount{DataType}"/> containing the challenges and the total challenge count</returns>
+        public DataWithCount<IEnumerable<Challenge>> GetPaginatedChallengeList(User user,
             int skip,
             int take)
         {
             // todo: fix user id
             // todo: add access control - only view authorized challenges
-            return challengeRepository.GetPagedChallengeList(0, skip, take);
+            return new DataWithCount<IEnumerable<Challenge>>
+            {
+                Data = challengeRepository.GetPagedChallengeList(skip, take),
+                Count = challengeRepository.GetChallengeCount()
+            };
         }
 
         /// <summary>
@@ -42,7 +46,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="challengeId">A challenge id</param>
-        /// <returns></returns>
+        /// <returns>Details for the requested challenge</returns>
         public Challenge GetChallengeDetails(User user, int challengeId)
         {
             // todo: fix user id
@@ -55,7 +59,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="challenge">A populated challenge object</param>
-        /// <returns></returns>
+        /// <returns>The challenge which was added with the Id property populated</returns>
         public Challenge AddChallenge(User user, Challenge challenge)
         {
             // todo: fix user id
@@ -68,7 +72,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="challenge">The modified challenge object</param>
-        /// <returns></returns>
+        /// <returns>The updated challenge</returns>
         public Challenge EditChallenge(User user, Challenge challenge)
         {
             // todo: fix user id
@@ -87,5 +91,63 @@ namespace GRA.Domain.Service
             // todo: add access control - only some users can remove
             challengeRepository.Remove(0, challengeId);
         }
+
+        /// <summary>
+        /// Create a new task if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="task">The task to add to the challenge</param>
+        /// <param name="challengeId">The id of the challenge to add the task to</param>
+        public ChallengeTask AddTask(User user, ChallengeTask task, int challengeId)
+        {
+            // todo: Add method
+            return null;
+        }
+
+        /// <summary>
+        /// Edit an existing task if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="task">The modified task object</param>
+        public ChallengeTask EditTask(User user, ChallengeTask task)
+        {
+            // todo: Add method
+            return null;
+        }
+
+        /// <summary>
+        /// Remove an existing task if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="taskId">The id of the task to remove</param>
+        public bool RemoveTask(User user, int taskId)
+        {
+            // todo: Add method
+            return false;
+        }
+
+        /// <summary>
+        /// Decrease the sorting position of the task if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="taskId">The id of the task whose position to decrease</param>
+        public bool DecreaseTaskPosition(User user, int taskId)
+        {
+            // todo: Add method
+            return false;
+        }
+
+        /// <summary>
+        /// Increase the sorting position of the task if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="taskId">The id of the task whose position to increase</param>
+        public bool IncreaseTaskPosition(User user, int taskId)
+        {
+            // todo: Add method
+            return false;
+        }
+
+
     }
 }

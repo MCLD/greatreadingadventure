@@ -1,0 +1,67 @@
+﻿@model GRA.Domain.Model.Challenge
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>
+            Create Challenge
+        </h1>
+    </div>
+</div>
+
+<form asp-controller="Challenge" asp-action="Create" method="post" class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <textarea asp-for="Description" class="form-control"> </textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PointsAwarded" class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input asp-for="PointsAwarded" type="number" class="form-control" />
+            <span asp-validation-for="PointsAwarded" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TasksToComplete" class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input asp-for="TasksToComplete" type="number" class="form-control" />
+            <span asp-validation-for="TasksToComplete" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
+                <span class="buttonText">Create</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $('#Submit').on("click", function(e) {
+            e.preventDefault();
+            if (!$(this).hasClass('disabled'))
+            {
+                $(this).addClass('disabled');
+                $(this).children('.fa-spinner').removeClass('hidden');
+                $(this).parents('form:first').submit();
+            }
+        });
+    </script>
+}
