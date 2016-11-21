@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Model
 {
-    public class Challenge
+    public class Challenge : Abstract.BaseDomainEntity
     {
-        public ICollection<ChallengeTask> tasks { get; set; }
-
-        public int Id { get; set; }
-        [Required]
         public int SiteId { get; set; }
         [Required]
         public int RelatedSystemId { get; set; }
@@ -38,18 +34,6 @@ namespace GRA.Domain.Model
         [Required]
         public int TasksToComplete { get; set; }
 
-        public void AddTask(int userId, ChallengeTask task)
-        {
-            if (tasks == null)
-            {
-                tasks = new List<ChallengeTask>();
-            }
-            tasks.Add(task);
-        }
-
-        public ICollection<ChallengeTask> GetTasks()
-        {
-            return tasks;
-        }
+        public ICollection<ChallengeTask> Tasks { get; set; }
     }
 }

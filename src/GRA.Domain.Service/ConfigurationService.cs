@@ -14,12 +14,14 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository branchRepository;
         private readonly IProgramRepository programRepository;
         private readonly IChallengeRepository challengeRepository;
+        private readonly IChallengeTaskRepository challengeTaskRepository;
         public ConfigurationService(ILogger<ConfigurationService> logger,
             ISiteRepository siteRepository,
             ISystemRepository systemRepository,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
-            IChallengeRepository challengeRepository) : base(logger)
+            IChallengeRepository challengeRepository,
+            IChallengeTaskRepository challengeTaskRepository) : base(logger)
         {
             if (siteRepository == null)
             {
@@ -50,21 +52,27 @@ namespace GRA.Domain.Service
                 throw new ArgumentNullException(nameof(challengeRepository));
             }
             this.challengeRepository = challengeRepository;
+
+            if (challengeTaskRepository == null)
+            {
+                throw new ArgumentNullException(nameof(challengeTaskRepository));
+            }
+            this.challengeTaskRepository = challengeTaskRepository;
         }
 
         public bool NeedsInitialSetup()
         {
-            return siteRepository.GetAll().Count() == 0;
+            return siteRepository.PageAll(0, 10).Count() == 0;
         }
 
         public void InitialSetup(Model.User adminUser)
         {
             int creatorUserId = 0;
-            var allSites = siteRepository.GetAll();
+            var topSites = siteRepository.PageAll(0, 10);
 
-            if (allSites.Count() > 0)
+            if (topSites.Count() > 0)
             {
-                throw new Exception($"Can't perform initial setup with existing sites: found {allSites.Count()} in the database.");
+                throw new Exception("Can't perform initial setup with existing sites: found existing sites in the database.");
             }
 
             var site = new Model.Site
@@ -134,21 +142,26 @@ namespace GRA.Domain.Service
                 RelatedBranchId = branch.Id
             };
 
+            challenge = challengeRepository.AddSave(creatorUserId, challenge);
+
             int positionCounter = 1;
-            challenge.AddTask(creatorUserId, new Model.ChallengeTask
+            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
             {
+                ChallengeId = challenge.Id,
                 Title = "Be excellent to each other",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            challenge.AddTask(creatorUserId, new Model.ChallengeTask
+            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
             {
+                ChallengeId = challenge.Id,
                 Title = "Party on, dudes!",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            challenge.AddTask(creatorUserId, new Model.ChallengeTask
+            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
             {
+                ChallengeId = challenge.Id,
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",
                 Author = "Kurt Vonnegut",
                 Isbn = "978-0385333849",
@@ -156,7 +169,6 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
-            challengeRepository.AddSave(creatorUserId, challenge);
         }
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Model
 {
-    public class ChallengeTask
+    public class ChallengeTask : Abstract.BaseDomainEntity
     {
-        public int Id { get; set; }
         [Required]
         public int ChallengeId { get; set; }
         [Required]

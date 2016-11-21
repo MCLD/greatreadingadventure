@@ -136,7 +136,8 @@ namespace GRA.Controllers.MissionControl
         public IActionResult AddTask(ChallengeDetailViewModel viewModel)
         {
             var blah = viewModel.Task.Title;
-            challengeService.AddTask(null, viewModel.Task, viewModel.Challenge.Id);
+            viewModel.Task.ChallengeId = viewModel.Challenge.Id;
+            challengeService.AddTask(null, viewModel.Task);
             return View("Edit", viewModel.Challenge.Id);
         }
 

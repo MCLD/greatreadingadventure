@@ -7,6 +7,5 @@ namespace GRA.Domain.Repository
 {
     public interface IProgramRepository : IRepository<Model.Program>
     {
-        IQueryable<Model.Program> GetAll();
     }
 }

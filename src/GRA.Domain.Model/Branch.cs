@@ -2,9 +2,8 @@
 
 namespace GRA.Domain.Model
 {
-    public class Branch
+    public class Branch : Abstract.BaseDomainEntity
     {
-        public int Id { get; set; }
         [Required]
         public int SiteId { get; set; }
         [Required]

@@ -20,10 +20,5 @@ namespace GRA.Domain.Service
             }
             this.siteRepository = siteRepository;
         }
-
-        public IEnumerable<Site> GetAllSites()
-        {
-            return siteRepository.GetAll();
-        }
     }
 }

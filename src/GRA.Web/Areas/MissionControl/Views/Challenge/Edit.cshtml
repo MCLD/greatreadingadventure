@@ -94,7 +94,7 @@
     </div>
 
     <h3>Tasks</h3>
-    @if (Model.Challenge.tasks != null)
+    @if (Model.Challenge.Tasks != null)
     {
         <table class="table table-condensed table-bordered link-table">
             <thead>
@@ -104,7 +104,7 @@
                     <th width="103">&nbsp;</th>
                 </tr>
             </thead>
-            @foreach (var task in Model.Challenge.tasks)
+            @foreach (var task in Model.Challenge.Tasks)
             {
                 <tr>
                     <td class="td-class">

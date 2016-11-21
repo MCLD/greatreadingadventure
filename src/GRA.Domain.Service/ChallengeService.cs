@@ -11,14 +11,22 @@ namespace GRA.Domain.Service
     public class ChallengeService : Abstract.BaseService<ChallengeService>
     {
         private readonly IChallengeRepository challengeRepository;
+        private readonly IChallengeTaskRepository challengeTaskRepository;
+
         public ChallengeService(ILogger<ChallengeService> logger,
-            IChallengeRepository challengeRepository) : base(logger)
+            IChallengeRepository challengeRepository,
+            IChallengeTaskRepository challengeTaskRepository) : base(logger)
         {
             if (challengeRepository == null)
             {
                 throw new ArgumentNullException(nameof(challengeRepository));
             }
             this.challengeRepository = challengeRepository;
+            if (challengeTaskRepository == null)
+            {
+                throw new ArgumentNullException(nameof(challengeTaskRepository));
+            }
+            this.challengeTaskRepository = challengeTaskRepository;
         }
 
         /// <summary>
@@ -36,7 +44,7 @@ namespace GRA.Domain.Service
             // todo: add access control - only view authorized challenges
             return new DataWithCount<IEnumerable<Challenge>>
             {
-                Data = challengeRepository.GetPagedChallengeList(skip, take),
+                Data = challengeRepository.PageAll(skip, take),
                 Count = challengeRepository.GetChallengeCount()
             };
         }
@@ -89,7 +97,7 @@ namespace GRA.Domain.Service
         {
             // todo: fix user id
             // todo: add access control - only some users can remove
-            challengeRepository.Remove(0, challengeId);
+            challengeRepository.RemoveSave(0, challengeId);
         }
 
         /// <summary>
@@ -98,10 +106,10 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="task">The task to add to the challenge</param>
         /// <param name="challengeId">The id of the challenge to add the task to</param>
-        public ChallengeTask AddTask(User user, ChallengeTask task, int challengeId)
+        public ChallengeTask AddTask(User user, ChallengeTask task)
         {
-            // todo: Add method
-            return null;
+            // todo: fix user id
+            return challengeTaskRepository.AddSave(0, task);
         }
 
         /// <summary>
@@ -111,8 +119,8 @@ namespace GRA.Domain.Service
         /// <param name="task">The modified task object</param>
         public ChallengeTask EditTask(User user, ChallengeTask task)
         {
-            // todo: Add method
-            return null;
+            // todo: fix user id
+            return challengeTaskRepository.UpdateSave(0, task);
         }
 
         /// <summary>
@@ -120,10 +128,10 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task to remove</param>
-        public bool RemoveTask(User user, int taskId)
+        public void RemoveTask(User user, int taskId)
         {
-            // todo: Add method
-            return false;
+            // todo: fix user id
+            challengeTaskRepository.RemoveSave(0, taskId);
         }
 
         /// <summary>
@@ -131,10 +139,10 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to decrease</param>
-        public bool DecreaseTaskPosition(User user, int taskId)
+        public void DecreaseTaskPosition(User user, int taskId)
         {
-            // todo: Add method
-            return false;
+            // todo: fix user id
+            challengeTaskRepository.DecreasePosition(taskId);
         }
 
         /// <summary>
@@ -142,10 +150,10 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to increase</param>
-        public bool IncreaseTaskPosition(User user, int taskId)
+        public void IncreaseTaskPosition(User user, int taskId)
         {
-            // todo: Add method
-            return false;
+            // todo: fix user id
+            challengeTaskRepository.IncreasePosition(taskId);
         }
 
 
