@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.ViewModel.Challenge
 {
@@ -9,6 +7,7 @@ namespace GRA.Controllers.ViewModel.Challenge
     {
         public GRA.Domain.Model.Challenge Challenge { get; set; }
         public GRA.Domain.Model.ChallengeTask Task { get; set; }
-        public GRA.Domain.Model.ChallengeTaskType TaskTypes { get; set; }
+        public List<SelectListItem> TaskTypes {get; set; }
+        public bool AddTask { get; set; }
     }
 }

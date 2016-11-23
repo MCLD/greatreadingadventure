@@ -1,28 +1,108 @@
 ﻿@model GRA.Controllers.ViewModel.Challenge.ChallengeDetailViewModel
 
-<form asp-controller="Challenge" asp-action="Edit" method="post" class="form-horizontal" role="form">
+<form asp-controller="Challenge" method="post" role="form">
 
-    <div class="row">
-        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="aaModalLabel">Add task</h4>
-                    </div>
-                    <div class="modal-body">
-                        @Html.EditorFor(m => m.Task)
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right" aria-label="Confirm">
-                            Add
-                        </button>
+    @if (Model.AddTask)
+    {
+        <div class="row">
+            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="addModalLabel">Add task</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label asp-for="Task.Title" class="control-label"></label>
+                                <input asp-for="Task.Title" class="form-control" />
+                                <span asp-validation-for="Task.Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Author" class="control-label"></label>
+                                <input asp-for="Task.Author" class="form-control" />
+                                <span asp-validation-for="Task.Author" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Isbn" class="control-label"></label>
+                                <input asp-for="Task.Isbn" class="form-control" />
+                                <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Url" class="control-label"></label>
+                                <input asp-for="Task.Url" class="form-control" />
+                                <span asp-validation-for="Task.Url" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.ChallengeTaskType" class="control-label"></label>
+                                <select asp-for="Task.ChallengeTaskType" asp-items="Model.TaskTypes" class="form-control"></select>
+                                <span asp-validation-for="Task.ChallengeTaskType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right" aria-label="Confirm">
+                                Add
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+
+    @if (Model.Task != null)
+    {
+        <div class="row">
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="editModalLabel">Edit task</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input asp-for="Task.Id" type="hidden" />
+                            <input asp-for="Task.Position" type="hidden" />
+                            <input asp-for="Task.ChallengeId" type="hidden" />
+
+                            <div class="form-group">
+                                <label asp-for="Task.Title" class="control-label"></label>
+                                <input asp-for="Task.Title" class="form-control" />
+                                <span asp-validation-for="Task.Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Author" class="control-label"></label>
+                                <input asp-for="Task.Author" class="form-control" />
+                                <span asp-validation-for="Task.Author" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Isbn" class="control-label"></label>
+                                <input asp-for="Task.Isbn" class="form-control" />
+                                <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.Url" class="control-label"></label>
+                                <input asp-for="Task.Url" class="form-control" />
+                                <span asp-validation-for="Task.Url" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Task.ChallengeTaskType" class="control-label"></label>
+                                <select asp-for="Task.ChallengeTaskType" asp-items="Model.TaskTypes" class="form-control"></select>
+                                <span asp-validation-for="Task.ChallengeTaskType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="submit" formmethod="post" asp-action="modifyTask" class="btn btn-primary pull-right" aria-label="Confirm">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <div class="row">
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
@@ -38,11 +118,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <input id="Id" name="Id" type="hidden" />
-                            <button type="submit" asp-action="DeleteTask" class="btn btn-danger pull-right" aria-label="Confirm">
-                                <span class="fa fa-remove" aria-hidden="true"></span>
-                                Delete
-                            </button>
+                        <button type="submit" id="DeleteTask" asp-action="DeleteTask" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>
@@ -50,74 +129,83 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-xs-12">
             <h1>
                 Edit Challenge - @Model.Challenge.Name
             </h1>
         </div>
     </div>
 
-
-
     <input asp-for="Challenge.Id" type="hidden" />
+    <input asp-for="Challenge.SiteId" type="hidden" />
 
-    <div class="form-group">
-        <label asp-for="Challenge.Name" class="control-label col-sm-2"></label>
-        <div class="col-sm-10">
-            <input asp-for="Challenge.Name" class="form-control" />
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Challenge.Name" class="control-label"></label>
+            <input asp-for="Challenge.Name" class="form-control ignore" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Challenge.Description" class="control-label col-sm-2"></label>
-        <div class="col-sm-10">
-            <textarea asp-for="Challenge.Description" class="form-control"> </textarea>
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Challenge.Description" class="control-labe"></label>
+            <textarea asp-for="Challenge.Description" class="form-control ignore"> </textarea>
             <span asp-validation-for="Challenge.Description" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Challenge.PointsAwarded" class="control-label col-sm-2"></label>
-        <div class="col-sm-10">
-            <input asp-for="Challenge.PointsAwarded" type="number" class="form-control" />
+    <div class="row row-spacing">
+        <div class="col-xs-6">
+            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
+            <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control ignore" />
             <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label asp-for="Challenge.TasksToComplete" class="control-label col-sm-2"></label>
-        <div class="col-sm-10">
-            <input asp-for="Challenge.TasksToComplete" type="number" class="form-control" />
+        <div class="col-xs-6">
+            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+            <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control ignore" />
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
     </div>
 
-    <h3>Tasks</h3>
-    @if (Model.Challenge.Tasks != null)
-    {
-        <table class="table table-condensed table-bordered link-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th width="103">&nbsp;</th>
-                </tr>
-            </thead>
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" asp-action="Edit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
+            <span class="buttonText">Save Changes</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+
+    <h3>
+        Tasks
+    </h3>
+
+    <table class="table table-condensed table-bordered link-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th width="103">&nbsp;</th>
+            </tr>
+        </thead>
+        @if (Model.Challenge.Tasks != null)
+        {
             @foreach (var task in Model.Challenge.Tasks)
             {
                 <tr>
                     <td class="td-class">
-                        <a data-toggle="modal" data-target="#deleteModal" class="rowlink">
+                        <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
+                        <a class="rowlink">
                             @task.Title
                         </a>
                     </td>
                     <td>@task.ChallengeTaskType</td>
                     <td class="on-top" style="white-space:nowrap;">
-                        <button asp-action="DecreaseTaskSort" asp-route-id="@task.Id" class="btn btn-default btn-xs">
+                        <button asp-action="DecreaseTaskSort" asp-route-id="@task.Id" class="btn btn-default btn-xs" disabled="@(task == Model.Challenge.Tasks.First() ? "disabled" : null)">
                             <span class="fa fa-arrow-up"></span>
                         </button>
-                        <button asp-action="IncreaseTaskSort" asp-route-id="@task.Id" class="btn btn-default btn-xs">
+                        <button asp-action="IncreaseTaskSort" asp-route-id="@task.Id" class="btn btn-default btn-xs" disabled="@(task == Model.Challenge.Tasks.Last() ? "disabled" : null)">
                             <span class="fa fa-arrow-down"></span>
                         </button>
                         <button type="button"
@@ -132,27 +220,27 @@
                     </td>
                 </tr>
             }
-        </table>
-    }
-    <button type="button" data-toggle="modal" data-target="#addModal" class="btn btn-default">
+        }
+    </table>
+
+    <button type="submit" formmethod="post" asp-action="OpenAddTask" asp-route-id="@Model.Challenge.Id" class="btn btn-primary">
         <span class="buttonText">Add Task</span>
     </button>
 
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
-                <span class="buttonText">Save Changes</span>
-                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-            </button>
-        </div>
-    </div>
 </form>
-
-
 
 @section scripts {
     <script>
         $(document).ready(function() {
+            @if (Model.AddTask)
+            {
+                <text>$('#addModal').modal('show');</text>
+            }
+            @if (Model.Task != null)
+            {
+                <text>$('#editModal').modal('show');</text>
+            }
+
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
@@ -163,22 +251,41 @@
             });
         });
 
+        $.validator.setDefaults({
+            ignore: ".ignore"
+        });
+
+        $('.rowlink').on('click', function() {
+            $(this).siblings('input:first').click();
+        });
+
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the task "' + name + '" ?');
-            modal.find('#Id').val(id);
+            modal.find('#DeleteTask').attr("formaction", function(i, val) {
+                return val + '/' + id;
+            });
         })
+        $('#addModal, #editModal').on('hidden.bs.modal', function() {
+            var form = $(this).parents('form:first');
+            form.attr('action', '/MissionControl/Challenge/CloseTask/');
+            form.validate().cancelSubmit = true;
+            form.submit();
+        });
 
         $('#Submit').on("click", function(e) {
-            e.preventDefault();
-            if (!$(this).hasClass('disabled'))
+            if ($(this).parents('form:first').valid())
             {
-                $(this).addClass('disabled');
-                $(this).children('.fa-spinner').removeClass('hidden');
-                $(this).parents('form:first').submit();
+                e.preventDefault();
+                if (!$(this).hasClass('disabled'))
+                {
+                    $(this).addClass('disabled');
+                    $(this).children('.fa-spinner').removeClass('hidden');
+                    $(this).parents('form:first').submit();
+                }
             }
         });
     </script>

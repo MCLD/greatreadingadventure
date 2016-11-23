@@ -124,6 +124,17 @@ namespace GRA.Domain.Service
         }
 
         /// <summary>
+        /// Get an existing task by id if the provided user has rights
+        /// </summary>
+        /// <param name="user">A valid user</param>
+        /// <param name="task">TThe id of the task to return</param>
+        public ChallengeTask GetTask(User user, int id)
+        {
+            // todo: fix user id
+            return challengeTaskRepository.GetById(id);
+        }
+
+        /// <summary>
         /// Remove an existing task if the provided user has rights
         /// </summary>
         /// <param name="user">A valid user</param>
@@ -156,6 +167,10 @@ namespace GRA.Domain.Service
             challengeTaskRepository.IncreasePosition(taskId);
         }
 
+        public IEnumerable<ChallengeTask> GetChallengeTasks(int challengeId)
+        {
+            return challengeRepository.GetChallengeTasks(challengeId);
+        }
 
     }
 }

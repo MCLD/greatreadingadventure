@@ -66,7 +66,17 @@ namespace GRA.Data.Repository
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .Single();
             entity.IsDeleted = true;
-            base.UpdateSave(userId, entity, null);
+            base.Update(userId, entity, null);
+            base.Save();
+        }
+
+        public IQueryable<Domain.Model.ChallengeTask> GetChallengeTasks(int challengeId)
+        {
+            return context.ChallengeTasks
+                .AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .OrderBy(_ => _.Position)
+                .ProjectTo<Domain.Model.ChallengeTask>();
         }
     }
 }

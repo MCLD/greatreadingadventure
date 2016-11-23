@@ -6,5 +6,6 @@ namespace GRA.Domain.Repository
     public interface IChallengeRepository : IRepository<Challenge>
     {
         int GetChallengeCount();
+        IQueryable<ChallengeTask> GetChallengeTasks(int challengeId);
     }
 }

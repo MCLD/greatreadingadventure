@@ -1,14 +1,12 @@
 ﻿using GRA.Controllers.ViewModel.Challenge;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
-using GRA.Domain.Repository;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -65,38 +63,40 @@ namespace GRA.Controllers.MissionControl
 
         public IActionResult Create()
         {
-            ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel();
-            return View("Create", viewModel);
+            return View("Create");
         }
 
         [HttpPost]
-        public IActionResult Create(ChallengeDetailViewModel viewModel)
+        public IActionResult Create(Challenge challenge)
         {
             if (ModelState.IsValid)
             {
                 int challengeId;
-                try
-                {
-                    challengeId = challengeService.AddChallenge(null, viewModel.Challenge).Id;
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError($"Error creating challenge: {ex}");
-                    AlertDanger = $"Error creating challenge: {ex}";
-                    return RedirectToAction("Index");
-                }
-                AlertSuccess = $"{viewModel.Challenge.Name} was successfully created";
+
+                // todo: fix siteId
+                challenge.SiteId = 1;
+                challengeId = challengeService.AddChallenge(null, challenge).Id;
+                AlertSuccess = $"{challenge.Name} was successfully created";
                 return RedirectToAction("Edit", new { id = challengeId });
             }
             else
             {
-                return View(viewModel);
+                return View(challenge);
             }
         }
 
         public IActionResult Edit(int id)
         {
-            var challenge = challengeService.GetChallengeDetails(null, id);
+            Challenge challenge = new Challenge();
+            if (TempData.ContainsKey("TempEditChallenge"))
+            {
+                challenge = Newtonsoft.Json.JsonConvert.DeserializeObject<Challenge>((string)TempData["TempEditChallenge"]);
+                challenge.Tasks = challengeService.GetChallengeTasks(id).ToList();
+            }
+            else
+            {
+                challenge = challengeService.GetChallengeDetails(null, id);
+            }
             if (challenge == null)
             {
                 TempData["AlertDanger"] = "The requested challenge could not be accessed or does not exist";
@@ -104,65 +104,137 @@ namespace GRA.Controllers.MissionControl
             }
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {
-                Challenge = challenge
+                Challenge = challenge,
+                TaskTypes = Enum.GetNames(typeof(ChallengeTaskType)).Select(m => new SelectListItem { Text = m, Value = m }).ToList()
             };
+            if (TempData.ContainsKey("AddTask"))
+            {
+                TempData.Remove("AddTask");
+                TempData.Remove("EditTask");
+                viewModel.AddTask = true;
+            }
+            else if (TempData.ContainsKey("EditTask"))
+            {
+                viewModel.Task = challengeService.GetTask(null, (int)TempData["EditTask"]);
+            }
             return View("Edit", viewModel);
         }
-
         [HttpPost]
-        public IActionResult Edit(ChallengeDetailViewModel viewModel, bool taskChange)
+        public IActionResult Edit(ChallengeDetailViewModel viewModel)
         {
-            if (!taskChange)
+            if (ModelState.IsValid)
             {
                 challengeService.EditChallenge(null, viewModel.Challenge);
+                AlertSuccess = $"{viewModel.Challenge.Name} was successfully modified";
                 return RedirectToAction("Index");
             }
             else
             {
+                viewModel.Challenge.Tasks = challengeService.GetChallengeTasks(viewModel.Challenge.Id).ToList();
                 return View(viewModel);
             }
-            
         }
 
         [HttpPost]
         public IActionResult Delete(int id)
         {
+            challengeService.RemoveChallenge(null, id);
             return RedirectToAction("Index");
+        }
+
+        #region Task methods
+        [HttpPost]
+        public IActionResult CloseTask(ChallengeDetailViewModel viewModel)
+        {
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+        }
+
+        [HttpPost]
+        public IActionResult OpenAddTask(ChallengeDetailViewModel viewModel)
+        {
+            TempData["AddTask"] = true;
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
         public IActionResult AddTask(ChallengeDetailViewModel viewModel)
         {
-            var blah = viewModel.Task.Title;
-            viewModel.Task.ChallengeId = viewModel.Challenge.Id;
-            challengeService.AddTask(null, viewModel.Task);
-            return View("Edit", viewModel.Challenge.Id);
+            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            if (ModelState.IsValid)
+            {
+                viewModel.Task.ChallengeId = viewModel.Challenge.Id;
+                challengeService.AddTask(null, viewModel.Task);
+            }
+            else
+            {
+                TempData["AddTask"] = true;
+            }
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+        }
+
+        [HttpPost]
+        public IActionResult OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
+        {
+            TempData["EditTask"] = taskId;
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
         public IActionResult ModifyTask(ChallengeDetailViewModel viewModel)
         {
-            return RedirectToAction("Edit", viewModel);
+            foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            if (ModelState.IsValid)
+            {
+                challengeService.EditTask(null, viewModel.Task);
+            }
+            else
+            {
+                TempData["EditTask"] = viewModel.Task.Id;
+            }
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
         public IActionResult DeleteTask(ChallengeDetailViewModel viewModel, int id)
         {
             challengeService.RemoveTask(null, id);
-            return View("Edit", viewModel.Challenge.Id);
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
-        IActionResult DecreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
+        public IActionResult DecreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
             challengeService.DecreaseTaskPosition(null, id);
-            return View("Edit", viewModel.Challenge.Id);
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
-        [HttpPost] IActionResult IncreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
+        [HttpPost]
+        public IActionResult IncreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
             challengeService.IncreaseTaskPosition(null, id);
-            return View("Edit", viewModel.Challenge.Id);
+            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+
+            return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
+        #endregion
     }
 }

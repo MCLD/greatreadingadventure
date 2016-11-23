@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,9 +31,14 @@ namespace GRA.Domain.Model
         public string Description { get; set; }
 
         [Required]
-        public int PointsAwarded { get; set; }
+        [DisplayName("Points Awarded")]
+        [Range(1, int.MaxValue, ErrorMessage = "The minimum points that can be awarded is {1}")]
+        public int? PointsAwarded { get; set; }
+
         [Required]
-        public int TasksToComplete { get; set; }
+        [DisplayName("Tasks To Complete")]
+        [Range(1, int.MaxValue, ErrorMessage = "The minimum tasks required to complete is {1}")]
+        public int? TasksToComplete { get; set; }
 
         public ICollection<ChallengeTask> Tasks { get; set; }
     }
