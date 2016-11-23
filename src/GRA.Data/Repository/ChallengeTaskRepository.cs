@@ -17,12 +17,18 @@ namespace GRA.Data.Repository
         public override void Add(int userId, ChallengeTask domainEntity)
         {
             LookUpChallengeTaskType(ref domainEntity);
+            domainEntity.Position = DbSet
+                .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
+                .Max(_ => _.Position) + 1;
             base.Add(userId, domainEntity);
         }
 
         public override ChallengeTask AddSave(int userId, ChallengeTask domainEntity)
         {
             LookUpChallengeTaskType(ref domainEntity);
+            domainEntity.Position = DbSet
+                .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
+                .Max(_ => _.Position) + 1;
             return base.AddSave(userId, domainEntity);
         }
         public override void Update(int userId, ChallengeTask domainEntity)
