@@ -7,12 +7,8 @@ namespace GRA.Data.Repository
     public class ProgramRepository
         : AuditingRepository<Model.Program, Domain.Model.Program>, IProgramRepository
     {
-        public ProgramRepository(
-            Context context,
-            ILogger<ProgramRepository> logger,
-            AutoMapper.IMapper mapper,
-            IConfigurationRoot config)
-            : base(context, logger, mapper, config)
+        public ProgramRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<ProgramRepository> logger): base(repositoryFacade, logger)
         {
         }
     }

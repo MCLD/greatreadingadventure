@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA
+namespace GRA.Domain.Model
 {
-    public static class ViewDataName
+    public enum Permission
     {
-        public const string Title = "Title";
+        AccessMissionControl,
+        EditChallenges
     }
 }

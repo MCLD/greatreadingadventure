@@ -7,10 +7,8 @@ namespace GRA.Data.Repository
     public class BranchRepository
         : AuditingRepository<Model.Branch, Domain.Model.Branch>, IBranchRepository
     {
-        public BranchRepository(Context context,
-            ILogger<BranchRepository> logger,
-            AutoMapper.IMapper mapper,
-            IConfigurationRoot config) : base(context, logger, mapper, config)
+        public BranchRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<BranchRepository> logger) : base(repositoryFacade, logger)
         {
         }
     }

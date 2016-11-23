@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,33 +34,36 @@ namespace GRA.Web
             services.AddSession(_ => _.IdleTimeout = System.TimeSpan.FromMinutes(30));
             services.AddSingleton(_ => Configuration);
             services.AddMvc();
+
+            // service facades
             services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
+            services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
 
             // database
             services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
 
+            // utilities
+            services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
+
             // services
             services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
             services.AddScoped<Domain.Service.ConfigurationService, Domain.Service.ConfigurationService>();
+            services.AddScoped<Domain.Service.PermissionService, Domain.Service.PermissionService>();
             services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
+            services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
 
             // repositories
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
+            services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
 
-            services.AddIdentity<Domain.Model.User, IdentityRole>()
-                .AddEntityFrameworkStores<Data.Context>();
             services.AddAutoMapper();
-            services.AddAuthorization(_ =>
-            {
-                _.AddPolicy(PolicyName.MissionControlAccess,
-                    policy => policy.RequireClaim(ClaimType.Privilege, ClaimName.MissionControlUser));
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +89,6 @@ namespace GRA.Web
             app.UseStaticFiles();
 
             app.UseSession();
-            app.UseIdentity();
 
             app.UseMvc(routes =>
             {

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,17 +11,22 @@ namespace GRA.Controllers.MissionControl
     public class LoginController : Base.Controller
     {
         private readonly ILogger<LoginController> logger;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly SignInManager<Domain.Model.User> signInManager;
+        private readonly UserService userService;
         public LoginController(ILogger<LoginController> logger,
             ServiceFacade.Controller context,
-            RoleManager<IdentityRole> roleManager,
-            SignInManager<Domain.Model.User> signInManager)
+            UserService userService)
             : base(context)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
             this.logger = logger;
-            this.signInManager = signInManager;
-            this.roleManager = roleManager;
+            if (userService == null)
+            {
+                throw new ArgumentNullException(nameof(userService));
+            }
+            this.userService = userService;
         }
 
         public IActionResult Index()
@@ -31,35 +36,16 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Domain.Model.MissionControl.Login model)
+        public IActionResult Login(Domain.Model.MissionControl.Login model)
         {
-            var result = await signInManager.PasswordSignInAsync(model.Username,
-                model.Password,
-                model.CookieUsername,
-                false);
-
-            if (result.Succeeded)
+            LoginUser(userService.AuthenticateUser(model.Username, model.Password));
+            if (CurrentUser != null && CurrentUser.Authenticated)
             {
-                AlertInfo = $"You have logged in as {model.Username}";
-                var participant = await userManager.FindByNameAsync(model.Username);
-
-                return RedirectToRoute(new { controller = "Home" });
+                return View("Index");
             }
             else
             {
-                if (result.IsNotAllowed)
-                {
-                    AlertDanger = "You are not allowed to log in.";
-                }
-                else if (result.IsLockedOut)
-                {
-                    AlertDanger = "Your account is locked out.";
-                }
-                else
-                {
-                    AlertDanger = "Login or password incorrect.";
-                }
-                return View("Index", model);
+                return RedirectToRoute(new { controller = "Home" });
             }
         }
     }

@@ -7,11 +7,8 @@ namespace GRA.Data.Repository
     public class SystemRepository
         : AuditingRepository<Model.System, Domain.Model.System>, ISystemRepository
     {
-        public SystemRepository(Context context,
-            ILogger<SystemRepository> logger,
-            AutoMapper.IMapper mapper,
-            IConfigurationRoot config)
-            : base(context, logger, mapper, config)
+        public SystemRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<SystemRepository> logger) : base(repositoryFacade, logger)
         {
         }
     }

@@ -1,8 +1,9 @@
 ﻿using GRA.Domain.Service;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -14,20 +15,29 @@ namespace GRA.Controllers.MissionControl
     public class RegisterController : Base.Controller
     {
         private readonly ILogger<RegisterController> logger;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly SignInManager<Domain.Model.User> signInManager;
         private readonly ConfigurationService configurationService;
+        private readonly UserService userService;
         public RegisterController(ILogger<RegisterController> logger,
             ServiceFacade.Controller context,
-            RoleManager<IdentityRole> roleManager,
-            SignInManager<Domain.Model.User> signInManager,
-            ConfigurationService configurationService)
+            ConfigurationService configurationService,
+            UserService userService)
             : base(context)
         {
+            if (logger == null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
             this.logger = logger;
-            this.roleManager = roleManager;
-            this.signInManager = signInManager;
+            if (configurationService == null)
+            {
+                throw new ArgumentNullException(nameof(configurationService));
+            }
             this.configurationService = configurationService;
+            if (userService == null)
+            {
+                throw new ArgumentNullException(nameof(userService));
+            }
+            this.userService = userService;
         }
 
         public IActionResult Index()
@@ -37,66 +47,32 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(Domain.Model.MissionControl.Register registerResponse)
+        public IActionResult Register(Domain.Model.MissionControl.Register registerResponse)
         {
             bool initialSetup = configurationService.NeedsInitialSetup();
 
-            var user = new Domain.Model.User
+            if (initialSetup)
             {
-                UserName = registerResponse.Username,
-                Email = registerResponse.Email,
-            };
-
-            IdentityResult result = await userManager.CreateAsync(user, registerResponse.Password);
-
-            if (result.Succeeded)
-            {
-                AlertSuccess = $"Account created: {user.UserName}";
-                logger.LogInformation($"Account create: {user.UserName}");
-
-                if (initialSetup)
+                var user = new Domain.Model.User
                 {
-                    logger.LogInformation("Site list from database is empty, initial setup");
-                    configurationService.InitialSetup(user);
+                    Username = registerResponse.Username,
+                    Email = registerResponse.Email,
+                    FirstName = registerResponse.Username
+                };
+                user = configurationService.InitialSetup(user, registerResponse.Password);
 
-                    // todo move identity out of aspnet
-                    // possibly following http://timschreiber.com/2015/01/14/persistence-ignorant-asp-net-identity-with-patterns-part-1/
-                    // this process should happen in service.InitialSetup(user)
-
-                    var adminRole = await roleManager.FindByNameAsync(RoleName.SystemAdministrator);
-                    if (adminRole == null)
-                    {
-                        adminRole = new IdentityRole(RoleName.SystemAdministrator);
-                        await roleManager.CreateAsync(adminRole);
-
-                        await roleManager.AddClaimAsync(adminRole,
-                            new Claim(ClaimType.Privilege, ClaimName.MissionControlUser));
-
-                        await userManager.AddToRoleAsync(user, adminRole.Name);
-                    }
-                    AlertSuccess = $"Initial account created: {user.UserName}";
-                }
-                
-                // sign in the registered user
-                var signInResult = await signInManager.PasswordSignInAsync(user.UserName,
-                    registerResponse.Password,
-                    false,
-                    false);
-
-                return RedirectToRoute(new { controller = "Home" });
+                AlertSuccess = $"Account created: {user.Username}";
+                logger.LogInformation($"Initial account create: {user.Username}");
             }
             else
             {
-                StringBuilder errors = new StringBuilder();
-                foreach (var error in result.Errors)
-                {
-                    errors.Append($"<li>{error.Description}</li>");
-                    logger.LogError($"Problem creating account: {error.Description}");
-                }
-                AlertDanger = $"Unable to register your account:{errors}";
-                PageTitle = "Register";
-                return View("Index");
+                AlertDanger = "Can't register a regular user yet, sorry!";
             }
+
+            LoginUser(userService.AuthenticateUser(registerResponse.Username,
+                registerResponse.Password));
+
+            return RedirectToRoute(new { controller = "Home" });
         }
     }
 }

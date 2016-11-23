@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData[GRA.ViewDataName.Title]</title>
+    <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -33,35 +33,35 @@
                      width="250" height="250" />
             </div>
         </div>
-        @if (TempData[GRA.TempDataName.AlertDanger] != null)
+        @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-danger">@TempData[GRA.TempDataName.AlertDanger]</div>
+                    <div class="alert alert-danger">@TempData[GRA.Controllers.TempDataKey.AlertDanger]</div>
                 </div>
             </div>
         }
-        @if (TempData[GRA.TempDataName.AlertWarning] != null)
+        @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
         {
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-warning">@TempData[GRA.TempDataName.AlertWarning]</div>
+                    <div class="alert alert-warning">@TempData[GRA.Controllers.TempDataKey.AlertWarning]</div>
                 </div>
             </div>
         }
-        @if (TempData[GRA.TempDataName.AlertSuccess] != null)
+        @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
         {
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-success">@TempData[GRA.TempDataName.AlertSuccess]</div>
+                    <div class="alert alert-success">@TempData[GRA.Controllers.TempDataKey.AlertSuccess]</div>
                 </div>
             </div>
         }
-        @if (TempData[GRA.TempDataName.AlertInfo] != null)
+        @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
         {
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-info">@TempData[GRA.TempDataName.AlertInfo]</div>
+                    <div class="alert alert-info">@TempData[GRA.Controllers.TempDataKey.AlertInfo]</div>
                 </div>
             </div>
         }

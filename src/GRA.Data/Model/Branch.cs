@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
 {
@@ -6,6 +7,7 @@ namespace GRA.Data.Model
     {
         [Required]
         public int SystemId { get; set; }
+        public virtual System System { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -17,5 +19,8 @@ namespace GRA.Data.Model
         public string Address { get; set; }
         [MaxLength(50)]
         public string Telephone { get; set; }
+
+        public virtual ICollection<User> Users { get; set; }
+
     }
 }

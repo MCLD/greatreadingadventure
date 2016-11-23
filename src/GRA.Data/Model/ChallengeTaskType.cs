@@ -11,7 +11,5 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
-
-        public virtual ICollection<ChallengeTask> ChallengeTasks { get; set; }
     }
 }

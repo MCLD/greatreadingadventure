@@ -5,7 +5,7 @@
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
     "GRA.Domain.Model": "1.0.0-*",
     "GRA.Domain.Repository": "1.0.0-*",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.1.0",
+    "GRA.Security": "1.0.0-*",
     "Microsoft.EntityFrameworkCore": "1.1.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
     "Microsoft.Extensions.Configuration": "1.1.0",

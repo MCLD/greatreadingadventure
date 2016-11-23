@@ -12,10 +12,8 @@ namespace GRA.Data.Repository
     public class ChallengeRepository
         : AuditingRepository<Model.Challenge, Domain.Model.Challenge>, IChallengeRepository
     {
-        public ChallengeRepository(Context context,
-            ILogger<ChallengeRepository> logger,
-            IMapper mapper,
-            IConfigurationRoot config) : base(context, logger, mapper, config)
+        public ChallengeRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<ChallengeRepository> logger) : base(repositoryFacade, logger)
         {
         }
 
@@ -37,6 +35,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false)
                 .Count();
+            
         }
 
         public override Domain.Model.Challenge GetById(int id)
@@ -67,18 +66,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .Single();
             entity.IsDeleted = true;
-            base.UpdateSave(userId, entity, string.Empty);
-        }
-
-        public void AddChallengeTaskType(int userId, string name)
-        {
-            context.ChallengeTaskTypes.Add(new Model.ChallengeTaskType
-            {
-                Name = name,
-                CreatedBy = userId,
-                CreatedAt = DateTime.Now
-            });
-            context.SaveChanges();
+            base.UpdateSave(userId, entity, null);
         }
     }
 }

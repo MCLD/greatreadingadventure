@@ -11,31 +11,29 @@ namespace GRA.Data.Repository
     public class ChallengeTaskRepository
         : AuditingRepository<Model.ChallengeTask, Domain.Model.ChallengeTask>, IChallengeTaskRepository
     {
-        public ChallengeTaskRepository(Context context,
-            ILogger<BranchRepository> logger,
-            AutoMapper.IMapper mapper,
-            IConfigurationRoot config) : base(context, logger, mapper, config) { }
+        public ChallengeTaskRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<BranchRepository> logger) : base(repositoryFacade, logger) { }
 
         public override void Add(int userId, ChallengeTask domainEntity)
         {
-            FixChallengeTaskTypeId(ref domainEntity);
+            LookUpChallengeTaskType(ref domainEntity);
             base.Add(userId, domainEntity);
         }
 
         public override ChallengeTask AddSave(int userId, ChallengeTask domainEntity)
         {
-            FixChallengeTaskTypeId(ref domainEntity);
+            LookUpChallengeTaskType(ref domainEntity);
             return base.AddSave(userId, domainEntity);
         }
         public override void Update(int userId, ChallengeTask domainEntity)
         {
-            FixChallengeTaskTypeId(ref domainEntity);
+            LookUpChallengeTaskType(ref domainEntity);
             base.Update(userId, domainEntity);
         }
 
         public override ChallengeTask UpdateSave(int userId, ChallengeTask domainEntity)
         {
-            FixChallengeTaskTypeId(ref domainEntity);
+            LookUpChallengeTaskType(ref domainEntity);
             return base.UpdateSave(userId, domainEntity);
         }
 
@@ -96,21 +94,24 @@ namespace GRA.Data.Repository
             Save();
         }
 
-        private int GetChallengeTypeId(string name)
+        public void AddChallengeTaskType(int userId, string name)
         {
-            return context.ChallengeTaskTypes
-                .AsNoTracking()
-                .Where(_ => _.Name == name)
-                .Select(_ => _.Id)
-                .SingleOrDefault();
+            context.ChallengeTaskTypes.Add(new Model.ChallengeTaskType
+            {
+                Name = name,
+                CreatedBy = userId,
+                CreatedAt = DateTime.Now
+            });
         }
 
-        private void FixChallengeTaskTypeId(ref ChallengeTask task)
+        private void LookUpChallengeTaskType(ref ChallengeTask task)
         {
-            if (task.ChallengeTaskTypeId == 0)
-            {
-                task.ChallengeTaskTypeId = GetChallengeTypeId(task.ChallengeTaskType.ToString());
-            }
+            string taskTypeName = task.ChallengeTaskType.ToString();
+            task.ChallengeTaskTypeId = context.ChallengeTaskTypes
+                .AsNoTracking()
+                .Where(_ => _.Name == taskTypeName)
+                .Select(_ => _.Id)
+                .SingleOrDefault();
         }
     }
 }

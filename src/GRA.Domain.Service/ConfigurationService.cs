@@ -4,48 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Domain.Service
 {
     public class ConfigurationService : Abstract.BaseService<ConfigurationService>
     {
-        private readonly ISiteRepository siteRepository;
-        private readonly ISystemRepository systemRepository;
         private readonly IBranchRepository branchRepository;
-        private readonly IProgramRepository programRepository;
         private readonly IChallengeRepository challengeRepository;
         private readonly IChallengeTaskRepository challengeTaskRepository;
+        private readonly IProgramRepository programRepository;
+        private readonly IRoleRepository roleRepository;
+        private readonly ISiteRepository siteRepository;
+        private readonly ISystemRepository systemRepository;
+        private readonly IUserRepository userRepository;
         public ConfigurationService(ILogger<ConfigurationService> logger,
+            IBranchRepository branchRepository,
+            IChallengeRepository challengeRepository,
+            IChallengeTaskRepository challengeTaskRepository,
+            IProgramRepository programRepository,
+            IRoleRepository roleRepository,
             ISiteRepository siteRepository,
             ISystemRepository systemRepository,
-            IBranchRepository branchRepository,
-            IProgramRepository programRepository,
-            IChallengeRepository challengeRepository,
-            IChallengeTaskRepository challengeTaskRepository) : base(logger)
+            IUserRepository userRepository) : base(logger)
         {
-            if (siteRepository == null)
-            {
-                throw new ArgumentNullException(nameof(siteRepository));
-            }
-            this.siteRepository = siteRepository;
-
-            if (systemRepository == null)
-            {
-                throw new ArgumentNullException(nameof(systemRepository));
-            }
-            this.systemRepository = systemRepository;
-
             if (branchRepository == null)
             {
                 throw new ArgumentNullException(nameof(branchRepository));
             }
             this.branchRepository = branchRepository;
-
-            if (programRepository == null)
-            {
-                throw new ArgumentNullException(nameof(programRepository));
-            }
-            this.programRepository = programRepository;
 
             if (challengeRepository == null)
             {
@@ -58,17 +45,42 @@ namespace GRA.Domain.Service
                 throw new ArgumentNullException(nameof(challengeTaskRepository));
             }
             this.challengeTaskRepository = challengeTaskRepository;
+
+            if (programRepository == null)
+            {
+                throw new ArgumentNullException(nameof(programRepository));
+            }
+            this.programRepository = programRepository;
+            if (roleRepository == null)
+            {
+                throw new ArgumentNullException(nameof(roleRepository));
+            }
+            this.roleRepository = roleRepository;
+            if (siteRepository == null)
+            {
+                throw new ArgumentNullException(nameof(siteRepository));
+            }
+            this.siteRepository = siteRepository;
+            if (systemRepository == null)
+            {
+                throw new ArgumentNullException(nameof(systemRepository));
+            }
+            this.systemRepository = systemRepository;
+            if (userRepository == null)
+            {
+                throw new ArgumentNullException(nameof(userRepository));
+            }
+            this.userRepository = userRepository;
         }
 
         public bool NeedsInitialSetup()
         {
-            return siteRepository.PageAll(0, 10).Count() == 0;
+            return siteRepository.PageAll(0, 1).Count() == 0;
         }
 
-        public void InitialSetup(Model.User adminUser)
+        public Model.User InitialSetup(Model.User adminUser, string password)
         {
-            int creatorUserId = 0;
-            var topSites = siteRepository.PageAll(0, 10);
+            var topSites = siteRepository.PageAll(0, 1);
 
             if (topSites.Count() > 0)
             {
@@ -81,7 +93,7 @@ namespace GRA.Domain.Service
                 Path = "default"
             };
             // create default site
-            site = siteRepository.AddSave(creatorUserId, site);
+            site = siteRepository.AddSave(-1, site);
 
             if (site == null)
             {
@@ -93,12 +105,7 @@ namespace GRA.Domain.Service
                 SiteId = site.Id,
                 Name = "Maricopa County Library District"
             };
-            system = systemRepository.AddSave(creatorUserId, system);
-
-            if (system == null)
-            {
-                throw new Exception("Unable to add initial default system or multiple systems found.");
-            }
+            system = systemRepository.AddSave(-1, system);
 
             var branch = new Model.Branch
             {
@@ -109,8 +116,7 @@ namespace GRA.Domain.Service
                 Telephone = "602-652-3064",
                 Url = "http://mcldaz.org/"
             };
-
-            branch = branchRepository.AddSave(creatorUserId, branch);
+            branch = branchRepository.AddSave(-1, branch);
 
             var program = new Model.Program
             {
@@ -118,12 +124,52 @@ namespace GRA.Domain.Service
                 Achiever = 1000,
                 Name = "Winter Reading Program"
             };
+            program = programRepository.AddSave(-1, program);
 
-            program = programRepository.AddSave(creatorUserId, program);
+            adminUser.BranchId = branch.Id;
+            adminUser.ProgramId = program.Id;
+            adminUser.SiteId = site.Id;
+            var user = userRepository.AddSave(0, adminUser);
+            user.CreatedBy = user.Id;
+            user = userRepository.UpdateSave(user.Id, user);
+            userRepository.SetUserPassword(user.Id, password);
+
+            int creatorUserId = user.Id;
+
+            site.CreatedBy = creatorUserId;
+            site = siteRepository.UpdateSave(creatorUserId, site);
+
+            system.CreatedBy = creatorUserId;
+            system = systemRepository.UpdateSave(creatorUserId, system);
+
+            branch.CreatedBy = creatorUserId;
+            branch = branchRepository.UpdateSave(creatorUserId, branch);
+
+            program.CreatedBy = creatorUserId;
+            program = programRepository.UpdateSave(creatorUserId, program);
+
+            var adminRole = roleRepository.AddSave(creatorUserId, new Model.Role
+            {
+                Name = "System Administrator"
+            });
+
+            userRepository.AddRole(creatorUserId, user.Id, adminRole.Id);
+
+            foreach (var value in Enum.GetValues(typeof(Model.Permission)))
+            {
+                roleRepository.AddPermission(creatorUserId, value.ToString());
+            }
+            roleRepository.Save();
+
+            foreach(var value in Enum.GetValues(typeof(Model.Permission)))
+            {
+                roleRepository.AddPermissionToRole(creatorUserId, adminRole.Id, value.ToString());
+            }
+            roleRepository.Save();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
             {
-                challengeRepository.AddChallengeTaskType(creatorUserId, value.ToString());
+                challengeTaskRepository.AddChallengeTaskType(creatorUserId, value.ToString());
             }
             challengeRepository.Save();
 
@@ -169,6 +215,7 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
+            return user;
         }
     }
 }

@@ -23,47 +23,46 @@ namespace GRA.Data
         private DbSet<DbEntity> dbSet;
         private DbSet<AuditLog> auditSet;
 
-        internal AuditingRepository(Context context,
-            ILogger logger,
-            AutoMapper.IMapper mapper,
-            IConfigurationRoot config)
+        internal AuditingRepository(ServiceFacade.Repository repositoryFacade, ILogger logger)
         {
-            if (context == null)
+            if (repositoryFacade == null)
             {
-                throw new ArgumentNullException(nameof(context));
+                throw new ArgumentNullException(nameof(repositoryFacade));
             }
-            this.context = context;
+            this.context = repositoryFacade.context;
+            this.mapper = repositoryFacade.mapper;
+            this.config = repositoryFacade.config;
             if (logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
             }
             this.logger = logger;
-            if (mapper == null)
-            {
-                throw new ArgumentNullException(nameof(mapper));
-            }
-            this.mapper = mapper;
-            if(config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            this.config = config;
+
             if (string.IsNullOrWhiteSpace(config["SuppressAuditLog"]))
             {
                 auditSet = context.Set<AuditLog>();
             }
         }
 
-        protected void AuditLog(int userId,
+        protected void AuditLog(int currentUserId,
             BaseDbEntity newObject,
             BaseDbEntity priorObject)
         {
-            AuditLog(userId, newObject, JsonConvert.SerializeObject(priorObject));
+            AuditLog(currentUserId, newObject.Id, newObject, priorObject);
         }
 
-        protected void AuditLog(int userId,
+        protected void AuditLog(int currentUserId,
             BaseDbEntity newObject,
-            string priorObject = null)
+            string priorObjectSerialized)
+        {
+            AuditLog(currentUserId, newObject.Id, newObject, priorObjectSerialized, true);
+        }
+
+        private void AuditLog(int currentUserId,
+            int objectId,
+            object newObject,
+            object priorObject,
+            bool priorObjectAlreadySerialized = false)
         {
             if (auditSet == null)
             {
@@ -73,16 +72,33 @@ namespace GRA.Data
             var audit = new AuditLog
             {
                 EntityType = newObject.GetType().ToString(),
-                EntityId = newObject.Id,
-                UpdatedBy = userId,
+                EntityId = objectId,
+                UpdatedBy = currentUserId,
                 UpdatedAt = DateTime.Now,
-                CurrentValue = JsonConvert.SerializeObject(newObject)
+                CurrentValue = SerializeEntity(newObject)
             };
-            if (!string.IsNullOrEmpty(priorObject))
+            if (priorObject != null)
             {
-                audit.PreviousValue = JsonConvert.SerializeObject(priorObject);
+                if (priorObjectAlreadySerialized)
+                {
+                    audit.PreviousValue = priorObject.ToString();
+                }
+                else
+                {
+                    audit.PreviousValue = SerializeEntity(priorObject);
+                }
             }
             AuditSet.Add(audit);
+        }
+
+        private string SerializeEntity(object entity)
+        {
+            return JsonConvert.SerializeObject(entity,
+                Formatting.None,
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
         }
 
         protected DbSet<AuditLog> AuditSet {
@@ -153,7 +169,7 @@ namespace GRA.Data
             string original = null;
             if (AuditSet != null)
             {
-                original = JsonConvert.SerializeObject(dbEntity);
+                original = SerializeEntity(dbEntity);
             }
             mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
             Update(userId, dbEntity, original);

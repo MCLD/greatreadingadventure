@@ -15,9 +15,7 @@
     "GRA.Data.SQLite": "1.0.0-*",
     "AutoMapper": "5.1.1",
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-    "GRA": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.1.0",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
@@ -31,7 +29,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0",
-    "BundlerMinifier.Core": "2.2.306"
+    "BundlerMinifier.Core": "2.2.306",
+    "GRA.Security": "1.0.0-*"
   },
 
   "tools": {

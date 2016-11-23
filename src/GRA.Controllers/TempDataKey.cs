@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA
+namespace GRA.Controllers
 {
-    public static class TempDataName
+    public static class TempDataKey
     {
         public const string AlertSuccess = "alert-success";
         public const string AlertInfo = "alert-info";
