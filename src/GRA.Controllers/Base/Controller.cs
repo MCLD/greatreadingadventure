@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using GRA.Domain.Model;
-using GRA.Controllers.Extension;
+using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace GRA.Controllers.Base
 {
@@ -54,38 +55,46 @@ namespace GRA.Controllers.Base
             return View();
         }
 
-        protected void LoginUser(AuthenticatedUser user)
+        protected async void LoginUser(AuthenticationResult authResult)
         {
-            if (user.Authenticated)
+            if (authResult.FoundUser && authResult.PasswordIsValid)
             {
-                currentUser = user;
-                HttpContext.Session.SetObjectAsJson(SessionKey.User, user);
-                if (!string.IsNullOrEmpty(user.AuthenticationMessage))
+                var claims = new HashSet<Claim>();
+                foreach (var permissionName in authResult.PermissionNames)
                 {
-                    AlertInfo = user.AuthenticationMessage;
+                    claims.Add(new Claim(ClaimType.Permission, permissionName));
+                }
+                claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
+
+                await HttpContext.Authentication.SignInAsync(Authentication.SchemeGRACookie,
+                    new ClaimsPrincipal(new ClaimsIdentity(claims, Authentication.TypeGRAPassword)));
+
+                if (!string.IsNullOrEmpty(authResult.AuthenticationMessage))
+                {
+                    AlertInfo = authResult.AuthenticationMessage;
                 }
             }
             else
             {
-                AlertDanger = user.AuthenticationMessage;
+                AlertDanger = authResult.AuthenticationMessage;
             }
         }
 
-        protected void LogoutUser()
+        protected async void LogoutUser()
         {
             HttpContext.Session.Remove(SessionKey.User);
-            currentUser = null;
+            await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
         }
 
-        private AuthenticatedUser currentUser { get; set; }
-        protected AuthenticatedUser CurrentUser {
+        protected ClaimsIdentity CurrentUser {
             get {
-                if(currentUser == null)
-                {
-                    currentUser = HttpContext.Session.GetObjectFromJson<AuthenticatedUser>(SessionKey.User);
-                }
-                return currentUser;
+                return (ClaimsIdentity)HttpContext.User.Identity;
             }
+        }
+
+        protected bool UserHasPermission(Permission permission)
+        {
+            return HttpContext.User.HasClaim(ClaimType.Permission, permission.ToString());
         }
     }
 }

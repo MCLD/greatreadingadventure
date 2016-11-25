@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace GRA.Domain.Model.MissionControl
+﻿namespace GRA.Domain.Model.MissionControl
 {
     public class Register
     {

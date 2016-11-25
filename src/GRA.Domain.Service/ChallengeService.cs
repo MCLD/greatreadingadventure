@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
+using System.Security.Claims;
 
 namespace GRA.Domain.Service
 {
@@ -36,7 +35,7 @@ namespace GRA.Domain.Service
         /// <param name="skip">The number of elements to skip before returning the remaining elements</param>
         /// <param name="take">The number of elements to return</param>
         /// <returns><see cref="DataWithCount{DataType}"/> containing the challenges and the total challenge count</returns>
-        public DataWithCount<IEnumerable<Challenge>> GetPaginatedChallengeList(User user,
+        public DataWithCount<IEnumerable<Challenge>> GetPaginatedChallengeList(ClaimsIdentity user,
             int skip,
             int take)
         {
@@ -55,7 +54,7 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challengeId">A challenge id</param>
         /// <returns>Details for the requested challenge</returns>
-        public Challenge GetChallengeDetails(User user, int challengeId)
+        public Challenge GetChallengeDetails(ClaimsIdentity user, int challengeId)
         {
             // todo: fix user id
             // todo: add access control - only view authorized challenges
@@ -68,11 +67,11 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challenge">A populated challenge object</param>
         /// <returns>The challenge which was added with the Id property populated</returns>
-        public Challenge AddChallenge(User user, Challenge challenge)
+        public Challenge AddChallenge(ClaimsIdentity user, Challenge challenge)
         {
             // todo: fix user id
             // todo: add access control - only some users can add
-            return challengeRepository.AddSave(0, challenge);
+            return challengeRepository.AddSave(GetUserId(user), challenge);
         }
 
         /// <summary>
@@ -81,11 +80,11 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challenge">The modified challenge object</param>
         /// <returns>The updated challenge</returns>
-        public Challenge EditChallenge(User user, Challenge challenge)
+        public Challenge EditChallenge(ClaimsIdentity user, Challenge challenge)
         {
             // todo: fix user id
             // todo: add access control - only some users can edit
-            return challengeRepository.UpdateSave(0, challenge);
+            return challengeRepository.UpdateSave(GetUserId(user), challenge);
         }
 
         /// <summary>
@@ -93,11 +92,11 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="challenge">The id of the challenge to remove</param>
-        public void RemoveChallenge(User user, int challengeId)
+        public void RemoveChallenge(ClaimsIdentity user, int challengeId)
         {
             // todo: fix user id
             // todo: add access control - only some users can remove
-            challengeRepository.RemoveSave(0, challengeId);
+            challengeRepository.RemoveSave(GetUserId(user), challengeId);
         }
 
         /// <summary>
@@ -106,10 +105,10 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="task">The task to add to the challenge</param>
         /// <param name="challengeId">The id of the challenge to add the task to</param>
-        public ChallengeTask AddTask(User user, ChallengeTask task)
+        public ChallengeTask AddTask(ClaimsIdentity user, ChallengeTask task)
         {
             // todo: fix user id
-            return challengeTaskRepository.AddSave(0, task);
+            return challengeTaskRepository.AddSave(GetUserId(user), task);
         }
 
         /// <summary>
@@ -117,10 +116,10 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="task">The modified task object</param>
-        public ChallengeTask EditTask(User user, ChallengeTask task)
+        public ChallengeTask EditTask(ClaimsIdentity user, ChallengeTask task)
         {
             // todo: fix user id
-            return challengeTaskRepository.UpdateSave(0, task);
+            return challengeTaskRepository.UpdateSave(GetUserId(user), task);
         }
 
         /// <summary>
@@ -128,7 +127,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="task">TThe id of the task to return</param>
-        public ChallengeTask GetTask(User user, int id)
+        public ChallengeTask GetTask(ClaimsIdentity user, int id)
         {
             // todo: fix user id
             return challengeTaskRepository.GetById(id);
@@ -139,10 +138,10 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task to remove</param>
-        public void RemoveTask(User user, int taskId)
+        public void RemoveTask(ClaimsIdentity user, int taskId)
         {
             // todo: fix user id
-            challengeTaskRepository.RemoveSave(0, taskId);
+            challengeTaskRepository.RemoveSave(GetUserId(user), taskId);
         }
 
         /// <summary>
@@ -150,7 +149,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to decrease</param>
-        public void DecreaseTaskPosition(User user, int taskId)
+        public void DecreaseTaskPosition(ClaimsIdentity user, int taskId)
         {
             // todo: fix user id
             challengeTaskRepository.DecreasePosition(taskId);
@@ -161,7 +160,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to increase</param>
-        public void IncreaseTaskPosition(User user, int taskId)
+        public void IncreaseTaskPosition(ClaimsIdentity user, int taskId)
         {
             // todo: fix user id
             challengeTaskRepository.IncreasePosition(taskId);

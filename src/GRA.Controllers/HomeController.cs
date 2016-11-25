@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {

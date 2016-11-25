@@ -2,6 +2,7 @@
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using System.Linq;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
+    [Authorize(Policy = Policy.AccessMissionControl)]
     public class ChallengeController : Base.Controller
     {
         private readonly ILogger<ChallengeController> logger;
@@ -35,7 +37,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (currentPage - 1);
 
-            var challengeList = challengeService.GetPaginatedChallengeList(null, skip, take);
+            var challengeList = challengeService.GetPaginatedChallengeList(CurrentUser, skip, take);
 
             ChallengeListViewModel viewModel = new ChallengeListViewModel();
 
@@ -75,7 +77,7 @@ namespace GRA.Controllers.MissionControl
 
                 // todo: fix siteId
                 challenge.SiteId = 1;
-                challengeId = challengeService.AddChallenge(null, challenge).Id;
+                challengeId = challengeService.AddChallenge(CurrentUser, challenge).Id;
                 AlertSuccess = $"{challenge.Name} was successfully created";
                 return RedirectToAction("Edit", new { id = challengeId });
             }
@@ -95,7 +97,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                challenge = challengeService.GetChallengeDetails(null, id);
+                challenge = challengeService.GetChallengeDetails(CurrentUser, id);
             }
             if (challenge == null)
             {
@@ -115,16 +117,17 @@ namespace GRA.Controllers.MissionControl
             }
             else if (TempData.ContainsKey("EditTask"))
             {
-                viewModel.Task = challengeService.GetTask(null, (int)TempData["EditTask"]);
+                viewModel.Task = challengeService.GetTask(CurrentUser, (int)TempData["EditTask"]);
             }
             return View("Edit", viewModel);
         }
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult Edit(ChallengeDetailViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                challengeService.EditChallenge(null, viewModel.Challenge);
+                challengeService.EditChallenge(CurrentUser, viewModel.Challenge);
                 AlertSuccess = $"{viewModel.Challenge.Name} was successfully modified";
                 return RedirectToAction("Index");
             }
@@ -136,9 +139,10 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult Delete(int id)
         {
-            challengeService.RemoveChallenge(null, id);
+            challengeService.RemoveChallenge(CurrentUser, id);
             return RedirectToAction("Index");
         }
 
@@ -151,6 +155,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenAddTask(ChallengeDetailViewModel viewModel)
         {
             TempData["AddTask"] = true;
@@ -159,6 +164,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult AddTask(ChallengeDetailViewModel viewModel)
         {
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
@@ -169,7 +175,7 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
-                challengeService.AddTask(null, viewModel.Task);
+                challengeService.AddTask(CurrentUser, viewModel.Task);
             }
             else
             {
@@ -181,6 +187,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
         {
             TempData["EditTask"] = taskId;
@@ -189,6 +196,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult ModifyTask(ChallengeDetailViewModel viewModel)
         {
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
@@ -198,7 +206,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
-                challengeService.EditTask(null, viewModel.Task);
+                challengeService.EditTask(CurrentUser, viewModel.Task);
             }
             else
             {
@@ -210,27 +218,30 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult DeleteTask(ChallengeDetailViewModel viewModel, int id)
         {
-            challengeService.RemoveTask(null, id);
+            challengeService.RemoveTask(CurrentUser, id);
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult DecreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
-            challengeService.DecreaseTaskPosition(null, id);
+            challengeService.DecreaseTaskPosition(CurrentUser, id);
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult IncreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
-            challengeService.IncreaseTaskPosition(null, id);
+            challengeService.IncreaseTaskPosition(CurrentUser, id);
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });

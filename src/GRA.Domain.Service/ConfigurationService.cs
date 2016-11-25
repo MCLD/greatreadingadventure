@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
-using GRA.Domain.Service.Abstract;
 
 namespace GRA.Domain.Service
 {
@@ -130,8 +127,6 @@ namespace GRA.Domain.Service
             adminUser.ProgramId = program.Id;
             adminUser.SiteId = site.Id;
             var user = userRepository.AddSave(0, adminUser);
-            user.CreatedBy = user.Id;
-            user = userRepository.UpdateSave(user.Id, user);
             userRepository.SetUserPassword(user.Id, password);
 
             int creatorUserId = user.Id;

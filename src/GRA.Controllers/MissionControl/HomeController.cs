@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GRA.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -14,25 +13,22 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context)
             : base(context)
         {
-            if(logger == null)
+            if (logger == null)
             {
                 throw new ArgumentNullException(nameof(logger));
             }
             this.logger = logger;
         }
 
-        //[Authorize(Policy = PolicyName.MissionControlAccess)]
         public IActionResult Index()
         {
-            if (CurrentUser == null 
-                || CurrentUser.Permissions == null 
-                || CurrentUser.Permissions.Count() == 0)
+            if (!CurrentUser.IsAuthenticated)
             {
                 // not logged in, redirect to login page
                 return RedirectToRoute(new { controller = "Login" });
             }
 
-            if (!CurrentUser.Permissions.Contains(Domain.Model.Permission.AccessMissionControl))
+            if (!UserHasPermission(Permission.AccessMissionControl))
             {
                 // not authorized for Mission Control, redirect to main site
                 return RedirectToRoute(new { area = string.Empty });

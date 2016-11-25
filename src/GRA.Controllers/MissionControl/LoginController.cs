@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -39,7 +37,7 @@ namespace GRA.Controllers.MissionControl
         public IActionResult Login(Domain.Model.MissionControl.Login model)
         {
             LoginUser(userService.AuthenticateUser(model.Username, model.Password));
-            if (CurrentUser != null && CurrentUser.Authenticated)
+            if (CurrentUser != null && CurrentUser.IsAuthenticated)
             {
                 return View("Index");
             }

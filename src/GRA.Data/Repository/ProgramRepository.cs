@@ -1,5 +1,4 @@
 ﻿using GRA.Domain.Repository;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository

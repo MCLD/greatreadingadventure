@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using GRA.Domain.Model;
-using System.Collections.Generic;
 
 namespace GRA.Data.Repository
 {
@@ -57,60 +56,30 @@ namespace GRA.Data.Repository
             }
         }
 
-        public AuthenticatedUser GetByUsernamePassword(string username, string password)
+        public AuthenticationResult AuthenticateUser(string username, string password)
         {
-            AuthenticatedUser authUser = new AuthenticatedUser
+            var result = new AuthenticationResult
             {
-                Authenticated = false
+                FoundUser = false,
+                PasswordIsValid = false
             };
+
             var dbUser = DbSet
                 .Where(_ => _.Username == username)
                 .SingleOrDefault();
             if (dbUser != null)
             {
-                authUser.User = mapper.Map<Model.User, User>(dbUser);
-                var passwordMatch
-                    = passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
-                if (passwordMatch)
+                result.FoundUser = true;
+                result.PasswordIsValid = 
+                    passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
+                if (result.PasswordIsValid)
                 {
-                    authUser.Authenticated = true;
-                    authUser.Permissions = GetPermissions(dbUser.Id);
+                    result.User = mapper.Map<Model.User, User>(dbUser);
                     dbUser.LastAccess = DateTime.Now;
                     Save();
                 }
             }
-            return authUser;
-        }
-
-        public ICollection<Permission> GetPermissions(int userId)
-        {
-            ICollection<Permission> permission = new HashSet<Permission>();
-
-            var roleIds = context
-                 .UserRoles
-                 .AsNoTracking()
-                 .Where(_ => _.UserId == userId)
-                 .Select(_ => _.RoleId);
-
-            var permissionNames = context
-                .RolePermissions
-                .AsNoTracking()
-                .Where(_ => roleIds.Contains(_.RoleId))
-                .Select(_ => _.Permission.Name)
-                .Distinct()
-                .OrderBy(_ => _);
-
-            if (permissionNames.Count() == 0)
-            {
-                return permission;
-            }
-
-            foreach (var permissionName in permissionNames)
-            {
-                permission.Add((Permission)Enum.Parse(typeof(Permission), permissionName));
-            }
-
-            return permission;
+            return result;
         }
     }
 }

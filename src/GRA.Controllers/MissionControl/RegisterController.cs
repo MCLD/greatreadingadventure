@@ -1,13 +1,7 @@
 ﻿using GRA.Domain.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -49,25 +43,26 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public IActionResult Register(Domain.Model.MissionControl.Register registerResponse)
         {
-            bool initialSetup = configurationService.NeedsInitialSetup();
-
-            if (initialSetup)
+            var user = new Domain.Model.User
             {
-                var user = new Domain.Model.User
-                {
-                    Username = registerResponse.Username,
-                    Email = registerResponse.Email,
-                    FirstName = registerResponse.Username
-                };
-                user = configurationService.InitialSetup(user, registerResponse.Password);
+                Username = registerResponse.Username,
+                Email = registerResponse.Email,
+                FirstName = registerResponse.Username
+            };
 
-                AlertSuccess = $"Account created: {user.Username}";
+
+            if (configurationService.NeedsInitialSetup())
+            {
+                user = configurationService.InitialSetup(user, registerResponse.Password);
                 logger.LogInformation($"Initial account create: {user.Username}");
             }
             else
             {
-                AlertDanger = "Can't register a regular user yet, sorry!";
+                user = userService.RegisterUser(user, registerResponse.Password);
+                logger.LogInformation($"Created account: {user.Username}");
             }
+
+            AlertSuccess = $"Account created: {user.Username}";
 
             LoginUser(userService.AuthenticateUser(registerResponse.Username,
                 registerResponse.Password));

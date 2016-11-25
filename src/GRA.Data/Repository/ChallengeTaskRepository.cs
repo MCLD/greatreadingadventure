@@ -1,7 +1,6 @@
 ﻿using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;

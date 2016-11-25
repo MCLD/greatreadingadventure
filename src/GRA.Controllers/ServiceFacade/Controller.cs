@@ -1,5 +1,4 @@
-﻿using GRA.Domain.Service;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System;
 
 namespace GRA.Controllers.ServiceFacade

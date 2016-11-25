@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace GRA.Data.Repository
 {
@@ -42,6 +40,23 @@ namespace GRA.Data.Repository
                 CreatedBy = userId,
                 CreatedAt = DateTime.Now
             });
+        }
+
+        public IEnumerable<string> GetPermisisonNamesForUser(int userId)
+        {
+            var roleIds = context
+                .UserRoles
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.RoleId);
+
+            return context
+                .RolePermissions
+                .AsNoTracking()
+                .Where(_ => roleIds.Contains(_.RoleId))
+                .Select(_ => _.Permission.Name)
+                .Distinct()
+                .OrderBy(_ => _);
         }
     }
 }

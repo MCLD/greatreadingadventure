@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using AutoMapper;
+﻿using System.Linq;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
-using Microsoft.Extensions.Configuration;
 
 namespace GRA.Data.Repository
 {

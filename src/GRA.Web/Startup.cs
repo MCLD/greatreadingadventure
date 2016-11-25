@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using GRA.Domain.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace GRA.Web
 {
@@ -35,6 +38,15 @@ namespace GRA.Web
             services.AddSingleton(_ => Configuration);
             services.AddMvc();
 
+            services.AddAuthorization(options =>
+            {
+                foreach (var permisisonName in Enum.GetValues(typeof(Domain.Model.Permission)))
+                {
+                    options.AddPolicy(permisisonName.ToString(),
+                        _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
+                }
+            });
+
             // service facades
             services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
             services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
@@ -49,7 +61,6 @@ namespace GRA.Web
             // services
             services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
             services.AddScoped<Domain.Service.ConfigurationService, Domain.Service.ConfigurationService>();
-            services.AddScoped<Domain.Service.PermissionService, Domain.Service.PermissionService>();
             services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
             services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
 
@@ -89,6 +100,15 @@ namespace GRA.Web
             app.UseStaticFiles();
 
             app.UseSession();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = Controllers.Authentication.SchemeGRACookie,
+                LoginPath = new PathString("/MissionControl/Login/"),
+                AccessDeniedPath = new PathString("/"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
 
             app.UseMvc(routes =>
             {

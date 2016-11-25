@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.Extensions.Logging;
 

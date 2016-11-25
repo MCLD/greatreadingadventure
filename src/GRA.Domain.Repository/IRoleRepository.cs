@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GRA.Domain.Repository
 {
@@ -9,5 +6,6 @@ namespace GRA.Domain.Repository
     {
         void AddPermission(int userId, string permissionName);
         void AddPermissionToRole(int userId, int roleId, string permissionName);
+        IEnumerable<string> GetPermisisonNamesForUser(int userId);
     }
 }

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace GRA.Security
 {
@@ -49,7 +46,7 @@ namespace GRA.Security
         /// </summary>
         /// <param name="password">The password to hash.</param>
         /// <returns>A hashed representation of the supplied <paramref name="password"/></returns>
-        public virtual string HashPassword(string password)
+        public string HashPassword(string password)
         {
             if (password == null)
             {
@@ -68,7 +65,7 @@ namespace GRA.Security
         /// <returns>A <see cref="PasswordVerificationResult"/> indicating the result of a password
         /// hash comparison.</returns>
         /// <remarks>Implementations of this method should be time consistent.</remarks>
-        public virtual bool VerifyHashedPassword(string hashedPassword, string providedPassword)
+        public bool VerifyHashedPassword(string hashedPassword, string providedPassword)
         {
             if (hashedPassword == null)
             {
