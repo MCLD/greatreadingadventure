@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -70,14 +71,15 @@ namespace GRA.Domain.Service
             this.userRepository = userRepository;
         }
 
-        public bool NeedsInitialSetup()
+        public async Task<bool> NeedsInitialSetupAsync()
         {
-            return siteRepository.PageAll(0, 1).Count() == 0;
+            var firstSite = await siteRepository.PageAllAsync(0, 1);
+            return firstSite.Count() == 0;
         }
 
-        public Model.User InitialSetup(Model.User adminUser, string password)
+        public async Task<Model.User> InitialSetupAsync(Model.User adminUser, string password)
         {
-            var topSites = siteRepository.PageAll(0, 1);
+            var topSites = await siteRepository.PageAllAsync(0, 1);
 
             if (topSites.Count() > 0)
             {
@@ -90,7 +92,7 @@ namespace GRA.Domain.Service
                 Path = "default"
             };
             // create default site
-            site = siteRepository.AddSave(-1, site);
+            site = await siteRepository.AddSaveAsync(-1, site);
 
             if (site == null)
             {
@@ -102,7 +104,7 @@ namespace GRA.Domain.Service
                 SiteId = site.Id,
                 Name = "Maricopa County Library District"
             };
-            system = systemRepository.AddSave(-1, system);
+            system = await systemRepository.AddSaveAsync(-1, system);
 
             var branch = new Model.Branch
             {
@@ -113,7 +115,7 @@ namespace GRA.Domain.Service
                 Telephone = "602-652-3064",
                 Url = "http://mcldaz.org/"
             };
-            branch = branchRepository.AddSave(-1, branch);
+            branch = await branchRepository.AddSaveAsync(-1, branch);
 
             var program = new Model.Program
             {
@@ -121,52 +123,52 @@ namespace GRA.Domain.Service
                 Achiever = 1000,
                 Name = "Winter Reading Program"
             };
-            program = programRepository.AddSave(-1, program);
+            program = await programRepository.AddSaveAsync(-1, program);
 
             adminUser.BranchId = branch.Id;
             adminUser.ProgramId = program.Id;
             adminUser.SiteId = site.Id;
-            var user = userRepository.AddSave(0, adminUser);
-            userRepository.SetUserPassword(user.Id, password);
+            var user = await userRepository.AddSaveAsync(0, adminUser);
+            await userRepository.SetUserPasswordAsync(user.Id, password);
 
             int creatorUserId = user.Id;
 
             site.CreatedBy = creatorUserId;
-            site = siteRepository.UpdateSave(creatorUserId, site);
+            site = await siteRepository.UpdateSaveAsync(creatorUserId, site);
 
             system.CreatedBy = creatorUserId;
-            system = systemRepository.UpdateSave(creatorUserId, system);
+            system = await systemRepository.UpdateSaveAsync(creatorUserId, system);
 
             branch.CreatedBy = creatorUserId;
-            branch = branchRepository.UpdateSave(creatorUserId, branch);
+            branch = await branchRepository.UpdateSaveAsync(creatorUserId, branch);
 
             program.CreatedBy = creatorUserId;
-            program = programRepository.UpdateSave(creatorUserId, program);
+            program = await programRepository.UpdateSaveAsync(creatorUserId, program);
 
-            var adminRole = roleRepository.AddSave(creatorUserId, new Model.Role
+            var adminRole = await roleRepository.AddSaveAsync(creatorUserId, new Model.Role
             {
                 Name = "System Administrator"
             });
 
-            userRepository.AddRole(creatorUserId, user.Id, adminRole.Id);
+            await userRepository.AddRoleAsync(creatorUserId, user.Id, adminRole.Id);
 
             foreach (var value in Enum.GetValues(typeof(Model.Permission)))
             {
                 roleRepository.AddPermission(creatorUserId, value.ToString());
             }
-            roleRepository.Save();
+            await roleRepository.SaveAsync();
 
             foreach(var value in Enum.GetValues(typeof(Model.Permission)))
             {
                 roleRepository.AddPermissionToRole(creatorUserId, adminRole.Id, value.ToString());
             }
-            roleRepository.Save();
+            await roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
             {
-                challengeTaskRepository.AddChallengeTaskType(creatorUserId, value.ToString());
+                await challengeTaskRepository.AddChallengeTaskTypeAsync(creatorUserId, value.ToString());
             }
-            challengeRepository.Save();
+            await challengeRepository.SaveAsync();
 
             // sample challenge
 
@@ -183,24 +185,24 @@ namespace GRA.Domain.Service
                 RelatedBranchId = branch.Id
             };
 
-            challenge = challengeRepository.AddSave(creatorUserId, challenge);
+            challenge = await challengeRepository.AddSaveAsync(creatorUserId, challenge);
 
             int positionCounter = 1;
-            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
+            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Be excellent to each other",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
+            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Party on, dudes!",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            challengeTaskRepository.AddSave(creatorUserId, new Model.ChallengeTask
+            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",

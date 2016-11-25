@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -13,36 +14,36 @@ namespace GRA.Data.Repository
         public ChallengeTaskRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<BranchRepository> logger) : base(repositoryFacade, logger) { }
 
-        public override void Add(int userId, ChallengeTask domainEntity)
+        public override async Task AddAsync(int userId, ChallengeTask domainEntity)
         {
-            LookUpChallengeTaskType(ref domainEntity);
+            await LookUpChallengeTaskTypeAsync(domainEntity);
             domainEntity.Position = DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
                 .Max(_ => _.Position) + 1;
-            base.Add(userId, domainEntity);
+            await base.AddAsync(userId, domainEntity);
         }
 
-        public override ChallengeTask AddSave(int userId, ChallengeTask domainEntity)
+        public override async Task<ChallengeTask> AddSaveAsync(int userId, ChallengeTask domainEntity)
         {
-            LookUpChallengeTaskType(ref domainEntity);
+            await LookUpChallengeTaskTypeAsync(domainEntity);
             domainEntity.Position = DbSet
                 .Where(_ => _.ChallengeId == domainEntity.ChallengeId)
                 .Max(_ => _.Position) + 1;
-            return base.AddSave(userId, domainEntity);
+            return await base.AddSaveAsync(userId, domainEntity);
         }
-        public override void Update(int userId, ChallengeTask domainEntity)
+        public override async Task UpdateAsync(int userId, ChallengeTask domainEntity)
         {
-            LookUpChallengeTaskType(ref domainEntity);
-            base.Update(userId, domainEntity);
+            await LookUpChallengeTaskTypeAsync(domainEntity);
+            await base.UpdateAsync(userId, domainEntity);
         }
 
-        public override ChallengeTask UpdateSave(int userId, ChallengeTask domainEntity)
+        public override async Task<ChallengeTask> UpdateSaveAsync(int userId, ChallengeTask domainEntity)
         {
-            LookUpChallengeTaskType(ref domainEntity);
-            return base.UpdateSave(userId, domainEntity);
+            await LookUpChallengeTaskTypeAsync(domainEntity);
+            return await base.UpdateSaveAsync(userId, domainEntity);
         }
 
-        public override void RemoveSave(int userId, int id)
+        public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = DbSet.Find(id);
             if (entity == null)
@@ -58,10 +59,10 @@ namespace GRA.Data.Repository
             {
                 task.Position = position++;
             }
-            Save();
+            await SaveAsync();
         }
 
-        public void DecreasePosition(int taskId)
+        public async Task DecreasePositionAsync(int taskId)
         {
             var task = DbSet.Find(taskId);
             if (task == null)
@@ -72,36 +73,36 @@ namespace GRA.Data.Repository
             {
                 throw new Exception($"Task {taskId} is already in the first position for this challenge.");
             }
-            var previousTask = DbSet
+            var previousTask = await DbSet
                 .Where(_ => _.ChallengeId == task.ChallengeId && _.Position == task.Position - 1)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             previousTask.Position++;
             task.Position--;
-            Save();
+            await SaveAsync();
         }
 
-        public void IncreasePosition(int taskId)
+        public async Task IncreasePositionAsync(int taskId)
         {
             var task = DbSet.Find(taskId);
             if (task == null)
             {
                 throw new Exception($"Task {taskId} could not be found");
             }
-            var nextTask = DbSet
+            var nextTask = await DbSet
                 .Where(_ => _.ChallengeId == task.ChallengeId && _.Position == task.Position + 1)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (nextTask == null)
             {
                 throw new Exception($"Task {taskId} is already in the last position for this challenge.");
             }
             nextTask.Position--;
             task.Position++;
-            Save();
+            await SaveAsync();
         }
 
-        public void AddChallengeTaskType(int userId, string name)
+        public async Task AddChallengeTaskTypeAsync(int userId, string name)
         {
-            context.ChallengeTaskTypes.Add(new Model.ChallengeTaskType
+            await context.ChallengeTaskTypes.AddAsync(new Model.ChallengeTaskType
             {
                 Name = name,
                 CreatedBy = userId,
@@ -109,14 +110,14 @@ namespace GRA.Data.Repository
             });
         }
 
-        private void LookUpChallengeTaskType(ref ChallengeTask task)
+        private async Task LookUpChallengeTaskTypeAsync(ChallengeTask task)
         {
             string taskTypeName = task.ChallengeTaskType.ToString();
-            task.ChallengeTaskTypeId = context.ChallengeTaskTypes
+            task.ChallengeTaskTypeId = await context.ChallengeTaskTypes
                 .AsNoTracking()
                 .Where(_ => _.Name == taskTypeName)
                 .Select(_ => _.Id)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
         }
     }
 }

@@ -1,16 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Repository
 {
     public interface IRepository<DomainEntity>
     {
-        void Add(int currentUserId, DomainEntity entity);
-        DomainEntity AddSave(int currentUserId, DomainEntity entity);
-        DomainEntity GetById(int id);
-        IQueryable<DomainEntity> PageAll(int skip, int take);
-        void RemoveSave(int currentUserId, int id);
-        void Save();
-        void Update(int currentUserId, DomainEntity entity);
-        DomainEntity UpdateSave(int currentUserId, DomainEntity entity);
+        Task AddAsync(int currentUserId, DomainEntity entity);
+        Task<DomainEntity> AddSaveAsync(int currentUserId, DomainEntity entity);
+        Task<DomainEntity> GetByIdAsync(int id);
+        Task<ICollection<DomainEntity>> PageAllAsync(int skip, int take);
+        Task RemoveSaveAsync(int currentUserId, int id);
+        Task SaveAsync();
+        Task UpdateAsync(int currentUserId, DomainEntity entity);
+        Task<DomainEntity> UpdateSaveAsync(int currentUserId, DomainEntity entity);
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace GRA.Data.Repository
 {
@@ -14,66 +16,68 @@ namespace GRA.Data.Repository
         {
         }
 
-        public override IQueryable<Domain.Model.Challenge> PageAll(int skip, int take)
+        public override async Task<ICollection<Domain.Model.Challenge>> PageAllAsync(int skip, int take)
         {
             // todo: add logic to filter for user
-            return DbSet
+            return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false)
                 .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Domain.Model.Challenge>();
+                .ProjectTo<Domain.Model.Challenge>()
+                .ToListAsync();
         }
 
-        public int GetChallengeCount()
+        public async Task<int> GetChallengeCountAsync()
         {
-            return DbSet
+            var challenges = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false)
-                .Count();
-            
+                .ToListAsync();
+            return challenges.Count();
         }
 
-        public override Domain.Model.Challenge GetById(int id)
+        public override async Task<Domain.Model.Challenge> GetByIdAsync(int id)
         {
             // todo: add logic to filter for user
-            var challenge = mapper.Map<Model.Challenge, Domain.Model.Challenge>(DbSet
+            var challenge = mapper.Map<Model.Challenge, Domain.Model.Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
-                .Single());
+                .SingleAsync());
 
             if (challenge != null)
             {
-                challenge.Tasks = context.ChallengeTasks
+                challenge.Tasks = await context.ChallengeTasks
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == id)
                 .OrderBy(_ => _.Position)
                 .ProjectTo<Domain.Model.ChallengeTask>()
-                .ToList();
+                .ToListAsync();
             }
 
             return challenge;
         }
 
-        public override void RemoveSave(int userId, int id)
+        public override async Task RemoveSaveAsync(int userId, int id)
         {
             // todo: fix user lookup
             var entity = context.Challenges
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .Single();
             entity.IsDeleted = true;
-            base.Update(userId, entity, null);
-            base.Save();
+            await base.UpdateAsync(userId, entity, null);
+            await base.SaveAsync();
         }
 
-        public IQueryable<Domain.Model.ChallengeTask> GetChallengeTasks(int challengeId)
+        public async Task<ICollection<Domain.Model.ChallengeTask>> GetChallengeTasksAsync(int challengeId)
         {
-            return context.ChallengeTasks
+            return await context.ChallengeTasks
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<Domain.Model.ChallengeTask>();
+                .ProjectTo<Domain.Model.ChallengeTask>()
+                .ToListAsync();
         }
     }
 }

@@ -7,7 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Data
 {
@@ -44,21 +46,21 @@ namespace GRA.Data
             }
         }
 
-        protected void AuditLog(int currentUserId,
+        protected async Task AuditLog(int currentUserId,
             BaseDbEntity newObject,
             BaseDbEntity priorObject)
         {
-            AuditLog(currentUserId, newObject.Id, newObject, priorObject);
+            await AuditLog(currentUserId, newObject.Id, newObject, priorObject);
         }
 
-        protected void AuditLog(int currentUserId,
+        protected async Task AuditLog(int currentUserId,
             BaseDbEntity newObject,
             string priorObjectSerialized)
         {
-            AuditLog(currentUserId, newObject.Id, newObject, priorObjectSerialized, true);
+            await AuditLog(currentUserId, newObject.Id, newObject, priorObjectSerialized, true);
         }
 
-        private void AuditLog(int currentUserId,
+        private async Task AuditLog(int currentUserId,
             int objectId,
             object newObject,
             object priorObject,
@@ -88,7 +90,7 @@ namespace GRA.Data
                     audit.PreviousValue = SerializeEntity(priorObject);
                 }
             }
-            AuditSet.Add(audit);
+            await AuditSet.AddAsync(audit);
         }
 
         private string SerializeEntity(object entity)
@@ -112,17 +114,22 @@ namespace GRA.Data
             }
         }
 
-        public virtual IQueryable<DomainEntity> PageAll(int skip, int take)
+        public async virtual Task<ICollection<DomainEntity>> PageAllAsync(int skip, int take)
         {
-            return DbSet.AsNoTracking().Skip(skip).Take(take).ProjectTo<DomainEntity>();
+            return await DbSet
+                .AsNoTracking()
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<DomainEntity>()
+                .ToListAsync();
         }
 
-        public virtual DomainEntity GetById(int id)
+        public async virtual Task<DomainEntity> GetByIdAsync(int id)
         {
-            var entity = DbSet
+            var entity = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Id == id)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (entity == null)
             {
                 throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
@@ -130,25 +137,25 @@ namespace GRA.Data
             return mapper.Map<DbEntity, DomainEntity>(entity);
         }
 
-        public virtual void Add(int userId, DomainEntity domainEntity)
+        public virtual async Task AddAsync(int userId, DomainEntity domainEntity)
         {
-            Add(userId, mapper.Map<DomainEntity, DbEntity>(domainEntity));
+            await AddAsync(userId, mapper.Map<DomainEntity, DbEntity>(domainEntity));
         }
 
-        public virtual DomainEntity AddSave(int userId, DomainEntity domainEntity)
+        public virtual async Task<DomainEntity> AddSaveAsync(int userId, DomainEntity domainEntity)
         {
             var dbEntity = mapper.Map<DomainEntity, DbEntity>(domainEntity);
-            return AddSave(userId, dbEntity);
+            return await AddSaveAsync(userId, dbEntity);
         }
 
-        protected virtual DomainEntity AddSave(int userId, DbEntity dbEntity)
+        protected virtual async Task<DomainEntity> AddSaveAsync(int userId, DbEntity dbEntity)
         {
-            Add(userId, dbEntity);
-            Save();
+            await AddAsync(userId, dbEntity);
+            await SaveAsync();
             return mapper.Map<DbEntity, DomainEntity>(dbEntity);
         }
 
-        protected virtual void Add(int userId, DbEntity dbEntity)
+        protected virtual async Task AddAsync(int userId, DbEntity dbEntity)
         {
             dbEntity.CreatedBy = userId;
             dbEntity.CreatedAt = DateTime.Now;
@@ -159,56 +166,57 @@ namespace GRA.Data
             }
             else
             {
-                DbSet.Add(dbEntity);
+                await DbSet.AddAsync(dbEntity);
             }
         }
 
-        public virtual void Update(int userId, DomainEntity domainEntity)
+
+        protected virtual async Task UpdateAsync(int userId, DbEntity dbEntity, string original)
         {
-            var dbEntity = DbSet.Find(domainEntity.Id);
+            DbSet.Update(dbEntity);
+            await AuditLog(userId, dbEntity, original);
+        }
+
+        public virtual async Task<DomainEntity> UpdateSaveAsync(int userId, DomainEntity domainEntity)
+        {
+            await UpdateAsync(userId, domainEntity);
+            await SaveAsync();
+            return await GetByIdAsync(domainEntity.Id);
+        }
+
+        protected virtual async Task<DomainEntity> UpdateSaveAsync(int userId, DbEntity dbEntity, string original)
+        {
+            await UpdateAsync(userId, dbEntity, original);
+            await SaveAsync();
+            return await GetByIdAsync(dbEntity.Id);
+        }
+
+        public virtual async Task UpdateAsync(int userId, DomainEntity domainEntity)
+        {
+            var dbEntity = await DbSet.FindAsync(domainEntity.Id);
             string original = null;
             if (AuditSet != null)
             {
                 original = SerializeEntity(dbEntity);
             }
             mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
-            Update(userId, dbEntity, original);
+            await UpdateAsync(userId, dbEntity, original);
         }
 
-        protected virtual void Update(int userId, DbEntity dbEntity, string original)
+        public virtual async Task RemoveSaveAsync(int userId, int id)
         {
-            DbSet.Update(dbEntity);
-            AuditLog(userId, dbEntity, original);
-        }
-
-        public virtual DomainEntity UpdateSave(int userId, DomainEntity domainEntity)
-        {
-            Update(userId, domainEntity);
-            Save();
-            return GetById(domainEntity.Id);
-        }
-
-        protected virtual DomainEntity UpdateSave(int userId, DbEntity dbEntity, string original)
-        {
-            Update(userId, dbEntity, original);
-            Save();
-            return GetById(dbEntity.Id);
-        }
-
-        public virtual void RemoveSave(int userId, int id)
-        {
-            var entity = DbSet.Find(id);
+            var entity = await DbSet.FindAsync(id);
             if (entity == null)
             {
                 throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
             }
             DbSet.Remove(entity);
-            Save();
+            await SaveAsync();
         }
 
-        public virtual void Save()
+        public virtual async Task SaveAsync()
         {
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

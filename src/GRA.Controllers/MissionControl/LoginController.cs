@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -34,9 +35,9 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult Login(Domain.Model.MissionControl.Login model)
+        public async Task<IActionResult> Login(Domain.Model.MissionControl.Login model)
         {
-            LoginUser(userService.AuthenticateUser(model.Username, model.Password));
+            LoginUser(await userService.AuthenticateUserAsync(model.Username, model.Password));
             if (CurrentUser != null && CurrentUser.IsAuthenticated)
             {
                 return View("Index");

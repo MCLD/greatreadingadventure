@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -26,9 +27,9 @@ namespace GRA.Domain.Service
             this.roleRepository = roleRepository;
         }
 
-        public AuthenticationResult AuthenticateUser(string username, string password)
+        public async Task<AuthenticationResult> AuthenticateUserAsync(string username, string password)
         {
-            var authResult = userRepository.AuthenticateUser(username, password);
+            var authResult = await userRepository.AuthenticateUserAsync(username, password);
 
             if (!authResult.FoundUser)
             {
@@ -45,14 +46,14 @@ namespace GRA.Domain.Service
             return authResult;
         }
 
-        public User RegisterUser(User user, string password)
+        public async Task<User> RegisterUserAsync(User user, string password)
         {
             //todo: handle validation (username isn't already in use, etc)
             user.BranchId = 1;
             user.ProgramId = 1;
             user.SiteId = 1;
-            var registeredUser = userRepository.AddSave(0, user);
-            userRepository.SetUserPassword(registeredUser.Id, password);
+            var registeredUser = await userRepository.AddSaveAsync(0, user);
+            await userRepository.SetUserPasswordAsync(registeredUser.Id, password);
             return registeredUser;
         }
     }

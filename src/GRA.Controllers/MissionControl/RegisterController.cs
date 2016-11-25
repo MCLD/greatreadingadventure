@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -41,7 +42,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult Register(Domain.Model.MissionControl.Register registerResponse)
+        public async Task<IActionResult> Register(Domain.Model.MissionControl.Register registerResponse)
         {
             var user = new Domain.Model.User
             {
@@ -51,20 +52,20 @@ namespace GRA.Controllers.MissionControl
             };
 
 
-            if (configurationService.NeedsInitialSetup())
+            if (await configurationService.NeedsInitialSetupAsync())
             {
-                user = configurationService.InitialSetup(user, registerResponse.Password);
+                user = await configurationService.InitialSetupAsync(user, registerResponse.Password);
                 logger.LogInformation($"Initial account create: {user.Username}");
             }
             else
             {
-                user = userService.RegisterUser(user, registerResponse.Password);
+                user = await userService.RegisterUserAsync(user, registerResponse.Password);
                 logger.LogInformation($"Created account: {user.Username}");
             }
 
             AlertSuccess = $"Account created: {user.Username}";
 
-            LoginUser(userService.AuthenticateUser(registerResponse.Username,
+            LoginUser(await userService.AuthenticateUserAsync(registerResponse.Username,
                 registerResponse.Password));
 
             return RedirectToRoute(new { controller = "Home" });

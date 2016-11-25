@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using GRA.Domain.Model;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -22,7 +23,7 @@ namespace GRA.Data.Repository
             this.passwordHasher = passwordHasher;
         }
 
-        public void AddRole(int currentUserId, int userId, int roleId)
+        public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
         {
             var userRoleAssignment = new Model.UserRole
             {
@@ -31,21 +32,21 @@ namespace GRA.Data.Repository
                 CreatedBy = currentUserId,
                 CreatedAt = DateTime.Now
             };
-            context.UserRoles.Add(userRoleAssignment);
+            await context.UserRoles.AddAsync(userRoleAssignment);
         }
 
-        public void SetUserPassword(int userId, string password)
+        public async Task SetUserPasswordAsync(int userId, string password)
         {
             var user = DbSet.Find(userId);
             user.PasswordHash = passwordHasher.HashPassword(password);
-            Save();
+            await SaveAsync();
         }
-        public User GetByUsername(string username)
+        public async Task<User> GetByUsernameAsync(string username)
         {
-            var dbUser = DbSet
+            var dbUser = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.Username == username)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (dbUser != null)
             {
                 return mapper.Map<Model.User, User>(dbUser);
@@ -56,7 +57,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        public AuthenticationResult AuthenticateUser(string username, string password)
+        public async Task<AuthenticationResult> AuthenticateUserAsync(string username, string password)
         {
             var result = new AuthenticationResult
             {
@@ -64,9 +65,9 @@ namespace GRA.Data.Repository
                 PasswordIsValid = false
             };
 
-            var dbUser = DbSet
+            var dbUser = await DbSet
                 .Where(_ => _.Username == username)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (dbUser != null)
             {
                 result.FoundUser = true;
@@ -76,7 +77,7 @@ namespace GRA.Data.Repository
                 {
                     result.User = mapper.Map<Model.User, User>(dbUser);
                     dbUser.LastAccess = DateTime.Now;
-                    Save();
+                    await SaveAsync();
                 }
             }
             return result;
