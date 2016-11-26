@@ -94,7 +94,8 @@ namespace GRA.Controllers.MissionControl
             if (TempData.ContainsKey("TempEditChallenge"))
             {
                 challenge = Newtonsoft.Json.JsonConvert.DeserializeObject<Challenge>((string)TempData["TempEditChallenge"]);
-                challenge.Tasks = (await challengeService.GetChallengeTasksAsync(id)).ToList();
+                var tasks = await challengeService.GetChallengeTasksAsync(id);
+                challenge.Tasks = tasks.ToList();
             }
             else
             {
@@ -134,7 +135,8 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                viewModel.Challenge.Tasks = (await challengeService.GetChallengeTasksAsync(viewModel.Challenge.Id)).ToList();
+                var tasks = await challengeService.GetChallengeTasksAsync(viewModel.Challenge.Id);
+                viewModel.Challenge.Tasks = tasks.ToList();
                 return View(viewModel);
             }
         }

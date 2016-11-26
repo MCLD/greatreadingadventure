@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Repository
 {
     public interface IRoleRepository : IRepository<Model.Role>
     {
-        void AddPermission(int userId, string permissionName);
-        void AddPermissionToRole(int userId, int roleId, string permissionName);
-        IEnumerable<string> GetPermisisonNamesForUser(int userId);
+        Task AddPermissionAsync(int userId, string permissionName);
+        Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName);
+        Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId);
     }
 }

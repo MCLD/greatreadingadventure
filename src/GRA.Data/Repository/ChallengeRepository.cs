@@ -62,9 +62,9 @@ namespace GRA.Data.Repository
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             // todo: fix user lookup
-            var entity = context.Challenges
+            var entity = await context.Challenges
                 .Where(_ => _.IsDeleted == false && _.Id == id)
-                .Single();
+                .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
             await base.SaveAsync();

@@ -154,13 +154,13 @@ namespace GRA.Domain.Service
 
             foreach (var value in Enum.GetValues(typeof(Model.Permission)))
             {
-                roleRepository.AddPermission(creatorUserId, value.ToString());
+                await roleRepository.AddPermissionAsync(creatorUserId, value.ToString());
             }
             await roleRepository.SaveAsync();
 
             foreach(var value in Enum.GetValues(typeof(Model.Permission)))
             {
-                roleRepository.AddPermissionToRole(creatorUserId, adminRole.Id, value.ToString());
+                await roleRepository.AddPermissionToRoleAsync(creatorUserId, adminRole.Id, value.ToString());
             }
             await roleRepository.SaveAsync();
 

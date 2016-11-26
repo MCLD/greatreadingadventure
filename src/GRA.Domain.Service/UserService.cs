@@ -41,7 +41,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                authResult.PermissionNames = roleRepository.GetPermisisonNamesForUser(authResult.User.Id);
+                authResult.PermissionNames = await roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
             }
             return authResult;
         }

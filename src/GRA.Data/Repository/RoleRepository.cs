@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -13,9 +14,9 @@ namespace GRA.Data.Repository
         public RoleRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<RoleRepository> logger) : base(repositoryFacade, logger) { }
 
-        public void AddPermission(int userId, string name)
+        public async Task AddPermissionAsync(int userId, string name)
         {
-            context.Permissions.Add(new Model.Permission
+            await context.Permissions.AddAsync(new Model.Permission
             {
                 Name = name,
                 CreatedBy = userId,
@@ -23,17 +24,17 @@ namespace GRA.Data.Repository
             });
         }
 
-        public void AddPermissionToRole(int userId, int roleId, string permissionName)
+        public async Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName)
         {
-            var permission = context.Permissions
+            var permission = await context.Permissions
                 .Where(_ => _.Name == permissionName)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (permission == null)
             {
                 throw new Exception($"Permission '{permissionName}' not found.");
             }
 
-            context.RolePermissions.Add(new Model.RolePermission
+            await context.RolePermissions.AddAsync(new Model.RolePermission
             {
                 RoleId = roleId,
                 PermissionId = permission.Id,
@@ -42,21 +43,23 @@ namespace GRA.Data.Repository
             });
         }
 
-        public IEnumerable<string> GetPermisisonNamesForUser(int userId)
+        public async Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId)
         {
-            var roleIds = context
+            var roleIds = await context
                 .UserRoles
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
-                .Select(_ => _.RoleId);
+                .Select(_ => _.RoleId)
+                .ToListAsync();
 
-            return context
+            return await context
                 .RolePermissions
                 .AsNoTracking()
                 .Where(_ => roleIds.Contains(_.RoleId))
                 .Select(_ => _.Permission.Name)
                 .Distinct()
-                .OrderBy(_ => _);
+                .OrderBy(_ => _)
+                .ToListAsync();
         }
     }
 }
