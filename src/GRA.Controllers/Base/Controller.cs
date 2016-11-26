@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using GRA.Domain.Model;
@@ -64,6 +65,9 @@ namespace GRA.Controllers.Base
                 {
                     claims.Add(new Claim(ClaimType.Permission, permissionName));
                 }
+                claims.Add(new Claim(ClaimType.BranchId, authResult.User.BranchId.ToString()));
+                claims.Add(new Claim(ClaimType.SiteId, authResult.User.SiteId.ToString()));
+                claims.Add(new Claim(ClaimType.SystemId, authResult.User.SystemId.ToString()));
                 claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
 
                 await HttpContext.Authentication.SignInAsync(Authentication.SchemeGRACookie,
@@ -95,6 +99,24 @@ namespace GRA.Controllers.Base
         protected bool UserHasPermission(Permission permission)
         {
             return HttpContext.User.HasClaim(ClaimType.Permission, permission.ToString());
+        }
+
+        protected string UserClaim(string claimType)
+        {
+            var claim = HttpContext
+                .User
+                .Claims
+                .Where(_ => _.Type == claimType)
+                .SingleOrDefault();
+
+            if(claim != null)
+            {
+                return claim.Value;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

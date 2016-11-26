@@ -14,11 +14,11 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.AccessMissionControl)]
-    public class ChallengeController : Base.Controller
+    public class ChallengesController : Base.Controller
     {
-        private readonly ILogger<ChallengeController> logger;
+        private readonly ILogger<ChallengesController> logger;
         private readonly ChallengeService challengeService;
-        public ChallengeController(ILogger<ChallengeController> logger,
+        public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             ChallengeService challengeService)
             : base(context)
@@ -70,17 +70,16 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public IActionResult Create(Challenge challenge)
+        public async Task<IActionResult> Create(Challenge challenge)
         {
             if (ModelState.IsValid)
             {
-                int challengeId;
-
-                // todo: fix siteId
-                challenge.SiteId = 1;
-                challengeId = challengeService.AddChallengeAsync(CurrentUser, challenge).Id;
-                AlertSuccess = $"{challenge.Name} was successfully created";
-                return RedirectToAction("Edit", new { id = challengeId });
+                challenge.SiteId = int.Parse(UserClaim(ClaimType.SiteId));
+                challenge.RelatedBranchId = int.Parse(UserClaim(ClaimType.BranchId));
+                challenge.RelatedSystemId = int.Parse(UserClaim(ClaimType.SystemId));
+                challenge = await challengeService.AddChallengeAsync(CurrentUser, challenge);
+                AlertSuccess = $"Challenge '{challenge.Name}' was successfully created";
+                return RedirectToAction("Edit", new { id = challenge.Id });
             }
             else
             {
@@ -103,7 +102,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (challenge == null)
             {
-                TempData["AlertDanger"] = "The requested challenge could not be accessed or does not exist";
+                AlertDanger = "The requested challenge could not be accessed or does not exist";
                 return RedirectToAction("Index");
             }
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
@@ -130,7 +129,7 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 await challengeService.EditChallengeAsync(CurrentUser, viewModel.Challenge);
-                AlertSuccess = $"{viewModel.Challenge.Name} was successfully modified";
+                AlertSuccess = $"Challenge '{viewModel.Challenge.Name}' was successfully modified";
                 return RedirectToAction("Index");
             }
             else
@@ -151,7 +150,7 @@ namespace GRA.Controllers.MissionControl
 
         #region Task methods
         [HttpPost]
-        public IActionResult CloseTask(ChallengeDetailViewModel viewModel)
+        public async Task<IActionResult> CloseTask(ChallengeDetailViewModel viewModel)
         {
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
@@ -159,7 +158,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.EditChallenges)]
-        public IActionResult OpenAddTask(ChallengeDetailViewModel viewModel)
+        public async Task<IActionResult> OpenAddTask(ChallengeDetailViewModel viewModel)
         {
             TempData["AddTask"] = true;
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
@@ -191,7 +190,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.EditChallenges)]
-        public IActionResult OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
+        public async Task<IActionResult> OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
         {
             TempData["EditTask"] = taskId;
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);

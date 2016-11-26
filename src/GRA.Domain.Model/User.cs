@@ -27,6 +27,7 @@ namespace GRA.Domain.Model
         public string CardNumber { get; set; }
         public DateTime? LastAccess { get; set; }
         public int BranchId { get; set; }
+        public int SystemId { get; set; }
         public int PointsEarned { get; set; }
         public int ProgramId { get; set; }
         public int AvatarId { get; set; }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace GRA.Data.Repository
 {
@@ -54,6 +55,18 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Position)
                 .ProjectTo<Domain.Model.ChallengeTask>()
                 .ToListAsync();
+            }
+
+            var challengeTaskTypes =
+                await context.ChallengeTaskTypes
+                .AsNoTracking()
+                .ToDictionaryAsync(_ => _.Id);
+
+            foreach (var task in challenge.Tasks)
+            {
+                task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
+                    Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
+                    challengeTaskTypes[task.ChallengeTaskTypeId].Name);
             }
 
             return challenge;

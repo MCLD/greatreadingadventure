@@ -128,6 +128,7 @@ namespace GRA.Domain.Service
             adminUser.BranchId = branch.Id;
             adminUser.ProgramId = program.Id;
             adminUser.SiteId = site.Id;
+            adminUser.SystemId = system.Id;
             var user = await userRepository.AddSaveAsync(0, adminUser);
             await userRepository.SetUserPasswordAsync(user.Id, password);
 

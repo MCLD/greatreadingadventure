@@ -38,7 +38,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Login(Domain.Model.MissionControl.Login model)
         {
             LoginUser(await userService.AuthenticateUserAsync(model.Username, model.Password));
-            if (CurrentUser != null && CurrentUser.IsAuthenticated)
+            if (CurrentUser.IsAuthenticated)
             {
                 return View("Index");
             }
