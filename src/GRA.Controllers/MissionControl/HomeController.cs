@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -13,16 +14,13 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context)
             : base(context)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-            this.logger = logger;
+            this.logger = Require.IsNotNull(logger, nameof(logger));
+            PageTitle = "Mission Control";
         }
 
         public IActionResult Index()
         {
-            if (!CurrentUser.IsAuthenticated)
+            if (!CurrentUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
                 return RedirectToRoute(new { controller = "Login" });
@@ -35,6 +33,15 @@ namespace GRA.Controllers.MissionControl
             }
 
             return View();
+        }
+
+        public async Task<IActionResult> Signout()
+        {
+            if (CurrentUser.Identity.IsAuthenticated)
+            {
+                await LogoutUserAsync();
+            }
+            return RedirectToRoute(new { area = string.Empty, action = "Index" });
         }
     }
 }

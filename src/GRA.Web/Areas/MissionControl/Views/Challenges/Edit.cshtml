@@ -128,14 +128,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>
-                Edit Challenge - @Model.Challenge.Name
-            </h1>
-        </div>
-    </div>
-
     <input asp-for="Challenge.Id" type="hidden" />
     <input asp-for="Challenge.SiteId" type="hidden" />
 
@@ -271,7 +263,7 @@
         })
         $('#addModal, #editModal').on('hidden.bs.modal', function() {
             var form = $(this).parents('form:first');
-            form.attr('action', '/MissionControl/Challenge/CloseTask/');
+            form.attr('action', '/MissionControl/Challenges/CloseTask/');
             form.validate().cancelSubmit = true;
             form.submit();
         });

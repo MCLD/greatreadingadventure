@@ -35,12 +35,18 @@
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="container body-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>@ViewData[GRA.Controllers.ViewDataKey.Title]</h1>
+            </div>
+        </div>
+
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
             <div class="row">

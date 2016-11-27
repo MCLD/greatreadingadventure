@@ -45,6 +45,8 @@ namespace GRA.Data
             modelBuilder.Entity<Model.User>()
                 .HasIndex(_ => new { _.SiteId, _.Username })
                 .IsUnique();
+            modelBuilder.Entity<Model.UserLog>()
+                .HasIndex(_ => _.UserId);
 
             // call the base OnModelCreating
             base.OnModelCreating(modelBuilder);
@@ -61,11 +63,13 @@ namespace GRA.Data
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }
+        public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
         public DbSet<Model.RolePermission> RolePermissions { get; set; }
         public DbSet<Model.Site> Sites { get; set; }
         public DbSet<Model.System> Systems { get; set; }
+        public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
     }

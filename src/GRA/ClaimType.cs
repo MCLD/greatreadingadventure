@@ -1,4 +1,4 @@
-﻿namespace GRA.Domain.Model
+﻿namespace GRA
 {
     public sealed class ClaimType
     {

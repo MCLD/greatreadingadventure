@@ -13,6 +13,7 @@ namespace GRA.Data.Model
         public string Email { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsLockedOut { get; set; }
+        public bool IsAchiever { get; set; }
         [MaxLength(36)]
         public string Username { get; set; }
         public string PasswordHash { get; set; }

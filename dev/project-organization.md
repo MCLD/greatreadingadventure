@@ -2,7 +2,7 @@
 
 This document describes the layout of the project as viewed in the solution file.
 
-- `GRA` - constants for use throughout the solution - *probably should be refactored into relevant areas*
+- `GRA` - utilities for use throughout the solution
 - `GRA.Controllers` - controllers for the MVC application - they are kept out of the `GRA.Web` project to keep all program logic removed from the UI and to make them easily testable
 - Domain
   - `GRA.Domain.Model` - domain models which are passed between the UI and data repositories
@@ -17,5 +17,6 @@ This document describes the layout of the project as viewed in the solution file
   - `GRA.Data.SqlServer` - database provider for using Microsoft SQL Server
 - `GRA.Web` - MVC Web front-end and dependency injection composition root
   - `wwwroot` - static files for serving via the Web
+  - `Areas/MissionControl` - Razor files for Mission Control (site administration)
   - `Views` - Razor files
   - `Startup.cs` - the main configuration location for the project

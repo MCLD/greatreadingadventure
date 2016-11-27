@@ -16,6 +16,7 @@ namespace GRA.Domain.Service
         private readonly ISiteRepository siteRepository;
         private readonly ISystemRepository systemRepository;
         private readonly IUserRepository userRepository;
+        private readonly IPointTranslationRepository pointTranslationRepository;
         public ConfigurationService(ILogger<ConfigurationService> logger,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
@@ -24,51 +25,22 @@ namespace GRA.Domain.Service
             IRoleRepository roleRepository,
             ISiteRepository siteRepository,
             ISystemRepository systemRepository,
-            IUserRepository userRepository) : base(logger)
+            IUserRepository userRepository,
+            IPointTranslationRepository pointTranslationRepository) : base(logger)
         {
-            if (branchRepository == null)
-            {
-                throw new ArgumentNullException(nameof(branchRepository));
-            }
-            this.branchRepository = branchRepository;
-
-            if (challengeRepository == null)
-            {
-                throw new ArgumentNullException(nameof(challengeRepository));
-            }
-            this.challengeRepository = challengeRepository;
-
-            if (challengeTaskRepository == null)
-            {
-                throw new ArgumentNullException(nameof(challengeTaskRepository));
-            }
-            this.challengeTaskRepository = challengeTaskRepository;
-
-            if (programRepository == null)
-            {
-                throw new ArgumentNullException(nameof(programRepository));
-            }
-            this.programRepository = programRepository;
-            if (roleRepository == null)
-            {
-                throw new ArgumentNullException(nameof(roleRepository));
-            }
-            this.roleRepository = roleRepository;
-            if (siteRepository == null)
-            {
-                throw new ArgumentNullException(nameof(siteRepository));
-            }
-            this.siteRepository = siteRepository;
-            if (systemRepository == null)
-            {
-                throw new ArgumentNullException(nameof(systemRepository));
-            }
-            this.systemRepository = systemRepository;
-            if (userRepository == null)
-            {
-                throw new ArgumentNullException(nameof(userRepository));
-            }
-            this.userRepository = userRepository;
+            this.branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            this.challengeRepository = Require.IsNotNull(challengeRepository,
+                nameof(challengeRepository));
+            this.challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
+                nameof(challengeTaskRepository));
+            this.programRepository = Require.IsNotNull(programRepository,
+                nameof(programRepository));
+            this.roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
+            this.siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
+            this.systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            this.userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            this.pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
+                nameof(pointTranslationRepository));
         }
 
         public async Task<bool> NeedsInitialSetupAsync()
@@ -120,7 +92,7 @@ namespace GRA.Domain.Service
             var program = new Model.Program
             {
                 SiteId = site.Id,
-                Achiever = 1000,
+                AchieverPointAmount = 1000,
                 Name = "Winter Reading Program"
             };
             program = await programRepository.AddSaveAsync(-1, program);
@@ -146,6 +118,17 @@ namespace GRA.Domain.Service
             program.CreatedBy = creatorUserId;
             program = await programRepository.UpdateSaveAsync(creatorUserId, program);
 
+            var pointTranslation = new Model.PointTranslation
+            {
+                ActivityAmount = 1,
+                ActivityDescription = "book",
+                IsSingleEvent = true,
+                PointsEarned = 10,
+                ProgramId = program.Id,
+                TranslationName = "One book, ten points"
+            };
+            await pointTranslationRepository.AddSaveAsync(creatorUserId, pointTranslation);
+
             var adminRole = await roleRepository.AddSaveAsync(creatorUserId, new Model.Role
             {
                 Name = "System Administrator"
@@ -159,15 +142,18 @@ namespace GRA.Domain.Service
             }
             await roleRepository.SaveAsync();
 
-            foreach(var value in Enum.GetValues(typeof(Model.Permission)))
+            foreach (var value in Enum.GetValues(typeof(Model.Permission)))
             {
-                await roleRepository.AddPermissionToRoleAsync(creatorUserId, adminRole.Id, value.ToString());
+                await roleRepository.AddPermissionToRoleAsync(creatorUserId,
+                    adminRole.Id,
+                    value.ToString());
             }
             await roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
             {
-                await challengeTaskRepository.AddChallengeTaskTypeAsync(creatorUserId, value.ToString());
+                await challengeTaskRepository.AddChallengeTaskTypeAsync(creatorUserId,
+                    value.ToString());
             }
             await challengeRepository.SaveAsync();
 

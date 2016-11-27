@@ -18,26 +18,15 @@ namespace GRA.Controllers.MissionControl
             UserService userService)
             : base(context)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-            this.logger = logger;
-            if (configurationService == null)
-            {
-                throw new ArgumentNullException(nameof(configurationService));
-            }
-            this.configurationService = configurationService;
-            if (userService == null)
-            {
-                throw new ArgumentNullException(nameof(userService));
-            }
-            this.userService = userService;
+            this.logger = Require.IsNotNull(logger, nameof(logger));
+            this.configurationService = Require.IsNotNull(configurationService,
+                nameof(configurationService));
+            this.userService = Require.IsNotNull(userService, nameof(userService));
+            PageTitle = "Register";
         }
 
         public IActionResult Index()
         {
-            PageTitle = "Register";
             return View();
         }
 
@@ -59,13 +48,22 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                user = await userService.RegisterUserAsync(user, registerResponse.Password);
+                try
+                {
+                    user = await userService.RegisterUserAsync(user, registerResponse.Password);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(null, ex, $"Could not register user: {ex.Message}");
+                    AlertDanger = $"Could not create account: {ex.Message}";
+                    return View("Register");
+                }
                 logger.LogInformation($"Created account: {user.Username}");
             }
 
             AlertSuccess = $"Account created: {user.Username}";
 
-            LoginUser(await userService.AuthenticateUserAsync(registerResponse.Username,
+            await LoginUserAsync(await userService.AuthenticateUserAsync(registerResponse.Username,
                 registerResponse.Password));
 
             return RedirectToRoute(new { controller = "Home" });

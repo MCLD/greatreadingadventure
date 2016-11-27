@@ -3,6 +3,7 @@
     public enum Permission
     {
         AccessMissionControl,
-        EditChallenges
+        EditChallenges,
+        CanLogActivityForAll
     }
 }

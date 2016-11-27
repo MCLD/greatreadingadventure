@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 
 namespace GRA.Controllers.ServiceFacade
 {
@@ -10,11 +9,7 @@ namespace GRA.Controllers.ServiceFacade
         public Controller(
             IConfigurationRoot config)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            this.config = config;
+            this.config = Require.IsNotNull(config, nameof(config));
         }
     }
 }

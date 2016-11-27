@@ -4,5 +4,6 @@
     {
         public const string AccessMissionControl = "AccessMissionControl";
         public const string EditChallenges = "EditChallenges";
+        public const string CanLogActivityForAll = "CanLogActivityForAll";
     }
 }

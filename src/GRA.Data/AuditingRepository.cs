@@ -93,7 +93,7 @@ namespace GRA.Data
             await AuditSet.AddAsync(audit);
         }
 
-        private string SerializeEntity(object entity)
+        protected string SerializeEntity(object entity)
         {
             return JsonConvert.SerializeObject(entity,
                 Formatting.None,
@@ -177,14 +177,17 @@ namespace GRA.Data
             await AuditLog(userId, dbEntity, original);
         }
 
-        public virtual async Task<DomainEntity> UpdateSaveAsync(int userId, DomainEntity domainEntity)
+        public virtual async Task<DomainEntity> UpdateSaveAsync(int userId,
+            DomainEntity domainEntity)
         {
             await UpdateAsync(userId, domainEntity);
             await SaveAsync();
             return await GetByIdAsync(domainEntity.Id);
         }
 
-        protected virtual async Task<DomainEntity> UpdateSaveAsync(int userId, DbEntity dbEntity, string original)
+        protected virtual async Task<DomainEntity> UpdateSaveAsync(int userId,
+            DbEntity dbEntity,
+            string original)
         {
             await UpdateAsync(userId, dbEntity, original);
             await SaveAsync();

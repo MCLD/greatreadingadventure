@@ -11,34 +11,30 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<LoginController> logger;
         private readonly UserService userService;
+        private readonly ActivityService activityService;
         public LoginController(ILogger<LoginController> logger,
             ServiceFacade.Controller context,
+            ActivityService activityService,
             UserService userService)
             : base(context)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-            this.logger = logger;
-            if (userService == null)
-            {
-                throw new ArgumentNullException(nameof(userService));
-            }
-            this.userService = userService;
+            this.logger = Require.IsNotNull(logger, nameof(logger));
+            this.userService = Require.IsNotNull(userService, nameof(userService));
+            this.activityService = Require.IsNotNull(activityService, nameof(activityService));
+            PageTitle = "Sign in";
         }
 
         public IActionResult Index()
         {
-            PageTitle = "Sign in";
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(Domain.Model.MissionControl.Login model)
         {
-            LoginUser(await userService.AuthenticateUserAsync(model.Username, model.Password));
-            if (CurrentUser.IsAuthenticated)
+            await LoginUserAsync(
+                await userService.AuthenticateUserAsync(model.Username, model.Password));
+            if (CurrentUser.Identity.IsAuthenticated)
             {
                 return View("Index");
             }

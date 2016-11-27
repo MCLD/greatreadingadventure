@@ -11,7 +11,7 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Name { get; set; }
         [Required]
-        public int Achiever { get; set; }
+        public int AchieverPointAmount { get; set; }
         [Required]
         public bool AskAge { get; set; }
         [Required]

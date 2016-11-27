@@ -33,10 +33,13 @@ namespace GRA.Domain.Service
         /// A paginated list of challenges which are visible to the provided user
         /// </summary>
         /// <param name="user">A valid user</param>
-        /// <param name="skip">The number of elements to skip before returning the remaining elements</param>
+        /// <param name="skip">The number of elements to skip before returning the remaining
+        /// elements</param>
         /// <param name="take">The number of elements to return</param>
-        /// <returns><see cref="DataWithCount{DataType}"/> containing the challenges and the total challenge count</returns>
-        public async Task<DataWithCount<IEnumerable<Challenge>>> GetPaginatedChallengeListAsync(ClaimsIdentity user,
+        /// <returns><see cref="DataWithCount{DataType}"/> containing the challenges and the total
+        /// challenge count</returns>
+        public async Task<DataWithCount<IEnumerable<Challenge>>>
+            GetPaginatedChallengeListAsync(ClaimsPrincipal user,
             int skip,
             int take)
         {
@@ -58,7 +61,7 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challengeId">A challenge id</param>
         /// <returns>Details for the requested challenge</returns>
-        public async Task<Challenge> GetChallengeDetailsAsync(ClaimsIdentity user, int challengeId)
+        public async Task<Challenge> GetChallengeDetailsAsync(ClaimsPrincipal user, int challengeId)
         {
             // todo: fix user id
             // todo: add access control - only view authorized challenges
@@ -71,7 +74,7 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challenge">A populated challenge object</param>
         /// <returns>The challenge which was added with the Id property populated</returns>
-        public async Task<Challenge> AddChallengeAsync(ClaimsIdentity user, Challenge challenge)
+        public async Task<Challenge> AddChallengeAsync(ClaimsPrincipal user, Challenge challenge)
         {
             // todo: fix user id
             // todo: add access control - only some users can add
@@ -84,7 +87,7 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challenge">The modified challenge object</param>
         /// <returns>The updated challenge</returns>
-        public async Task<Challenge> EditChallengeAsync(ClaimsIdentity user, Challenge challenge)
+        public async Task<Challenge> EditChallengeAsync(ClaimsPrincipal user, Challenge challenge)
         {
             // todo: fix user id
             // todo: add access control - only some users can edit
@@ -96,7 +99,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="challenge">The id of the challenge to remove</param>
-        public async Task RemoveChallengeAsync(ClaimsIdentity user, int challengeId)
+        public async Task RemoveChallengeAsync(ClaimsPrincipal user, int challengeId)
         {
             // todo: fix user id
             // todo: add access control - only some users can remove
@@ -109,7 +112,7 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="task">The task to add to the challenge</param>
         /// <param name="challengeId">The id of the challenge to add the task to</param>
-        public async Task<ChallengeTask> AddTaskAsync(ClaimsIdentity user, ChallengeTask task)
+        public async Task<ChallengeTask> AddTaskAsync(ClaimsPrincipal user, ChallengeTask task)
         {
             // todo: fix user id
             return await challengeTaskRepository.AddSaveAsync(GetUserId(user), task);
@@ -120,7 +123,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="task">The modified task object</param>
-        public async Task<ChallengeTask> EditTaskAsync(ClaimsIdentity user, ChallengeTask task)
+        public async Task<ChallengeTask> EditTaskAsync(ClaimsPrincipal user, ChallengeTask task)
         {
             // todo: fix user id
             return await challengeTaskRepository.UpdateSaveAsync(GetUserId(user), task);
@@ -131,7 +134,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="task">TThe id of the task to return</param>
-        public async Task<ChallengeTask> GetTaskAsync(ClaimsIdentity user, int id)
+        public async Task<ChallengeTask> GetTaskAsync(ClaimsPrincipal user, int id)
         {
             // todo: fix user id
             return await challengeTaskRepository.GetByIdAsync(id);
@@ -142,7 +145,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task to remove</param>
-        public async Task RemoveTaskAsync(ClaimsIdentity user, int taskId)
+        public async Task RemoveTaskAsync(ClaimsPrincipal user, int taskId)
         {
             // todo: fix user id
             await challengeTaskRepository.RemoveSaveAsync(GetUserId(user), taskId);
@@ -153,7 +156,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to decrease</param>
-        public async Task DecreaseTaskPositionAsync(ClaimsIdentity user, int taskId)
+        public async Task DecreaseTaskPositionAsync(ClaimsPrincipal user, int taskId)
         {
             // todo: fix user id
             await challengeTaskRepository.DecreasePositionAsync(taskId);
@@ -164,7 +167,7 @@ namespace GRA.Domain.Service
         /// </summary>
         /// <param name="user">A valid user</param>
         /// <param name="taskId">The id of the task whose position to increase</param>
-        public async Task IncreaseTaskPositionAsync(ClaimsIdentity user, int taskId)
+        public async Task IncreaseTaskPositionAsync(ClaimsPrincipal user, int taskId)
         {
             // todo: fix user id
             await challengeTaskRepository.IncreasePositionAsync(taskId);

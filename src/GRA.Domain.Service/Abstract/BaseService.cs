@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Linq;
 using System.Security.Claims;
 
@@ -10,16 +9,13 @@ namespace GRA.Domain.Service.Abstract
         protected readonly ILogger<T> logger;
         public BaseService(ILogger<T> logger)
         {
-            if(logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-            this.logger = logger;
+            this.logger = Require.IsNotNull(logger, nameof(logger));
         }
 
-        protected int GetUserId(ClaimsIdentity user)
+        protected int GetUserId(ClaimsPrincipal user)
         {
-            var userId = user.Claims.Where(_ => _.Type == Model.ClaimType.UserId).SingleOrDefault().Value;
+            var userId = user.Claims
+                .Where(_ => _.Type == ClaimType.UserId).SingleOrDefault().Value;
             return int.Parse(userId);
         }
     }

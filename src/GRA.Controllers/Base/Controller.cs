@@ -5,28 +5,33 @@ using Microsoft.Extensions.Configuration;
 using GRA.Domain.Model;
 using System.Security.Claims;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers.Base
 {
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot config;
+        protected string PageTitle { get; set; }
         public Controller(ServiceFacade.Controller context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            this.config = context.config;
+            config = context.config;
+        }
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            base.OnActionExecuted(context);
 
             // sensible default
-            PageTitle = "Great Reading Adventure";
-        }
+            string pageTitle = "Great Reading Adventure";
 
-        protected string PageTitle {
-            set {
-                ViewData[ViewDataKey.Title] = value;
+            // set page title
+            var controller = context.Controller as Controller;
+            if (controller != null && !string.IsNullOrWhiteSpace(controller.PageTitle))
+            {
+                pageTitle = controller.PageTitle;
             }
+            ViewData[ViewDataKey.Title] = pageTitle;
         }
 
         protected string AlertDanger {
@@ -56,7 +61,7 @@ namespace GRA.Controllers.Base
             return View();
         }
 
-        protected async void LoginUser(AuthenticationResult authResult)
+        protected async Task LoginUserAsync(AuthenticationResult authResult)
         {
             if (authResult.FoundUser && authResult.PasswordIsValid)
             {
@@ -70,8 +75,10 @@ namespace GRA.Controllers.Base
                 claims.Add(new Claim(ClaimType.SystemId, authResult.User.SystemId.ToString()));
                 claims.Add(new Claim(ClaimType.UserId, authResult.User.Id.ToString()));
 
+                var identity = new ClaimsIdentity(claims, Authentication.TypeGRAPassword);
+
                 await HttpContext.Authentication.SignInAsync(Authentication.SchemeGRACookie,
-                    new ClaimsPrincipal(new ClaimsIdentity(claims, Authentication.TypeGRAPassword)));
+                    new ClaimsPrincipal(identity));
 
                 if (!string.IsNullOrEmpty(authResult.AuthenticationMessage))
                 {
@@ -84,39 +91,26 @@ namespace GRA.Controllers.Base
             }
         }
 
-        protected async void LogoutUser()
+        protected async Task LogoutUserAsync()
         {
             HttpContext.Session.Remove(SessionKey.User);
             await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
         }
 
-        protected ClaimsIdentity CurrentUser {
+        protected ClaimsPrincipal CurrentUser {
             get {
-                return (ClaimsIdentity)HttpContext.User.Identity;
+                return HttpContext.User;
             }
         }
 
         protected bool UserHasPermission(Permission permission)
         {
-            return HttpContext.User.HasClaim(ClaimType.Permission, permission.ToString());
+            return new UserClaimLookup(CurrentUser).UserHasPermission(permission.ToString());
         }
 
         protected string UserClaim(string claimType)
         {
-            var claim = HttpContext
-                .User
-                .Claims
-                .Where(_ => _.Type == claimType)
-                .SingleOrDefault();
-
-            if(claim != null)
-            {
-                return claim.Value;
-            }
-            else
-            {
-                return null;
-            }
+            return new UserClaimLookup(CurrentUser).UserClaim(claimType);
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace GRA.Data.Repository
 {
     public class UserRepository
-        : AuditingRepository<Model.User, Domain.Model.User>, IUserRepository
+        : AuditingRepository<Model.User, User>, IUserRepository
     {
         private readonly Security.Abstract.IPasswordHasher passwordHasher;
         public UserRepository(ServiceFacade.Repository repositoryFacade,
@@ -57,7 +57,8 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<AuthenticationResult> AuthenticateUserAsync(string username, string password)
+        public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
+            string password)
         {
             var result = new AuthenticationResult
             {
@@ -71,7 +72,7 @@ namespace GRA.Data.Repository
             if (dbUser != null)
             {
                 result.FoundUser = true;
-                result.PasswordIsValid = 
+                result.PasswordIsValid =
                     passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
                 if (result.PasswordIsValid)
                 {
@@ -81,6 +82,64 @@ namespace GRA.Data.Repository
                 }
             }
             return result;
+        }
+
+        public async Task<User> AddPointsSaveAsync(int currentUserId,
+            int whoEarnedUserId,
+            int pointsEarned,
+            bool loggingAsAdminUser)
+        {
+            if (pointsEarned < 0)
+            {
+                throw new Exception($"Cannot log negative points");
+            }
+
+            User returnUser = null;
+
+            var dbUser = await DbSet
+                .Where(_ => _.Id == whoEarnedUserId)
+                .SingleOrDefaultAsync();
+
+            if (dbUser == null)
+            {
+                throw new Exception($"Could not find single user with id {whoEarnedUserId}");
+            }
+
+            string original = null;
+
+            if (loggingAsAdminUser)
+            {
+                original = SerializeEntity(dbUser);
+            }
+
+            dbUser.PointsEarned += pointsEarned;
+
+            // update the user's achiever status if they've crossed the threshhold
+            var program = await context
+                .Programs
+                .AsNoTracking()
+                .Where(_ => _.Id == dbUser.ProgramId)
+                .SingleOrDefaultAsync();
+
+            if (dbUser.PointsEarned >= program.AchieverPointAmount)
+            {
+                dbUser.IsAchiever = true;
+            }
+
+            // save user's changes
+            if (loggingAsAdminUser)
+            {
+                returnUser = await UpdateSaveAsync(currentUserId, dbUser, original);
+            }
+            else
+            {
+                await SaveAsync();
+            }
+
+            // achiever
+
+            return returnUser ?? await GetByIdAsync(whoEarnedUserId);
+
         }
     }
 }

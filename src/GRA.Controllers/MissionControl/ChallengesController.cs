@@ -23,13 +23,9 @@ namespace GRA.Controllers.MissionControl
             ChallengeService challengeService)
             : base(context)
         {
-            this.logger = logger;
-
-            if (challengeService == null)
-            {
-                throw new ArgumentNullException(nameof(challengeService));
-            }
-            this.challengeService = challengeService;
+            this.logger = Require.IsNotNull(logger, nameof(logger));
+            this.challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
+            PageTitle = "Challenges";
         }
 
         public async Task<IActionResult> Index(string Search, string FilterBy, int? page)
@@ -66,6 +62,7 @@ namespace GRA.Controllers.MissionControl
 
         public IActionResult Create()
         {
+            PageTitle = "Create Challenge";
             return View("Create");
         }
 
@@ -83,6 +80,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
+                PageTitle = "Create Challenge";
                 return View(challenge);
             }
         }
@@ -120,6 +118,7 @@ namespace GRA.Controllers.MissionControl
             {
                 viewModel.Task = await challengeService.GetTaskAsync(CurrentUser, (int)TempData["EditTask"]);
             }
+            PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
             return View("Edit", viewModel);
         }
         [HttpPost]
@@ -136,6 +135,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var tasks = await challengeService.GetChallengeTasksAsync(viewModel.Challenge.Id);
                 viewModel.Challenge.Tasks = tasks.ToList();
+                PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
                 return View(viewModel);
             }
         }
@@ -150,7 +150,7 @@ namespace GRA.Controllers.MissionControl
 
         #region Task methods
         [HttpPost]
-        public async Task<IActionResult> CloseTask(ChallengeDetailViewModel viewModel)
+        public IActionResult CloseTask(ChallengeDetailViewModel viewModel)
         {
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
@@ -158,7 +158,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.EditChallenges)]
-        public async Task<IActionResult> OpenAddTask(ChallengeDetailViewModel viewModel)
+        public IActionResult OpenAddTask(ChallengeDetailViewModel viewModel)
         {
             TempData["AddTask"] = true;
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
@@ -190,7 +190,7 @@ namespace GRA.Controllers.MissionControl
 
         [HttpPost]
         [Authorize(Policy = Policy.EditChallenges)]
-        public async Task<IActionResult> OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
+        public IActionResult OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
         {
             TempData["EditTask"] = taskId;
             TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);

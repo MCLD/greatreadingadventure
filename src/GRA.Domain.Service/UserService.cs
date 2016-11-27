@@ -27,7 +27,8 @@ namespace GRA.Domain.Service
             this.roleRepository = roleRepository;
         }
 
-        public async Task<AuthenticationResult> AuthenticateUserAsync(string username, string password)
+        public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
+            string password)
         {
             var authResult = await userRepository.AuthenticateUserAsync(username, password);
 
@@ -41,7 +42,8 @@ namespace GRA.Domain.Service
             }
             else
             {
-                authResult.PermissionNames = await roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
+                authResult.PermissionNames 
+                    = await roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
             }
             return authResult;
         }
