@@ -10,6 +10,7 @@ namespace GRA.Controllers
             : base(context)
         {
             this.logger = logger;
+            PageTitle = "The Great Reading Adventure";
         }
 
         public IActionResult Index(string site = null)

@@ -11,11 +11,15 @@
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+        <link rel="stylesheet"
+              href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+              asp-fallback-test-class="sr-only"
+              asp-fallback-test-property="position"
+              asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" />
     </environment>
     @RenderSection("styles", required: false)
@@ -24,13 +28,21 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button"
+                        class="navbar-toggle"
+                        data-toggle="collapse"
+                        data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand"><span class="fa fa-space-shuttle"></span> Mission Control</a>
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="navbar-brand">
+                    <span class="fa fa-space-shuttle"></span>
+                    Mission Control
+                </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
@@ -80,9 +92,18 @@
             </div>
         }
         @RenderBody()
-        <hr />
+        <hr class="footer">
         <footer>
-            <p>This site is running the open source <a href="https://github.com/mcld/greatreadingadventure/">Great Reading Adventure</a> software.</p>
+            <p class="footer">
+                This site is running the open source
+                <a href="http://www.greatreadingadventure.com/">Great Reading Adventure</a>
+                software developed by the
+                <a href="https://mcldaz.org/">Maricopa County Library District</a>
+                with support by the
+                <a href="http://www.azlibrary.gov/">Arizona State Library, Archives and Public Records</a>,
+                a division of the Secretary of State, and with federal funds from the
+                <a href="http://www.imls.gov/">Institute of Museum and Library Services</a>.
+            </p>
         </footer>
     </div>
     <environment names="Development">

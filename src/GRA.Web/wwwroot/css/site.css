@@ -8,13 +8,13 @@
 }
 
 .rowlink::before {
-  content: "";
-  display: block;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: inherit; /* don't forget to set the height! */
-  margin-top: -5px;
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: inherit; /* don't forget to set the height! */
+    margin-top: -5px;
 }
 
 .rowlink:hover::before {
@@ -31,11 +31,21 @@ a.rowlink {
 
 .on-top {
     position: relative;
-    z-index:100;
+    z-index: 100;
     background-color: white;
     background-clip: padding-box;
 }
 
 .row-spacing {
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
+}
+
+hr.footer {
+    margin-bottom: 1rem;
+    border-top: 1px solid #ccc;
+}
+
+p.footer {
+    font-style: italic;
+    font-size: small;
 }
