@@ -17,7 +17,8 @@ namespace GRA.Data.Repository
         {
         }
 
-        public override async Task<ICollection<Domain.Model.Challenge>> PageAllAsync(int skip, int take)
+        public override async Task<ICollection<Domain.Model.Challenge>>
+            PageAllAsync(int skip, int take)
         {
             // todo: add logic to filter for user
             return await DbSet
@@ -41,7 +42,6 @@ namespace GRA.Data.Repository
 
         public override async Task<Domain.Model.Challenge> GetByIdAsync(int id)
         {
-            // todo: add logic to filter for user
             var challenge = mapper.Map<Model.Challenge, Domain.Model.Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
@@ -64,7 +64,6 @@ namespace GRA.Data.Repository
 
         public override async Task RemoveSaveAsync(int userId, int id)
         {
-            // todo: fix user lookup
             var entity = await context.Challenges
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync();
@@ -73,7 +72,8 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        public async Task<ICollection<Domain.Model.ChallengeTask>> GetChallengeTasksAsync(int challengeId)
+        public async Task<ICollection<Domain.Model.ChallengeTask>>
+            GetChallengeTasksAsync(int challengeId)
         {
             var tasks = await context.ChallengeTasks
                 .AsNoTracking()
@@ -85,8 +85,8 @@ namespace GRA.Data.Repository
             return await GetChallengeTasksTypeAsync(tasks);
         }
 
-        private async Task<ICollection<Domain.Model.ChallengeTask>> GetChallengeTasksTypeAsync(
-            ICollection<Domain.Model.ChallengeTask> tasks)
+        private async Task<ICollection<Domain.Model.ChallengeTask>>
+            GetChallengeTasksTypeAsync(ICollection<Domain.Model.ChallengeTask> tasks)
         {
             var challengeTaskTypes =
                 await context.ChallengeTaskTypes

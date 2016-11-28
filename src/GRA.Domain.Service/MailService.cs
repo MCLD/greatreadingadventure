@@ -42,7 +42,7 @@ namespace GRA.Domain.Service
         public async Task<Mail> GetDetails(ClaimsPrincipal user, int mailId)
         {
             var userId = GetId(user, ClaimType.UserId);
-            bool canReadAll = UserHasPermission(user, Permission.CanReadAllMail);
+            bool canReadAll = UserHasPermission(user, Permission.ReadAllMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if(mail.FromUserId == userId || mail.ToUserId == userId || canReadAll)
             {
@@ -57,7 +57,7 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            if (UserHasPermission(user, Permission.CanReadAllMail))
+            if (UserHasPermission(user, Permission.ReadAllMail))
             {
                 var dataTask = _mailRepository.PageAllAsync(skip, take);
                 var countTask = _mailRepository.GetAllCountAsync();
@@ -81,7 +81,7 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            if (UserHasPermission(user, Permission.CanReadAllMail))
+            if (UserHasPermission(user, Permission.ReadAllMail))
             {
                 var dataTask = _mailRepository.PageAdminUnreadAsync(skip, take);
                 var countTask = _mailRepository.GetAdminUnreadCountAsync();
@@ -116,7 +116,7 @@ namespace GRA.Domain.Service
         public async Task<Mail> SendAsync(ClaimsPrincipal user, Mail mail)
         {
             if(mail.ToUserId == default(int)
-               || UserHasPermission(user, Permission.CanMailParticipants))
+               || UserHasPermission(user, Permission.MailParticipants))
             {
                 mail.FromUserId = GetId(user, ClaimType.UserId);
                 mail.IsNew = true;
@@ -135,7 +135,7 @@ namespace GRA.Domain.Service
         public async Task RemoveAsync(ClaimsPrincipal user, int mailId)
         {
             var userId = GetId(user, ClaimType.UserId);
-            bool canDeleteAll = UserHasPermission(user, Permission.CanDeleteAllMail);
+            bool canDeleteAll = UserHasPermission(user, Permission.DeleteAllMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail.FromUserId == userId || mail.ToUserId == userId || canDeleteAll)
             {
