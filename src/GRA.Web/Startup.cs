@@ -62,6 +62,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Service.ActivityService, Domain.Service.ActivityService>();
             services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
             services.AddScoped<Domain.Service.ConfigurationService, Domain.Service.ConfigurationService>();
+            services.AddScoped<Domain.Service.MailService, Domain.Service.MailService>();
             services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
             services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
 
@@ -69,6 +70,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
+            services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();

@@ -61,7 +61,9 @@ namespace GRA.Domain.Service
         /// <param name="user">A valid user</param>
         /// <param name="challengeId">A challenge id</param>
         /// <returns>Details for the requested challenge</returns>
-        public async Task<Challenge> GetChallengeDetailsAsync(ClaimsPrincipal user, int challengeId)
+        public async Task<Challenge> GetChallengeDetailsAsync(
+            ClaimsPrincipal user,
+            int challengeId)
         {
             // todo: fix user id
             // todo: add access control - only view authorized challenges
@@ -78,7 +80,8 @@ namespace GRA.Domain.Service
         {
             // todo: fix user id
             // todo: add access control - only some users can add
-            return await challengeRepository.AddSaveAsync(GetUserId(user), challenge);
+            return await challengeRepository
+                .AddSaveAsync(GetId(user, ClaimType.UserId), challenge);
         }
 
         /// <summary>
@@ -91,7 +94,8 @@ namespace GRA.Domain.Service
         {
             // todo: fix user id
             // todo: add access control - only some users can edit
-            return await challengeRepository.UpdateSaveAsync(GetUserId(user), challenge);
+            return await challengeRepository
+                .UpdateSaveAsync(GetId(user, ClaimType.UserId), challenge);
         }
 
         /// <summary>
@@ -103,7 +107,7 @@ namespace GRA.Domain.Service
         {
             // todo: fix user id
             // todo: add access control - only some users can remove
-            await challengeRepository.RemoveSaveAsync(GetUserId(user), challengeId);
+            await challengeRepository.RemoveSaveAsync(GetId(user, ClaimType.UserId), challengeId);
         }
 
         /// <summary>
@@ -115,7 +119,7 @@ namespace GRA.Domain.Service
         public async Task<ChallengeTask> AddTaskAsync(ClaimsPrincipal user, ChallengeTask task)
         {
             // todo: fix user id
-            return await challengeTaskRepository.AddSaveAsync(GetUserId(user), task);
+            return await challengeTaskRepository.AddSaveAsync(GetId(user, ClaimType.UserId), task);
         }
 
         /// <summary>
@@ -126,7 +130,8 @@ namespace GRA.Domain.Service
         public async Task<ChallengeTask> EditTaskAsync(ClaimsPrincipal user, ChallengeTask task)
         {
             // todo: fix user id
-            return await challengeTaskRepository.UpdateSaveAsync(GetUserId(user), task);
+            return await challengeTaskRepository
+                .UpdateSaveAsync(GetId(user, ClaimType.UserId), task);
         }
 
         /// <summary>
@@ -148,7 +153,8 @@ namespace GRA.Domain.Service
         public async Task RemoveTaskAsync(ClaimsPrincipal user, int taskId)
         {
             // todo: fix user id
-            await challengeTaskRepository.RemoveSaveAsync(GetUserId(user), taskId);
+            await challengeTaskRepository
+                .RemoveSaveAsync(GetId(user, ClaimType.UserId), taskId);
         }
 
         /// <summary>

@@ -7,6 +7,7 @@
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
             CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
+            CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.Role, Domain.Model.Role>().ReverseMap();

@@ -3,7 +3,10 @@
     public enum Permission
     {
         AccessMissionControl,
-        EditChallenges,
-        CanLogActivityForAll
+        CanDeleteAllMail,
+        CanLogActivityForAll,
+        CanMailParticipants,
+        CanReadAllMail,
+        EditChallenges
     }
 }
