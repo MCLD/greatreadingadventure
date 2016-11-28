@@ -1,9 +1,9 @@
 ﻿using GRA.Controllers.ViewModel.Shared;
 using System.Collections.Generic;
 
-namespace GRA.Controllers.ViewModel.Challenge
+namespace GRA.Controllers.ViewModel.Challenges
 {
-    public class ChallengeListViewModel
+    public class ChallengesListViewModel
     {
         public IEnumerable<GRA.Domain.Model.Challenge> Challenges { get; set; }
         public PaginateViewModel PaginateModel { get; set; }

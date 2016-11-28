@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
 {
@@ -25,6 +26,7 @@ namespace GRA.Domain.Model
         public int ChallengeTaskTypeId { get; set; }
 
         [Required]
+        [DisplayName("Task Type")]
         public Model.ChallengeTaskType ChallengeTaskType { get; set; }
     }
 }
