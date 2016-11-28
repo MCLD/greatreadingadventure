@@ -135,7 +135,7 @@ namespace GRA.Domain.Service
         public async Task RemoveAsync(ClaimsPrincipal user, int mailId)
         {
             var userId = GetId(user, ClaimType.UserId);
-            bool canDeleteAll = UserHasPermission(user, Permission.DeleteAllMail);
+            bool canDeleteAll = UserHasPermission(user, Permission.DeleteAnyMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail.FromUserId == userId || mail.ToUserId == userId || canDeleteAll)
             {

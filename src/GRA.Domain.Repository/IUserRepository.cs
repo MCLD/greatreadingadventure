@@ -12,5 +12,6 @@ namespace GRA.Domain.Repository
         Task<Model.AuthenticationResult> AuthenticateUserAsync(string username, string password);
         Task<Model.User> GetByUsernameAsync(string username);
         Task SetUserPasswordAsync(int currentUserId, string password);
+        Task<int> GetCountAsync();
     }
 }

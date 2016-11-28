@@ -5,6 +5,8 @@ using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using GRA.Domain.Model;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using AutoMapper.QueryableExtensions;
 
 namespace GRA.Data.Repository
 {
@@ -140,6 +142,35 @@ namespace GRA.Data.Repository
 
             return returnUser ?? await GetByIdAsync(whoEarnedUserId);
 
+        }
+
+        public async override Task<ICollection<User>> PageAllAsync(int skip, int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<User>()
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCountAsync()
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false)
+                .CountAsync();
+        }
+
+        public async override Task RemoveSaveAsync(int userId, int id)
+        {
+            var entity = await context.Users
+                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .SingleAsync();
+            entity.IsDeleted = true;
+            await base.UpdateAsync(userId, entity, null);
+            await base.SaveAsync();
         }
     }
 }

@@ -4,11 +4,15 @@
     {
         AccessMissionControl,
         AddChallenges,
-        DeleteAllMail,
-        LogActivityForAll,
+        DeleteAnyMail,
+        DeleteParticipants,
+        EditChallenges,
+        EditParticipants,
+        LogActivityForAny,
         MailParticipants,
         ReadAllMail,
         RemoveChallenges,
-        EditChallenges
+        ViewParticipantList,
+        ViewParticipantDetails
     }
 }

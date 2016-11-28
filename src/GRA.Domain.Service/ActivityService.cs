@@ -40,7 +40,7 @@ namespace GRA.Domain.Service
             {
                 goodToLog = true;
             }
-            else if (claimLookup.UserHasPermission(Permission.LogActivityForAll.ToString()))
+            else if (claimLookup.UserHasPermission(Permission.LogActivityForAny.ToString()))
             {
                 goodToLog = true;
                 loggingAsAdminUser = true;
