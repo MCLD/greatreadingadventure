@@ -55,18 +55,8 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Position)
                 .ProjectTo<Domain.Model.ChallengeTask>()
                 .ToListAsync();
-            }
 
-            var challengeTaskTypes =
-                await context.ChallengeTaskTypes
-                .AsNoTracking()
-                .ToDictionaryAsync(_ => _.Id);
-
-            foreach (var task in challenge.Tasks)
-            {
-                task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
-                    Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
-                    challengeTaskTypes[task.ChallengeTaskTypeId].Name);
+                await GetChallengeTasksTypeAsync(challenge.Tasks);
             }
 
             return challenge;
@@ -85,12 +75,31 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<Domain.Model.ChallengeTask>> GetChallengeTasksAsync(int challengeId)
         {
-            return await context.ChallengeTasks
+            var tasks = await context.ChallengeTasks
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .OrderBy(_ => _.Position)
                 .ProjectTo<Domain.Model.ChallengeTask>()
                 .ToListAsync();
+
+            return await GetChallengeTasksTypeAsync(tasks);
+        }
+
+        private async Task<ICollection<Domain.Model.ChallengeTask>> GetChallengeTasksTypeAsync(
+            ICollection<Domain.Model.ChallengeTask> tasks)
+        {
+            var challengeTaskTypes =
+                await context.ChallengeTaskTypes
+                .AsNoTracking()
+                .ToDictionaryAsync(_ => _.Id);
+
+            foreach (var task in tasks)
+            {
+                task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
+                    Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
+                    challengeTaskTypes[task.ChallengeTaskTypeId].Name);
+            }
+            return tasks;
         }
     }
 }

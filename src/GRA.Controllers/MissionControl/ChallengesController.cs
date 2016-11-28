@@ -16,6 +16,10 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.AccessMissionControl)]
     public class ChallengesController : Base.Controller
     {
+        private const string NewTask = "NewTask";
+        private const string EditTask = "EditTask";
+        private const string TempEditChallenge = "TempEditChallenge";
+
         private readonly ILogger<ChallengesController> logger;
         private readonly ChallengeService challengeService;
         public ChallengesController(ILogger<ChallengesController> logger,
@@ -28,13 +32,13 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, string FilterBy, int? page)
+        public async Task<IActionResult> Index(string Search, string FilterBy, int page = 1)
         {
-            int currentPage = page ?? 1;
             int take = 15;
-            int skip = take * (currentPage - 1);
+            int skip = take * (page - 1);
 
-            var challengeList = await challengeService.GetPaginatedChallengeListAsync(CurrentUser, skip, take);
+            var challengeList = await challengeService
+                .GetPaginatedChallengeListAsync(CurrentUser, skip, take);
 
             ChallengeListViewModel viewModel = new ChallengeListViewModel();
 
@@ -43,7 +47,7 @@ namespace GRA.Controllers.MissionControl
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = challengeList.Count,
-                CurrentPage = currentPage,
+                CurrentPage = page,
                 ItemsPerPage = take
             };
 
@@ -88,9 +92,11 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(int id)
         {
             Challenge challenge = new Challenge();
-            if (TempData.ContainsKey("TempEditChallenge"))
+            if (TempData.ContainsKey(TempEditChallenge))
             {
-                challenge = Newtonsoft.Json.JsonConvert.DeserializeObject<Challenge>((string)TempData["TempEditChallenge"]);
+                challenge = Newtonsoft.Json.JsonConvert
+                    .DeserializeObject<Challenge>((string)TempData[TempEditChallenge]);
+
                 var tasks = await challengeService.GetChallengeTasksAsync(id);
                 challenge.Tasks = tasks.ToList();
             }
@@ -106,17 +112,19 @@ namespace GRA.Controllers.MissionControl
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {
                 Challenge = challenge,
-                TaskTypes = Enum.GetNames(typeof(ChallengeTaskType)).Select(m => new SelectListItem { Text = m, Value = m }).ToList()
+                TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
+                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList()
             };
-            if (TempData.ContainsKey("AddTask"))
+            if (TempData.ContainsKey(NewTask))
             {
-                TempData.Remove("AddTask");
-                TempData.Remove("EditTask");
+                TempData.Remove(NewTask);
+                TempData.Remove(EditTask);
                 viewModel.AddTask = true;
             }
-            else if (TempData.ContainsKey("EditTask"))
+            else if (TempData.ContainsKey(EditTask))
             {
-                viewModel.Task = await challengeService.GetTaskAsync(CurrentUser, (int)TempData["EditTask"]);
+                viewModel.Task = await challengeService
+                    .GetTaskAsync(CurrentUser, (int)TempData[EditTask]);
             }
             PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
             return View("Edit", viewModel);
@@ -152,7 +160,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public IActionResult CloseTask(ChallengeDetailViewModel viewModel)
         {
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
@@ -160,8 +169,9 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenAddTask(ChallengeDetailViewModel viewModel)
         {
-            TempData["AddTask"] = true;
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[NewTask] = true;
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
@@ -181,9 +191,10 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                TempData["AddTask"] = true;
+                TempData[NewTask] = true;
             }
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
@@ -192,8 +203,9 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenModifyTask(ChallengeDetailViewModel viewModel, int taskId)
         {
-            TempData["EditTask"] = taskId;
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[EditTask] = taskId;
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
@@ -212,9 +224,10 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                TempData["EditTask"] = viewModel.Task.Id;
+                TempData[EditTask] = viewModel.Task.Id;
             }
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
@@ -224,7 +237,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> DeleteTask(ChallengeDetailViewModel viewModel, int id)
         {
             await challengeService.RemoveTaskAsync(CurrentUser, id);
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
@@ -234,7 +248,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> DecreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
             await challengeService.DecreaseTaskPositionAsync(CurrentUser, id);
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
@@ -244,7 +259,8 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> IncreaseTaskSort(ChallengeDetailViewModel viewModel, int id)
         {
             await challengeService.IncreaseTaskPositionAsync(CurrentUser, id);
-            TempData["TempEditChallenge"] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel.Challenge);
+            TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
+                .SerializeObject(viewModel.Challenge);
 
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }

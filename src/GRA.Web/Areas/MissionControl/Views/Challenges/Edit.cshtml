@@ -263,7 +263,7 @@
         })
         $('#addModal, #editModal').on('hidden.bs.modal', function() {
             var form = $(this).parents('form:first');
-            form.attr('action', '/MissionControl/Challenges/CloseTask/');
+            form.attr('action', '@Url.Action("CloseTask")');
             form.validate().cancelSubmit = true;
             form.submit();
         });
