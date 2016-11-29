@@ -39,12 +39,37 @@ namespace GRA.Domain.Service
             };
         }
 
+        public async Task<DataWithCount<IEnumerable<Mail>>> GetUserPaginatedAsync(
+            ClaimsPrincipal user,
+            int getMailForUserId,
+            int skip,
+            int take)
+        {
+            if (UserHasPermission(user, Permission.ReadAllMail))
+            {
+                var dataTask = _mailRepository.PageUserAsync(getMailForUserId, skip, take);
+                var countTask = _mailRepository.GetUserCountAsync(getMailForUserId);
+                await Task.WhenAll(dataTask, countTask);
+                return new DataWithCount<IEnumerable<Mail>>
+                {
+                    Data = dataTask.Result,
+                    Count = countTask.Result
+                };
+            }
+            else
+            {
+                var requestingUser = GetId(user, ClaimType.UserId);
+                logger.LogError($"User {requestingUser} doesn't have permission to view messages for {getMailForUserId}.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
         public async Task<Mail> GetDetails(ClaimsPrincipal user, int mailId)
         {
             var userId = GetId(user, ClaimType.UserId);
             bool canReadAll = UserHasPermission(user, Permission.ReadAllMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
-            if(mail.FromUserId == userId || mail.ToUserId == userId || canReadAll)
+            if (mail.FromUserId == userId || mail.ToUserId == userId || canReadAll)
             {
                 return mail;
             }
@@ -115,7 +140,7 @@ namespace GRA.Domain.Service
 
         public async Task<Mail> SendAsync(ClaimsPrincipal user, Mail mail)
         {
-            if(mail.ToUserId == default(int)
+            if (mail.ToUserId == default(int)
                || UserHasPermission(user, Permission.MailParticipants))
             {
                 mail.FromUserId = GetId(user, ClaimType.UserId);

@@ -62,6 +62,7 @@ namespace GRA.Data
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
+        public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
