@@ -35,7 +35,8 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            var dataTask = _challengeRepository.PageAllAsync(skip, take);
+            int siteId = GetId(user, ClaimType.SiteId);
+            var dataTask = _challengeRepository.PageAllAsync(siteId, skip, take);
             var countTask = _challengeRepository.GetChallengeCountAsync();
             await Task.WhenAll(dataTask, countTask);
             return new DataWithCount<IEnumerable<Challenge>>

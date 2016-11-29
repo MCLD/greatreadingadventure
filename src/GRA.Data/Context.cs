@@ -19,7 +19,8 @@ namespace GRA.Data
             this.config = config;
             devConnectionString = null;
         }
-        protected internal Context(string connectionString) {
+        protected internal Context(string connectionString)
+        {
             devConnectionString = connectionString;
         }
 
@@ -45,6 +46,8 @@ namespace GRA.Data
             modelBuilder.Entity<Model.User>()
                 .HasIndex(_ => new { _.SiteId, _.Username })
                 .IsUnique();
+            modelBuilder.Entity<Model.User>()
+                .HasIndex(_ => new { _.SiteId, _.HouseholdHeadUserId });
             modelBuilder.Entity<Model.UserLog>()
                 .HasIndex(_ => _.UserId);
 

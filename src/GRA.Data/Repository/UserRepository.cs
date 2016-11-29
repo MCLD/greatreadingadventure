@@ -144,11 +144,12 @@ namespace GRA.Data.Repository
 
         }
 
-        public async override Task<ICollection<User>> PageAllAsync(int skip, int take)
+        public async Task<IEnumerable<User>> PageAllAsync(int siteId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false)
+                .Where(_ => _.IsDeleted == false
+                       && _.SiteId == siteId)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<User>()
@@ -171,6 +172,28 @@ namespace GRA.Data.Repository
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
             await base.SaveAsync();
+        }
+
+        public async Task<IEnumerable<User>>
+            PageFamilyAsync(int householdHeadUserId, int skip, int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                       && _.HouseholdHeadUserId == householdHeadUserId)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<User>()
+                .ToListAsync();
+        }
+
+        public async Task<int> GetFamilyCountAsync(int householdHeadUserId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                       && _.HouseholdHeadUserId == householdHeadUserId)
+                       .CountAsync();
         }
     }
 }

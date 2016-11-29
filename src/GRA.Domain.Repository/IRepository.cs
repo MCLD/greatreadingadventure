@@ -9,7 +9,6 @@ namespace GRA.Domain.Repository
         Task AddAsync(int currentUserId, DomainEntity entity);
         Task<DomainEntity> AddSaveAsync(int currentUserId, DomainEntity entity);
         Task<DomainEntity> GetByIdAsync(int id);
-        Task<ICollection<DomainEntity>> PageAllAsync(int skip, int take);
         Task RemoveSaveAsync(int currentUserId, int id);
         Task SaveAsync();
         Task UpdateAsync(int currentUserId, DomainEntity entity);

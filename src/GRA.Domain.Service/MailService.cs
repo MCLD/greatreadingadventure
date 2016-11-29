@@ -82,9 +82,10 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
+            int siteId = GetId(user, ClaimType.SiteId);
             if (UserHasPermission(user, Permission.ReadAllMail))
             {
-                var dataTask = _mailRepository.PageAllAsync(skip, take);
+                var dataTask = _mailRepository.PageAllAsync(siteId, skip, take);
                 var countTask = _mailRepository.GetAllCountAsync();
                 await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<Mail>>
@@ -140,7 +141,7 @@ namespace GRA.Domain.Service
 
         public async Task<Mail> SendAsync(ClaimsPrincipal user, Mail mail)
         {
-            if (mail.ToUserId == default(int)
+            if (mail.ToUserId == null
                || UserHasPermission(user, Permission.MailParticipants))
             {
                 mail.FromUserId = GetId(user, ClaimType.UserId);

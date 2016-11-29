@@ -58,9 +58,10 @@ namespace GRA.Domain.Service
            int skip,
            int take)
         {
+            int siteId = GetId(user, ClaimType.SiteId);
             if (UserHasPermission(user, Permission.ViewParticipantList))
             {
-                var dataTask = _userRepository.PageAllAsync(skip, take);
+                var dataTask = _userRepository.PageAllAsync(siteId, skip, take);
                 var countTask = _userRepository.GetCountAsync();
                 await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<User>>
@@ -68,10 +69,53 @@ namespace GRA.Domain.Service
                     Data = dataTask.Result,
                     Count = countTask.Result
                 };
-            } else
+            }
+            else
             {
                 int userId = GetId(user, ClaimType.UserId);
                 logger.LogError($"User {userId} doesn't have permission to view all participants.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
+        public async Task<DataWithCount<IEnumerable<User>>>
+            GetPaginatedFamilyListAsync(ClaimsPrincipal user,
+            int householdHeadUserId,
+            int skip,
+            int take)
+        {
+            int requestingUserId = GetId(user, ClaimType.UserId);
+            if (requestingUserId == householdHeadUserId
+                || UserHasPermission(user, Permission.ViewParticipantList))
+            {
+                var dataTask = _userRepository.PageFamilyAsync(householdHeadUserId, skip, take);
+                var countTask = _userRepository.GetFamilyCountAsync(householdHeadUserId);
+                await Task.WhenAll(dataTask, countTask);
+                return new DataWithCount<IEnumerable<User>>
+                {
+                    Data = dataTask.Result,
+                    Count = countTask.Result
+                };
+            }
+            else
+            {
+                logger.LogError($"User {requestingUserId} doesn't have permission to view household participants.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
+        public async Task<int>
+            FamilyMemberCountAsync(ClaimsPrincipal user, int householdHeadUserId)
+        {
+            int requestingUserId = GetId(user, ClaimType.UserId);
+            if (requestingUserId == householdHeadUserId
+                || UserHasPermission(user, Permission.ViewParticipantList))
+            {
+                return await _userRepository.GetFamilyCountAsync(householdHeadUserId);
+            }
+            else
+            {
+                logger.LogError($"User {requestingUserId} doesn't have permission to get a count of household participants.");
                 throw new Exception("Permission denied.");
             }
         }

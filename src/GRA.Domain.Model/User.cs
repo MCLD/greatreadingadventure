@@ -32,6 +32,6 @@ namespace GRA.Domain.Model
         public int PointsEarned { get; set; }
         public int ProgramId { get; set; }
         public int AvatarId { get; set; }
-        public int HeadOfHouseholdUserId { get; set; }
+        public int? HouseholdHeadUserId { get; set; }
     }
 }

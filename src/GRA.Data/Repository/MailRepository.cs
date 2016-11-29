@@ -11,13 +11,26 @@ using AutoMapper.QueryableExtensions;
 namespace GRA.Data.Repository
 {
     public class MailRepository
-        : AuditingRepository<Model.Mail, Domain.Model.Mail>, IMailRepository
+        : AuditingRepository<Model.Mail, Mail>, IMailRepository
     {
         public MailRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<MailRepository> logger) : base(repositoryFacade, logger)
         {
         }
-        
+
+        public async Task<IEnumerable<Mail>> PageAllAsync(int siteId, int skip, int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                       && _.SiteId == siteId)
+                .OrderByDescending(_ => _.CreatedAt)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<Mail>()
+                .ToListAsync();
+        }
+
         public async Task<int> GetAllCountAsync()
         {
             return await DbSet
@@ -28,22 +41,20 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetAdminUnreadCountAsync()
         {
-            int to = default(int);
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
-                    && _.ToUserId == to
+                    && _.ToUserId == null
                     && _.IsNew == true)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Mail>> PageAdminUnreadAsync(int skip, int take)
+        public async Task<IEnumerable<Mail>> PageAdminUnreadAsync(int skip, int take)
         {
-            int to = default(int);
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
-                    && _.ToUserId == to
+                    && _.ToUserId == null
                     && _.IsNew == true)
                 .Skip(skip)
                 .Take(take)
@@ -59,7 +70,7 @@ namespace GRA.Data.Repository
                     && (_.ToUserId == userId || _.FromUserId == userId))
                 .CountAsync();
         }
-        public async Task<ICollection<Mail>> PageUserAsync(int userId, int skip, int take)
+        public async Task<IEnumerable<Mail>> PageUserAsync(int userId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()

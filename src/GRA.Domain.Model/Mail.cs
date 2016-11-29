@@ -5,8 +5,7 @@ namespace GRA.Domain.Model
     public class Mail : Abstract.BaseDomainEntity
     {
         public int SiteId { get; set; }
-        [Required]
-        public int ToUserId { get; set; }
+        public int? ToUserId { get; set; }
         [Required]
         public int FromUserId { get; set; }
 

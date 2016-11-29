@@ -17,13 +17,13 @@ namespace GRA.Data.Repository
         {
         }
 
-        public override async Task<ICollection<Domain.Model.Challenge>>
-            PageAllAsync(int skip, int take)
+        public async Task<IEnumerable<Domain.Model.Challenge>>
+            PageAllAsync(int siteId, int skip, int take)
         {
-            // todo: add logic to filter for user
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false)
+                .Where(_ => _.IsDeleted == false
+                       && _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
@@ -72,7 +72,7 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        public async Task<ICollection<Domain.Model.ChallengeTask>>
+        public async Task<IEnumerable<Domain.Model.ChallengeTask>>
             GetChallengeTasksAsync(int challengeId)
         {
             var tasks = await context.ChallengeTasks
@@ -85,8 +85,8 @@ namespace GRA.Data.Repository
             return await GetChallengeTasksTypeAsync(tasks);
         }
 
-        private async Task<ICollection<Domain.Model.ChallengeTask>>
-            GetChallengeTasksTypeAsync(ICollection<Domain.Model.ChallengeTask> tasks)
+        private async Task<IEnumerable<Domain.Model.ChallengeTask>>
+            GetChallengeTasksTypeAsync(IEnumerable<Domain.Model.ChallengeTask> tasks)
         {
             var challengeTaskTypes =
                 await context.ChallengeTaskTypes

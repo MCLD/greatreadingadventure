@@ -45,7 +45,7 @@ namespace GRA.Domain.Service
                 goodToLog = true;
                 loggingAsAdminUser = true;
             }
-            else if (userToLog.HeadOfHouseholdUserId == currentUserId)
+            else if (userToLog.HouseholdHeadUserId == currentUserId)
             {
                 // current user is the earning user's head of household
                 goodToLog = true;

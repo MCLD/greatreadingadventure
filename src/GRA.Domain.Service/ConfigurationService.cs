@@ -8,19 +8,21 @@ namespace GRA.Domain.Service
 {
     public class ConfigurationService : Abstract.BaseService<ConfigurationService>
     {
-        private readonly IBranchRepository branchRepository;
-        private readonly IChallengeRepository challengeRepository;
-        private readonly IChallengeTaskRepository challengeTaskRepository;
-        private readonly IProgramRepository programRepository;
-        private readonly IRoleRepository roleRepository;
-        private readonly ISiteRepository siteRepository;
-        private readonly ISystemRepository systemRepository;
-        private readonly IUserRepository userRepository;
-        private readonly IPointTranslationRepository pointTranslationRepository;
+        private readonly IBranchRepository _branchRepository;
+        private readonly IChallengeRepository _challengeRepository;
+        private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly IMailRepository _mailRepository;
+        private readonly IProgramRepository _programRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly ISiteRepository _siteRepository;
+        private readonly ISystemRepository _systemRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IPointTranslationRepository _pointTranslationRepository;
         public ConfigurationService(ILogger<ConfigurationService> logger,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
+            IMailRepository mailRepository,
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISiteRepository siteRepository,
@@ -28,30 +30,31 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IPointTranslationRepository pointTranslationRepository) : base(logger)
         {
-            this.branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            this.challengeRepository = Require.IsNotNull(challengeRepository,
+            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
-            this.challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
+            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
-            this.programRepository = Require.IsNotNull(programRepository,
+            _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
+            _programRepository = Require.IsNotNull(programRepository,
                 nameof(programRepository));
-            this.roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
-            this.siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            this.systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
-            this.userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            this.pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
+            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
+            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
+            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
         }
 
         public async Task<bool> NeedsInitialSetupAsync()
         {
-            var firstSite = await siteRepository.PageAllAsync(0, 1);
+            var firstSite = await _siteRepository.PageAllAsync(0, 1);
             return firstSite.Count() == 0;
         }
 
         public async Task<Model.User> InitialSetupAsync(Model.User adminUser, string password)
         {
-            var topSites = await siteRepository.PageAllAsync(0, 1);
+            var topSites = await _siteRepository.PageAllAsync(0, 1);
 
             if (topSites.Count() > 0)
             {
@@ -64,7 +67,7 @@ namespace GRA.Domain.Service
                 Path = "default"
             };
             // create default site
-            site = await siteRepository.AddSaveAsync(-1, site);
+            site = await _siteRepository.AddSaveAsync(-1, site);
 
             if (site == null)
             {
@@ -76,7 +79,7 @@ namespace GRA.Domain.Service
                 SiteId = site.Id,
                 Name = "Maricopa County Library District"
             };
-            system = await systemRepository.AddSaveAsync(-1, system);
+            system = await _systemRepository.AddSaveAsync(-1, system);
 
             var branch = new Model.Branch
             {
@@ -87,7 +90,7 @@ namespace GRA.Domain.Service
                 Telephone = "602-652-3064",
                 Url = "http://mcldaz.org/"
             };
-            branch = await branchRepository.AddSaveAsync(-1, branch);
+            branch = await _branchRepository.AddSaveAsync(-1, branch);
 
             var program = new Model.Program
             {
@@ -95,28 +98,28 @@ namespace GRA.Domain.Service
                 AchieverPointAmount = 1000,
                 Name = "Winter Reading Program"
             };
-            program = await programRepository.AddSaveAsync(-1, program);
+            program = await _programRepository.AddSaveAsync(-1, program);
 
             adminUser.BranchId = branch.Id;
             adminUser.ProgramId = program.Id;
             adminUser.SiteId = site.Id;
             adminUser.SystemId = system.Id;
-            var user = await userRepository.AddSaveAsync(0, adminUser);
-            await userRepository.SetUserPasswordAsync(user.Id, password);
+            var user = await _userRepository.AddSaveAsync(0, adminUser);
+            await _userRepository.SetUserPasswordAsync(user.Id, password);
 
             int creatorUserId = user.Id;
 
             site.CreatedBy = creatorUserId;
-            site = await siteRepository.UpdateSaveAsync(creatorUserId, site);
+            site = await _siteRepository.UpdateSaveAsync(creatorUserId, site);
 
             system.CreatedBy = creatorUserId;
-            system = await systemRepository.UpdateSaveAsync(creatorUserId, system);
+            system = await _systemRepository.UpdateSaveAsync(creatorUserId, system);
 
             branch.CreatedBy = creatorUserId;
-            branch = await branchRepository.UpdateSaveAsync(creatorUserId, branch);
+            branch = await _branchRepository.UpdateSaveAsync(creatorUserId, branch);
 
             program.CreatedBy = creatorUserId;
-            program = await programRepository.UpdateSaveAsync(creatorUserId, program);
+            program = await _programRepository.UpdateSaveAsync(creatorUserId, program);
 
             var pointTranslation = new Model.PointTranslation
             {
@@ -127,35 +130,35 @@ namespace GRA.Domain.Service
                 ProgramId = program.Id,
                 TranslationName = "One book, ten points"
             };
-            await pointTranslationRepository.AddSaveAsync(creatorUserId, pointTranslation);
+            await _pointTranslationRepository.AddSaveAsync(creatorUserId, pointTranslation);
 
-            var adminRole = await roleRepository.AddSaveAsync(creatorUserId, new Model.Role
+            var adminRole = await _roleRepository.AddSaveAsync(creatorUserId, new Model.Role
             {
                 Name = "System Administrator"
             });
 
-            await userRepository.AddRoleAsync(creatorUserId, user.Id, adminRole.Id);
+            await _userRepository.AddRoleAsync(creatorUserId, user.Id, adminRole.Id);
 
             foreach (var value in Enum.GetValues(typeof(Model.Permission)))
             {
-                await roleRepository.AddPermissionAsync(creatorUserId, value.ToString());
+                await _roleRepository.AddPermissionAsync(creatorUserId, value.ToString());
             }
-            await roleRepository.SaveAsync();
+            await _roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.Permission)))
             {
-                await roleRepository.AddPermissionToRoleAsync(creatorUserId,
+                await _roleRepository.AddPermissionToRoleAsync(creatorUserId,
                     adminRole.Id,
                     value.ToString());
             }
-            await roleRepository.SaveAsync();
+            await _roleRepository.SaveAsync();
 
             foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
             {
-                await challengeTaskRepository.AddChallengeTaskTypeAsync(creatorUserId,
+                await _challengeTaskRepository.AddChallengeTaskTypeAsync(creatorUserId,
                     value.ToString());
             }
-            await challengeRepository.SaveAsync();
+            await _challengeRepository.SaveAsync();
 
             // sample challenge
 
@@ -172,24 +175,24 @@ namespace GRA.Domain.Service
                 RelatedBranchId = branch.Id
             };
 
-            challenge = await challengeRepository.AddSaveAsync(creatorUserId, challenge);
+            challenge = await _challengeRepository.AddSaveAsync(creatorUserId, challenge);
 
             int positionCounter = 1;
-            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Be excellent to each other",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Party on, dudes!",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            await challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(creatorUserId, new Model.ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",
@@ -198,6 +201,58 @@ namespace GRA.Domain.Service
                 ChallengeTaskType = Model.ChallengeTaskType.Book,
                 Position = positionCounter++
             });
+
+            // add a welcome message to the admin
+
+            await _mailRepository.AddSaveAsync(creatorUserId, new Model.Mail
+            {
+                Body = "Your administrative account has been created successfully!",
+                FromUserId = creatorUserId,
+                Subject = "Welcome to The Great Reading Adventure!"
+            });
+
+            // add some family users
+
+            var newUser = new Model.User
+            {
+                SiteId = site.Id,
+                BranchId = branch.Id,
+                SystemId = system.Id,
+                ProgramId = program.Id,
+                FirstName = "Arthur",
+                LastName = "Weasley",
+                Username = "aweasley"
+            };
+
+            var arthur = _userRepository.AddSaveAsync(creatorUserId, newUser);
+
+            await _mailRepository.AddSaveAsync(creatorUserId, new Model.Mail
+            {
+                Body = "Your account has been created successfully!",
+                FromUserId = arthur.Id,
+                Subject = "Welcome to The Great Reading Adventure!"
+            });
+
+            newUser.FirstName = "Molly";
+            newUser.Username = null;
+            newUser.HouseholdHeadUserId = arthur.Id;
+            await _userRepository.AddAsync(creatorUserId, newUser);
+
+            newUser.FirstName = "Bill";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "Charlie";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "Fred";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "Ron";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "George";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "Ginny";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            newUser.FirstName = "Percy";
+            await _userRepository.AddAsync(creatorUserId, newUser);
+            await _userRepository.SaveAsync();
 
             return user;
         }

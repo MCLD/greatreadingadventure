@@ -8,9 +8,10 @@ namespace GRA.Domain.Repository
     {
         Task<int> GetAllCountAsync();
         Task<int> GetAdminUnreadCountAsync();
-        Task<ICollection<Mail>> PageAdminUnreadAsync(int skip, int take);
+        Task<IEnumerable<Mail>> PageAdminUnreadAsync(int skip, int take);
         Task<int> GetUserCountAsync(int userId);
-        Task<ICollection<Mail>> PageUserAsync(int userId, int skip, int take);
+        Task<IEnumerable<Mail>> PageAllAsync(int siteId, int skip, int take);
+        Task<IEnumerable<Mail>> PageUserAsync(int userId, int skip, int take);
         Task<int> GetUserUnreadCountAsync(int userId);
         Task MarkAsReadAsync(int mailId);
     }

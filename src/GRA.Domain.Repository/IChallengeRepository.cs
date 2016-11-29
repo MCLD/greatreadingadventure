@@ -8,6 +8,7 @@ namespace GRA.Domain.Repository
     public interface IChallengeRepository : IRepository<Challenge>
     {
         Task<int> GetChallengeCountAsync();
-        Task<ICollection<ChallengeTask>> GetChallengeTasksAsync(int challengeId);
+        Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId);
+        Task<IEnumerable<Challenge>> PageAllAsync(int siteId, int skip, int take);
     }
 }

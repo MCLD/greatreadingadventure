@@ -114,7 +114,7 @@ namespace GRA.Data
             }
         }
 
-        public async virtual Task<ICollection<DomainEntity>> PageAllAsync(int skip, int take)
+        public async virtual Task<IEnumerable<DomainEntity>> PageAllAsync(int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
