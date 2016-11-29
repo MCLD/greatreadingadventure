@@ -9,19 +9,22 @@ namespace GRA.Domain.Service
 {
     public class ActivityService : Abstract.BaseService<UserService>
     {
-        private readonly IPointTranslationRepository pointTranslationRepository;
-        private readonly IUserRepository userRepository;
-        private readonly IUserLogRepository userLogRepository;
+        private readonly IBookRepository _bookRepository;
+        private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUserLogRepository _userLogRepository;
 
         public ActivityService(ILogger<UserService> logger,
+            IBookRepository bookRepository,
             IPointTranslationRepository pointTranslationRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger)
         {
-            this.pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
+            _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
+            _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
-            this.userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            this.userLogRepository = Require.IsNotNull(userLogRepository,
+            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            _userLogRepository = Require.IsNotNull(userLogRepository,
                 nameof(userLogRepository));
         }
 
@@ -34,7 +37,7 @@ namespace GRA.Domain.Service
 
             var claimLookup = new UserClaimLookup(currentUser);
             int currentUserId = int.Parse(claimLookup.UserClaim(ClaimType.UserId));
-            var userToLog = await userRepository.GetByIdAsync(userIdToLog);
+            var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
 
             if (currentUserId == userIdToLog)
             {
@@ -59,7 +62,7 @@ namespace GRA.Domain.Service
             }
 
             var translation
-                = await pointTranslationRepository.GetByProgramIdAsync(userToLog.ProgramId);
+                = await _pointTranslationRepository.GetByProgramIdAsync(userToLog.ProgramId);
 
             int pointsEarned
                 = (activityAmountEarned / translation.ActivityAmount) * translation.PointsEarned;
@@ -76,11 +79,42 @@ namespace GRA.Domain.Service
             {
                 userLog.AwardedBy = currentUserId;
             }
-            await userLogRepository.AddSaveAsync(currentUserId, userLog);
+            await _userLogRepository.AddSaveAsync(currentUserId, userLog);
 
             // update the score in the user record
-            return await userRepository
+            return await _userRepository
                 .AddPointsSaveAsync(currentUserId, userToLog.Id, pointsEarned, loggingAsAdminUser);
+        }
+
+        public async Task AddBook(ClaimsPrincipal user, int userId, Book book)
+        {
+            int requestedByUserId = GetId(user, ClaimType.UserId);
+            if (requestedByUserId == userId
+                || UserHasPermission(user, Permission.LogActivityForAny))
+            {
+                await _bookRepository.AddSaveForUserAsync(requestedByUserId, userId, book);
+            }
+            else
+            {
+                logger.LogError($"User {requestedByUserId} doesn't have permission to add a book for {userId}.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
+        public async Task RemoveBook(ClaimsPrincipal user, int userId, int bookId)
+        {
+            int requestedByUserId = GetId(user, ClaimType.UserId);
+            if (requestedByUserId == userId
+                || UserHasPermission(user, Permission.LogActivityForAny))
+            {
+                await _bookRepository.RemoveForUserAsync(requestedByUserId, userId, bookId);
+            }
+            else
+            {
+                logger.LogError($"User {requestedByUserId} doesn't have permission to remove a book for {userId}.");
+                throw new Exception("Permission denied.");
+            }
+
         }
     }
 }

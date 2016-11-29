@@ -8,6 +8,7 @@ namespace GRA.Domain.Service
 {
     public class ConfigurationService : Abstract.BaseService<ConfigurationService>
     {
+        private readonly IBookRepository _bookRepository;
         private readonly IBranchRepository _branchRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
@@ -19,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         public ConfigurationService(ILogger<ConfigurationService> logger,
+            IBookRepository bookRepository,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
@@ -30,6 +32,7 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IPointTranslationRepository pointTranslationRepository) : base(logger)
         {
+            _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
@@ -202,6 +205,25 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
+            // add a book for the admin
+
+            await _bookRepository.AddSaveForUserAsync(creatorUserId, creatorUserId, new Model.Book
+            {
+                Author = "Kurt Vonnegut",
+                Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death"
+            });
+            await _bookRepository.AddSaveForUserAsync(creatorUserId, creatorUserId, new Model.Book
+            {
+                Author = "Kurt Vonnegut",
+                Title = "Breakfast of Champions, or Goodbye Blue Monday"
+            });
+            await _bookRepository.AddSaveForUserAsync(creatorUserId, creatorUserId, new Model.Book
+            {
+                Author = "Kurt Vonnegut",
+                Title = "Cat's Cradle"
+            });
+
+
             // add a welcome message to the admin
 
             await _mailRepository.AddSaveAsync(creatorUserId, new Model.Mail
@@ -224,7 +246,7 @@ namespace GRA.Domain.Service
                 Username = "aweasley"
             };
 
-            var arthur = _userRepository.AddSaveAsync(creatorUserId, newUser);
+            var arthur = await _userRepository.AddSaveAsync(creatorUserId, newUser);
 
             await _mailRepository.AddSaveAsync(creatorUserId, new Model.Mail
             {

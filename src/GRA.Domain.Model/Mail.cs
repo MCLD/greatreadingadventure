@@ -10,12 +10,16 @@ namespace GRA.Domain.Model
         public int FromUserId { get; set; }
 
         [Required]
+        [MaxLength(500)]
         public string Subject { get; set; }
         [Required]
+        [MaxLength(1000)]
         public string Body { get; set; }
         [Required]
         public bool IsNew { get; set; }
         [Required]
         public bool IsDeleted { get; set; }
+        public int? InReplyToId { get; set; }
+        public int? ThreadId { get; set; }
     }
 }

@@ -158,6 +158,29 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<Mail> SendReplyAsync(ClaimsPrincipal user, Mail mail, int inReplyToId)
+        {
+            if (mail.ToUserId == null
+               || UserHasPermission(user, Permission.MailParticipants))
+            {
+                var inReplyToMail = await _mailRepository.GetByIdAsync(inReplyToId);
+                mail.InReplyToId = inReplyToId;
+                mail.ThreadId = inReplyToMail.ThreadId ?? inReplyToId;
+                mail.FromUserId = GetId(user, ClaimType.UserId);
+                mail.IsNew = true;
+                mail.IsDeleted = false;
+                mail.SiteId = GetId(user, ClaimType.SiteId);
+                return await _mailRepository.AddSaveAsync(mail.FromUserId, mail);
+            }
+            else
+            {
+                var userId = GetId(user, ClaimType.UserId);
+                logger.LogError($"User {userId} doesn't have permission to send a mail to {mail.ToUserId}.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+
         public async Task RemoveAsync(ClaimsPrincipal user, int mailId)
         {
             var userId = GetId(user, ClaimType.UserId);

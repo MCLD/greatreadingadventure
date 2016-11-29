@@ -36,10 +36,12 @@ namespace GRA.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
-            modelBuilder.Entity<Model.UserRole>()
-                .HasKey(_ => new { _.UserId, _.RoleId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.UserBook>()
+                .HasKey(_ => new { _.UserId, _.BookId });
+            modelBuilder.Entity<Model.UserRole>()
+                .HasKey(_ => new { _.UserId, _.RoleId });
 
             // add indexing as needed
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
@@ -61,6 +63,7 @@ namespace GRA.Data
         }
 
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
+        public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
@@ -75,6 +78,7 @@ namespace GRA.Data
         public DbSet<Model.System> Systems { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
+        public DbSet<Model.UserBook> UserBooks { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
     }
 }

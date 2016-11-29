@@ -10,13 +10,19 @@ namespace GRA.Domain.Service
 {
     public class UserService : Abstract.BaseService<UserService>
     {
+        private readonly IBookRepository _bookRepository;
+        private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         public UserService(ILogger<UserService> logger,
+            IBookRepository bookRepository,
+            IUserLogRepository userLogRepository,
             IUserRepository userRepository,
             IRoleRepository roleRepository)
             : base(logger)
         {
+            _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
+            _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
         }
@@ -162,7 +168,25 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission remove user {userIdToRemove}.");
+                logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
+        public async Task<IEnumerable<UserLog>> GetPaginatedUserHistoryAsync(ClaimsPrincipal user,
+            int userId,
+            int skip,
+            int take)
+        {
+            int requestedByUserId = GetId(user, ClaimType.UserId);
+            if (requestedByUserId == userId
+               || UserHasPermission(user, Permission.ViewParticipantDetails))
+            {
+                return await _userLogRepository.PageHistoryAsync(userId, skip, take);
+            }
+            else
+            {
+                logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
                 throw new Exception("Permission denied.");
             }
         }
