@@ -44,6 +44,15 @@ namespace GRA.Data.Repository
                 .ProjectTo<Book>()
                 .ToListAsync();
         }
+
+        public async Task<int> GetCountForUserAsync(int userId)
+        {
+            return await context.UserBooks
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .CountAsync();
+        }
+
         public async Task RemoveForUserAsync(int requestedByUserId, int userId, int bookId)
         {
             var joinRecord = await context.UserBooks

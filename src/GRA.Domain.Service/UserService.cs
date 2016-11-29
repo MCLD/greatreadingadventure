@@ -198,5 +198,28 @@ namespace GRA.Domain.Service
                 throw new Exception("Permission denied.");
             }
         }
+
+        public async Task<DataWithCount<IEnumerable<Book>>>
+            GetPaginatedUserBookListAsync(ClaimsPrincipal user, int userId, int skip, int take)
+        {
+            int requestedByUserId = GetId(user, ClaimType.UserId);
+            if (requestedByUserId == userId
+               || UserHasPermission(user, Permission.ViewParticipantDetails))
+            {
+                var dataTask = _bookRepository.GetForUserAsync(userId);
+                var countTask = _bookRepository.GetCountForUserAsync(userId);
+                await Task.WhenAll(dataTask, countTask);
+                return new DataWithCount<IEnumerable<Book>>
+                {
+                    Data = dataTask.Result,
+                    Count = countTask.Result
+                };
+            }
+            else
+            {
+                logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
+                throw new Exception("Permission denied.");
+            }
+        }
     }
 }

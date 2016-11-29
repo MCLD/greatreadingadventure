@@ -22,7 +22,8 @@ namespace GRA.Data.Repository
         {
             var userLogs = await DbSet
                .AsNoTracking()
-               .Where(_ => _.UserId == userId)
+               .Where(_ => _.UserId == userId
+                      && _.IsDeleted == false)
                .OrderBy(_ => _.CreatedAt)
                .Skip(skip)
                .Take(take)
@@ -66,7 +67,8 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.UserId == userId)
+                .Where(_ => _.UserId == userId
+                       && _.IsDeleted == false)
                 .CountAsync();
         }
 

@@ -137,5 +137,20 @@ namespace GRA.Domain.Service
             }
 
         }
+
+        public async Task UpdateBook(ClaimsPrincipal user, int userId, Book book)
+        {
+            int requestedByUserId = GetId(user, ClaimType.UserId);
+            if (requestedByUserId == userId
+                || UserHasPermission(user, Permission.LogActivityForAny))
+            {
+                await _bookRepository.UpdateSaveAsync(requestedByUserId, book);
+            }
+            else
+            {
+                logger.LogError($"User {requestedByUserId} doesn't have permission to edit a book for {userId}.");
+                throw new Exception("Permission denied.");
+            }
+        }
     }
 }
