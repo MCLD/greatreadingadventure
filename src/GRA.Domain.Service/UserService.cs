@@ -173,7 +173,8 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<IEnumerable<UserLog>> GetPaginatedUserHistoryAsync(ClaimsPrincipal user,
+        public async Task<DataWithCount<IEnumerable<UserLog>>>
+            GetPaginatedUserHistoryAsync(ClaimsPrincipal user,
             int userId,
             int skip,
             int take)
@@ -182,7 +183,14 @@ namespace GRA.Domain.Service
             if (requestedByUserId == userId
                || UserHasPermission(user, Permission.ViewParticipantDetails))
             {
-                return await _userLogRepository.PageHistoryAsync(userId, skip, take);
+                var dataTask = _userLogRepository.PageHistoryAsync(userId, skip, take);
+                var countTask = _userLogRepository.GetHistoryItemCountAsync(userId);
+                await Task.WhenAll(dataTask, countTask);
+                return new DataWithCount<IEnumerable<UserLog>>
+                {
+                    Data = dataTask.Result,
+                    Count = countTask.Result
+                };
             }
             else
             {

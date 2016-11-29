@@ -18,5 +18,9 @@ namespace GRA.Data.Model
         public int PointsEarned { get; set; }
         [Required]
         public bool IsSingleEvent { get; set; }
+        [Required]
+        public string TranslationDescriptionPresentTense { get; set; }
+        [Required]
+        public string TranslationDescriptionPastTense { get; set; }
     }
 }

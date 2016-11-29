@@ -35,15 +35,14 @@ namespace GRA.Domain.Service
             bool goodToLog = false;
             bool loggingAsAdminUser = false;
 
-            var claimLookup = new UserClaimLookup(currentUser);
-            int currentUserId = int.Parse(claimLookup.UserClaim(ClaimType.UserId));
+            int currentUserId = GetId(currentUser, ClaimType.UserId);
             var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
 
             if (currentUserId == userIdToLog)
             {
                 goodToLog = true;
             }
-            else if (claimLookup.UserHasPermission(Permission.LogActivityForAny.ToString()))
+            else if (UserHasPermission(currentUser, Permission.LogActivityForAny))
             {
                 goodToLog = true;
                 loggingAsAdminUser = true;
@@ -84,6 +83,28 @@ namespace GRA.Domain.Service
             // update the score in the user record
             return await _userRepository
                 .AddPointsSaveAsync(currentUserId, userToLog.Id, pointsEarned, loggingAsAdminUser);
+        }
+
+        public async Task<User> RemoveActivityAsync(ClaimsPrincipal user,
+            int userIdToLog,
+            int userLogIdToRemove)
+        {
+            int currentUserId = GetId(user, ClaimType.UserId);
+            if(UserHasPermission(user, Permission.LogActivityForAny))
+            {
+                var userLog = await _userLogRepository.GetByIdAsync(userLogIdToRemove);
+
+                int pointsToRemove = userLog.PointsEarned;
+                await _userLogRepository.RemoveSaveAsync(currentUserId, userLogIdToRemove);
+                return await _userRepository
+                    .RemovePointsSaveASync(currentUserId, userIdToLog, pointsToRemove);
+            }
+            else
+            {
+                string error = $"User id {currentUserId} cannot remove activity for user id {userIdToLog}";
+                logger.LogError(error);
+                throw new Exception(error);
+            }
         }
 
         public async Task AddBook(ClaimsPrincipal user, int userId, Book book)

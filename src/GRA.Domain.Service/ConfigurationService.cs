@@ -131,7 +131,9 @@ namespace GRA.Domain.Service
                 IsSingleEvent = true,
                 PointsEarned = 10,
                 ProgramId = program.Id,
-                TranslationName = "One book, ten points"
+                TranslationName = "One book, ten points",
+                TranslationDescriptionPastTense = "Read {0} book",
+                TranslationDescriptionPresentTense = "Read {0} book"
             };
             await _pointTranslationRepository.AddSaveAsync(creatorUserId, pointTranslation);
 

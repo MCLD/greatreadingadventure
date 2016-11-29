@@ -17,6 +17,6 @@ namespace GRA.Data.Model
         [Required]
         public bool IsDeleted { get; set; }
         public int? DeletedBy { get; set; }
-        public int ChallengeId { get; set; }
+        public int? ChallengeId { get; set; }
     }
 }

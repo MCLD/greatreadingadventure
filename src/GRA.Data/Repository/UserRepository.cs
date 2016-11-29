@@ -137,13 +137,49 @@ namespace GRA.Data.Repository
             {
                 await SaveAsync();
             }
-
-            // achiever
-
             return returnUser ?? await GetByIdAsync(whoEarnedUserId);
-
         }
 
+        public async Task<User>
+            RemovePointsSaveASync(int currentUserId, int whoRemoveUserId, int pointsToRemove)
+        {
+            if (pointsToRemove < 0)
+            {
+                throw new Exception($"Cannot remove negative points");
+            }
+
+            var dbUser = await DbSet
+                .Where(_ => _.Id == whoRemoveUserId)
+                .SingleOrDefaultAsync();
+
+            if (dbUser == null)
+            {
+                throw new Exception($"Could not find single user with id {whoRemoveUserId}");
+            }
+
+            string original = null;
+            original = SerializeEntity(dbUser);
+
+            dbUser.PointsEarned -= pointsToRemove;
+
+            // update the user's achiever status if they've crossed the threshhold
+            var program = await context
+                .Programs
+                .AsNoTracking()
+                .Where(_ => _.Id == dbUser.ProgramId)
+                .SingleOrDefaultAsync();
+
+            if (dbUser.PointsEarned >= program.AchieverPointAmount)
+            {
+                dbUser.IsAchiever = true;
+            }
+            else
+            {
+                dbUser.IsAchiever = false;
+            }
+
+            return await UpdateSaveAsync(currentUserId, dbUser, original);
+        }
         public async Task<IEnumerable<User>> PageAllAsync(int siteId, int skip, int take)
         {
             return await DbSet
