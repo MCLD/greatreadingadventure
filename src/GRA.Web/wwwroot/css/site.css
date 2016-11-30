@@ -49,3 +49,8 @@ p.footer {
     font-style: italic;
     font-size: small;
 }
+
+.label-as-badge {
+    border-radius: 0.7em;
+    font-size: 0.8em;
+}

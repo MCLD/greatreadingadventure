@@ -46,7 +46,14 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
+                    {
+                        <li><a asp-controller="Participants" asp-action="Index">Participants</a></li>
+                    }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditChallenges.ToString()))
+                    {
+                        <li><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                    }
                     <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                 </ul>
             </div>

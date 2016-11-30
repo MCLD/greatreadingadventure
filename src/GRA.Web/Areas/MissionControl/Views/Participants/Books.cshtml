@@ -1,0 +1,138 @@
+﻿@model GRA.Controllers.ViewModel.Participants.BookListViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+@if (Model.CanModifyBooks)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Delete book</h4>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Participants" asp-action="DeleteBook" method="post" role="form" style="display:inline">
+                            <input id="Id" name="Id" type="hidden" />
+                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Books.Count() == 0)
+        {
+            <div class="alert alert-warning">No Books</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered @(Model.CanModifyBooks ? "link-table" : "table-striped")">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Isbn</th>
+                            <th>Url</th>
+                            @if (Model.CanModifyBooks)
+                            {
+                                <th>&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Model.Books)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    @if (Model.CanModifyBooks)
+                                    {
+                                        <a asp-action="BookDetail" asp-route-id="@book.Id" class="rowlink">
+                                            @book.CreatedAt.ToString("d")
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @book.CreatedAt.ToString("d")
+                                    }
+                                </td>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.Isbn</td>
+                                <td>@book.Url</td>
+                                @if (Model.CanModifyBooks)
+                                {
+                                    <td class="on-top">
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@book.Id"
+                                                data-name="@book.Title">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+</div>
+
+
+
+@section scripts
+{
+    <script>
+        @if (Model.CanModifyBooks) {
+        <text>
+        $(document).ready(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to delete the book "' + name + '" ?');
+            modal.find('#Id').val(id);
+        })
+        </text>
+        }
+    </script>
+}

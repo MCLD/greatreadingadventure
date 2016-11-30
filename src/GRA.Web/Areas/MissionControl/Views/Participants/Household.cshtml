@@ -1,0 +1,87 @@
+﻿@model GRA.Controllers.ViewModel.Participants.HouseholdListViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Users.Count() == 0)
+        {
+            <div class="alert alert-warning">Participant is not a member of a household</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th colspan="6">Head of Household</th>
+                        </tr>
+                        <tr>
+                            <td class="td-class">
+                                <a asp-action="Detail" asp-route-id="@Model.Head.Id" class="rowlink">
+                                    @Model.Head.FirstName
+                                </a>
+                            </td>
+                            <td>@Model.Head.LastName</td>
+                            <td>@Model.Head.Username</td>
+                            <td>@Model.Head.Email</td>
+                            <td>@Model.Head.BranchId</td>
+                            <td>@Model.Head.ProgramId</td>
+                        </tr>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>UserName</th>
+                            <th>EmailAddress</th>
+                            <th>Branch</th>
+                            <th>Program</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
+                                        @user.FirstName
+                                    </a>
+                                </td>
+                                <td>@user.LastName</td>
+                                <td>@user.Username</td>
+                                <td>@user.Email</td>
+                                <td>@user.BranchId</td>
+                                <td>@user.ProgramId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+</div>
+
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+    </script>
+}

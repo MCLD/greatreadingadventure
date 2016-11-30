@@ -1,0 +1,86 @@
+﻿@model GRA.Controllers.ViewModel.Participants.ParticipantsDetailViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+<form asp-controller="Participants" method="post" role="form">
+    <input asp-for="User.Id" type="hidden" />
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.FirstName" class="control-label"></label>
+            <input asp-for="User.FirstName" class="form-control" />
+            <span asp-validation-for="User.FirstName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.LastName" class="control-label"></label>
+            <input asp-for="User.LastName" class="form-control" />
+            <span asp-validation-for="User.LastName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.Email" class="control-label"></label>
+            <input asp-for="User.Email" class="form-control" />
+            <span asp-validation-for="User.Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.PhoneNumber" class="control-label"></label>
+            <input asp-for="User.PhoneNumber" class="form-control" />
+            <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.BranchId" class="control-label"></label>
+            <input asp-for="User.BranchId" class="form-control" />
+            <span asp-validation-for="User.BranchId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.ProgramId" class="control-label"></label>
+            <input asp-for="User.ProgramId" class="form-control" />
+            <span asp-validation-for="User.ProgramId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="User.SystemId" class="control-label"></label>
+            <input asp-for="User.SystemId" class="form-control" />
+            <span asp-validation-for="User.SystemId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+        @if (Model.CanEditDetails)
+        {
+            <button type="submit" asp-action="Detail" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                <span class="buttonText">Save Changes</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
+    </div>
+
+</form>
+
+
+
+@section scripts {
+    <script>
+        @if (!Model.CanEditDetails)
+        {
+            <text>$("input").prop('readonly', true);</text>
+        }
+    </script>
+}

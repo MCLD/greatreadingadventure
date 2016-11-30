@@ -1,0 +1,110 @@
+﻿@model GRA.Controllers.ViewModel.Participants.HistoryListViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+@if (Model.CanRemoveHistory)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Delete item</h4>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Participants" asp-action="DeleteHistory" method="post" role="form" style="display:inline">
+                            <input id="Id" name="Id" type="hidden" />
+                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Historys.Count() == 0)
+        {
+            <div class="alert alert-warning">No History</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Activity</th>
+                            <th>Points</th>
+                            @if (Model.CanRemoveHistory)
+                            {
+                                <th>&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var history in Model.Historys)
+                        {
+                            <tr>
+                                <td>@history.CreatedAt.ToString("d")</td>
+                                <td>@history.Description</td>
+                                <td>@history.PointsEarned</td>
+                                @if (Model.CanRemoveHistory)
+                                {
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@history.Id"
+                                                data-name="@history.Description">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+</div>
+
+@section scripts
+{
+    <script>
+        @if (Model.CanRemoveHistory) {
+        <text>
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to Delete the item "' + name + '" ?');
+            modal.find('#Id').val(id);
+        })
+        </text>
+        }
+    </script>
+}
