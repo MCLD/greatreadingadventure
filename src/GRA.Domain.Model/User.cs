@@ -33,5 +33,8 @@ namespace GRA.Domain.Model
         public int ProgramId { get; set; }
         public int AvatarId { get; set; }
         public int? HouseholdHeadUserId { get; set; }
+        public string BranchName { get; set; }
+        public string SystemName { get; set; }
+        public string ProgramName { get; set; }
     }
 }

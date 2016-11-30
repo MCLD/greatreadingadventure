@@ -185,6 +185,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
                 .Where(_ => _.IsDeleted == false
                        && _.SiteId == siteId)
                 .Skip(skip)
@@ -216,6 +219,9 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
                 .Where(_ => _.IsDeleted == false
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .Skip(skip)
@@ -232,5 +238,18 @@ namespace GRA.Data.Repository
                        && _.HouseholdHeadUserId == householdHeadUserId)
                        .CountAsync();
         }
+
+        public override async Task<User> GetByIdAsync(int id)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
+                .Where(_ => _.Id == id)
+                .ProjectTo<User>()
+                .SingleOrDefaultAsync();
+        }
+
     }
 }
