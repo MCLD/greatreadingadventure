@@ -21,5 +21,7 @@ namespace GRA.Data.Model
         public bool AskSchool { get; set; }
         [Required]
         public bool SchoolRequired { get; set; }
+        [Required]
+        public int Position { get; set; }
     }
 }

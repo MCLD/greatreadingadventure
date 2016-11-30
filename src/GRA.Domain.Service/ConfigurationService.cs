@@ -99,7 +99,7 @@ namespace GRA.Domain.Service
             {
                 SiteId = site.Id,
                 AchieverPointAmount = 1000,
-                Name = "Winter Reading Program"
+                Name = "Winter Reading Program",
             };
             program = await _programRepository.AddSaveAsync(-1, program);
 
