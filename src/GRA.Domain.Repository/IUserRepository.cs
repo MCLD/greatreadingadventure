@@ -20,6 +20,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Model.User>>
             PageFamilyAsync(int householdHeadUserId, int skip, int take);
         Task<User> RemovePointsSaveASync(int userId, int whoRemoveUserId, int pointsToRemove);
-        Task SetUserPasswordAsync(int currentUserId, string password);
+        Task SetUserPasswordAsync(int currentUserId, int userId, string password);
     }
 }

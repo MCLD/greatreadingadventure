@@ -108,7 +108,7 @@ namespace GRA.Domain.Service
             adminUser.SiteId = site.Id;
             adminUser.SystemId = system.Id;
             var user = await _userRepository.AddSaveAsync(0, adminUser);
-            await _userRepository.SetUserPasswordAsync(user.Id, password);
+            await _userRepository.SetUserPasswordAsync(user.Id, user.Id, password);
 
             int creatorUserId = user.Id;
 

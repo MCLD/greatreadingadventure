@@ -55,8 +55,24 @@ namespace GRA.Domain.Service
             user.ProgramId = 1;
             user.SiteId = 1;
             var registeredUser = await _userRepository.AddSaveAsync(0, user);
-            await _userRepository.SetUserPasswordAsync(registeredUser.Id, password);
+            await _userRepository.SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
             return registeredUser;
+        }
+
+        public async Task ResetPassword(ClaimsPrincipal user, int userIdToReset, string password)
+        {
+            int userId = GetId(user, ClaimType.UserId);
+            if (userId == userIdToReset
+                || UserHasPermission(user, Permission.EditParticipants))
+            {
+                await _userRepository.SetUserPasswordAsync(userId, userIdToReset, password);
+            }
+            else
+            {
+                logger.LogError($"User {userId} doesn't have permission to reset password for {userIdToReset}.");
+                throw new Exception("Permission denied.");
+            }
+
         }
 
         public async Task<DataWithCount<IEnumerable<User>>>

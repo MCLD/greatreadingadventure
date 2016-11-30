@@ -37,11 +37,12 @@ namespace GRA.Data.Repository
             await context.UserRoles.AddAsync(userRoleAssignment);
         }
 
-        public async Task SetUserPasswordAsync(int userId, string password)
+        public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
+            string original = SerializeEntity(user);
             user.PasswordHash = passwordHasher.HashPassword(password);
-            await SaveAsync();
+            await UpdateSaveAsync(currentUserId, user, original);
         }
         public async Task<User> GetByUsernameAsync(string username)
         {
