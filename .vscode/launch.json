@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/GRA.Web/bin/Debug/netcoreapp1.0/GRA.Web.dll",
+            "program": "${workspaceRoot}/src/GRA.Web/bin/Debug/netcoreapp1.1/GRA.Web.dll",
             "args": [],
             "cwd": "${workspaceRoot}/src/GRA.Web/",
             "stopAtEntry": false,
