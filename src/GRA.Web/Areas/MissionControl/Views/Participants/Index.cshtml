@@ -1,4 +1,4 @@
-﻿@model GRA.Controllers.ViewModel.Participants.ParticipantsListViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsListViewModel
 
 
 @if (Model.CanRemoveParticipant)
@@ -56,8 +56,8 @@
                         <tr>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>UserName</th>
-                            <th>EmailAddress</th>
+                            <th>Username</th>
+                            <th>Email Address</th>
                             <th>Branch</th>
                             <th>Program</th>
                             @if (Model.CanRemoveParticipant)
@@ -95,7 +95,7 @@
                                                 data-toggle="modal"
                                                 data-target="#deleteModal"
                                                 data-id="@user.Id"
-                                                data-name="@user.Username">
+                                                data-name="@(user.Username ?? user.FirstName + " " + user.LastName)">
                                             <span class="fa fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>
@@ -138,7 +138,7 @@
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the user "' + name + '" ?');
+            modal.find('#modal-text').text('Are you sure you wish to delete the participant "' + name + '" ?');
             modal.find('#Id').val(id);
         })
         </text>

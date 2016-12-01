@@ -1,4 +1,4 @@
-﻿@model GRA.Controllers.ViewModel.Participants.BookListViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.BookListViewModel
 
 @Html.Partial("_ParticipantPartial")
 
@@ -41,61 +41,87 @@
         }
         else
         {
-            <div>
-                <table class="table table-condensed table-bordered @(Model.CanModifyBooks ? "link-table" : "table-striped")">
+            @if (Model.CanModifyBooks)
+            {
+                <form asp-controller="Participants" method="post" role="form">
+                    <input asp-for="Id" type="hidden" />
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th width="80">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (int i = 0; i < Model.Books.Count(); i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Model.Books[i].CreatedAt.ToString("d")
+                                        <input asp-for="Books[i].Id" type="hidden" class="form-control" />
+                                        <input asp-for="Books[i].CreatedAt" type="hidden" class="form-control" />
+                                        <input asp-for="Books[i].CreatedBy" type="hidden" class="form-control" />
+                                        <input asp-for="Books[i].Isbn" type="hidden" class="form-control" />
+                                        <input asp-for="Books[i].Url" type="hidden" class="form-control" />
+                                    </td>
+                                    <td class="title">
+                                        <input asp-for="Books[i].Title" class="form-control titleInput" />
+                                        <span asp-validation-for="Books[i].Title" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <input asp-for="Books[i].Author" class="form-control" />
+                                        <span asp-validation-for="Books[i].Author" class="text-danger"></span>
+                                    </td>
+                                    <td>
+                                        <button type="submit"
+                                                asp-action="EditBook"
+                                                asp-route-listId="@i"
+                                                class="btn btn-primary btn-xs editBook">
+                                            <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                style="margin-left:16px;"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@Model.Books[i].Id"
+                                                data-name="@Model.Books[i].Title">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            }
+            else
+            {
+                <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Title</th>
                             <th>Author</th>
-                            <th>Isbn</th>
-                            <th>Url</th>
-                            @if (Model.CanModifyBooks)
-                            {
-                                <th>&nbsp;</th>
-                            }
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var book in Model.Books)
+                        @for (int i = 0; i < Model.Books.Count(); i++)
                         {
                             <tr>
-                                <td class="td-class">
-                                    @if (Model.CanModifyBooks)
-                                    {
-                                        <a asp-action="BookDetail" asp-route-id="@book.Id" class="rowlink">
-                                            @book.CreatedAt.ToString("d")
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        @book.CreatedAt.ToString("d")
-                                    }
-                                </td>
-                                <td>@book.Title</td>
-                                <td>@book.Author</td>
-                                <td>@book.Isbn</td>
-                                <td>@book.Url</td>
-                                @if (Model.CanModifyBooks)
-                                {
-                                    <td class="on-top">
-                                        <button type="button"
-                                                class="btn btn-danger btn-xs"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                data-id="@book.Id"
-                                                data-name="@book.Title">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
-                                        </button>
-                                    </td>
-                                }
+                                <td>@Model.Books[i].CreatedAt.ToString("d")</td>
+                                <td>@Model.Books[i].Title</td>
+                                <td>@Model.Books[i].Author</td>
                             </tr>
                         }
                     </tbody>
                 </table>
-            </div>
+            }
             @if (Model.PaginateModel.MaxPage > 1)
-            {
+                {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
@@ -104,6 +130,7 @@
 
 <div class="form-group">
     <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    <a asp-action="AddBook" asp-route-id="@Model.Id" class="btn btn-primary">Add Book</a>
 </div>
 
 
@@ -113,15 +140,13 @@
     <script>
         @if (Model.CanModifyBooks) {
         <text>
-        $(document).ready(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
-            });
+        $.validator.setDefaults({
+            ignore: ".ignore"
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
-                $(this).children('a.rowlink').height($(this).height() + 11);
-            });
+
+        $('.editBook').on('click', function() {
+            $('.titleInput').addClass('ignore');
+            $(this).parent().siblings('.title').children('input').removeClass('ignore');
         });
 
         $('#deleteModal').on('show.bs.modal', function(event) {
@@ -131,7 +156,7 @@
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the book "' + name + '" ?');
             modal.find('#Id').val(id);
-        })
+        });
         </text>
         }
     </script>

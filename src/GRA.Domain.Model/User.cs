@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -15,11 +16,14 @@ namespace GRA.Domain.Model
         [MaxLength(36)]
         public string Username { get; set; }
 
+        [DisplayName("First Name")]
         [Required]
         [MaxLength(255)]
         public string FirstName { get; set; }
+        [DisplayName("Last Name")]
         [MaxLength(255)]
         public string LastName { get; set; }
+        [DisplayName("Phone Number")]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
         [MaxLength(32)]
@@ -27,9 +31,12 @@ namespace GRA.Domain.Model
         [MaxLength(64)]
         public string CardNumber { get; set; }
         public DateTime? LastAccess { get; set; }
+        [DisplayName("Branch")]
         public int BranchId { get; set; }
+        [DisplayName("System")]
         public int SystemId { get; set; }
         public int PointsEarned { get; set; }
+        [DisplayName("Program")]
         public int ProgramId { get; set; }
         public int AvatarId { get; set; }
         public int? HouseholdHeadUserId { get; set; }

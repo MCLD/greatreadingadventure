@@ -17,6 +17,11 @@
             {
                 <li ActiveBy routeKey="Action" value="Mail"><a asp-action="Mail" asp-route-id="@Model.Id">Mail</a></li>
             }
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditParticipants.ToString())
+                && Model.HasAccount)
+            {
+                <li ActiveBy routeKey="Action" value="PasswordReset"><a asp-action="PasswordReset" asp-route-id="@Model.Id">Password Reset</a></li>
+            }
         </ul>
     </div>
 </div>

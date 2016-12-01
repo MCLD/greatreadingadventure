@@ -1,4 +1,4 @@
-﻿using GRA.Controllers.ViewModel.Challenges;
+﻿using GRA.Controllers.ViewModel.MissionControl.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;

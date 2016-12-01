@@ -21,7 +21,7 @@ namespace GRA.Data.Repository
             return await DbSet
                .AsNoTracking()
                .Where(_ => _.SiteId == siteId)
-               .OrderBy(_ => _.Position)
+               .OrderBy(_ => _.Name)
                .ProjectTo<Program>()
                .ToListAsync();
         }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace GRA.Controllers.ViewModel.Challenges
+namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
     public class ChallengesDetailViewModel
     {

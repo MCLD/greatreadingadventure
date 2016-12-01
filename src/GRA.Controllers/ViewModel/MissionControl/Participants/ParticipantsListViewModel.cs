@@ -1,7 +1,7 @@
 ﻿using GRA.Controllers.ViewModel.Shared;
 using System.Collections.Generic;
 
-namespace GRA.Controllers.ViewModel.Participants
+namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
     public class ParticipantsListViewModel
     {
