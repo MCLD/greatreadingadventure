@@ -20,20 +20,7 @@ namespace GRA.Domain.Service.Abstract
 
         protected int GetId(ClaimsPrincipal user, string claimType)
         {
-            string result = new UserClaimLookup(user).UserClaim(claimType);
-            if(string.IsNullOrEmpty(result))
-            {
-                throw new System.Exception($"Could not find user claim '{claimType}'");
-            }
-            int id;
-            if(int.TryParse(result, out id))
-            {
-                return id;
-            }
-            else
-            {
-                throw new System.Exception($"Could not convert '{claimType}' to a number.");
-            }
+            return new UserClaimLookup(user).GetId(claimType);
         }
     }
 }

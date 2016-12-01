@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,8 +35,12 @@ namespace GRA.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddSession(_ => _.IdleTimeout = System.TimeSpan.FromMinutes(30));
+            services.AddSession(_ =>
+            {
+                _.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddSingleton(_ => Configuration);
+            services.AddMemoryCache();
             services.AddMvc();
 
             services.AddAuthorization(options =>
@@ -46,6 +51,9 @@ namespace GRA.Web
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
                 }
             });
+
+            // path validator
+            services.AddScoped<Controllers.Base.ISitePathValidator, Controllers.Validator.SitePathValidator>();
 
             // service facades
             services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
@@ -125,7 +133,10 @@ namespace GRA.Web
                     name: null,
                     template: "{sitePath}/{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" },
-                    constraints: new { site = new RouteConstraints.SiteRouteConstraint() });
+                    constraints: new
+                    {
+                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                    });
                 routes.MapRoute(
                     name: null,
                     template: "{controller=Home}/{action=Index}/{id?}");

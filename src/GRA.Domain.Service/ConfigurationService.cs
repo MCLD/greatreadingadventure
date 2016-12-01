@@ -51,31 +51,15 @@ namespace GRA.Domain.Service
 
         public async Task<bool> NeedsInitialSetupAsync()
         {
-            var firstSite = await _siteRepository.PageAllAsync(0, 1);
-            return firstSite.Count() == 0;
+            var firstSite = await _siteRepository.GetAllAsync();
+            return firstSite.Count() == 0 || firstSite.First().CreatedBy == -1;
         }
 
         public async Task<Model.User> InitialSetupAsync(Model.User adminUser, string password)
         {
-            var topSites = await _siteRepository.PageAllAsync(0, 1);
+            var allSites = await _siteRepository.GetAllAsync();
 
-            if (topSites.Count() > 0)
-            {
-                throw new Exception("Can't perform initial setup with existing sites: found existing sites in the database.");
-            }
-
-            var site = new Model.Site
-            {
-                Name = "Default site",
-                Path = "default"
-            };
-            // create default site
-            site = await _siteRepository.AddSaveAsync(-1, site);
-
-            if (site == null)
-            {
-                throw new Exception("Unable to add initial default site or multiple sites found.");
-            }
+            var site = allSites.First();
 
             var system = new Model.System
             {

@@ -26,7 +26,7 @@
     @RenderSection("styles", required: false)
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar gra-navbar navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button"
@@ -39,7 +39,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
-                    <span class="fa fa-book"></span> Great Reading Adventure
+                    <grasite property="name"></grasite>
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
@@ -85,16 +85,7 @@
         @RenderBody()
         <hr class="footer">
         <footer>
-            <p class="footer">
-                This site is running the open source
-                <a href="http://www.greatreadingadventure.com/">Great Reading Adventure</a>
-                software developed by the
-                <a href="https://mcldaz.org/">Maricopa County Library District</a>
-                with support by the
-                <a href="http://www.azlibrary.gov/">Arizona State Library, Archives and Public Records</a>,
-                a division of the Secretary of State, and with federal funds from the
-                <a href="http://www.imls.gov/">Institute of Museum and Library Services</a>.
-            </p>
+            <grasite property="footer"></grasite>
         </footer>
     </div>
     <environment names="Development">

@@ -6,6 +6,7 @@ namespace GRA.Domain.Repository
 {
     public interface ISiteRepository : IRepository<Site>
     {
-        Task<IEnumerable<Model.Site>> PageAllAsync(int skip, int take);
+        Task<IEnumerable<Site>> PageAllAsync(int skip, int take);
+        Task<IEnumerable<Site>> GetAllAsync();
     }
 }

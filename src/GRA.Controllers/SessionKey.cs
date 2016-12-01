@@ -2,6 +2,6 @@
 {
     public static class SessionKey
     {
-        public const string User = "U";
+        public const string SiteId = "SiteId";
     }
 }

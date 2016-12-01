@@ -18,7 +18,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Mission Control";
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string sitePath = null)
         {
             if (!CurrentUser.Identity.IsAuthenticated)
             {
@@ -31,7 +31,8 @@ namespace GRA.Controllers.MissionControl
                 // not authorized for Mission Control, redirect to main site
                 return RedirectToRoute(new { area = string.Empty });
             }
-
+            Site site = await GetCurrentSite(sitePath);
+            PageTitle = $"Mission Control: {site.Name}";
             return View();
         }
 

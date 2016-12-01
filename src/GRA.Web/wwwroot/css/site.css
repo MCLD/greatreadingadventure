@@ -1,9 +1,4 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-.link-table {
+﻿.link-table {
     position: relative;
 }
 
@@ -53,4 +48,21 @@ p.footer {
 .label-as-badge {
     border-radius: 0.7em;
     font-size: 0.8em;
+}
+
+.mc-menu-button {
+    color: white;
+}
+
+.mc-alertrow {
+    margin-top: 1em;
+}
+
+.body-content {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.gra-navbar {
+    border-bottom: 1px solid #eee;
 }

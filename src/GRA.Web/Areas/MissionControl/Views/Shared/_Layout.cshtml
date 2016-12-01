@@ -25,7 +25,7 @@
     @RenderSection("styles", required: false)
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button"
@@ -33,15 +33,13 @@
                         data-toggle="collapse"
                         data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="mc-menu-button">Menu</span>
                 </button>
                 <a asp-controller="Home"
                    asp-action="Index"
-                   class="navbar-brand">
+                   class="navbar-brand mc-navbar-brand">
                     <span class="fa fa-space-shuttle"></span>
-                    Mission Control
+                    Mission Control: <grasite property="name"></grasite>
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
@@ -62,13 +60,13 @@
     <div class="container body-content">
         <div class="row">
             <div class="col-xs-12">
-                <h1>@ViewData[GRA.Controllers.ViewDataKey.Title]</h1>
+                <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
             </div>
         </div>
 
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
                 </div>
@@ -76,7 +74,7 @@
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
                 </div>
@@ -84,7 +82,7 @@
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
                 </div>
@@ -92,7 +90,7 @@
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
                 </div>
@@ -101,16 +99,7 @@
         @RenderBody()
         <hr class="footer">
         <footer>
-            <p class="footer">
-                This site is running the open source
-                <a href="http://www.greatreadingadventure.com/">Great Reading Adventure</a>
-                software developed by the
-                <a href="https://mcldaz.org/">Maricopa County Library District</a>
-                with support by the
-                <a href="http://www.azlibrary.gov/">Arizona State Library, Archives and Public Records</a>,
-                a division of the Secretary of State, and with federal funds from the
-                <a href="http://www.imls.gov/">Institute of Museum and Library Services</a>.
-            </p>
+            <grasite property="footer"></grasite>
         </footer>
     </div>
     <environment names="Development">

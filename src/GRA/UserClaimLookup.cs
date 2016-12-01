@@ -35,6 +35,22 @@ namespace GRA
             }
         }
 
-
+        public int GetId(string claimType)
+        {
+            string result = UserClaim(claimType);
+            if (string.IsNullOrEmpty(result))
+            {
+                throw new Exception($"Could not find user claim '{claimType}'");
+            }
+            int id;
+            if (int.TryParse(result, out id))
+            {
+                return id;
+            }
+            else
+            {
+                throw new Exception($"Could not convert '{claimType}' to a number.");
+            }
+        }
     }
 }

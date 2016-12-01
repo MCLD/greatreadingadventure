@@ -14,7 +14,8 @@ namespace GRA.Data.Model
         public string Name { get; set; }
         [MaxLength(255)]
         public string Domain { get; set; }
-
+        public bool IsDefault { get; set; }
+        public string Footer { get; set; }
         public DateTime? RegistrationOpens { get; set; }
         public DateTime? ProgramStarts { get; set; }
         public DateTime? ProgramEnds { get; set; }

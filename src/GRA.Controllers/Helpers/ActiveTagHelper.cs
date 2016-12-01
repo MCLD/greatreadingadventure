@@ -8,16 +8,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA.Web.Helper
+namespace GRA.Controllers.Helper
 {
     [HtmlTargetElement(Attributes = "ActiveBy, routeKey, value")]
     public class ActiveTagHelper : TagHelper
     {
-        private IUrlHelperFactory urlHelperFactory;
+        private IUrlHelperFactory _urlHelperFactory;
 
-        public ActiveTagHelper(IUrlHelperFactory factory)
+        public ActiveTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            urlHelperFactory = factory;
+            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
         }
 
         [ViewContext]
@@ -32,7 +32,7 @@ namespace GRA.Web.Helper
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            IUrlHelper url = urlHelperFactory.GetUrlHelper(ViewContextData);
+            IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
             var routeData = url.ActionContext.RouteData.Values;
             string routeValue = routeData[routeKey] as string ?? url.ActionContext.HttpContext.Request.Query[routeKey].ToString();
             

@@ -7,16 +7,21 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using GRA.Domain.Service;
+using GRA.Controllers.Helpers;
 
 namespace GRA.Controllers.Base
 {
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
-        protected readonly IConfigurationRoot config;
+        protected readonly IConfigurationRoot _config;
+        protected readonly SiteService _siteService;
         protected string PageTitle { get; set; }
         public Controller(ServiceFacade.Controller context)
         {
-            config = context.config;
+            _config = context.Config;
+            _siteService = context.SiteService;
         }
         public override void OnActionExecuted(ActionExecutedContext context)
         {
@@ -93,7 +98,6 @@ namespace GRA.Controllers.Base
 
         protected async Task LogoutUserAsync()
         {
-            HttpContext.Session.Remove(SessionKey.User);
             await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
         }
 
@@ -111,6 +115,22 @@ namespace GRA.Controllers.Base
         protected string UserClaim(string claimType)
         {
             return new UserClaimLookup(CurrentUser).UserClaim(claimType);
+        }
+
+        protected int GetId(string claimType)
+        {
+            return new UserClaimLookup(CurrentUser).GetId(claimType);
+        }
+
+        protected async Task<int> GetCurrentSiteId(string sitePath)
+        {
+            return await new SiteHelper(_siteService).GetSiteId(HttpContext, sitePath);
+
+        }
+
+        protected async Task<Site> GetCurrentSite(string sitePath)
+        {
+            return await _siteService.GetById(await GetCurrentSiteId(sitePath));
         }
     }
 }

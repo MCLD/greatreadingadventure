@@ -13,16 +13,16 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace GRA.Web.Helper
+namespace GRA.Controllers.Helper
 {
     [HtmlTargetElement("paginate", Attributes = "paginateModel")]
     public class PaginateTagHelper : TagHelper
     {
-        private IUrlHelperFactory urlHelperFactory;
+        private IUrlHelperFactory _urlHelperFactory;
 
-        public PaginateTagHelper(IUrlHelperFactory factory)
+        public PaginateTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            urlHelperFactory = factory;
+            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
         }
 
         [ViewContext]
@@ -34,7 +34,7 @@ namespace GRA.Web.Helper
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            IUrlHelper url = urlHelperFactory.GetUrlHelper(ViewContextData);
+            IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
             TagBuilder ulTag = new TagBuilder("ul");
             ulTag.TagRenderMode = TagRenderMode.Normal;
             ulTag.MergeAttribute("class", "pagination");
