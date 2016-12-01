@@ -1,14 +1,11 @@
 ﻿using GRA.Domain.Model;
 using GRA.Domain.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.Helpers
@@ -41,23 +38,34 @@ namespace GRA.Controllers.Helpers
             int siteId = await new SiteHelper(_siteService)
                 .GetSiteId(ViewContext.HttpContext, sitePath);
             Site site = await _siteService.GetById((int)siteId);
-            TagBuilder result;
-            switch(property)
+            string resultText = string.Empty;
+            TagBuilder resultTag = null;
+            switch(property.ToLower())
             {
                 case "name":
-                    result = new TagBuilder("span");
-                    result.InnerHtml.Append(site.Name);
+                    resultText = site.Name;
+                    break;
+                case "pagetitle":
+                    resultText = site.PageTitle;
                     break;
                 case "footer":
-                    result = new TagBuilder("p");
-                    result.AddCssClass("footer");
-                    result.InnerHtml.AppendHtml(site.Footer);
+                    resultTag = new TagBuilder("p");
+                    resultTag.AddCssClass("footer");
+                    resultTag.InnerHtml.AppendHtml(site.Footer);
                     break;
                 default:
                     throw new NotImplementedException();
             }
 
-            output.Content.SetHtmlContent(result);
+            if(resultTag != null)
+            {
+                output.Content.SetHtmlContent(resultTag);
+            }
+            else
+            {
+                output.Content.SetHtmlContent(resultText);
+            }
+            
         }
     }
 }

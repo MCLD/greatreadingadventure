@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using GRA.Controllers.RouteConstraint;
-using GRA.Domain.Model;
+using GRA.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,10 +22,14 @@ namespace GRA.Web
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            Configuration[ConfigurationKeys.DefaultSiteName] = "The Great Reading Adventure";
+            Configuration[ConfigurationKeys.DefaultPageTitle] = "Great Reading Adventure";
+            Configuration[ConfigurationKeys.DefaultSitePath] = "gra";
+            Configuration[ConfigurationKeys.DefaultFooter] = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>.";
             if (env.IsDevelopment())
             {
-                Configuration["ConnectionStrings:DefaultConnection"] = @"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true";
-                //Configuration["ConnectionStrings:DefaultConnection"] = @"Filename=./gra4.db";
+                Configuration[ConfigurationKeys.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
+                Configuration[ConfigurationKeys.DefaultCSSQLite] = DefaultConnectionString.SQLite;
             }
         }
 

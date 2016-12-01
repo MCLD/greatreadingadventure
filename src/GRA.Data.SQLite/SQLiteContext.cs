@@ -5,9 +5,8 @@ namespace GRA.Data.SQLite
 {
     public class SQLiteContext : Context
     {
-        private const string defaultDevCs = "Filename=./gra4.db";
         public SQLiteContext(IConfigurationRoot config) : base(config) {}
-        internal SQLiteContext() : base(defaultDevCs) { }
+        internal SQLiteContext() : base(DefaultConnectionString.SQLite) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -17,7 +16,7 @@ namespace GRA.Data.SQLite
             }
             else
             {
-                optionsBuilder.UseSqlite(config["ConnectionStrings:DefaultConnection"]);
+                optionsBuilder.UseSqlite(config[ConfigurationKeys.DefaultCSSQLite]);
             }
         }
     }

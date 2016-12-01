@@ -1,8 +1,4 @@
-﻿using GRA.Controllers.Helpers;
-using GRA.Domain.Model;
-using GRA.Domain.Service;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -16,7 +12,6 @@ namespace GRA.Controllers
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
-            PageTitle = "The Great Reading Adventure";
         }
 
         public async Task<IActionResult> Index(string sitePath = null)

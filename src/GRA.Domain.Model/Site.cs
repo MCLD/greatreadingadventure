@@ -11,6 +11,9 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string PageTitle { get; set; }
         [MaxLength(255)]
         public string Domain { get; set; }
         public bool IsDefault { get; set; }

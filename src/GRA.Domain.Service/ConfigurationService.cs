@@ -91,6 +91,7 @@ namespace GRA.Domain.Service
             adminUser.ProgramId = program.Id;
             adminUser.SiteId = site.Id;
             adminUser.SystemId = system.Id;
+            adminUser.CanBeDeleted = false;
             var user = await _userRepository.AddSaveAsync(0, adminUser);
             await _userRepository.SetUserPasswordAsync(user.Id, user.Id, password);
 
@@ -216,7 +217,7 @@ namespace GRA.Domain.Service
             {
                 Body = "Your administrative account has been created successfully!",
                 FromUserId = creatorUserId,
-                Subject = "Welcome to The Great Reading Adventure!"
+                Subject = $"Welcome to {site.Name}"
             });
 
             // add some family users
@@ -238,7 +239,7 @@ namespace GRA.Domain.Service
             {
                 Body = "Your account has been created successfully!",
                 FromUserId = arthur.Id,
-                Subject = "Welcome to The Great Reading Adventure!"
+                Subject = $"Welcome to {site.Name}!"
             });
 
             newUser.FirstName = "Molly";

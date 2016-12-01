@@ -5,9 +5,8 @@ namespace GRA.Data.SqlServer
 {
     public class SqlServerContext : Context
     {
-        private const string defaultDevCs = @"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true";
         public SqlServerContext(IConfigurationRoot config) : base(config) { }
-        internal SqlServerContext() : base(defaultDevCs) { }
+        internal SqlServerContext() : base(DefaultConnectionString.SqlServer) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!string.IsNullOrEmpty(devConnectionString))
@@ -16,7 +15,7 @@ namespace GRA.Data.SqlServer
             }
             else
             {
-                optionsBuilder.UseSqlServer(config["ConnectionStrings:DefaultConnection"]);
+                optionsBuilder.UseSqlServer(config[ConfigurationKeys.DefaultCSSqlServer]);
             }
         }
     }

@@ -50,10 +50,14 @@ namespace GRA.Domain.Service
 
         public async Task<User> RegisterUserAsync(User user, string password)
         {
-            //todo: handle validation (username isn't already in use, etc)
-            user.BranchId = 1;
-            user.ProgramId = 1;
-            user.SiteId = 1;
+            var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("Someone has already chosen that username, please try another.");
+            }
+
+            user.CanBeDeleted = true;
+            user.IsLockedOut = false;
             var registeredUser = await _userRepository.AddSaveAsync(0, user);
             await _userRepository.SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
             return registeredUser;
@@ -160,12 +164,33 @@ namespace GRA.Domain.Service
         {
             int requestedByUserId = GetId(user, ClaimType.UserId);
 
-            if (UserHasPermission(user, Permission.EditParticipants)
-                || requestedByUserId == userToUpdate.Id)
+            if (UserHasPermission(user, Permission.EditParticipants))
             {
+                // admin users can update anything except siteid
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
                 userToUpdate.SiteId = currentEntity.SiteId;
                 return await _userRepository.UpdateSaveAsync(requestedByUserId, userToUpdate);
+            }
+            else if (requestedByUserId == userToUpdate.Id)
+            {
+                // users can only update some of their own fields
+                var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
+                currentEntity.AvatarId = userToUpdate.AvatarId;
+                currentEntity.BranchId = userToUpdate.BranchId;
+                currentEntity.BranchName = null;
+                currentEntity.CanBeDeleted = userToUpdate.CanBeDeleted;
+                currentEntity.CardNumber = userToUpdate.CardNumber;
+                currentEntity.Email = userToUpdate.Email;
+                currentEntity.FirstName = userToUpdate.FirstName;
+                currentEntity.LastName = userToUpdate.LastName;
+                currentEntity.PhoneNumber = userToUpdate.PhoneNumber;
+                currentEntity.PostalCode = userToUpdate.PostalCode;
+                currentEntity.ProgramId = userToUpdate.ProgramId;
+                currentEntity.ProgramName = null;
+                currentEntity.SystemId = userToUpdate.SystemId;
+                currentEntity.SystemName = null;
+                currentEntity.Username = userToUpdate.Username;
+                return await _userRepository.UpdateSaveAsync(requestedByUserId, currentEntity);
             }
             else
             {
@@ -180,6 +205,16 @@ namespace GRA.Domain.Service
 
             if (UserHasPermission(user, Permission.DeleteParticipants))
             {
+                var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
+                if (!userLookup.CanBeDeleted)
+                {
+                    throw new Exception($"User {userIdToRemove} cannot be deleted.");
+                }
+                var familyCount = await _userRepository.GetFamilyCountAsync(userIdToRemove);
+                if (familyCount > 0)
+                {
+                    throw new Exception($"User {userIdToRemove} is the head of a family. Please remove all family members first.");
+                }
                 await _userRepository.RemoveSaveAsync(requestedByUserId, userIdToRemove);
             }
             else

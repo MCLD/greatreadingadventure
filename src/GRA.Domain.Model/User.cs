@@ -11,7 +11,10 @@ namespace GRA.Domain.Model
         [MaxLength(254)]
         public string Email { get; set; }
         public bool IsDeleted { get; set; }
+        public bool CanBeDeleted { get; set; }
         public bool IsLockedOut { get; set; }
+        public DateTime LockedOutAt { get; set; }
+        public string LockedOutFor { get; set; }
         public bool IsAchiever { get; set; }
         [MaxLength(36)]
         public string Username { get; set; }

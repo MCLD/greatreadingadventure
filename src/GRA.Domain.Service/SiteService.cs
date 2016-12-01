@@ -1,5 +1,4 @@
-﻿using System;
-using GRA.Domain.Repository;
+﻿using GRA.Domain.Repository;
 using GRA.Domain.Model;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -7,11 +6,13 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace GRA.Domain.Service
 {
     public class SiteService : Abstract.BaseService<SiteService>
     {
+        private readonly IConfigurationRoot _config;
         private readonly IMemoryCache _memoryCache;
         private readonly IBranchRepository _branchRepository;
         private readonly IProgramRepository _programRepository;
@@ -19,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
 
         public SiteService(ILogger<SiteService> logger,
+            IConfigurationRoot config,
             IMemoryCache memoryCache,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
@@ -26,6 +28,7 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository)
             : base(logger)
         {
+            _config = Require.IsNotNull(config, nameof(config));
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
@@ -38,11 +41,13 @@ namespace GRA.Domain.Service
             var site = new Site
             {
                 IsDefault = true,
-                Name = "Great Reading Adventure",
-                Path = "gra",
-                Footer = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>."
+                Name = _config[ConfigurationKeys.DefaultSiteName],
+                PageTitle = _config[ConfigurationKeys.DefaultPageTitle],
+                Path = _config[ConfigurationKeys.DefaultSitePath],
+                Footer = _config[ConfigurationKeys.DefaultFooter]
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
+            _memoryCache.Remove(CacheKey.SitePaths);
             return new List<Site>
             {
                 site

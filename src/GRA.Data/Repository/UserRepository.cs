@@ -181,19 +181,54 @@ namespace GRA.Data.Repository
 
             return await UpdateSaveAsync(currentUserId, dbUser, original);
         }
-        public async Task<IEnumerable<User>> PageAllAsync(int siteId, int skip, int take)
+        public async Task<IEnumerable<User>> PageAllAsync(int siteId,
+            int skip,
+            int take,
+            SortUsersBy sortBy = SortUsersBy.LastName)
         {
-            return await DbSet
+            var userList = DbSet
                 .AsNoTracking()
                 .Include(_ => _.Branch)
                 .Include(_ => _.Program)
                 .Include(_ => _.System)
                 .Where(_ => _.IsDeleted == false
-                       && _.SiteId == siteId)
-                .Skip(skip)
-                .Take(take)
-                .ProjectTo<User>()
-                .ToListAsync();
+                    && _.SiteId == siteId);
+
+            IQueryable<Model.User> orderedUserList = null;
+            switch (sortBy)
+            {
+                case SortUsersBy.FirstName:
+                    orderedUserList = userList
+                        .OrderBy(_ => _.FirstName)
+                        .ThenBy(_ => _.LastName)
+                        .ThenBy(_ => _.Username);
+                    break;
+                case SortUsersBy.LastName:
+                    orderedUserList = userList
+                        .OrderBy(_ => _.LastName)
+                        .ThenBy(_ => _.FirstName)
+                        .ThenBy(_ => _.Username);
+                    break;
+                case SortUsersBy.RegistrationDate:
+                    orderedUserList = userList
+                        .OrderBy(_ => _.CreatedAt)
+                        .ThenBy(_ => _.LastName)
+                        .ThenBy(_ => _.FirstName)
+                        .ThenBy(_ => _.Username);
+                    break;
+                case SortUsersBy.Username:
+                    orderedUserList = userList
+                        .OrderBy(_ => _.Username)
+                        .ThenBy(_ => _.LastName)
+                        .ThenBy(_ => _.FirstName);
+                    break;
+            }
+
+            return await orderedUserList
+            .Skip(skip)
+            .Take(take)
+            .ProjectTo<User>()
+            .ToListAsync();
         }
 
         public async Task<int> GetCountAsync()

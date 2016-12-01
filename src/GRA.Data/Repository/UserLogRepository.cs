@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +37,7 @@ namespace GRA.Data.Repository
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.ChallengeId)
                         .SingleOrDefault();
-                    userLog.Description = $"Completed the {challenge.Name} challenge.";
+                    userLog.Description = $"Completed challenge: {challenge.Name}";
                 }
                 else
                 {

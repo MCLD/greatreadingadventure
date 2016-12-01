@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using GRA.Domain.Model;
 using System.Security.Claims;
@@ -28,7 +26,7 @@ namespace GRA.Controllers.Base
             base.OnActionExecuted(context);
 
             // sensible default
-            string pageTitle = "Great Reading Adventure";
+            string pageTitle = _config[ConfigurationKeys.DefaultSiteName];
 
             // set page title
             var controller = context.Controller as Controller;

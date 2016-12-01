@@ -15,8 +15,10 @@ namespace GRA.Domain.Repository
         Task<User> GetByUsernameAsync(string username);
         Task<int> GetCountAsync();
         Task<int> GetFamilyCountAsync(int householdHeadUserId);
-        Task<IEnumerable<Model.User>> PageAllAsync(int siteId, int skip, int take);
-
+        Task<IEnumerable<Model.User>> PageAllAsync(int siteId, 
+            int skip, 
+            int take, 
+            SortUsersBy sortBy = SortUsersBy.LastName);
         Task<IEnumerable<Model.User>>
             PageFamilyAsync(int householdHeadUserId, int skip, int take);
         Task<User> RemovePointsSaveASync(int userId, int whoRemoveUserId, int pointsToRemove);
