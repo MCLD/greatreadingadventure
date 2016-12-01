@@ -13,7 +13,6 @@
     "GRA.Data": "1.0.0-*",
     "GRA.Data.SqlServer": "1.0.0-*",
     "GRA.Data.SQLite": "1.0.0-*",
-    "AutoMapper": "5.1.1",
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
@@ -32,12 +31,13 @@
     "BundlerMinifier.Core": "2.2.306",
     "GRA.Security": "1.0.0-*",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
-    "Microsoft.Extensions.Caching.Memory": "1.1.0"
+    "Microsoft.Extensions.Caching.Memory": "1.1.0",
+    "AutoMapper": "5.2.0"
   },
 
   "tools": {
-    "Microsoft.AspNetCore.Razor.Tools": "1.0.0-preview2-final",
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
+    "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview4-final",
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final"
   },
 
   "frameworks": {
