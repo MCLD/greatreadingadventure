@@ -22,7 +22,7 @@ namespace GRA.Controllers.Helpers
 
         [HtmlAttributeName("property")]
         public string property { get; set; }
- 
+
         public SiteTagHelper(IUrlHelperFactory urlHelperFactory,
             SiteService siteService)
         {
@@ -38,34 +38,26 @@ namespace GRA.Controllers.Helpers
             int siteId = await new SiteHelper(_siteService)
                 .GetSiteId(ViewContext.HttpContext, sitePath);
             Site site = await _siteService.GetById((int)siteId);
-            string resultText = string.Empty;
-            TagBuilder resultTag = null;
-            switch(property.ToLower())
+            switch (property.ToLower())
             {
                 case "name":
-                    resultText = site.Name;
+                    output.TagName = "span";
+                    output.Attributes.SetAttribute("class", "gra-sitename");
+                    output.Content.SetHtmlContent(site.Name);
                     break;
                 case "pagetitle":
-                    resultText = site.PageTitle;
+                    output.TagName = "span";
+                    output.Attributes.SetAttribute("class", "gra-pagetitle");
+                    output.Content.SetHtmlContent(site.PageTitle);
                     break;
                 case "footer":
-                    resultTag = new TagBuilder("p");
-                    resultTag.AddCssClass("footer");
-                    resultTag.InnerHtml.AppendHtml(site.Footer);
+                    output.TagName = "p";
+                    output.Attributes.SetAttribute("class", "footer");
+                    output.Content.SetHtmlContent(site.Footer);
                     break;
                 default:
                     throw new NotImplementedException();
             }
-
-            if(resultTag != null)
-            {
-                output.Content.SetHtmlContent(resultTag);
-            }
-            else
-            {
-                output.Content.SetHtmlContent(resultText);
-            }
-            
         }
     }
 }

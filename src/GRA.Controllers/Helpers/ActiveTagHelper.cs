@@ -40,6 +40,7 @@ namespace GRA.Controllers.Helper
             {
                 output.Attributes.Add("class", "active");
             }
+            output.Attributes.Remove(new TagHelperAttribute("ActiveBy"));
         }
     }
 }

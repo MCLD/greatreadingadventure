@@ -30,13 +30,11 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button"
-                        class="navbar-toggle"
+                        class="navbar-toggle gra-menu-button btn-sm"
                         data-toggle="collapse"
                         data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    Menu
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
                     <grasite property="pageTitle"></grasite>
@@ -44,7 +42,17 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index"><span class="fa fa-home"></span></a></li>
+                    <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
+                    }
+                    else
+                    {
+                        <li ActiveBy routeKey="Controller" value="Join"><a asp-controller="Join" asp-action="Index">Join</a></li>
+                        <li ActiveBy routeKey="Controller" value="Signin"><a asp-controller="Signin" asp-action="Index">Sign in</a></li>
+                    }
                 </ul>
             </div>
         </div>

@@ -30,5 +30,11 @@ namespace GRA.Controllers
                 return View();
             }
         }
+
+        public async Task<IActionResult> Signout()
+        {
+            await LogoutUserAsync();
+            return View("Index");
+        }
     }
 }

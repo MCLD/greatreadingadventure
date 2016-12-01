@@ -50,12 +50,16 @@ p.footer {
     font-size: 0.8em;
 }
 
-.mc-menu-button {
-    color: white;
+span.gra-pagetitle {
+    color: black;
 }
 
-.mc-alertrow {
-    margin-top: 1em;
+ul.navbar-nav > li > a {
+    color: black;
+}
+
+ul.navbar-nav li.active {
+    background-color: #eeeeff;
 }
 
 .body-content {
@@ -65,4 +69,20 @@ p.footer {
 
 .gra-navbar {
     border-bottom: 1px solid #eee;
+}
+
+.gra-menu-button {
+    border: 1px solid #ccc;
+}
+
+.mc-navbar-brand span.gra-pagetitle {
+    color: white;
+}
+
+.mc-menu-button {
+    color: white;
+}
+
+.mc-alertrow {
+    margin-top: 1em;
 }

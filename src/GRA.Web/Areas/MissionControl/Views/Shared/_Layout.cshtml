@@ -29,11 +29,11 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button"
-                        class="navbar-toggle"
+                        class="navbar-toggle mc-menu-button btn-sm"
                         data-toggle="collapse"
                         data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="mc-menu-button">Menu</span>
+                    Menu
                 </button>
                 <a asp-controller="Home"
                    asp-action="Index"
@@ -46,11 +46,11 @@
                 <ul class="nav navbar-nav">
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
-                        <li><a asp-controller="Participants" asp-action="Index">Participants</a></li>
+                        <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index">Participants</a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditChallenges.ToString()))
                     {
-                        <li><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                        <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
                     }
                     <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                 </ul>
