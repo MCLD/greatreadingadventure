@@ -1,19 +1,101 @@
-﻿<div class="row">
-    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead"><grasite property="name"></grasite> - join now!</span>
-            </div>
-            <div class="panel-body">
+﻿@model GRA.Controllers.ViewModel.Join.JoinViewModel
 
-            </div>
-            <div class="panel-footer clearfix">
-                <div class="pull-right">
-                    <button class="btn btn-primary btn-lg">
-                        <span class="fa fa-book"></span> Join!
-                    </button>
+<form asp-controller="Join" asp-action="Index" method="post" role="form" novalidate>
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead"><grasite property="name"></grasite> - Join Now!</span>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="Username" class="control-label"></label>
+                            <input asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="Password" class="control-label"></label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="ConfirmPassword" class="control-label"></label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="BranchId" class="control-label"></label>
+                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <p>
+                                Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="PhoneNumber" class="control-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" type="tel" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer clearfix">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <span class="fa fa-book"></span> Join!
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
