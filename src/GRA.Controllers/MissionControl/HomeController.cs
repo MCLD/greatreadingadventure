@@ -3,7 +3,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
@@ -12,10 +11,10 @@ namespace GRA.Controllers.MissionControl
     public class HomeController : Base.Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ConfigurationService _configurationService;
+        private readonly SampleDataService _configurationService;
         private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
-            ConfigurationService configurationService,
+            SampleDataService configurationService,
             UserService userService,
             ServiceFacade.Controller context)
             : base(context)
@@ -59,8 +58,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             string role
-                = await _userService.ActivateAuthorizationCode(CurrentUser, 
-                viewmodel.AuthorizationCode);
+                = await _userService.ActivateAuthorizationCode(viewmodel.AuthorizationCode);
 
             if (!string.IsNullOrEmpty(role))
             {
@@ -77,7 +75,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> LoadSampleData()
         {
-            await _configurationService.InsertSampleData(CurrentUser);
+            await _configurationService.InsertSampleData(GetId(ClaimType.UserId));
             AlertSuccess = "Inserted sample data.";
             return RedirectToAction("Index");
         }

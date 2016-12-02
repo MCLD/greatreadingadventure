@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Domain.Service
 {
-    public class ActivityService : Abstract.BaseService<UserService>
+    public class ActivityService : Abstract.BaseUserService<UserService>
     {
         private readonly IBookRepository _bookRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
 
-        public ActivityService(ILogger<UserService> logger,
+        public ActivityService(ILogger<UserService> logger, 
+            IUserContextProvider userContext,
             IBookRepository bookRepository,
             IPointTranslationRepository pointTranslationRepository,
             IUserRepository userRepository,
-            IUserLogRepository userLogRepository) : base(logger)
+            IUserLogRepository userLogRepository) : base(logger, userContext)
         {
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -28,21 +29,20 @@ namespace GRA.Domain.Service
                 nameof(userLogRepository));
         }
 
-        public async Task<User> LogActivityAsync(ClaimsPrincipal currentUser,
-            int userIdToLog,
+        public async Task<User> LogActivityAsync(int userIdToLog,
             int activityAmountEarned)
         {
             bool goodToLog = false;
             bool loggingAsAdminUser = false;
 
-            int currentUserId = GetId(currentUser, ClaimType.UserId);
+            int currentUserId = await GetClaimId(ClaimType.UserId);
             var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
 
             if (currentUserId == userIdToLog)
             {
                 goodToLog = true;
             }
-            else if (UserHasPermission(currentUser, Permission.LogActivityForAny))
+            else if (await HasPermission(Permission.LogActivityForAny))
             {
                 goodToLog = true;
                 loggingAsAdminUser = true;
@@ -56,7 +56,7 @@ namespace GRA.Domain.Service
             if (!goodToLog)
             {
                 string error = $"User id {currentUserId} cannot log activity for user id {userIdToLog}";
-                logger.LogError(error);
+                _logger.LogError(error);
                 throw new Exception(error);
             }
 
@@ -86,12 +86,11 @@ namespace GRA.Domain.Service
                 .AddPointsSaveAsync(currentUserId, userToLog.Id, pointsEarned, loggingAsAdminUser);
         }
 
-        public async Task<User> RemoveActivityAsync(ClaimsPrincipal user,
-            int userIdToLog,
+        public async Task<User> RemoveActivityAsync(int userIdToLog,
             int userLogIdToRemove)
         {
-            int currentUserId = GetId(user, ClaimType.UserId);
-            if(UserHasPermission(user, Permission.LogActivityForAny))
+            int currentUserId = await GetClaimId(ClaimType.UserId);
+            if(await HasPermission(Permission.LogActivityForAny))
             {
                 var userLog = await _userLogRepository.GetByIdAsync(userLogIdToRemove);
 
@@ -103,53 +102,53 @@ namespace GRA.Domain.Service
             else
             {
                 string error = $"User id {currentUserId} cannot remove activity for user id {userIdToLog}";
-                logger.LogError(error);
+                _logger.LogError(error);
                 throw new Exception(error);
             }
         }
 
-        public async Task AddBook(ClaimsPrincipal user, int userId, Book book)
+        public async Task AddBook(int userId, Book book)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-                || UserHasPermission(user, Permission.LogActivityForAny))
+                || await HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.AddSaveForUserAsync(requestedByUserId, userId, book);
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to add a book for {userId}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to add a book for {userId}.");
                 throw new Exception("Permission denied.");
             }
         }
 
-        public async Task RemoveBook(ClaimsPrincipal user, int userId, int bookId)
+        public async Task RemoveBook(int userId, int bookId)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-                || UserHasPermission(user, Permission.LogActivityForAny))
+                || await HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.RemoveForUserAsync(requestedByUserId, userId, bookId);
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to remove a book for {userId}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to remove a book for {userId}.");
                 throw new Exception("Permission denied.");
             }
 
         }
 
-        public async Task UpdateBook(ClaimsPrincipal user, int userId, Book book)
+        public async Task UpdateBook(int userId, Book book)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-                || UserHasPermission(user, Permission.LogActivityForAny))
+                || await HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.UpdateSaveAsync(requestedByUserId, book);
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to edit a book for {userId}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to edit a book for {userId}.");
                 throw new Exception("Permission denied.");
             }
         }

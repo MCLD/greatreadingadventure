@@ -3,27 +3,28 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using System.Collections.Generic;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Domain.Service
 {
-    public class UserService : Abstract.BaseService<UserService>
+    public class UserService : Abstract.BaseUserService<UserService>
     {
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly ConfigurationService _configurationService;
+        private readonly SampleDataService _configurationService;
         public UserService(ILogger<UserService> logger,
+            IUserContextProvider userContextProvider,
             IAuthorizationCodeRepository authorizationCodeRepository,
             IBookRepository bookRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
-            ConfigurationService configurationService)
-            : base(logger)
+            SampleDataService configurationService)
+            : base(logger, userContextProvider)
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
@@ -70,29 +71,27 @@ namespace GRA.Domain.Service
             return registeredUser;
         }
 
-        public async Task ResetPassword(ClaimsPrincipal user, int userIdToReset, string password)
+        public async Task ResetPassword(int userIdToReset, string password)
         {
-            int userId = GetId(user, ClaimType.UserId);
+            int userId = await GetClaimId(ClaimType.UserId);
             if (userId == userIdToReset
-                || UserHasPermission(user, Permission.EditParticipants))
+                || await HasPermission(Permission.EditParticipants))
             {
                 await _userRepository.SetUserPasswordAsync(userId, userIdToReset, password);
             }
             else
             {
-                logger.LogError($"User {userId} doesn't have permission to reset password for {userIdToReset}.");
+                _logger.LogError($"User {userId} doesn't have permission to reset password for {userIdToReset}.");
                 throw new Exception("Permission denied.");
             }
 
         }
 
         public async Task<DataWithCount<IEnumerable<User>>>
-           GetPaginatedUserListAsync(ClaimsPrincipal user,
-           int skip,
-           int take)
+           GetPaginatedUserListAsync(int skip, int take)
         {
-            int siteId = GetId(user, ClaimType.SiteId);
-            if (UserHasPermission(user, Permission.ViewParticipantList))
+            int siteId = await GetClaimId(ClaimType.SiteId);
+            if (await HasPermission(Permission.ViewParticipantList))
             {
                 var dataTask = _userRepository.PageAllAsync(siteId, skip, take);
                 var countTask = _userRepository.GetCountAsync();
@@ -105,21 +104,21 @@ namespace GRA.Domain.Service
             }
             else
             {
-                int userId = GetId(user, ClaimType.UserId);
-                logger.LogError($"User {userId} doesn't have permission to view all participants.");
+                int userId = await GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to view all participants.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<DataWithCount<IEnumerable<User>>>
-            GetPaginatedFamilyListAsync(ClaimsPrincipal user,
+            GetPaginatedFamilyListAsync(
             int householdHeadUserId,
             int skip,
             int take)
         {
-            int requestingUserId = GetId(user, ClaimType.UserId);
+            int requestingUserId = await GetClaimId(ClaimType.UserId);
             if (requestingUserId == householdHeadUserId
-                || UserHasPermission(user, Permission.ViewParticipantList))
+                || await HasPermission(Permission.ViewParticipantList))
             {
                 var dataTask = _userRepository.PageFamilyAsync(householdHeadUserId, skip, take);
                 var countTask = _userRepository.GetFamilyCountAsync(householdHeadUserId);
@@ -132,46 +131,46 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestingUserId} doesn't have permission to view household participants.");
+                _logger.LogError($"User {requestingUserId} doesn't have permission to view household participants.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<int>
-            FamilyMemberCountAsync(ClaimsPrincipal user, int householdHeadUserId)
+            FamilyMemberCountAsync(int householdHeadUserId)
         {
-            int requestingUserId = GetId(user, ClaimType.UserId);
+            int requestingUserId = await GetClaimId(ClaimType.UserId);
             if (requestingUserId == householdHeadUserId
-                || UserHasPermission(user, Permission.ViewParticipantList))
+                || await HasPermission(Permission.ViewParticipantList))
             {
                 return await _userRepository.GetFamilyCountAsync(householdHeadUserId);
             }
             else
             {
-                logger.LogError($"User {requestingUserId} doesn't have permission to get a count of household participants.");
+                _logger.LogError($"User {requestingUserId} doesn't have permission to get a count of household participants.");
                 throw new Exception("Permission denied.");
             }
         }
 
-        public async Task<User> GetDetails(ClaimsPrincipal user, int userId)
+        public async Task<User> GetDetails(int userId)
         {
-            if (UserHasPermission(user, Permission.ViewParticipantDetails))
+            if (await HasPermission(Permission.ViewParticipantDetails))
             {
                 return await _userRepository.GetByIdAsync(userId);
             }
             else
             {
-                int requestedByUserId = GetId(user, ClaimType.UserId);
-                logger.LogError($"User {requestedByUserId} doesn't have permission to view participant details.");
+                int requestedByUserId = await GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to view participant details.");
                 throw new Exception("Permission denied.");
             }
         }
 
-        public async Task<User> Update(ClaimsPrincipal user, User userToUpdate)
+        public async Task<User> Update(User userToUpdate)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
 
-            if (UserHasPermission(user, Permission.EditParticipants))
+            if (await HasPermission(Permission.EditParticipants))
             {
                 // admin users can update anything except siteid
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
@@ -201,16 +200,16 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
                 throw new Exception("Permission denied.");
             }
         }
 
-        public async Task Remove(ClaimsPrincipal user, int userIdToRemove)
+        public async Task Remove(int userIdToRemove)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
 
-            if (UserHasPermission(user, Permission.DeleteParticipants))
+            if (await HasPermission(Permission.DeleteParticipants))
             {
                 var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
                 if (!userLookup.CanBeDeleted)
@@ -226,20 +225,19 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<DataWithCount<IEnumerable<UserLog>>>
-            GetPaginatedUserHistoryAsync(ClaimsPrincipal user,
-            int userId,
+            GetPaginatedUserHistoryAsync(int userId,
             int skip,
             int take)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-               || UserHasPermission(user, Permission.ViewParticipantDetails))
+               || await HasPermission(Permission.ViewParticipantDetails))
             {
                 var dataTask = _userLogRepository.PageHistoryAsync(userId, skip, take);
                 var countTask = _userLogRepository.GetHistoryItemCountAsync(userId);
@@ -252,17 +250,17 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<DataWithCount<IEnumerable<Book>>>
-            GetPaginatedUserBookListAsync(ClaimsPrincipal user, int userId, int skip, int take)
+            GetPaginatedUserBookListAsync(int userId, int skip, int take)
         {
-            int requestedByUserId = GetId(user, ClaimType.UserId);
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-               || UserHasPermission(user, Permission.ViewParticipantDetails))
+               || await HasPermission(Permission.ViewParticipantDetails))
             {
                 var dataTask = _bookRepository.GetForUserAsync(userId);
                 var countTask = _bookRepository.GetCountForUserAsync(userId);
@@ -275,15 +273,15 @@ namespace GRA.Domain.Service
             }
             else
             {
-                logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<string>
-            ActivateAuthorizationCode(ClaimsPrincipal user, string authorizationCode)
+            ActivateAuthorizationCode(string authorizationCode)
         {
-            int siteId = GetId(user, ClaimType.SiteId);
+            int siteId = await GetClaimId(ClaimType.SiteId);
             var authCode 
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode);
 
@@ -291,7 +289,7 @@ namespace GRA.Domain.Service
             {
                 return null;
             }
-            int userId = GetId(user, ClaimType.UserId);
+            int userId = await GetClaimId(ClaimType.UserId);
             await _userRepository.AddRoleAsync(userId, userId, authCode.RoleId);
             if (authCode.IsSingleUse)
             {

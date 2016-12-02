@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 
 namespace GRA.Controllers.ServiceFacade
@@ -7,16 +8,20 @@ namespace GRA.Controllers.ServiceFacade
     {
         public readonly AutoMapper.IMapper Mapper;
         public readonly IConfigurationRoot Config;
-        public readonly SiteService SiteService;
+        public readonly IUserContextProvider UserContextProvider;
+        public readonly SiteLookupService SiteLookupService;
 
         public Controller(
             AutoMapper.IMapper mapper,
             IConfigurationRoot config,
-            SiteService siteService)
+            IUserContextProvider userContextProvider,
+            SiteLookupService siteLookupService)
         {
             Mapper = Require.IsNotNull(mapper, nameof(mapper));
             Config = Require.IsNotNull(config, nameof(config));
-            SiteService = Require.IsNotNull(siteService, nameof(siteService));
+            UserContextProvider = Require.IsNotNull(userContextProvider, 
+                nameof(userContextProvider));
+            SiteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }
     }
 }

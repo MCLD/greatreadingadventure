@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using GRA.Controllers.RouteConstraint;
-using GRA.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace GRA.Web
 {
@@ -44,7 +44,8 @@ namespace GRA.Web
             {
                 _.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-            services.AddSingleton(_ => Configuration);
+            services.TryAddSingleton(_ => Configuration);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCache();
             services.AddMvc();
 
@@ -69,13 +70,16 @@ namespace GRA.Web
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
 
             // utilities
+            services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
 
             // services
             services.AddScoped<Domain.Service.ActivityService, Domain.Service.ActivityService>();
             services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
-            services.AddScoped<Domain.Service.ConfigurationService, Domain.Service.ConfigurationService>();
+            services.AddScoped<Domain.Service.InitialSetupService, Domain.Service.InitialSetupService>();
             services.AddScoped<Domain.Service.MailService, Domain.Service.MailService>();
+            services.AddScoped<Domain.Service.SampleDataService, Domain.Service.SampleDataService>();
+            services.AddScoped<Domain.Service.SiteLookupService, Domain.Service.SiteLookupService>();
             services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
             services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
 

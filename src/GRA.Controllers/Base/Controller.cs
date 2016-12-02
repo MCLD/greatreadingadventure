@@ -7,19 +7,21 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using GRA.Domain.Service;
-using GRA.Controllers.Helpers;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Controllers.Base
 {
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot _config;
-        protected readonly SiteService _siteService;
+        protected readonly IUserContextProvider _userContextProvider;
+        protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         public Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
-            _siteService = context.SiteService;
+            _userContextProvider = context.UserContextProvider;
+            _siteLookupService = context.SiteLookupService;
         }
         public override void OnActionExecuted(ActionExecutedContext context)
         {
@@ -122,13 +124,13 @@ namespace GRA.Controllers.Base
 
         protected async Task<int> GetCurrentSiteId(string sitePath)
         {
-            return await new SiteHelper(_siteService).GetSiteId(HttpContext, sitePath);
-
+            var context = await _userContextProvider.GetContext();
+            return context.SiteId;
         }
 
         protected async Task<Site> GetCurrentSite(string sitePath)
         {
-            return await _siteService.GetById(await GetCurrentSiteId(sitePath));
+            return await _siteLookupService.GetById(await GetCurrentSiteId(sitePath));
         }
     }
 }

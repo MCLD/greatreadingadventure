@@ -3,9 +3,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers
@@ -25,11 +23,12 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string Search, int page = 1, string sitePath = null)
         {
+            HttpContext.Items["sitePath"] = sitePath;
             int siteId = await GetCurrentSiteId(sitePath);
             int take = 15;
             int skip = take * (page - 1);
 
-            var challengeList = await _challengeService.GetPaginatedChallengeListAsync(siteId, skip, take);
+            var challengeList = await _challengeService.GetPaginatedChallengeListAsync(skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -71,7 +70,9 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id, string sitePath = null)
         {
-            var challenge = await _challengeService.GetChallengeDetailsAsync(CurrentUser, id);
+            HttpContext.Items["sitePath"] = sitePath;
+
+            var challenge = await _challengeService.GetChallengeDetailsAsync(id);
 
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {

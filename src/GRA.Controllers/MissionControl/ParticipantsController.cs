@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,18 +18,21 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<ParticipantsController> _logger;
         private readonly ActivityService _activityService;
         private readonly MailService _mailService;
+        private readonly SiteService _siteService;
         private readonly UserService _userService;
         public ParticipantsController(ILogger<ParticipantsController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
             MailService mailService,
+            SiteService siteService,
             UserService userService)
             : base(context)
         {
-            this._logger = Require.IsNotNull(logger, nameof(logger));
-            this._activityService = Require.IsNotNull(activityService, nameof(activityService));
-            this._mailService = Require.IsNotNull(mailService, nameof(mailService));
-            this._userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Participants";
         }
 
@@ -42,7 +43,7 @@ namespace GRA.Controllers.MissionControl
             int skip = take * (page - 1);
 
             var participantsList = await _userService
-                .GetPaginatedUserListAsync(CurrentUser, skip, take);
+                .GetPaginatedUserListAsync(skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -75,7 +76,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _userService.Remove(CurrentUser, id);
+            await _userService.Remove(id);
             AlertSuccess = "Participant deleted";
             return RedirectToAction("Index");
         }
@@ -85,19 +86,18 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Detail(int id)
         {
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
-
-            var branchList = _siteService.GetBranches(CurrentUser, user.SystemId);
-            var programList = _siteService.GetProgramList(CurrentUser);
-            var systemList = _siteService.GetSystemList(CurrentUser);
+            var branchList = _siteService.GetBranches(user.SystemId);
+            var programList = _siteService.GetProgramList(user.SiteId);
+            var systemList = _siteService.GetSystemList(user.SiteId);
             await Task.WhenAll(branchList, programList, systemList);
 
             ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
             {
                 User = user,
                 Id = user.Id,
-                HouseholdCount = await _userService.FamilyMemberCountAsync(CurrentUser, user.HouseholdHeadUserId ?? id),
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 CanEditDetails = UserHasPermission(Permission.EditParticipants),
@@ -114,7 +114,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                await _userService.Update(CurrentUser, model.User);
+                await _userService.Update(model.User);
                 AlertSuccess = "Participant infomation updated";
                 return RedirectToAction("Detail", new { id = model.User.Id });
             }
@@ -133,7 +133,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
 
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
             User headOfHousehold = new User();
@@ -141,7 +141,7 @@ namespace GRA.Controllers.MissionControl
             if (user.HouseholdHeadUserId.HasValue)
             {
                 headOfHousehold = await _userService
-                    .GetDetails(CurrentUser, user.HouseholdHeadUserId.Value);
+                    .GetDetails(user.HouseholdHeadUserId.Value);
             }
             else
             {
@@ -149,7 +149,7 @@ namespace GRA.Controllers.MissionControl
             }
 
             var household = await _userService
-                .GetPaginatedFamilyListAsync(CurrentUser, headOfHousehold.Id, skip, take);
+                .GetPaginatedFamilyListAsync(headOfHousehold.Id, skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -188,7 +188,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
 
-            var books = await _userService.GetPaginatedUserBookListAsync(CurrentUser, id, skip, take);
+            var books = await _userService.GetPaginatedUserBookListAsync(id, skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -205,7 +205,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
             BookListViewModel viewModel = new BookListViewModel()
@@ -214,7 +214,7 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 Id = id,
                 HouseholdCount = await _userService
-                .FamilyMemberCountAsync(CurrentUser, user.HouseholdHeadUserId ?? id),
+                .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 CanModifyBooks = UserHasPermission(Permission.LogActivityForAny)
@@ -235,7 +235,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
-                await _activityService.UpdateBook(CurrentUser, model.Id, model.Books[listId]);
+                await _activityService.UpdateBook(model.Id, model.Books[listId]);
                 AlertSuccess = $"'{model.Books[listId].Title}' updated";
             }
             else
@@ -248,7 +248,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> AddBook(int id)
         {
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user, addBook: true);
 
             BookAddViewModel viewModel = new BookAddViewModel()
@@ -265,13 +265,13 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                await _activityService.AddBook(CurrentUser, model.Id, model.Book);
+                await _activityService.AddBook(model.Id, model.Book);
                 AlertSuccess = $"Added book '{model.Book.Title}'";
                 return RedirectToAction("Books", new { id = model.Id });
             }
             else
             {
-                var user = await _userService.GetDetails(CurrentUser, model.Id);
+                var user = await _userService.GetDetails(model.Id);
                 SetPageTitle(user, addBook: true);
 
                 return View(model);
@@ -282,7 +282,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteBook(int id, int userId)
         {
-            await _activityService.RemoveBook(CurrentUser, userId, id);
+            await _activityService.RemoveBook(userId, id);
             AlertSuccess = "Book deleted";
             return RedirectToAction("Books", new { id = userId });
         }
@@ -295,7 +295,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
             var history = await _userService
-                .GetPaginatedUserHistoryAsync(CurrentUser, id, skip, take);
+                .GetPaginatedUserHistoryAsync(id, skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -312,7 +312,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
             HistoryListViewModel viewModel = new HistoryListViewModel()
@@ -320,7 +320,7 @@ namespace GRA.Controllers.MissionControl
                 Historys = history.Data,
                 PaginateModel = paginateModel,
                 Id = id,
-                HouseholdCount = await _userService.FamilyMemberCountAsync(CurrentUser, user.HouseholdHeadUserId ?? id),
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny)
@@ -332,7 +332,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> DeleteHistory(int id, int userId)
         {
-            await _activityService.RemoveActivityAsync(CurrentUser, userId, id);
+            await _activityService.RemoveActivityAsync(userId, id);
             return RedirectToAction("History", new { id = userId });
         }
         #endregion
@@ -344,7 +344,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
 
-            var mail = await _mailService.GetUserPaginatedAsync(CurrentUser, id, skip, take);
+            var mail = await _mailService.GetUserPaginatedAsync(id, skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -361,7 +361,7 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
             MailListViewModel viewModel = new MailListViewModel()
@@ -369,7 +369,7 @@ namespace GRA.Controllers.MissionControl
                 Mails = mail.Data,
                 PaginateModel = paginateModel,
                 Id = id,
-                HouseholdCount = await _userService.FamilyMemberCountAsync(CurrentUser, user.HouseholdHeadUserId ?? id),
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail)
@@ -380,10 +380,10 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<IActionResult> MailDetail(int id)
         {
-            var mail = await _mailService.GetDetails(CurrentUser, id);
+            var mail = await _mailService.GetDetails(id);
             var userId = mail.ToUserId ?? mail.FromUserId;
 
-            var user = await _userService.GetDetails(CurrentUser, userId);
+            var user = await _userService.GetDetails(userId);
             SetPageTitle(user, mailTo: mail.ToUserId.HasValue);
 
             MailDetailViewModel viewModel = new MailDetailViewModel
@@ -400,7 +400,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteMail(int id, int userId)
         {
-            await _mailService.RemoveAsync(CurrentUser, id);
+            await _mailService.RemoveAsync(id);
             AlertSuccess = "Mail deleted";
             return RedirectToAction("Mail", new { id = userId });
         }
@@ -410,14 +410,14 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> PasswordReset(int id)
         {
-            var user = await _userService.GetDetails(CurrentUser, id);
+            var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
             PasswordResetViewModel viewModel = new PasswordResetViewModel()
             {
                 Id = id,
                 HouseholdCount = await _userService
-                .FamilyMemberCountAsync(CurrentUser, user.HouseholdHeadUserId ?? id),
+                .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
@@ -431,13 +431,13 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                await _userService.ResetPassword(CurrentUser, model.Id, model.NewPassword);
+                await _userService.ResetPassword(model.Id, model.NewPassword);
                 AlertSuccess = "Password reset";
                 return RedirectToAction("PasswordReset", new { id = model.Id });
             }
             else
             {
-                var user = await _userService.GetDetails(CurrentUser, model.Id);
+                var user = await _userService.GetDetails(model.Id);
                 SetPageTitle(user);
 
                 return View(model);

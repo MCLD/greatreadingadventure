@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using GRA.Controllers.ServiceFacade;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using GRA.Controllers.ViewModel.Join;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GRA.Domain.Service;
 using GRA.Domain.Model;
-using AutoMapper;
 
 namespace GRA.Controllers
 {
@@ -18,23 +14,28 @@ namespace GRA.Controllers
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly UserService _userService;
+        private readonly SiteService _siteService;
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
-            UserService userService)
+            UserService userService,
+            SiteService siteService)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _mapper = context.Mapper;
             _userService = Require.IsNotNull(userService, nameof(userService));
+            _siteService = Require.IsNotNull(siteService, nameof(siteService));
             PageTitle = "Join";
         }
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
+            HttpContext.Items["sitePath"] = sitePath;
+
             var site = await GetCurrentSite(sitePath);
             PageTitle = $"{site.Name} - Join Now!";
 
-            var branchList = await _siteService.GetBranches(CurrentUser, site.Id);
+            var branchList = await _siteService.GetBranches(1);
 
             JoinViewModel viewModel = new JoinViewModel()
             {
@@ -47,6 +48,8 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(JoinViewModel model, string sitePath = null)
         {
+            HttpContext.Items["sitePath"] = sitePath;
+
             var site = await GetCurrentSite(sitePath);
 
             if (ModelState.IsValid)
@@ -67,7 +70,7 @@ namespace GRA.Controllers
             {
                 PageTitle = $"{site.Name} - Join Now!";
 
-                var branchList = await _siteService.GetBranches(CurrentUser, site.Id);
+                var branchList = await _siteService.GetBranches(1);
                 model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
 
                 return View(model);

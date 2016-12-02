@@ -1,7 +1,4 @@
 ﻿using GRA.Domain.Service;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,15 +6,15 @@ namespace GRA.Controllers.Validator
 {
     public class SitePathValidator : Base.ISitePathValidator
     {
-        private readonly SiteService _siteService;
+        private readonly SiteLookupService _siteLookupService;
 
-        public SitePathValidator(SiteService siteService)
+        public SitePathValidator(SiteLookupService siteLookupService)
         {
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }
         public bool IsValid(string sitePath)
         {
-            var validSitePathLookup = _siteService.GetSitePaths();
+            var validSitePathLookup = _siteLookupService.GetSitePaths();
             Task.WaitAll(validSitePathLookup);
             return validSitePathLookup.Result.Any(s => s == sitePath.ToLower());
         }

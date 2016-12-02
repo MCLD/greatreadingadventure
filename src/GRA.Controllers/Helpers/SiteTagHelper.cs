@@ -1,5 +1,6 @@
 ﻿using GRA.Domain.Model;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -13,8 +14,9 @@ namespace GRA.Controllers.Helpers
     [HtmlTargetElement("grasite", Attributes = "property")]
     public class SiteTagHelper : TagHelper
     {
-        private readonly SiteService _siteService;
+        private readonly SiteLookupService _siteLookupService;
         private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IUserContextProvider _userContextProvider;
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -24,10 +26,13 @@ namespace GRA.Controllers.Helpers
         public string property { get; set; }
 
         public SiteTagHelper(IUrlHelperFactory urlHelperFactory,
-            SiteService siteService)
+            IUserContextProvider userContextProvider,
+            SiteLookupService siteLookupService)
         {
             _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
-            _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _userContextProvider = Require.IsNotNull(userContextProvider,
+                nameof(userContextProvider));
+            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }
 
         public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -35,9 +40,9 @@ namespace GRA.Controllers.Helpers
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
             var routeData = url.ActionContext.RouteData.Values;
             string sitePath = routeData["sitePath"] as string;
-            int siteId = await new SiteHelper(_siteService)
-                .GetSiteId(ViewContext.HttpContext, sitePath);
-            Site site = await _siteService.GetById((int)siteId);
+            var userContext = await _userContextProvider.GetContext();
+            int siteId = userContext.SiteId;
+            Site site = await _siteLookupService.GetById((int)siteId);
             switch (property.ToLower())
             {
                 case "name":
