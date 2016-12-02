@@ -23,12 +23,13 @@ namespace GRA.Controllers
             PageTitle = "Sign In";
         }
 
-        public async Task<IActionResult> Index(string sitePath = null)
+        public async Task<IActionResult> Index(string sitePath = null, string ReturnUrl = null)
         {
             var site = await GetCurrentSite(sitePath);
             PageTitle = $"Sign In to {site.Name}";
 
             SignInViewModel viewModel = new SignInViewModel();
+            viewModel.ReturnUrl = ReturnUrl;
             return View(viewModel);
         }
 
@@ -41,7 +42,14 @@ namespace GRA.Controllers
                 if (loginAttempt.PasswordIsValid)
                 {
                     await LoginUserAsync(loginAttempt);
-                    return RedirectToAction("Index", "Home");
+                    if (!string.IsNullOrEmpty(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 model.ErrorMessage = "The username and password entered do not match";
             }

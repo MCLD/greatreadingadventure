@@ -11,14 +11,20 @@
         else
         {
             <div>
-                <table class="table table-condensed table-bordered link-table">
+                <table class="table table-condensed table-bordered link-table table-striped">
                     <thead>
                         <tr>
-                            <th colspan="6">Head of Household</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>UserName</th>
+                            <th>EmailAddress</th>
+                            <th>Branch</th>
+                            <th>Program</th>
                         </tr>
-                        <tr>
+                        <tr class="warning">
                             <td class="td-class">
                                 <a asp-action="Detail" asp-route-id="@Model.Head.Id" class="rowlink">
+                                    <span class="fa fa-user"></span>
                                     @Model.Head.FirstName
                                 </a>
                             </td>
@@ -27,14 +33,6 @@
                             <td>@Model.Head.Email</td>
                             <td>@Model.Head.BranchName</td>
                             <td>@Model.Head.ProgramName</td>
-                        </tr>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>UserName</th>
-                            <th>EmailAddress</th>
-                            <th>Branch</th>
-                            <th>Program</th>
                         </tr>
                     </thead>
                     <tbody>

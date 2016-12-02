@@ -63,6 +63,7 @@ namespace GRA.Data
         }
 
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
+        public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }

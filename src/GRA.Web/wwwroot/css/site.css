@@ -50,7 +50,7 @@ p.footer {
     font-size: 0.8em;
 }
 
-span.gra-pagetitle {
+.gra-navbar-brand > span.gra-pagetitle {
     color: black;
 }
 
@@ -73,10 +73,6 @@ ul.navbar-nav li.active {
 
 .gra-menu-button {
     border: 1px solid #ccc;
-}
-
-.mc-navbar-brand span.gra-pagetitle {
-    color: white;
 }
 
 .mc-menu-button {

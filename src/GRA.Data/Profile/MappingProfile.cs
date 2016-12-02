@@ -4,6 +4,7 @@
     {
         public MappingProfile()
         {
+            CreateMap<Model.AuthorizationCode, Domain.Model.AuthorizationCode>().ReverseMap();
             CreateMap<Model.Book, Domain.Model.Book>().ReverseMap();
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
             CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();

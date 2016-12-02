@@ -72,7 +72,8 @@ namespace GRA.Domain.Service
                 ActivityEarned = activityAmountEarned,
                 IsDeleted = false,
                 PointsEarned = pointsEarned,
-                UserId = userToLog.Id
+                UserId = userToLog.Id,
+                PointTranslationId = translation.Id
             };
             if (currentUserId != userToLog.Id)
             {

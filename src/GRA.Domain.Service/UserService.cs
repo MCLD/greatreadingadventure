@@ -10,21 +10,28 @@ namespace GRA.Domain.Service
 {
     public class UserService : Abstract.BaseService<UserService>
     {
+        private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly ConfigurationService _configurationService;
         public UserService(ILogger<UserService> logger,
+            IAuthorizationCodeRepository authorizationCodeRepository,
             IBookRepository bookRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            ConfigurationService configurationService)
             : base(logger)
         {
+            _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
+                nameof(authorizationCodeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
+            _configurationService = Require.IsNotNull(configurationService, nameof(configurationService));
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
@@ -271,6 +278,32 @@ namespace GRA.Domain.Service
                 logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
                 throw new Exception("Permission denied.");
             }
+        }
+
+        public async Task<string>
+            ActivateAuthorizationCode(ClaimsPrincipal user, string authorizationCode)
+        {
+            int siteId = GetId(user, ClaimType.SiteId);
+            var authCode 
+                = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode);
+
+            if (authCode == null)
+            {
+                return null;
+            }
+            int userId = GetId(user, ClaimType.UserId);
+            await _userRepository.AddRoleAsync(userId, userId, authCode.RoleId);
+            if (authCode.IsSingleUse)
+            {
+                await _authorizationCodeRepository.RemoveSaveAsync(userId, authCode.Id);
+            }
+            else
+            {
+                authCode.Uses++;
+                await _authorizationCodeRepository.UpdateSaveAsync(userId, authCode);
+            }
+
+            return authCode.RoleName;
         }
     }
 }

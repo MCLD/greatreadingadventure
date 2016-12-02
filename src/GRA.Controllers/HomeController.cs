@@ -33,8 +33,11 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Signout()
         {
-            await LogoutUserAsync();
-            return View("Index");
+            if (CurrentUser.Identity.IsAuthenticated)
+            {
+                await LogoutUserAsync();
+            }
+            return RedirectToRoute(new { action = "Index" });
         }
     }
 }

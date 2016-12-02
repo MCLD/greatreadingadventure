@@ -22,14 +22,15 @@ namespace GRA.Web
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-            Configuration[ConfigurationKeys.DefaultSiteName] = "The Great Reading Adventure";
-            Configuration[ConfigurationKeys.DefaultPageTitle] = "Great Reading Adventure";
-            Configuration[ConfigurationKeys.DefaultSitePath] = "gra";
-            Configuration[ConfigurationKeys.DefaultFooter] = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>.";
+            Configuration[ConfigurationKey.DefaultSiteName] = "The Great Reading Adventure";
+            Configuration[ConfigurationKey.DefaultPageTitle] = "Great Reading Adventure";
+            Configuration[ConfigurationKey.DefaultSitePath] = "gra";
+            Configuration[ConfigurationKey.DefaultFooter] = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>.";
+            Configuration[ConfigurationKey.InitialAuthorizationCode] = "gra4adminmagic";
             if (env.IsDevelopment())
             {
-                Configuration[ConfigurationKeys.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
-                Configuration[ConfigurationKeys.DefaultCSSQLite] = DefaultConnectionString.SQLite;
+                Configuration[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
+                Configuration[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
             }
         }
 
@@ -79,6 +80,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
 
             // repositories
+            services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
@@ -122,7 +124,7 @@ namespace GRA.Web
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationScheme = Controllers.Authentication.SchemeGRACookie,
-                LoginPath = new PathString("/MissionControl/Login/"),
+                LoginPath = new PathString("/SignIn/"),
                 AccessDeniedPath = new PathString("/"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true

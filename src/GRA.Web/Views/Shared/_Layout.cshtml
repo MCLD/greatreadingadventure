@@ -25,6 +25,11 @@
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" />
     </environment>
     @RenderSection("styles", required: false)
+    <style>
+        div.tooltip-inner {
+            width: 11rem;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar gra-navbar navbar-static-top">
@@ -37,12 +42,16 @@
                     <span class="sr-only">Toggle navigation</span>
                     Menu
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand gra-navbar-brand">
                     <grasite property="pageTitle"></grasite>
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.AccessMissionControl.ToString()))
+                    {
+                        <li><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="gra-mclink"><span class="fa fa-rocket"></span></a></li>
+                    }
                     <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index"><span class="fa fa-home"></span></a></li>
                     <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
                     @if (User.Identity.IsAuthenticated)
@@ -52,7 +61,7 @@
                     else
                     {
                         <li ActiveBy routeKey="Controller" value="Join"><a asp-controller="Join" asp-action="Index">Join</a></li>
-                        <li ActiveBy routeKey="Controller" value="Signin"><a asp-controller="Signin" asp-action="Index">Sign in</a></li>
+                        <li ActiveBy routeKey="Controller" value="SignIn"><a asp-controller="Signin" asp-action="Index">Sign in</a></li>
                     }
                 </ul>
             </div>
@@ -114,5 +123,10 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
     @RenderSection("scripts", required: false)
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </body>
 </html>

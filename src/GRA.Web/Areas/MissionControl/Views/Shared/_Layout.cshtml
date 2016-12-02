@@ -23,6 +23,11 @@
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" />
     </environment>
     @RenderSection("styles", required: false)
+    <style>
+        div.tooltip-inner {
+            width: 10rem;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-static-top">
@@ -44,6 +49,7 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span></a></li>
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index">Participants</a></li>
@@ -121,5 +127,10 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
     @RenderSection("scripts", required: false)
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </body>
 </html>

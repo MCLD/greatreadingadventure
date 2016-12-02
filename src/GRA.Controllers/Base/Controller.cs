@@ -26,7 +26,7 @@ namespace GRA.Controllers.Base
             base.OnActionExecuted(context);
 
             // sensible default
-            string pageTitle = _config[ConfigurationKeys.DefaultSiteName];
+            string pageTitle = _config[ConfigurationKey.DefaultSiteName];
 
             // set page title
             var controller = context.Controller as Controller;

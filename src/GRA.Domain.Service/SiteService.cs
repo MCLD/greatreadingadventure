@@ -18,6 +18,7 @@ namespace GRA.Domain.Service
         private readonly IProgramRepository _programRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly ISystemRepository _systemRepository;
+        private readonly ConfigurationService _configurationService;
 
         public SiteService(ILogger<SiteService> logger,
             IConfigurationRoot config,
@@ -25,7 +26,8 @@ namespace GRA.Domain.Service
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
-            ISystemRepository systemRepository)
+            ISystemRepository systemRepository,
+            ConfigurationService configurationService)
             : base(logger)
         {
             _config = Require.IsNotNull(config, nameof(config));
@@ -34,6 +36,7 @@ namespace GRA.Domain.Service
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
+            _configurationService = Require.IsNotNull(configurationService, nameof(configurationService));
         }
 
         private async Task<IEnumerable<Site>> InsertInitialSite()
@@ -41,13 +44,16 @@ namespace GRA.Domain.Service
             var site = new Site
             {
                 IsDefault = true,
-                Name = _config[ConfigurationKeys.DefaultSiteName],
-                PageTitle = _config[ConfigurationKeys.DefaultPageTitle],
-                Path = _config[ConfigurationKeys.DefaultSitePath],
-                Footer = _config[ConfigurationKeys.DefaultFooter]
+                Name = _config[ConfigurationKey.DefaultSiteName],
+                PageTitle = _config[ConfigurationKey.DefaultPageTitle],
+                Path = _config[ConfigurationKey.DefaultSitePath],
+                Footer = _config[ConfigurationKey.DefaultFooter]
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);
+
+            await _configurationService.InsertSetupData(site);
+
             return new List<Site>
             {
                 site

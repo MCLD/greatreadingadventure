@@ -16,7 +16,7 @@ namespace GRA.Data.SQLite
             }
             else
             {
-                optionsBuilder.UseSqlite(config[ConfigurationKeys.DefaultCSSQLite]);
+                optionsBuilder.UseSqlite(config[ConfigurationKey.DefaultCSSQLite]);
             }
         }
     }

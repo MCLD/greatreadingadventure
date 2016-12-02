@@ -1,4 +1,6 @@
-﻿using GRA.Domain.Model;
+﻿using GRA.Controllers.ViewModel.MissionControl;
+using GRA.Domain.Model;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,12 +11,19 @@ namespace GRA.Controllers.MissionControl
     [Area("MissionControl")]
     public class HomeController : Base.Controller
     {
-        private readonly ILogger<HomeController> logger;
+        private readonly ILogger<HomeController> _logger;
+        private readonly ConfigurationService _configurationService;
+        private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
+            ConfigurationService configurationService,
+            UserService userService,
             ServiceFacade.Controller context)
             : base(context)
         {
-            this.logger = Require.IsNotNull(logger, nameof(logger));
+            this._logger = Require.IsNotNull(logger, nameof(logger));
+            this._configurationService = Require.IsNotNull(configurationService,
+                nameof(configurationService));
+            this._userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Mission Control";
         }
 
@@ -23,17 +32,54 @@ namespace GRA.Controllers.MissionControl
             if (!CurrentUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
-                return RedirectToRoute(new { controller = "Login" });
+                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
             }
 
             if (!UserHasPermission(Permission.AccessMissionControl))
             {
-                // not authorized for Mission Control, redirect to main site
-                return RedirectToRoute(new { area = string.Empty });
+                // not authorized for Mission Control, redirect to authorization code
+                return View("AuthorizationCode");
             }
             Site site = await GetCurrentSite(sitePath);
             PageTitle = $"Mission Control: {site.Name}";
             return View();
+        }
+        [HttpGet]
+        public IActionResult AuthorizationCode()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel viewmodel)
+        {
+            if (!CurrentUser.Identity.IsAuthenticated)
+            {
+                // not logged in, redirect to login page
+                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
+            }
+
+            string role
+                = await _userService.ActivateAuthorizationCode(CurrentUser, 
+                viewmodel.AuthorizationCode);
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                AlertSuccess = $"Code applied, you are now a member of the role: <strong>{role}</strong>. Please log in again to access your new rights.";
+                await LogoutUserAsync();
+                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", action = "Index"});
+            }
+            else
+            {
+                AlertDanger = "Invalid code. This request was logged.";
+                return View("AuthorizationCode");
+            }
+        }
+
+        public async Task<IActionResult> LoadSampleData()
+        {
+            await _configurationService.InsertSampleData(CurrentUser);
+            AlertSuccess = "Inserted sample data.";
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Signout()

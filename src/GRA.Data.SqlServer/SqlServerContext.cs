@@ -15,7 +15,7 @@ namespace GRA.Data.SqlServer
             }
             else
             {
-                optionsBuilder.UseSqlServer(config[ConfigurationKeys.DefaultCSSqlServer]);
+                optionsBuilder.UseSqlServer(config[ConfigurationKey.DefaultCSSqlServer]);
             }
         }
     }
