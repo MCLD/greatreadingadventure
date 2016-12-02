@@ -9,15 +9,12 @@ namespace GRA.Controllers
     public class UserContextProvider : IUserContextProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly SiteLookupService _simpleSiteService;
         public UserContextProvider(IHttpContextAccessor httpContextAccessor,
-            IUrlHelperFactory urlHelperFactory,
             SiteLookupService simpleSiteService)
         {
             _httpContextAccessor = Require.IsNotNull(httpContextAccessor,
                 nameof(httpContextAccessor));
-            _urlHelperFactory = Require.IsNotNull(urlHelperFactory, nameof(urlHelperFactory));
             _simpleSiteService = Require.IsNotNull(simpleSiteService, nameof(simpleSiteService));
         }
         public async Task<UserContext> GetContext()

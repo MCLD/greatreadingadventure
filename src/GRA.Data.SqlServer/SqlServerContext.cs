@@ -15,7 +15,10 @@ namespace GRA.Data.SqlServer
             }
             else
             {
-                optionsBuilder.UseSqlServer(config[ConfigurationKey.DefaultCSSqlServer]);
+                // .UseRowNumberForPaging is for SQL Server 2008 compatibility:
+                // https://github.com/aspnet/EntityFramework/issues/4616
+                optionsBuilder.UseSqlServer(config[ConfigurationKey.DefaultCSSqlServer],
+                    _ => _.UseRowNumberForPaging());
             }
         }
     }

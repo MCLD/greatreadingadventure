@@ -184,7 +184,6 @@ namespace GRA.Domain.Service
                 currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
-                currentEntity.CanBeDeleted = userToUpdate.CanBeDeleted;
                 currentEntity.CardNumber = userToUpdate.CardNumber;
                 currentEntity.Email = userToUpdate.Email;
                 currentEntity.FirstName = userToUpdate.FirstName;
@@ -195,7 +194,7 @@ namespace GRA.Domain.Service
                 currentEntity.ProgramName = null;
                 currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
-                currentEntity.Username = userToUpdate.Username;
+                //currentEntity.Username = userToUpdate.Username;
                 return await _userRepository.UpdateSaveAsync(requestedByUserId, currentEntity);
             }
             else

@@ -244,6 +244,8 @@ ModelManifest.xml
 
 ##### Project-specific #####
 
+src/GRA.Web/Properties/PublishProfiles/
+
 # for now exclude Migrations until the database stablizes a little
 src/GRA.Data.SQLite/Migrations
 src/GRA.Data.SqlServer/Migrations
