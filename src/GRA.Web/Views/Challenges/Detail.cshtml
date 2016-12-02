@@ -1,0 +1,49 @@
+﻿@model GRA.Controllers.ViewModel.Challenges.ChallengeDetailViewModel
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">
+                    Challenge: @Model.Name
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-9">
+                        <p>@Model.Description</p>
+                        <p>@Html.Raw(Model.Details)</p>
+                    </div>
+                    <div class="col-xs-4 col-sm-3" style="min-width: 64px;">
+                        <img src="@Model.BadgePath" height="64" width="64" class="pull-right" />
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped" style="margin-top: 1em;">
+                <tr>
+                    <th class="text-center">Complete</th>
+                    <th>Task</th>
+                </tr>
+                @for (int i = 0; i < Model.Tasks.Count; i++)
+            {
+                    <tr>
+                        <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
+                            <input type="checkbox" />
+                        </td>
+
+                        <td>
+                            <div class="row">
+                                @Html.Raw(Model.Tasks[i].Description)
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div class="panel-footer clearfix hidden-print">
+                <div class="pull-right">
+                    <a asp-action="Index" class="btn btn-default">View All Challenges</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

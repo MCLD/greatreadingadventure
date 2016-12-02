@@ -1,0 +1,53 @@
+﻿@model GRA.Controllers.ViewModel.Challenges.ChallengesListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <span class="h2">Challenges</span>
+    </div>
+</div>
+
+<form asp-controller="Challenges" asp-action="Index" method="post" role="form">
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-10">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-2">
+            <input type="submit" value="Search" class="btn btn-default" />
+        </div>
+    </div>
+</form>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Challenges.Count() == 0)
+        {
+            <div class="alert alert-warning">No Challenges</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Points you'll earn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var challenge in Model.Challenges)
+                        {
+                            <tr>
+                                <td><a asp-action="Detail" asp-route-id="@challenge.Id">@challenge.Name</a></td>
+                                <td>@challenge.PointsAwarded</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>

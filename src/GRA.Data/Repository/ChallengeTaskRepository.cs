@@ -14,6 +14,25 @@ namespace GRA.Data.Repository
         public ChallengeTaskRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<BranchRepository> logger) : base(repositoryFacade, logger) { }
 
+        public override async Task<Domain.Model.ChallengeTask> GetByIdAsync(int id)
+        {
+            var task = mapper.Map<Model.ChallengeTask, Domain.Model.ChallengeTask>(await DbSet
+               .AsNoTracking()
+               .Where(_ => _.Id == id)
+               .SingleAsync());
+
+            var challengeTaskTypes =
+                await context.ChallengeTaskTypes
+                .AsNoTracking()
+                .ToDictionaryAsync(_ => _.Id);
+
+            task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
+                   Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
+                   challengeTaskTypes[task.ChallengeTaskTypeId].Name);
+
+            return task;
+        }
+
         public override async Task AddAsync(int userId, ChallengeTask domainEntity)
         {
             await LookUpChallengeTaskTypeAsync(domainEntity);

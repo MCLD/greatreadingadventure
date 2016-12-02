@@ -21,21 +21,11 @@ namespace GRA.Domain.Service
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository, nameof(challengeTaskRepository));
         }
 
-        /// <summary>
-        /// A paginated list of challenges which are visible to the provided user
-        /// </summary>
-        /// <param name="user">A valid user</param>
-        /// <param name="skip">The number of elements to skip before returning the remaining
-        /// elements</param>
-        /// <param name="take">The number of elements to return</param>
-        /// <returns><see cref="DataWithCount{DataType}"/> containing the challenges and the total
-        /// challenge count</returns>
         public async Task<DataWithCount<IEnumerable<Challenge>>>
-            GetPaginatedChallengeListAsync(ClaimsPrincipal user,
+            GetPaginatedChallengeListAsync(int siteId,
             int skip,
             int take)
         {
-            int siteId = GetId(user, ClaimType.SiteId);
             var dataTask = _challengeRepository.PageAllAsync(siteId, skip, take);
             var countTask = _challengeRepository.GetChallengeCountAsync();
             await Task.WhenAll(dataTask, countTask);
@@ -44,6 +34,15 @@ namespace GRA.Domain.Service
                 Data = dataTask.Result,
                 Count = countTask.Result
             };
+        }
+
+        public async Task<DataWithCount<IEnumerable<Challenge>>>
+            GetPaginatedChallengeListAsync(ClaimsPrincipal user,
+            int skip,
+            int take)
+        {
+            int siteId = GetId(user, ClaimType.SiteId);
+            return await GetPaginatedChallengeListAsync(siteId, skip, take);
         }
 
         /// <summary>

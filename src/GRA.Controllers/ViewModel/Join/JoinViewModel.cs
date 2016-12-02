@@ -30,6 +30,7 @@ namespace GRA.Controllers.ViewModel.Join
         public string LastName { get; set; }
 
         [Required]
+        [DisplayName("Branch")]
         public int? BranchId { get; set; }
 
         [DisplayName("Email Address")]
