@@ -8,6 +8,7 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int SiteId { get; set; }
+        [EmailAddress]
         [MaxLength(254)]
         public string Email { get; set; }
         public bool IsDeleted { get; set; }
@@ -27,6 +28,7 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string LastName { get; set; }
         [DisplayName("Phone Number")]
+        [Phone]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
         [MaxLength(32)]

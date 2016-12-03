@@ -28,9 +28,10 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
         }
 
-        public async Task<IEnumerable<Model.System>> GetSystemList(int siteId)
+        public async Task<IEnumerable<Model.System>> GetSystemList()
         {
-            return await _systemRepository.GetAllAsync(siteId);
+            
+            return await _systemRepository.GetAllAsync(await GetCurrentSiteId());
         }
 
         public async Task<IEnumerable<Branch>> GetBranches(int systemId)
@@ -38,9 +39,9 @@ namespace GRA.Domain.Service
             return await _branchRepository.GetAllAsync(systemId);
         }
 
-        public async Task<IEnumerable<Program>> GetProgramList(int siteId)
+        public async Task<IEnumerable<Program>> GetProgramList()
         {
-            return await _programRepository.GetAllAsync(siteId);
+            return await _programRepository.GetAllAsync(await GetCurrentSiteId());
         }
     }
 }

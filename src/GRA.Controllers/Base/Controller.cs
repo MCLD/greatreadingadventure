@@ -85,6 +85,9 @@ namespace GRA.Controllers.Base
                 await HttpContext.Authentication.SignInAsync(Authentication.SchemeGRACookie,
                     new ClaimsPrincipal(identity));
 
+                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, authResult.User.Id);
+                HttpContext.Items[SessionKey.ActiveUserId] = authResult.User.Id;
+
                 if (!string.IsNullOrEmpty(authResult.AuthenticationMessage))
                 {
                     AlertInfo = authResult.AuthenticationMessage;

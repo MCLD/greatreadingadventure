@@ -89,8 +89,8 @@ namespace GRA.Controllers.MissionControl
             var user = await _userService.GetDetails(id);
             SetPageTitle(user);
             var branchList = _siteService.GetBranches(user.SystemId);
-            var programList = _siteService.GetProgramList(user.SiteId);
-            var systemList = _siteService.GetSystemList(user.SiteId);
+            var programList = _siteService.GetProgramList();
+            var systemList = _siteService.GetSystemList();
             await Task.WhenAll(branchList, programList, systemList);
 
             ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
@@ -114,13 +114,22 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                await _userService.Update(model.User);
+                await _userService.MCUpdate(model.User);
                 AlertSuccess = "Participant infomation updated";
                 return RedirectToAction("Detail", new { id = model.User.Id });
             }
             else
             {
                 SetPageTitle(model.User);
+
+                var branchList = _siteService.GetBranches(model.User.SystemId);
+                var programList = _siteService.GetProgramList();
+                var systemList = _siteService.GetSystemList();
+                await Task.WhenAll(branchList, programList, systemList);
+                model.BranchList = new SelectList(branchList.Result.ToList(), "Id", "Name");
+                model.ProgramList = new SelectList(programList.Result.ToList(), "Id", "Name");
+                model.SystemList = new SelectList(systemList.Result.ToList(), "Id", "Name");
+
                 return View(model);
             }
         }

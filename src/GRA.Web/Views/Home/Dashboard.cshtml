@@ -1,12 +1,35 @@
-﻿<div class="row" style="font-size: larger;">
+﻿@model GRA.Domain.Model.Book
+
+<div class="row" style="font-size: larger;">
     <div class="col-sm-3" style="text-align: center;">
         <p><span class="fa fa-user" style="font-size: 10em;"></span><br /></p>
         <p style="font-size: x-large;">You have <strong>x points</strong>.</p>
-        <p>See my <a href="">activity history</a>.</p>
+        <p>See my <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
     </div>
     <div class="col-sm-6">
         <p style="text-align: center; font-size: x-large;">Welcome <strong>person!</strong></p>
-        <p style="text-align: center;">Log reading <strong>here</strong>.</p>
+        <div class="well">
+            <form asp-controller="Home" asp-action="LogBook" method="post" role="form">
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="Author" class="control-label"></label>
+                        <input asp-for="Author" class="form-control" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn center-block btn-primary btn-lg btn-spinner-no-validate">
+                    <span class="buttonText">I read a book!</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            </form>
+        </div>
     </div>
     <div class="col-sm-3" style="text-align: center;">
         <p>My badges</p>

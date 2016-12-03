@@ -154,7 +154,9 @@ namespace GRA.Domain.Service
 
         public async Task<User> GetDetails(int userId)
         {
-            if (await HasPermission(Permission.ViewParticipantDetails))
+            int requestingUserId = await GetClaimId(ClaimType.UserId);
+            if (requestingUserId == userId 
+                ||await HasPermission(Permission.ViewParticipantDetails))
             {
                 return await _userRepository.GetByIdAsync(userId);
             }
@@ -170,14 +172,7 @@ namespace GRA.Domain.Service
         {
             int requestedByUserId = await GetClaimId(ClaimType.UserId);
 
-            if (await HasPermission(Permission.EditParticipants))
-            {
-                // admin users can update anything except siteid
-                var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
-                userToUpdate.SiteId = currentEntity.SiteId;
-                return await _userRepository.UpdateSaveAsync(requestedByUserId, userToUpdate);
-            }
-            else if (requestedByUserId == userToUpdate.Id)
+            if (requestedByUserId == userToUpdate.Id)
             {
                 // users can only update some of their own fields
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
@@ -196,6 +191,24 @@ namespace GRA.Domain.Service
                 currentEntity.SystemName = null;
                 //currentEntity.Username = userToUpdate.Username;
                 return await _userRepository.UpdateSaveAsync(requestedByUserId, currentEntity);
+            }
+            else
+            {
+                _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
+                throw new Exception("Permission denied.");
+            }
+        }
+
+        public async Task<User> MCUpdate(User userToUpdate)
+        {
+            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+
+            if (await HasPermission(Permission.EditParticipants))
+            {
+                // admin users can update anything except siteid
+                var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
+                userToUpdate.SiteId = currentEntity.SiteId;
+                return await _userRepository.UpdateSaveAsync(requestedByUserId, userToUpdate);
             }
             else
             {

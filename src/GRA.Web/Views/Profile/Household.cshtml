@@ -1,0 +1,86 @@
+﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <span class="h2">My Household</span>
+    </div>
+</div>
+
+@Html.Partial("_ProfilePartial")
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Users.Count() == 0)
+        {
+            <div class="alert alert-warning">Click below to create a household</div>
+        }
+        else
+        {
+            <form asp-controller="Profile" method="post" role="form">
+                <div>
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>UserName</th>
+                                <th>EmailAddress</th>
+                                <th>Branch</th>
+                                <th>Program</th>
+                                @if (Model.IsHead)
+                                {
+                                    <th>&nbsp;</th>
+                                }
+                            </tr>
+                            <tr class="warning">
+                                <td>
+                                    <span class="fa fa-user"></span>
+                                    @Model.Head.FirstName
+                                </td>
+                                <td>@Model.Head.LastName</td>
+                                <td>@Model.Head.Username</td>
+                                <td>@Model.Head.Email</td>
+                                <td>@Model.Head.BranchName</td>
+                                <td>@Model.Head.ProgramName</td>
+                                @if (Model.IsHead)
+                                {
+                                    <td>&nbsp;</td>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@user.FirstName</td>
+                                    <td>@user.LastName</td>
+                                    <td>@user.Username</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.BranchName</td>
+                                    <td>@user.ProgramName</td>
+                                    @if (Model.IsHead)
+                                    {
+                                        <td>
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-xs"
+                                                    asp-action="LoginAs"
+                                                    asp-route-id="@user.Id">
+                                                <span class="fa fa-login" aria-hidden="true">
+                                                    Sign In As
+                                                </span>
+                                            </button>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>

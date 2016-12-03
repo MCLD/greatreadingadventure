@@ -56,6 +56,7 @@
                     <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
+                        <li ActiveBy routeKey="Controller" value="Profile"><a asp-controller="Profile" asp-action="Index">My Profile</a></li>
                         <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                     }
                     else

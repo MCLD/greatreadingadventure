@@ -10,3 +10,13 @@
         }
     }
 });
+
+$('.btn-spinner-no-validate').on("click", function(e) {
+    e.preventDefault();
+    if (!$(this).hasClass('disabled'))
+    {
+        $(this).addClass('disabled');
+        $(this).children('.fa-spinner').removeClass('hidden');
+        $(this).parents('form:first').submit();
+    }
+});
