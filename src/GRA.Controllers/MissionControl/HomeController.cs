@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            if (!CurrentUser.Identity.IsAuthenticated)
+            if (!AuthUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
                 return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
@@ -51,7 +51,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel viewmodel)
         {
-            if (!CurrentUser.Identity.IsAuthenticated)
+            if (!AuthUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
                 return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
@@ -82,7 +82,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Signout()
         {
-            if (CurrentUser.Identity.IsAuthenticated)
+            if (AuthUser.Identity.IsAuthenticated)
             {
                 await LogoutUserAsync();
             }

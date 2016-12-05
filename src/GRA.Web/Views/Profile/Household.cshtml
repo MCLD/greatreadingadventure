@@ -27,22 +27,34 @@
                                 <th>EmailAddress</th>
                                 <th>Branch</th>
                                 <th>Program</th>
-                                @if (Model.IsHead)
-                                {
-                                    <th>&nbsp;</th>
-                                }
+                                <th>&nbsp;</th>
                             </tr>
                             <tr class="warning">
                                 <td>
-                                    <span class="fa fa-user"></span>
-                                    @Model.Head.FirstName
+                                    @if (Model.ActiveUser == Model.Head.Id)
+                                    {
+                                        <span class="fa fa-user"></span>
+                                    }
+                                    <strong>@Model.Head.FirstName</strong>
                                 </td>
-                                <td>@Model.Head.LastName</td>
-                                <td>@Model.Head.Username</td>
-                                <td>@Model.Head.Email</td>
-                                <td>@Model.Head.BranchName</td>
-                                <td>@Model.Head.ProgramName</td>
-                                @if (Model.IsHead)
+                                <td><strong>@Model.Head.LastName</strong></td>
+                                <td><strong>@Model.Head.Username</strong></td>
+                                <td><strong>@Model.Head.Email</strong></td>
+                                <td><strong>@Model.Head.BranchName</strong></td>
+                                <td><strong>@Model.Head.ProgramName</strong></td>
+                                @if (Model.ActiveUser != Model.Head.Id)
+                                {
+                                    <td>
+                                        <button type="submit"
+                                                class="btn btn-primary btn-xs"
+                                                asp-action="LoginAs"
+                                                asp-route-id="@Model.Head.Id">
+                                            <span class="fa fa-sign-in"></span>
+                                            Sign In As
+                                        </button>
+                                    </td>
+                                }
+                                else
                                 {
                                     <td>&nbsp;</td>
                                 }
@@ -52,24 +64,34 @@
                             @foreach (var user in Model.Users)
                             {
                                 <tr>
-                                    <td>@user.FirstName</td>
+                                    <td>
+                                        @if (Model.ActiveUser == user.Id)
+                                        {
+                                            <span class="fa fa-user"></span>
+                                        }
+                                        @user.FirstName
+                                    </td>
                                     <td>@user.LastName</td>
                                     <td>@user.Username</td>
                                     <td>@user.Email</td>
                                     <td>@user.BranchName</td>
                                     <td>@user.ProgramName</td>
-                                    @if (Model.IsHead)
+                                    @if (Model.ActiveUser != user.Id)
                                     {
                                         <td>
                                             <button type="submit"
                                                     class="btn btn-primary btn-xs"
                                                     asp-action="LoginAs"
                                                     asp-route-id="@user.Id">
-                                                <span class="fa fa-login" aria-hidden="true">
-                                                    Sign In As
-                                                </span>
+                                                <span class="fa fa-sign-in"></span>
+                                                Sign In As
                                             </button>
                                         </td>
+                                    }
+                                    else
+                                    {
+                                        <td>&nbsp;</td>
+
                                     }
                                 </tr>
                             }

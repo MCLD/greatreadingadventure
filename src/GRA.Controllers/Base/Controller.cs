@@ -101,10 +101,11 @@ namespace GRA.Controllers.Base
 
         protected async Task LogoutUserAsync()
         {
+            HttpContext.Session.Clear();
             await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
         }
 
-        protected ClaimsPrincipal CurrentUser {
+        protected ClaimsPrincipal AuthUser {
             get {
                 return HttpContext.User;
             }
@@ -112,17 +113,17 @@ namespace GRA.Controllers.Base
 
         protected bool UserHasPermission(Permission permission)
         {
-            return new UserClaimLookup(CurrentUser).UserHasPermission(permission.ToString());
+            return new UserClaimLookup(AuthUser).UserHasPermission(permission.ToString());
         }
 
         protected string UserClaim(string claimType)
         {
-            return new UserClaimLookup(CurrentUser).UserClaim(claimType);
+            return new UserClaimLookup(AuthUser).UserClaim(claimType);
         }
 
         protected int GetId(string claimType)
         {
-            return new UserClaimLookup(CurrentUser).GetId(claimType);
+            return new UserClaimLookup(AuthUser).GetId(claimType);
         }
 
         protected async Task<int> GetCurrentSiteId(string sitePath)
@@ -134,6 +135,16 @@ namespace GRA.Controllers.Base
         protected async Task<Site> GetCurrentSite(string sitePath)
         {
             return await _siteLookupService.GetById(await GetCurrentSiteId(sitePath));
+        }
+
+        protected int GetActiveUserId()
+        {
+            int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId);
+            if(activeUserId == null)
+            {
+                GetId(ClaimType.UserId);
+            }
+            return (int)activeUserId;
         }
     }
 }

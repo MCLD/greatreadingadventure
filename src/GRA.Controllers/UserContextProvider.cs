@@ -20,11 +20,17 @@ namespace GRA.Controllers
         public async Task<UserContext> GetContext()
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            return new UserContext
+            var userContext = new UserContext
             {
                 User = httpContext.User,
                 SiteId = await GetSiteId()
             };
+            if(httpContext.User.Identity.IsAuthenticated)
+            {
+                userContext.ActiveUserId = httpContext.Session.GetInt32(SessionKey.ActiveUserId)
+                    ?? new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId);
+            }
+            return userContext;
         }
 
         private async Task<int> GetSiteId()

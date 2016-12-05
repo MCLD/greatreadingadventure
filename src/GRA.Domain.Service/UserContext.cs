@@ -6,5 +6,6 @@ namespace GRA.Domain.Service
     {
         public ClaimsPrincipal User { get; set; }
         public int SiteId { get; set; }
+        public int? ActiveUserId { get; set; }
     }
 }

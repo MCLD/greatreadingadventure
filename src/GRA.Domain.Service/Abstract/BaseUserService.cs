@@ -18,7 +18,7 @@ namespace GRA.Domain.Service.Abstract
         private UserContext userContext = null;
         private ClaimsPrincipal currentUser = null;
         private int? currentUserSiteId = null;
-        protected async Task<ClaimsPrincipal> GetCurrentUser()
+        protected async Task<ClaimsPrincipal> GetAuthUser()
         {
             if (userContext == null)
             {
@@ -46,14 +46,29 @@ namespace GRA.Domain.Service.Abstract
 
         protected async Task<bool> HasPermission(Permission permission)
         {
-            var currentUser = await GetCurrentUser();
+            var currentUser = await GetAuthUser();
             return new UserClaimLookup(currentUser).UserHasPermission(permission.ToString());
         }
 
         protected async Task<int> GetClaimId(string claimType)
         {
-            var currentUser = await GetCurrentUser();
+            var currentUser = await GetAuthUser();
             return new UserClaimLookup(currentUser).GetId(claimType);
+        }
+
+        protected async Task<int> GetActiveUserId()
+        {
+            if (userContext == null)
+            {
+                userContext = await _userContextProvider.GetContext();
+            }
+            if(userContext == null
+               || !userContext.User.Identity.IsAuthenticated
+               || userContext.ActiveUserId == null)
+            {
+                throw new System.Exception("User is not authenticated.");
+            }
+            return (int)userContext.ActiveUserId;
         }
     }
 }

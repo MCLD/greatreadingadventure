@@ -1,13 +1,13 @@
-﻿@model GRA.Domain.Model.Book
+﻿@model GRA.Controllers.ViewModel.DashboardViewModel
 
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3" style="text-align: center;">
         <p><span class="fa fa-user" style="font-size: 10em;"></span><br /></p>
-        <p style="font-size: x-large;">You have <strong>x points</strong>.</p>
-        <p>See my <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
+        <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
+        <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
     </div>
     <div class="col-sm-6">
-        <p style="text-align: center; font-size: x-large;">Welcome <strong>person!</strong></p>
+        <p style="text-align: center; font-size: x-large;">Welcome <strong>@Model.FirstName!</strong></p>
         <div class="well">
             <form asp-controller="Home" asp-action="LogBook" method="post" role="form">
                 <div class="row row-spacing">
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="col-sm-3" style="text-align: center;">
-        <p>My badges</p>
+        <p>Your badges</p>
         <div class="row">
             <div class="col-sm-4"><span class="fa fa-certificate" style="font-size: 4em;"></span></div>
             <div class="col-sm-4"><span class="fa fa-plane" style="font-size: 4em;"></span></div>

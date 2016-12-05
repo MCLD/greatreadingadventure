@@ -73,6 +73,7 @@ namespace GRA.Data
         public DbSet<Model.Permission> Permissions { get; set; }
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
+        public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
         public DbSet<Model.RolePermission> RolePermissions { get; set; }
         public DbSet<Model.Site> Sites { get; set; }

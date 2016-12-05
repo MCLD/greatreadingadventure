@@ -250,7 +250,7 @@ namespace GRA.Data.Repository
         }
 
         public async Task<IEnumerable<User>>
-            PageFamilyAsync(int householdHeadUserId, int skip, int take)
+            PageHouseholdAsync(int householdHeadUserId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
@@ -265,7 +265,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetFamilyCountAsync(int householdHeadUserId)
+        public async Task<int> GetHouseholdCountAsync(int householdHeadUserId)
         {
             return await DbSet
                 .AsNoTracking()

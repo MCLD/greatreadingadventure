@@ -9,13 +9,17 @@ namespace GRA.Controllers
     public class SignInController : Base.Controller
     {
         private readonly ILogger<SignInController> _logger;
+        private readonly AuthenticationService _authenticationService;
         private readonly UserService _userService;
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
+            AuthenticationService authenticationService,
             UserService userService)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _authenticationService = Require.IsNotNull(authenticationService,
+                nameof(authenticationService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Sign In";
         }
@@ -39,7 +43,8 @@ namespace GRA.Controllers
 
             if (ModelState.IsValid)
             {
-                var loginAttempt = await _userService.AuthenticateUserAsync(model.Username, model.Password);
+                var loginAttempt = await _authenticationService
+                    .AuthenticateUserAsync(model.Username, model.Password);
                 if (loginAttempt.PasswordIsValid)
                 {
                     await LoginUserAsync(loginAttempt);

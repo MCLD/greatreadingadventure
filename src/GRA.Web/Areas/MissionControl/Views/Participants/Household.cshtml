@@ -20,19 +20,23 @@
                             <th>EmailAddress</th>
                             <th>Branch</th>
                             <th>Program</th>
+                            <th>&nbsp;</th>
                         </tr>
                         <tr class="warning">
                             <td class="td-class">
                                 <a asp-action="Detail" asp-route-id="@Model.Head.Id" class="rowlink">
-                                    <span class="fa fa-user"></span>
-                                    @Model.Head.FirstName
+                                    @if (Model.Head.Id == Model.Id)
+                                    {
+                                        <span class="fa fa-user"></span>
+                                    }
+                                    <strong>@Model.Head.FirstName</strong>
                                 </a>
                             </td>
-                            <td>@Model.Head.LastName</td>
-                            <td>@Model.Head.Username</td>
-                            <td>@Model.Head.Email</td>
-                            <td>@Model.Head.BranchName</td>
-                            <td>@Model.Head.ProgramName</td>
+                            <td><strong>@Model.Head.LastName</strong></td>
+                            <td><strong>@Model.Head.Username</strong></td>
+                            <td><strong>@Model.Head.Email</strong></td>
+                            <td><strong>@Model.Head.BranchName</strong></td>
+                            <td><strong>@Model.Head.ProgramName</strong></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +45,10 @@
                             <tr>
                                 <td class="td-class">
                                     <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
+                                        @if (user.Id == Model.Id)
+                                        {
+                                            <span class="fa fa-user"></span>
+                                        }
                                         @user.FirstName
                                     </a>
                                 </td>
@@ -71,13 +79,13 @@
 @section scripts
 {
     <script>
-        $(document).ready(function() {
-            $('.td-class').each(function() {
+        $(document).ready(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
+        $(window).resize(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });

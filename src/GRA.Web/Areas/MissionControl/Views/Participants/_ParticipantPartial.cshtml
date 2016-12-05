@@ -2,15 +2,15 @@
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
-            @if (Model.HouseholdCount > 0)
-            {
-                <li ActiveBy routeKey="Action" value="Household">
-                    <a asp-action="Household" asp-route-id="@Model.Id">
-                        Household
+            <li ActiveBy routeKey="Action" value="Household">
+                <a asp-action="Household" asp-route-id="@Model.Id">
+                    Household
+                    @if (Model.HouseholdCount > 0)
+                    {
                         <span class="label label-default label-as-badge">@Model.HouseholdCount</span>
-                    </a>
-                </li>
-            }
+                    }
+                </a>
+            </li>
             <li ActiveBy routeKey="Action" value="Books"><a asp-action="Books" asp-route-id="@Model.Id">Books</a></li>
             <li ActiveBy routeKey="Action" value="History"><a asp-action="History" asp-route-id="@Model.Id">History</a></li>
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))

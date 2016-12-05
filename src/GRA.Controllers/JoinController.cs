@@ -13,16 +13,20 @@ namespace GRA.Controllers
     {
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
+        private readonly AuthenticationService _authenticationService;
         private readonly UserService _userService;
         private readonly SiteService _siteService;
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
+            AuthenticationService authenticationService,
             UserService userService,
             SiteService siteService)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _mapper = context.Mapper;
+            _authenticationService = Require.IsNotNull(authenticationService,
+                nameof(authenticationService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             PageTitle = "Join";
@@ -61,7 +65,7 @@ namespace GRA.Controllers
                 User user = _mapper.Map<User>(model);
 
                 await _userService.RegisterUserAsync(user, model.Password);
-                await LoginUserAsync(await _userService
+                await LoginUserAsync(await _authenticationService
                     .AuthenticateUserAsync(user.Username, model.Password));
 
                 return RedirectToAction("Index", "Home");

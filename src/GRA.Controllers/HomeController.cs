@@ -1,4 +1,5 @@
-﻿using GRA.Domain.Service;
+﻿using GRA.Controllers.ViewModel;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,16 @@ namespace GRA.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
-            ActivityService activityService)
+            ActivityService activityService,
+            UserService userService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
         }
 
         public async Task<IActionResult> Index(string sitePath = null)
@@ -28,9 +32,14 @@ namespace GRA.Controllers
             {
                 PageTitle = site.Name;
             }
-            if (CurrentUser.Identity.IsAuthenticated)
+            if (AuthUser.Identity.IsAuthenticated)
             {
-                return View("Dashboard");
+                var user = await _userService.GetDetails(GetActiveUserId());
+                return View("Dashboard", new DashboardViewModel
+                {
+                    FirstName = user.FirstName,
+                    CurrentPointTotal = user.PointsEarned
+                });
             }
             else
             {
@@ -40,7 +49,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Signout()
         {
-            if (CurrentUser.Identity.IsAuthenticated)
+            if (AuthUser.Identity.IsAuthenticated)
             {
                 await LogoutUserAsync();
             }
@@ -49,13 +58,21 @@ namespace GRA.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> LogBook(GRA.Domain.Model.Book book)
+        public async Task<IActionResult> LogBook(DashboardViewModel viewModel)
         {
-            await _activityService.LogActivityAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId), 1);
+            var book = new Domain.Model.Book
+            {
+                Author = viewModel.Author,
+                Title = viewModel.Title
+            };
+            var result = await _activityService.LogActivityAsync(GetActiveUserId(), 1);
+            string message = $"<span class=\"fa fa-star\"></span> You earned <strong>{result.PointsEarned} points</strong> and currently have <strong>{result.User.PointsEarned} points</strong>!";
             if (!string.IsNullOrWhiteSpace(book.Title))
             {
-                await _activityService.AddBook((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId), book);
+                await _activityService.AddBook(GetActiveUserId(), book);
+                message += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
             }
+            AlertSuccess = message;
             return RedirectToAction("Index");
         }
     }

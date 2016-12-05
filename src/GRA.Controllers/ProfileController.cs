@@ -16,15 +16,19 @@ namespace GRA.Controllers
     public class ProfileController : Base.Controller
     {
         private readonly ILogger<ChallengesController> _logger;
+        private readonly AuthenticationService _authenticationService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
         public ProfileController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
+            AuthenticationService authenticationService,
             SiteService siteService,
             UserService userService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _authenticationService = Require.IsNotNull(authenticationService,
+                nameof(authenticationService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "My Profile";
@@ -32,9 +36,9 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index()
         {
-            User user = await _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
+            User user = await _userService.GetDetails(GetActiveUserId());
 
-            var getHouseholdCount = _userService.FamilyMemberCountAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
+            var getHouseholdCount = _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
             var branchList = _siteService.GetBranches(user.SystemId);
             var programList = _siteService.GetProgramList();
             var systemList = _siteService.GetSystemList();
@@ -81,23 +85,15 @@ namespace GRA.Controllers
             int take = 15;
             int skip = take * (page - 1);
 
-            var user = await _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-
-            User headOfHousehold = new User();
-            bool isHead = false;
-            if (user.HouseholdHeadUserId.HasValue)
-            {
-                headOfHousehold = await _userService
-                    .GetDetails(user.HouseholdHeadUserId.Value);
-            }
-            else
-            {
-                headOfHousehold = user;
-                isHead = true;
-            }
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            User activeUser = await _userService.GetDetails(GetActiveUserId());
 
             var household = await _userService
-                .GetPaginatedFamilyListAsync(headOfHousehold.Id, skip, take);
+                .GetPaginatedFamilyListAsync(authUser.Id, skip, take);
+
+            // authUser is the head of the family
+            bool authUserIsHead = 
+                authUser.Id == household.Data.FirstOrDefault()?.HouseholdHeadUserId;
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -119,19 +115,22 @@ namespace GRA.Controllers
                 Users = household.Data,
                 PaginateModel = paginateModel,
                 HouseholdCount = household.Count,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                Head = headOfHousehold,
-                IsHead = isHead
+                HasAccount = !string.IsNullOrWhiteSpace(activeUser.Username),
+                Head = authUser,
+                AuthUserIsHead = authUserIsHead,
+                ActiveUser = GetActiveUserId()
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult LoginAs(int id)
+        public async Task<IActionResult> LoginAs(int id)
         {
             HttpContext.Session.SetInt32(SessionKey.ActiveUserId, id);
-            return RedirectToAction("Index");
+            var user = await _userService.GetDetails(id);
+            AlertSuccess = $"<span class=\"fa fa-user\"></span> You are now signed in as <strong>{user.FullName}</strong>.";
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
         public async Task<IActionResult> Books(int page = 1)
@@ -139,8 +138,8 @@ namespace GRA.Controllers
             int take = 15;
             int skip = take * (page - 1);
 
-            var books = await _userService.GetPaginatedUserBookListAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId), skip, take);
-
+            var books = await _userService
+                .GetPaginatedUserBookListAsync(GetActiveUserId(), skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -157,16 +156,15 @@ namespace GRA.Controllers
                     });
             }
 
-            var getUser = _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-            var getHouseholdCount = _userService.FamilyMemberCountAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-            await Task.WhenAll(getUser, getHouseholdCount);
+            var getUser = await _userService.GetDetails(GetActiveUserId());
+            var getHouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
 
             BookListViewModel viewModel = new BookListViewModel()
             {
                 Books = books.Data,
                 PaginateModel = paginateModel,
-                HouseholdCount = getHouseholdCount.Result,
-                HasAccount = !string.IsNullOrWhiteSpace(getUser.Result.Username)
+                HouseholdCount = getHouseholdCount,
+                HasAccount = !string.IsNullOrWhiteSpace(getUser.Username)
             };
 
             return View(viewModel);
@@ -177,7 +175,7 @@ namespace GRA.Controllers
             int take = 15;
             int skip = take * (page - 1);
             var history = await _userService
-                .GetPaginatedUserHistoryAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId), skip, take);
+                .GetPaginatedUserHistoryAsync(GetActiveUserId(), skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -194,16 +192,15 @@ namespace GRA.Controllers
                     });
             }
 
-            var getUser = _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-            var getHouseholdCount = _userService.FamilyMemberCountAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-            await Task.WhenAll(getUser, getHouseholdCount);
+            var getUser = await _userService.GetDetails(GetActiveUserId());
+            var getHouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
 
             HistoryListViewModel viewModel = new HistoryListViewModel()
             {
                 Historys = history.Data,
                 PaginateModel = paginateModel,
-                HouseholdCount = getHouseholdCount.Result,
-                HasAccount = !string.IsNullOrWhiteSpace(getUser.Result.Username)
+                HouseholdCount = getHouseholdCount,
+                HasAccount = !string.IsNullOrWhiteSpace(getUser.Username)
             };
 
             return View(viewModel);
@@ -211,7 +208,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> ChangePassword()
         {
-            User user = await _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
+            User user = await _userService.GetDetails(GetActiveUserId());
             if (string.IsNullOrWhiteSpace(user.Username))
             {
                 return RedirectToAction("Index");
@@ -219,7 +216,7 @@ namespace GRA.Controllers
 
             ChangePasswordViewModel viewModel = new ChangePasswordViewModel()
             {
-                HouseholdCount = await _userService.FamilyMemberCountAsync((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId)),
+                HouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId)),
                 HasAccount = true
             };
 
@@ -231,11 +228,13 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userService.GetDetails((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId));
-                var loginAttempt = await _userService.AuthenticateUserAsync(user.Username, model.OldPassword);
+                User user = await _userService.GetDetails(GetActiveUserId());
+                var loginAttempt = await _authenticationService
+                    .AuthenticateUserAsync(user.Username, model.OldPassword);
                 if (loginAttempt.PasswordIsValid)
                 {
-                    await _userService.ResetPassword((int)HttpContext.Session.GetInt32(SessionKey.ActiveUserId), model.NewPassword);
+                    await _authenticationService.ResetPassword(GetActiveUserId(),
+                        model.NewPassword);
                     AlertSuccess = "Password changed";
                     return RedirectToAction("ChangePassword");
                 }

@@ -14,7 +14,6 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
         private readonly SampleDataService _configurationService;
         public UserService(ILogger<UserService> logger,
             IUserContextProvider userContextProvider,
@@ -22,7 +21,6 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
-            IRoleRepository roleRepository,
             SampleDataService configurationService)
             : base(logger, userContextProvider)
         {
@@ -31,29 +29,8 @@ namespace GRA.Domain.Service
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
-            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
-            _configurationService = Require.IsNotNull(configurationService, nameof(configurationService));
-        }
-
-        public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
-            string password)
-        {
-            var authResult = await _userRepository.AuthenticateUserAsync(username, password);
-
-            if (!authResult.FoundUser)
-            {
-                authResult.AuthenticationMessage = $"Could not find username '{username}'";
-            }
-            else if (!authResult.PasswordIsValid)
-            {
-                authResult.AuthenticationMessage = "The provided password is incorrect.";
-            }
-            else
-            {
-                authResult.PermissionNames
-                    = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
-            }
-            return authResult;
+            _configurationService = Require.IsNotNull(configurationService,
+                nameof(configurationService));
         }
 
         public async Task<User> RegisterUserAsync(User user, string password)
@@ -67,24 +44,9 @@ namespace GRA.Domain.Service
             user.CanBeDeleted = true;
             user.IsLockedOut = false;
             var registeredUser = await _userRepository.AddSaveAsync(0, user);
-            await _userRepository.SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
+            await _userRepository
+                .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
             return registeredUser;
-        }
-
-        public async Task ResetPassword(int userIdToReset, string password)
-        {
-            int userId = await GetClaimId(ClaimType.UserId);
-            if (userId == userIdToReset
-                || await HasPermission(Permission.EditParticipants))
-            {
-                await _userRepository.SetUserPasswordAsync(userId, userIdToReset, password);
-            }
-            else
-            {
-                _logger.LogError($"User {userId} doesn't have permission to reset password for {userIdToReset}.");
-                throw new Exception("Permission denied.");
-            }
-
         }
 
         public async Task<DataWithCount<IEnumerable<User>>>
@@ -120,8 +82,8 @@ namespace GRA.Domain.Service
             if (requestingUserId == householdHeadUserId
                 || await HasPermission(Permission.ViewParticipantList))
             {
-                var dataTask = _userRepository.PageFamilyAsync(householdHeadUserId, skip, take);
-                var countTask = _userRepository.GetFamilyCountAsync(householdHeadUserId);
+                var dataTask = _userRepository.PageHouseholdAsync(householdHeadUserId, skip, take);
+                var countTask = _userRepository.GetHouseholdCountAsync(householdHeadUserId);
                 await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<User>>
                 {
@@ -143,7 +105,7 @@ namespace GRA.Domain.Service
             if (requestingUserId == householdHeadUserId
                 || await HasPermission(Permission.ViewParticipantList))
             {
-                return await _userRepository.GetFamilyCountAsync(householdHeadUserId);
+                return await _userRepository.GetHouseholdCountAsync(householdHeadUserId);
             }
             else
             {
@@ -154,25 +116,28 @@ namespace GRA.Domain.Service
 
         public async Task<User> GetDetails(int userId)
         {
-            int requestingUserId = await GetClaimId(ClaimType.UserId);
-            if (requestingUserId == userId 
-                ||await HasPermission(Permission.ViewParticipantDetails))
+            int requestingUserId = await GetActiveUserId();
+            var requestingUser = await _userRepository.GetByIdAsync(requestingUserId);
+            int authUserId = await GetClaimId(ClaimType.UserId);
+
+            if (requestingUserId == userId
+                || requestingUser.HouseholdHeadUserId == authUserId
+                || await HasPermission(Permission.ViewParticipantDetails))
             {
                 return await _userRepository.GetByIdAsync(userId);
             }
             else
             {
-                int requestedByUserId = await GetClaimId(ClaimType.UserId);
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to view participant details.");
+                _logger.LogError($"User {requestingUserId} doesn't have permission to view participant details.");
                 throw new Exception("Permission denied.");
             }
         }
 
         public async Task<User> Update(User userToUpdate)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestingUserId = await GetActiveUserId();
 
-            if (requestedByUserId == userToUpdate.Id)
+            if (requestingUserId == userToUpdate.Id)
             {
                 // users can only update some of their own fields
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
@@ -190,11 +155,11 @@ namespace GRA.Domain.Service
                 currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
                 //currentEntity.Username = userToUpdate.Username;
-                return await _userRepository.UpdateSaveAsync(requestedByUserId, currentEntity);
+                return await _userRepository.UpdateSaveAsync(requestingUserId, currentEntity);
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
+                _logger.LogError($"User {requestingUserId} doesn't have permission to update user {userToUpdate.Id}.");
                 throw new Exception("Permission denied.");
             }
         }
@@ -228,7 +193,7 @@ namespace GRA.Domain.Service
                 {
                     throw new Exception($"User {userIdToRemove} cannot be deleted.");
                 }
-                var familyCount = await _userRepository.GetFamilyCountAsync(userIdToRemove);
+                var familyCount = await _userRepository.GetHouseholdCountAsync(userIdToRemove);
                 if (familyCount > 0)
                 {
                     throw new Exception($"User {userIdToRemove} is the head of a family. Please remove all family members first.");
@@ -247,17 +212,14 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = await GetActiveUserId();
             if (requestedByUserId == userId
                || await HasPermission(Permission.ViewParticipantDetails))
             {
-                var dataTask = _userLogRepository.PageHistoryAsync(userId, skip, take);
-                var countTask = _userLogRepository.GetHistoryItemCountAsync(userId);
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<UserLog>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _userLogRepository.PageHistoryAsync(userId, skip, take),
+                    Count = await _userLogRepository.GetHistoryItemCountAsync(userId)
                 };
             }
             else
@@ -270,7 +232,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Book>>>
             GetPaginatedUserBookListAsync(int userId, int skip, int take)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = await GetActiveUserId();
             if (requestedByUserId == userId
                || await HasPermission(Permission.ViewParticipantDetails))
             {
@@ -294,7 +256,7 @@ namespace GRA.Domain.Service
             ActivateAuthorizationCode(string authorizationCode)
         {
             int siteId = await GetClaimId(ClaimType.SiteId);
-            var authCode 
+            var authCode
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode);
 
             if (authCode == null)
