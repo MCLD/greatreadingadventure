@@ -17,61 +17,21 @@ namespace GRA.Controllers
                 nameof(httpContextAccessor));
             _simpleSiteService = Require.IsNotNull(simpleSiteService, nameof(simpleSiteService));
         }
-        public async Task<UserContext> GetContext()
+        public UserContext GetContext()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var userContext = new UserContext
             {
                 User = httpContext.User,
-                SiteId = await GetSiteId()
+                SiteId = (int)httpContext.Items[SessionKey.SiteId]
             };
-            if(httpContext.User.Identity.IsAuthenticated)
+
+            if (httpContext.User.Identity.IsAuthenticated)
             {
                 userContext.ActiveUserId = httpContext.Session.GetInt32(SessionKey.ActiveUserId)
                     ?? new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId);
             }
             return userContext;
-        }
-
-        private async Task<int> GetSiteId()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            string sitePath = httpContext.Items["sitePath"] as string;
-
-            int? siteId = (int?)httpContext.Items[SessionKey.SiteId];
-            if (siteId == null)
-            {
-                if (httpContext.User.Identity.IsAuthenticated)
-                {
-                    // if the user is authenticated, that is their site
-                    siteId = new UserClaimLookup(httpContext.User).GetId(ClaimType.SiteId);
-                }
-                else
-                {
-                    // first check, did they use a sitePath giving them a specific site
-                    if (!string.IsNullOrEmpty(sitePath))
-                    {
-                        var site = await _simpleSiteService.GetSiteByPath(sitePath);
-                        if (site != null)
-                        {
-                            siteId = site.Id;
-                        }
-                    }
-                    // if not check if they already have one in their session
-                    if (siteId == null)
-                    {
-                        siteId = httpContext.Session.GetInt32(SessionKey.SiteId);
-                    }
-                    // if not then resort to the default
-                    if (siteId == null)
-                    {
-                        siteId = await _simpleSiteService.GetDefaultSiteId();
-                    }
-                }
-            }
-            httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
-            httpContext.Items[SessionKey.SiteId] = (int)siteId;
-            return (int)siteId;
         }
     }
 }

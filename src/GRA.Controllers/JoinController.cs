@@ -34,8 +34,6 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            HttpContext.Items["sitePath"] = sitePath;
-
             var site = await GetCurrentSite(sitePath);
             PageTitle = $"{site.Name} - Join Now!";
 
@@ -52,8 +50,6 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(JoinViewModel model, string sitePath = null)
         {
-            HttpContext.Items["sitePath"] = sitePath;
-
             var site = await GetCurrentSite(sitePath);
 
             if (ModelState.IsValid)

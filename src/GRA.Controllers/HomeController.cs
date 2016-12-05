@@ -26,7 +26,6 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            HttpContext.Items["sitePath"] = sitePath;
             var site = await GetCurrentSite(sitePath);
             if (site != null)
             {

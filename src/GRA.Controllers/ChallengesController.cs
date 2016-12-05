@@ -23,8 +23,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string Search, int page = 1, string sitePath = null)
         {
-            HttpContext.Items["sitePath"] = sitePath;
-            int siteId = await GetCurrentSiteId(sitePath);
+            int siteId = GetCurrentSiteId(sitePath);
             int take = 15;
             int skip = take * (page - 1);
 
@@ -70,8 +69,6 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id, string sitePath = null)
         {
-            HttpContext.Items["sitePath"] = sitePath;
-
             var challenge = await _challengeService.GetChallengeDetailsAsync(id);
 
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()

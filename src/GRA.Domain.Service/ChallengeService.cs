@@ -26,14 +26,11 @@ namespace GRA.Domain.Service
             GetPaginatedChallengeListAsync(int skip,
             int take)
         {
-            int siteId = await GetCurrentSiteId();
-            var dataTask = _challengeRepository.PageAllAsync(siteId, skip, take);
-            var countTask = _challengeRepository.GetChallengeCountAsync();
-            await Task.WhenAll(dataTask, countTask);
+            int siteId = GetCurrentSiteId();
             return new DataWithCount<IEnumerable<Challenge>>
             {
-                Data = dataTask.Result,
-                Count = countTask.Result
+                Data = await _challengeRepository.PageAllAsync(siteId, skip, take),
+                Count = await _challengeRepository.GetChallengeCountAsync()
             };
         }
 
@@ -44,69 +41,69 @@ namespace GRA.Domain.Service
 
         public async Task<Challenge> AddChallengeAsync(Challenge challenge)
         {
-            if (await HasPermission(Permission.AddChallenges))
+            if (HasPermission(Permission.AddChallenges))
             {
                 challenge.IsDeleted = false;
-                challenge.SiteId = await GetCurrentSiteId();
-                challenge.RelatedBranchId = await GetClaimId(ClaimType.BranchId);
-                challenge.RelatedSystemId = await GetClaimId(ClaimType.SystemId);
+                challenge.SiteId = GetCurrentSiteId();
+                challenge.RelatedBranchId = GetClaimId(ClaimType.BranchId);
+                challenge.RelatedSystemId = GetClaimId(ClaimType.SystemId);
                 return await _challengeRepository
-                    .AddSaveAsync(await GetClaimId(ClaimType.UserId), challenge);
+                    .AddSaveAsync(GetClaimId(ClaimType.UserId), challenge);
             }
-            int userId = await GetClaimId(ClaimType.UserId);
+            int userId = GetClaimId(ClaimType.UserId);
             _logger.LogError($"User {userId} doesn't have permission to add a challenge.");
             throw new Exception("Permission denied.");
         }
 
         public async Task<Challenge> EditChallengeAsync(Challenge challenge)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
                 var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
                 challenge.SiteId = currentChallenge.SiteId;
                 challenge.RelatedBranchId = currentChallenge.RelatedBranchId;
                 challenge.RelatedSystemId = currentChallenge.RelatedSystemId;
                 return await _challengeRepository
-                    .UpdateSaveAsync(await GetClaimId(ClaimType.UserId), challenge);
+                    .UpdateSaveAsync(GetClaimId(ClaimType.UserId), challenge);
             }
-            int userId = await GetClaimId(ClaimType.UserId);
+            int userId = GetClaimId(ClaimType.UserId);
             _logger.LogError($"User {userId} doesn't have permission to edit challenge {challenge.Id}.");
             throw new Exception("Permission denied.");
         }
 
         public async Task RemoveChallengeAsync(int challengeId)
         {
-            if (await HasPermission(Permission.RemoveChallenges))
+            if (HasPermission(Permission.RemoveChallenges))
             {
                 await _challengeRepository
-                    .RemoveSaveAsync(await GetClaimId(ClaimType.UserId), challengeId);
+                    .RemoveSaveAsync(GetClaimId(ClaimType.UserId), challengeId);
             }
             else
             {
-                int userId = await GetClaimId(ClaimType.UserId);
+                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to remove challenge {challengeId}.");
                 throw new Exception("Permission denied.");
             }
         }
         public async Task<ChallengeTask> AddTaskAsync(ChallengeTask task)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
-                return await _challengeTaskRepository.AddSaveAsync(await GetClaimId(ClaimType.UserId), task);
+                return await _challengeTaskRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), task);
             }
-            int userId = await GetClaimId(ClaimType.UserId);
+            int userId = GetClaimId(ClaimType.UserId);
             _logger.LogError($"User {userId} doesn't have permission to add a task to challenge {task.ChallengeId}.");
             throw new Exception("Permission denied.");
         }
 
         public async Task<ChallengeTask> EditTaskAsync(ChallengeTask task)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
                 return await _challengeTaskRepository
-                    .UpdateSaveAsync(await GetClaimId(ClaimType.UserId), task);
+                    .UpdateSaveAsync(GetClaimId(ClaimType.UserId), task);
             }
-            int userId = await GetClaimId(ClaimType.UserId);
+            int userId = GetClaimId(ClaimType.UserId);
             _logger.LogError($"User {userId} doesn't have permission to edit a task for challenge {task.ChallengeId}.");
             throw new Exception("Permission denied.");
         }
@@ -118,14 +115,14 @@ namespace GRA.Domain.Service
 
         public async Task RemoveTaskAsync(int taskId)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
                 await _challengeTaskRepository
-                    .RemoveSaveAsync(await GetClaimId(ClaimType.UserId), taskId);
+                    .RemoveSaveAsync(GetClaimId(ClaimType.UserId), taskId);
             }
             else
             {
-                int userId = await GetClaimId(ClaimType.UserId);
+                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to remove a challenge task");
                 throw new Exception("Permission denied.");
             }
@@ -133,13 +130,13 @@ namespace GRA.Domain.Service
 
         public async Task DecreaseTaskPositionAsync(int taskId)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
                 await _challengeTaskRepository.DecreasePositionAsync(taskId);
             }
             else
             {
-                int userId = await GetClaimId(ClaimType.UserId);
+                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
                 throw new Exception("Permission denied.");
             }
@@ -147,13 +144,13 @@ namespace GRA.Domain.Service
 
         public async Task IncreaseTaskPositionAsync(int taskId)
         {
-            if (await HasPermission(Permission.EditChallenges))
+            if (HasPermission(Permission.EditChallenges))
             {
                 await _challengeTaskRepository.IncreasePositionAsync(taskId);
             }
             else
             {
-                int userId = await GetClaimId(ClaimType.UserId);
+                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to modify a challenge task");
                 throw new Exception("Permission denied.");
             }

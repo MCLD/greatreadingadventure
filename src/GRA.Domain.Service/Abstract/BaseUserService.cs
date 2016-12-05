@@ -18,11 +18,11 @@ namespace GRA.Domain.Service.Abstract
         private UserContext userContext = null;
         private ClaimsPrincipal currentUser = null;
         private int? currentUserSiteId = null;
-        protected async Task<ClaimsPrincipal> GetAuthUser()
+        protected ClaimsPrincipal GetAuthUser()
         {
             if (userContext == null)
             {
-                userContext = await _userContextProvider.GetContext();
+                userContext = _userContextProvider.GetContext();
             }
             if (currentUser == null)
             {
@@ -31,11 +31,11 @@ namespace GRA.Domain.Service.Abstract
             return currentUser;
         }
 
-        protected async Task<int> GetCurrentSiteId()
+        protected int GetCurrentSiteId()
         {
             if (userContext == null)
             {
-                userContext = await _userContextProvider.GetContext();
+                userContext = _userContextProvider.GetContext();
             }
             if (currentUserSiteId == null)
             {
@@ -44,23 +44,23 @@ namespace GRA.Domain.Service.Abstract
             return (int)currentUserSiteId;
         }
 
-        protected async Task<bool> HasPermission(Permission permission)
+        protected bool HasPermission(Permission permission)
         {
-            var currentUser = await GetAuthUser();
+            var currentUser = GetAuthUser();
             return new UserClaimLookup(currentUser).UserHasPermission(permission.ToString());
         }
 
-        protected async Task<int> GetClaimId(string claimType)
+        protected int GetClaimId(string claimType)
         {
-            var currentUser = await GetAuthUser();
+            var currentUser = GetAuthUser();
             return new UserClaimLookup(currentUser).GetId(claimType);
         }
 
-        protected async Task<int> GetActiveUserId()
+        protected int GetActiveUserId()
         {
             if (userContext == null)
             {
-                userContext = await _userContextProvider.GetContext();
+                userContext = _userContextProvider.GetContext();
             }
             if(userContext == null
                || !userContext.User.Identity.IsAuthenticated

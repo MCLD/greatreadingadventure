@@ -52,8 +52,8 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<User>>>
            GetPaginatedUserListAsync(int skip, int take)
         {
-            int siteId = await GetClaimId(ClaimType.SiteId);
-            if (await HasPermission(Permission.ViewParticipantList))
+            int siteId = GetClaimId(ClaimType.SiteId);
+            if (HasPermission(Permission.ViewParticipantList))
             {
                 var dataTask = _userRepository.PageAllAsync(siteId, skip, take);
                 var countTask = _userRepository.GetCountAsync();
@@ -66,7 +66,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                int userId = await GetClaimId(ClaimType.UserId);
+                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to view all participants.");
                 throw new Exception("Permission denied.");
             }
@@ -78,9 +78,9 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            int requestingUserId = await GetClaimId(ClaimType.UserId);
+            int requestingUserId = GetClaimId(ClaimType.UserId);
             if (requestingUserId == householdHeadUserId
-                || await HasPermission(Permission.ViewParticipantList))
+                || HasPermission(Permission.ViewParticipantList))
             {
                 var dataTask = _userRepository.PageHouseholdAsync(householdHeadUserId, skip, take);
                 var countTask = _userRepository.GetHouseholdCountAsync(householdHeadUserId);
@@ -101,9 +101,9 @@ namespace GRA.Domain.Service
         public async Task<int>
             FamilyMemberCountAsync(int householdHeadUserId)
         {
-            int requestingUserId = await GetClaimId(ClaimType.UserId);
+            int requestingUserId = GetClaimId(ClaimType.UserId);
             if (requestingUserId == householdHeadUserId
-                || await HasPermission(Permission.ViewParticipantList))
+                || HasPermission(Permission.ViewParticipantList))
             {
                 return await _userRepository.GetHouseholdCountAsync(householdHeadUserId);
             }
@@ -116,13 +116,13 @@ namespace GRA.Domain.Service
 
         public async Task<User> GetDetails(int userId)
         {
-            int requestingUserId = await GetActiveUserId();
+            int requestingUserId = GetActiveUserId();
             var requestingUser = await _userRepository.GetByIdAsync(requestingUserId);
-            int authUserId = await GetClaimId(ClaimType.UserId);
+            int authUserId = GetClaimId(ClaimType.UserId);
 
             if (requestingUserId == userId
                 || requestingUser.HouseholdHeadUserId == authUserId
-                || await HasPermission(Permission.ViewParticipantDetails))
+                || HasPermission(Permission.ViewParticipantDetails))
             {
                 return await _userRepository.GetByIdAsync(userId);
             }
@@ -135,7 +135,7 @@ namespace GRA.Domain.Service
 
         public async Task<User> Update(User userToUpdate)
         {
-            int requestingUserId = await GetActiveUserId();
+            int requestingUserId = GetActiveUserId();
 
             if (requestingUserId == userToUpdate.Id)
             {
@@ -166,9 +166,9 @@ namespace GRA.Domain.Service
 
         public async Task<User> MCUpdate(User userToUpdate)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = GetClaimId(ClaimType.UserId);
 
-            if (await HasPermission(Permission.EditParticipants))
+            if (HasPermission(Permission.EditParticipants))
             {
                 // admin users can update anything except siteid
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
@@ -184,9 +184,9 @@ namespace GRA.Domain.Service
 
         public async Task Remove(int userIdToRemove)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = GetClaimId(ClaimType.UserId);
 
-            if (await HasPermission(Permission.DeleteParticipants))
+            if (HasPermission(Permission.DeleteParticipants))
             {
                 var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
                 if (!userLookup.CanBeDeleted)
@@ -212,9 +212,9 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            int requestedByUserId = await GetActiveUserId();
+            int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
-               || await HasPermission(Permission.ViewParticipantDetails))
+               || HasPermission(Permission.ViewParticipantDetails))
             {
                 return new DataWithCount<IEnumerable<UserLog>>
                 {
@@ -232,9 +232,9 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Book>>>
             GetPaginatedUserBookListAsync(int userId, int skip, int take)
         {
-            int requestedByUserId = await GetActiveUserId();
+            int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
-               || await HasPermission(Permission.ViewParticipantDetails))
+               || HasPermission(Permission.ViewParticipantDetails))
             {
                 var dataTask = _bookRepository.GetForUserAsync(userId);
                 var countTask = _bookRepository.GetCountForUserAsync(userId);
@@ -255,7 +255,7 @@ namespace GRA.Domain.Service
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode)
         {
-            int siteId = await GetClaimId(ClaimType.SiteId);
+            int siteId = GetClaimId(ClaimType.SiteId);
             var authCode
                 = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode);
 
@@ -263,7 +263,7 @@ namespace GRA.Domain.Service
             {
                 return null;
             }
-            int userId = await GetClaimId(ClaimType.UserId);
+            int userId = GetClaimId(ClaimType.UserId);
             await _userRepository.AddRoleAsync(userId, userId, authCode.RoleId);
             if (authCode.IsSingleUse)
             {

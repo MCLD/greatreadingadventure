@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using GRA.Domain.Service;
 
 namespace GRA.Web
 {
@@ -73,16 +74,19 @@ namespace GRA.Web
             services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
 
+            // filters
+            services.AddScoped<Controllers.Filter.SiteFilter>();
+
             // services
-            services.AddScoped<Domain.Service.ActivityService, Domain.Service.ActivityService>();
-            services.AddScoped<Domain.Service.AuthenticationService, Domain.Service.AuthenticationService>();
-            services.AddScoped<Domain.Service.ChallengeService, Domain.Service.ChallengeService>();
-            services.AddScoped<Domain.Service.InitialSetupService, Domain.Service.InitialSetupService>();
-            services.AddScoped<Domain.Service.MailService, Domain.Service.MailService>();
-            services.AddScoped<Domain.Service.SampleDataService, Domain.Service.SampleDataService>();
-            services.AddScoped<Domain.Service.SiteLookupService, Domain.Service.SiteLookupService>();
-            services.AddScoped<Domain.Service.SiteService, Domain.Service.SiteService>();
-            services.AddScoped<Domain.Service.UserService, Domain.Service.UserService>();
+            services.AddScoped<ActivityService>();
+            services.AddScoped<AuthenticationService>();
+            services.AddScoped<ChallengeService>();
+            services.AddScoped<InitialSetupService>();
+            services.AddScoped<MailService>();
+            services.AddScoped<SampleDataService>();
+            services.AddScoped<SiteLookupService>();
+            services.AddScoped<SiteService>();
+            services.AddScoped<UserService>();
 
             // repositories
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
@@ -111,7 +115,7 @@ namespace GRA.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() && false)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
@@ -136,6 +140,7 @@ namespace GRA.Web
                 AutomaticChallenge = true
             });
 
+            // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

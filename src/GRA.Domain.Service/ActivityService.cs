@@ -36,15 +36,15 @@ namespace GRA.Domain.Service
             bool goodToLog = false;
             bool loggingAsAdminUser = false;
 
-            int activeUserId = await GetActiveUserId();
-            int authUserId = await GetClaimId(ClaimType.UserId);
+            int activeUserId = GetActiveUserId();
+            int authUserId = GetClaimId(ClaimType.UserId);
             var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
 
             if (activeUserId == userIdToLog)
             {
                 goodToLog = true;
             }
-            else if (await HasPermission(Permission.LogActivityForAny))
+            else if (HasPermission(Permission.LogActivityForAny))
             {
                 goodToLog = true;
                 loggingAsAdminUser = true;
@@ -94,8 +94,8 @@ namespace GRA.Domain.Service
         public async Task<User> RemoveActivityAsync(int userIdToLog,
             int userLogIdToRemove)
         {
-            int currentUserId = await GetClaimId(ClaimType.UserId);
-            if(await HasPermission(Permission.LogActivityForAny))
+            int currentUserId = GetClaimId(ClaimType.UserId);
+            if(HasPermission(Permission.LogActivityForAny))
             {
                 var userLog = await _userLogRepository.GetByIdAsync(userLogIdToRemove);
 
@@ -114,14 +114,14 @@ namespace GRA.Domain.Service
 
         public async Task AddBook(int userId, Book book)
         {
-            int activeUserId = await GetActiveUserId();
+            int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
-            int authUserId = await GetClaimId(ClaimType.UserId);
+            int authUserId = GetClaimId(ClaimType.UserId);
 
 
             if (userId == activeUserId
                 || activeUser.HouseholdHeadUserId == authUserId
-                || await HasPermission(Permission.LogActivityForAny))
+                || HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
             }
@@ -134,9 +134,9 @@ namespace GRA.Domain.Service
 
         public async Task RemoveBook(int userId, int bookId)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-                || await HasPermission(Permission.LogActivityForAny))
+                || HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.RemoveForUserAsync(requestedByUserId, userId, bookId);
             }
@@ -150,9 +150,9 @@ namespace GRA.Domain.Service
 
         public async Task UpdateBook(int userId, Book book)
         {
-            int requestedByUserId = await GetClaimId(ClaimType.UserId);
+            int requestedByUserId = GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
-                || await HasPermission(Permission.LogActivityForAny))
+                || HasPermission(Permission.LogActivityForAny))
             {
                 await _bookRepository.UpdateSaveAsync(requestedByUserId, book);
             }

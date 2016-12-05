@@ -39,8 +39,7 @@ namespace GRA.Controllers.Helpers
         {
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
             var routeData = url.ActionContext.RouteData.Values;
-            string sitePath = routeData["sitePath"] as string;
-            var userContext = await _userContextProvider.GetContext();
+            var userContext = _userContextProvider.GetContext();
             int siteId = userContext.SiteId;
             Site site = await _siteLookupService.GetById((int)siteId);
             switch (property.ToLower())

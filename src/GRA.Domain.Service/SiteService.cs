@@ -31,7 +31,7 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Model.System>> GetSystemList()
         {
             
-            return await _systemRepository.GetAllAsync(await GetCurrentSiteId());
+            return await _systemRepository.GetAllAsync(GetCurrentSiteId());
         }
 
         public async Task<IEnumerable<Branch>> GetBranches(int systemId)
@@ -41,7 +41,7 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<Program>> GetProgramList()
         {
-            return await _programRepository.GetAllAsync(await GetCurrentSiteId());
+            return await _programRepository.GetAllAsync(GetCurrentSiteId());
         }
     }
 }

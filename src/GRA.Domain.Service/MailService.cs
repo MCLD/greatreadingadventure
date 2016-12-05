@@ -20,14 +20,14 @@ namespace GRA.Domain.Service
 
         public async Task<int> GetUserUnreadCountAsync()
         {
-            var userId = await GetClaimId(ClaimType.UserId);
+            var userId = GetClaimId(ClaimType.UserId);
             return await _mailRepository.GetUserUnreadCountAsync(userId);
         }
 
         public async Task<DataWithCount<IEnumerable<Mail>>> GetUserPaginatedAsync(int skip,
             int take)
         {
-            var userId = await GetClaimId(ClaimType.UserId);
+            var userId = GetClaimId(ClaimType.UserId);
             var dataTask = _mailRepository.PageUserAsync(userId, skip, take);
             var countTask = _mailRepository.GetUserCountAsync(userId);
             await Task.WhenAll(dataTask, countTask);
@@ -43,7 +43,7 @@ namespace GRA.Domain.Service
             int skip,
             int take)
         {
-            if (await HasPermission(Permission.ReadAllMail))
+            if (HasPermission(Permission.ReadAllMail))
             {
                 var dataTask = _mailRepository.PageUserAsync(getMailForUserId, skip, take);
                 var countTask = _mailRepository.GetUserCountAsync(getMailForUserId);
@@ -56,7 +56,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                var requestingUser = await GetClaimId(ClaimType.UserId);
+                var requestingUser = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {requestingUser} doesn't have permission to view messages for {getMailForUserId}.");
                 throw new Exception("Permission denied.");
             }
@@ -64,8 +64,8 @@ namespace GRA.Domain.Service
 
         public async Task<Mail> GetDetails(int mailId)
         {
-            var userId = await GetClaimId(ClaimType.UserId);
-            bool canReadAll = await HasPermission(Permission.ReadAllMail);
+            var userId = GetClaimId(ClaimType.UserId);
+            bool canReadAll = HasPermission(Permission.ReadAllMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail.FromUserId == userId || mail.ToUserId == userId || canReadAll)
             {
@@ -78,8 +78,8 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Mail>>> GetAllPaginatedAsync(int skip,
             int take)
         {
-            int siteId = await GetClaimId(ClaimType.SiteId);
-            if (await HasPermission(Permission.ReadAllMail))
+            int siteId = GetClaimId(ClaimType.SiteId);
+            if (HasPermission(Permission.ReadAllMail))
             {
                 var dataTask = _mailRepository.PageAllAsync(siteId, skip, take);
                 var countTask = _mailRepository.GetAllCountAsync();
@@ -92,7 +92,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                var userId = await GetClaimId(ClaimType.UserId);
+                var userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to get all mails.");
                 throw new Exception("Permission denied.");
             }
@@ -101,7 +101,7 @@ namespace GRA.Domain.Service
         public async Task<DataWithCount<IEnumerable<Mail>>> GetAllUnreadPaginatedAsync(int skip,
             int take)
         {
-            if (await HasPermission(Permission.ReadAllMail))
+            if (HasPermission(Permission.ReadAllMail))
             {
                 var dataTask = _mailRepository.PageAdminUnreadAsync(skip, take);
                 var countTask = _mailRepository.GetAdminUnreadCountAsync();
@@ -114,7 +114,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                var userId = await GetClaimId(ClaimType.UserId);
+                var userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to get all unread mails.");
                 throw new Exception("Permission denied.");
             }
@@ -122,7 +122,7 @@ namespace GRA.Domain.Service
 
         public async Task MarkAsReadAsync(int mailId)
         {
-            var userId = await GetClaimId(ClaimType.UserId);
+            var userId = GetClaimId(ClaimType.UserId);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail.FromUserId == userId || mail.ToUserId == userId)
             {
@@ -136,17 +136,17 @@ namespace GRA.Domain.Service
         public async Task<Mail> SendAsync(Mail mail)
         {
             if (mail.ToUserId == null
-               || await HasPermission(Permission.MailParticipants))
+               || HasPermission(Permission.MailParticipants))
             {
-                mail.FromUserId = await GetClaimId(ClaimType.UserId);
+                mail.FromUserId = GetClaimId(ClaimType.UserId);
                 mail.IsNew = true;
                 mail.IsDeleted = false;
-                mail.SiteId = await GetClaimId(ClaimType.SiteId);
+                mail.SiteId = GetClaimId(ClaimType.SiteId);
                 return await _mailRepository.AddSaveAsync(mail.FromUserId, mail);
             }
             else
             {
-                var userId = await GetClaimId(ClaimType.UserId);
+                var userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to send a mail to {mail.ToUserId}.");
                 throw new Exception("Permission denied");
             }
@@ -155,20 +155,20 @@ namespace GRA.Domain.Service
         public async Task<Mail> SendReplyAsync(Mail mail, int inReplyToId)
         {
             if (mail.ToUserId == null
-               || await HasPermission(Permission.MailParticipants))
+               || HasPermission(Permission.MailParticipants))
             {
                 var inReplyToMail = await _mailRepository.GetByIdAsync(inReplyToId);
                 mail.InReplyToId = inReplyToId;
                 mail.ThreadId = inReplyToMail.ThreadId ?? inReplyToId;
-                mail.FromUserId = await GetClaimId(ClaimType.UserId);
+                mail.FromUserId = GetClaimId(ClaimType.UserId);
                 mail.IsNew = true;
                 mail.IsDeleted = false;
-                mail.SiteId = await GetClaimId(ClaimType.SiteId);
+                mail.SiteId = GetClaimId(ClaimType.SiteId);
                 return await _mailRepository.AddSaveAsync(mail.FromUserId, mail);
             }
             else
             {
-                var userId = await GetClaimId(ClaimType.UserId);
+                var userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to send a mail to {mail.ToUserId}.");
                 throw new Exception("Permission denied");
             }
@@ -177,8 +177,8 @@ namespace GRA.Domain.Service
 
         public async Task RemoveAsync(int mailId)
         {
-            var userId = await GetClaimId(ClaimType.UserId);
-            bool canDeleteAll = await HasPermission(Permission.DeleteAnyMail);
+            var userId = GetClaimId(ClaimType.UserId);
+            bool canDeleteAll = HasPermission(Permission.DeleteAnyMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
             if (mail.FromUserId == userId || mail.ToUserId == userId || canDeleteAll)
             {

@@ -3,6 +3,7 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
@@ -11,17 +12,21 @@ namespace GRA.Controllers.MissionControl
     public class HomeController : Base.Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly SampleDataService _configurationService;
+        private readonly AuthenticationService _authenticationService;
+        private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
-            SampleDataService configurationService,
+            AuthenticationService authenticationService,
+            SampleDataService sampleDataService,
             UserService userService,
             ServiceFacade.Controller context)
             : base(context)
         {
             this._logger = Require.IsNotNull(logger, nameof(logger));
-            this._configurationService = Require.IsNotNull(configurationService,
-                nameof(configurationService));
+            this._authenticationService = Require.IsNotNull(authenticationService,
+                nameof(authenticationService));
+            this._sampleDataService = Require.IsNotNull(sampleDataService,
+                nameof(sampleDataService));
             this._userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Mission Control";
         }
@@ -31,7 +36,12 @@ namespace GRA.Controllers.MissionControl
             if (!AuthUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
-                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    ReturnUrl = "/MissionControl"
+                });
             }
 
             if (!UserHasPermission(Permission.AccessMissionControl))
@@ -54,7 +64,12 @@ namespace GRA.Controllers.MissionControl
             if (!AuthUser.Identity.IsAuthenticated)
             {
                 // not logged in, redirect to login page
-                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", ReturnUrl = "/MissionControl" });
+                return RedirectToRoute(new
+                {
+                    area = string.Empty,
+                    controller = "SignIn",
+                    ReturnUrl = "/MissionControl"
+                });
             }
 
             string role
@@ -62,9 +77,16 @@ namespace GRA.Controllers.MissionControl
 
             if (!string.IsNullOrEmpty(role))
             {
-                AlertSuccess = $"Code applied, you are now a member of the role: <strong>{role}</strong>. Please log in again to access your new rights.";
-                await LogoutUserAsync();
-                return RedirectToRoute(new { area = string.Empty, controller = "SignIn", action = "Index"});
+                var auth = await _authenticationService
+                    .RevalidateUserAsync(GetId(ClaimType.UserId));
+                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: <strong>{role}</strong>.";
+                await LoginUserAsync(auth);
+                return RedirectToRoute(new
+                {
+                    area = "MissionControl",
+                    controller = "Home",
+                    action = "Index"
+                });
             }
             else
             {
@@ -75,7 +97,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> LoadSampleData()
         {
-            await _configurationService.InsertSampleData(GetId(ClaimType.UserId));
+            await _sampleDataService.InsertSampleData(GetId(ClaimType.UserId));
             AlertSuccess = "Inserted sample data.";
             return RedirectToAction("Index");
         }
