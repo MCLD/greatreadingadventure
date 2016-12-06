@@ -92,10 +92,9 @@ namespace GRA.Controllers.MissionControl
         {
             var user = await _userService.GetDetails(id);
             SetPageTitle(user);
-            var branchList = _siteService.GetBranches(user.SystemId);
-            var programList = _siteService.GetProgramList();
-            var systemList = _siteService.GetSystemList();
-            await Task.WhenAll(branchList, programList, systemList);
+            var branchList = await _siteService.GetBranches(user.SystemId);
+            var programList = await _siteService.GetProgramList();
+            var systemList = await _siteService.GetSystemList();
 
             ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
             {
@@ -106,9 +105,9 @@ namespace GRA.Controllers.MissionControl
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 CanEditDetails = UserHasPermission(Permission.EditParticipants),
-                BranchList = new SelectList(branchList.Result.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.Result.ToList(), "Id", "Name"),
-                SystemList = new SelectList(systemList.Result.ToList(), "Id", "Name")
+                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                SystemList = new SelectList(systemList.ToList(), "Id", "Name")
             };
             return View(viewModel);
         }
@@ -127,13 +126,12 @@ namespace GRA.Controllers.MissionControl
             {
                 SetPageTitle(model.User);
 
-                var branchList = _siteService.GetBranches(model.User.SystemId);
-                var programList = _siteService.GetProgramList();
-                var systemList = _siteService.GetSystemList();
-                await Task.WhenAll(branchList, programList, systemList);
-                model.BranchList = new SelectList(branchList.Result.ToList(), "Id", "Name");
-                model.ProgramList = new SelectList(programList.Result.ToList(), "Id", "Name");
-                model.SystemList = new SelectList(systemList.Result.ToList(), "Id", "Name");
+                var branchList = await _siteService.GetBranches(model.User.SystemId);
+                var programList = await _siteService.GetProgramList();
+                var systemList = await _siteService.GetSystemList();
+                model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
+                model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
 
                 return View(model);
             }

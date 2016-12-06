@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers.Filter
 {
-    public class SessionTimeoutFilter : Attribute, IActionFilter
+    public class SessionTimeoutFilter : Attribute, IAsyncActionFilter
     {
-        public void OnActionExecuted(ActionExecutedContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context,
+            ActionExecutionDelegate next)
         {
             if (context.HttpContext.Session.GetInt32(SessionKey.ActiveUserId) == null
                 && context.HttpContext.User.Identity.IsAuthenticated)
             {
                 // no session but logged in - log out, redirect
-                var controller = (Controllers.Base.Controller)context.Controller;
-                Task.WaitAll(controller.LogoutUserAsync());
+                var controller = (Base.Controller)context.Controller;
+                await controller.LogoutUserAsync();
                 // TODO move this message to a customizable location
                 controller.TempData[TempDataKey.AlertWarning] = "Your session has expired. Please sign in again.";
 
@@ -25,10 +26,10 @@ namespace GRA.Controllers.Filter
                     action = "Index"
                 });
             }
-        }
-
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
+            else
+            {
+                await next();
+            }
         }
     }
 }

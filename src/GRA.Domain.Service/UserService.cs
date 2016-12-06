@@ -55,13 +55,10 @@ namespace GRA.Domain.Service
             int siteId = GetClaimId(ClaimType.SiteId);
             if (HasPermission(Permission.ViewParticipantList))
             {
-                var dataTask = _userRepository.PageAllAsync(siteId, skip, take);
-                var countTask = _userRepository.GetCountAsync();
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<User>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _userRepository.PageAllAsync(siteId, skip, take),
+                    Count = await _userRepository.GetCountAsync()
                 };
             }
             else
@@ -84,14 +81,12 @@ namespace GRA.Domain.Service
                 || authUser.HouseholdHeadUserId == householdHeadUserId
                 || HasPermission(Permission.ViewParticipantList))
             {
-                var dataTask = _userRepository.PageHouseholdAsync(householdHeadUserId, skip, take);
-                var countTask = _userRepository.GetHouseholdCountAsync(householdHeadUserId);
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<User>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
-                };
+                    Data = await _userRepository
+                        .PageHouseholdAsync(householdHeadUserId, skip, take),
+                    Count = await _userRepository.GetHouseholdCountAsync(householdHeadUserId)
+            };
             }
             else
             {
@@ -240,13 +235,10 @@ namespace GRA.Domain.Service
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                var dataTask = _bookRepository.GetForUserAsync(userId);
-                var countTask = _bookRepository.GetCountForUserAsync(userId);
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<Book>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _bookRepository.GetForUserAsync(userId),
+                    Count = await _bookRepository.GetCountForUserAsync(userId)
                 };
             }
             else

@@ -28,13 +28,10 @@ namespace GRA.Domain.Service
             int take)
         {
             var userId = GetClaimId(ClaimType.UserId);
-            var dataTask = _mailRepository.PageUserAsync(userId, skip, take);
-            var countTask = _mailRepository.GetUserCountAsync(userId);
-            await Task.WhenAll(dataTask, countTask);
             return new DataWithCount<IEnumerable<Mail>>
             {
-                Data = dataTask.Result,
-                Count = countTask.Result
+                Data = await _mailRepository.PageUserAsync(userId, skip, take),
+                Count = await _mailRepository.GetUserCountAsync(userId)
             };
         }
 
@@ -45,13 +42,10 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.ReadAllMail))
             {
-                var dataTask = _mailRepository.PageUserAsync(getMailForUserId, skip, take);
-                var countTask = _mailRepository.GetUserCountAsync(getMailForUserId);
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<Mail>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _mailRepository.PageUserAsync(getMailForUserId, skip, take),
+                    Count = await _mailRepository.GetUserCountAsync(getMailForUserId)
                 };
             }
             else
@@ -81,13 +75,10 @@ namespace GRA.Domain.Service
             int siteId = GetClaimId(ClaimType.SiteId);
             if (HasPermission(Permission.ReadAllMail))
             {
-                var dataTask = _mailRepository.PageAllAsync(siteId, skip, take);
-                var countTask = _mailRepository.GetAllCountAsync();
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<Mail>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _mailRepository.PageAllAsync(siteId, skip, take),
+                    Count = await _mailRepository.GetAllCountAsync()
                 };
             }
             else
@@ -103,13 +94,10 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.ReadAllMail))
             {
-                var dataTask = _mailRepository.PageAdminUnreadAsync(skip, take);
-                var countTask = _mailRepository.GetAdminUnreadCountAsync();
-                await Task.WhenAll(dataTask, countTask);
                 return new DataWithCount<IEnumerable<Mail>>
                 {
-                    Data = dataTask.Result,
-                    Count = countTask.Result
+                    Data = await _mailRepository.PageAdminUnreadAsync(skip, take),
+                    Count = await _mailRepository.GetAdminUnreadCountAsync()
                 };
             }
             else
