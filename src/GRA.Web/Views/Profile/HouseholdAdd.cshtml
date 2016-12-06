@@ -1,0 +1,77 @@
+﻿@model GRA.Controllers.ViewModel.Profile.HouseholdAddViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <span class="h2">Add Household Member</span>
+    </div>
+</div>
+
+<form asp-controller="Profile" asp-action="AddHouseholdMember" method="post" role="form">
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.FirstName" class="control-label"></label>
+                    <input asp-for="User.FirstName" class="form-control" />
+                    <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.LastName" class="control-label"></label>
+                    <input asp-for="User.LastName" class="form-control" />
+                    <span asp-validation-for="User.LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.Email" class="control-label"></label>
+                    <input asp-for="User.Email" class="form-control" type="email" />
+                    <span asp-validation-for="User.Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.PhoneNumber" class="control-label"></label>
+                    <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
+                    <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.BranchId" class="control-label"></label>
+                    <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                    <span asp-validation-for="User.BranchId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.ProgramId" class="control-label"></label>
+                    <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
+                    <span asp-validation-for="User.ProgramId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="User.SystemId" class="control-label"></label>
+                    <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                    <span asp-validation-for="User.SystemId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner-no-validate">
+            <span class="buttonText">Add member</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>

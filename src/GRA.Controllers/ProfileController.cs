@@ -38,7 +38,8 @@ namespace GRA.Controllers
         {
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            var getHouseholdCount = _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
+            var getHouseholdCount = _userService
+                .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id);
             var branchList = _siteService.GetBranches(user.SystemId);
             var programList = _siteService.GetProgramList();
             var systemList = _siteService.GetSystemList();
@@ -88,11 +89,17 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             User activeUser = await _userService.GetDetails(GetActiveUserId());
 
+            User headUser = null;
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
+            }
+
             var household = await _userService
-                .GetPaginatedFamilyListAsync(authUser.Id, skip, take);
+                .GetPaginatedFamilyListAsync(authUser.HouseholdHeadUserId ?? authUser.Id, skip, take);
 
             // authUser is the head of the family
-            bool authUserIsHead = 
+            bool authUserIsHead =
                 authUser.Id == household.Data.FirstOrDefault()?.HouseholdHeadUserId;
 
             PaginateViewModel paginateModel = new PaginateViewModel()
@@ -116,7 +123,7 @@ namespace GRA.Controllers
                 PaginateModel = paginateModel,
                 HouseholdCount = household.Count,
                 HasAccount = !string.IsNullOrWhiteSpace(activeUser.Username),
-                Head = authUser,
+                Head = headUser ?? authUser,
                 AuthUserIsHead = authUserIsHead,
                 ActiveUser = GetActiveUserId()
             };
@@ -124,12 +131,82 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> AddHouseholdMember()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                RedirectToAction("Household");
+            }
+
+            var userBase = new User()
+            {
+                LastName = authUser.LastName,
+                Email = authUser.Email,
+                PhoneNumber = authUser.PhoneNumber,
+                BranchId = authUser.BranchId,
+                ProgramId = authUser.ProgramId,
+                SystemId = authUser.SystemId
+            };
+
+            var branchList = _siteService.GetBranches(authUser.SystemId);
+            var programList = _siteService.GetProgramList();
+            var systemList = _siteService.GetSystemList();
+            await Task.WhenAll(branchList, programList, systemList);
+
+            HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
+            {
+                User = userBase,
+                BranchList = new SelectList(branchList.Result.ToList(), "Id", "Name"),
+                ProgramList = new SelectList(programList.Result.ToList(), "Id", "Name"),
+                SystemList = new SelectList(systemList.Result.ToList(), "Id", "Name")
+            };
+                
+
+            return View("HouseholdAdd", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddHouseholdMember(HouseholdAddViewModel model)
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                RedirectToAction("Household");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _userService.AddHouseholdMemberAsync(authUser.Id, model.User);
+                AlertSuccess = "Added household member";
+                return RedirectToAction("Household");
+            }
+            else
+            {
+                var branchList = _siteService.GetBranches(model.User.SystemId);
+                var programList = _siteService.GetProgramList();
+                var systemList = _siteService.GetSystemList();
+                await Task.WhenAll(branchList, programList, systemList);
+                model.BranchList = new SelectList(branchList.Result.ToList(), "Id", "Name");
+                model.ProgramList = new SelectList(programList.Result.ToList(), "Id", "Name");
+                model.SystemList = new SelectList(systemList.Result.ToList(), "Id", "Name");
+
+                return View("HouseholdAdd", model);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> LoginAs(int id)
         {
-            HttpContext.Session.SetInt32(SessionKey.ActiveUserId, id);
             var user = await _userService.GetDetails(id);
-            AlertSuccess = $"<span class=\"fa fa-user\"></span> You are now signed in as <strong>{user.FullName}</strong>.";
+            var authUser = GetId(ClaimType.UserId);
+            var activeUser = GetActiveUserId();
+
+            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != id)
+            {
+                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, id);
+                AlertSuccess = $"<span class=\"fa fa-user\"></span> You are now signed in as <strong>{user.FullName}</strong>.";
+            }
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
@@ -156,15 +233,15 @@ namespace GRA.Controllers
                     });
             }
 
-            var getUser = await _userService.GetDetails(GetActiveUserId());
-            var getHouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
+            User user = await _userService.GetDetails(GetActiveUserId());
 
             BookListViewModel viewModel = new BookListViewModel()
             {
                 Books = books.Data,
                 PaginateModel = paginateModel,
-                HouseholdCount = getHouseholdCount,
-                HasAccount = !string.IsNullOrWhiteSpace(getUser.Username)
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
 
             return View(viewModel);
@@ -192,15 +269,15 @@ namespace GRA.Controllers
                     });
             }
 
-            var getUser = await _userService.GetDetails(GetActiveUserId());
-            var getHouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId));
+            User user = await _userService.GetDetails(GetActiveUserId());
 
             HistoryListViewModel viewModel = new HistoryListViewModel()
             {
                 Historys = history.Data,
                 PaginateModel = paginateModel,
-                HouseholdCount = getHouseholdCount,
-                HasAccount = !string.IsNullOrWhiteSpace(getUser.Username)
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
 
             return View(viewModel);
@@ -216,7 +293,8 @@ namespace GRA.Controllers
 
             ChangePasswordViewModel viewModel = new ChangePasswordViewModel()
             {
-                HouseholdCount = await _userService.FamilyMemberCountAsync(GetId(ClaimType.UserId)),
+                HouseholdCount = await _userService
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
                 HasAccount = true
             };
 

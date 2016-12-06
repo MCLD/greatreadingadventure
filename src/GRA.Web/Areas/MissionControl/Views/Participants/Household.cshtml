@@ -14,13 +14,12 @@
                 <table class="table table-condensed table-bordered link-table table-striped">
                     <thead>
                         <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Name</th>
                             <th>UserName</th>
+                            <th>Points Earned</th>
                             <th>EmailAddress</th>
                             <th>Branch</th>
                             <th>Program</th>
-                            <th>&nbsp;</th>
                         </tr>
                         <tr class="warning">
                             <td class="td-class">
@@ -29,12 +28,13 @@
                                     {
                                         <span class="fa fa-user"></span>
                                     }
-                                    <strong>@Model.Head.FirstName</strong>
+                                    <strong>@Model.Head.FullName</strong>
                                 </a>
                             </td>
-                            <td><strong>@Model.Head.LastName</strong></td>
                             <td><strong>@Model.Head.Username</strong></td>
+                            
                             <td><strong>@Model.Head.Email</strong></td>
+                            <td><strong>@Model.Head.PointsEarned</strong></td>
                             <td><strong>@Model.Head.BranchName</strong></td>
                             <td><strong>@Model.Head.ProgramName</strong></td>
                         </tr>
@@ -42,19 +42,19 @@
                     <tbody>
                         @foreach (var user in Model.Users)
                         {
-                            <tr>
+                            <tr class="@(Model.Id == user.Id ? "info" : null)">
                                 <td class="td-class">
                                     <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
                                         @if (user.Id == Model.Id)
                                         {
                                             <span class="fa fa-user"></span>
                                         }
-                                        @user.FirstName
+                                        @user.FullName
                                     </a>
                                 </td>
-                                <td>@user.LastName</td>
                                 <td>@user.Username</td>
                                 <td>@user.Email</td>
+                                <td>@user.PointsEarned</td>
                                 <td>@user.BranchName</td>
                                 <td>@user.ProgramName</td>
                             </tr>

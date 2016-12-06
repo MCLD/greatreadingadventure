@@ -13,6 +13,7 @@
         @if (Model.Users.Count() == 0)
         {
             <div class="alert alert-warning">Click below to create a household</div>
+            <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
         }
         else
         {
@@ -21,13 +22,14 @@
                     <table class="table table-condensed table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>UserName</th>
-                                <th>EmailAddress</th>
-                                <th>Branch</th>
-                                <th>Program</th>
-                                <th>&nbsp;</th>
+                                <th>Name</th>
+                                <th>Points Earned</th>
+                                @if (Model.AuthUserIsHead)
+                                {
+                                    <th>UserName</th>
+                                    <th>EmailAddress</th>
+                                    <th>&nbsp;</th>
+                                }
                             </tr>
                             <tr class="warning">
                                 <td>
@@ -35,62 +37,67 @@
                                     {
                                         <span class="fa fa-user"></span>
                                     }
-                                    <strong>@Model.Head.FirstName</strong>
+                                    <strong>@Model.Head.FullName</strong>
                                 </td>
-                                <td><strong>@Model.Head.LastName</strong></td>
-                                <td><strong>@Model.Head.Username</strong></td>
-                                <td><strong>@Model.Head.Email</strong></td>
-                                <td><strong>@Model.Head.BranchName</strong></td>
-                                <td><strong>@Model.Head.ProgramName</strong></td>
-                                @if (Model.ActiveUser != Model.Head.Id)
+                                <td><strong>@Model.Head.PointsEarned</strong></td>
+                                @if (Model.AuthUserIsHead)
                                 {
+                                    <td><strong>@Model.Head.Username</strong></td>
+                                    <td><strong>@Model.Head.Email</strong></td>
+
                                     <td>
-                                        <button type="submit"
-                                                class="btn btn-primary btn-xs"
-                                                asp-action="LoginAs"
-                                                asp-route-id="@Model.Head.Id">
-                                            <span class="fa fa-sign-in"></span>
-                                            Sign In As
-                                        </button>
+                                        @if (Model.ActiveUser != Model.Head.Id)
+                                        {
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-xs"
+                                                    asp-action="LoginAs"
+                                                    asp-route-id="@Model.Head.Id">
+                                                <span class="fa fa-sign-in"></span>
+                                                Sign In As
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            @:&nbsp;
+                                        }
                                     </td>
-                                }
-                                else
-                                {
-                                    <td>&nbsp;</td>
+
                                 }
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var user in Model.Users)
                             {
-                                <tr>
+                                <tr class="@(Model.ActiveUser == user.Id ? "info" : null)">
                                     <td>
                                         @if (Model.ActiveUser == user.Id)
                                         {
                                             <span class="fa fa-user"></span>
                                         }
-                                        @user.FirstName
+                                        @user.FullName
                                     </td>
-                                    <td>@user.LastName</td>
-                                    <td>@user.Username</td>
-                                    <td>@user.Email</td>
-                                    <td>@user.BranchName</td>
-                                    <td>@user.ProgramName</td>
-                                    @if (Model.ActiveUser != user.Id)
+                                    <td>@user.PointsEarned</td>
+                                    @if (Model.AuthUserIsHead)
                                     {
+                                        <td>@user.Username</td>
+                                        <td>@user.Email</td>
+
                                         <td>
-                                            <button type="submit"
-                                                    class="btn btn-primary btn-xs"
-                                                    asp-action="LoginAs"
-                                                    asp-route-id="@user.Id">
-                                                <span class="fa fa-sign-in"></span>
-                                                Sign In As
-                                            </button>
+                                            @if (Model.ActiveUser != user.Id)
+                                            {
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-xs"
+                                                        asp-action="LoginAs"
+                                                        asp-route-id="@user.Id">
+                                                    <span class="fa fa-sign-in"></span>
+                                                    Sign In As
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                @:&nbsp;
+                                            }
                                         </td>
-                                    }
-                                    else
-                                    {
-                                        <td>&nbsp;</td>
 
                                     }
                                 </tr>
@@ -102,6 +109,10 @@
             @if (Model.PaginateModel.MaxPage > 1)
             {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+            @if (Model.AuthUserIsHead)
+            {
+                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
             }
         }
     </div>
