@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using GRA.Controllers.Filter;
+using System.Security.Principal;
 
 namespace GRA.Controllers.Base
 {
@@ -104,8 +105,14 @@ namespace GRA.Controllers.Base
 
         public async Task LogoutUserAsync()
         {
+            int? siteId = HttpContext.Session.GetInt32(SessionKey.SiteId);
             HttpContext.Session.Clear();
             await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
+            HttpContext.User = new GenericPrincipal(new GenericIdentity(string.Empty), null);
+            if (siteId != null)
+            {
+                HttpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
+            }
         }
 
         protected ClaimsPrincipal AuthUser {
@@ -145,7 +152,7 @@ namespace GRA.Controllers.Base
             int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId);
             if(activeUserId == null)
             {
-                GetId(ClaimType.UserId);
+                activeUserId = GetId(ClaimType.UserId);
             }
             return (int)activeUserId;
         }

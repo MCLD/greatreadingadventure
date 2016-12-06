@@ -6,6 +6,7 @@ using GRA.Controllers.ViewModel.Join;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GRA.Domain.Service;
 using GRA.Domain.Model;
+using System;
 
 namespace GRA.Controllers
 {
@@ -59,8 +60,14 @@ namespace GRA.Controllers
                 model.SystemId = 1;
 
                 User user = _mapper.Map<User>(model);
-
-                await _userService.RegisterUserAsync(user, model.Password);
+                try
+                {
+                    await _userService.RegisterUserAsync(user, model.Password);
+                } catch (Exception ex)
+                {
+                    AlertDanger = ex.Message;
+                    return View(model);
+                }
                 await LoginUserAsync(await _authenticationService
                     .AuthenticateUserAsync(user.Username, model.Password));
 

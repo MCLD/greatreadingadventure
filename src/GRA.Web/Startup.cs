@@ -112,10 +112,11 @@ namespace GRA.Web
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddFile("Logs/gra-{Date}.txt");
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment() && false)
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
