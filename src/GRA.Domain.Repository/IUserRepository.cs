@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace GRA.Domain.Repository
         Task<User> GetByUsernameAsync(string username);
         Task<int> GetCountAsync(int siteId, string search = null);
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
+        Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email);
         Task<IEnumerable<Model.User>> PageAllAsync(int siteId, 
             int skip, 
             int take, 

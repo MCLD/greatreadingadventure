@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
             var system = new Model.System
             {
                 SiteId = siteId,
-                Name = "Maricopa County Library District"
+                Name = "Library District"
             };
             system = await _systemRepository.AddSaveAsync(userId, system);
 
@@ -58,10 +58,7 @@ namespace GRA.Domain.Service
             {
                 SiteId = siteId,
                 SystemId = system.Id,
-                Name = "Admin",
-                Address = "2700 N. Central Ave Ste 700, 85004",
-                Telephone = "602-652-3064",
-                Url = "http://mcldaz.org/"
+                Name = "Main Library",
             };
             branch = await _branchRepository.AddSaveAsync(userId, branch);
 
@@ -69,7 +66,7 @@ namespace GRA.Domain.Service
             {
                 SiteId = siteId,
                 AchieverPointAmount = 1000,
-                Name = "Winter Reading Program",
+                Name = "Reading Program",
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 
@@ -95,7 +92,7 @@ namespace GRA.Domain.Service
             // add code to make first user system administrator
             await _authorizationCodeRepository.AddSaveAsync(userId, new AuthorizationCode
             {
-                Code = initialAuthorizationCode,
+                Code = initialAuthorizationCode.Trim().ToLower(),
                 Description = "Initial code to grant system administrator status.",
                 IsSingleUse = true,
                 RoleId = adminRole.Id,

@@ -253,9 +253,10 @@ namespace GRA.Domain.Service
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode)
         {
+            string fixedCode = authorizationCode.Trim().ToLower();
             int siteId = GetClaimId(ClaimType.SiteId);
             var authCode
-                = await _authorizationCodeRepository.GetByCodeAsync(siteId, authorizationCode);
+                = await _authorizationCodeRepository.GetByCodeAsync(siteId, fixedCode);
 
             if (authCode == null)
             {

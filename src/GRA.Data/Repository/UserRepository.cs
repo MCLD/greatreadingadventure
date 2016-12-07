@@ -315,5 +315,27 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email)
+        {
+            var userIdLookup = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Email == email)
+                .FirstOrDefaultAsync();
+
+            if (userIdLookup == null)
+            {
+                return null;
+            }
+
+            return new DataWithId<IEnumerable<string>>
+            {
+                Id = userIdLookup.Id,
+                Data = await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.Email == email && !string.IsNullOrEmpty(_.Username))
+                    .Select(_ => _.Username)
+                    .ToListAsync()
+            };
+        }
     }
 }

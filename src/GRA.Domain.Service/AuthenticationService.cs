@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Model;
 using GRA.Domain.Service.Abstract;
 using GRA.Domain.Repository;
+using System.Text;
 
 namespace GRA.Domain.Service
 {
@@ -109,7 +110,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task GenerateRecoveryToken(string username)
+        public async Task GenerateTokenAndEmail(string username)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
 
@@ -147,6 +148,27 @@ namespace GRA.Domain.Service
             string mailBody = $"Your password reset token is: {tokenString}";
 
             await _emailService.Send(user.Id, subject, mailBody);
+        }
+
+        public async Task EmailAllUsernames(string email)
+        {
+            var lookupEmail = email.Trim();
+            var usernames = await _userRepository.GetUserIdAndUsernames(lookupEmail);
+
+            if (usernames == null || usernames.Data.Count() == 0)
+            {
+                throw new GraException($"There are no usernames associated with email address: '{lookupEmail}'.");
+            }
+
+            var sb = new StringBuilder($"The following usernames are associated with '{lookupEmail}':");
+            sb.AppendLine();
+            foreach(string username in usernames.Data)
+            {
+                sb.AppendLine($"- username");
+            }
+
+            string subject = "Usernames associated with your email address";
+            await _emailService.Send(usernames.Id, subject, sb.ToString());
         }
     }
 }
