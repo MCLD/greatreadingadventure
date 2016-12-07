@@ -30,6 +30,7 @@ namespace GRA.Web
             Configuration[ConfigurationKey.InitialAuthorizationCode] = "gra4adminmagic";
             if (env.IsDevelopment())
             {
+                builder.AddUserSecrets();
                 Configuration[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
                 Configuration[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
             }
@@ -73,6 +74,7 @@ namespace GRA.Web
             // utilities
             services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
+            services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
 
             // filters
             services.AddScoped<Controllers.Filter.SiteFilter>();
@@ -81,6 +83,7 @@ namespace GRA.Web
             services.AddScoped<ActivityService>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ChallengeService>();
+            services.AddScoped<EmailService>();
             services.AddScoped<InitialSetupService>();
             services.AddScoped<MailService>();
             services.AddScoped<SampleDataService>();

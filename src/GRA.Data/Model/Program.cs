@@ -23,5 +23,8 @@ namespace GRA.Data.Model
         public bool SchoolRequired { get; set; }
         [Required]
         public int Position { get; set; }
+        
+        public string FromEmailName { get; set; }
+        public string FromEmailAddress { get; set; }
     }
 }

@@ -23,5 +23,10 @@ namespace GRA.Domain.Model
         public DateTime? ProgramStarts { get; set; }
         public DateTime? ProgramEnds { get; set; }
         public DateTime? AccessClosed { get; set; }
+
+        public string OutgoingMailHost { get; set; }
+        public int? OutgoingMailPort { get; set; }
+        public string OutgoingMailLogin { get; set; }
+        public string OutgoingMailPassword { get; set; }
     }
 }

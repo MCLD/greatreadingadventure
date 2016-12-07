@@ -56,6 +56,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - [Entity Framework Core](https://github.com/aspnet/EntityFramework) is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects. It eliminates the need for most of the data-access code that developers usually need to write.
 - Source on GitHub: [aspnet/EntityFramework](https://github.com/aspnet/EntityFramework) - [Apache License, Version 2.0](https://github.com/aspnet/EntityFramework/blob/dev/LICENSE.txt)
 
+### MailKit
+- A cross-platform .NET library for IMAP, POP3, and SMTP.
+- Source on GitHub: [jstedfast/MailKit](https://github.com/jstedfast/MailKit) - [MIT License](https://github.com/jstedfast/MailKit/blob/master/License.md)
+
 ### PasswordHasher
 - Securely hash passwords for storage in the database and for valiating logins.
 - Adapted code from the [ASP.NET Identity PasswordHasher class](https://github.com/aspnet/Identity/blob/dev/src/Microsoft.AspNetCore.Identity/PasswordHasher.cs)
@@ -64,3 +68,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### Session serialization/deserialization code snippet
 - The session serialization/deserialization code allows complex objects to be stored in the ASP.NET Session by serializing them to [JSON](http://www.json.org/).
 - From the blog post [Using Sessions and HttpContext in ASP.NET Core and MVC Core](http://benjii.me/2016/07/using-sessions-and-httpcontext-in-aspnetcore-and-mvc-core/) by [Ben Cull](https://bencull.com/)
+
+### SmartFormat.NET
+- A lightweight engine that makes it easy to form natural language from text templates.
+- Source on GitHub [scottrippey/SmartFormat.NET](https://github.com/scottrippey/SmartFormat.NET) - [MIT License](https://github.com/scottrippey/SmartFormat.NET/blob/master/license.txt)

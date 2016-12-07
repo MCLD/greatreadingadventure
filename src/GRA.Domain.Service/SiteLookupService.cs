@@ -77,7 +77,11 @@ namespace GRA.Domain.Service
                 Name = _config[ConfigurationKey.DefaultSiteName],
                 PageTitle = _config[ConfigurationKey.DefaultPageTitle],
                 Path = _config[ConfigurationKey.DefaultSitePath],
-                Footer = _config[ConfigurationKey.DefaultFooter]
+                Footer = _config[ConfigurationKey.DefaultFooter],
+                OutgoingMailHost = _config[ConfigurationKey.DefaultOutgoingMailHost],
+                OutgoingMailLogin = _config[ConfigurationKey.DefaultOutgoingMailLogin],
+                OutgoingMailPassword = _config[ConfigurationKey.DefaultOutgoingMailPassword],
+                OutgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort])
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);

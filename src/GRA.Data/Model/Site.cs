@@ -24,6 +24,11 @@ namespace GRA.Data.Model
         public DateTime? ProgramEnds { get; set; }
         public DateTime? AccessClosed { get; set; }
 
+        public string OutgoingMailHost { get; set; }
+        public int? OutgoingMailPort { get; set; }
+        public string OutgoingMailLogin { get; set; }
+        public string OutgoingMailPassword { get; set; }
+
         public virtual ICollection<Challenge> Challenges { get; set; }
         public virtual ICollection<Program> Programs { get; set; }
         public virtual ICollection<System> Systems { get; set; }

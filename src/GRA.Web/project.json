@@ -1,4 +1,6 @@
 {
+  "userSecretsId": "gra-e773e45a-3078-4b1b-842d-c7a8f7d310a6",
+
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.1.0",
@@ -32,12 +34,14 @@
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
     "Microsoft.Extensions.Caching.Memory": "1.1.0",
     "AutoMapper": "5.2.0",
-    "Serilog.Extensions.Logging.File": "1.0.0"
+    "Serilog.Extensions.Logging.File": "1.0.0",
+    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final"
   },
 
   "tools": {
     "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview4-final",
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
+    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final",
     "BundlerMinifier.Core": "2.2.306"
   },
 

@@ -10,20 +10,26 @@ namespace GRA.Domain.Service
 {
     public class AuthenticationService : Abstract.BaseUserService<AuthenticationService>
     {
+        private readonly GRA.Abstract.ITokenGenerator _tokenGenerator;
         private readonly IUserRepository _userRepository;
         private readonly IRecoveryTokenRepository _recoveryTokenRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly EmailService _emailService;
 
         public AuthenticationService(ILogger<AuthenticationService> logger,
+            GRA.Abstract.ITokenGenerator tokenGenerator,
             IUserContextProvider userContextProvider,
             IUserRepository userRepository,
             IRecoveryTokenRepository recoveryTokenRepository,
-            IRoleRepository roleRepository) : base(logger, userContextProvider)
+            IRoleRepository roleRepository,
+            EmailService emailService) : base(logger, userContextProvider)
         {
+            _tokenGenerator = Require.IsNotNull(tokenGenerator, nameof(tokenGenerator));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _recoveryTokenRepository = Require.IsNotNull(recoveryTokenRepository,
                 nameof(recoveryTokenRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
+            _emailService = Require.IsNotNull(emailService, nameof(emailService));
         }
 
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
@@ -69,7 +75,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {activeUserId} doesn't have permission to reset password for {userIdToReset}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -87,7 +93,7 @@ namespace GRA.Domain.Service
             {
                 if ((validTokens.First().CreatedAt - DateTime.Now).TotalHours > 24)
                 {
-                    throw new Exception($"Token {token} has expired.");
+                    throw new GraException($"Token {token} has expired.");
                 }
 
                 foreach (var request in tokens)
@@ -99,25 +105,24 @@ namespace GRA.Domain.Service
             }
             else
             {
-                throw new Exception($"Token {token} is not valid.");
+                throw new GraException($"Token {token} is not valid.");
             }
         }
 
         public async Task GenerateRecoveryToken(string username)
         {
-            throw new NotImplementedException();
             var user = await _userRepository.GetByUsernameAsync(username);
 
             if (user == null)
             {
                 _logger.LogError($"Username '{username}' doesn't exist so can't create a recovery token.");
-                throw new Exception($"User '{username}' not found.");
+                throw new GraException($"User '{username}' not found.");
             }
 
             if (string.IsNullOrEmpty(user.Email))
             {
                 _logger.LogError($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
-                throw new Exception($"User '{username}' doesn't have an email address configured.");
+                throw new GraException($"User '{username}' doesn't have an email address configured.");
             }
 
             // clear any existing tokens
@@ -128,16 +133,20 @@ namespace GRA.Domain.Service
                 await _recoveryTokenRepository.RemoveSaveAsync(-1, request.Id);
             }
 
+            string tokenString = _tokenGenerator.Generate().ToUpper().Trim();
+
             // insert new token
             var token = await _recoveryTokenRepository.AddSaveAsync(-1, new RecoveryToken
             {
-                //TODO generate token - lowercase and trimmed
-                Token = "generate_token",
+                Token = tokenString.ToLower(),
                 UserId = user.Id
             });
             _logger.LogInformation($"Inserted token for user {user.Id}.");
 
-            //TODO send email with token
+            string subject = "Password reset";
+            string mailBody = $"Your password reset token is: {tokenString}";
+
+            await _emailService.Send(user.Id, subject, mailBody);
         }
     }
 }
