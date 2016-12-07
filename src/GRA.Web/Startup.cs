@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using GRA.Domain.Service;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace GRA.Web
 {
@@ -132,6 +134,13 @@ namespace GRA.Web
             app.ApplicationServices.GetService<Data.Context>().Migrate();
 
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "content")),
+                RequestPath = new PathString("/content")
+            });
 
             app.UseSession();
 
