@@ -38,7 +38,7 @@ namespace GRA.Domain.Service
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
             {
-                throw new Exception("Someone has already chosen that username, please try another.");
+                throw new GraException("Someone has already chosen that username, please try another.");
             }
 
             user.CanBeDeleted = true;
@@ -49,23 +49,25 @@ namespace GRA.Domain.Service
             return registeredUser;
         }
 
-        public async Task<DataWithCount<IEnumerable<User>>>
-           GetPaginatedUserListAsync(int skip, int take)
+        public async Task<DataWithCount<IEnumerable<User>>> GetPaginatedUserListAsync(int skip,
+            int take,
+            string search = null,
+            SortUsersBy sortBy = SortUsersBy.LastName)
         {
             int siteId = GetClaimId(ClaimType.SiteId);
             if (HasPermission(Permission.ViewParticipantList))
             {
                 return new DataWithCount<IEnumerable<User>>
                 {
-                    Data = await _userRepository.PageAllAsync(siteId, skip, take),
-                    Count = await _userRepository.GetCountAsync()
+                    Data = await _userRepository.PageAllAsync(siteId, skip, take, search, sortBy),
+                    Count = await _userRepository.GetCountAsync(siteId, search)
                 };
             }
             else
             {
                 int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to view all participants.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -86,12 +88,12 @@ namespace GRA.Domain.Service
                     Data = await _userRepository
                         .PageHouseholdAsync(householdHeadUserId, skip, take),
                     Count = await _userRepository.GetHouseholdCountAsync(householdHeadUserId)
-            };
+                };
             }
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to view household participants.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -109,7 +111,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to get a count of household participants.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -128,7 +130,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to view participant details.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -159,7 +161,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestingUserId} doesn't have permission to update user {userToUpdate.Id}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -177,7 +179,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to update user {userToUpdate.Id}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -190,19 +192,19 @@ namespace GRA.Domain.Service
                 var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
                 if (!userLookup.CanBeDeleted)
                 {
-                    throw new Exception($"User {userIdToRemove} cannot be deleted.");
+                    throw new GraException($"User {userIdToRemove} cannot be deleted.");
                 }
                 var familyCount = await _userRepository.GetHouseholdCountAsync(userIdToRemove);
                 if (familyCount > 0)
                 {
-                    throw new Exception($"User {userIdToRemove} is the head of a family. Please remove all family members first.");
+                    throw new GraException($"User {userIdToRemove} is the head of a family. Please remove all family members first.");
                 }
                 await _userRepository.RemoveSaveAsync(requestedByUserId, userIdToRemove);
             }
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to remove user {userIdToRemove}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -224,7 +226,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -244,7 +246,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to view details for {userId}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
 
@@ -282,7 +284,7 @@ namespace GRA.Domain.Service
             if (householdHead.HouseholdHeadUserId != null)
             {
                 _logger.LogError($"User {requestedByUserId} cannot add a household member for {householdHeadUserId} who isn't a head of household.");
-                throw new Exception("Cannot add a household member to someone who isn't a head of household.");
+                throw new GraException("Cannot add a household member to someone who isn't a head of household.");
             }
 
             if (requestedByUserId == householdHeadUserId
@@ -297,7 +299,7 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to add a household member to {householdHeadUserId}.");
-                throw new Exception("Permission denied.");
+                throw new GraException("Permission denied.");
             }
         }
     }

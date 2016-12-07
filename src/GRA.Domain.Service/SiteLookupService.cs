@@ -71,6 +71,12 @@ namespace GRA.Domain.Service
 
         private async Task<IEnumerable<Site>> InsertInitialSite()
         {
+            int? outgoingMailPort = null;
+            if(!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
+            {
+                outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort]);
+            }
+
             var site = new Site
             {
                 IsDefault = true,
@@ -81,7 +87,7 @@ namespace GRA.Domain.Service
                 OutgoingMailHost = _config[ConfigurationKey.DefaultOutgoingMailHost],
                 OutgoingMailLogin = _config[ConfigurationKey.DefaultOutgoingMailLogin],
                 OutgoingMailPassword = _config[ConfigurationKey.DefaultOutgoingMailPassword],
-                OutgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort])
+                OutgoingMailPort = outgoingMailPort
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);

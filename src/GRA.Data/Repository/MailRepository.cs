@@ -31,29 +31,31 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetAllCountAsync()
+        public async Task<int> GetAllCountAsync(int siteId)
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false)
+                .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
                 .CountAsync();
         }
 
-        public async Task<int> GetAdminUnreadCountAsync()
+        public async Task<int> GetAdminUnreadCountAsync(int siteId)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
+                    && _.SiteId == siteId
                     && _.ToUserId == null
                     && _.IsNew == true)
                 .CountAsync();
         }
 
-        public async Task<IEnumerable<Mail>> PageAdminUnreadAsync(int skip, int take)
+        public async Task<IEnumerable<Mail>> PageAdminUnreadAsync(int siteId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
+                    && _.SiteId == siteId
                     && _.ToUserId == null
                     && _.IsNew == true)
                 .Skip(skip)

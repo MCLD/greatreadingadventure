@@ -13,11 +13,12 @@ namespace GRA.Domain.Repository
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
         Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
         Task<User> GetByUsernameAsync(string username);
-        Task<int> GetCountAsync();
+        Task<int> GetCountAsync(int siteId, string search = null);
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
         Task<IEnumerable<Model.User>> PageAllAsync(int siteId, 
             int skip, 
             int take, 
+            string search = null,
             SortUsersBy sortBy = SortUsersBy.LastName);
         Task<IEnumerable<Model.User>>
             PageHouseholdAsync(int householdHeadUserId, int skip, int take);

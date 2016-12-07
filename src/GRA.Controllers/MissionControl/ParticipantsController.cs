@@ -47,7 +47,7 @@ namespace GRA.Controllers.MissionControl
             int skip = take * (page - 1);
 
             var participantsList = await _userService
-                .GetPaginatedUserListAsync(skip, take);
+                .GetPaginatedUserListAsync(skip, take, search);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {

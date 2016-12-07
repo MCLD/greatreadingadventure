@@ -184,40 +184,55 @@ namespace GRA.Data.Repository
         public async Task<IEnumerable<User>> PageAllAsync(int siteId,
             int skip,
             int take,
+            string search = null,
             SortUsersBy sortBy = SortUsersBy.LastName)
         {
             var userList = DbSet
                 .AsNoTracking()
                 .Include(_ => _.Branch)
                 .Include(_ => _.Program)
-                .Include(_ => _.System)
-                .Where(_ => _.IsDeleted == false
+                .Include(_ => _.System);
+
+            IQueryable<Model.User> filteredUserList = null;
+            if (string.IsNullOrEmpty(search))
+            {
+                filteredUserList = userList.Where(_ => _.IsDeleted == false
                     && _.SiteId == siteId);
+            }
+            else
+            {
+                filteredUserList = userList.Where(_ => _.IsDeleted == false
+                    && _.SiteId == siteId
+                    && (_.Username.Contains(search)
+                        || _.FirstName.Contains(search)
+                        || _.LastName.Contains(search)
+                        || _.Email.Contains(search)));
+            }
 
             IQueryable<Model.User> orderedUserList = null;
             switch (sortBy)
             {
                 case SortUsersBy.FirstName:
-                    orderedUserList = userList
+                    orderedUserList = filteredUserList
                         .OrderBy(_ => _.FirstName)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.LastName:
-                    orderedUserList = userList
+                    orderedUserList = filteredUserList
                         .OrderBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.RegistrationDate:
-                    orderedUserList = userList
+                    orderedUserList = filteredUserList
                         .OrderBy(_ => _.CreatedAt)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.Username:
-                    orderedUserList = userList
+                    orderedUserList = filteredUserList
                         .OrderBy(_ => _.Username)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName);
@@ -225,18 +240,32 @@ namespace GRA.Data.Repository
             }
 
             return await orderedUserList
-            .Skip(skip)
-            .Take(take)
-            .ProjectTo<User>()
-            .ToListAsync();
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<User>()
+                .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync()
+        public async Task<int> GetCountAsync(int siteId, string search = null)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsDeleted == false)
-                .CountAsync();
+            if (string.IsNullOrEmpty(search))
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
+                    .CountAsync();
+            }
+            else
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId
+                        && (_.Username.Contains(search)
+                        || _.FirstName.Contains(search)
+                        || _.LastName.Contains(search)
+                        || _.Email.Contains(search)))
+                    .CountAsync();
+            }
         }
 
         public async override Task RemoveSaveAsync(int userId, int id)
