@@ -2,9 +2,11 @@
 
 ## Development environment
 
-- Windows: [Visual Studio](https://www.visualstudio.com/vs/)
+- Windows: [Visual Studio 2015](https://www.visualstudio.com/vs/)
 - Linux, macOS, Windows: [Visual Studio Code](https://code.visualstudio.com/)
   - Ensure you [install the C# extension](https://code.visualstudio.com/docs/runtimes/dotnet)
+
+*Currently version 4 of the GRA uses .NET Core 1.1. The project infrastructure is still set up to use `project.json` files and not `.csproj` files so Visual Studio 2017 RC cannot be used without performing a `dotnet migrate` from the root directory of the project. For now, the suggestion is to continue using Visual Studio 2015 or Visual Studio Code.*
 
 ## Initial developer setup
 
@@ -25,28 +27,32 @@ Initial database setup and configuration can be done utilizing the `dotnet` comm
 
     `dotnet ef --startup-project ../GRA.Web migrations add initial`
 
+### Configuration
+
+The `GRA.Web` project has the [Secret Manager](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets#secret-manager) enabled. You may want to issue a command such as:
+
+```c#
+  dotnet user-secrets set GraEmailOverride your@email.address 
+```
+
+To ensure that no errant emails are sent out during development. There are other settings you may want to configure through this manner such as `GraDefaultOutgoingMailHost` and `GraDefaultOutgoingMailPort`. Review `Startup.cs` for more configuration settings.
+
 ### Run the application!
 
 At this point you should be able to run the application in the debugger.
 
 ## Database provider selection
 
-Currently the application supports using Microsoft SQL Server and SQLite.
+Currently the application supports using Microsoft SQL Server and SQLite. Default developer database connection strings are in the `GRA.DefaultConnectionString` namespace (in the `GRA` project).
 
 ### SQL Server
 
-Ensure the following lines are uncommented in the `GRA.Web/Startup.cs`
+Ensure the following is the only uncommented line in the `GRA.Web/Startup.cs` under the `//database` comment.
 
-- `Configuration["ConnectionStrings:DefaultConnection"] = @"Server=(localdb)\mssqllocaldb;Database=gra4;Trusted_Connection=True;MultipleActiveResultSets=true";`
 - `services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();`
-
-**Note: if you wish to change the development connection string you will also need to do it in `GRA.Data.SqlServer/SqlServerContext.cs`.**
 
 ### SQLite
 
-Ensure the following lines are uncommented in the `GRA.Web/Startup.cs`
+Ensure the following is the only uncommented line in the `GRA.Web/Startup.cs` under the `//database` comment.
 
-- `Configuration["ConnectionStrings:DefaultConnection"] = @"Filename=./gra4.db";`
 - `services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();`
-
-**Note: if you wish to change the development connection string you will also need to do it in `GRA.Data.SQLite/SQLiteContext.cs`.**
