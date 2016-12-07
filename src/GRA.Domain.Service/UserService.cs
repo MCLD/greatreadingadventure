@@ -279,27 +279,59 @@ namespace GRA.Domain.Service
 
         public async Task AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
         {
-            int requestedByUserId = GetClaimId(ClaimType.UserId);
+            int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
 
             if (householdHead.HouseholdHeadUserId != null)
             {
-                _logger.LogError($"User {requestedByUserId} cannot add a household member for {householdHeadUserId} who isn't a head of household.");
+                _logger.LogError($"User {authUserId} cannot add a household member for {householdHeadUserId} who isn't a head of household.");
                 throw new GraException("Cannot add a household member to someone who isn't a head of household.");
             }
 
-            if (requestedByUserId == householdHeadUserId
+            if (authUserId == householdHeadUserId
                || HasPermission(Permission.EditParticipants))
             {
                 memberToAdd.HouseholdHeadUserId = householdHeadUserId;
                 memberToAdd.SiteId = householdHead.SiteId;
                 memberToAdd.CanBeDeleted = true;
                 memberToAdd.IsLockedOut = false;
-                var registeredUser = await _userRepository.AddSaveAsync(requestedByUserId, memberToAdd);
+                var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to add a household member to {householdHeadUserId}.");
+                _logger.LogError($"User {authUserId} doesn't have permission to add a household member to {householdHeadUserId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            
+            if (authUserId == (int)memberToRegister.HouseholdHeadUserId
+               || HasPermission(Permission.EditParticipants))
+            {
+                var user = await GetDetails(memberToRegister.Id);
+                if (!string.IsNullOrWhiteSpace(user.Username))
+                {
+                    _logger.LogError($"User {authUserId} cannot register household member {memberToRegister.Id} who is already registered.");
+                    throw new GraException("Household member is already registered");
+                }
+
+                var existingUser = await _userRepository.GetByUsernameAsync(memberToRegister.Username);
+                if (existingUser != null)
+                {
+                    throw new GraException("Someone has already chosen that username, please try another.");
+                }
+
+                user.Username = memberToRegister.Username;
+                await _userRepository.UpdateSaveAsync(authUserId, user);
+                await _userRepository
+                    .SetUserPasswordAsync(authUserId, user.Id, password);
+            }
+            else
+            {
+                _logger.LogError($"User {authUserId} doesn't have permission to register household member {memberToRegister.Id}.");
                 throw new GraException("Permission denied.");
             }
         }

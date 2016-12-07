@@ -38,7 +38,7 @@ namespace GRA.Controllers
         {
             User user = await _userService.GetDetails(GetActiveUserId());
 
-            var getHouseholdCount = await _userService
+            int householdCount = await _userService
                 .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id);
             var branchList = await _siteService.GetBranches(user.SystemId);
             var programList = await _siteService.GetProgramList();
@@ -47,7 +47,7 @@ namespace GRA.Controllers
             ProfileDetailViewModel viewModel = new ProfileDetailViewModel()
             {
                 User = user,
-                HouseholdCount = getHouseholdCount,
+                HouseholdCount = householdCount,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
@@ -158,7 +158,6 @@ namespace GRA.Controllers
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name")
             };
-                
 
             return View("HouseholdAdd", viewModel);
         }
@@ -192,15 +191,43 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAs(int id)
+        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
         {
-            var user = await _userService.GetDetails(id);
+            var user = await _userService.GetDetails(model.RegisterId);
+            var authUser = GetId(ClaimType.UserId);
+            if (user.HouseholdHeadUserId != authUser || !string.IsNullOrWhiteSpace(user.Username))
+            {
+                return RedirectToAction("Household");
+            }
+
+            if (model.Validate)
+            {
+                if (ModelState.IsValid)
+                {
+                    user.Username = model.Username;
+                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                    AlertSuccess = "Registered household member";
+                    return RedirectToAction("Household");
+                }
+                return View("HouseholdRegisterMember", model);
+            }
+            else
+            {
+                ModelState.Clear();
+                return View("HouseholdRegisterMember", model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginAs(int loginId)
+        {
+            var user = await _userService.GetDetails(loginId);
             var authUser = GetId(ClaimType.UserId);
             var activeUser = GetActiveUserId();
 
-            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != id)
+            if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != loginId)
             {
-                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, id);
+                HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
                 AlertSuccess = $"<span class=\"fa fa-user\"></span> You are now signed in as <strong>{user.FullName}</strong>.";
             }
             return RedirectToRoute(new { controller = "Home", action = "Index" });
@@ -314,7 +341,6 @@ namespace GRA.Controllers
                 }
                 model.ErrorMessage = "The username and password entered do not match";
             }
-
             return View(model);
         }
     }

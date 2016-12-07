@@ -50,8 +50,9 @@
                                         {
                                             <button type="submit"
                                                     class="btn btn-primary btn-xs"
-                                                    asp-action="LoginAs"
-                                                    asp-route-id="@Model.Head.Id">
+                                                    name="loginId"
+                                                    value="@Model.Head.Id"
+                                                    asp-action="LoginAs">
                                                 <span class="fa fa-sign-in"></span>
                                                 Sign In As
                                             </button>
@@ -79,7 +80,23 @@
                                     <td>@user.PointsEarned</td>
                                     @if (Model.AuthUserIsHead)
                                     {
-                                        <td>@user.Username</td>
+                                        <td>
+                                            @if (string.IsNullOrWhiteSpace(user.Username))
+                                            {
+                                                <button type="submit"
+                                                        class="btn btn-default btn-xs"
+                                                        name="RegisterId"
+                                                        asp-action="RegisterHouseholdMember"
+                                                        value="@user.Id">
+                                                    <span class="fa fa-user-plus"></span>
+                                                    Register Member
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                @user.Username
+                                            }
+                                        </td>
                                         <td>@user.Email</td>
 
                                         <td>
@@ -87,8 +104,9 @@
                                             {
                                                 <button type="submit"
                                                         class="btn btn-primary btn-xs"
-                                                        asp-action="LoginAs"
-                                                        asp-route-id="@user.Id">
+                                                        name="loginId"
+                                                        value="@user.Id"
+                                                        asp-action="LoginAs">
                                                     <span class="fa fa-sign-in"></span>
                                                     Sign In As
                                                 </button>

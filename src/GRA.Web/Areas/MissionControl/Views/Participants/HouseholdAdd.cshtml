@@ -1,14 +1,10 @@
-﻿@model GRA.Controllers.ViewModel.Profile.HouseholdAddViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdAddViewModel
 
-<div class="row">
-    <div class="col-xs-12">
-        <span class="h2">Add Household Member</span>
-    </div>
-</div>
-
-<form asp-controller="Profile" asp-action="AddHouseholdMember" method="post" role="form">
+<form asp-controller="Participants" asp-action="AddHouseholdMember" method="post" role="form">
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
+
+            <input asp-for="Id" type="hidden" />
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
@@ -69,8 +65,8 @@
     </div>
 
     <div class="form-group">
-        <a asp-action="Household" class="btn btn-default">Return to Household</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner-no-validate">
+        <a asp-action="Household" asp-route-id="@Model.Id" class="btn btn-default">Return to Household</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
             <span class="buttonText">Add Member</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>

@@ -32,7 +32,6 @@
                                 </a>
                             </td>
                             <td><strong>@Model.Head.Username</strong></td>
-                            
                             <td><strong>@Model.Head.Email</strong></td>
                             <td><strong>@Model.Head.PointsEarned</strong></td>
                             <td><strong>@Model.Head.BranchName</strong></td>
@@ -52,7 +51,21 @@
                                         @user.FullName
                                     </a>
                                 </td>
-                                <td>@user.Username</td>
+                                <td>
+                                    @if (Model.CanEditDetails && string.IsNullOrWhiteSpace(user.Username))
+                                    {
+                                        <a class="btn btn-default btn-xs on-top"
+                                           asp-action="RegisterHouseholdMember"
+                                           asp-route-id="@user.Id">
+                                            <span class="fa fa-user-plus"></span>
+                                            Register Member
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @user.Username
+                                    }
+                                </td>
                                 <td>@user.Email</td>
                                 <td>@user.PointsEarned</td>
                                 <td>@user.BranchName</td>
@@ -72,20 +85,22 @@
 
 <div class="form-group">
     <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    @if (Model.CanEditDetails)
+    {
+        <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Household Member</a>
+    }
 </div>
-
-
 
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-            $('.td-class').each(function () {
+        $(document).ready(function() {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function () {
-            $('.td-class').each(function () {
+        $(window).resize(function() {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });

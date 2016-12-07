@@ -186,11 +186,125 @@ namespace GRA.Controllers.MissionControl
                 HouseholdCount = household.Count,
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                CanEditDetails = UserHasPermission(Permission.EditParticipants),
                 Head = headOfHousehold
             };
 
             return View(viewModel);
         }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> AddHouseholdMember(int id)
+        {
+            var headOfHousehold = await _userService.GetDetails(id);
+            if (headOfHousehold.HouseholdHeadUserId != null)
+            {
+                headOfHousehold = await _userService
+                    .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+            }
+
+            SetPageTitle(headOfHousehold, "Add Household Member");
+
+            var userBase = new User()
+            {
+                LastName = headOfHousehold.LastName,
+                Email = headOfHousehold.Email,
+                PhoneNumber = headOfHousehold.PhoneNumber,
+                BranchId = headOfHousehold.BranchId,
+                ProgramId = headOfHousehold.ProgramId,
+                SystemId = headOfHousehold.SystemId
+            };
+
+            var branchList = await _siteService.GetBranches(headOfHousehold.SystemId);
+            var programList = await _siteService.GetProgramList();
+            var systemList = await _siteService.GetSystemList();
+
+            HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
+            {
+                User = userBase,
+                Id = id,
+                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+            };
+
+            return View("HouseholdAdd", viewModel);
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> AddHouseholdMember(HouseholdAddViewModel model)
+        {
+            var headOfHousehold = await _userService.GetDetails(model.Id);
+            if (headOfHousehold.HouseholdHeadUserId != null)
+            {
+                headOfHousehold = await _userService
+                    .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _userService.AddHouseholdMemberAsync(headOfHousehold.Id, model.User);
+                AlertSuccess = "Added household member";
+                return RedirectToAction("Household", new { id = model.Id });
+            }
+            else
+            {
+                SetPageTitle(headOfHousehold, "Add Household Member");
+
+                var branchList = await _siteService.GetBranches(model.User.SystemId);
+                var programList = await _siteService.GetProgramList();
+                var systemList = await _siteService.GetSystemList();
+                model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+                model.ProgramList = new SelectList(programList.ToList(), "Id", "Name");
+                model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
+
+                return View("HouseholdAdd", model);
+            }
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> RegisterHouseholdMember(int id)
+        {
+            var user = await _userService.GetDetails(id);
+            if (!string.IsNullOrWhiteSpace(user.Username))
+            {
+                return RedirectToAction("Household", new { id = id });
+            }
+            SetPageTitle(user, "Register Household Memeber");
+
+            HouseholdRegisterViewModel viewModel = new HouseholdRegisterViewModel()
+            {
+                Id = id
+            };
+
+            return View("HouseholdRegister", viewModel);
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
+        {
+            var user = await _userService.GetDetails(model.Id);
+            if (!string.IsNullOrWhiteSpace(user.Username))
+            {
+                return RedirectToAction("Household", new { id = model.Id });
+            }
+            if (ModelState.IsValid)
+            {
+                user.Username = model.Username;
+                await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                AlertSuccess = "Registered household member";
+                return RedirectToAction("Household", new { id = model.Id });
+            }
+            else
+            {
+                SetPageTitle(user, "Register Household Memeber");
+                return View("HouseholdRegister", model);
+            }
+        }
+
+
         #endregion
 
         #region Books
@@ -261,7 +375,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> AddBook(int id)
         {
             var user = await _userService.GetDetails(id);
-            SetPageTitle(user, addBook: true);
+            SetPageTitle(user, "Add Book");
 
             BookAddViewModel viewModel = new BookAddViewModel()
             {
@@ -284,7 +398,7 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 var user = await _userService.GetDetails(model.Id);
-                SetPageTitle(user, addBook: true);
+                SetPageTitle(user, "Add Book");
 
                 return View(model);
             }
@@ -397,7 +511,7 @@ namespace GRA.Controllers.MissionControl
             var userId = mail.ToUserId ?? mail.FromUserId;
 
             var user = await _userService.GetDetails(userId);
-            SetPageTitle(user, mailTo: mail.ToUserId.HasValue);
+            SetPageTitle(user, (mail.ToUserId.HasValue ? "To" : "From"));
 
             MailDetailViewModel viewModel = new MailDetailViewModel
             {
@@ -459,26 +573,14 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
-        private void SetPageTitle(User user, bool addBook = false, bool? mailTo = null)
+        private void SetPageTitle(User user, string title = "Participant")
         {
             var name = user.FullName;
             if (!string.IsNullOrEmpty(user.Username))
             {
                 name += $"({user.Username})";
             }
-
-            if (addBook == true)
-            {
-                PageTitle = $"Add Book - {name}";
-            }
-            else if (mailTo != null)
-            {
-                PageTitle = $"{(mailTo.Value ? "To" : "From")} - {name}";
-            }
-            else
-            {
-                PageTitle = $"Participant - {name}";
-            }
+            PageTitle = $"{title} - {name}";
         }
     }
 }
