@@ -133,13 +133,33 @@ namespace GRA.Web
 
             app.ApplicationServices.GetService<Data.Context>().Migrate();
 
-            app.UseStaticFiles();
+            // configure static files with 7 day cache
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = _ =>
+                {
+                    var headers = _.Context.Response.GetTypedHeaders();
+                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromDays(7)
+                    };
+                }
+            });
 
+            // configure /content with 7 day cache
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "content")),
-                RequestPath = new PathString("/content")
+                RequestPath = new PathString("/content"),
+                OnPrepareResponse = _ =>
+                {
+                    var headers = _.Context.Response.GetTypedHeaders();
+                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromDays(7)
+                    };
+                }
             });
 
             app.UseSession();
