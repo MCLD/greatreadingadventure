@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    [Authorize(Policy = Policy.AccessMissionControl)]
+    [Authorize(Policy = Policy.EditChallenges)]
     public class ChallengesController : Base.Controller
     {
         private const string NewTask = "NewTask";
@@ -126,8 +126,8 @@ namespace GRA.Controllers.MissionControl
             PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
             return View("Edit", viewModel);
         }
+
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> Edit(ChallengesDetailViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -146,7 +146,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> Delete(int id)
         {
             await challengeService.RemoveChallengeAsync(id);
@@ -163,7 +162,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenAddTask(ChallengesDetailViewModel viewModel)
         {
             TempData[NewTask] = true;
@@ -173,7 +171,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> AddTask(ChallengesDetailViewModel viewModel)
         {
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
@@ -197,7 +194,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public IActionResult OpenModifyTask(ChallengesDetailViewModel viewModel, int taskId)
         {
             TempData[EditTask] = taskId;
@@ -207,7 +203,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> ModifyTask(ChallengesDetailViewModel viewModel)
         {
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
@@ -230,7 +225,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
         {
             await challengeService.RemoveTaskAsync(id);
@@ -241,7 +235,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> DecreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
             await challengeService.DecreaseTaskPositionAsync(id);
@@ -252,7 +245,6 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> IncreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
             await challengeService.IncreaseTaskPositionAsync(id);

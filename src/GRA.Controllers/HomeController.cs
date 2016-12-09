@@ -10,6 +10,8 @@ namespace GRA.Controllers
 {
     public class HomeController : Base.Controller
     {
+        private const string AuthorMissingTitle = "AuthorMissingTitle";
+
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
         private readonly UserService _userService;
@@ -34,11 +36,18 @@ namespace GRA.Controllers
             if (AuthUser.Identity.IsAuthenticated)
             {
                 var user = await _userService.GetDetails(GetActiveUserId());
-                return View("Dashboard", new DashboardViewModel
+                DashboardViewModel viewModel = new DashboardViewModel()
                 {
                     FirstName = user.FirstName,
                     CurrentPointTotal = user.PointsEarned
-                });
+                };
+                if (TempData.ContainsKey(AuthorMissingTitle))
+                {
+                    viewModel.Author = (string)TempData[AuthorMissingTitle];
+                    ModelState.AddModelError("Title", "Please include the Title of the book");
+                }
+                
+                return View("Dashboard", viewModel);
             }
             else
             {
@@ -59,19 +68,27 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> LogBook(DashboardViewModel viewModel)
         {
-            var book = new Domain.Model.Book
+            if (string.IsNullOrWhiteSpace(viewModel.Title)
+                && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
-                Author = viewModel.Author,
-                Title = viewModel.Title
-            };
-            var result = await _activityService.LogActivityAsync(GetActiveUserId(), 1);
-            string message = $"<span class=\"fa fa-star\"></span> You earned <strong>{result.PointsEarned} points</strong> and currently have <strong>{result.User.PointsEarned} points</strong>!";
-            if (!string.IsNullOrWhiteSpace(book.Title))
-            {
-                await _activityService.AddBook(GetActiveUserId(), book);
-                message += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
+                TempData[AuthorMissingTitle] = viewModel.Author;
             }
-            AlertSuccess = message;
+            else
+            {
+                var book = new Domain.Model.Book
+                {
+                    Author = viewModel.Author,
+                    Title = viewModel.Title
+                };
+                var result = await _activityService.LogActivityAsync(GetActiveUserId(), 1);
+                string message = $"<span class=\"fa fa-star\"></span> You earned <strong>{result.PointsEarned} points</strong> and currently have <strong>{result.User.PointsEarned} points</strong>!";
+                if (!string.IsNullOrWhiteSpace(book.Title))
+                {
+                    await _activityService.AddBook(GetActiveUserId(), book);
+                    message += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
+                }
+                AlertSuccess = message;
+            }
             return RedirectToAction("Index");
         }
     }
