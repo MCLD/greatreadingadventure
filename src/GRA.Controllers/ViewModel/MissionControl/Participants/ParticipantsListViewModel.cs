@@ -10,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string Search { get; set; }
         public bool CanRemoveParticipant { get; set; }
         public bool CanViewDetails { get; set; }
+        public System.Array SortUsers { get; set; }
     }
 }

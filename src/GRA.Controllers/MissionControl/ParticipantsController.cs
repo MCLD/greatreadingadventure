@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,13 +43,24 @@ namespace GRA.Controllers.MissionControl
         }
 
         #region Index
-        public async Task<IActionResult> Index(string search, int page = 1)
+        public async Task<IActionResult> Index(string search, string sort, int page = 1)
         {
             int take = 15;
             int skip = take * (page - 1);
 
-            var participantsList = await _userService
+            DataWithCount<IEnumerable<User>> participantsList = new DataWithCount<IEnumerable<User>>();
+
+            if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
+            {
+                SortUsersBy userSort = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
+                participantsList = await _userService
+                .GetPaginatedUserListAsync(skip, take, search, userSort);
+            }
+            else
+            {
+                participantsList = await _userService
                 .GetPaginatedUserListAsync(skip, take, search);
+            }
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -70,9 +83,9 @@ namespace GRA.Controllers.MissionControl
                 PaginateModel = paginateModel,
                 Search = search,
                 CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
-                CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails)
+                CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
+                SortUsers = Enum.GetValues(typeof(SortUsersBy))
             };
-
             return View(viewModel);
         }
 

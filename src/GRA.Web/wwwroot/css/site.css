@@ -82,3 +82,26 @@ ul.navbar-nav li.active {
 .mc-alertrow {
     margin-top: 1em;
 }
+
+.alert-sm {
+    padding: 5px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.sort-asc {
+    position: relative;
+    margin-left: 4px;
+    top: 2px;
+}
+
+.sort-desc {
+    position: relative;
+    margin-left: 4px;
+    top: -2px;
+}
+
+.sort-hide {
+    margin-left: 4px;
+    visibility: hidden;
+}

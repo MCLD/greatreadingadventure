@@ -1,6 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsListViewModel
 
-
 @if (Model.CanRemoveParticipant)
 {
     <div class="row">
@@ -33,14 +32,24 @@
 
 <form asp-controller="Participants" asp-action="Index" method="get" role="form">
     <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-10">
+        <div class="col-xs-8">
             <input asp-for="Search" class="form-control" />
         </div>
-        <div class="col-xs-2">
-            <input type="submit" value="Search" class="btn btn-default" />
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Index" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
+
+@if (!string.IsNullOrEmpty(Model.Search))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="alert-sm alert-info">Searching for '<strong>@Model.Search</strong>'</p>
+        </div>
+    </div>
+}
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
@@ -54,12 +63,13 @@
                 <table class="table table-condensed table-bordered @(Model.CanViewDetails ? "link-table" : "table-striped")">
                     <thead>
                         <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(3)">Registered</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(0)">First Name</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(1)">Last Name</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(2)">Username</a></th>
                             <th>Email Address</th>
                             <th>Branch</th>
-                            <th>Program</th>
+                            <th hidden>Program</th>
                             @if (Model.CanRemoveParticipant)
                             {
                                 <th>&nbsp;</th>
@@ -74,19 +84,20 @@
                                     @if (Model.CanViewDetails)
                                     {
                                         <a asp-action="Detail" asp-route-id="@user.Id" class="rowlink">
-                                            @user.FirstName
+                                            @user.CreatedAt.ToString("d")
                                         </a>
                                     }
                                     else
                                     {
-                                        @user.FirstName
+                                        @user.CreatedAt.ToString("d")
                                     }
                                 </td>
+                                <td>@user.FirstName</td>
                                 <td>@user.LastName</td>
                                 <td>@user.Username</td>
                                 <td>@user.Email</td>
                                 <td>@user.BranchName</td>
-                                <td>@user.ProgramName</td>
+                                <td hidden>@user.ProgramName</td>
                                 @if (Model.CanRemoveParticipant)
                                 {
                                     <td class="on-top">
