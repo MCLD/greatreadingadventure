@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -27,6 +28,8 @@ namespace GRA.Domain.Model
 
         [Required]
         [DisplayName("Task Type")]
-        public Model.ChallengeTaskType ChallengeTaskType { get; set; }
+        public ChallengeTaskType ChallengeTaskType { get; set; }
+        public bool? IsCompleted { get; set; }
+        public DateTime? CompletedAt { get; set; }
     }
 }

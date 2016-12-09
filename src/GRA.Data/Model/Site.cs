@@ -32,5 +32,7 @@ namespace GRA.Data.Model
         public virtual ICollection<Challenge> Challenges { get; set; }
         public virtual ICollection<Program> Programs { get; set; }
         public virtual ICollection<System> Systems { get; set; }
+
+        public string ExternalEventListUrl { get; set; }
     }
 }

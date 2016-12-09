@@ -80,14 +80,7 @@ namespace GRA.Controllers
                     Author = viewModel.Author,
                     Title = viewModel.Title
                 };
-                var result = await _activityService.LogActivityAsync(GetActiveUserId(), 1);
-                string message = $"<span class=\"fa fa-star\"></span> You earned <strong>{result.PointsEarned} points</strong> and currently have <strong>{result.User.PointsEarned} points</strong>!";
-                if (!string.IsNullOrWhiteSpace(book.Title))
-                {
-                    await _activityService.AddBook(GetActiveUserId(), book);
-                    message += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
-                }
-                AlertSuccess = message;
+                await _activityService.LogActivityAsync(GetActiveUserId(), 1, book);
             }
             return RedirectToAction("Index");
         }

@@ -43,7 +43,7 @@ namespace GRA.Data.Model
         public int PointsEarned { get; set; }
         public int ProgramId { get; set; }
         public virtual Program Program { get; set; }
-        public int AvatarId { get; set; }
+        public int? AvatarId { get; set; }
         public int? HouseholdHeadUserId { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }

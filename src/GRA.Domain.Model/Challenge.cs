@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,5 +39,8 @@ namespace GRA.Domain.Model
         public int? TasksToComplete { get; set; }
 
         public IEnumerable<ChallengeTask> Tasks { get; set; }
+        public bool? IsCompleted { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public int? BadgeId { get; set; }
     }
 }

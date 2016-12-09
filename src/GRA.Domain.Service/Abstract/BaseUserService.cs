@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Service.Abstract
 {
-    public abstract class BaseUserService<T> : BaseService<T>
+    public abstract class BaseUserService<Service> : BaseService<Service>
     {
         protected readonly IUserContextProvider _userContextProvider;
-        public BaseUserService(ILogger<T> logger, IUserContextProvider userContextProvider)
+        public BaseUserService(ILogger<Service> logger, IUserContextProvider userContextProvider)
             : base(logger)
         {
             _userContextProvider = Require.IsNotNull(userContextProvider, nameof(userContextProvider));

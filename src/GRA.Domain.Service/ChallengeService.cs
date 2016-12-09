@@ -36,7 +36,12 @@ namespace GRA.Domain.Service
 
         public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
         {
-            return await _challengeRepository.GetByIdAsync(challengeId);
+            int? userId = null;
+            if(GetAuthUser().Identity.IsAuthenticated)
+            {
+                userId = GetActiveUserId();
+            }
+            return await _challengeRepository.GetByIdAsync(challengeId, userId);
         }
 
         public async Task<Challenge> AddChallengeAsync(Challenge challenge)
@@ -158,7 +163,12 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId)
         {
-            return await _challengeRepository.GetChallengeTasksAsync(challengeId);
+            int? userId = null;
+            if(GetAuthUser().Identity.IsAuthenticated)
+            {
+                userId = GetActiveUserId();
+            }
+            return await _challengeRepository.GetChallengeTasksAsync(challengeId, userId);
         }
     }
 }

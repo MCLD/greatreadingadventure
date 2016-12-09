@@ -6,18 +6,19 @@ using AutoMapper.QueryableExtensions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using GRA.Domain.Model;
 
 namespace GRA.Data.Repository
 {
     public class ChallengeRepository
-        : AuditingRepository<Model.Challenge, Domain.Model.Challenge>, IChallengeRepository
+        : AuditingRepository<Model.Challenge, Challenge>, IChallengeRepository
     {
         public ChallengeRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<ChallengeRepository> logger) : base(repositoryFacade, logger)
         {
         }
 
-        public async Task<IEnumerable<Domain.Model.Challenge>>
+        public async Task<IEnumerable<Challenge>>
             PageAllAsync(int siteId, int skip, int take)
         {
             return await DbSet
@@ -27,7 +28,7 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .Skip(skip)
                 .Take(take)
-                .ProjectTo<Domain.Model.Challenge>()
+                .ProjectTo<Challenge>()
                 .ToListAsync();
         }
 
@@ -40,9 +41,9 @@ namespace GRA.Data.Repository
             return challenges.Count();
         }
 
-        public override async Task<Domain.Model.Challenge> GetByIdAsync(int id)
+        public async Task<Challenge> GetByIdAsync(int id, int? userId = null)
         {
-            var challenge = mapper.Map<Model.Challenge, Domain.Model.Challenge>(await DbSet
+            var challenge = mapper.Map<Model.Challenge, Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync());
@@ -53,10 +54,23 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == id)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<Domain.Model.ChallengeTask>()
+                .ProjectTo<ChallengeTask>()
                 .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
+            }
+
+            if (userId != null)
+            {
+                var challengeStatus = await context.UserLogs
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == userId && _.ChallengeId == id)
+                    .SingleOrDefaultAsync();
+                if (challengeStatus != null)
+                {
+                    challenge.IsCompleted = true;
+                    challenge.CompletedAt = challengeStatus.CreatedAt;
+                }
             }
 
             return challenge;
@@ -72,21 +86,43 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        public async Task<IEnumerable<Domain.Model.ChallengeTask>>
-            GetChallengeTasksAsync(int challengeId)
+        public async Task<IEnumerable<ChallengeTask>>
+            GetChallengeTasksAsync(int challengeId, int? userId = null)
         {
             var tasks = await context.ChallengeTasks
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .OrderBy(_ => _.Position)
-                .ProjectTo<Domain.Model.ChallengeTask>()
+                .ProjectTo<ChallengeTask>()
                 .ToListAsync();
 
-            return await GetChallengeTasksTypeAsync(tasks);
+            var tasksWithTypes = await GetChallengeTasksTypeAsync(tasks);
+
+            if (userId != null)
+            {
+                var tasksCompleted = await context.UserChallengeTasks
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == (int)userId)
+                    .ToListAsync();
+
+                foreach (var taskCompleted in tasksCompleted)
+                {
+                    var task = tasksWithTypes
+                        .Where(_ => _.Id == taskCompleted.ChallengeTaskId)
+                        .SingleOrDefault();
+                    if (task != null)
+                    {
+                        task.IsCompleted = true;
+                        task.CompletedAt = taskCompleted.CreatedAt;
+                    }
+                }
+
+            }
+            return tasksWithTypes;
         }
 
-        private async Task<IEnumerable<Domain.Model.ChallengeTask>>
-            GetChallengeTasksTypeAsync(IEnumerable<Domain.Model.ChallengeTask> tasks)
+        private async Task<IEnumerable<ChallengeTask>>
+            GetChallengeTasksTypeAsync(IEnumerable<ChallengeTask> tasks)
         {
             var challengeTaskTypes =
                 await context.ChallengeTaskTypes
@@ -95,11 +131,39 @@ namespace GRA.Data.Repository
 
             foreach (var task in tasks)
             {
-                task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
-                    Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
+                task.ChallengeTaskType = (ChallengeTaskType)
+                    Enum.Parse(typeof(ChallengeTaskType),
                     challengeTaskTypes[task.ChallengeTaskTypeId].Name);
             }
             return tasks;
+        }
+
+        public async Task UpdateUserChallengeTask(int userId,
+            IEnumerable<ChallengeTask> challengeTasks)
+        {
+            foreach (var updatedChallengeTask in challengeTasks)
+            {
+                var savedChallengeTask = await context
+                    .UserChallengeTasks.Where(_ => _.UserId == userId
+                     && _.ChallengeTaskId == updatedChallengeTask.Id)
+                     .SingleOrDefaultAsync();
+
+                if (savedChallengeTask == null)
+                {
+                    context.UserChallengeTasks.Add(new Model.UserChallengeTask
+                    {
+                        ChallengeTaskId = updatedChallengeTask.Id,
+                        UserId = userId,
+                        IsCompleted = updatedChallengeTask.IsCompleted ?? false
+                    });
+                }
+                else
+                {
+                    savedChallengeTask.IsCompleted = updatedChallengeTask.IsCompleted ?? false;
+                    context.UserChallengeTasks.Update(savedChallengeTask);
+                }
+            }
+            await SaveAsync();
         }
     }
 }

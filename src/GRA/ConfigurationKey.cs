@@ -4,6 +4,8 @@
     {
         public const string DefaultCSSQLite = "ConnectionStrings:SQLite";
         public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
+
+        public const string ContentDirectory = "GraContentDirectory";
         public const string DefaultFooter = "GraDefaultFooter";
         public const string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
         public const string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";

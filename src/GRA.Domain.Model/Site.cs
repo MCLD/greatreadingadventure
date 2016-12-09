@@ -28,5 +28,7 @@ namespace GRA.Domain.Model
         public int? OutgoingMailPort { get; set; }
         public string OutgoingMailLogin { get; set; }
         public string OutgoingMailPassword { get; set; }
+
+        public string ExternalEventListUrl { get; set; }
     }
 }

@@ -43,7 +43,8 @@ namespace GRA.Domain.Model
         public int PointsEarned { get; set; }
         [DisplayName("Program")]
         public int ProgramId { get; set; }
-        public int AvatarId { get; set; }
+        public string StaticAvatarFilename { get; set; }
+        public int? AvatarId { get; set; }
         public int? HouseholdHeadUserId { get; set; }
         public string BranchName { get; set; }
         public string SystemName { get; set; }

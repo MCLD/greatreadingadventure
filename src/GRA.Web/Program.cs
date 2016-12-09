@@ -8,19 +8,6 @@ namespace GRA.Web
     {
         public static void Main(string[] args)
         {
-            if (!Directory.Exists("content"))
-            {
-                try
-                {
-                    Directory.CreateDirectory("content");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Unable to create directory 'content' in {Directory.GetCurrentDirectory()}");
-                    throw (ex);
-                }
-            }
-
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())

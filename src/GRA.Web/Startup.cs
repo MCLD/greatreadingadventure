@@ -30,11 +30,27 @@ namespace GRA.Web
             Configuration[ConfigurationKey.DefaultSitePath] = "gra";
             Configuration[ConfigurationKey.DefaultFooter] = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>.";
             Configuration[ConfigurationKey.InitialAuthorizationCode] = "gra4adminmagic";
+            Configuration[ConfigurationKey.ContentDirectory] = "content";
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();
                 Configuration[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
                 Configuration[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
+            }
+
+            string contentDirectory = Configuration[ConfigurationKey.ContentDirectory];
+
+            if (!Directory.Exists(contentDirectory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(contentDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Unable to create directory '{contentDirectory}' in {Directory.GetCurrentDirectory()}");
+                    throw (ex);
+                }
             }
         }
 
@@ -95,16 +111,19 @@ namespace GRA.Web
 
             // repositories
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
+            services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
+            services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
+            services.AddScoped<Domain.Repository.IStaticAvatarRepository, Data.Repository.StaticAvatarRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
             services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
             services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();

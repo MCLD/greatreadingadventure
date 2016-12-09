@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Service.Abstract
 {
-    public abstract class BaseService<T>
+    public abstract class BaseService<Service>
     {
-        protected readonly ILogger<T> _logger;
+        protected readonly ILogger<Service> _logger;
 
-        public BaseService(ILogger<T> logger)
+        public BaseService(ILogger<Service> logger)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
         }

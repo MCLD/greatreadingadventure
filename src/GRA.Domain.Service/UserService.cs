@@ -11,14 +11,20 @@ namespace GRA.Domain.Service
     public class UserService : Abstract.BaseUserService<UserService>
     {
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
+        private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly INotificationRepository _notificationRepository;
+        private readonly IStaticAvatarRepository _staticAvatarRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly SampleDataService _configurationService;
         public UserService(ILogger<UserService> logger,
             IUserContextProvider userContextProvider,
             IAuthorizationCodeRepository authorizationCodeRepository,
+            IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
+            INotificationRepository notificationRepository,
+            IStaticAvatarRepository staticAvatarRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
             SampleDataService configurationService)
@@ -26,7 +32,10 @@ namespace GRA.Domain.Service
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
+            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
+            _notificationRepository = Require.IsNotNull(notificationRepository, nameof(notificationRepository));
+            _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository, nameof(staticAvatarRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _configurationService = Require.IsNotNull(configurationService,
@@ -125,7 +134,16 @@ namespace GRA.Domain.Service
                 || authUser.HouseholdHeadUserId == userId
                 || HasPermission(Permission.ViewParticipantDetails))
             {
-                return await _userRepository.GetByIdAsync(userId);
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user.AvatarId != null)
+                {
+                    var avatar = await _staticAvatarRepository.GetByIdAsync((int)user.AvatarId);
+                    if (avatar != null)
+                    {
+                        user.StaticAvatarFilename = avatar.Filename;
+                    }
+                }
+                return user;
             }
             else
             {
@@ -307,7 +325,7 @@ namespace GRA.Domain.Service
         public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
-            
+
             if (authUserId == (int)memberToRegister.HouseholdHeadUserId
                || HasPermission(Permission.EditParticipants))
             {
@@ -334,6 +352,37 @@ namespace GRA.Domain.Service
                 _logger.LogError($"User {authUserId} doesn't have permission to register household member {memberToRegister.Id}.");
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public async Task<DataWithCount<IEnumerable<Badge>>>
+            GetPaginatedBadges(int userId, int skip, int take)
+        {
+            int activeUserId = GetActiveUserId();
+
+            if (userId == activeUserId
+                || HasPermission(Permission.ViewParticipantDetails))
+            {
+                return new DataWithCount<IEnumerable<Badge>>
+                {
+                    Data = await _badgeRepository.PageForUserAsync(userId, skip, take),
+                    Count = await _badgeRepository.GetCountForUserAsync(userId)
+                };
+            }
+            else
+            {
+                _logger.LogError($"User {activeUserId} doesn't have permission to view details for {userId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<IEnumerable<Notification>> GetNotificationsForUser()
+        {
+            return await _notificationRepository.GetByUserIdAsync(GetActiveUserId());
+        }
+
+        public async Task ClearNotificationsForUser()
+        {
+            await _notificationRepository.RemoveByUserId(GetActiveUserId());
         }
     }
 }
