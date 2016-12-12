@@ -12,6 +12,7 @@
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
+            CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>().ReverseMap();

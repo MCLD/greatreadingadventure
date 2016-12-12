@@ -131,6 +131,7 @@ namespace GRA.Web
             services.AddScoped<EmailService>();
             services.AddScoped<InitialSetupService>();
             services.AddScoped<MailService>();
+            services.AddScoped<PageService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
@@ -145,6 +146,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
+            services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();

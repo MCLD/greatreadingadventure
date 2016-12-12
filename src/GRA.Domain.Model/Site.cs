@@ -30,5 +30,6 @@ namespace GRA.Domain.Model
         public string OutgoingMailPassword { get; set; }
 
         public string ExternalEventListUrl { get; set; }
+        public string GoogleAnalyticsTrackingId { get; set; }
     }
 }

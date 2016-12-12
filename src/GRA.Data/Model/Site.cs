@@ -34,5 +34,6 @@ namespace GRA.Data.Model
         public virtual ICollection<System> Systems { get; set; }
 
         public string ExternalEventListUrl { get; set; }
+        public string GoogleAnalyticsTrackingId { get; set; }
     }
 }
