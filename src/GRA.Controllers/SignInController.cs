@@ -57,5 +57,77 @@ namespace GRA.Controllers
             }
             return View(model);
         }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string username)
+        {
+            try
+            {
+                string recoveryUrl = Url.Action("PasswordRecovery", "SignIn", null, HttpContext.Request.Scheme);
+                await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
+                AlertSuccess = $"A password recovery email has been sent to the email of '{username}'";
+            }
+            catch(GraException gex)
+            {
+                AlertWarning = gex.Message;
+            }
+
+            return View();
+        }
+
+        public IActionResult ForgotUsername()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotUsername(string email)
+        {
+            try
+            {
+                await _authenticationService.EmailAllUsernames(email);
+                AlertSuccess = $"A list of usernames associated with {email} has been emailed to you";
+            }
+            catch (GraException gex)
+            {
+                AlertWarning = gex.Message;
+            }
+
+            return View();
+        }
+
+        public IActionResult PasswordRecovery(string username, string token)
+        {
+            PasswordRecoveryViewModel viewModel = new PasswordRecoveryViewModel()
+            {
+                Username = username,
+                Token = token
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordRecovery(PasswordRecoveryViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    await _authenticationService.ResetPassword(model.Username, model.NewPassword, model.Token);
+                    AlertSuccess = $"Password reset for {model.Username}";
+                    return RedirectToAction("Index");
+                }
+                catch (GraException gex)
+                {
+                    AlertWarning = gex.Message;
+                }
+            }
+            return View(model);
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly INotificationRepository _notificationRepository;
+        private readonly IProgramRepository _programRepository;
         private readonly IStaticAvatarRepository _staticAvatarRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
@@ -24,6 +25,7 @@ namespace GRA.Domain.Service
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             INotificationRepository notificationRepository,
+            IProgramRepository programRepository,
             IStaticAvatarRepository staticAvatarRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
@@ -34,8 +36,11 @@ namespace GRA.Domain.Service
                 nameof(authorizationCodeRepository));
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
-            _notificationRepository = Require.IsNotNull(notificationRepository, nameof(notificationRepository));
-            _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository, nameof(staticAvatarRepository));
+            _notificationRepository = Require.IsNotNull(notificationRepository,
+                nameof(notificationRepository));
+            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository,
+                nameof(staticAvatarRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _configurationService = Require.IsNotNull(configurationService,
@@ -290,6 +295,17 @@ namespace GRA.Domain.Service
             {
                 authCode.Uses++;
                 await _authorizationCodeRepository.UpdateSaveAsync(userId, authCode);
+            }
+
+            // if the program doesn't have an email address assigned, perform that action here
+            // TODO in the future this should be replaced with the initial setup process
+            var user = await _userRepository.GetByIdAsync(userId);
+            var program = await _programRepository.GetByIdAsync(user.ProgramId);
+            if(string.IsNullOrEmpty(program.FromEmailAddress))
+            {
+                program.FromEmailAddress = user.Email;
+                program.FromEmailName = user.FullName;
+                await _programRepository.UpdateSaveAsync(userId, program);
             }
 
             return authCode.RoleName;

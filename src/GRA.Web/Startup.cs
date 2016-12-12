@@ -1,21 +1,32 @@
 ﻿using AutoMapper;
 using GRA.Controllers.RouteConstraint;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using System;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using GRA.Domain.Service;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.Extensions.FileProviders;
 
 namespace GRA.Web
 {
     public class Startup
     {
+        private IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
+        {
+            { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
+            { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
+            { ConfigurationKey.DefaultSitePath, "gra" },
+            { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
+            { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
+            { ConfigurationKey.ContentDirectory, "content" }
+        };
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -24,18 +35,34 @@ namespace GRA.Web
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
-            Configuration = builder.Build();
-            Configuration[ConfigurationKey.DefaultSiteName] = "The Great Reading Adventure";
-            Configuration[ConfigurationKey.DefaultPageTitle] = "Great Reading Adventure";
-            Configuration[ConfigurationKey.DefaultSitePath] = "gra";
-            Configuration[ConfigurationKey.DefaultFooter] = "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>.";
-            Configuration[ConfigurationKey.InitialAuthorizationCode] = "gra4adminmagic";
-            Configuration[ConfigurationKey.ContentDirectory] = "content";
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();
-                Configuration[ConfigurationKey.DefaultCSSqlServer] = DefaultConnectionString.SqlServer;
-                Configuration[ConfigurationKey.DefaultCSSQLite] = DefaultConnectionString.SQLite;
+            }
+            builder.AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+
+            foreach (var configKey in _defaultSettings.Keys)
+            {
+                if (string.IsNullOrEmpty(Configuration[configKey]))
+                {
+                    Configuration[configKey] = _defaultSettings[configKey];
+                }
+            }
+
+            if (env.IsDevelopment())
+            {
+                if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSqlServer]))
+                {
+                    Configuration[ConfigurationKey.DefaultCSSqlServer] 
+                        = DefaultConnectionString.SqlServer;
+                }
+                if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSQLite]))
+                {
+                    Configuration[ConfigurationKey.DefaultCSSQLite] 
+                        = DefaultConnectionString.SQLite;
+                }
             }
 
             string contentDirectory = Configuration[ConfigurationKey.ContentDirectory];

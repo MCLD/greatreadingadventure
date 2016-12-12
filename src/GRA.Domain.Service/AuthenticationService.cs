@@ -89,7 +89,7 @@ namespace GRA.Domain.Service
 
             var tokens = await _recoveryTokenRepository.GetByUserIdAsync(user.Id);
             var validTokens = tokens
-                .Where(_ => _.Token.Contains(token))
+                .Where(_ => _.Token == fixedToken)
                 .OrderByDescending(_ => _.CreatedBy);
             if (validTokens.Count() > 0)
             {
@@ -111,7 +111,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task GenerateTokenAndEmail(string username)
+        public async Task GenerateTokenAndEmail(string username, string recoveryUrl)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
 
@@ -147,6 +147,7 @@ namespace GRA.Domain.Service
 
             string subject = "Password reset";
             string mailBody = $"Your password reset token is: {tokenString}";
+            mailBody += $"\n\r{recoveryUrl}?username={username}&token={tokenString}";
 
             await _emailService.Send(user.Id, subject, mailBody);
         }
@@ -165,7 +166,7 @@ namespace GRA.Domain.Service
             sb.AppendLine();
             foreach(string username in usernames.Data)
             {
-                sb.AppendLine($"- username");
+                sb.AppendLine($"- {username}");
             }
 
             string subject = "Usernames associated with your email address";
