@@ -51,17 +51,18 @@ namespace GRA.Data.Repository
             if (challenge != null)
             {
                 challenge.Tasks = await context.ChallengeTasks
-                .AsNoTracking()
-                .Where(_ => _.ChallengeId == id)
-                .OrderBy(_ => _.Position)
-                .ProjectTo<ChallengeTask>()
-                .ToListAsync();
+                    .AsNoTracking()
+                    .Where(_ => _.ChallengeId == id)
+                    .OrderBy(_ => _.Position)
+                    .ProjectTo<ChallengeTask>()
+                    .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
             }
 
             if (userId != null)
             {
+                // determine if challenge is completed
                 var challengeStatus = await context.UserLogs
                     .AsNoTracking()
                     .Where(_ => _.UserId == userId && _.ChallengeId == id)
@@ -70,6 +71,23 @@ namespace GRA.Data.Repository
                 {
                     challenge.IsCompleted = true;
                     challenge.CompletedAt = challengeStatus.CreatedAt;
+                }
+
+                var userChallengeTasks = await context.UserChallengeTasks
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == (int)userId)
+                    .ToListAsync();
+
+                foreach (var userChallengeTask in userChallengeTasks)
+                {
+                    var task = challenge.Tasks
+                        .Where(_ => _.Id == userChallengeTask.ChallengeTaskId)
+                        .SingleOrDefault();
+                    if (task != null && userChallengeTask.IsCompleted)
+                    {
+                        task.IsCompleted = true;
+                        task.CompletedAt = userChallengeTask.CreatedAt;
+                    }
                 }
             }
 
@@ -96,29 +114,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<ChallengeTask>()
                 .ToListAsync();
 
-            var tasksWithTypes = await GetChallengeTasksTypeAsync(tasks);
-
-            if (userId != null)
-            {
-                var tasksCompleted = await context.UserChallengeTasks
-                    .AsNoTracking()
-                    .Where(_ => _.UserId == (int)userId)
-                    .ToListAsync();
-
-                foreach (var taskCompleted in tasksCompleted)
-                {
-                    var task = tasksWithTypes
-                        .Where(_ => _.Id == taskCompleted.ChallengeTaskId)
-                        .SingleOrDefault();
-                    if (task != null)
-                    {
-                        task.IsCompleted = true;
-                        task.CompletedAt = taskCompleted.CreatedAt;
-                    }
-                }
-
-            }
-            return tasksWithTypes;
+            return await GetChallengeTasksTypeAsync(tasks);
         }
 
         private async Task<IEnumerable<ChallengeTask>>

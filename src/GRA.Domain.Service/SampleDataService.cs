@@ -42,6 +42,7 @@ namespace GRA.Domain.Service
             {
                 SiteId = user.SiteId,
                 RelatedSystemId = user.SystemId,
+                BadgeId = null,
                 Name = "Get Along",
                 Description = "This is a challenge encourging you to get along with others!",
                 IsActive = false,
@@ -72,6 +73,7 @@ namespace GRA.Domain.Service
             challenge = new Model.Challenge
             {
                 SiteId = user.SiteId,
+                BadgeId = null,
                 RelatedSystemId = user.SystemId,
                 Name = "Science Fiction reading list",
                 Description = "Read some excellent science fiction!",

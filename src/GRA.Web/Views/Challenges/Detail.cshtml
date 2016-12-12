@@ -1,49 +1,75 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengeDetailViewModel
 
-<div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">
-                    Challenge: @Model.Name
-                </span>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-8 col-sm-9">
-                        <p>@Model.Description</p>
-                        <p>@Html.Raw(Model.Details)</p>
-                    </div>
-                    <div class="col-xs-4 col-sm-3" style="min-width: 64px;">
-                        <img src="@Model.BadgePath" height="64" width="64" class="pull-right" asp-append-version="true" />
+<form asp-controller="Challenges" asp-action="CompleteTasks" method="post" role="form">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead">
+                        Challenge: @Model.Challenge.Name
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-8 col-sm-9">
+                            <p>@Model.Challenge.Description</p>
+                            <p>@Html.Raw(Model.Details)</p>
+                        </div>
+                        <div class="col-xs-4 col-sm-3" style="min-width: 64px;">
+                            <img src="@Model.BadgePath" height="64" width="64" class="pull-right" asp-append-version="true" />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <table class="table table-striped" style="margin-top: 1em;">
-                <tr>
-                    <th class="text-center">Complete</th>
-                    <th>Task</th>
-                </tr>
-                @for (int i = 0; i < Model.Tasks.Count; i++)
-            {
+                <table class="table table-striped" style="margin-top: 1em;">
                     <tr>
-                        <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
-                            <input type="checkbox" />
-                        </td>
-
-                        <td>
-                            <div class="row">
-                                @Html.Raw(Model.Tasks[i].Description)
-                            </div>
-                        </td>
+                        @if (Model.IsAuthenticated && !(Model.Challenge.IsCompleted == true))
+                        {
+                            <th class="text-center">Complete</th>
+                        }
+                        <th>Task</th>
                     </tr>
-                }
-            </table>
-            <div class="panel-footer clearfix hidden-print">
-                <div class="pull-right">
-                    <a asp-action="Index" class="btn btn-default">View All Challenges</a>
+                    @for (int i = 0; i < Model.Tasks.Count; i++)
+                    {
+                        <tr>
+                            @if (Model.IsAuthenticated && !(Model.Challenge.IsCompleted == true))
+                            {
+                                <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
+                                    <input asp-for="Tasks[i].Id" type="hidden" />
+                                    <input asp-for="Tasks[i].IsCompleted" type="checkbox" />
+                                </td>
+                            }
+                            <td>
+                                <div>
+                                    @Html.Raw(Model.Tasks[i].Description)
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+                <div class="panel-footer clearfix hidden-print">
+                    <div class="pull-left">
+                        <a asp-action="Index" class="btn btn-default btn-lg">Return to Challenges</a>
+                    </div>
+                    @if (Model.Challenge.IsCompleted == true)
+                    {
+                        <div class="pull-right">
+                            <div class="btn-lg" style="border:1px solid transparent">
+                                Completed on: @Model.Challenge.CompletedAt?.ToString("d")
+                            </div>
+                        </div>
+
+                    }
+                    else if (Model.IsAuthenticated)
+                    {
+                        <input asp-for="Challenge.Id" type="hidden" />
+                        <div class="pull-right">
+                            <button class="btn btn-primary btn-lg">
+                                Complete Tasks!
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>

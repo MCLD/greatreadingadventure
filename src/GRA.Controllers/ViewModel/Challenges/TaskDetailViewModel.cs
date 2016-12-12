@@ -3,7 +3,7 @@
     public class TaskDetailViewModel
     {
         public int Id { get; set; }
-        public bool Complete { get; set; }
+        public bool IsCompleted { get; set; }
         public string TaskType { get; set; }
         public string BookCover { get; set; }
         public string Description { get; set; }
