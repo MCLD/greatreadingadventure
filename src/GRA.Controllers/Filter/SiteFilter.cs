@@ -1,4 +1,5 @@
-﻿using GRA.Domain.Service;
+﻿using GRA.Domain.Model;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -19,6 +20,7 @@ namespace GRA.Controllers.Filter
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
             ResourceExecutionDelegate next)
         {
+            Site site = null;
             var httpContext = context.HttpContext;
             // if we've already fetched it on this request it's present in Items
             int? siteId = null;
@@ -33,7 +35,7 @@ namespace GRA.Controllers.Filter
                 // first check, did they use a sitePath giving them a specific site
                 if (!string.IsNullOrEmpty(sitePath))
                 {
-                    var site = await _siteLookupService.GetSiteByPath(sitePath);
+                    site = await _siteLookupService.GetSiteByPath(sitePath);
                     if (site != null)
                     {
                         siteId = site.Id;
@@ -49,6 +51,11 @@ namespace GRA.Controllers.Filter
                 {
                     siteId = await _siteLookupService.GetDefaultSiteId();
                 }
+            }
+            if(site == null)
+            {
+                site = await _siteLookupService.GetById((int)siteId);
+                httpContext.Items["GoogleAnalyticsTrackingId"] = site.GoogleAnalyticsTrackingId;
             }
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[SessionKey.SiteId] = (int)siteId;

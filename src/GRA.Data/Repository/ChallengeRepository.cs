@@ -43,14 +43,14 @@ namespace GRA.Data.Repository
 
         public async Task<Challenge> GetByIdAsync(int id, int? userId = null)
         {
-            var challenge = mapper.Map<Model.Challenge, Challenge>(await DbSet
+            var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync());
 
             if (challenge != null)
             {
-                challenge.Tasks = await context.ChallengeTasks
+                challenge.Tasks = await _context.ChallengeTasks
                     .AsNoTracking()
                     .Where(_ => _.ChallengeId == id)
                     .OrderBy(_ => _.Position)
@@ -63,7 +63,7 @@ namespace GRA.Data.Repository
             if (userId != null)
             {
                 // determine if challenge is completed
-                var challengeStatus = await context.UserLogs
+                var challengeStatus = await _context.UserLogs
                     .AsNoTracking()
                     .Where(_ => _.UserId == userId && _.ChallengeId == id)
                     .SingleOrDefaultAsync();
@@ -73,7 +73,7 @@ namespace GRA.Data.Repository
                     challenge.CompletedAt = challengeStatus.CreatedAt;
                 }
 
-                var userChallengeTasks = await context.UserChallengeTasks
+                var userChallengeTasks = await _context.UserChallengeTasks
                     .AsNoTracking()
                     .Where(_ => _.UserId == (int)userId)
                     .ToListAsync();
@@ -96,7 +96,7 @@ namespace GRA.Data.Repository
 
         public override async Task RemoveSaveAsync(int userId, int id)
         {
-            var entity = await context.Challenges
+            var entity = await _context.Challenges
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
@@ -107,7 +107,7 @@ namespace GRA.Data.Repository
         public async Task<IEnumerable<ChallengeTask>>
             GetChallengeTasksAsync(int challengeId, int? userId = null)
         {
-            var tasks = await context.ChallengeTasks
+            var tasks = await _context.ChallengeTasks
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .OrderBy(_ => _.Position)
@@ -121,7 +121,7 @@ namespace GRA.Data.Repository
             GetChallengeTasksTypeAsync(IEnumerable<ChallengeTask> tasks)
         {
             var challengeTaskTypes =
-                await context.ChallengeTaskTypes
+                await _context.ChallengeTaskTypes
                 .AsNoTracking()
                 .ToDictionaryAsync(_ => _.Id);
 
@@ -139,14 +139,14 @@ namespace GRA.Data.Repository
         {
             foreach (var updatedChallengeTask in challengeTasks)
             {
-                var savedChallengeTask = await context
+                var savedChallengeTask = await _context
                     .UserChallengeTasks.Where(_ => _.UserId == userId
                      && _.ChallengeTaskId == updatedChallengeTask.Id)
                      .SingleOrDefaultAsync();
 
                 if (savedChallengeTask == null)
                 {
-                    context.UserChallengeTasks.Add(new Model.UserChallengeTask
+                    _context.UserChallengeTasks.Add(new Model.UserChallengeTask
                     {
                         ChallengeTaskId = updatedChallengeTask.Id,
                         UserId = userId,
@@ -156,7 +156,7 @@ namespace GRA.Data.Repository
                 else
                 {
                     savedChallengeTask.IsCompleted = updatedChallengeTask.IsCompleted ?? false;
-                    context.UserChallengeTasks.Update(savedChallengeTask);
+                    _context.UserChallengeTasks.Update(savedChallengeTask);
                 }
             }
             await SaveAsync();

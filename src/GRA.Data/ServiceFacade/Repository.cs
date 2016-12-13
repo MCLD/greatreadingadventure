@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using GRA.Abstract;
+using Microsoft.Extensions.Configuration;
 using System;
 
 namespace GRA.Data.ServiceFacade
@@ -8,25 +9,16 @@ namespace GRA.Data.ServiceFacade
         public readonly Context context;
         public readonly AutoMapper.IMapper mapper;
         public readonly IConfigurationRoot config;
+        public readonly IEntitySerializer entitySerializer;
         public Repository(Context context,
             AutoMapper.IMapper mapper,
-            IConfigurationRoot config)
+            IConfigurationRoot config,
+            IEntitySerializer entitySerializer)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            this.context = context;
-            if (mapper == null)
-            {
-                throw new ArgumentNullException(nameof(mapper));
-            }
-            this.mapper = mapper;
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            this.config = config;
+            this.context = Require.IsNotNull(context, nameof(context));
+            this.mapper = Require.IsNotNull(mapper, nameof(mapper));
+            this.config = Require.IsNotNull(config, nameof(config));
+            this.entitySerializer = Require.IsNotNull(entitySerializer, nameof(entitySerializer));
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
 
         public async Task AddPermissionAsync(int userId, string name)
         {
-            await context.Permissions.AddAsync(new Model.Permission
+            await _context.Permissions.AddAsync(new Model.Permission
             {
                 Name = name,
                 CreatedBy = userId,
@@ -26,7 +26,7 @@ namespace GRA.Data.Repository
 
         public async Task AddPermissionToRoleAsync(int userId, int roleId, string permissionName)
         {
-            var permission = await context.Permissions
+            var permission = await _context.Permissions
                 .Where(_ => _.Name == permissionName)
                 .SingleOrDefaultAsync();
             if (permission == null)
@@ -34,7 +34,7 @@ namespace GRA.Data.Repository
                 throw new Exception($"Permission '{permissionName}' not found.");
             }
 
-            await context.RolePermissions.AddAsync(new Model.RolePermission
+            await _context.RolePermissions.AddAsync(new Model.RolePermission
             {
                 RoleId = roleId,
                 PermissionId = permission.Id,
@@ -45,14 +45,14 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<string>> GetPermisisonNamesForUserAsync(int userId)
         {
-            var roleIds = await context
+            var roleIds = await _context
                 .UserRoles
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.RoleId)
                 .ToListAsync();
 
-            return await context
+            return await _context
                 .RolePermissions
                 .AsNoTracking()
                 .Where(_ => roleIds.Contains(_.RoleId))

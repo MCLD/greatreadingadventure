@@ -13,6 +13,8 @@ namespace GRA.Data.Model
         public string Name { get; set; }
         [Required]
         public int AchieverPointAmount { get; set; }
+        public int? AchieverBadgeId { get; set; }
+        public int? JoinBadgeId { get; set; }
         [Required]
         public bool AskAge { get; set; }
         [Required]

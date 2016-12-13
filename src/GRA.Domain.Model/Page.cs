@@ -8,7 +8,6 @@ namespace GRA.Domain.Model
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-        [Required]
         public string Stub { get; set; }
         [Required]
         public string Content { get; set; }

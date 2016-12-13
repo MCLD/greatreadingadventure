@@ -1,0 +1,41 @@
+﻿<div class="row" style="margin-bottom: 1em;">
+    <div class="col-xs-12">
+        <img src="~/images/meadow.jpg"
+             alt="Illustration of a meadow."
+             class="img-responsive img-rounded"
+             style="width: 100%;"
+             srcset="@Url.Content("~/images/meadow.jpg") 1x, @Url.Content("~/images/meadow@2x.jpg") 2x"
+             asp-append-version="true" />
+    </div>
+</div>
+<div class="row" style="margin-top: 2em; font-size: larger;">
+    <div class="col-sm-3">
+        <p>For more information about this reading program, visit your local library!</p>
+        <p>
+            While you're there, go on a journey of discovery! Visit fabulous destinations such as
+            Hogwarts, Narnia, Oz, and Middle Earth!
+        </p>
+    </div>
+    <div class="col-sm-6">
+        <p>
+            Welcome to <grasite property="name"></grasite> site. Join to get started on your
+            reading adventure!
+            <div class="row" style="margin-top: 2em;">
+                <div class="col-sm-6" style="margin-top: 0.5em;">
+                    <a asp-controller="Join" asp-action="Index" class="btn btn-primary btn-block btn-lg">
+                        <span class="fa fa-book"></span> Join!
+                    </a>
+                </div>
+                <div class="col-sm-6" style="margin-top: 0.5em;">
+                    <a asp-controller="SignIn" asp-action="Index" class="btn btn-success btn-block btn-lg">
+                        <span class="fa fa-sign-in"></span> Sign in!
+                    </a>
+                </div>
+            </div>
+        </p>
+    </div>
+    <div class="col-sm-3">
+        <p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p>
+        <p>Reading is fundamental for developing literacy skills!</p>
+    </div>
+</div>

@@ -13,16 +13,12 @@ namespace GRA.Data.Repository
     public class UserRepository
         : AuditingRepository<Model.User, User>, IUserRepository
     {
-        private readonly Security.Abstract.IPasswordHasher passwordHasher;
+        private readonly Security.Abstract.IPasswordHasher _passwordHasher;
         public UserRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<UserRepository> logger,
             Security.Abstract.IPasswordHasher passwordHasher) : base(repositoryFacade, logger)
         {
-            if (passwordHasher == null)
-            {
-                throw new ArgumentNullException(nameof(passwordHasher));
-            }
-            this.passwordHasher = passwordHasher;
+            _passwordHasher = Require.IsNotNull(passwordHasher, nameof(passwordHasher));
         }
 
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
@@ -34,14 +30,14 @@ namespace GRA.Data.Repository
                 CreatedBy = currentUserId,
                 CreatedAt = DateTime.Now
             };
-            await context.UserRoles.AddAsync(userRoleAssignment);
+            await _context.UserRoles.AddAsync(userRoleAssignment);
         }
 
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);
-            string original = SerializeEntity(user);
-            user.PasswordHash = passwordHasher.HashPassword(password);
+            string original = _entitySerializer.Serialize(user);
+            user.PasswordHash = _passwordHasher.HashPassword(password);
             await UpdateSaveAsync(currentUserId, user, original);
         }
         public async Task<User> GetByUsernameAsync(string username)
@@ -52,7 +48,7 @@ namespace GRA.Data.Repository
                 .SingleOrDefaultAsync();
             if (dbUser != null)
             {
-                return mapper.Map<Model.User, User>(dbUser);
+                return _mapper.Map<Model.User, User>(dbUser);
             }
             else
             {
@@ -76,10 +72,10 @@ namespace GRA.Data.Repository
             {
                 result.FoundUser = true;
                 result.PasswordIsValid =
-                    passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
+                    _passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
                 if (result.PasswordIsValid)
                 {
-                    result.User = mapper.Map<Model.User, User>(dbUser);
+                    result.User = _mapper.Map<Model.User, User>(dbUser);
                     dbUser.LastAccess = DateTime.Now;
                     await SaveAsync();
                 }
@@ -87,100 +83,6 @@ namespace GRA.Data.Repository
             return result;
         }
 
-        public async Task<User> AddPointsSaveAsync(int currentUserId,
-            int whoEarnedUserId,
-            int pointsEarned,
-            bool loggingAsAdminUser)
-        {
-            if (pointsEarned < 0)
-            {
-                throw new Exception($"Cannot log negative points");
-            }
-
-            User returnUser = null;
-
-            var dbUser = await DbSet
-                .Where(_ => _.Id == whoEarnedUserId)
-                .SingleOrDefaultAsync();
-
-            if (dbUser == null)
-            {
-                throw new Exception($"Could not find single user with id {whoEarnedUserId}");
-            }
-
-            string original = null;
-
-            if (loggingAsAdminUser)
-            {
-                original = SerializeEntity(dbUser);
-            }
-
-            dbUser.PointsEarned += pointsEarned;
-
-            // update the user's achiever status if they've crossed the threshhold
-            var program = await context
-                .Programs
-                .AsNoTracking()
-                .Where(_ => _.Id == dbUser.ProgramId)
-                .SingleOrDefaultAsync();
-
-            if (dbUser.PointsEarned >= program.AchieverPointAmount)
-            {
-                dbUser.IsAchiever = true;
-            }
-
-            // save user's changes
-            if (loggingAsAdminUser)
-            {
-                returnUser = await UpdateSaveAsync(currentUserId, dbUser, original);
-            }
-            else
-            {
-                await SaveAsync();
-            }
-            return returnUser ?? await GetByIdAsync(whoEarnedUserId);
-        }
-
-        public async Task<User>
-            RemovePointsSaveASync(int currentUserId, int whoRemoveUserId, int pointsToRemove)
-        {
-            if (pointsToRemove < 0)
-            {
-                throw new Exception($"Cannot remove negative points");
-            }
-
-            var dbUser = await DbSet
-                .Where(_ => _.Id == whoRemoveUserId)
-                .SingleOrDefaultAsync();
-
-            if (dbUser == null)
-            {
-                throw new Exception($"Could not find single user with id {whoRemoveUserId}");
-            }
-
-            string original = null;
-            original = SerializeEntity(dbUser);
-
-            dbUser.PointsEarned -= pointsToRemove;
-
-            // update the user's achiever status if they've crossed the threshhold
-            var program = await context
-                .Programs
-                .AsNoTracking()
-                .Where(_ => _.Id == dbUser.ProgramId)
-                .SingleOrDefaultAsync();
-
-            if (dbUser.PointsEarned >= program.AchieverPointAmount)
-            {
-                dbUser.IsAchiever = true;
-            }
-            else
-            {
-                dbUser.IsAchiever = false;
-            }
-
-            return await UpdateSaveAsync(currentUserId, dbUser, original);
-        }
         public async Task<IEnumerable<User>> PageAllAsync(int siteId,
             int skip,
             int take,
@@ -270,7 +172,7 @@ namespace GRA.Data.Repository
 
         public async override Task RemoveSaveAsync(int userId, int id)
         {
-            var entity = await context.Users
+            var entity = await _context.Users
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;

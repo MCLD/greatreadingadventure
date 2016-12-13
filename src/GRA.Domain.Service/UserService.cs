@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly ISiteRepository _siteRepository;
         private readonly IStaticAvatarRepository _staticAvatarRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
@@ -26,6 +27,7 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             INotificationRepository notificationRepository,
             IProgramRepository programRepository,
+            ISiteRepository siteRepository,
             IStaticAvatarRepository staticAvatarRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
@@ -39,6 +41,7 @@ namespace GRA.Domain.Service
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository,
                 nameof(staticAvatarRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
@@ -60,6 +63,27 @@ namespace GRA.Domain.Service
             var registeredUser = await _userRepository.AddSaveAsync(0, user);
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
+
+            var program = await _programRepository.GetByIdAsync(registeredUser.ProgramId);
+            var site = await _siteRepository.GetByIdAsync(registeredUser.SiteId);
+
+            var notification = new Notification
+            {
+                PointsEarned = 0,
+                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                UserId = registeredUser.Id,
+                IsJoining = true
+            };
+
+            if (program.JoinBadgeId != null)
+            {
+                var badge = await _badgeRepository.GetByIdAsync((int)program.JoinBadgeId);
+                await _badgeRepository.AddUserBadge(registeredUser.Id, badge.Id);
+                notification.BadgeId = badge.Id;
+                notification.BadgeFilename = badge.Filename;
+            }
+            await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
+
             return registeredUser;
         }
 
@@ -307,6 +331,9 @@ namespace GRA.Domain.Service
                 program.FromEmailName = user.FullName;
                 await _programRepository.UpdateSaveAsync(userId, program);
             }
+
+            user.IsAdmin = true;
+            await _userRepository.UpdateSaveAsync(userId, user);
 
             return authCode.RoleName;
         }

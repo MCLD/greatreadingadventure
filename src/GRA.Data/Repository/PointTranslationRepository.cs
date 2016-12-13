@@ -27,7 +27,7 @@ namespace GRA.Data.Repository
             {
                 return null;
             }
-            return mapper.Map<PointTranslation>(translation);
+            return _mapper.Map<PointTranslation>(translation);
         }
     }
 }

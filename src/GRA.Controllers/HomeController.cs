@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers
@@ -35,6 +36,7 @@ namespace GRA.Controllers
             }
             if (AuthUser.Identity.IsAuthenticated)
             {
+                // signed-in users can view the dashboard
                 var user = await _userService.GetDetails(GetActiveUserId());
                 DashboardViewModel viewModel = new DashboardViewModel()
                 {
@@ -46,12 +48,72 @@ namespace GRA.Controllers
                     viewModel.Author = (string)TempData[AuthorMissingTitle];
                     ModelState.AddModelError("Title", "Please include the Title of the book");
                 }
-                
+
                 return View("Dashboard", viewModel);
             }
             else
             {
-                return View();
+                // determine the appropriate page to show and show it
+                if (site.AccessClosed != null && DateTime.Now >= site.AccessClosed)
+                {
+                    if (site.AccessClosedPage != null)
+                    {
+                        // show custom access closed page
+                        return View("IndexAccessClosed");
+                    }
+                    else
+                    {
+                        return View("IndexAccessClosed");
+                    }
+                }
+                else if (site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
+                {
+                    if (site.ProgramEndedPage != null)
+                    {
+                        //show custom program ended page
+                        return View("IndexProgramEnded");
+                    }
+                    else
+                    {
+                        return View("IndexProgramEnded");
+                    }
+                }
+                else if (site.ProgramStarts != null && DateTime.Now > site.ProgramStarts)
+                {
+                    if (site.ProgramOpenPage != null)
+                    {
+                        // show custom program open page
+                        return View("IndexProgramOpen");
+                    }
+                    else
+                    {
+                        return View("IndexProgramOpen");
+                    }
+                }
+                else if (site.RegistrationOpens != null && DateTime.Now > site.RegistrationOpens)
+                {
+                    if (site.RegistrationOpenPage != null)
+                    {
+                        // show custom registration open page
+                        return View("IndexRegistrationOpen");
+                    }
+                    else
+                    {
+                        return View("IndexRegistrationOpen");
+                    }
+                }
+                else
+                {
+                    if (site.BeforeRegistrationPage != null)
+                    {
+                        // show custom before registration page
+                        return View("IndexNotOpenYet");
+                    }
+                    else
+                    {
+                        return View("IndexNotOpenYet");
+                    }
+                }
             }
         }
 

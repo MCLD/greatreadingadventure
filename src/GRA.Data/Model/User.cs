@@ -18,6 +18,9 @@ namespace GRA.Data.Model
         public string LockedOutFor { get; set; }
 
         public bool IsAchiever { get; set; }
+        public bool IsAdmin { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? LastActivityDate { get; set; }
 
         [MaxLength(36)]
         public string Username { get; set; }

@@ -11,15 +11,19 @@ The Great Reading Adventure is open source software developed with the help of [
 
 ## <a name="people"></a>People
 
-- [Caris O'Malley](http://carisomalley.com/) &#9734;
-- Brianna King
+### <a name="people-developers"></a>Developers
+- [Harald Nagel](https://haraldnagel.com/) :shipit:
 - [Dan Wilcox](https://github.com/iafb/)
-- Danette Barton
-- [Daniel Messer](http://cyberpunklibrarian.com/)
-- [Harald Nagel](https://haraldnagel.com/)
-- [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
 - [Ian Griffin](https://github.com/iangriffin/)
 - [Justin Meiners](https://justinmeiners.github.io/)
+
+### <a name="people-support"></a>Support
+
+- [Caris O'Malley](http://carisomalley.com/) &#9734;
+- Brianna King
+- Danette Barton
+- [Daniel Messer](http://cyberpunklibrarian.com/)
+- [Holly Brennan](https://www.linkedin.com/in/holly-brennan-76450270)
 - [Lucas Gonzalez](http://diffracted.com/)
 - [Tara Carpenter](http://www.taracarpenter.com/)
 - [Tony Apodaca](https://antonioramonapodaca.wordpress.com/)
@@ -64,10 +68,6 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Securely hash passwords for storage in the database and for valiating logins.
 - Adapted code from the [ASP.NET Identity PasswordHasher class](https://github.com/aspnet/Identity/blob/dev/src/Microsoft.AspNetCore.Identity/PasswordHasher.cs)
 - Source on GitHub: [aspnet/Identity](https://github.com/aspnet/Identity) - [Apache License, Version 2.0](https://github.com/aspnet/Identity/blob/dev/LICENSE.txt)
-
-### Session serialization/deserialization code snippet
-- The session serialization/deserialization code allows complex objects to be stored in the ASP.NET Session by serializing them to [JSON](http://www.json.org/).
-- From the blog post [Using Sessions and HttpContext in ASP.NET Core and MVC Core](http://benjii.me/2016/07/using-sessions-and-httpcontext-in-aspnetcore-and-mvc-core/) by [Ben Cull](https://bencull.com/)
 
 ### SmartFormat.NET
 - A lightweight engine that makes it easy to form natural language from text templates.

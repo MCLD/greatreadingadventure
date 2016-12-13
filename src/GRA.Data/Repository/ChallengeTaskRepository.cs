@@ -16,13 +16,13 @@ namespace GRA.Data.Repository
 
         public override async Task<Domain.Model.ChallengeTask> GetByIdAsync(int id)
         {
-            var task = mapper.Map<Model.ChallengeTask, Domain.Model.ChallengeTask>(await DbSet
+            var task = _mapper.Map<Model.ChallengeTask, Domain.Model.ChallengeTask>(await DbSet
                .AsNoTracking()
                .Where(_ => _.Id == id)
                .SingleAsync());
 
             var challengeTaskTypes =
-                await context.ChallengeTaskTypes
+                await _context.ChallengeTaskTypes
                 .AsNoTracking()
                 .ToDictionaryAsync(_ => _.Id);
 
@@ -121,7 +121,7 @@ namespace GRA.Data.Repository
 
         public async Task AddChallengeTaskTypeAsync(int userId, string name)
         {
-            await context.ChallengeTaskTypes.AddAsync(new Model.ChallengeTaskType
+            await _context.ChallengeTaskTypes.AddAsync(new Model.ChallengeTaskType
             {
                 Name = name,
                 CreatedBy = userId,
@@ -132,7 +132,7 @@ namespace GRA.Data.Repository
         private async Task LookUpChallengeTaskTypeAsync(ChallengeTask task)
         {
             string taskTypeName = task.ChallengeTaskType.ToString();
-            task.ChallengeTaskTypeId = await context.ChallengeTaskTypes
+            task.ChallengeTaskTypeId = await _context.ChallengeTaskTypes
                 .AsNoTracking()
                 .Where(_ => _.Name == taskTypeName)
                 .Select(_ => _.Id)

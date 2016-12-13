@@ -19,9 +19,23 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task AddUserBadge(int userId, int badgeId)
+        {
+            if (!await UserHasBadge(userId, badgeId))
+            {
+                _context.UserBadges.Add(new Model.UserBadge
+                {
+                    UserId = userId,
+                    BadgeId = badgeId,
+                    CreatedAt = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<int> GetCountForUserAsync(int userId)
         {
-            return await context.UserBadges
+            return await _context.UserBadges
                 .AsNoTracking()
                 .Include(_ => _.Badge)
                 .Where(_ => _.UserId == userId)
@@ -30,7 +44,7 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<Badge>> PageForUserAsync(int userId, int skip, int take)
         {
-            return await context.UserBadges
+            return await _context.UserBadges
                 .AsNoTracking()
                 .Include(_ => _.Badge)
                 .Where(_ => _.UserId == userId)
@@ -40,6 +54,13 @@ namespace GRA.Data.Repository
                 .Select(_ => _.Badge)
                 .ProjectTo<Badge>()
                 .ToListAsync();
+        }
+
+        public async Task<bool> UserHasBadge(int userId, int badgeId)
+        {
+            return null != await _context.UserBadges
+                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
+                .SingleOrDefaultAsync();
         }
     }
 }

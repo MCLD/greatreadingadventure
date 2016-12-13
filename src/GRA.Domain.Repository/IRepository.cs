@@ -13,5 +13,6 @@ namespace GRA.Domain.Repository
         Task SaveAsync();
         Task UpdateAsync(int currentUserId, DomainEntity entity);
         Task<DomainEntity> UpdateSaveAsync(int currentUserId, DomainEntity entity);
+        Task<DomainEntity> UpdateSaveNoAuditAsync(DomainEntity entity);
     }
 }

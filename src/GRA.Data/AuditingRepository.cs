@@ -1,11 +1,11 @@
 ﻿using AutoMapper.QueryableExtensions;
+using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,14 @@ namespace GRA.Data
         where DbEntity : BaseDbEntity
         where DomainEntity : Domain.Model.Abstract.BaseDomainEntity
     {
-        protected readonly Context context;
-        protected readonly ILogger logger;
-        protected readonly AutoMapper.IMapper mapper;
-        protected readonly IConfigurationRoot config;
+        protected readonly Context _context;
+        protected readonly ILogger _logger;
+        protected readonly AutoMapper.IMapper _mapper;
+        protected readonly IConfigurationRoot _config;
+        protected readonly IEntitySerializer _entitySerializer;
 
-        private DbSet<DbEntity> dbSet;
-        private DbSet<AuditLog> auditSet;
+        private DbSet<DbEntity> _dbSet;
+        private DbSet<AuditLog> _auditSet;
 
         internal AuditingRepository(ServiceFacade.Repository repositoryFacade, ILogger logger)
         {
@@ -31,18 +32,15 @@ namespace GRA.Data
             {
                 throw new ArgumentNullException(nameof(repositoryFacade));
             }
-            this.context = repositoryFacade.context;
-            this.mapper = repositoryFacade.mapper;
-            this.config = repositoryFacade.config;
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-            this.logger = logger;
+            _context = repositoryFacade.context;
+            _mapper = repositoryFacade.mapper;
+            _config = repositoryFacade.config;
+            _entitySerializer = repositoryFacade.entitySerializer;
+            _logger = Require.IsNotNull(logger, nameof(logger));
 
-            if (string.IsNullOrWhiteSpace(config["SuppressAuditLog"]))
+            if (string.IsNullOrWhiteSpace(_config["SuppressAuditLog"]))
             {
-                auditSet = context.Set<AuditLog>();
+                _auditSet = _context.Set<AuditLog>();
             }
         }
 
@@ -66,7 +64,7 @@ namespace GRA.Data
             object priorObject,
             bool priorObjectAlreadySerialized = false)
         {
-            if (auditSet == null)
+            if (_auditSet == null)
             {
                 // audit logging is not enabled
                 return;
@@ -77,7 +75,7 @@ namespace GRA.Data
                 EntityId = objectId,
                 UpdatedBy = currentUserId,
                 UpdatedAt = DateTime.Now,
-                CurrentValue = SerializeEntity(newObject)
+                CurrentValue = _entitySerializer.Serialize(newObject)
             };
             if (priorObject != null)
             {
@@ -87,30 +85,20 @@ namespace GRA.Data
                 }
                 else
                 {
-                    audit.PreviousValue = SerializeEntity(priorObject);
+                    audit.PreviousValue = _entitySerializer.Serialize(priorObject);
                 }
             }
             await AuditSet.AddAsync(audit);
         }
 
-        protected string SerializeEntity(object entity)
-        {
-            return JsonConvert.SerializeObject(entity,
-                Formatting.None,
-                new JsonSerializerSettings()
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                });
-        }
-
         protected DbSet<AuditLog> AuditSet {
             get {
-                return auditSet;
+                return _auditSet;
             }
         }
         protected DbSet<DbEntity> DbSet {
             get {
-                return dbSet ?? (dbSet = context.Set<DbEntity>());
+                return _dbSet ?? (_dbSet = _context.Set<DbEntity>());
             }
         }
 
@@ -134,17 +122,17 @@ namespace GRA.Data
             {
                 throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
             }
-            return mapper.Map<DbEntity, DomainEntity>(entity);
+            return _mapper.Map<DbEntity, DomainEntity>(entity);
         }
 
         public virtual async Task AddAsync(int userId, DomainEntity domainEntity)
         {
-            await AddAsync(userId, mapper.Map<DomainEntity, DbEntity>(domainEntity));
+            await AddAsync(userId, _mapper.Map<DomainEntity, DbEntity>(domainEntity));
         }
 
         public virtual async Task<DomainEntity> AddSaveAsync(int userId, DomainEntity domainEntity)
         {
-            var dbEntity = mapper.Map<DomainEntity, DbEntity>(domainEntity);
+            var dbEntity = _mapper.Map<DomainEntity, DbEntity>(domainEntity);
             return await AddSaveAsync(userId, dbEntity);
         }
 
@@ -152,14 +140,14 @@ namespace GRA.Data
         {
             await AddAsync(userId, dbEntity);
             await SaveAsync();
-            return mapper.Map<DbEntity, DomainEntity>(dbEntity);
+            return _mapper.Map<DbEntity, DomainEntity>(dbEntity);
         }
 
         protected virtual async Task AddAsync(int userId, DbEntity dbEntity)
         {
             dbEntity.CreatedBy = userId;
             dbEntity.CreatedAt = DateTime.Now;
-            EntityEntry<DbEntity> dbEntityEntry = context.Entry(dbEntity);
+            EntityEntry<DbEntity> dbEntityEntry = _context.Entry(dbEntity);
             if (dbEntityEntry.State != (EntityState)EntityState.Detached)
             {
                 dbEntityEntry.State = EntityState.Added;
@@ -185,6 +173,15 @@ namespace GRA.Data
             return await GetByIdAsync(domainEntity.Id);
         }
 
+        public virtual async Task<DomainEntity> UpdateSaveNoAuditAsync(DomainEntity domainEntity)
+        {
+            var dbEntity = await DbSet.FindAsync(domainEntity.Id);
+            _mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
+            DbSet.Update(dbEntity);
+            await SaveAsync();
+            return await GetByIdAsync(domainEntity.Id);
+        }
+
         protected virtual async Task<DomainEntity> UpdateSaveAsync(int userId,
             DbEntity dbEntity,
             string original)
@@ -200,9 +197,9 @@ namespace GRA.Data
             string original = null;
             if (AuditSet != null)
             {
-                original = SerializeEntity(dbEntity);
+                original = _entitySerializer.Serialize(dbEntity);
             }
-            mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
+            _mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
             await UpdateAsync(userId, dbEntity, original);
         }
 
@@ -219,7 +216,7 @@ namespace GRA.Data
 
         public virtual async Task SaveAsync()
         {
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

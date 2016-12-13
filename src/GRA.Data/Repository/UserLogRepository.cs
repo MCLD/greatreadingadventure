@@ -33,7 +33,7 @@ namespace GRA.Data.Repository
             {
                 if (userLog.ChallengeId != null)
                 {
-                    var challenge = context.Challenges
+                    var challenge = _context.Challenges
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.ChallengeId)
                         .SingleOrDefault();
@@ -42,7 +42,7 @@ namespace GRA.Data.Repository
                 else
                 {
                     // used a point translation
-                    var translation = context.PointTranslations
+                    var translation = _context.PointTranslations
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.PointTranslationId)
                         .SingleOrDefault();

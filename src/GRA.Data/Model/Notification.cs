@@ -12,5 +12,7 @@ namespace GRA.Data.Model
         public string BadgeFilename { get; set; }
         public int? ChallengeId { get; set; }
         public int? PointsEarned { get; set; }
+        public bool IsAchiever { get; set; }
+        public bool IsJoiner { get; set; }
     }
 }

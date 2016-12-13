@@ -5,6 +5,8 @@ using GRA.Domain.Repository;
 using GRA.Domain.Model;
 using GRA.Domain.Service.Abstract;
 using System.Collections.Generic;
+using GRA.Abstract;
+using System;
 
 namespace GRA.Domain.Service
 {
@@ -15,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly IChallengeRepository _challengeRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly IProgramRepository _programRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
 
@@ -25,6 +28,7 @@ namespace GRA.Domain.Service
             IChallengeRepository challengeRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
+            IProgramRepository programRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, userContext)
         {
@@ -36,6 +40,7 @@ namespace GRA.Domain.Service
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
+            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository,
                 nameof(userLogRepository));
@@ -91,10 +96,10 @@ namespace GRA.Domain.Service
             await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
             // update the score in the user record
-            var postUpdateUser = await _userRepository.AddPointsSaveAsync(activeUserId,
+            var postUpdateUser = await AddPointsSaveAsync(authUserId,
+                activeUserId,
                 userToLog.Id,
-                pointsEarned,
-                loggingAsAdminUser);
+                pointsEarned);
 
             // create the notification record
             var notification = new Notification
@@ -124,8 +129,7 @@ namespace GRA.Domain.Service
 
                 int pointsToRemove = userLog.PointsEarned;
                 await _userLogRepository.RemoveSaveAsync(currentUserId, userLogIdToRemove);
-                return await _userRepository
-                    .RemovePointsSaveASync(currentUserId, userIdToLog, pointsToRemove);
+                return await RemovePointsSaveAsync(currentUserId, userIdToLog, pointsToRemove);
             }
             else
             {
@@ -192,7 +196,7 @@ namespace GRA.Domain.Service
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
 
-            var challengeAlreadyCompleted = 
+            var challengeAlreadyCompleted =
                 await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
 
             if (challengeAlreadyCompleted.IsCompleted == true)
@@ -218,10 +222,10 @@ namespace GRA.Domain.Service
                 await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
                 // update the score in the user record
-                var postUpdateUser = await _userRepository.AddPointsSaveAsync(authUserId,
+                var postUpdateUser = await AddPointsSaveAsync(authUserId,
                     activeUserId,
-                    pointsAwarded,
-                    false);
+                    activeUserId,
+                    pointsAwarded);
 
                 string badgeNotification = null;
                 Badge badge = null;
@@ -229,6 +233,7 @@ namespace GRA.Domain.Service
                 {
                     badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
                     badgeNotification = $" and the badge: {badge.Name}";
+                    await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
                 }
 
                 // create the notification record
@@ -253,6 +258,100 @@ namespace GRA.Domain.Service
             {
                 return false;
             }
+        }
+
+        private async Task<User> AddPointsSaveAsync(int authUserId,
+            int activeUserId,
+            int whoEarnedUserId,
+            int pointsEarned)
+        {
+            if (pointsEarned < 0)
+            {
+                throw new GraException($"Cannot log negative points!");
+            }
+
+            var earnedUser = await _userRepository.GetByIdAsync(whoEarnedUserId);
+            if (earnedUser == null)
+            {
+                throw new Exception($"Could not find a user with id {whoEarnedUserId}");
+            }
+
+            earnedUser.PointsEarned += pointsEarned;
+            earnedUser.IsActive = true;
+            earnedUser.LastActivityDate = DateTime.Now;
+
+            // update the user's achiever status if they've crossed the threshhold
+            var program = await _programRepository.GetByIdAsync(earnedUser.ProgramId);
+
+            if (!earnedUser.IsAchiever
+                && earnedUser.PointsEarned >= program.AchieverPointAmount)
+            {
+                earnedUser.IsAchiever = true;
+
+                var notification = new Notification
+                {
+                    PointsEarned = pointsEarned,
+                    Text = $"<span class=\"fa fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
+                    UserId = earnedUser.Id,
+                    IsAchiever = true
+                };
+
+                if (program.AchieverBadgeId != null)
+                {
+                    var badge = await _badgeRepository.GetByIdAsync((int)program.AchieverBadgeId);
+                    await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
+                    notification.Text += " You've earned the badge: {badge.Name}!";
+                    notification.BadgeId = badge.Id;
+                    notification.BadgeFilename = badge.Filename;
+                }
+
+                await _notificationRepository.AddSaveAsync(authUserId, notification);
+            }
+
+            // save user's changes
+            if (activeUserId == earnedUser.Id
+                || authUserId == earnedUser.HouseholdHeadUserId)
+            {
+                return await _userRepository.UpdateSaveNoAuditAsync(earnedUser);
+            }
+            else
+            {
+                return await _userRepository.UpdateSaveAsync(activeUserId, earnedUser);
+            }
+        }
+
+        private async Task<User>
+            RemovePointsSaveAsync(int currentUserId,
+            int removePointsFromUserId,
+            int pointsToRemove)
+        {
+            if (pointsToRemove < 0)
+            {
+                throw new GraException($"Cannot remove negative points!");
+            }
+
+            var removeUser = await _userRepository.GetByIdAsync(removePointsFromUserId);
+
+            if (removeUser == null)
+            {
+                throw new Exception($"Could not find single user with id {removePointsFromUserId}");
+            }
+
+            removeUser.PointsEarned -= pointsToRemove;
+
+            // update the user's achiever status if they've crossed the threshhold
+            var program = await _programRepository.GetByIdAsync(removeUser.ProgramId);
+
+            if (removeUser.PointsEarned >= program.AchieverPointAmount)
+            {
+                removeUser.IsAchiever = true;
+            }
+            else
+            {
+                removeUser.IsAchiever = false;
+            }
+
+            return await _userRepository.UpdateSaveAsync(currentUserId, removeUser);
         }
     }
 }

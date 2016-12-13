@@ -65,7 +65,7 @@ namespace GRA.Domain.Service
             var program = new Model.Program
             {
                 SiteId = siteId,
-                AchieverPointAmount = 1000,
+                AchieverPointAmount = 100,
                 Name = "Reading Program",
             };
             program = await _programRepository.AddSaveAsync(userId, program);

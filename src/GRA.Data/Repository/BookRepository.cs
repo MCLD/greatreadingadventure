@@ -22,9 +22,9 @@ namespace GRA.Data.Repository
         {
             book.CreatedBy = requestedByUserId;
             book.CreatedAt = DateTime.Now;
-            book = await AddSaveAsync(requestedByUserId, mapper.Map<Model.Book>(book));
+            book = await AddSaveAsync(requestedByUserId, _mapper.Map<Model.Book>(book));
 
-            context.UserBooks.Add(new Model.UserBook
+            _context.UserBooks.Add(new Model.UserBook
             {
                 BookId = book.Id,
                 CreatedAt = book.CreatedAt,
@@ -37,7 +37,7 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<Book>> GetForUserAsync(int userId)
         {
-            return await context.UserBooks
+            return await _context.UserBooks
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .Select(_ => _.Book)
@@ -47,7 +47,7 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetCountForUserAsync(int userId)
         {
-            return await context.UserBooks
+            return await _context.UserBooks
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .CountAsync();
@@ -55,11 +55,11 @@ namespace GRA.Data.Repository
 
         public async Task RemoveForUserAsync(int requestedByUserId, int userId, int bookId)
         {
-            var joinRecord = await context.UserBooks
+            var joinRecord = await _context.UserBooks
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId && _.BookId == bookId)
                 .SingleOrDefaultAsync();
-            context.UserBooks.Remove(joinRecord);
+            _context.UserBooks.Remove(joinRecord);
             await RemoveSaveAsync(requestedByUserId, bookId);
         }
     }

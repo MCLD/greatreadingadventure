@@ -17,7 +17,7 @@ namespace GRA.Data.Repository
         }
         public async Task<IEnumerable<Domain.Model.System>> GetAllAsync(int siteId)
         {
-            return await context.Systems
+            return await _context.Systems
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
