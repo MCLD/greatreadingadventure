@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
-    public class SignInController : Base.Controller
+    public class SignInController : Base.UserController
     {
         private readonly ILogger<SignInController> _logger;
         private readonly AuthenticationService _authenticationService;

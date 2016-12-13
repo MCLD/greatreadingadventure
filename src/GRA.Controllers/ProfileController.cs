@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace GRA.Controllers
 {
     [Authorize]
-    public class ProfileController : Base.Controller
+    public class ProfileController : Base.UserController
     {
         private readonly ILogger<ChallengesController> _logger;
         private readonly AuthenticationService _authenticationService;

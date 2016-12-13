@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
-    public class HomeController : Base.Controller
+    public class HomeController : Base.UserController
     {
         private const string AuthorMissingTitle = "AuthorMissingTitle";
 

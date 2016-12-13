@@ -58,7 +58,7 @@ namespace GRA.Controllers.Filter
                 httpContext.Items["GoogleAnalyticsTrackingId"] = site.GoogleAnalyticsTrackingId;
             }
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
-            httpContext.Items[SessionKey.SiteId] = (int)siteId;
+            httpContext.Items[ItemKey.SiteId] = (int)siteId;
 
             await next();
         }

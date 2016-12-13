@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
-    public class ChallengesController : Base.Controller
+    public class ChallengesController : Base.UserController
     {
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;

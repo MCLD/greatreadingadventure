@@ -23,7 +23,7 @@ namespace GRA.Controllers
             var userContext = new UserContext
             {
                 User = httpContext.User,
-                SiteId = (int)httpContext.Items[SessionKey.SiteId]
+                SiteId = (int)httpContext.Items[ItemKey.SiteId]
             };
 
             if (httpContext.User.Identity.IsAuthenticated)

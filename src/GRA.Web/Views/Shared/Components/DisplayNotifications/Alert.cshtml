@@ -1,0 +1,19 @@
+﻿@model GRA.Controllers.ViewModel.Shared.DisplayNotificationsViewModel
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+        <div class="alert alert-success">
+
+            @foreach (var notification in Model.Notifications)
+            {
+                @Html.Raw(notification.Text)
+                <br />
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.SummaryText))
+            {
+                <span>@Html.Raw(Model.SummaryText)</span>
+            }
+        </div>
+    </div>
+</div>

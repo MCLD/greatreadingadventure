@@ -74,6 +74,11 @@
         </div>
     </div>
     <div class="container body-content">
+        @if (Context.Items[GRA.Controllers.ItemKey.NotificicationsList] != null)
+        {
+            @await Component.InvokeAsync("DisplayNotifications")
+        }
+
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
             <div class="row">
@@ -143,7 +148,7 @@
     }
     @RenderSection("scripts", required: false)
     <script>
-        $(function () {
+        $(function() {
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>

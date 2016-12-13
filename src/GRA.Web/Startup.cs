@@ -123,6 +123,7 @@ namespace GRA.Web
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
 
             // filters
+            services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SiteFilter>();
 
             // services

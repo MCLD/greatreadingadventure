@@ -10,7 +10,7 @@ using System;
 
 namespace GRA.Controllers
 {
-    public class JoinController : Base.Controller
+    public class JoinController : Base.UserController
     {
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
