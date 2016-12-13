@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
 
-<form asp-controller="Challenges" method="post" role="form">
+<form asp-controller="Challenges" method="post" role="form" enctype="multipart/form-data">
 
     @if (Model.AddTask)
     {
@@ -129,6 +129,7 @@
     </div>
 
     <input asp-for="Challenge.Id" type="hidden" />
+    <input asp-for="Challenge.BadgeId" type="hidden" />
 
     <div class="row row-spacing">
         <div class="col-xs-12">
@@ -159,6 +160,35 @@
             <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
     </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+            {
+                <input asp-for="BadgePath" type="hidden" />
+                <img class="thumbnail" style="margin-bottom:0px;" height="74" width="74" src="@Model.BadgePath" />
+                <label class="control-label">Edit badge image</label>
+            }
+            else
+            {
+                <label class="control-label">Add a badge</label>
+            }
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span>Select an image<input type="file" name="BadgeImage" id="BadgeImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly id="selectedFile">
+            </div>
+            <div>
+                <span asp-validation-for="BadgeImage" class="text-danger"></span>
+            </div>
+            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
+        </div>
+    </div>
+
+    <hr />
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
@@ -235,7 +265,40 @@
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
+
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length)
+                {
+                    input.val(log);
+                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').addClass('btn-success');
+                }
+                else
+                {
+                    input.val('');
+                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').removeClass('btn-success');
+                }
+            });
+
+            $('#clearFile').on("click", function() {
+                $('#BadgeImage').val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+                $('#selectedFile').val('');
+            });
+
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
         });
+
         $(window).resize(function() {
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);

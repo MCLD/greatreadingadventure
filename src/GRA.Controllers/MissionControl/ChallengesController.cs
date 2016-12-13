@@ -3,10 +3,12 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,15 +22,18 @@ namespace GRA.Controllers.MissionControl
         private const string EditTask = "EditTask";
         private const string TempEditChallenge = "TempEditChallenge";
 
-        private readonly ILogger<ChallengesController> logger;
-        private readonly ChallengeService challengeService;
+        private readonly ILogger<ChallengesController> _logger;
+        private readonly BadgeService _badgeService;
+        private readonly ChallengeService _challengeService;
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
+            BadgeService badgeService,
             ChallengeService challengeService)
             : base(context)
         {
-            this.logger = Require.IsNotNull(logger, nameof(logger));
-            this.challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
+            _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
             PageTitle = "Challenges";
         }
 
@@ -37,7 +42,7 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
 
-            var challengeList = await challengeService
+            var challengeList = await _challengeService
                 .GetPaginatedChallengeListAsync(skip, take);
 
             ChallengesListViewModel viewModel = new ChallengesListViewModel();
@@ -71,18 +76,41 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Challenge challenge)
+        public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
+            if (model.BadgeImage != null)
+            {
+                if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
+                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpeg"
+                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".png")
+                {
+                    ModelState.AddModelError("BadgeImage", "Please use a .jpg or .png image");
+                }
+            }
             if (ModelState.IsValid)
             {
-                challenge = await challengeService.AddChallengeAsync(challenge);
+                var challenge = model.Challenge;
+                if (model.BadgeImage != null)
+                {
+                    using (var fileStream = model.BadgeImage.OpenReadStream())
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            fileStream.CopyTo(ms);
+                            var badgeBytes = ms.ToArray();
+                            //var badgeId = await _badgeService.AddBadge(badgeBytes, challenge.Name);
+                            //challenge.BadgeId = badgeId;
+                        }
+                    }
+                }
+                challenge = await _challengeService.AddChallengeAsync(challenge);
                 AlertSuccess = $"Challenge '{challenge.Name}' was successfully created";
                 return RedirectToAction("Edit", new { id = challenge.Id });
             }
             else
             {
                 PageTitle = "Create Challenge";
-                return View(challenge);
+                return View(model);
             }
         }
 
@@ -94,24 +122,33 @@ namespace GRA.Controllers.MissionControl
                 challenge = Newtonsoft.Json.JsonConvert
                     .DeserializeObject<Challenge>((string)TempData[TempEditChallenge]);
 
-                var tasks = await challengeService.GetChallengeTasksAsync(id);
+                var tasks = await _challengeService.GetChallengeTasksAsync(id);
                 challenge.Tasks = tasks.ToList();
             }
             else
             {
-                challenge = await challengeService.GetChallengeDetailsAsync(id);
+                challenge = await _challengeService.GetChallengeDetailsAsync(id);
             }
             if (challenge == null)
             {
                 AlertDanger = "The requested challenge could not be accessed or does not exist";
                 return RedirectToAction("Index");
             }
+
             ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
             {
                 Challenge = challenge,
                 TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
-                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList()
+                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
+                BadgePath = "/favicon-96x96.png"
             };
+
+            /*var challengeBadge = await _badgeService.GetByIdAsync(challenge.BadgeId);
+            if (challengeBadge != null)
+            {
+                viewModel.BadgePath = challengeBadge.Filename;
+            }*/
+
             if (TempData.ContainsKey(NewTask))
             {
                 TempData.Remove(NewTask);
@@ -120,7 +157,7 @@ namespace GRA.Controllers.MissionControl
             }
             else if (TempData.ContainsKey(EditTask))
             {
-                viewModel.Task = await challengeService
+                viewModel.Task = await _challengeService
                     .GetTaskAsync((int)TempData[EditTask]);
             }
             PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
@@ -128,27 +165,58 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(ChallengesDetailViewModel viewModel)
+        public async Task<IActionResult> Edit(ChallengesDetailViewModel model)
         {
+            if (model.BadgeImage != null)
+            {
+                if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
+                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpeg"
+                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".png")
+                {
+                    ModelState.AddModelError("BadgeImage", "Please use a .jpg or .png image");
+                }
+            }
             if (ModelState.IsValid)
             {
-                await challengeService.EditChallengeAsync(viewModel.Challenge);
-                AlertSuccess = $"Challenge '{viewModel.Challenge.Name}' was successfully modified";
+                var challenge = model.Challenge;
+                if (model.BadgeImage != null)
+                {
+                    using (var fileStream = model.BadgeImage.OpenReadStream())
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            fileStream.CopyTo(ms);
+                            var badgeBytes = ms.ToArray();
+                            if (challenge.BadgeId == null)
+                            {
+                                //var badgeId = await _badgeService.AddBadge(badgeBytes, challenge.Name);
+                                //challenge.BadgeId = badgeId;
+                            }
+                            else
+                            {
+                                //await _badgeService.EditBadge(badgeBytes, challenge.BadgeId);
+                            }
+                        }
+                    }
+                }
+
+                await _challengeService.EditChallengeAsync(challenge);
+                AlertSuccess = $"Challenge '{challenge.Name}' was successfully modified";
                 return RedirectToAction("Index");
             }
             else
             {
-                var tasks = await challengeService.GetChallengeTasksAsync(viewModel.Challenge.Id);
-                viewModel.Challenge.Tasks = tasks.ToList();
-                PageTitle = $"Edit Challenge - {viewModel.Challenge.Name}";
-                return View(viewModel);
+                var tasks = await _challengeService.GetChallengeTasksAsync(model.Challenge.Id);
+                model.Challenge.Tasks = tasks.ToList();
+                PageTitle = $"Edit Challenge - {model.Challenge.Name}";
+                return View(model);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await challengeService.RemoveChallengeAsync(id);
+            await _challengeService.RemoveChallengeAsync(id);
             return RedirectToAction("Index");
         }
 
@@ -181,7 +249,7 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
-                await challengeService.AddTaskAsync(viewModel.Task);
+                await _challengeService.AddTaskAsync(viewModel.Task);
             }
             else
             {
@@ -212,7 +280,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
-                await challengeService.EditTaskAsync(viewModel.Task);
+                await _challengeService.EditTaskAsync(viewModel.Task);
             }
             else
             {
@@ -227,7 +295,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
         {
-            await challengeService.RemoveTaskAsync(id);
+            await _challengeService.RemoveTaskAsync(id);
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
 
@@ -237,7 +305,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DecreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
-            await challengeService.DecreaseTaskPositionAsync(id);
+            await _challengeService.DecreaseTaskPositionAsync(id);
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
 
@@ -247,7 +315,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> IncreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
-            await challengeService.IncreaseTaskPositionAsync(id);
+            await _challengeService.IncreaseTaskPositionAsync(id);
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
 

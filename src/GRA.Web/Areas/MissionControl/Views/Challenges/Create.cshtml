@@ -1,36 +1,56 @@
-﻿@model GRA.Domain.Model.Challenge
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
 
-<form asp-controller="Challenges" asp-action="Create" method="post" role="form">
+<form asp-controller="Challenges" asp-action="Create" method="post" role="form" enctype="multipart/form-data">
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <label asp-for="Challenge.Name" class="control-label"></label>
+            <input asp-for="Challenge.Name" class="form-control" />
+            <span asp-validation-for="Challenge.Name" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Description" class="control-labe"></label>
-            <textarea asp-for="Description" class="form-control"> </textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
+            <label asp-for="Challenge.Description" class="control-labe"></label>
+            <textarea asp-for="Challenge.Description" class="form-control"> </textarea>
+            <span asp-validation-for="Challenge.Description" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-6">
-            <label asp-for="PointsAwarded" class="control-label"></label>
-            <input asp-for="PointsAwarded" type="number" min="1" class="form-control" />
-            <span asp-validation-for="PointsAwarded" class="text-danger"></span>
+            <label asp-for="Challenge.PointsAwarded" class="control-label"></label>
+            <input asp-for="Challenge.PointsAwarded" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Challenge.PointsAwarded" class="text-danger"></span>
         </div>
 
         <div class="col-xs-6">
-            <label asp-for="TasksToComplete" class="control-label"></label>
-            <input asp-for="TasksToComplete" type="number" min="1" class="form-control" />
-            <span asp-validation-for="TasksToComplete" class="text-danger"></span>
+            <label asp-for="Challenge.TasksToComplete" class="control-label"></label>
+            <input asp-for="Challenge.TasksToComplete" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Challenge.TasksToComplete" class="text-danger"></span>
         </div>
     </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label class="control-label">Add a badge</label>
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly id="selectedFile">
+            </div>
+            <div>
+                <span asp-validation-for="BadgeImage" class="text-danger"></span>
+            </div>
+            <button id="clearFile" class="btn btn-default" type="button" style="margin-top: 0.5em;"><span class="fa fa-ban"></span> Clear file selection</button>
+        </div>
+    </div>
+
+    <hr />
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
@@ -43,17 +63,51 @@
 
 @section scripts {
     <script>
-        $('#Submit').on("click", function(e) {
-            if ($(this).parents('form:first').valid())
-            {
-                e.preventDefault();
-                if (!$(this).hasClass('disabled'))
+        $(document).ready(function() {
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length)
                 {
-                    $(this).addClass('disabled');
-                    $(this).children('.fa-spinner').removeClass('hidden');
-                    $(this).parents('form:first').submit();
+                    input.val(log);
+                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').addClass('btn-success');
                 }
-            }
+                else
+                {
+                    input.val('');
+                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').removeClass('btn-success');
+                }
+            });
+
+            $('#clearFile').on("click", function() {
+                $('#BadgeImage').val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+                $('#selectedFile').val('');
+            });
+
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $('#Submit').on("click", function(e) {
+                if ($(this).parents('form:first').valid())
+                {
+                    e.preventDefault();
+                    if (!$(this).hasClass('disabled'))
+                    {
+                        $(this).addClass('disabled');
+                        $(this).children('.fa-spinner').removeClass('hidden');
+                        $(this).parents('form:first').submit();
+                    }
+                }
+            });
         });
     </script>
 }
