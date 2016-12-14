@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using GRA.Domain.Service.Abstract;
+using System.Text;
+using System.Linq;
+using System;
 
 namespace GRA.Domain.Service
 {
@@ -30,7 +33,7 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<Model.System>> GetSystemList()
         {
-            
+
             return await _systemRepository.GetAllAsync(GetCurrentSiteId());
         }
 
@@ -42,6 +45,55 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Program>> GetProgramList()
         {
             return await _programRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
+        public async Task<string> GetBaseUrl(string scheme, string host)
+        {
+            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
+            if (site.IsDefault)
+            {
+                return $"{scheme}://{host}";
+            }
+            else
+            {
+                return $"{scheme}://{host}/{site.Path}";
+            }
+        }
+
+        public async Task<byte[]> GetIcsFile(string siteUrl)
+        {
+            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
+            if (site.RegistrationOpens == null)
+            {
+                _logger.LogError($"Can't generate calendar file becuase RegistrationOpens date is not set for site {site.Id}");
+                throw new GraException("Unable to generate calendar file.");
+            }
+            string project = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
+
+            // if the start time is midnight then let's bump the calendar appointment to 0700
+            var localStartTime = (DateTime)site.RegistrationOpens;
+            if (localStartTime.Hour + localStartTime.Minute + localStartTime.Second == 0)
+            {
+                localStartTime = localStartTime.AddHours(7);
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("BEGIN:VCALENDAR");
+            sb.AppendLine($"PRODID:-//{project}//EN");
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("BEGIN:VEVENT");
+            sb.AppendLine($"SUMMARY; LANGUAGE = en - us:{site.Name}");
+            sb.AppendLine("CLASS:PUBLIC");
+            sb.AppendLine($"CREATED:{DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+            sb.AppendLine($"DESCRIPTION:Remember to join {site.Name}: {siteUrl}");
+            sb.AppendLine($"DTSTART:{localStartTime:yyyyMMddTHHmmss}");
+            sb.AppendLine($"DTEND:{localStartTime:yyyyMMddTHHmmss}");
+            sb.AppendLine("SEQUENCE:0");
+            sb.AppendLine($"UID:{Guid.NewGuid()}");
+            sb.AppendLine($"LOCATION:{siteUrl}");
+            sb.AppendLine("END:VEVENT");
+            sb.AppendLine("END:VCALENDAR");
+            return Encoding.UTF8.GetBytes(sb.ToString());
         }
     }
 }

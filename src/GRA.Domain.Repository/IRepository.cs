@@ -8,6 +8,7 @@ namespace GRA.Domain.Repository
     {
         Task AddAsync(int currentUserId, DomainEntity entity);
         Task<DomainEntity> AddSaveAsync(int currentUserId, DomainEntity entity);
+        Task<DomainEntity> AddSaveNoAuditAsync(DomainEntity entity);
         Task<DomainEntity> GetByIdAsync(int id);
         Task RemoveSaveAsync(int currentUserId, int id);
         Task SaveAsync();

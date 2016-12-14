@@ -49,7 +49,7 @@ namespace GRA.Controllers.MissionControl
                 // not authorized for Mission Control, redirect to authorization code
                 return View("AuthorizationCode");
             }
-            Site site = await GetCurrentSite(sitePath);
+            Site site = await GetCurrentSiteAsync(sitePath);
             PageTitle = $"Mission Control: {site.Name}";
             return View();
         }

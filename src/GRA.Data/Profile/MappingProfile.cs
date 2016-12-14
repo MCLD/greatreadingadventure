@@ -10,6 +10,7 @@
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
             CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
+            CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();

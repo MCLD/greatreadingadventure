@@ -26,7 +26,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string sitePath = null, string ReturnUrl = null)
         {
-            var site = await GetCurrentSite(sitePath);
+            var site = await GetCurrentSiteAsync(sitePath);
             PageTitle = $"Sign In to {site.Name}";
 
             SignInViewModel viewModel = new SignInViewModel();

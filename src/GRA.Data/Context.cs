@@ -49,6 +49,9 @@ namespace GRA.Data
 
             // add indexing as needed
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
+            modelBuilder.Entity<Model.EmailReminder>()
+                .HasIndex(_ => new { _.Email, _.SignUpSource })
+                .IsUnique();
             modelBuilder.Entity<Model.Notification>()
                 .HasIndex(_ => _.UserId);
             modelBuilder.Entity<Model.Page>()
@@ -79,6 +82,7 @@ namespace GRA.Data
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
+        public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
         public DbSet<Model.Page> Pages { get; set; }

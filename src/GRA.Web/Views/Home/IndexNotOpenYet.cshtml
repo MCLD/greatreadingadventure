@@ -1,4 +1,6 @@
-﻿<div class="row" style="margin-bottom: 1em;">
+﻿@model GRA.Controllers.ViewModel.Home.NotOpenYetViewModel
+
+<div class="row" style="margin-bottom: 1em;">
     <div class="col-xs-12">
         <img src="~/images/meadow.jpg"
              alt="Illustration of a meadow."
@@ -17,10 +19,50 @@
         </p>
     </div>
     <div class="col-sm-6">
-        <p>
-            Welcome to <grasite property="name"></grasite>. Soon you'll be able to join the program
-            right here! Come back soon!
-        </p>
+        Welcome to <grasite property="name"></grasite>.
+        @if (Model == null || Model.Site == null || string.IsNullOrEmpty(Model.RegistrationOpens))
+            {
+            <p>When the program starts, you'll be able to join right here. Come back soon!</p>
+        }
+        else if (Model.Site.CollectPreregistrationEmails == true)
+        {
+            <p>You can join our program starting on @Model.RegistrationOpens!</p>
+
+            <p>
+                <strong>Would you like a reminder email?</strong> Enter your email address below
+                and click the "Remind me" button and we'll send you a reminder when you can join.
+            </p>
+            <form asp-controller="Home"
+                  asp-action="AddReminder"
+                  method="post"
+                  role="form"
+                  class="form-horizontal">
+                <input asp-for="SignUpSource" type="hidden" />
+                <div class="form-group" style="padding: 0.5em 1em;">
+                    <label asp-for="Email" class="control-label sr-only"></label>
+                    <div class="input-group">
+                        <input asp-for="Email" class="form-control" type="email" autofocus />
+                        <span class="input-group-btn">
+                            <button type="submit"
+                                    class="btn btn-info">
+                                <span class="fa fa-envelope-o"></span> Remind me!
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <p><strong>Want to add a calendar reminder?</strong> Click "Add to calendar" button!</p>
+            <form asp-controller="Home"
+                  asp-action="GetIcs"
+                  method="post"
+                  role="form">
+                <button type="submit" class="btn btn-primary center-block"><span class="fa fa-calendar"></span> Add to calendar</button>
+            </form>
+        }
+        else
+        {
+            <p>You can join our program starting on @Model.RegistrationOpens!</p>
+        }
     </div>
     <div class="col-sm-3">
         <p>Reading for 20 minutes a day helps build a strong lifelong reading habit.</p>

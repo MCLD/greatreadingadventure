@@ -143,6 +143,14 @@ namespace GRA.Data
             return _mapper.Map<DbEntity, DomainEntity>(dbEntity);
         }
 
+        public virtual async Task<DomainEntity> AddSaveNoAuditAsync(DomainEntity domainEntity)
+        {
+            var dbEntity = _mapper.Map<DbEntity>(domainEntity);
+            await DbSet.AddAsync(dbEntity);
+            await SaveAsync();
+            return await GetByIdAsync(dbEntity.Id);
+        }
+
         protected virtual async Task AddAsync(int userId, DbEntity dbEntity)
         {
             dbEntity.CreatedBy = userId;

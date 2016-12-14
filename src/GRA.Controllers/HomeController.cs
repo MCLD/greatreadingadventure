@@ -1,10 +1,11 @@
 ﻿using GRA.Controllers.ViewModel;
+using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers
@@ -15,21 +16,28 @@ namespace GRA.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly EmailReminderService _emailReminderService;
+        private readonly SiteService _siteService;
         private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            EmailReminderService emailReminderService,
+            SiteService siteService,
             UserService userService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _emailReminderService = Require.IsNotNull(emailReminderService,
+                nameof(emailReminderService));
+            _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
         }
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            var site = await GetCurrentSite(sitePath);
+            var site = await GetCurrentSiteAsync(sitePath);
             if (site != null)
             {
                 PageTitle = site.Name;
@@ -111,10 +119,42 @@ namespace GRA.Controllers
                     }
                     else
                     {
-                        return View("IndexNotOpenYet");
+                        var viewModel = new NotOpenYetViewModel
+                        {
+                            Site = await GetCurrentSiteAsync(),
+                            SignUpSource = "NotOpenYet"
+                        };
+                        if (viewModel.Site != null && viewModel.Site.RegistrationOpens != null)
+                        {
+                            viewModel.RegistrationOpens
+                                = ((DateTime)viewModel.Site.RegistrationOpens).ToString("D");
+                        }
+                        return View("IndexNotOpenYet", viewModel);
                     }
                 }
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddReminder(NotOpenYetViewModel viewModel)
+        {
+            if (!string.IsNullOrEmpty(viewModel.Email))
+            {
+                await _emailReminderService
+                    .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+            }
+            AlertInfo = "<span class=\"fa fa-envelope\"></span> Thanks! We'll let you know when you can join the program.";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetIcs()
+        {
+            var site = await GetCurrentSiteAsync();
+            var filename = new string(site.Name.Where(_ => char.IsLetterOrDigit(_)).ToArray());
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+            var calendarBytes = await _siteService.GetIcsFile(siteUrl);
+            return File(calendarBytes, "text/calendar", $"{filename}.ics");
         }
 
         public async Task<IActionResult> Signout()
@@ -123,7 +163,7 @@ namespace GRA.Controllers
             {
                 await LogoutUserAsync();
             }
-            return RedirectToRoute(new { action = "Index" });
+            return RedirectToAction("Index");
         }
 
         [Authorize]
