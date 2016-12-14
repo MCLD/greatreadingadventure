@@ -10,16 +10,21 @@ namespace GRA.Domain.Service
 {
     public class ChallengeService : Abstract.BaseUserService<ChallengeService>
     {
+        private readonly IBadgeRepository _badgeRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             IUserContextProvider userContextProvider,
+            IBadgeRepository badgeRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository) : base(logger, userContextProvider)
         {
-            _challengeRepository = Require.IsNotNull(challengeRepository, nameof(challengeRepository));
-            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository, nameof(challengeTaskRepository));
+            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
+            _challengeRepository = Require.IsNotNull(challengeRepository,
+                nameof(challengeRepository));
+            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
+                nameof(challengeTaskRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
@@ -37,11 +42,20 @@ namespace GRA.Domain.Service
         public async Task<Challenge> GetChallengeDetailsAsync(int challengeId)
         {
             int? userId = null;
-            if(GetAuthUser().Identity.IsAuthenticated)
+            if (GetAuthUser().Identity.IsAuthenticated)
             {
                 userId = GetActiveUserId();
             }
-            return await _challengeRepository.GetByIdAsync(challengeId, userId);
+            var challenge = await _challengeRepository.GetByIdAsync(challengeId, userId);
+            if (challenge.BadgeId != null)
+            {
+                var badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
+                if (badge != null)
+                {
+                    challenge.BadgeFilename = badge.Filename;
+                }
+            }
+            return challenge;
         }
 
         public async Task<Challenge> AddChallengeAsync(Challenge challenge)
@@ -164,7 +178,7 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId)
         {
             int? userId = null;
-            if(GetAuthUser().Identity.IsAuthenticated)
+            if (GetAuthUser().Identity.IsAuthenticated)
             {
                 userId = GetActiveUserId();
             }

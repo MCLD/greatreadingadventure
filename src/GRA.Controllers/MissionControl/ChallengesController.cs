@@ -3,7 +3,6 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -98,13 +97,19 @@ namespace GRA.Controllers.MissionControl
                         {
                             fileStream.CopyTo(ms);
                             var badgeBytes = ms.ToArray();
-                            //var badgeId = await _badgeService.AddBadge(badgeBytes, challenge.Name);
-                            //challenge.BadgeId = badgeId;
+                            var newBadge = new Badge
+                            {
+                                Filename = Path.GetFileName(model.BadgePath),
+                                IsActive = true,
+                                Name = challenge.Name
+                            };
+                            var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                            challenge.BadgeId = badge.Id;
                         }
                     }
                 }
                 challenge = await _challengeService.AddChallengeAsync(challenge);
-                AlertSuccess = $"Challenge '{challenge.Name}' was successfully created";
+                AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully created";
                 return RedirectToAction("Edit", new { id = challenge.Id });
             }
             else
@@ -139,15 +144,17 @@ namespace GRA.Controllers.MissionControl
             {
                 Challenge = challenge,
                 TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
-                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
-                BadgePath = "/favicon-96x96.png"
+                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList()
             };
 
-            /*var challengeBadge = await _badgeService.GetByIdAsync(challenge.BadgeId);
-            if (challengeBadge != null)
+            if (challenge.BadgeId != null)
             {
-                viewModel.BadgePath = challengeBadge.Filename;
-            }*/
+                var challengeBadge = await _badgeService.GetByIdAsync((int)challenge.BadgeId);
+                if (challengeBadge != null)
+                {
+                    viewModel.BadgePath = challengeBadge.Filename;
+                }
+            }
 
             if (TempData.ContainsKey(NewTask))
             {
@@ -189,19 +196,29 @@ namespace GRA.Controllers.MissionControl
                             var badgeBytes = ms.ToArray();
                             if (challenge.BadgeId == null)
                             {
-                                //var badgeId = await _badgeService.AddBadge(badgeBytes, challenge.Name);
-                                //challenge.BadgeId = badgeId;
+                                var newBadge = new Badge
+                                {
+                                    Filename = Path.GetFileName(model.BadgeImage.FileName),
+                                    IsActive = true,
+                                    Name = challenge.Name
+                                };
+                                var badge = await _badgeService
+                                    .AddBadgeAsync(newBadge, badgeBytes);
+                                challenge.BadgeId = badge.Id;
                             }
                             else
                             {
-                                //await _badgeService.EditBadge(badgeBytes, challenge.BadgeId);
+                                var existing = await _badgeService
+                                    .GetByIdAsync((int)challenge.BadgeId);
+                                existing.Filename = Path.GetFileName(model.BadgePath);
+                                await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
                             }
                         }
                     }
                 }
 
                 await _challengeService.EditChallengeAsync(challenge);
-                AlertSuccess = $"Challenge '{challenge.Name}' was successfully modified";
+                AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
                 return RedirectToAction("Index");
             }
             else
@@ -303,7 +320,8 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> DecreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
+        public async Task<IActionResult>
+            DecreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
             await _challengeService.DecreaseTaskPositionAsync(id);
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
@@ -313,7 +331,8 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> IncreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
+        public async Task<IActionResult>
+            IncreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
         {
             await _challengeService.IncreaseTaskPositionAsync(id);
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert

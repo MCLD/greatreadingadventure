@@ -16,7 +16,10 @@
                             <p>@Html.Raw(Model.Details)</p>
                         </div>
                         <div class="col-xs-4 col-sm-3" style="min-width: 64px;">
-                            <img src="@Model.BadgePath" height="64" width="64" class="pull-right" asp-append-version="true" />
+                            @if (!string.IsNullOrEmpty(Model.BadgePath))
+                            {
+                                <img src="~/@Model.BadgePath" height="100" width="100" class="pull-right" asp-append-version="true" />
+                            }
                         </div>
                     </div>
                 </div>
@@ -63,8 +66,8 @@
                     {
                         <input asp-for="Challenge.Id" type="hidden" />
                         <div class="pull-right">
-                            <button class="btn btn-primary btn-lg">
-                                Complete Tasks!
+                            <button class="btn btn-success btn-lg">
+                                Save Tasks!
                             </button>
                         </div>
                     }

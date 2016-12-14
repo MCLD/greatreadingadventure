@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers
@@ -81,8 +82,8 @@ namespace GRA.Controllers
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {
                 Challenge = challenge,
+                BadgePath = challenge.BadgeFilename,
                 IsAuthenticated = AuthUser.Identity.IsAuthenticated,
-                BadgePath = "/favicon-96x96.png",
                 Tasks = new List<TaskDetailViewModel>()
             };
 
@@ -129,7 +130,19 @@ namespace GRA.Controllers
                 var completed = await _activityService.UpdateChallengeTasks(model.Challenge.Id, tasks);
                 if (!completed)
                 {
-                    AlertSuccess = "Saved tasks";
+                    var challenge 
+                        = await _challengeService.GetChallengeDetailsAsync(model.Challenge.Id);
+                    if(challenge.TasksToComplete != null 
+                        && challenge.TasksToComplete > 0)
+                    {
+                        int tasksCompleted = model.Tasks.Where(_ => _.IsCompleted == true).Count();
+                        int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
+                        AlertSuccess = $"<span class=\"fa fa-check\"></span> Your status has been saved. You have completed <strong>{percentage}%</strong> of the required tasks for the challenge: <strong>{challenge.Name}</strong>!";
+                    }
+                    else
+                    {
+                        AlertSuccess = "<span class=\"fa fa-check\"></span> Your status has been saved!";
+                    }
                 }
             }
             catch (GraException gex)

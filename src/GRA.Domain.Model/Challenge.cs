@@ -42,5 +42,6 @@ namespace GRA.Domain.Model
         public bool? IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }
         public int? BadgeId { get; set; }
+        public string BadgeFilename { get; set; }
     }
 }
