@@ -232,7 +232,7 @@ namespace GRA.Domain.Service
                 if (challenge.BadgeId != null)
                 {
                     badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
-                    badgeNotification = $" and the badge: {badge.Name}";
+                    badgeNotification = $" and a badge";
                     await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
                 }
 

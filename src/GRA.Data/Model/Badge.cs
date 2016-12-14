@@ -5,8 +5,6 @@ namespace GRA.Data.Model
     public class Badge : BaseDbEntity
     {
         public int SiteId { get; set; }
-        public string Name { get; set; }
-        public bool IsActive { get; set; }
         public string Filename { get; set; }
     }
 }
