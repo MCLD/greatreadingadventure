@@ -41,7 +41,7 @@ namespace GRA.Controllers.Helpers
             var routeData = url.ActionContext.RouteData.Values;
             var userContext = _userContextProvider.GetContext();
             int siteId = userContext.SiteId;
-            Site site = await _siteLookupService.GetById((int)siteId);
+            Site site = await _siteLookupService.GetByIdAsync((int)siteId);
             switch (property.ToLower())
             {
                 case "name":

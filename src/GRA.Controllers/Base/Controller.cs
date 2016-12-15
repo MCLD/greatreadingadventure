@@ -144,7 +144,7 @@ namespace GRA.Controllers.Base
 
         protected async Task<Site> GetCurrentSiteAsync(string sitePath = null)
         {
-            return await _siteLookupService.GetById(GetCurrentSiteId(sitePath));
+            return await _siteLookupService.GetByIdAsync(GetCurrentSiteId(sitePath));
         }
 
         protected int GetActiveUserId()
@@ -155,6 +155,11 @@ namespace GRA.Controllers.Base
                 activeUserId = GetId(ClaimType.UserId);
             }
             return (int)activeUserId;
+        }
+
+        protected SiteStage GetSiteStage()
+        {
+            return (SiteStage)HttpContext.Items[ItemKey.SiteStage];
         }
     }
 }

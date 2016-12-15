@@ -14,7 +14,7 @@ namespace GRA.Controllers.Validator
         }
         public bool IsValid(string sitePath)
         {
-            var validSitePathLookup = _siteLookupService.GetSitePaths();
+            var validSitePathLookup = _siteLookupService.GetSitePathsAsync();
             Task.WaitAll(validSitePathLookup);
             return validSitePathLookup.Result.Any(s => s == sitePath.ToLower());
         }

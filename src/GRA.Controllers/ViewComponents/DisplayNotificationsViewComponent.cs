@@ -21,7 +21,7 @@ namespace GRA.Controllers.ViewComponents
         public IViewComponentResult Invoke()
         {
             var notifications =
-                (List<GRA.Domain.Model.Notification>)HttpContext.Items[ItemKey.NotificicationsList];
+                (List<GRA.Domain.Model.Notification>)HttpContext.Items[ItemKey.NotificationsList];
 
             var notificationDisplayList = new List<GRA.Domain.Model.Notification>();
             int? totalPointsEarned = 0;

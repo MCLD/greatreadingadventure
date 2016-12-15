@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers.ViewModel.Home
 {
-    public class NotOpenYetViewModel
+    public class BeforeRegistrationViewModel
     {
         public Site Site { get; set; }
         public string RegistrationOpens { get; set; }

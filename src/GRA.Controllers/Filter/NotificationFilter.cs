@@ -25,7 +25,7 @@ namespace GRA.Controllers.Filter
                 var notifications = await _userService.GetNotificationsForUser();
                 if (notifications.Any())
                 {
-                    httpContext.Items[ItemKey.NotificicationsList] = notifications;
+                    httpContext.Items[ItemKey.NotificationsList] = notifications;
                 }
 
                 await next();

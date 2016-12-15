@@ -35,7 +35,7 @@ namespace GRA.Controllers.Filter
                 // first check, did they use a sitePath giving them a specific site
                 if (!string.IsNullOrEmpty(sitePath))
                 {
-                    site = await _siteLookupService.GetSiteByPath(sitePath);
+                    site = await _siteLookupService.GetSiteByPathAsync(sitePath);
                     if (site != null)
                     {
                         siteId = site.Id;
@@ -49,13 +49,14 @@ namespace GRA.Controllers.Filter
                 // if not then resort to the default
                 if (siteId == null)
                 {
-                    siteId = await _siteLookupService.GetDefaultSiteId();
+                    siteId = await _siteLookupService.GetDefaultSiteIdAsync();
                 }
             }
             if(site == null)
             {
-                site = await _siteLookupService.GetById((int)siteId);
-                httpContext.Items["GoogleAnalyticsTrackingId"] = site.GoogleAnalyticsTrackingId;
+                site = await _siteLookupService.GetByIdAsync((int)siteId);
+                httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
+                httpContext.Items[ItemKey.SiteStage] = _siteLookupService.GetSiteStageAsync(site);
             }
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[ItemKey.SiteId] = (int)siteId;

@@ -23,12 +23,10 @@ namespace GRA.Domain.Service
 
         private string GetPath()
         {
-            string contentDir = _config[ConfigurationKey.ContentDirectory];
-            if (!contentDir.EndsWith("/"))
-            {
-                contentDir += "/";
-            }
-            contentDir += $"site{GetClaimId(ClaimType.SiteId)}/{BadgePath}";
+            string contentDir = System.IO.Path.Combine(
+                _config[ConfigurationKey.ContentDirectory],
+                $"site{GetClaimId(ClaimType.SiteId)}",
+                BadgePath);
             if (!System.IO.Directory.Exists(contentDir))
             {
                 System.IO.Directory.CreateDirectory(contentDir);
@@ -39,7 +37,7 @@ namespace GRA.Domain.Service
         private string WriteBadgeFile(Badge badge, byte[] imageFile)
         {
             string extension = System.IO.Path.GetExtension(badge.Filename).ToLower();
-            string filename = $"{GetPath()}/badge{badge.Id}{extension}";
+            string filename = System.IO.Path.Combine(GetPath(), $"badge{badge.Id}{extension}");
             System.IO.File.WriteAllBytes(filename, imageFile);
             return filename;
         }

@@ -3,6 +3,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Routing;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers
 {
@@ -10,6 +11,7 @@ namespace GRA.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SiteLookupService _simpleSiteService;
+        private readonly UserContext _userContext;
         public UserContextProvider(IHttpContextAccessor httpContextAccessor,
             SiteLookupService simpleSiteService)
         {
@@ -23,7 +25,8 @@ namespace GRA.Controllers
             var userContext = new UserContext
             {
                 User = httpContext.User,
-                SiteId = (int)httpContext.Items[ItemKey.SiteId]
+                SiteId = (int)httpContext.Items[ItemKey.SiteId],
+                SiteStage = (SiteStage)httpContext.Items[ItemKey.SiteStage]
             };
 
             if (httpContext.User.Identity.IsAuthenticated)

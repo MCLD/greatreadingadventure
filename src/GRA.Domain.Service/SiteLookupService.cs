@@ -31,7 +31,7 @@ namespace GRA.Domain.Service
             _initialSetupService = Require.IsNotNull(initialSetupService,
                 nameof(initialSetupService));
         }
-        private async Task<IEnumerable<Site>> GetSitesFromCache()
+        private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
         {
             var sites = _memoryCache.Get<IEnumerable<Site>>(CacheKey.SitePaths);
             if (sites == null)
@@ -39,41 +39,70 @@ namespace GRA.Domain.Service
                 sites = await _siteRepository.GetAllAsync();
                 if (sites.Count() == 0)
                 {
-                    sites = await InsertInitialSite();
+                    sites = await InsertInitialSiteAsync();
                 }
                 _memoryCache.Set(CacheKey.SitePaths, sites);
             }
             return sites;
         }
 
-        public async Task<int> GetDefaultSiteId()
+        public async Task<int> GetDefaultSiteIdAsync()
         {
-            var sites = await GetSitesFromCache();
+            var sites = await GetSitesFromCacheAsync();
             return sites.Where(_ => _.IsDefault).Select(_ => _.Id).FirstOrDefault();
         }
 
-        public async Task<Site> GetSiteByPath(string sitePath)
+        public async Task<Site> GetSiteByPathAsync(string sitePath)
         {
-            var sites = await GetSitesFromCache();
+            var sites = await GetSitesFromCacheAsync();
             return sites.Where(_ => _.Path == sitePath).SingleOrDefault();
         }
 
-        public async Task<Site> GetById(int siteId)
+        public async Task<Site> GetByIdAsync(int siteId)
         {
-            var sites = await GetSitesFromCache();
+            var sites = await GetSitesFromCacheAsync();
             return sites.Where(_ => _.Id == siteId).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<string>> GetSitePaths()
+        public async Task<IEnumerable<string>> GetSitePathsAsync()
         {
-            var sites = await GetSitesFromCache();
+            var sites = await GetSitesFromCacheAsync();
             return sites.Select(_ => _.Path);
         }
 
-        private async Task<IEnumerable<Site>> InsertInitialSite()
+        public SiteStage GetSiteStageAsync(Site site)
+        {
+            if (site.AccessClosed == null 
+                && site.ProgramEnds == null 
+                && site.ProgramStarts == null 
+                && site.RegistrationOpens == null)
+            {
+                return SiteStage.ProgramOpen;
+            }
+
+            if (site.AccessClosed != null && DateTime.Now >= site.AccessClosed)
+            {
+                return SiteStage.AccessClosed;
+            }
+            if(site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
+            {
+                return SiteStage.ProgramEnded;
+            }
+            if(site.ProgramStarts != null && DateTime.Now >= site.ProgramStarts)
+            {
+                return SiteStage.ProgramOpen;
+            }
+            if(site.RegistrationOpens != null && DateTime.Now >= site.RegistrationOpens)
+            {
+                return SiteStage.BeforeRegistration;
+            }
+            return SiteStage.BeforeRegistration;
+        }
+
+        private async Task<IEnumerable<Site>> InsertInitialSiteAsync()
         {
             int? outgoingMailPort = null;
-            if(!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.DefaultOutgoingMailPort]))
             {
                 outgoingMailPort = int.Parse(_config[ConfigurationKey.DefaultOutgoingMailPort]);
             }

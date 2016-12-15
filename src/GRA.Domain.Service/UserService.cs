@@ -52,6 +52,7 @@ namespace GRA.Domain.Service
 
         public async Task<User> RegisterUserAsync(User user, string password)
         {
+            VerifyCanRegister();
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
             if (existingUser != null)
             {
@@ -325,7 +326,7 @@ namespace GRA.Domain.Service
             // TODO in the future this should be replaced with the initial setup process
             var user = await _userRepository.GetByIdAsync(userId);
             var program = await _programRepository.GetByIdAsync(user.ProgramId);
-            if(string.IsNullOrEmpty(program.FromEmailAddress))
+            if (string.IsNullOrEmpty(program.FromEmailAddress))
             {
                 program.FromEmailAddress = user.Email;
                 program.FromEmailName = user.FullName;
@@ -367,6 +368,7 @@ namespace GRA.Domain.Service
 
         public async Task RegisterHouseholdMemberAsync(User memberToRegister, string password)
         {
+            VerifyCanRegister();
             int authUserId = GetClaimId(ClaimType.UserId);
 
             if (authUserId == (int)memberToRegister.HouseholdHeadUserId

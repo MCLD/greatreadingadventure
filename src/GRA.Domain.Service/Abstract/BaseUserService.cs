@@ -15,33 +15,37 @@ namespace GRA.Domain.Service.Abstract
             _userContextProvider = Require.IsNotNull(userContextProvider, nameof(userContextProvider));
         }
 
-        private UserContext userContext = null;
-        private ClaimsPrincipal currentUser = null;
-        private int? currentUserSiteId = null;
+        private UserContext _userContext = null;
+        private ClaimsPrincipal _currentUser = null;
+        private int? _currentUserSiteId = null;
+
+        protected UserContext GetUserContext()
+        {
+            if (_userContext == null)
+            {
+                _userContext = _userContextProvider.GetContext();
+            }
+            return _userContext;
+        }
+
         protected ClaimsPrincipal GetAuthUser()
         {
-            if (userContext == null)
+            if (_currentUser == null)
             {
-                userContext = _userContextProvider.GetContext();
+                var userContext = GetUserContext();
+                _currentUser = userContext.User;
             }
-            if (currentUser == null)
-            {
-                currentUser = userContext.User;
-            }
-            return currentUser;
+            return _currentUser;
         }
 
         protected int GetCurrentSiteId()
         {
-            if (userContext == null)
+            if (_currentUserSiteId == null)
             {
-                userContext = _userContextProvider.GetContext();
+                var userContext = GetUserContext();
+                _currentUserSiteId = userContext.SiteId;
             }
-            if (currentUserSiteId == null)
-            {
-                currentUserSiteId = userContext.SiteId;
-            }
-            return (int)currentUserSiteId;
+            return (int)_currentUserSiteId;
         }
 
         protected bool HasPermission(Permission permission)
@@ -58,10 +62,7 @@ namespace GRA.Domain.Service.Abstract
 
         protected int GetActiveUserId()
         {
-            if (userContext == null)
-            {
-                userContext = _userContextProvider.GetContext();
-            }
+            var userContext = GetUserContext();
             if(userContext == null
                || !userContext.User.Identity.IsAuthenticated
                || userContext.ActiveUserId == null)
@@ -69,6 +70,16 @@ namespace GRA.Domain.Service.Abstract
                 throw new System.Exception("User is not authenticated.");
             }
             return (int)userContext.ActiveUserId;
+        }
+
+        protected void VerifyCanRegister()
+        {
+            var userContext = GetUserContext();
+            if (userContext.SiteStage != SiteStage.RegistrationOpen
+                && userContext.SiteStage != SiteStage.ProgramOpen)
+            {
+                throw new GraException("The program is not accepting registrations at this time.");
+            }
         }
     }
 }

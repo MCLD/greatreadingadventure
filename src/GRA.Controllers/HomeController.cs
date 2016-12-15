@@ -1,5 +1,6 @@
 ﻿using GRA.Controllers.ViewModel;
 using GRA.Controllers.ViewModel.Home;
+using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,82 +62,36 @@ namespace GRA.Controllers
             }
             else
             {
-                // determine the appropriate page to show and show it
-                if (site.AccessClosed != null && DateTime.Now >= site.AccessClosed)
+                // TODO handle pages if they are assigned in lieu of views
+                switch (GetSiteStage())
                 {
-                    if (site.AccessClosedPage != null)
-                    {
-                        // show custom access closed page
-                        return View("IndexAccessClosed");
-                    }
-                    else
-                    {
-                        return View("IndexAccessClosed");
-                    }
-                }
-                else if (site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
-                {
-                    if (site.ProgramEndedPage != null)
-                    {
-                        //show custom program ended page
-                        return View("IndexProgramEnded");
-                    }
-                    else
-                    {
-                        return View("IndexProgramEnded");
-                    }
-                }
-                else if (site.ProgramStarts != null && DateTime.Now > site.ProgramStarts)
-                {
-                    if (site.ProgramOpenPage != null)
-                    {
-                        // show custom program open page
-                        return View("IndexProgramOpen");
-                    }
-                    else
-                    {
-                        return View("IndexProgramOpen");
-                    }
-                }
-                else if (site.RegistrationOpens != null && DateTime.Now > site.RegistrationOpens)
-                {
-                    if (site.RegistrationOpenPage != null)
-                    {
-                        // show custom registration open page
-                        return View("IndexRegistrationOpen");
-                    }
-                    else
-                    {
-                        return View("IndexRegistrationOpen");
-                    }
-                }
-                else
-                {
-                    if (site.BeforeRegistrationPage != null)
-                    {
-                        // show custom before registration page
-                        return View("IndexNotOpenYet");
-                    }
-                    else
-                    {
-                        var viewModel = new NotOpenYetViewModel
+                    case SiteStage.BeforeRegistration:
+                        var viewModel = new BeforeRegistrationViewModel
                         {
                             Site = await GetCurrentSiteAsync(),
-                            SignUpSource = "NotOpenYet"
+                            SignUpSource = "BeforeRegistration"
                         };
                         if (viewModel.Site != null && viewModel.Site.RegistrationOpens != null)
                         {
                             viewModel.RegistrationOpens
                                 = ((DateTime)viewModel.Site.RegistrationOpens).ToString("D");
                         }
-                        return View("IndexNotOpenYet", viewModel);
-                    }
+                        return View("IndexBeforeRegistration", viewModel);
+                    case SiteStage.RegistrationOpen:
+                        return View("IndexRegistrationOpen");
+                    case SiteStage.ProgramEnded:
+                        return View("IndexProgramEnded");
+                    case SiteStage.AccessClosed:
+                        return View("IndexAccessClosed");
+                    case SiteStage.ProgramOpen:
+                    default:
+                        return View("IndexProgramOpen");
                 }
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddReminder(NotOpenYetViewModel viewModel)
+        public async Task<IActionResult> AddReminder(BeforeRegistrationViewModel viewModel)
         {
             if (!string.IsNullOrEmpty(viewModel.Email))
             {

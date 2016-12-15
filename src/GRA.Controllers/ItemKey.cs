@@ -7,8 +7,10 @@ namespace GRA.Controllers
 {
     public class ItemKey
     {
-        public const string SiteId = "SiteId";
-        public const string NotificicationsList = "NotificationsList";
+        public const string GoogleAnalytics = "GoogleAnalytics";
         public const string NotificationsDisplayed = "NotificationsDisplayed";
+        public const string NotificationsList = "NotificationsList";
+        public const string SiteId = "SiteId";
+        public const string SiteStage = "SiteStage";
     }
 }
