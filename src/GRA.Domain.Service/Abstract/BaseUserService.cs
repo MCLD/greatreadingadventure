@@ -81,5 +81,14 @@ namespace GRA.Domain.Service.Abstract
                 throw new GraException("The program is not accepting registrations at this time.");
             }
         }
+
+        protected void VerifyCanLog()
+        {
+            var userContext = GetUserContext();
+            if(userContext.SiteStage != SiteStage.ProgramOpen)
+            {
+                throw new GraException("The program is not open for activity at this time.");
+            }
+        }
     }
 }

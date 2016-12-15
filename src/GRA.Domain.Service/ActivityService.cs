@@ -50,6 +50,7 @@ namespace GRA.Domain.Service
             int activityAmountEarned,
             Book book = null)
         {
+            VerifyCanLog();
             if (book != null)
             {
                 if (string.IsNullOrWhiteSpace(book.Title)
@@ -141,6 +142,7 @@ namespace GRA.Domain.Service
 
         public async Task AddBook(int userId, Book book)
         {
+            VerifyCanLog();
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
             int authUserId = GetClaimId(ClaimType.UserId);
@@ -193,6 +195,7 @@ namespace GRA.Domain.Service
         public async Task<bool> UpdateChallengeTasks(int challengeId,
             IEnumerable<ChallengeTask> challengeTasks)
         {
+            VerifyCanLog();
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
 
