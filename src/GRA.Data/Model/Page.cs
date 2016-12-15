@@ -12,6 +12,7 @@ namespace GRA.Data.Model
         public string Stub { get; set; }
         [Required]
         public string Content { get; set; }
+        public bool IsFooter { get; set; }
         public bool IsPublished { get; set; }
     }
 }

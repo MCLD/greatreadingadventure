@@ -1,0 +1,116 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagesEditViewModel
+
+@section styles
+{
+    <link rel="stylesheet" href="~/css/WMD.css" asp-append-version="true" />
+}
+
+<a asp-action="Preview" asp-route-stub="@Model.Page.Stub" class="btn btn-default" style="margin:10px 0;"> Full Preview</a>
+
+<form asp-controller="Pages" asp-action="Edit" method="post" role="form">
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.Title" class="control-label"></label>
+            <input asp-for="Page.Title" class="form-control" />
+            <span asp-validation-for="Page.Title" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.Stub" class="control-label"></label>
+            <input asp-for="Page.Stub" class="form-control" readonly />
+            <span asp-validation-for="Page.Stub" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.Description" class="control-label"></label>
+            <input asp-for="Page.Description" class="form-control" />
+            <span asp-validation-for="Page.Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.Content" class="control-labe"></label>
+            @if (Model.CanEdit)
+            {
+                <div id="wmd-button-bar"></div>
+            }
+            <textarea asp-for="Page.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <div id="preview"></div>
+            <span asp-validation-for="Page.Content" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.IsFooter" class="control-label"></label>
+            <select asp-for="Page.IsFooter" class="form-control">
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+            </select>
+            <span asp-validation-for="Page.IsFooter" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.IsPublished" class="control-label"></label>
+            <select asp-for="Page.IsPublished" class="form-control">
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+            </select>
+            <span asp-validation-for="Page.IsPublished" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        @if (Model.CanEdit)
+        {
+            <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
+                <span class="buttonText">Edit</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
+
+    </div>
+</form>
+
+@section scripts
+{
+    <script src="~/js/commonmark.min.js" asp-append-version="true"></script>
+    <script src="~/js/WMD.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+            @if (!Model.CanEdit)
+             {
+                 <text>
+            $("input").prop('readonly', true);
+            $("select").prop('disabled', true);
+            $("textarea").prop('disabled', true);
+            </text>
+             }
+
+            var editor = new Markdown.Editor(allowUploads = false);
+            editor.run();
+
+            $('#Submit').on("click", function(e) {
+                if ($(this).parents('form:first').valid())
+                {
+                    e.preventDefault();
+                    if (!$(this).hasClass('disabled'))
+                    {
+                        $(this).addClass('disabled');
+                        $(this).children('.fa-spinner').removeClass('hidden');
+                        $(this).parents('form:first').submit();
+                    }
+                }
+            });
+        });
+    </script>
+}

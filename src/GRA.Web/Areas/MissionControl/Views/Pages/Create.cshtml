@@ -1,0 +1,113 @@
+﻿@model GRA.Domain.Model.Page
+
+@section styles 
+{
+    <link rel="stylesheet" href="~/css/WMD.css" asp-append-version="true" />
+}
+
+
+<form asp-controller="Pages" asp-action="Create" method="post" role="form">
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Stub" class="control-label"></label>
+            <input asp-for="Stub" class="form-control" />
+            <span asp-validation-for="Stub" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Content" class="control-labe"></label>
+            <div id="wmd-button-bar"></div>
+            <textarea asp-for="Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <div id="preview"></div>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="IsFooter" class="control-label"></label>
+            <select asp-for="IsFooter" class="form-control">
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+            </select>
+            <span asp-validation-for="IsFooter" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="IsPublished" class="control-label"></label>
+            <select asp-for="IsPublished" class="form-control">
+                <option value="True">Yes</option>
+                <option value="False">No</option>
+            </select>
+            <span asp-validation-for="IsPublished" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
+            <span class="buttonText">Create</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@section scripts 
+{
+    <script src="~/js/commonmark.min.js" asp-append-version="true"></script>
+    <script src="~/js/WMD.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            var editor = new Markdown.Editor(allowUploads = false);
+            editor.run();
+
+            $('#Title').on("keyup", function() {
+                // From https://gist.github.com/mathewbyrne/1280286
+                var slug = $('#Title').val().toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/&/g, '-and-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+                $('#Stub').val(slug);
+            });
+
+            $('#Submit').on("click", function(e) {
+                if ($(this).parents('form:first').valid())
+                {
+                    e.preventDefault();
+                    if (!$(this).hasClass('disabled'))
+                    {
+                        $(this).addClass('disabled');
+                        $(this).children('.fa-spinner').removeClass('hidden');
+                        $(this).parents('form:first').submit();
+                    }
+                }
+            });
+        });
+    </script>
+}

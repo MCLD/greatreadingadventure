@@ -61,6 +61,10 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
                     }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="Pages"><a asp-controller="Pages" asp-action="Index">Pages</a></li>
+                    }
                     <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                 </ul>
             </div>

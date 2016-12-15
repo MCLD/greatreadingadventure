@@ -6,10 +6,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
+using System.Collections.Generic;
 
 namespace GRA.Data.Repository
 {
-    public class PageRepository 
+    public class PageRepository
         : AuditingRepository<Model.Page, Domain.Model.Page>, IPageRepository
     {
         public PageRepository(ServiceFacade.Repository repositoryFacade,
@@ -24,6 +25,28 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && _.Stub == pageStub)
                 .ProjectTo<Page>()
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Page>> PageAllAsync(int siteId,
+            int skip,
+            int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .OrderBy(_ => _.Title)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<Page>()
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCountAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .CountAsync();
         }
     }
 }

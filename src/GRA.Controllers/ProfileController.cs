@@ -15,12 +15,12 @@ namespace GRA.Controllers
     [Authorize]
     public class ProfileController : Base.UserController
     {
-        private readonly ILogger<ChallengesController> _logger;
+        private readonly ILogger<ProfileController> _logger;
         private readonly AuthenticationService _authenticationService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
 
-        public ProfileController(ILogger<ChallengesController> logger,
+        public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             SiteService siteService,

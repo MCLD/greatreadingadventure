@@ -1,0 +1,7 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagePreviewViewModel
+
+<a asp-action="Edit" asp-route-stub="@Model.Stub" class="btn btn-default" style="margin-top:10px;">Return to Editor</a>
+
+<hr />
+
+@Html.Raw(Model.Content)

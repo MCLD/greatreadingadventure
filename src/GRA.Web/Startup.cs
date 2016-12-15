@@ -232,6 +232,20 @@ namespace GRA.Web
                 routes.MapRoute(
                     name: null,
                     template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: null,
+                    template: "{sitePath}/Info/{stub}",
+                    defaults: new { controller = "Info", action = "Index" },
+                    constraints: new
+                    {
+                        sitePath = new SiteRouteConstraint(app.ApplicationServices.GetRequiredService<Controllers.Base.ISitePathValidator>())
+                    });
+                routes.MapRoute(
+                    name: null,
+                    template: "Info/{stub}",
+                    defaults: new { controller = "Info", action = "Index" });
+
                 routes.MapRoute(
                     name: null,
                     template: "{sitePath}/{controller}/{action}/{id?}",

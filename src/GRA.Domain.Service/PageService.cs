@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
 using GRA.Domain.Service.Abstract;
+using System.Collections.Generic;
 
 namespace GRA.Domain.Service
 {
@@ -16,27 +17,59 @@ namespace GRA.Domain.Service
             _pageRepository = Require.IsNotNull(pageRepository, nameof(pageRepository));
         }
 
-        public async Task<Page> AddPageAsync(Page page)
+        public async Task<DataWithCount<IEnumerable<Page>>> GetPaginatedPageListAsync(int skip,
+            int take)
         {
-            if(HasPermission(Permission.AddPages))
+            int siteId = GetClaimId(ClaimType.SiteId);
+            if (HasPermission(Permission.ViewUnpublishedPages))
             {
-                page.SiteId = GetClaimId(ClaimType.SiteId);
-                return await _pageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), page);
+                return new DataWithCount<IEnumerable<Page>>
+                {
+                    Data = await _pageRepository.PageAllAsync(siteId, skip, take),
+                    Count = await _pageRepository.GetCountAsync(siteId)
+                };
             }
             else
             {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to view all pages.");
                 throw new GraException("Permission denied.");
             }
         }
 
-        public async Task DeletePageAsync(Page page)
+        public async Task<Page> AddPageAsync(Page page)
         {
-            if(HasPermission(Permission.DeletePages))
+            if(HasPermission(Permission.AddPages))
             {
-                await _pageRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), page.Id);
+                var siteId = GetClaimId(ClaimType.SiteId);
+                var existingPage = await _pageRepository.GetByStubAsync(siteId, page.Stub);
+                if (existingPage != null)
+                {
+                    throw new GraException("The stub already exists, please enter a different one.");
+                }
+
+                page.SiteId = siteId;
+                page.Stub = page.Stub.ToLower();
+                return await _pageRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), page);
             }
             else
             {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to add pages.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task DeletePageAsync(int id)
+        {
+            if(HasPermission(Permission.DeletePages))
+            {
+                await _pageRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
+            }
+            else
+            {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to delete pages.");
                 throw new GraException("Permission denied.");
             }
         }
@@ -45,19 +78,36 @@ namespace GRA.Domain.Service
         {
             if(HasPermission(Permission.EditPages))
             {
-                page.SiteId = GetClaimId(ClaimType.SiteId);
-                return await _pageRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), page);
+                var siteId = GetClaimId(ClaimType.SiteId);
+                var currentPage = await _pageRepository
+                    .GetByStubAsync(GetClaimId(ClaimType.SiteId), page.Stub);
+
+                currentPage.Title = page.Title;
+                currentPage.Description = page.Description;
+                currentPage.Content = page.Content;
+                currentPage.IsFooter = page.IsFooter;
+                currentPage.IsPublished = page.IsPublished;
+
+                return await _pageRepository
+                    .UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentPage);
             }
             else
             {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to edit pages.");
                 throw new GraException("Permission denied.");
             }
         }
 
         public async Task<Page> GetByStubAsync(string pageStub)
         {
-            var page = await _pageRepository.GetByStubAsync(GetClaimId(ClaimType.SiteId), pageStub);
-            if(page.IsPublished)
+            var siteId = GetCurrentSiteId();
+            var page = await _pageRepository.GetByStubAsync(siteId, pageStub);
+            if (page == null)
+            {
+                return null;
+            }
+            if (page.IsPublished)
             {
                 return page;
             }
