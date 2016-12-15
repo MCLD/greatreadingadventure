@@ -39,19 +39,28 @@ namespace GRA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var loginAttempt = await _authenticationService
-                    .AuthenticateUserAsync(model.Username, model.Password);
-                if (loginAttempt.PasswordIsValid)
+                try
                 {
-                    await LoginUserAsync(loginAttempt);
-                    if (!string.IsNullOrEmpty(model.ReturnUrl))
+                    var loginAttempt = await _authenticationService
+                        .AuthenticateUserAsync(model.Username, model.Password);
+
+                    if (loginAttempt.PasswordIsValid)
                     {
-                        return Redirect(model.ReturnUrl);
+                        await LoginUserAsync(loginAttempt);
+                        if (!string.IsNullOrEmpty(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                }
+                catch (GraException gex)
+                {
+                    AlertInfo = gex.Message;
+                    return RedirectToAction("Index", "Home");
                 }
                 model.ErrorMessage = "The username and password entered do not match";
             }
@@ -72,7 +81,7 @@ namespace GRA.Controllers
                 await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
                 AlertSuccess = $"A password recovery email has been sent to the email of '{username}'";
             }
-            catch(GraException gex)
+            catch (GraException gex)
             {
                 AlertWarning = gex.Message;
             }
@@ -114,7 +123,7 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> PasswordRecovery(PasswordRecoveryViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {

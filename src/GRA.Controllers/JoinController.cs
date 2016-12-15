@@ -35,7 +35,26 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            var site = await GetCurrentSiteAsync(sitePath);
+            var site = await GetCurrentSiteAsync();
+            var siteStage = GetSiteStage();
+            if (siteStage == SiteStage.BeforeRegistration)
+            {
+                if (site.RegistrationOpens.HasValue)
+                {
+                    AlertInfo = $"You can join {site.Name} on {site.RegistrationOpens.Value.ToString("d")}";
+                }
+                else
+                {
+                    AlertInfo = $"Registration for {site.Name} has not opened yet";
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            else if (siteStage >= SiteStage.ProgramEnded)
+            {
+                AlertInfo = $"{site.Name} has ended, please join us next time!";
+                return RedirectToAction("Index", "Home");
+            }
+
             PageTitle = $"{site.Name} - Join Now!";
 
             var branchList = await _siteService.GetBranches(1);

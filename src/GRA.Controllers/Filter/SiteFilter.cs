@@ -52,12 +52,13 @@ namespace GRA.Controllers.Filter
                     siteId = await _siteLookupService.GetDefaultSiteIdAsync();
                 }
             }
-            if(site == null)
+            if (site == null)
             {
                 site = await _siteLookupService.GetByIdAsync((int)siteId);
-                httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
-                httpContext.Items[ItemKey.SiteStage] = _siteLookupService.GetSiteStageAsync(site);
             }
+
+            httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
+            httpContext.Items[ItemKey.SiteStage] = _siteLookupService.GetSiteStageAsync(site);
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[ItemKey.SiteId] = (int)siteId;
 

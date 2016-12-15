@@ -94,7 +94,7 @@ namespace GRA.Domain.Service
             }
             if(site.RegistrationOpens != null && DateTime.Now >= site.RegistrationOpens)
             {
-                return SiteStage.BeforeRegistration;
+                return SiteStage.RegistrationOpen;
             }
             return SiteStage.BeforeRegistration;
         }

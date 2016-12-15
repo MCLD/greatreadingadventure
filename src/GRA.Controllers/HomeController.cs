@@ -38,7 +38,7 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string sitePath = null)
         {
-            var site = await GetCurrentSiteAsync(sitePath);
+            var site = await GetCurrentSiteAsync();
             if (site != null)
             {
                 PageTitle = site.Name;

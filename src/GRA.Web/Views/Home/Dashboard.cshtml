@@ -8,29 +8,36 @@
     </div>
     <div class="col-sm-6">
         <p style="text-align: center; font-size: x-large;">Welcome <strong>@Model.FirstName!</strong></p>
-        <div class="well">
-            <form asp-controller="Home" asp-action="LogBook" method="post" role="form">
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="Title" class="control-label"></label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+        @if ((GRA.Domain.Model.SiteStage)Context.Items[GRA.Controllers.ItemKey.SiteStage] == GRA.Domain.Model.SiteStage.ProgramOpen)
+        {
+            <div class="well">
+                <form asp-controller="Home" asp-action="LogBook" method="post" role="form">
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="Author" class="control-label"></label>
-                        <input asp-for="Author" class="form-control" />
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="Author" class="control-label"></label>
+                            <input asp-for="Author" class="form-control" />
+                        </div>
                     </div>
-                </div>
 
-                <button type="submit" class="btn center-block btn-success btn-lg btn-spinner-no-validate">
-                    <span class="buttonText">I read a book!</span>
-                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                </button>
-            </form>
-        </div>
+                    <button type="submit" class="btn center-block btn-success btn-lg btn-spinner-no-validate">
+                        <span class="buttonText">I read a book!</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            @: <p style="text-align:center;">You will be able to log books once the program opens</p>
+        }
     </div>
     <div class="col-sm-3" style="text-align: center;">
         <p>Your badges</p>

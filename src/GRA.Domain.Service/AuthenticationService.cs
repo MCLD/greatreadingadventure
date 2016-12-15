@@ -51,6 +51,15 @@ namespace GRA.Domain.Service
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
             }
+            if (!authResult.PermissionNames.Any(_ => _ == Permission.AccessMissionControl.ToString()))
+            {
+                var userContext = GetUserContext();
+                if (userContext.SiteStage == SiteStage.BeforeRegistration 
+                    || userContext.SiteStage == SiteStage.AccessClosed)
+                {
+                    throw new GraException("The program is not accepting sign ins at this time.");
+                }
+            }
             return authResult;
         }
 
