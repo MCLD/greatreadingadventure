@@ -34,6 +34,7 @@ The Great Reading Adventure is open source software developed with the help of [
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
 - [dmarcian](https://dmarcian.com/) - helps keep email spam-free
+- [Favicon Generator. For real.](https://realfavicongenerator.net/) - generate icons for many platforms
 - [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
 - [GitMagic](https://gitmagic.io/) - enforces revision control guidelines
 - [Glitch public domain game art](https://www.glitchthegame.com/public-domain-game-art/) - free fantastic art which can be seen in the default banner and avatars
@@ -61,7 +62,7 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Source on GitHub: [jgm/commonmark.js](https://github.com/jgm/commonmark.js) - [MIT License](https://github.com/jgm/commonmark.js/blob/master/LICENSE)
 
 ### CommonMark.NET
-- Implementation of [CommonMark](http://commonmark.org/) specification in C# for converting Markdown documents to HTML. Optimized for maximum performance and portability. 
+- Implementation of [CommonMark](http://commonmark.org/) specification in C# for converting Markdown documents to HTML. Optimized for maximum performance and portability.
 - Source on GitHub: [Knagis/CommonMark.NET](https://github.com/Knagis/CommonMark.NET) - [BSD-3-Clause](https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md)
 
 ### Entity Framework Core
