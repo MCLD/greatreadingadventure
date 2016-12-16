@@ -123,5 +123,11 @@ namespace GRA.Domain.Service
                 }
             }
         }
+
+        public async Task<IEnumerable<Page>> GetFooterPagesAsync()
+        {
+            var siteId = GetCurrentSiteId();
+            return await _pageRepository.GetFooterPagesAsync(siteId);
+        }
     }
 }

@@ -126,3 +126,11 @@ ul.navbar-nav li.active {
         cursor: inherit;
         display: block;
     }
+
+.infolinks {
+    text-align: center;
+    font-size: 1.2em;
+}
+    .infolinks .active {
+    font-weight: bold;
+}

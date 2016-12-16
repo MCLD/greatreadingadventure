@@ -48,5 +48,17 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId)
                 .CountAsync();
         }
+
+        public async Task<IEnumerable<Page>> GetFooterPagesAsync(int siteId)
+        {
+            return await DbSet
+               .AsNoTracking()
+               .Where(_ => _.SiteId == siteId 
+               && _.IsFooter == true
+               && _.IsPublished == true)
+               .OrderBy(_ => _.Title)
+               .ProjectTo<Page>()
+               .ToListAsync();
+        }
     }
 }

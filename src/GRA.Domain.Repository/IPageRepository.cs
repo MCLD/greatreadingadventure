@@ -9,5 +9,6 @@ namespace GRA.Domain.Repository
         Task<Page> GetByStubAsync(int siteId, string pageStub);
         Task<IEnumerable<Page>> PageAllAsync(int siteId, int skip, int take);
         Task<int> GetCountAsync(int siteId);
+        Task<IEnumerable<Page>> GetFooterPagesAsync(int siteId);
     }
 }
