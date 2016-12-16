@@ -68,7 +68,7 @@ namespace GRA.Web
 
             string contentDirectory = Configuration[ConfigurationKey.ContentDirectory];
 
-            if (!Directory.Exists(contentDirectory))
+            if (!string.IsNullOrEmpty(contentDirectory) && !Directory.Exists(contentDirectory))
             {
                 try
                 {
