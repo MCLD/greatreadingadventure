@@ -1,8 +1,6 @@
 ﻿using GRA.Domain.Service.Abstract;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Routing;
 using GRA.Domain.Model;
 
 namespace GRA.Controllers
@@ -11,7 +9,7 @@ namespace GRA.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SiteLookupService _simpleSiteService;
-        private readonly UserContext _userContext;
+
         public UserContextProvider(IHttpContextAccessor httpContextAccessor,
             SiteLookupService simpleSiteService)
         {

@@ -82,7 +82,7 @@ namespace GRA.Controllers
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {
                 Challenge = challenge,
-                BadgePath = challenge.BadgeFilename,
+                BadgePath = ResolveContentPath(challenge.BadgeFilename),
                 IsAuthenticated = AuthUser.Identity.IsAuthenticated,
                 Tasks = new List<TaskDetailViewModel>()
             };

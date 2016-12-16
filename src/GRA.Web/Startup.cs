@@ -24,7 +24,8 @@ namespace GRA.Web
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            { ConfigurationKey.ContentDirectory, "content" }
+            //{ ConfigurationKey.ContentDirectory, @"c:\inetpub\content\" },
+            { ConfigurationKey.ContentPath, "content" }
         };
 
         public Startup(IHostingEnvironment env)

@@ -6,6 +6,7 @@
         public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
 
         public const string ContentDirectory = "GraContentDirectory";
+        public const string ContentPath = "GraContentPath";
         public const string DefaultFooter = "GraDefaultFooter";
         public const string DefaultOutgoingMailHost = "GraDefaultOutgoingMailHost";
         public const string DefaultOutgoingMailLogin = "GraDefaultOutgoingMailLogin";

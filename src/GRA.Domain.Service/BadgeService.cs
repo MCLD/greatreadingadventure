@@ -21,32 +21,50 @@ namespace GRA.Domain.Service
             _config = Require.IsNotNull(config, nameof(config));
         }
 
-        private string GetPath()
+        private string GetFilePath(string filename)
         {
-            string contentDir = System.IO.Path.Combine(
-                _config[ConfigurationKey.ContentDirectory],
-                $"site{GetClaimId(ClaimType.SiteId)}",
-                BadgePath);
+            string contentDir = null;
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ContentDirectory]))
+            {
+                contentDir = _config[ConfigurationKey.ContentDirectory];
+            }
+            else
+            {
+                contentDir = _config[ConfigurationKey.ContentPath];
+            }
+            contentDir = System.IO.Path.Combine(contentDir,
+                    $"site{GetClaimId(ClaimType.SiteId)}",
+                    BadgePath);
+
             if (!System.IO.Directory.Exists(contentDir))
             {
                 System.IO.Directory.CreateDirectory(contentDir);
             }
-            return contentDir;
+            return System.IO.Path.Combine(contentDir, filename);
+        }
+
+        private string GetUrlPath(string filename)
+        {
+            return System.IO.Path.Combine($"site{GetClaimId(ClaimType.SiteId)}",
+                BadgePath,
+                filename);
         }
 
         private string WriteBadgeFile(Badge badge, byte[] imageFile)
         {
             string extension = System.IO.Path.GetExtension(badge.Filename).ToLower();
-            string filename = System.IO.Path.Combine(GetPath(), $"badge{badge.Id}{extension}");
-            System.IO.File.WriteAllBytes(filename, imageFile);
-            return filename;
+            string filename = $"badge{badge.Id}{extension}";
+            string fullFilePath = GetFilePath(filename);
+            _logger.LogInformation($"Writing out badge file {fullFilePath}...");
+            System.IO.File.WriteAllBytes(fullFilePath, imageFile);
+            return GetUrlPath(filename);
         }
 
         public async Task<Badge> AddBadgeAsync(Badge badge, byte[] imageFile)
         {
             var result = await _badgeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), badge);
-           
-            result.Filename = WriteBadgeFile(badge, imageFile);
+
+            result.Filename = WriteBadgeFile(result, imageFile);
             result = await _badgeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), result);
             return result;
         }
@@ -63,7 +81,7 @@ namespace GRA.Domain.Service
             {
                 System.IO.File.Delete(existingBadge.Filename);
             }
-            badge.Filename = WriteBadgeFile(badge, imageFile);
+            badge.Filename = WriteBadgeFile(existingBadge, imageFile);
             return await _badgeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 badge);
         }

@@ -99,7 +99,7 @@ namespace GRA.Controllers.MissionControl
                             var badgeBytes = ms.ToArray();
                             var newBadge = new Badge
                             {
-                                Filename = Path.GetFileName(model.BadgePath),
+                                Filename = Path.GetFileName(model.BadgeImage.FileName),
                             };
                             var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
                             challenge.BadgeId = badge.Id;
@@ -150,7 +150,7 @@ namespace GRA.Controllers.MissionControl
                 var challengeBadge = await _badgeService.GetByIdAsync((int)challenge.BadgeId);
                 if (challengeBadge != null)
                 {
-                    viewModel.BadgePath = challengeBadge.Filename;
+                    viewModel.BadgePath = ResolveContentPath(challengeBadge.Filename);
                 }
             }
 

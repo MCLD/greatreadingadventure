@@ -161,5 +161,15 @@ namespace GRA.Controllers.Base
         {
             return (SiteStage)HttpContext.Items[ItemKey.SiteStage];
         }
+
+        protected string ResolveContentPath(string filePath)
+        {
+            string path = _config[ConfigurationKey.ContentPath];
+            if(!path.EndsWith("/"))
+            {
+                path += "/";
+            }
+            return path + filePath;
+        }
     }
 }
