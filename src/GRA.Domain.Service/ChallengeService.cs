@@ -32,9 +32,11 @@ namespace GRA.Domain.Service
             int take)
         {
             int siteId = GetCurrentSiteId();
+            var challenges = await _challengeRepository.PageAllAsync(siteId, skip, take);
+            await AddBadgeFilenames(challenges);
             return new DataWithCount<IEnumerable<Challenge>>
             {
-                Data = await _challengeRepository.PageAllAsync(siteId, skip, take),
+                Data = challenges,
                 Count = await _challengeRepository.GetChallengeCountAsync()
             };
         }
@@ -47,14 +49,7 @@ namespace GRA.Domain.Service
                 userId = GetActiveUserId();
             }
             var challenge = await _challengeRepository.GetByIdAsync(challengeId, userId);
-            if (challenge.BadgeId != null)
-            {
-                var badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
-                if (badge != null)
-                {
-                    challenge.BadgeFilename = badge.Filename;
-                }
-            }
+            await AddBadgeFilename(challenge);
             return challenge;
         }
 
@@ -183,6 +178,26 @@ namespace GRA.Domain.Service
                 userId = GetActiveUserId();
             }
             return await _challengeRepository.GetChallengeTasksAsync(challengeId, userId);
+        }
+
+        private async Task AddBadgeFilename(Challenge challenge)
+        {
+            if (challenge.BadgeId != null)
+            {
+                var badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
+                if (badge != null)
+                {
+                    challenge.BadgeFilename = badge.Filename;
+                }
+            }
+        }
+
+        private async Task AddBadgeFilenames(IEnumerable<Challenge> challenges)
+        {
+            foreach (var challenge in challenges)
+            {
+                await AddBadgeFilename(challenge);
+            }
         }
     }
 }

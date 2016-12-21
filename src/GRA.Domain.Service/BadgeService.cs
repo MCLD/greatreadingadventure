@@ -3,6 +3,7 @@ using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
@@ -45,9 +46,7 @@ namespace GRA.Domain.Service
 
         private string GetUrlPath(string filename)
         {
-            return System.IO.Path.Combine($"site{GetClaimId(ClaimType.SiteId)}",
-                BadgePath,
-                filename);
+            return $"site{GetClaimId(ClaimType.SiteId)}/{BadgePath}/{filename}";
         }
 
         private string WriteBadgeFile(Badge badge, byte[] imageFile)

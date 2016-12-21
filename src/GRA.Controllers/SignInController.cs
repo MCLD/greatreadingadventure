@@ -75,17 +75,23 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string username)
         {
-            try
+            if (string.IsNullOrWhiteSpace(username))
             {
-                string recoveryUrl = Url.Action("PasswordRecovery", "SignIn", null, HttpContext.Request.Scheme);
-                await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
-                AlertSuccess = $"A password recovery email has been sent to the email of '{username}'";
+                ModelState.AddModelError("", "The Username field is required");
             }
-            catch (GraException gex)
+            if (ModelState.IsValid)
             {
-                ShowAlertWarning("Could not recover password:", gex);
+                try
+                {
+                    string recoveryUrl = Url.Action("PasswordRecovery", "SignIn", null, HttpContext.Request.Scheme);
+                    await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
+                    AlertSuccess = $"A password recovery email has been sent to the email of '{username}'";
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertWarning("Could not recover password:", gex);
+                }
             }
-
             return View();
         }
 
@@ -97,14 +103,21 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotUsername(string email)
         {
-            try
+            if (string.IsNullOrWhiteSpace(email))
             {
-                await _authenticationService.EmailAllUsernames(email);
-                AlertSuccess = $"A list of usernames associated with {email} has been emailed to you";
+                ModelState.AddModelError("", "The Email field is required");
             }
-            catch (GraException gex)
+            if (ModelState.IsValid)
             {
-                ShowAlertWarning("Could not recover usernames:", gex.Message);
+                try
+                {
+                    await _authenticationService.EmailAllUsernames(email);
+                    AlertSuccess = $"A list of usernames associated with {email} has been emailed to you";
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertWarning("Could not recover usernames:", gex.Message);
+                }
             }
 
             return View();
