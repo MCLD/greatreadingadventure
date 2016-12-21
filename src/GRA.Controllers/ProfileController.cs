@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -304,12 +305,29 @@ namespace GRA.Controllers
 
             HistoryListViewModel viewModel = new HistoryListViewModel()
             {
-                Historys = history.Data,
+                Historys = new List<HistoryItemViewModel>(),
                 PaginateModel = paginateModel,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                TotalPoints = user.PointsEarned
             };
+
+            foreach(var item in history.Data)
+            {
+                if (item.ChallengeId != null)
+                {
+                    var url = Url.Action("Detail", "Challenges", new { id = item.ChallengeId });
+                    item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
+                }
+                HistoryItemViewModel itemModel = new HistoryItemViewModel()
+                {
+                    CreatedAt = item.CreatedAt.ToString("d"),
+                    Description = item.Description,
+                    PointsEarned = item.PointsEarned,
+                };
+                viewModel.Historys.Add(itemModel);
+            }
 
             return View(viewModel);
         }

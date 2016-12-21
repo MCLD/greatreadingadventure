@@ -1,0 +1,11 @@
+﻿namespace GRA.Controllers.ViewModel.MissionControl.Participants
+{
+    public class HistoryItemViewModel
+    {
+        public int Id { get; set; }
+        public string CreatedAt { get; set; }
+        public string Description { get; set; }
+        public int PointsEarned { get; set; }
+        public string BadgePath { get; set; }
+    }
+}

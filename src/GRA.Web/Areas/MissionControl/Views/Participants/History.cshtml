@@ -58,8 +58,8 @@
                         @foreach (var history in Model.Historys)
                         {
                             <tr>
-                                <td>@history.CreatedAt.ToString("d")</td>
-                                <td>@history.Description</td>
+                                <td>@history.CreatedAt</td>
+                                <td>@Html.Raw(history.Description)</td>
                                 <td>@history.PointsEarned</td>
                                 @if (Model.CanRemoveHistory)
                                 {
@@ -76,6 +76,10 @@
                                 }
                             </tr>
                         }
+                        <tr class="total-row">
+                            <td colspan="2" style="text-align:right">Total Points:</td>
+                            <td colspan="2">@Model.TotalPoints</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

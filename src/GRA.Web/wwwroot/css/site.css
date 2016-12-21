@@ -139,3 +139,8 @@ ul.navbar-nav li.active {
     .infolinks .active {
         font-weight: bold;
     }
+
+.total-row {
+    background-color: rgb(215, 240, 240);
+    font-weight: bold;
+}

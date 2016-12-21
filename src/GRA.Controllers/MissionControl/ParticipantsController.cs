@@ -459,15 +459,44 @@ namespace GRA.Controllers.MissionControl
 
             HistoryListViewModel viewModel = new HistoryListViewModel()
             {
-                Historys = history.Data,
+                Historys = new List<HistoryItemViewModel>(),
                 PaginateModel = paginateModel,
                 Id = id,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny)
+                CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
+                TotalPoints = user.PointsEarned
             };
+
+            bool editChallenges = UserHasPermission(Permission.EditChallenges);
+
+            foreach (var item in history.Data)
+            {
+                if (item.ChallengeId != null)
+                {
+                    string url = "";
+                    if (editChallenges)
+                    {
+                        url = Url.Action("Edit", "Challenges", new { id = item.ChallengeId });
+                    }
+                    else
+                    {
+                        url = Url.Action("Detail", "Challenges",
+                        new { area = "", id = item.ChallengeId });
+                    }
+                    item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
+                }
+                HistoryItemViewModel itemModel = new HistoryItemViewModel()
+                {
+                    Id = item.Id,
+                    CreatedAt = item.CreatedAt.ToString("d"),
+                    Description = item.Description,
+                    PointsEarned = item.PointsEarned,
+                };
+                viewModel.Historys.Add(itemModel);
+            }
 
             return View(viewModel);
         }
