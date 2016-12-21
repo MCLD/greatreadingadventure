@@ -89,7 +89,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<Mail>>> GetAllUnreadPaginatedAsync(int siteId,
+        public async Task<DataWithCount<IEnumerable<Mail>>> GetAllUnrepliedPaginatedAsync(int siteId,
             int skip,
             int take)
         {
@@ -97,8 +97,8 @@ namespace GRA.Domain.Service
             {
                 return new DataWithCount<IEnumerable<Mail>>
                 {
-                    Data = await _mailRepository.PageAdminUnreadAsync(siteId, skip, take),
-                    Count = await _mailRepository.GetAdminUnreadCountAsync(siteId)
+                    Data = await _mailRepository.PageAdminUnrepliedAsync(siteId, skip, take),
+                    Count = await _mailRepository.GetAdminUnrepliedCountAsync(siteId)
                 };
             }
             else

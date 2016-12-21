@@ -20,6 +20,10 @@ namespace GRA.Data.Model
         public bool IsNew { get; set; }
         [Required]
         public bool IsDeleted { get; set; }
+        [Required]
+        public bool IsRepliedTo { get; set; }
+        [Required]
+        public bool CanParticipantDelete { get; set; }
         public int? InReplyToId { get; set; }
         public int? ThreadId { get; set; }
     }

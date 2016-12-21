@@ -39,29 +39,40 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
-        public async Task<int> GetAdminUnreadCountAsync(int siteId)
+        public async Task<int> GetAdminUnrepliedCountAsync(int siteId)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
                     && _.SiteId == siteId
                     && _.ToUserId == null
-                    && _.IsNew == true)
+                    && _.IsRepliedTo == false)
                 .CountAsync();
         }
 
-        public async Task<IEnumerable<Mail>> PageAdminUnreadAsync(int siteId, int skip, int take)
+        public async Task<IEnumerable<Mail>> PageAdminUnrepliedAsync(int siteId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
                     && _.SiteId == siteId
                     && _.ToUserId == null
-                    && _.IsNew == true)
+                    && _.IsRepliedTo == false)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Mail>()
                 .ToListAsync();
+        }
+
+        public async Task MarkAdminReplied(int mailId)
+        {
+            var mail = await GetByIdAsync(mailId);
+            if (mail == null)
+            {
+                throw new Exception($"Mail id {mailId} not found.");
+            }
+            mail.IsRepliedTo = true;
+            await UpdateSaveNoAuditAsync(mail);
         }
 
         public async Task<int> GetUserCountAsync(int userId)
