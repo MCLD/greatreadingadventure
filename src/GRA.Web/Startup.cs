@@ -140,6 +140,7 @@ namespace GRA.Web
             services.AddScoped<SampleDataService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
+            services.AddScoped<StaticAvatarService>();
             services.AddScoped<UserService>();
 
             // repositories

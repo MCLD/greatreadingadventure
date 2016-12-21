@@ -1,0 +1,48 @@
+﻿@model GRA.Controllers.ViewModel.Avatar.AvatarSelectionViewModel
+
+<form asp-controller="Avatar" asp-action="Index" method="post" role="form">
+    <input asp-for="Avatar.Id" type="hidden" />
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="row">
+                <table style="margin-left:auto; margin-right:auto">
+                    <tr>
+                        <td>
+                            <a id="prev" asp-action="Index" asp-route-id="@Model.PreviousAvatarId">
+                                <span class="fa fa-lg fa-chevron-left" style="margin-right: 6px;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <img src="~/@Model.Avatar.Filename" style="max-width: 300px;" />
+                        </td>
+                        <td>
+                            <a id="next" asp-action="Index" asp-route-id="@Model.NextAvatarId">
+                                <span class="fa fa-lg fa-chevron-right" style="margin-left: 6px;"></span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row">
+                <p id="name" style="text-align: center; font-size: x-large;">@Model.Avatar.Name</p>
+            </div>
+
+            <div class="row row-spacing">
+                <p id="description" style="text-align: center; font-size: large;">@Model.Avatar.Description</p>
+            </div>
+
+            <div class="row" style="width:100%; text-align:center;">
+                <div class="col-sm-6 col-sm-push-6" style="margin-bottom:10px;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Select Avatar
+                    </button>
+                </div>
+
+                <div class="col-sm-6 col-sm-pull-6">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-default btn-lg">Return to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
