@@ -31,6 +31,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Points you'll earn</th>
+                            <th>Badge</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +40,16 @@
                             <tr>
                                 <td><a asp-action="Detail" asp-route-id="@challenge.Id">@challenge.Name</a></td>
                                 <td>@challenge.PointsAwarded</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+                                    {
+                                        <img src="~/@challenge.BadgeFilename" asp-append-version="true" width="75" />
+                                    }
+                                    else
+                                    {
+                                        @: &nbsp;
+                                    }
+                                </td>
                             </tr>
                         }
                     </tbody>

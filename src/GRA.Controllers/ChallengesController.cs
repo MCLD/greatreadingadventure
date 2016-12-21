@@ -52,6 +52,15 @@ namespace GRA.Controllers
                         page = paginateModel.LastPage ?? 1
                     });
             }
+
+            foreach(var challenge in challengeList.Data)
+            {
+                if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+                {
+                    challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+                } 
+            }
+
             ChallengesListViewModel viewModel = new ChallengesListViewModel()
             {
                 Challenges = challengeList.Data,
