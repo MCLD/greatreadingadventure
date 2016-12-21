@@ -1,4 +1,4 @@
-﻿@model GRA.Controllers.ViewModel.DashboardViewModel
+﻿@model GRA.Controllers.ViewModel.Home.DashboardViewModel
 
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3" style="text-align: center;">
@@ -52,13 +52,19 @@
         }
     </div>
     <div class="col-sm-3" style="text-align: center;">
-        <p>Your badges</p>
+        <p style="font-size: x-large;"><a asp-controller="Profile" asp-action="History">Your badges</a></p>
         <div class="row">
-            <div class="col-sm-4"><span class="fa fa-certificate" style="font-size: 4em;"></span></div>
-            <div class="col-sm-4"><span class="fa fa-plane" style="font-size: 4em;"></span></div>
-            <div class="col-sm-4"><span class="fa fa-calendar" style="font-size: 4em;"></span></div>
-            <div class="col-sm-4"><span class="fa fa-book" style="font-size: 4em;"></span></div>
-            <div class="col-sm-4"><span class="fa fa-cloud" style="font-size: 4em;"></span></div>
+            @if (Model.Badges.Count() > 0)
+            {
+                foreach (var badge in Model.Badges)
+                {
+                    <div class="col-md-4 col-sm-6 col-xs-4" style="padding: 0 10px 20px 10px;"><img style="width:100%; max-width:150px" src="~/@badge.Filename" /></div>
+                }
+            }
+            else
+            {
+                <p>Complete <a asp-controller="Challenges" asp-action="Index">Challenges</a> to earn badges!</p>
+            }
         </div>
     </div>
 </div>

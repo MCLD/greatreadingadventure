@@ -1,10 +1,6 @@
-﻿using GRA.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace GRA.Controllers.ViewModel
+namespace GRA.Controllers.ViewModel.Home
 {
     public class DashboardViewModel
     {
@@ -14,5 +10,7 @@ namespace GRA.Controllers.ViewModel
 
         public string Title { get; set; }
         public string Author { get; set; }
+
+        public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
     }
 }
