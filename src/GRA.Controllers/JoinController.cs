@@ -88,7 +88,11 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger(gex.Message);
+                    ShowAlertDanger("Could not create your account:", gex);
+                    if(gex.Message.Contains("password"))
+                    {
+                        ModelState.AddModelError("Password", "Please correct the issues with your password.");
+                    }
                 }
             }
 
