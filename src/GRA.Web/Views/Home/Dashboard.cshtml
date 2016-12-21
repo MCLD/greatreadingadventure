@@ -4,7 +4,7 @@
     <div class="col-sm-3" style="text-align: center;">
         <p>
             <a asp-controller="Avatar" asp-action="Index">
-                @if (Model.AvatarPath != null)
+                @if (!string.IsNullOrEmpty(Model.AvatarPath))
                 {
                     <img src="~/@Model.AvatarPath" width="200" />
                 }

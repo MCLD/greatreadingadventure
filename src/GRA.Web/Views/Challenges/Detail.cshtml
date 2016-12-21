@@ -25,7 +25,7 @@
                 </div>
                 <table class="table table-striped" style="margin-top: 1em;">
                     <tr>
-                        @if (Model.IsAuthenticated && !(Model.Challenge.IsCompleted == true))
+                        @if (Model.IsActive && !(Model.Challenge.IsCompleted == true))
                         {
                             <th class="text-center">Complete</th>
                         }
@@ -34,7 +34,7 @@
                     @for (int i = 0; i < Model.Tasks.Count; i++)
                     {
                         <tr>
-                            @if (Model.IsAuthenticated && !(Model.Challenge.IsCompleted == true))
+                            @if (Model.IsActive && !(Model.Challenge.IsCompleted == true))
                             {
                                 <td class="text-center challenge-checkbox-container" style="vertical-align: middle;">
                                     <input asp-for="Tasks[i].Id" type="hidden" />
@@ -53,7 +53,7 @@
                     <div class="pull-left">
                         <a asp-action="Index" class="btn btn-default btn-lg">Return to Challenges</a>
                     </div>
-                    @if (Model.Challenge.IsCompleted == true)
+                    @if (Model.Challenge.IsCompleted == true && Model.ShowCompleted)
                     {
                         <div class="pull-right">
                             <div class="btn-lg" style="border:1px solid transparent">
@@ -62,7 +62,7 @@
                         </div>
 
                     }
-                    else if (Model.IsAuthenticated)
+                    else if (Model.IsActive)
                     {
                         <input asp-for="Challenge.Id" type="hidden" />
                         <div class="pull-right">

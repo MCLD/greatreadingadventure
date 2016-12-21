@@ -78,12 +78,23 @@ namespace GRA.Controllers
         public async Task<IActionResult> Detail(int id, string sitePath = null)
         {
             var challenge = await _challengeService.GetChallengeDetailsAsync(id);
+            var siteStage = GetSiteStage();
+
+            if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+            {
+                challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+            }
+
+            bool isActive = AuthUser.Identity.IsAuthenticated && siteStage == SiteStage.ProgramOpen;
+            bool showCompleted = siteStage == SiteStage.ProgramOpen
+                || siteStage == SiteStage.ProgramEnded;
 
             ChallengeDetailViewModel viewModel = new ChallengeDetailViewModel()
             {
                 Challenge = challenge,
-                BadgePath = ResolveContentPath(challenge.BadgeFilename),
-                IsAuthenticated = AuthUser.Identity.IsAuthenticated,
+                BadgePath = challenge.BadgeFilename,
+                IsActive = isActive,
+                ShowCompleted = showCompleted,
                 Tasks = new List<TaskDetailViewModel>()
             };
 
