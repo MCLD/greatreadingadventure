@@ -134,7 +134,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (challenge == null)
             {
-                AlertDanger = "The requested challenge could not be accessed or does not exist";
+                ShowAlertDanger("The requested challenge could not be accessed or does not exist");
                 return RedirectToAction("Index");
             }
 

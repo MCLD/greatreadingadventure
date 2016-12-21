@@ -148,11 +148,11 @@ namespace GRA.Controllers
                     {
                         int tasksCompleted = model.Tasks.Where(_ => _.IsCompleted == true).Count();
                         int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
-                        AlertSuccess = $"<span class=\"fa fa-check\"></span> Your status has been saved. You have completed <strong>{percentage}%</strong> of the required tasks for the challenge: <strong>{challenge.Name}</strong>!";
+                        ShowAlertSuccess("Your status has been saved. You have completed <strong>{percentage}%</strong> of the required tasks for the challenge: <strong>{challenge.Name}</strong>!", "check");
                     }
                     else
                     {
-                        AlertSuccess = "<span class=\"fa fa-check\"></span> Your status has been saved!";
+                        ShowAlertSuccess("Your status has been saved!", "check");
                     }
                 }
             }

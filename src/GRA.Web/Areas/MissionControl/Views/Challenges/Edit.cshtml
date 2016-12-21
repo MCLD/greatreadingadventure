@@ -176,7 +176,11 @@
             {
             <div class="col-xs-12 col-sm-2">
                 <input asp-for="BadgePath" type="hidden" />
-                <img class="thumbnail" height="100" width="100" src="~/@Model.BadgePath" />
+                <img class="thumbnail"
+                     height="100"
+                     width="100"
+                     src="~/@Model.BadgePath"
+                     asp-append-version="true" />
             </div>
         }
         <div class="col-xs-12 col-sm-10">

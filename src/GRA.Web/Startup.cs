@@ -120,6 +120,7 @@ namespace GRA.Web
             // utilities
             services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
+            services.AddScoped<Abstract.IPasswordValidator, PasswordValidator>();
             services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
 

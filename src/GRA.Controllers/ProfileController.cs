@@ -22,6 +22,7 @@ namespace GRA.Controllers
 
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
+            Abstract.IPasswordValidator passwordValidator,
             AuthenticationService authenticationService,
             SiteService siteService,
             UserService userService) : base(context)
@@ -205,9 +206,16 @@ namespace GRA.Controllers
                 if (ModelState.IsValid)
                 {
                     user.Username = model.Username;
-                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                    AlertSuccess = "Registered household member";
-                    return RedirectToAction("Household");
+                    try
+                    {
+                        await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                        AlertSuccess = "Household member registered!";
+                        return RedirectToAction("Household");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger("Unable to register household member:", gex);
+                    }
                 }
                 return View("HouseholdRegisterMember", model);
             }
@@ -228,7 +236,7 @@ namespace GRA.Controllers
             if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != loginId)
             {
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
-                AlertSuccess = $"<span class=\"fa fa-user\"></span> You are now signed in as <strong>{user.FullName}</strong>.";
+                ShowAlertSuccess("You are now signed in as <strong>{user.FullName}</strong>.", "user");
             }
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
@@ -334,12 +342,22 @@ namespace GRA.Controllers
                     .AuthenticateUserAsync(user.Username, model.OldPassword);
                 if (loginAttempt.PasswordIsValid)
                 {
-                    await _authenticationService.ResetPassword(GetActiveUserId(),
-                        model.NewPassword);
-                    AlertSuccess = "Password changed";
-                    return RedirectToAction("ChangePassword");
+                    try
+                    {
+                        await _authenticationService.ResetPassword(GetActiveUserId(),
+                            model.NewPassword);
+                        AlertSuccess = "Password changed";
+                        return RedirectToAction("ChangePassword");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger("Unable to change password:", gex);
+                    }
                 }
-                model.ErrorMessage = "The username and password entered do not match";
+                else
+                {
+                    model.ErrorMessage = "The username and password entered do not match";
+                }
             }
             return View(model);
         }

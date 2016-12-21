@@ -12,6 +12,7 @@ namespace GRA.Domain.Service
     public class AuthenticationService : Abstract.BaseUserService<AuthenticationService>
     {
         private readonly GRA.Abstract.ITokenGenerator _tokenGenerator;
+        private readonly GRA.Abstract.IPasswordValidator _passwordValidator;
         private readonly IUserRepository _userRepository;
         private readonly IRecoveryTokenRepository _recoveryTokenRepository;
         private readonly IRoleRepository _roleRepository;
@@ -19,6 +20,7 @@ namespace GRA.Domain.Service
 
         public AuthenticationService(ILogger<AuthenticationService> logger,
             GRA.Abstract.ITokenGenerator tokenGenerator,
+            GRA.Abstract.IPasswordValidator passwordValidator,
             IUserContextProvider userContextProvider,
             IUserRepository userRepository,
             IRecoveryTokenRepository recoveryTokenRepository,
@@ -26,6 +28,7 @@ namespace GRA.Domain.Service
             EmailService emailService) : base(logger, userContextProvider)
         {
             _tokenGenerator = Require.IsNotNull(tokenGenerator, nameof(tokenGenerator));
+            _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _recoveryTokenRepository = Require.IsNotNull(recoveryTokenRepository,
                 nameof(recoveryTokenRepository));
@@ -50,14 +53,14 @@ namespace GRA.Domain.Service
             {
                 authResult.PermissionNames
                     = await _roleRepository.GetPermisisonNamesForUserAsync(authResult.User.Id);
-            }
-            if (!authResult.PermissionNames.Any(_ => _ == Permission.AccessMissionControl.ToString()))
-            {
-                var userContext = GetUserContext();
-                if (userContext.SiteStage == SiteStage.BeforeRegistration 
-                    || userContext.SiteStage == SiteStage.AccessClosed)
+                if (!authResult.PermissionNames.Contains(Permission.AccessMissionControl.ToString()))
                 {
-                    throw new GraException("The program is not accepting sign ins at this time.");
+                    var userContext = GetUserContext();
+                    if (userContext.SiteStage == SiteStage.BeforeRegistration
+                        || userContext.SiteStage == SiteStage.AccessClosed)
+                    {
+                        throw new GraException("The program is not accepting sign-ins at this time.");
+                    }
                 }
             }
             return authResult;
@@ -76,6 +79,7 @@ namespace GRA.Domain.Service
 
         public async Task ResetPassword(int userIdToReset, string password)
         {
+            _passwordValidator.Validate(password);
             int authUserId = GetClaimId(ClaimType.UserId);
             int activeUserId = GetActiveUserId();
             if (activeUserId == userIdToReset
@@ -92,6 +96,7 @@ namespace GRA.Domain.Service
 
         public async Task ResetPassword(string username, string password, string token)
         {
+            _passwordValidator.Validate(password);
             var fixedToken = token.Trim().ToLower();
 
             var user = await _userRepository.GetByUsernameAsync(username);
@@ -173,7 +178,7 @@ namespace GRA.Domain.Service
 
             var sb = new StringBuilder($"The following usernames are associated with '{lookupEmail}':");
             sb.AppendLine();
-            foreach(string username in usernames.Data)
+            foreach (string username in usernames.Data)
             {
                 sb.AppendLine($"- {username}");
             }

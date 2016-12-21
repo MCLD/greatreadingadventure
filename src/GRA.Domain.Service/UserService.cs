@@ -10,6 +10,7 @@ namespace GRA.Domain.Service
 {
     public class UserService : Abstract.BaseUserService<UserService>
     {
+        private readonly GRA.Abstract.IPasswordValidator _passwordValidator;
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
@@ -22,6 +23,7 @@ namespace GRA.Domain.Service
         private readonly SampleDataService _configurationService;
         public UserService(ILogger<UserService> logger,
             IUserContextProvider userContextProvider,
+            GRA.Abstract.IPasswordValidator passwordValidator,
             IAuthorizationCodeRepository authorizationCodeRepository,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
@@ -34,6 +36,7 @@ namespace GRA.Domain.Service
             SampleDataService configurationService)
             : base(logger, userContextProvider)
         {
+            _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
@@ -58,6 +61,8 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Someone has already chosen that username, please try another.");
             }
+
+            _passwordValidator.Validate(password);
 
             user.CanBeDeleted = true;
             user.IsLockedOut = false;
@@ -386,6 +391,8 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException("Someone has already chosen that username, please try another.");
                 }
+
+                _passwordValidator.Validate(password);
 
                 user.Username = memberToRegister.Username;
                 await _userRepository.UpdateSaveAsync(authUserId, user);

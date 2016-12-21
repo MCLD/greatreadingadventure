@@ -10,6 +10,8 @@ using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using GRA.Controllers.Filter;
 using System.Security.Principal;
+using System;
+using System.Text;
 
 namespace GRA.Controllers.Base
 {
@@ -99,7 +101,7 @@ namespace GRA.Controllers.Base
             }
             else
             {
-                AlertDanger = authResult.AuthenticationMessage;
+                ShowAlertDanger(authResult.AuthenticationMessage);
             }
         }
 
@@ -150,7 +152,7 @@ namespace GRA.Controllers.Base
         protected int GetActiveUserId()
         {
             int? activeUserId = HttpContext.Session.GetInt32(SessionKey.ActiveUserId);
-            if(activeUserId == null)
+            if (activeUserId == null)
             {
                 activeUserId = GetId(ClaimType.UserId);
             }
@@ -165,11 +167,79 @@ namespace GRA.Controllers.Base
         protected string ResolveContentPath(string filePath)
         {
             string path = _config[ConfigurationKey.ContentPath];
-            if(!path.EndsWith("/"))
+            if (!path.EndsWith("/"))
             {
                 path += "/";
             }
             return path + filePath;
         }
+
+        protected string FormatMessage(GraException gex)
+        {
+            if (gex.Message.Contains(Environment.NewLine))
+            {
+                var lines = gex.Message.Split(
+                    new string[] { Environment.NewLine },
+                    StringSplitOptions.RemoveEmptyEntries);
+                var formatted = new StringBuilder("<ul>");
+                foreach (string line in lines)
+                {
+                    formatted.Append($"<li>{line}</li>");
+                }
+                formatted.Append("</ul>");
+                return formatted.ToString();
+            }
+            return gex.Message;
+        }
+
+        private string Fa(string iconName)
+        {
+            return $"<span class=\"fa fa-{iconName}\" aria-hidden=\"true\"></span>";
+        }
+
+        protected void ShowAlertDanger(string message, string details = null)
+        {
+            AlertDanger = $"{Fa("exclamation-triangle")} <strong>{message}</strong>{details}";
+        }
+
+        protected void ShowAlertDanger(string message, GraException gex)
+        {
+            AlertDanger = $"{Fa("exclamation-triangle")} <strong>{message}</strong>{FormatMessage(gex)}";
+        }
+
+        protected void ShowAlertWarning(string message, string details = null)
+        {
+            AlertWarning = $"{Fa("exclamation-circle")} <strong>{message}</strong>{details}";
+        }
+
+        protected void ShowAlertWarning(string message, GraException gex)
+        {
+            AlertWarning = $"{Fa("exclamation-circle")} <strong>{message}</strong>{FormatMessage(gex)}";
+        }
+
+        protected void ShowAlertSuccess(string message, string faIconName = null)
+        {
+            if (!string.IsNullOrEmpty(faIconName))
+            {
+                AlertSuccess = $"{Fa(faIconName)} <strong>{message}";
+            }
+            else
+            {
+                AlertSuccess = $"{Fa("thumbs-o-up")} <strong>{message}</strong>";
+            }
+        }
+
+        protected void ShowAlertInfo(string message, string faIconName = null)
+        {
+            if (!string.IsNullOrEmpty(faIconName))
+            {
+                AlertInfo = $"{Fa(faIconName)} <strong>{message}";
+            }
+            else
+            {
+                AlertInfo = $"{Fa("check-circle")} <strong>{message}</strong>";
+            }
+        }
+
     }
 }

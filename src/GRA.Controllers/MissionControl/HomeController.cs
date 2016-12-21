@@ -90,7 +90,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                AlertDanger = "Invalid code. This request was logged.";
+                ShowAlertDanger("Invalid code. This request was logged.");
                 return View("AuthorizationCode");
             }
         }

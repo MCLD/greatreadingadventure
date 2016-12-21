@@ -117,7 +117,7 @@ namespace GRA.Controllers
                 await _emailReminderService
                     .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
             }
-            AlertInfo = "<span class=\"fa fa-envelope\"></span> Thanks! We'll let you know when you can join the program.";
+            ShowAlertInfo("Thanks! We'll let you know when you can join the program.", "envelope");
             return RedirectToAction("Index");
         }
 

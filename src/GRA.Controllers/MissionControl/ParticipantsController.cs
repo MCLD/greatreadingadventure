@@ -306,17 +306,20 @@ namespace GRA.Controllers.MissionControl
             if (ModelState.IsValid)
             {
                 user.Username = model.Username;
-                await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                AlertSuccess = "Registered household member";
-                return RedirectToAction("Household", new { id = model.Id });
+                try
+                {
+                    await _userService.RegisterHouseholdMemberAsync(user, model.Password);
+                    AlertSuccess = "Household member registered!";
+                    return RedirectToAction("Household", new { id = model.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to register household member:", gex);
+                }
             }
-            else
-            {
-                SetPageTitle(user, "Register Household Memeber");
-                return View("HouseholdRegister", model);
-            }
+            SetPageTitle(user, "Register Household Memeber");
+            return View("HouseholdRegister", model);
         }
-
 
         #endregion
 
@@ -379,7 +382,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                AlertDanger = "Missing required fields";
+                ShowAlertDanger("Missing required fields");
             }
             return RedirectToAction("Books", new { id = model.Id });
         }
@@ -569,20 +572,23 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> PasswordReset(PasswordResetViewModel model)
         {
+            var user = await _userService.GetDetails(model.Id);
             if (ModelState.IsValid)
             {
-                await _authenticationService.ResetPassword(model.Id, model.NewPassword);
-                var user = await _userService.GetDetails(model.Id);
-                AlertSuccess = $"Password reset for <strong>{user.FullName} ('{user.Username}')</strong>.";
-                return RedirectToAction("PasswordReset", new { id = model.Id });
+                try
+                {
+                    await _authenticationService.ResetPassword(model.Id, model.NewPassword);
+                    AlertSuccess = $"Password reset for <strong>{user.FullName} ('{user.Username}')</strong>.";
+                    return RedirectToAction("PasswordReset", new { id = model.Id });
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to change password:", gex);
+                }
             }
-            else
-            {
-                var user = await _userService.GetDetails(model.Id);
-                SetPageTitle(user);
 
-                return View(model);
-            }
+            SetPageTitle(user);
+            return View(model);
         }
         #endregion
 

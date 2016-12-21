@@ -3,17 +3,20 @@
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3" style="text-align: center;">
         <p>
-            <a asp-controller="Avatar" asp-action="Index">
-                @if (!string.IsNullOrEmpty(Model.AvatarPath))
-                {
-                    <img src="~/@Model.AvatarPath" width="200" />
-                }
-                else
-                {
+            @if (!string.IsNullOrEmpty(Model.AvatarPath))
+            {
+                <a asp-controller="Avatar" asp-action="Index">
+                    <img src="~/@Model.AvatarPath"
+                         asp-append-version="true"
+                         width="200" />
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Avatar" asp-action="Index">
                     <span class="fa fa-user" style="font-size: 10em;"></span>
-                }
-            </a>
-            <br />
+                </a>
+            }
         </p>
         <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
         <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
@@ -58,7 +61,7 @@
             {
                 foreach (var badge in Model.Badges)
                 {
-                    <div class="col-md-4 col-sm-6 col-xs-4" style="padding: 0 10px 20px 10px;"><img style="width:100%; max-width:150px" src="~/@badge.Filename" /></div>
+                    <div class="col-md-4 col-sm-6 col-xs-4" style="padding: 0 10px 20px 10px;"><img style="width:100%; max-width:150px" src="~/@badge.Filename" asp-append-version="true" /></div>
                 }
             }
             else

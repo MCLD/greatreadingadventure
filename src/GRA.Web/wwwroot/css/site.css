@@ -83,6 +83,10 @@ ul.navbar-nav li.active {
     margin-top: 1em;
 }
 
+.alert > ul {
+    padding-left: 1em;
+}
+
 .alert-sm {
     padding: 5px;
     border: 1px solid transparent;
@@ -131,6 +135,7 @@ ul.navbar-nav li.active {
     text-align: center;
     font-size: 1.2em;
 }
+
     .infolinks .active {
-    font-weight: bold;
-}
+        font-weight: bold;
+    }

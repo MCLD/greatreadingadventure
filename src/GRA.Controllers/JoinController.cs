@@ -6,7 +6,6 @@ using GRA.Controllers.ViewModel.Join;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GRA.Domain.Service;
 using GRA.Domain.Model;
-using System;
 
 namespace GRA.Controllers
 {
@@ -82,25 +81,23 @@ namespace GRA.Controllers
                 try
                 {
                     await _userService.RegisterUserAsync(user, model.Password);
-                } catch (Exception ex)
-                {
-                    AlertDanger = ex.Message;
-                    return View(model);
+                    await LoginUserAsync(await _authenticationService
+                        .AuthenticateUserAsync(user.Username, model.Password));
+
+                    return RedirectToAction("Index", "Home");
                 }
-                await LoginUserAsync(await _authenticationService
-                    .AuthenticateUserAsync(user.Username, model.Password));
-
-                return RedirectToAction("Index", "Home");
+                catch (GraException gex)
+                {
+                    ShowAlertDanger(gex.Message);
+                }
             }
-            else
-            {
-                PageTitle = $"{site.Name} - Join Now!";
 
-                var branchList = await _siteService.GetBranches(1);
-                model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+            PageTitle = $"{site.Name} - Join Now!";
 
-                return View(model);
-            }
+            var branchList = await _siteService.GetBranches(1);
+            model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
+
+            return View(model);
         }
     }
 }
