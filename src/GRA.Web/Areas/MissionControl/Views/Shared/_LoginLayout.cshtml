@@ -50,33 +50,33 @@
         </div>
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-danger">@TempData[GRA.Controllers.TempDataKey.AlertDanger]</div>
+                    <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
                 </div>
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-warning">@TempData[GRA.Controllers.TempDataKey.AlertWarning]</div>
+                    <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
                 </div>
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-success">@TempData[GRA.Controllers.TempDataKey.AlertSuccess]</div>
+                    <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
                 </div>
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
         {
-            <div class="row">
+            <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div class="alert alert-info">@TempData[GRA.Controllers.TempDataKey.AlertInfo]</div>
+                    <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
                 </div>
             </div>
         }
