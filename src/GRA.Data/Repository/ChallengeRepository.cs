@@ -19,17 +19,37 @@ namespace GRA.Data.Repository
         }
 
         public async Task<IEnumerable<Challenge>>
-            PageAllAsync(int siteId, int skip, int take)
+            PageAllAsync(int siteId, int skip, int take, string search = null)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                       && _.SiteId == siteId)
-                .OrderBy(_ => _.Name)
-                .Skip(skip)
-                .Take(take)
-                .ProjectTo<Challenge>()
-                .ToListAsync();
+            if (string.IsNullOrEmpty(search))
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId)
+                    .OrderBy(_ => _.Name)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<Challenge>()
+                    .ToListAsync();
+            }
+            else
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Include(_ => _.Tasks)
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId
+                        && (_.Name.Contains(search)
+                        || _.Description.Contains(search)
+                        || _.Tasks.Any(_t => _t.Title.Contains(search))
+                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
+                    .OrderBy(_ => _.Name)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<Challenge>()
+                    .ToListAsync();
+            }
         }
 
         public async Task<int> GetChallengeCountAsync()

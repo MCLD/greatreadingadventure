@@ -9,7 +9,11 @@ namespace GRA.Domain.Repository
         Task<int> GetChallengeCountAsync();
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
         Task<Challenge> GetByIdAsync(int id, int? userId = null);
-        Task<IEnumerable<Challenge>> PageAllAsync(int siteId, int skip, int take);
+        Task<IEnumerable<Challenge>> PageAllAsync(
+            int siteId, 
+            int skip, 
+            int take, 
+            string search = null);
         Task UpdateUserChallengeTask(int userId, IEnumerable<ChallengeTask> challengeTasks);
     }
 }

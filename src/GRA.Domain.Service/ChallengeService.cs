@@ -29,10 +29,11 @@ namespace GRA.Domain.Service
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
             GetPaginatedChallengeListAsync(int skip,
-            int take)
+            int take,
+            string search = null)
         {
             int siteId = GetCurrentSiteId();
-            var challenges = await _challengeRepository.PageAllAsync(siteId, skip, take);
+            var challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search);
             await AddBadgeFilenames(challenges);
             return new DataWithCount<IEnumerable<Challenge>>
             {
