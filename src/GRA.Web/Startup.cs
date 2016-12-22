@@ -132,6 +132,7 @@ namespace GRA.Web
             services.AddScoped<ActivityService>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<BadgeService>();
+            services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
@@ -149,6 +150,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
+            services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();

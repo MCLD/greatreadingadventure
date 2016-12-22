@@ -3,11 +3,14 @@
     public enum Permission
     {
         AccessMissionControl,
+        AddCategories,
         AddChallenges,
         AddPages,
         DeleteAnyMail,
+        DeleteCategories,
         DeletePages,
         DeleteParticipants,
+        EditCategories,
         EditChallenges,
         EditPages,
         EditParticipants,

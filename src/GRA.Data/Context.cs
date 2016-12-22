@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GRA.Data
 {
@@ -36,6 +36,8 @@ namespace GRA.Data
 
             // configure composite keys
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
+            modelBuilder.Entity<Model.ChallengeCategory>()
+                .HasKey(_ => new { _.ChallengeId, _.CategoryId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.UserBadge>()
@@ -79,6 +81,8 @@ namespace GRA.Data
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
+        public DbSet<Model.Category> Categories { get; set; }
+        public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
