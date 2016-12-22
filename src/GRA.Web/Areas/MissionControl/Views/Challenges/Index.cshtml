@@ -40,18 +40,21 @@
     </div>
 </div>
 
-<form asp-controller="Challenges" asp-action="Index" asp-route-FilterBy="@Model.FilterBy" method="post" role="form">
+-->
+
+<form asp-controller="Challenges" asp-action="Index" asp-route-search="@Model.Search" method="get" role="form">
     <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-10">
-            <input class="form-control" />
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
         </div>
-        <div class="col-xs-2">
-            <input type="submit" value="Search" class="btn btn-default" />
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Index" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
 
--->
+
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">

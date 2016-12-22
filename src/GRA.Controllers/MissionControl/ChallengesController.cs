@@ -42,7 +42,7 @@ namespace GRA.Controllers.MissionControl
             int skip = take * (page - 1);
 
             var challengeList = await _challengeService
-                .GetPaginatedChallengeListAsync(skip, take);
+                .GetPaginatedChallengeListAsync(skip, take, Search);
 
             ChallengesListViewModel viewModel = new ChallengesListViewModel();
 

@@ -35,7 +35,8 @@ namespace GRA.Controllers
             int take = 15;
             int skip = take * (page - 1);
 
-            var challengeList = await _challengeService.GetPaginatedChallengeListAsync(skip, take);
+            var challengeList = await _challengeService
+                .GetPaginatedChallengeListAsync(skip, take, Search);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
