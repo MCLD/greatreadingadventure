@@ -237,7 +237,7 @@ namespace GRA.Controllers
             if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != loginId)
             {
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
-                ShowAlertSuccess("You are now signed in as <strong>{user.FullName}</strong>.", "user");
+                ShowAlertSuccess($"You are now signed in as {user.FullName}.", "user");
             }
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }

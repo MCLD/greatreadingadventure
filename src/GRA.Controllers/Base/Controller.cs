@@ -221,7 +221,7 @@ namespace GRA.Controllers.Base
         {
             if (!string.IsNullOrEmpty(faIconName))
             {
-                AlertSuccess = $"{Fa(faIconName)} <strong>{message}";
+                AlertSuccess = $"{Fa(faIconName)} <strong>{message}</strong>";
             }
             else
             {
@@ -233,7 +233,7 @@ namespace GRA.Controllers.Base
         {
             if (!string.IsNullOrEmpty(faIconName))
             {
-                AlertInfo = $"{Fa(faIconName)} <strong>{message}";
+                AlertInfo = $"{Fa(faIconName)} <strong>{message}</strong>";
             }
             else
             {

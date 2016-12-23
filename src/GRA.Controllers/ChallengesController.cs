@@ -125,7 +125,7 @@ namespace GRA.Controllers
                 };
                 if (task.ChallengeTaskType.ToString() == "Book")
                 {
-                    string description = $"Read <strong>{task.Title}</strong>";
+                    string description = $"Read <strong><em>{task.Title}</em></strong>";
                     if (!string.IsNullOrWhiteSpace(task.Author))
                     {
                         description += $" by <strong>{task.Author}</strong>";
@@ -158,11 +158,11 @@ namespace GRA.Controllers
                     {
                         int tasksCompleted = model.Tasks.Where(_ => _.IsCompleted == true).Count();
                         int percentage = tasksCompleted * 100 / (int)challenge.TasksToComplete;
-                        ShowAlertSuccess("Your status has been saved. You have completed <strong>{percentage}%</strong> of the required tasks for the challenge: <strong>{challenge.Name}</strong>!", "check");
+                        ShowAlertSuccess($"Your status has been saved. You have completed {percentage}% of the required tasks for the challenge: {challenge.Name}!");
                     }
                     else
                     {
-                        ShowAlertSuccess("Your status has been saved!", "check");
+                        ShowAlertSuccess("Your status has been saved!");
                     }
                 }
             }
