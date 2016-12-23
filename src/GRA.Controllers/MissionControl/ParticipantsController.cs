@@ -15,7 +15,7 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ViewParticipantList)]
-    public class ParticipantsController : Base.Controller
+    public class ParticipantsController : Base.MCController
     {
         private readonly ILogger<ParticipantsController> _logger;
         private readonly ActivityService _activityService;

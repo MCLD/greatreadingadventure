@@ -125,8 +125,10 @@ namespace GRA.Web
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
 
             // filters
+            services.AddScoped<Controllers.Filter.MissionControlFilter>();
             services.AddScoped<Controllers.Filter.NotificationFilter>();
             services.AddScoped<Controllers.Filter.SiteFilter>();
+            services.AddScoped<Controllers.Filter.UserFilter>();
 
             // services
             services.AddScoped<ActivityService>();

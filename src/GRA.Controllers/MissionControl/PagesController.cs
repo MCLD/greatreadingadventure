@@ -13,7 +13,7 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ViewUnpublishedPages)]
-    public class PagesController : Base.Controller
+    public class PagesController : Base.MCController
     {
         private readonly ILogger<PagesController> _logger;
         private readonly PageService _pageService;

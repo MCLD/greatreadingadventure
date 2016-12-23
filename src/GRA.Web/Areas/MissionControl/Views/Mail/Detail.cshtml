@@ -1,0 +1,79 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.MailDetailViewModel
+
+@if (Model.CanDelete)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Delete Mail</h4>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text">Are you sure you wish to delete the mail "@Model.Mail.Subject" ?</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <form asp-controller="Mail" asp-action="Delete" method="post" role="form" style="display:inline">
+                            <input asp-for="Mail.Id" name="Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <p style="font-size:large">Sent @Model.SentMessage <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a> on @Model.Mail.CreatedAt.ToString("d")</p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">
+                    Subject: @Model.Mail.Subject
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-9">
+                        <p>@Model.Mail.Body</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer clearfix hidden-print">
+                <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
+                <div class="pull-right">
+                    @if (Model.CanDelete)
+                    {
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" style="margin-right: 12px;">
+                            Delete Mail
+                        </button>
+                    }
+                    @if (Model.Mail.ToUserId == null && Model.CanMail)
+                    {
+                        @if (Model.Mail.IsRepliedTo == false)
+                        {
+                            <div style="display:inline-block">
+                                <form asp-controller="Mail" asp-action="MarkHandled" method="post" role="form">
+                                    <input asp-for="Mail.Id" name="Id" type="hidden" />
+                                    <button type="submit" class="btn btn-success" style="margin-right: 12px;">
+                                        Mark Handled
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        <a asp-action="Reply" asp-route-id="@Model.Mail.Id" class="btn btn-primary">
+                            Reply
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

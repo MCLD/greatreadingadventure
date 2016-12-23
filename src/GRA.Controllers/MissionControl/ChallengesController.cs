@@ -15,7 +15,7 @@ namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.EditChallenges)]
-    public class ChallengesController : Base.Controller
+    public class ChallengesController : Base.MCController
     {
         private const string NewTask = "NewTask";
         private const string EditTask = "EditTask";

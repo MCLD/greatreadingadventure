@@ -8,5 +8,7 @@ namespace GRA
     public sealed class CacheKey
     {
         public const string SitePaths = "SitePaths";
+        public const string UnhandledMailCount = "UnhanledMailCount";
+        public const string UserUnreadMailCount = "UserUnreadMailCount";
     }
 }

@@ -12,5 +12,6 @@ namespace GRA.Controllers
         public const string NotificationsList = "NotificationsList";
         public const string SiteId = "SiteId";
         public const string SiteStage = "SiteStage";
+        public const string UnreadCount = "UnreadCount";
     }
 }

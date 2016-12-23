@@ -144,3 +144,10 @@ ul.navbar-nav li.active {
     background-color: rgb(215, 240, 240);
     font-weight: bold;
 }
+.unread-mail {
+    font-weight: bold;
+}
+
+.read-mail {
+    background-color: #f9f9f9;
+}

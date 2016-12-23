@@ -1,0 +1,41 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.MailReplyViewModel
+
+<form asp-controller="Mail" asp-action="Reply" method="post" role="form">
+    <input asp-for="InReplyToId" type="hidden" />
+    <input asp-for="InReplyToSubject" type="hidden" />
+    <input asp-for="ParticipantLink" type="hidden" />
+    <input asp-for="ParticipantName" type="hidden" />
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <p style="font-size:large"><strong>Reply to:</strong> @Model.InReplyToSubject</p>
+            <p style="font-size:large"><strong>From:</strong> <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a></p>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-sm-8 col-sm-offset-2">
+            <label asp-for="Subject" class="control-label"></label>
+            <input asp-for="Subject" class="form-control" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-sm-8 col-sm-offset-2">
+            <label asp-for="Body" class="control-label"></label>
+            <textarea asp-for="Body" class="form-control"></textarea>
+            <span asp-validation-for="Body" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
+            <a asp-action="Detail" asp-route-id="@Model.InReplyToId" class="btn btn-default">Return to Mail</a>
+            <button type="submit" class="btn btn-primary">
+                Send Reply
+            </button>
+        </div>
+    </div>
+</form>

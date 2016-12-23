@@ -60,6 +60,17 @@
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span></a></li>
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="Mail">
+                            <a asp-controller="Mail" asp-action="Index">
+                                <span class="fa fa-envelope-o"></span>
+                                <span class="label label-default label-as-badge">
+                                    @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
+                                </span>
+                            </a>
+                        </li>
+                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index">Participants</a></li>
@@ -154,7 +165,7 @@
     </environment>
     @RenderSection("scripts", required: false)
     <script>
-        $(function () {
+        $(function() {
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>

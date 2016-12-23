@@ -1,8 +1,8 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.MailListViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.MailListViewModel
 
-@Html.Partial("_ParticipantPartial")
+@Html.Partial("_MailPartial")
 
-@if (Model.CanRemoveMail)
+@if (Model.CanDelete)
 {
     <div class="row">
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
@@ -18,9 +18,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="DeleteMail" method="post" role="form" style="display:inline">
+                        <form asp-controller="Mail" asp-action="Delete" method="post" role="form" style="display:inline">
                             <input id="Id" name="Id" type="hidden" />
-                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
                             <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 Delete
@@ -35,9 +34,9 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        @if (Model.Mails.Count() == 0)
+        @if (Model.Mail.Count() == 0)
         {
-            <div class="alert alert-warning">No Mail</div>
+            <div class="alert alert-warning">No Unread Mail</div>
         }
         else
         {
@@ -46,28 +45,24 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Sent</th>
                             <th>Subject</th>
-                            <th>Unread</th>
-                            @if (Model.CanRemoveMail)
+                            @if (Model.CanDelete)
                             {
                                 <th>&nbsp;</th>
                             }
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var mail in Model.Mails)
+                        @foreach (var mail in Model.Mail)
                         {
-                            <tr>
+                            <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
                                 <td class="td-class">
-                                    <a asp-action="MailDetail" asp-route-id="@mail.Id" class="rowlink">
+                                    <a asp-action="Detail" asp-route-id="@mail.Id" class="rowlink">
                                         @mail.CreatedAt.ToString("d")
                                     </a>
                                 </td>
-                                <td>@(mail.FromUserId == Model.Id ? "From" : "To")</td>
                                 <td>@mail.Subject</td>
-                                <td>@(mail.IsNew ? "Yes" : "No")</td>
-                                @if (Model.CanRemoveMail)
+                                @if (Model.CanDelete)
                                 {
                                     <td class="on-top">
                                         <button type="button"
@@ -93,10 +88,6 @@
     </div>
 </div>
 
-<div class="form-group">
-    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
-</div>
-
 @section scripts
 {
     <script>
@@ -111,7 +102,7 @@
             });
         });
 
-        @if (Model.CanRemoveMail) {
+        @if (Model.CanDelete) {
         <text>
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);

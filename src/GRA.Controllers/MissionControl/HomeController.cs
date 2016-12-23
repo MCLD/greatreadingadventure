@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    public class HomeController : Base.Controller
+    public class HomeController : Base.MCController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;

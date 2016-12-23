@@ -15,7 +15,7 @@ using System.Text;
 
 namespace GRA.Controllers.Base
 {
-    [ServiceFilter(typeof(SiteFilter))]
+    [ServiceFilter(typeof(SiteFilter), Order = 1)]
     [SessionTimeoutFilter]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {

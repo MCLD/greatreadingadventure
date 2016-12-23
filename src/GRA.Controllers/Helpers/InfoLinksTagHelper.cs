@@ -30,7 +30,7 @@ namespace GRA.Controllers.Helpers
         public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var pages = await _pageService.GetFooterPagesAsync();
-            if (pages.Count() > 1)
+            if (pages.Count() > 0)
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
                 string activeStub = url.ActionContext.RouteData.Values["stub"] as string;
@@ -40,11 +40,11 @@ namespace GRA.Controllers.Helpers
                     var link = url.Action("Index", "Info", new { stub = page.Stub });
                     if (page.Stub == activeStub)
                     {
-                        pageList.Add($"<a class='active' href='{link}'>{page.Title}</a>");
+                        pageList.Add($"<a class=\"active\" href=\"{link}\">{page.Title}</a>");
                     }
                     else
                     {
-                        pageList.Add($"<a href='{link}'>{page.Title}</a>");
+                        pageList.Add($"<a href=\"{link}\">{page.Title}</a>");
                     }
                 }
                 output.TagName = "div";

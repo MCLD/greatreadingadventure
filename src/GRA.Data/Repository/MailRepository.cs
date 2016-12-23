@@ -83,12 +83,33 @@ namespace GRA.Data.Repository
                     && (_.ToUserId == userId || _.FromUserId == userId))
                 .CountAsync();
         }
+
+        public async Task<int> GetUserInboxCountAsync(int userId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                    && _.ToUserId == userId)
+                .CountAsync();
+        }
         public async Task<IEnumerable<Mail>> PageUserAsync(int userId, int skip, int take)
         {
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
                     && (_.ToUserId == userId || _.FromUserId == userId))
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<Mail>()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Mail>> PageUserInboxAsync(int userId, int skip, int take)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                    && _.ToUserId == userId)
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<Mail>()
@@ -117,6 +138,15 @@ namespace GRA.Data.Repository
             }
             mail.IsNew = false;
             await SaveAsync();
+        }
+
+        public override async Task<Mail> GetByIdAsync(int id)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.Id == id)
+                .ProjectTo<Mail>()
+                .SingleOrDefaultAsync();
         }
 
         public override async Task RemoveSaveAsync(int userId, int id)
