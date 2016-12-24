@@ -148,26 +148,40 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId, string search = null)
+        public async Task<int> GetCountAsync(int siteId,
+            string search = null,
+            DateTime? registrationStartDate = default(DateTime?),
+            DateTime? registrationEndDate = default(DateTime?))
         {
+            IQueryable<Model.User> userCount = null;
             if (string.IsNullOrEmpty(search))
             {
-                return await DbSet
+                userCount = DbSet
                     .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
-                    .CountAsync();
+                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId);
             }
             else
             {
-                return await DbSet
+                userCount = DbSet
                     .AsNoTracking()
                     .Where(_ => _.IsDeleted == false && _.SiteId == siteId
                         && (_.Username.Contains(search)
                         || _.FirstName.Contains(search)
                         || _.LastName.Contains(search)
-                        || _.Email.Contains(search)))
-                    .CountAsync();
+                        || _.Email.Contains(search)));
             }
+
+            if(registrationStartDate != null)
+            {
+                userCount = userCount.Where(_ => _.CreatedAt >= registrationStartDate);
+            }
+
+            if(registrationEndDate != null)
+            {
+                userCount = userCount.Where(_ => _.CreatedAt <= registrationEndDate);
+            }
+
+            return await userCount.CountAsync();
         }
 
         public async override Task RemoveSaveAsync(int userId, int id)

@@ -1,1 +1,57 @@
-﻿<a asp-controller="Home" asp-action="LoadSampleData" class="btn btn-warning">Insert sample data</a>
+﻿@model GRA.Domain.Model.StatusSummary
+
+@section styles {
+    <style>
+        .info-pill {
+            border: 1px solid;
+            border-radius: 1rem;
+            font-size: 2rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-pill-steelblue {
+            background-color: #4682b4;
+            border-color: #4682b4;
+            color: white;
+        }
+    </style>
+}
+<div class="row" style="text-align: center;">
+    <div class="col-sm-3">
+        <div class="info-pill info-pill-steelblue">
+            <span class="fa fa-user"></span>
+            @Model.RegisteredUsers users
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="info-pill info-pill-steelblue">
+            <span class="fa fa-hashtag"></span>
+            @Model.PointsEarned points
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="info-pill info-pill-steelblue">
+            <span class="fa fa-trophy"></span>
+            @Model.CompletedChallenges challenges
+        </div>
+    </div>
+    @foreach (var item in Model.ActivityEarnings)
+    {
+        <div class="col-sm-3">
+            <div class="info-pill info-pill-steelblue">
+                <span class="fa fa-book"></span>
+                @item.Value @item.Key
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <a asp-controller="Home" asp-action="LoadSampleData" class="btn btn-warning">Insert sample data</a>
+    </div>
+</div>
+

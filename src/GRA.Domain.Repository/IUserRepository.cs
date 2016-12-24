@@ -10,7 +10,10 @@ namespace GRA.Domain.Repository
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
         Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
         Task<User> GetByUsernameAsync(string username);
-        Task<int> GetCountAsync(int siteId, string search = null);
+        Task<int> GetCountAsync(int siteId, 
+            string search = null,
+            DateTime? registrationStartDate = default(DateTime?),
+            DateTime? registrationEndDate = default(DateTime?));
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
         Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email);
         Task<IEnumerable<Model.User>> PageAllAsync(int siteId, 

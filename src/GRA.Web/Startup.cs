@@ -141,6 +141,7 @@ namespace GRA.Web
             services.AddScoped<InitialSetupService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
+            services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();

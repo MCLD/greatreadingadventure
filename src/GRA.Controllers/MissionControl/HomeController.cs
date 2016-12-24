@@ -13,10 +13,12 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly ReportService _reportService;
         private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
+            ReportService reportService,
             SampleDataService sampleDataService,
             UserService userService,
             ServiceFacade.Controller context)
@@ -25,6 +27,7 @@ namespace GRA.Controllers.MissionControl
             this._logger = Require.IsNotNull(logger, nameof(logger));
             this._authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _reportService = Require.IsNotNull(reportService, nameof(reportService));
             this._sampleDataService = Require.IsNotNull(sampleDataService,
                 nameof(sampleDataService));
             this._userService = Require.IsNotNull(userService, nameof(userService));
@@ -51,7 +54,8 @@ namespace GRA.Controllers.MissionControl
             }
             Site site = await GetCurrentSiteAsync(sitePath);
             PageTitle = $"Mission Control: {site.Name}";
-            return View();
+            var currentStats = await _reportService.GetCurrentStats();
+            return View(currentStats);
         }
         [HttpGet]
         public IActionResult AuthorizationCode()
