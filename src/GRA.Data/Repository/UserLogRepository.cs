@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using GRA.Domain.Repository;
+﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
-using AutoMapper.QueryableExtensions;
-using System;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -47,7 +46,7 @@ namespace GRA.Data.Repository
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.PointTranslationId)
                         .SingleOrDefault();
-                    if(translation.TranslationDescriptionPastTense.Contains("{0}"))
+                    if (translation.TranslationDescriptionPastTense.Contains("{0}"))
                     {
                         userLog.Description = string.Format(
                             translation.TranslationDescriptionPastTense,
@@ -82,76 +81,132 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        public async Task<int> CompletedChallengeCountAsync(
-            int siteId,
-            DateTime? startDate = default(DateTime?),
-            DateTime? endDate = default(DateTime?))
+        private async Task<ICollection<int>> GetEligibleUserIds(StatusSummary request)
         {
+            if (request.ProgramId != null
+               || request.SystemId != null
+               || request.BranchId != null)
+            {
+                var eligibleUsers = _context.Users
+                    .AsNoTracking()
+                    .Where(_ => _.SiteId == request.SiteId && _.IsDeleted == false);
+                if (request.ProgramId != null)
+                {
+                    eligibleUsers = eligibleUsers.Where(_ => _.ProgramId == request.ProgramId);
+                }
+                if (request.SystemId != null)
+                {
+                    eligibleUsers = eligibleUsers.Where(_ => _.SystemId == request.SystemId);
+                }
+                if (request.BranchId != null)
+                {
+                    eligibleUsers = eligibleUsers.Where(_ => _.BranchId == request.BranchId);
+                }
+                return await eligibleUsers.Select(_ => _.Id).ToListAsync();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<int> CompletedChallengeCountAsync(StatusSummary request)
+        {
+            var eligibleUserIds = await GetEligibleUserIds(request);
+
             var challengeCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId != null);
 
-            if(startDate != null)
+            if (eligibleUserIds != null)
             {
-                challengeCount = challengeCount
-                    .Where(_ => _.CreatedAt >= startDate);
+                challengeCount = challengeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
             }
 
-            if(endDate != null)
+            if (request.StartDate != null)
             {
                 challengeCount = challengeCount
-                    .Where(_ => _.CreatedAt <= endDate);
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                challengeCount = challengeCount
+                    .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
             return await challengeCount.CountAsync();
         }
 
-        public async Task<int> PointsEarnedTotalAsync(int siteId, 
-            DateTime? startDate = default(DateTime?), 
-            DateTime? endDate = default(DateTime?))
+        public async Task<int> PointsEarnedTotalAsync(StatusSummary request)
         {
+            var eligibleUserIds = await GetEligibleUserIds(request);
+
             var pointCount = DbSet
                 .AsNoTracking();
 
-            if(startDate != null)
+            if (eligibleUserIds != null)
             {
-                pointCount = pointCount
-                    .Where(_ => _.CreatedAt >= startDate);
+                pointCount = pointCount.Where(_ => eligibleUserIds.Contains(_.UserId));
             }
 
-            if(endDate != null)
+            if (request.StartDate != null)
             {
                 pointCount = pointCount
-                    .Where(_ => _.CreatedAt <= endDate);
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                pointCount = pointCount
+                    .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
             return await pointCount.SumAsync(_ => _.PointsEarned);
         }
 
-        public async Task<Dictionary<string, int>> ActivityEarningsTotalAsync(int siteId,
-            DateTime? startDate = default(DateTime?),
-            DateTime? endDate = default(DateTime?))
+        public async Task<Dictionary<string, int>> ActivityEarningsTotalAsync(StatusSummary request)
         {
-            var pointTranslations = await _context.PointTranslations
-                .AsNoTracking()
-                .ToDictionaryAsync(_ => _.Id, _ => _.ActivityDescription);
+            // look up user id restrictions
+            var eligibleUserIds = await GetEligibleUserIds(request);
 
-            var activityTotals = await DbSet
+            // build lookup of point translations
+            var translationLookup = await _context.PointTranslations
                 .AsNoTracking()
-                .Where(_ => _.PointTranslationId > 0)
+                .ToDictionaryAsync(_ => _.Id);
+
+            // start out with all line items that have a point translation id
+            var earnedFilter = DbSet
+                .AsNoTracking()
+                .Where(_ => _.PointTranslationId != null);
+
+            // filter by users if necessary
+            if (eligibleUserIds != null)
+            {
+                earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
+            }
+
+            // group them by point translation id
+            var earnedTotals = await earnedFilter
                 .GroupBy(_ => _.PointTranslationId)
-                .Select(_ => new {
+                .Select(_ => new
+                {
                     PointTranslationId = _.Key,
                     ActivityTotal = _.Sum(ae => ae.ActivityEarned)
                 })
                 .ToListAsync();
 
             Dictionary<string, int> result = new Dictionary<string, int>();
-            foreach(var activityTotal in activityTotals)
+            foreach (var earned in earnedTotals)
             {
-                result.Add(
-                    pointTranslations[activityTotal.PointTranslationId],
-                    activityTotal.ActivityTotal ?? 0);
+                int earnedSum = earned.ActivityTotal ?? 0;
+                int pointTranslationId = (int)earned.PointTranslationId;
+
+                string description = earnedSum == 1
+                    ? translationLookup[pointTranslationId].ActivityDescription
+                    : translationLookup[pointTranslationId].ActivityDescriptionPlural;
+
+                result.Add(description, earnedSum);
             }
 
             return result;

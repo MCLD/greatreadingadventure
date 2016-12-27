@@ -13,6 +13,9 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string ActivityDescription { get; set; }
         [Required]
+        [MaxLength(255)]
+        public string ActivityDescriptionPlural { get; set; }
+        [Required]
         public int ActivityAmount { get; set; }
         [Required]
         public int PointsEarned { get; set; }

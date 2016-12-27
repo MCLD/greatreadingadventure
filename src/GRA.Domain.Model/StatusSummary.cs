@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Model
 {
     public class StatusSummary
     {
-        public int SiteId { get; set; }
+        public int? SiteId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int? SystemId { get; set; }
+        public int? BranchId { get; set; }
+        public int? ProgramId { get; set; }
 
         public int RegisteredUsers { get; set; }
         public int PointsEarned { get; set; }

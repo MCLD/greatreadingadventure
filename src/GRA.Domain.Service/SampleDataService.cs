@@ -38,7 +38,7 @@ namespace GRA.Domain.Service
             var user = await _userRepository.GetByIdAsync(userId);
 
             //insert sample data
-            var challenge = new Model.Challenge
+            var challenge = new Challenge
             {
                 SiteId = user.SiteId,
                 RelatedSystemId = user.SystemId,
@@ -55,14 +55,14 @@ namespace GRA.Domain.Service
             challenge = await _challengeRepository.AddSaveAsync(userId, challenge);
 
             int positionCounter = 1;
-            await _challengeTaskRepository.AddSaveAsync(userId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Be excellent to each other",
                 ChallengeTaskType = Model.ChallengeTaskType.Action,
                 Position = positionCounter++
             });
-            await _challengeTaskRepository.AddSaveAsync(userId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Party on, dudes!",
@@ -70,7 +70,7 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
-            challenge = new Model.Challenge
+            challenge = new Challenge
             {
                 SiteId = user.SiteId,
                 BadgeId = null,
@@ -87,7 +87,7 @@ namespace GRA.Domain.Service
             challenge = await _challengeRepository.AddSaveAsync(userId, challenge);
             positionCounter = 0;
 
-            await _challengeTaskRepository.AddSaveAsync(userId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",
@@ -97,7 +97,7 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
-            await _challengeTaskRepository.AddSaveAsync(userId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Stories of Your Life and Others",
@@ -107,7 +107,7 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
-            await _challengeTaskRepository.AddSaveAsync(userId, new Model.ChallengeTask
+            await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Have Space Suit - Will Travel",
@@ -121,7 +121,7 @@ namespace GRA.Domain.Service
             if (userCheck == null)
             {
                 // add some family users
-                var newUser = new Model.User
+                var newUser = new User
                 {
                     SiteId = user.SiteId,
                     BranchId = user.BranchId,
@@ -174,13 +174,53 @@ namespace GRA.Domain.Service
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Fred";
                 await _userRepository.AddAsync(userId, newUser);
-                newUser.FirstName = "Ron";
-                await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "George";
                 await _userRepository.AddAsync(userId, newUser);
-                newUser.FirstName = "Ginny";
-                await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Percy";
+                await _userRepository.AddAsync(userId, newUser);
+                await _userRepository.SaveAsync();
+
+                newUser.FirstName = "Ron";
+                newUser.HouseholdHeadUserId = null;
+                var ron = await _userRepository.AddSaveAsync(userId, newUser);
+
+                newUser.FirstName = "Hermione";
+                newUser.LastName = "Granger";
+                newUser.HouseholdHeadUserId = ron.Id;
+                var hermione = await _userRepository.AddSaveAsync(userId, newUser);
+
+                await _activityService.LogActivityAsync(ron.Id, 1);
+                await _activityService.LogActivityAsync(hermione.Id, 1);
+                await _activityService.LogActivityAsync(hermione.Id, 1);
+                await _activityService.LogActivityAsync(hermione.Id, 1);
+                await _activityService.LogActivityAsync(hermione.Id, 1);
+                await _activityService.LogActivityAsync(hermione.Id, 1);
+
+                newUser.FirstName = "Rose";
+                newUser.LastName = "Granger-Weasley";
+                await _userRepository.AddAsync(userId, newUser);
+                newUser.FirstName = "Hugo";
+                await _userRepository.AddAsync(userId, newUser);
+                await _userRepository.SaveAsync();
+
+                newUser.FirstName = "Harry";
+                newUser.LastName = "Potter";
+                newUser.HouseholdHeadUserId = null;
+                var harry = await _userRepository.AddSaveAsync(userId, newUser);
+
+                newUser.FirstName = "Ginevra";
+                newUser.HouseholdHeadUserId = harry.Id;
+                var ginny = await _userRepository.AddSaveAsync(userId, newUser);
+
+                await _activityService.LogActivityAsync(harry.Id, 1);
+                await _activityService.LogActivityAsync(harry.Id, 1);
+                await _activityService.LogActivityAsync(ginny.Id, 1);
+
+                newUser.FirstName = "James";
+                await _userRepository.AddAsync(userId, newUser);
+                newUser.FirstName = "Albus";
+                await _userRepository.AddAsync(userId, newUser);
+                newUser.FirstName = "Lily";
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();
             }

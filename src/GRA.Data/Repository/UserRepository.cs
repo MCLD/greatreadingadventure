@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.Logging;
+﻿using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
-using GRA.Domain.Model;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -148,10 +148,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId,
-            string search = null,
-            DateTime? registrationStartDate = default(DateTime?),
-            DateTime? registrationEndDate = default(DateTime?))
+        public async Task<int> GetCountAsync(int siteId, string search = null)
         {
             IQueryable<Model.User> userCount = null;
             if (string.IsNullOrEmpty(search))
@@ -171,14 +168,39 @@ namespace GRA.Data.Repository
                         || _.Email.Contains(search)));
             }
 
-            if(registrationStartDate != null)
+            return await userCount.CountAsync();
+        }
+
+        public async Task<int> GetCountAsync(StatusSummary request)
+        {
+            IQueryable<Model.User> userCount = null;
+            userCount = DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.SiteId == request.SiteId);
+
+            if (request.StartDate != null)
             {
-                userCount = userCount.Where(_ => _.CreatedAt >= registrationStartDate);
+                userCount = userCount.Where(_ => _.CreatedAt >= request.StartDate);
             }
 
-            if(registrationEndDate != null)
+            if (request.EndDate != null)
             {
-                userCount = userCount.Where(_ => _.CreatedAt <= registrationEndDate);
+                userCount = userCount.Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
+            if(request.ProgramId != null)
+            {
+                userCount = userCount.Where(_ => _.ProgramId == request.ProgramId);
+            }
+
+            if(request.SystemId != null)
+            {
+                userCount = userCount.Where(_ => _.SystemId == request.SystemId);
+            }
+
+            if(request.BranchId != null)
+            {
+                userCount = userCount.Where(_ => _.BranchId == request.BranchId);
             }
 
             return await userCount.CountAsync();

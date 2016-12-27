@@ -12,6 +12,8 @@ namespace GRA.Data.Model
         [Required]
         [MaxLength(255)]
         public string ActivityDescription { get; set; }
+        [MaxLength(255)]
+        public string ActivityDescriptionPlural { get; set; }
         [Required]
         public int ActivityAmount { get; set; }
         [Required]

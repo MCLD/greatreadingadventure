@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
+﻿using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
-using GRA.Domain.Model;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -26,33 +24,24 @@ namespace GRA.Domain.Service
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
         }
 
-        public async Task<StatusSummary> GetCurrentStats(
-            DateTime? startDate = null,
-            DateTime? endDate = null)
+        public async Task<StatusSummary> GetCurrentStats(StatusSummary request)
         {
-            int siteId = GetCurrentSiteId();
-            string cacheKey = CacheKey.CurrentStats + siteId;
+            if (request.SiteId == null
+                || request.SiteId != GetCurrentSiteId())
+            {
+                request.SiteId = GetCurrentSiteId();
+            }
+            string cacheKey = $"{CacheKey.CurrentStats}s{request.SiteId}p{request.ProgramId}sys{request.SystemId}b{request.BranchId}";
             var summary = _memoryCache.Get<StatusSummary>(cacheKey);
             if (summary == null)
             {
-                summary = new StatusSummary
-                {
-                    SiteId = siteId,
-                    StartDate = startDate,
-                    EndDate = endDate,
-                    RegisteredUsers = await _userRepository.GetCountAsync(siteId,
-                        registrationStartDate: startDate,
-                        registrationEndDate: endDate),
-                    PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(siteId,
-                        startDate,
-                        endDate),
-                    ActivityEarnings = await _userLogRepository.ActivityEarningsTotalAsync(siteId,
-                        startDate,
-                        endDate),
-                    CompletedChallenges = await _userLogRepository.CompletedChallengeCountAsync(siteId,
-                        startDate,
-                        endDate)
-                };
+                summary = request;
+                summary.RegisteredUsers = await _userRepository.GetCountAsync(request);
+                summary.PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(request);
+                summary.ActivityEarnings = await _userLogRepository
+                    .ActivityEarningsTotalAsync(request);
+                summary.CompletedChallenges = await _userLogRepository
+                     .CompletedChallengeCountAsync(request);
                 _memoryCache.Set(cacheKey,
                     summary,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));

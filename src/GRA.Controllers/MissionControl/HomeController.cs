@@ -1,9 +1,9 @@
-﻿using GRA.Controllers.ViewModel.MissionControl;
+﻿using GRA.Controllers.ViewModel.MissionControl.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
@@ -16,21 +16,24 @@ namespace GRA.Controllers.MissionControl
         private readonly ReportService _reportService;
         private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
+        private readonly SiteService _siteService;
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
             ReportService reportService,
             SampleDataService sampleDataService,
             UserService userService,
+            SiteService siteService,
             ServiceFacade.Controller context)
             : base(context)
         {
-            this._logger = Require.IsNotNull(logger, nameof(logger));
-            this._authenticationService = Require.IsNotNull(authenticationService,
+            _logger = Require.IsNotNull(logger, nameof(logger));
+            _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
             _reportService = Require.IsNotNull(reportService, nameof(reportService));
-            this._sampleDataService = Require.IsNotNull(sampleDataService,
+            _sampleDataService = Require.IsNotNull(sampleDataService,
                 nameof(sampleDataService));
-            this._userService = Require.IsNotNull(userService, nameof(userService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
+            _siteService = Require.IsNotNull(siteService, nameof(siteService));
             PageTitle = "Mission Control";
         }
 
@@ -54,9 +57,25 @@ namespace GRA.Controllers.MissionControl
             }
             Site site = await GetCurrentSiteAsync(sitePath);
             PageTitle = $"Mission Control: {site.Name}";
-            var currentStats = await _reportService.GetCurrentStats();
-            return View(currentStats);
+
+            // show the at-a-glance report
+            int currentUserBranchId = GetId(ClaimType.BranchId);
+
+            var siteStatus = await _reportService.GetCurrentStats(new StatusSummary());
+            var branchStatus = await _reportService.GetCurrentStats(new StatusSummary
+            {
+                BranchId = currentUserBranchId
+            });
+            var branchName = await _siteService.GetBranchName(GetId(ClaimType.BranchId));
+
+            return View(new AtAGlanceViewModel
+            {
+                SiteStatus = siteStatus,
+                FilteredBranchDescription = $"Your branch ({branchName})",
+                FilteredStatus = branchStatus
+            });
         }
+
         [HttpGet]
         public IActionResult AuthorizationCode()
         {
@@ -83,7 +102,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var auth = await _authenticationService
                     .RevalidateUserAsync(GetId(ClaimType.UserId));
-                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: <strong>{role}</strong>.";
+                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: {role}.";
                 await LoginUserAsync(auth);
                 return RedirectToRoute(new
                 {

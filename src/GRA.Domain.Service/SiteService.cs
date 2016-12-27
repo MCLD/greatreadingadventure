@@ -42,6 +42,19 @@ namespace GRA.Domain.Service
             return await _branchRepository.GetAllAsync(systemId);
         }
 
+        public async Task<string> GetBranchName(int branchId)
+        {
+            var branch = await _branchRepository.GetByIdAsync(branchId);
+            if(branch == null)
+            {
+                throw new GraException("Could not find branch.");
+            }
+            else
+            {
+                return branch.Name;
+            }
+        }
+
         public async Task<IEnumerable<Program>> GetProgramList()
         {
             return await _programRepository.GetAllAsync(GetCurrentSiteId());

@@ -1,8 +1,8 @@
-﻿@model GRA.Domain.Model.StatusSummary
+﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AtAGlanceViewModel
 
 @section styles {
     <style>
-        .info-pill {
+        .ataglance-pill {
             border: 1px solid;
             border-radius: 1rem;
             font-size: 2rem;
@@ -11,36 +11,43 @@
             margin-bottom: 1rem;
         }
 
-        .info-pill-steelblue {
-            background-color: #4682b4;
-            border-color: #4682b4;
+        .ataglance-pill-steelblue {
+            background-color: steelblue;
+            border-color: steelblue;
+            color: white;
+        }
+
+        .ataglance-pill-forestgreen {
+            background-color: forestgreen;
+            border-color: forestgreen;
             color: white;
         }
     </style>
 }
-<div class="row" style="text-align: center;">
+
+<div class="row row-spacing" style="text-align: center;">
     <div class="col-sm-3">
-        <div class="info-pill info-pill-steelblue">
+        <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-user"></span>
-            @Model.RegisteredUsers users
+            @Model.SiteStatus.RegisteredUsers users
         </div>
     </div>
     <div class="col-sm-3">
-        <div class="info-pill info-pill-steelblue">
+        <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-hashtag"></span>
-            @Model.PointsEarned points
+            @Model.SiteStatus.PointsEarned points
         </div>
     </div>
     <div class="col-sm-3">
-        <div class="info-pill info-pill-steelblue">
+        <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-trophy"></span>
-            @Model.CompletedChallenges challenges
+            @Model.SiteStatus.CompletedChallenges challenges
         </div>
     </div>
-    @foreach (var item in Model.ActivityEarnings)
+    @foreach (var item in Model.SiteStatus.ActivityEarnings)
     {
         <div class="col-sm-3">
-            <div class="info-pill info-pill-steelblue">
+            <div class="ataglance-pill ataglance-pill-steelblue">
                 <span class="fa fa-book"></span>
                 @item.Value @item.Key
             </div>
@@ -48,6 +55,41 @@
     }
 </div>
 
+<div class="row">
+    <div class="col-xs-12">
+        <span class="h3">@Model.FilteredBranchDescription:</span>
+    </div>
+</div>
+
+<div class="row row-spacing" style="text-align: center;">
+    <div class="col-sm-3">
+        <div class="ataglance-pill ataglance-pill-forestgreen">
+            <span class="fa fa-user"></span>
+            @Model.FilteredStatus.RegisteredUsers users
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="ataglance-pill ataglance-pill-forestgreen">
+            <span class="fa fa-hashtag"></span>
+            @Model.FilteredStatus.PointsEarned points
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="ataglance-pill ataglance-pill-forestgreen">
+            <span class="fa fa-trophy"></span>
+            @Model.FilteredStatus.CompletedChallenges challenges
+        </div>
+    </div>
+    @foreach (var item in Model.FilteredStatus.ActivityEarnings)
+    {
+        <div class="col-sm-3">
+            <div class="ataglance-pill ataglance-pill-forestgreen">
+                <span class="fa fa-book"></span>
+                @item.Value @item.Key
+            </div>
+        </div>
+    }
+</div>
 
 <div class="row">
     <div class="col-sm-12">

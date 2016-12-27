@@ -74,6 +74,7 @@ namespace GRA.Domain.Service
             {
                 ActivityAmount = 1,
                 ActivityDescription = "book",
+                ActivityDescriptionPlural = "books",
                 IsSingleEvent = true,
                 PointsEarned = 10,
                 ProgramId = program.Id,

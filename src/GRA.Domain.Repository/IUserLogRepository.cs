@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GRA.Domain.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,16 +9,8 @@ namespace GRA.Domain.Repository
     {
         Task<IEnumerable<Model.UserLog>> PageHistoryAsync(int userId, int skip, int take);
         Task<int> GetHistoryItemCountAsync(int userId);
-        Task<int> CompletedChallengeCountAsync(
-            int siteId,
-            DateTime? startDate = default(DateTime?),
-            DateTime? endDate = default(DateTime?));
-        Task<int> PointsEarnedTotalAsync(
-            int siteId,
-            DateTime? startDate = default(DateTime?),
-            DateTime? endDate = default(DateTime?));
-        Task<Dictionary<string, int>> ActivityEarningsTotalAsync(int siteId,
-            DateTime? startDate = default(DateTime?),
-            DateTime? endDate = default(DateTime?));
+        Task<int> CompletedChallengeCountAsync(StatusSummary request);
+        Task<int> PointsEarnedTotalAsync(StatusSummary request);
+        Task<Dictionary<string, int>> ActivityEarningsTotalAsync(StatusSummary request);
     }
 }

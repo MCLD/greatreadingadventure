@@ -7,7 +7,7 @@ namespace GRA.Data.Model
         [Required]
         public int UserId { get; set; }
         public virtual User User { get; set; }
-        public int PointTranslationId { get; set; }
+        public int? PointTranslationId { get; set; }
 
         public int? ActivityEarned { get; set; }
         [Required]
