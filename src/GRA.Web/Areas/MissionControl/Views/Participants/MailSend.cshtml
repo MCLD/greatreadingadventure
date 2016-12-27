@@ -1,0 +1,33 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.MailSendViewModel
+
+<form asp-controller="Participants" asp-action="MailSend" method="post" role="form">
+    <input asp-for="Id" type="hidden" />
+
+    <br />
+
+    <div class="row row-spacing">
+        <div class="col-sm-8 col-sm-offset-2">
+            <label asp-for="Subject" class="control-label"></label>
+            <input asp-for="Subject" class="form-control" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-sm-8 col-sm-offset-2">
+            <label asp-for="Body" class="control-label"></label>
+            <textarea asp-for="Body" class="form-control"></textarea>
+            <span asp-validation-for="Body" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <a asp-action="Index" class="btn btn-default">Return to Participants List</a>
+            <a asp-action="Mail" asp-route-id="@Model.Id" class="btn btn-default">Return to Mail List</a>
+            <button type="submit" class="btn btn-primary">
+                Send Mail
+            </button>
+        </div>
+    </div>
+</form>

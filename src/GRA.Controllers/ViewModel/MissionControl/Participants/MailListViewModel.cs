@@ -12,5 +12,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? HeadOfHouseholdId { get; set; }
         public bool HasAccount { get; set; }
         public bool CanRemoveMail { get; set; }
+        public bool CanSendMail { get; set; }
     }
 }

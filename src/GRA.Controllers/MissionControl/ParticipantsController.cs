@@ -544,7 +544,8 @@ namespace GRA.Controllers.MissionControl
                 HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HeadOfHouseholdId = user.HouseholdHeadUserId,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail)
+                CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
+                CanSendMail = UserHasPermission(Permission.MailParticipants)
             };
             return View(viewModel);
         }
@@ -575,6 +576,43 @@ namespace GRA.Controllers.MissionControl
             await _mailService.RemoveAsync(id);
             AlertSuccess = "Mail deleted";
             return RedirectToAction("Mail", new { id = userId });
+        }
+
+        [Authorize(Policy = Policy.MailParticipants)]
+        public async Task<IActionResult> MailSend(int id)
+        {
+            var user = await _userService.GetDetails(id);
+            SetPageTitle(user, "Send Mail");
+
+            MailSendViewModel viewModel = new MailSendViewModel()
+            {
+                Id = user.Id
+            };
+            return View(viewModel);
+        }
+
+        [Authorize(Policy = Policy.MailParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> MailSend(MailSendViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                Mail mail = new Mail()
+                {
+                    ToUserId = model.Id,
+                    Subject = model.Subject,
+                    Body = model.Body,
+                };
+                await _mailService.MCSendAsync(mail);
+                AlertSuccess = "Mail sent to participant";
+                return RedirectToAction("Mail", new { id = model.Id });
+            }
+            else
+            {
+                var user = await _userService.GetDetails(model.Id);
+                SetPageTitle(user, "Send Mail");
+                return View();
+            }
         }
         #endregion
 

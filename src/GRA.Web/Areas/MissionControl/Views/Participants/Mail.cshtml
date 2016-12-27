@@ -64,7 +64,7 @@
                                         @mail.CreatedAt.ToString("d")
                                     </a>
                                 </td>
-                                <td>@(mail.FromUserId == Model.Id ? "From" : "To")</td>
+                                <td>@(mail.FromUserId == Model.Id ? "From" : "To") Participant</td>
                                 <td>@mail.Subject</td>
                                 <td>@(mail.IsNew ? "Yes" : "No")</td>
                                 @if (Model.CanRemoveMail)
@@ -95,6 +95,10 @@
 
 <div class="form-group">
     <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+    @if (Model.CanSendMail)
+    {
+        <a asp-action="MailSend" asp-route-id="@Model.Id" class="btn btn-primary">Send Mail</a>
+    }
 </div>
 
 @section scripts

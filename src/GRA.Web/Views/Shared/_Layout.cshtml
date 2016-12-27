@@ -70,9 +70,12 @@
                         <li ActiveBy routeKey="Controller" value="Mail">
                             <a asp-controller="Mail" asp-action="Index">
                                 <span class="fa fa-envelope"></span>
-                                <span class="label label-default label-as-badge">
-                                    @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
-                                </span>
+                                @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
+                                {
+                                    <span class="label label-default label-as-badge">
+                                        @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
+                                    </span>
+                                }
                             </a>
                         </li>
                     }
