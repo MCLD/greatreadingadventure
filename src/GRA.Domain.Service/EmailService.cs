@@ -61,11 +61,11 @@ namespace GRA.Domain.Service
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
             {
-                message.To.Add(new MailboxAddress(user.FullName, user.Email));
+                message.To.Add(new MailboxAddress(_config[ConfigurationKey.EmailOverride]));
             }
             else
             {
-                message.To.Add(new MailboxAddress(_config[ConfigurationKey.EmailOverride]));
+                message.To.Add(new MailboxAddress(user.FullName, user.Email));
             }
             message.Subject = subject;
 
