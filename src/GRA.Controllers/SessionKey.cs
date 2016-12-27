@@ -4,5 +4,7 @@
     {
         public const string SiteId = "SiteId";
         public const string ActiveUserId = "ActiveUserId";
+        public const string ChallengeSearch = "ChallengeSearch";
+        public const string ChallengePage = "ChallengePage";
     }
 }

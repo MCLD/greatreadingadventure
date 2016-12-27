@@ -38,7 +38,7 @@ namespace GRA.Domain.Service
             return new DataWithCount<IEnumerable<Challenge>>
             {
                 Data = challenges,
-                Count = await _challengeRepository.GetChallengeCountAsync()
+                Count = await _challengeRepository.GetChallengeCountAsync(siteId, search)
             };
         }
 

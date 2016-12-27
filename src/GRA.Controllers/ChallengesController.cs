@@ -3,6 +3,7 @@ using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -54,12 +55,12 @@ namespace GRA.Controllers
                     });
             }
 
-            foreach(var challenge in challengeList.Data)
+            foreach (var challenge in challengeList.Data)
             {
                 if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                 {
                     challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
-                } 
+                }
             }
 
             ChallengesListViewModel viewModel = new ChallengesListViewModel()
@@ -69,20 +70,17 @@ namespace GRA.Controllers
                 Search = Search
             };
 
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public IActionResult Index(string Search)
-        {
-            if (Search != null)
+            if (!string.IsNullOrWhiteSpace(Search))
             {
-                return RedirectToAction("Index", new { Search = Search });
+                HttpContext.Session.SetString(SessionKey.ChallengeSearch, Search);
             }
             else
             {
-                return RedirectToAction("Index");
+                HttpContext.Session.Remove(SessionKey.ChallengeSearch);
             }
+            HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Detail(int id, string sitePath = null)
@@ -151,9 +149,9 @@ namespace GRA.Controllers
                 var completed = await _activityService.UpdateChallengeTasks(model.Challenge.Id, tasks);
                 if (!completed)
                 {
-                    var challenge 
+                    var challenge
                         = await _challengeService.GetChallengeDetailsAsync(model.Challenge.Id);
-                    if(challenge.TasksToComplete != null 
+                    if (challenge.TasksToComplete != null
                         && challenge.TasksToComplete > 0)
                     {
                         int tasksCompleted = model.Tasks.Where(_ => _.IsCompleted == true).Count();

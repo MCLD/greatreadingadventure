@@ -46,6 +46,14 @@ namespace GRA.Controllers.MissionControl
 
             ChallengesListViewModel viewModel = new ChallengesListViewModel();
 
+            foreach (var challenge in challengeList.Data)
+            {
+                if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+                {
+                    challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+                }
+            }
+
             viewModel.Challenges = challengeList.Data;
 
             PaginateViewModel paginateModel = new PaginateViewModel()
@@ -215,7 +223,7 @@ namespace GRA.Controllers.MissionControl
 
                 await _challengeService.EditChallengeAsync(challenge);
                 AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", new { id = model.Challenge.Id });
             }
             else
             {

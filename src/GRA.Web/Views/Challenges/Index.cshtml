@@ -7,7 +7,7 @@
                 <span class="lead">Challenges</span>
             </div>
             <div class="panel-body">
-                <form asp-controller="Challenges" asp-action="Index" method="post" role="form">
+                <form asp-controller="Challenges" asp-action="Index" method="get" role="form">
                     <div class="row row-spacing">
                         <div class="col-xs-10">
                             <input asp-for="Search"
@@ -43,17 +43,19 @@
                                         @foreach (var challenge in Model.Challenges)
                                         {
                                             <tr>
-                                                <td><a asp-action="Detail" asp-route-id="@challenge.Id">@challenge.Name</a></td>
-                                                <td>@challenge.PointsAwarded</td>
+                                                <td style="vertical-align:middle;"><a asp-action="Detail" asp-route-id="@challenge.Id">@challenge.Name</a></td>
+                                                <td style="font-size:large; text-align:center; vertical-align:middle;">@challenge.PointsAwarded</td>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                                                     {
-                                                        <img src="~/@challenge.BadgeFilename" asp-append-version="true" width="75" />
+                                                        <div style="text-align:center;">
+                                                            <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename" asp-append-version="true" />
+                                                        </div>
                                                     }
                                                     else
                                                     {
                                                         @: &nbsp;
-                                    }
+                                                    }
                                                 </td>
                                             </tr>
                                         }

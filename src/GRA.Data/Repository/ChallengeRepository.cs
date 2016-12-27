@@ -52,13 +52,31 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<int> GetChallengeCountAsync()
+        public async Task<int> GetChallengeCountAsync(int siteId, string search = null)
         {
-            var challenges = await DbSet
+            if (string.IsNullOrEmpty(search))
+            {
+                var challenges = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false)
+                .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
                 .ToListAsync();
-            return challenges.Count();
+                return challenges.Count();
+            }
+            else
+            {
+                var challenges = await DbSet
+                .AsNoTracking()
+                .Include(_ => _.Tasks)
+                .Where(_ => _.IsDeleted == false
+                    && _.SiteId == siteId
+                        && (_.Name.Contains(search)
+                        || _.Description.Contains(search)
+                        || _.Tasks.Any(_t => _t.Title.Contains(search))
+                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
+                .ToListAsync();
+                return challenges.Count();
+            }
+
         }
 
         public async Task<Challenge> GetByIdAsync(int id, int? userId = null)

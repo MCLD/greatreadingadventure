@@ -151,3 +151,12 @@ ul.navbar-nav li.active {
 .read-mail {
     background-color: #f9f9f9;
 }
+
+.badge-sm {
+    width: 110px;
+    height: auto;
+}
+.badge-lg {
+    width: 210px;
+    height: auto;
+}

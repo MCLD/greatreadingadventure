@@ -174,16 +174,14 @@
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-            <div class="col-xs-12 col-sm-2">
+            <div class="col-xs-12 col-sm-4 col-md-3">
                 <input asp-for="BadgePath" type="hidden" />
-                <img class="thumbnail"
-                     height="100"
-                     width="100"
+                <img class="img-thumbnail badge-lg"
                      src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
                      asp-append-version="true" />
             </div>
         }
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-8 col-md-9">
             <div class="input-group">
                 <label class="input-group-btn">
                     <span class="btn btn-default btn-file">

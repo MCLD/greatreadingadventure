@@ -74,8 +74,9 @@
                 <table class="table table-condensed table-bordered link-table">
                     <thead>
                         <tr>
-                            <th width="90%">Name</th>
-                            <th width="10%">&nbsp;</th>
+                            <th>Name</th>
+                            <th>Badge</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,6 +87,16 @@
                                     <a asp-action="Edit" asp-route-id="@challenge.Id" class="rowlink">
                                         @challenge.Name
                                     </a>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
+                                    {
+                                        <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" asp-append-version="true"/>
+                                    }
+                                    else
+                                    {
+                                        @: &nbsp;
+                                    }
                                 </td>
                                 <td class="on-top">
                                     <button type="button"
