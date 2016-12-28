@@ -45,7 +45,7 @@ namespace GRA.Controllers
                 var user = await _userService.GetDetails(GetActiveUserId());
                 var viewingAvatarId = id ?? user.AvatarId ?? avatarList.FirstOrDefault().Id;
                 var avatar = avatarList.FirstOrDefault(_ => _.Id == viewingAvatarId);
-                avatar.Filename = ResolveContentPath(avatar.Filename);
+                avatar.Filename = _pathResolver.ResolveContentPath(avatar.Filename);
 
                 var currentIndex = avatarList.FindIndex(_ => _.Id == viewingAvatarId);
                 int previousAvatarId;

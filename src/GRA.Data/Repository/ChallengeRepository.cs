@@ -28,6 +28,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.IsDeleted == false
                         && _.SiteId == siteId)
                     .OrderBy(_ => _.Name)
+                    .ThenBy(_ => _.Id)
                     .Skip(skip)
                     .Take(take)
                     .ProjectTo<Challenge>()
@@ -45,6 +46,7 @@ namespace GRA.Data.Repository
                         || _.Tasks.Any(_t => _t.Title.Contains(search))
                         || _.Tasks.Any(_t => _t.Author.Contains(search))))
                     .OrderBy(_ => _.Name)
+                    .ThenBy(_ => _.Id)
                     .Skip(skip)
                     .Take(take)
                     .ProjectTo<Challenge>()

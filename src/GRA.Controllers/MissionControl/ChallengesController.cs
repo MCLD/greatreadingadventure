@@ -50,7 +50,7 @@ namespace GRA.Controllers.MissionControl
             {
                 if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                 {
-                    challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
                 }
             }
 
@@ -158,7 +158,7 @@ namespace GRA.Controllers.MissionControl
                 var challengeBadge = await _badgeService.GetByIdAsync((int)challenge.BadgeId);
                 if (challengeBadge != null)
                 {
-                    viewModel.BadgePath = ResolveContentPath(challengeBadge.Filename);
+                    viewModel.BadgePath = _pathResolver.ResolveContentPath(challengeBadge.Filename);
                 }
             }
 

@@ -91,7 +91,7 @@
                                 <td>
                                     @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                                     {
-                                        <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" asp-append-version="true"/>
+                                        <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")" asp-append-version="true" />
                                     }
                                     else
                                     {
@@ -124,7 +124,7 @@
 @section scripts
 {
     <script>
-        $(document).ready(function() {
+        $(window).on("load", function() {
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });

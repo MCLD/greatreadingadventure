@@ -121,6 +121,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
             services.AddScoped<Abstract.IPasswordValidator, PasswordValidator>();
+            services.AddScoped<Abstract.IPathResolver, PathResolver>();
             services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
 

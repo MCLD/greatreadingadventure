@@ -59,7 +59,7 @@ namespace GRA.Controllers
             {
                 if (!string.IsNullOrEmpty(challenge.BadgeFilename))
                 {
-                    challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
                 }
             }
 
@@ -90,7 +90,7 @@ namespace GRA.Controllers
 
             if (!string.IsNullOrEmpty(challenge.BadgeFilename))
             {
-                challenge.BadgeFilename = ResolveContentPath(challenge.BadgeFilename);
+                challenge.BadgeFilename = _pathResolver.ResolveContentPath(challenge.BadgeFilename);
             }
 
             bool isActive = AuthUser.Identity.IsAuthenticated && siteStage == SiteStage.ProgramOpen;

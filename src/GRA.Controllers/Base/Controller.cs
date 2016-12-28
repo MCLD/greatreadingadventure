@@ -12,6 +12,7 @@ using GRA.Controllers.Filter;
 using System.Security.Principal;
 using System;
 using System.Text;
+using GRA.Abstract;
 
 namespace GRA.Controllers.Base
 {
@@ -20,12 +21,14 @@ namespace GRA.Controllers.Base
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot _config;
+        protected readonly IPathResolver _pathResolver;
         protected readonly IUserContextProvider _userContextProvider;
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
         public Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
+            _pathResolver = context.PathResolver;
             _userContextProvider = context.UserContextProvider;
             _siteLookupService = context.SiteLookupService;
         }
@@ -162,16 +165,6 @@ namespace GRA.Controllers.Base
         protected SiteStage GetSiteStage()
         {
             return (SiteStage)HttpContext.Items[ItemKey.SiteStage];
-        }
-
-        protected string ResolveContentPath(string filePath)
-        {
-            string path = _config[ConfigurationKey.ContentPath];
-            if (!path.EndsWith("/"))
-            {
-                path += "/";
-            }
-            return path + filePath;
         }
 
         protected string FormatMessage(GraException gex)

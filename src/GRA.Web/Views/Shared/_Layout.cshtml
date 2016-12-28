@@ -175,6 +175,10 @@
         $(function() {
             $('[data-toggle="tooltip"]').tooltip()
         })
+        @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
+        {
+            @: $('#notificationsModal').modal('show');
+        }
     </script>
 </body>
 </html>

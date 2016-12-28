@@ -106,7 +106,7 @@ namespace GRA.Domain.Service
             var notification = new Notification
             {
                 PointsEarned = pointsEarned,
-                Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> and currently have <strong>{postUpdateUser.PointsEarned} points</strong>!",
+                Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong>!",
                 UserId = userToLog.Id
             };
 
@@ -243,7 +243,7 @@ namespace GRA.Domain.Service
                 var notification = new Notification
                 {
                     PointsEarned = pointsAwarded,
-                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong> and currently have <strong>{postUpdateUser.PointsEarned} points</strong>!",
+                    Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsAwarded} points{badgeNotification}</strong> for completing the challenge: <strong>{challenge.Name}</strong>!",
                     UserId = activeUserId,
                     ChallengeId = challengeId
                 };
@@ -293,7 +293,7 @@ namespace GRA.Domain.Service
 
                 var notification = new Notification
                 {
-                    PointsEarned = pointsEarned,
+                    PointsEarned = 0,
                     Text = $"<span class=\"fa fa-certificate\"></span> Congratulations! You've achieved <strong>{program.AchieverPointAmount} points</strong> reaching the goal of the program!",
                     UserId = earnedUser.Id,
                     IsAchiever = true

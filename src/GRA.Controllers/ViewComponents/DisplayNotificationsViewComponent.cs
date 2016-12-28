@@ -1,6 +1,8 @@
-﻿using GRA.Controllers.ViewModel.Shared;
+﻿using GRA.Abstract;
+using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +15,12 @@ namespace GRA.Controllers.ViewComponents
     {
         private const int MaxNotifications = 3;
 
+        private readonly IPathResolver _pathResolver;
         private readonly UserService _userService;
-        public DisplayNotificationsViewComponent(UserService userService)
+        public DisplayNotificationsViewComponent(IPathResolver pathResolver,
+            UserService userService)
         {
+            _pathResolver = pathResolver;
             _userService = Require.IsNotNull(userService, nameof(userService));
         }
         public IViewComponentResult Invoke()
@@ -23,14 +28,58 @@ namespace GRA.Controllers.ViewComponents
             var notifications =
                 (List<GRA.Domain.Model.Notification>)HttpContext.Items[ItemKey.NotificationsList];
 
+            var totalNotifications = notifications.Count;
+
             var notificationDisplayList = new List<GRA.Domain.Model.Notification>();
             int? totalPointsEarned = 0;
             bool earnedBadge = false;
 
-            foreach (var notification in notifications.Where(m => m.BadgeId != null)
+            foreach (var notification in notifications.Where(m => m.IsAchiever).ToList())
+            {
+                totalPointsEarned += notification.PointsEarned;
+                if (notificationDisplayList.Count < MaxNotifications)
+                {
+                    if (notification.BadgeId.HasValue)
+                    {
+                        notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                        earnedBadge = true;
+                    }
+                    notificationDisplayList.Add(notification);
+                }
+                notifications.Remove(notification);
+            }
+
+            foreach (var notification in notifications.Where(m => m.IsJoining).ToList())
+            {
+                totalPointsEarned += notification.PointsEarned;
+                if (notificationDisplayList.Count < MaxNotifications)
+                {
+                    if (notification.BadgeId.HasValue)
+                    {
+                        notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                        earnedBadge = true;
+                    }
+                    notificationDisplayList.Add(notification);
+                }
+                notifications.Remove(notification);
+            }
+
+            foreach (var notification in notifications.Where(m => m.BadgeId.HasValue)
+                .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt).ToList())
+            {
+                totalPointsEarned += notification.PointsEarned;
+                if (notificationDisplayList.Count < MaxNotifications)
+                {
+                    notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
+                    earnedBadge = true;
+                    notificationDisplayList.Add(notification);
+                }
+                notifications.Remove(notification);
+            }
+
+            foreach (var notification in notifications
                 .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt))
             {
-                earnedBadge = true;
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
@@ -38,25 +87,12 @@ namespace GRA.Controllers.ViewComponents
                 }
             }
 
-            if (notificationDisplayList.Count < MaxNotifications)
-            {
-                foreach (var notification in notifications.Where(m => m.BadgeId == null)
-                    .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt))
-                {
-                    totalPointsEarned += notification.PointsEarned;
-                    if (notificationDisplayList.Count < MaxNotifications)
-                    {
-                        notificationDisplayList.Add(notification);
-                    }
-                }
-            }
-
             string summaryText = "";
-            if (notifications.Count() > 1)
+            if (notificationDisplayList.Count() > 1)
             {
-                if (notifications.Count() > MaxNotifications)
+                if (totalNotifications > MaxNotifications)
                 {
-                    summaryText = $"and <a href='{Url.Action("History", "Profile")}'>other activities</a> ";
+                    summaryText = $"...and <a href='{Url.Action("History", "Profile")}'>other activities</a> ";
                 }
 
                 summaryText += $"for a total of <strong>{totalPointsEarned} points!</strong>";
@@ -69,8 +105,9 @@ namespace GRA.Controllers.ViewComponents
             };
 
             HttpContext.Items[ItemKey.NotificationsDisplayed] = true;
-            if (earnedBadge == true && false)
+            if (earnedBadge == true)
             {
+                HttpContext.Items[ItemKey.NotificationsModal] = true;
                 return View("Modal", viewModel);
             }
             else

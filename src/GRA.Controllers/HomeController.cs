@@ -56,13 +56,13 @@ namespace GRA.Controllers
                 if (user.AvatarId != null)
                 {
                     avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
-                    avatar.Filename = ResolveContentPath(avatar.Filename);
+                    avatar.Filename = _pathResolver.ResolveContentPath(avatar.Filename);
                 }
 
                 var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
                 foreach (var badge in badges.Data)
                 {
-                    badge.Filename = ResolveContentPath(badge.Filename);
+                    badge.Filename = _pathResolver.ResolveContentPath(badge.Filename);
                 }
                 DashboardViewModel viewModel = new DashboardViewModel()
                 {
