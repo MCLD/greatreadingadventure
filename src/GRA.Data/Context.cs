@@ -38,6 +38,8 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
+            modelBuilder.Entity<Model.DrawingWinner>()
+                .HasKey(_ => new { _.DrawingId, _.UserId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.UserBadge>()
@@ -53,6 +55,9 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
             modelBuilder.Entity<Model.EmailReminder>()
                 .HasIndex(_ => new { _.Email, _.SignUpSource })
+                .IsUnique();
+            modelBuilder.Entity<Model.DrawingWinner>()
+                .HasIndex(_ => new { _.DrawingId, _.UserId, _.RedeemedAt })
                 .IsUnique();
             modelBuilder.Entity<Model.Notification>()
                 .HasIndex(_ => _.UserId);
@@ -86,6 +91,9 @@ namespace GRA.Data
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
+        public DbSet<Model.Drawing> Drawings { get; set; }
+        public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
+        public DbSet<Model.DrawingWinner> DrawingWinners { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
