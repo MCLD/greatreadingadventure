@@ -100,6 +100,16 @@ namespace GRA.Data.Repository
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
             }
 
+            var challengeTaskTypes = await _context.ChallengeTaskTypes
+                .AsNoTracking()
+                .ToDictionaryAsync(_ => _.Id);
+
+            foreach (var task in challenge.Tasks)
+            {
+                task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
+                task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
+            }
+
             if (userId != null)
             {
                 // determine if challenge is completed
@@ -174,11 +184,22 @@ namespace GRA.Data.Repository
             return tasks;
         }
 
-        public async Task UpdateUserChallengeTask(int userId,
-            IEnumerable<ChallengeTask> challengeTasks)
+        public async Task<IEnumerable<ChallengeTaskUpdateStatus>>
+            UpdateUserChallengeTasksAsync(int userId, IEnumerable<ChallengeTask> challengeTasks)
         {
+            var result = new List<ChallengeTaskUpdateStatus>();
             foreach (var updatedChallengeTask in challengeTasks)
             {
+                var dataSourceChallengeTask = await _context.ChallengeTasks
+                    .AsNoTracking()
+                    .Where(_ => _.Id == updatedChallengeTask.Id)
+                    .SingleAsync();
+
+                var status = new ChallengeTaskUpdateStatus
+                {
+                    ChallengeTask = _mapper.Map<ChallengeTask>(dataSourceChallengeTask),
+                    IsComplete = updatedChallengeTask.IsCompleted ?? false
+                };
                 var savedChallengeTask = await _context
                     .UserChallengeTasks.Where(_ => _.UserId == userId
                      && _.ChallengeTaskId == updatedChallengeTask.Id)
@@ -186,6 +207,7 @@ namespace GRA.Data.Repository
 
                 if (savedChallengeTask == null)
                 {
+                    status.WasComplete = false;
                     _context.UserChallengeTasks.Add(new Model.UserChallengeTask
                     {
                         ChallengeTaskId = updatedChallengeTask.Id,
@@ -195,11 +217,56 @@ namespace GRA.Data.Repository
                 }
                 else
                 {
+                    status.WasComplete = savedChallengeTask.IsCompleted;
                     savedChallengeTask.IsCompleted = updatedChallengeTask.IsCompleted ?? false;
                     _context.UserChallengeTasks.Update(savedChallengeTask);
                 }
+                result.Add(status);
             }
             await SaveAsync();
+            return result;
+        }
+
+        public async Task UpdateUserChallengeTaskAsync(int userId,
+            int challengeTaskId,
+            int userLogId,
+            int? bookId)
+        {
+            var userChallengeTask = await _context.UserChallengeTasks
+                .Where(_ => _.UserId == userId && _.ChallengeTaskId == challengeTaskId)
+                .SingleOrDefaultAsync();
+            if (userChallengeTask == null)
+            {
+                _logger.LogError("Unable to update UserChallengeTask with UserLogId and BookId");
+            }
+            else
+            {
+                userChallengeTask.UserLogId = userLogId;
+                userChallengeTask.BookId = bookId;
+                _context.UserChallengeTasks.Update(userChallengeTask);
+                await SaveAsync();
+            }
+        }
+
+        public async Task<ActivityLogResult> GetUserChallengeTaskResultAsync(int userId,
+            int challengeTaskId)
+        {
+            var userChallengeTask = await _context.UserChallengeTasks
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId && _.ChallengeTaskId == challengeTaskId)
+                .SingleOrDefaultAsync();
+            if (userChallengeTask == null || userChallengeTask.UserLogId == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new ActivityLogResult
+                {
+                    BookId = userChallengeTask.BookId,
+                    UserLogId = (int)userChallengeTask.UserLogId
+                };
+            }
         }
     }
 }

@@ -377,7 +377,7 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
-                await _activityService.UpdateBook(model.Id, model.Books[listId]);
+                await _activityService.UpdateBookAsync(model.Id, model.Books[listId]);
                 AlertSuccess = $"'{model.Books[listId].Title}' updated";
             }
             else
@@ -407,7 +407,7 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
-                await _activityService.AddBook(model.Id, model.Book);
+                await _activityService.AddBookAsync(model.Id, model.Book);
                 AlertSuccess = $"Added book '{model.Book.Title}'";
                 return RedirectToAction("Books", new { id = model.Id });
             }
@@ -424,7 +424,7 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteBook(int id, int userId)
         {
-            await _activityService.RemoveBook(userId, id);
+            await _activityService.RemoveBookAsync(userId, id);
             AlertSuccess = "Book deleted";
             return RedirectToAction("Books", new { id = userId });
         }

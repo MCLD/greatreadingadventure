@@ -14,5 +14,6 @@ namespace GRA.Data.Model
 
         [MaxLength(500)]
         public string Url { get; set; }
+        public int? ChallengeId { get; set; }
     }
 }

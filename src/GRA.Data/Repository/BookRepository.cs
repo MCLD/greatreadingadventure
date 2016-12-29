@@ -18,7 +18,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task AddSaveForUserAsync(int requestedByUserId, int userId, Book book)
+        public async Task<int> AddSaveForUserAsync(int requestedByUserId, int userId, Book book)
         {
             book.CreatedBy = requestedByUserId;
             book.CreatedAt = DateTime.Now;
@@ -33,6 +33,8 @@ namespace GRA.Data.Repository
             });
 
             await SaveAsync();
+
+            return book.Id;
         }
 
         public async Task<IEnumerable<Book>> GetForUserAsync(int userId)

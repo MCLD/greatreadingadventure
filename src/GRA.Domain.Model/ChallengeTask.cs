@@ -31,5 +31,7 @@ namespace GRA.Domain.Model
         public ChallengeTaskType ChallengeTaskType { get; set; }
         public bool? IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public int? ActivityCount { get; set; }
+        public int? PointTranslationId { get; set; }
     }
 }

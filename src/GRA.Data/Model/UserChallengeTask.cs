@@ -10,5 +10,7 @@ namespace GRA.Data.Model
         public ChallengeTask ChallengeTask { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int? UserLogId { get; set; }
+        public int? BookId { get; set; }
     }
 }

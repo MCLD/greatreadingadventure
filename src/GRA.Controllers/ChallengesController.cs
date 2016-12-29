@@ -146,7 +146,7 @@ namespace GRA.Controllers
             List<ChallengeTask> tasks = _mapper.Map<List<ChallengeTask>>(model.Tasks);
             try
             {
-                var completed = await _activityService.UpdateChallengeTasks(model.Challenge.Id, tasks);
+                var completed = await _activityService.UpdateChallengeTasksAsync(model.Challenge.Id, tasks);
                 if (!completed)
                 {
                     var challenge

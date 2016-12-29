@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
 
         public override async Task<Domain.Model.ChallengeTask> GetByIdAsync(int id)
         {
-            var task = _mapper.Map<Model.ChallengeTask, Domain.Model.ChallengeTask>(await DbSet
+            var task = _mapper.Map<Model.ChallengeTask, ChallengeTask>(await DbSet
                .AsNoTracking()
                .Where(_ => _.Id == id)
                .SingleAsync());
@@ -26,8 +26,8 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .ToDictionaryAsync(_ => _.Id);
 
-            task.ChallengeTaskType = (Domain.Model.ChallengeTaskType)
-                   Enum.Parse(typeof(Domain.Model.ChallengeTaskType),
+            task.ChallengeTaskType = (ChallengeTaskType)
+                   Enum.Parse(typeof(ChallengeTaskType),
                    challengeTaskTypes[task.ChallengeTaskTypeId].Name);
 
             return task;
@@ -119,13 +119,18 @@ namespace GRA.Data.Repository
             await SaveAsync();
         }
 
-        public async Task AddChallengeTaskTypeAsync(int userId, string name)
+        public async Task AddChallengeTaskTypeAsync(int userId,
+            string name,
+            int? activityCount = null,
+            int? pointTranslationId = null)
         {
             await _context.ChallengeTaskTypes.AddAsync(new Model.ChallengeTaskType
             {
                 Name = name,
                 CreatedBy = userId,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                ActivityCount = activityCount,
+                PointTranslationId = pointTranslationId
             });
         }
 

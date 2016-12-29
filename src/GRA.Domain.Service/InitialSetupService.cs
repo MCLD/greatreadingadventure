@@ -82,7 +82,8 @@ namespace GRA.Domain.Service
                 TranslationDescriptionPastTense = "Read {0} book",
                 TranslationDescriptionPresentTense = "Read {0} book"
             };
-            await _pointTranslationRepository.AddSaveAsync(userId, pointTranslation);
+            pointTranslation = await _pointTranslationRepository.AddSaveAsync(userId,
+                pointTranslation);
 
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role
@@ -116,10 +117,20 @@ namespace GRA.Domain.Service
             }
             await _roleRepository.SaveAsync();
 
-            foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
+            foreach (var value in Enum.GetValues(typeof(ChallengeTaskType)))
             {
-                await _challengeTaskRepository.AddChallengeTaskTypeAsync(userId,
-                    value.ToString());
+                if ((ChallengeTaskType)value == ChallengeTaskType.Book)
+                {
+                    await _challengeTaskRepository.AddChallengeTaskTypeAsync(userId,
+                        value.ToString(), 
+                        1,
+                        pointTranslation.Id);
+                }
+                else
+                {
+                    await _challengeTaskRepository.AddChallengeTaskTypeAsync(userId,
+                        value.ToString());
+                }
             }
             await _challengeTaskRepository.SaveAsync();
         }

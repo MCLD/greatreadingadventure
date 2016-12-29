@@ -144,13 +144,13 @@ namespace GRA.Domain.Service
                 });
 
                 await _activityService.LogActivityAsync(arthur.Id, 1);
-                await _activityService.AddBook(arthur.Id, new Book
+                await _activityService.AddBookAsync(arthur.Id, new Book
                 {
                     Author = "Kurt Vonnegut",
                     Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death"
                 });
                 await _activityService.LogActivityAsync(arthur.Id, 1);
-                await _activityService.AddBook(arthur.Id, new Book
+                await _activityService.AddBookAsync(arthur.Id, new Book
                 {
                     Author = "Kurt Vonnegut",
                     Title = "Breakfast of Champions, or Goodbye Blue Monday"
@@ -162,7 +162,7 @@ namespace GRA.Domain.Service
                 var molly = await _userRepository.AddSaveAsync(userId, newUser);
 
                 await _activityService.LogActivityAsync(molly.Id, 1);
-                await _activityService.AddBook(molly.Id, new Book
+                await _activityService.AddBookAsync(molly.Id, new Book
                 {
                     Author = "Kurt Vonnegut",
                     Title = "Cat's Cradle"

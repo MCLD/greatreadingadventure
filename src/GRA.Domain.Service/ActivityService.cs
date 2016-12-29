@@ -46,7 +46,7 @@ namespace GRA.Domain.Service
                 nameof(userLogRepository));
         }
 
-        public async Task LogActivityAsync(int userIdToLog,
+        public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
             int activityAmountEarned,
             Book book = null)
         {
@@ -94,7 +94,7 @@ namespace GRA.Domain.Service
             {
                 userLog.AwardedBy = activeUserId;
             }
-            await _userLogRepository.AddSaveAsync(activeUserId, userLog);
+            var userLogSaved = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
             // update the score in the user record
             var postUpdateUser = await AddPointsSaveAsync(authUserId,
@@ -110,49 +110,59 @@ namespace GRA.Domain.Service
                 UserId = userToLog.Id
             };
 
+            int? bookId = null;
             // add the book if one was supplied
             if (book != null && !string.IsNullOrWhiteSpace(book.Title))
             {
-                await AddBook(GetActiveUserId(), book);
+                bookId = await AddBookAsync(GetActiveUserId(), book);
                 notification.Text += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
             }
 
             await _notificationRepository.AddSaveAsync(authUserId, notification);
+            return new ActivityLogResult
+            {
+                UserLogId = userLogSaved.Id,
+                BookId = bookId
+            };
         }
 
         public async Task<User> RemoveActivityAsync(int userIdToLog,
             int userLogIdToRemove)
         {
-            int currentUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.LogActivityForAny))
+            int activeUserId = GetActiveUserId();
+            var activeUser = await _userRepository.GetByIdAsync(activeUserId);
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            if (userIdToLog == activeUserId
+                || activeUser.HouseholdHeadUserId == authUserId
+                || HasPermission(Permission.LogActivityForAny))
             {
                 var userLog = await _userLogRepository.GetByIdAsync(userLogIdToRemove);
 
                 int pointsToRemove = userLog.PointsEarned;
-                await _userLogRepository.RemoveSaveAsync(currentUserId, userLogIdToRemove);
-                return await RemovePointsSaveAsync(currentUserId, userIdToLog, pointsToRemove);
+                await _userLogRepository.RemoveSaveAsync(authUserId, userLogIdToRemove);
+                return await RemovePointsSaveAsync(authUserId, userIdToLog, pointsToRemove);
             }
             else
             {
-                string error = $"User id {currentUserId} cannot remove activity for user id {userIdToLog}";
+                string error = $"User id {authUserId} cannot remove activity for user id {userIdToLog}";
                 _logger.LogError(error);
                 throw new GraException(error);
             }
         }
 
-        public async Task AddBook(int userId, Book book)
+        public async Task<int> AddBookAsync(int userId, Book book)
         {
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
             int authUserId = GetClaimId(ClaimType.UserId);
 
-
             if (userId == activeUserId
                 || activeUser.HouseholdHeadUserId == authUserId
                 || HasPermission(Permission.LogActivityForAny))
             {
-                await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
+                return await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
             }
             else
             {
@@ -161,7 +171,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task RemoveBook(int userId, int bookId)
+        public async Task RemoveBookAsync(int userId, int bookId)
         {
             int requestedByUserId = GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
@@ -177,7 +187,7 @@ namespace GRA.Domain.Service
 
         }
 
-        public async Task UpdateBook(int userId, Book book)
+        public async Task UpdateBookAsync(int userId, Book book)
         {
             int requestedByUserId = GetClaimId(ClaimType.UserId);
             if (requestedByUserId == userId
@@ -192,25 +202,94 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<bool> UpdateChallengeTasks(int challengeId,
+        public async Task<bool> UpdateChallengeTasksAsync(int challengeId,
             IEnumerable<ChallengeTask> challengeTasks)
         {
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
 
-            var challengeAlreadyCompleted =
-                await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
+            var challenge = await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
 
-            if (challengeAlreadyCompleted.IsCompleted == true)
+            if (challenge.IsCompleted == true)
             {
                 _logger.LogError($"User {authUserId} cannot make changes to a completed challenge {challengeId}.");
                 throw new GraException("Challenge is already completed.");
             }
 
-            await _challengeRepository.UpdateUserChallengeTask(activeUserId, challengeTasks);
-            // check if the challenge was completed
-            var challenge = await _challengeRepository.GetByIdAsync(challengeId);
+            var updateStatuses = await _challengeRepository.UpdateUserChallengeTasksAsync(activeUserId,
+                challengeTasks);
+
+            // re-fetch challenge with tasks completed
+            challenge = await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
+
+            // loop tasks to see if we need to perform any additional point translation/book tasks
+            foreach (var updateStatus in updateStatuses)
+            {
+                var challengeTaskDetails = challenge.Tasks.Where(_ => _.Id == updateStatus.ChallengeTask.Id).SingleOrDefault();
+                // is there work we need to do on this item
+                if (challengeTaskDetails.ActivityCount != null
+                    && challengeTaskDetails.PointTranslationId != null)
+                {
+                    // did something change?
+                    _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
+                    if (updateStatus.WasComplete != updateStatus.IsComplete)
+                    {
+                        _logger.LogDebug($"Status of {updateStatus.ChallengeTask.Id}: was {updateStatus.WasComplete}, is {updateStatus.IsComplete}");
+                        if (updateStatus.IsComplete)
+                        {
+                            // person completed the task
+                            Book book = null;
+                            if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
+                            {
+                                _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} is a book");
+                                book = new Book
+                                {
+                                    Title = updateStatus.ChallengeTask.Title,
+                                    Author = updateStatus.ChallengeTask.Author,
+                                    ChallengeId = challenge.Id
+                                };
+                            }
+                            _logger.LogDebug($"Logging activity for {activeUserId} based on challenge task {updateStatus.ChallengeTask.Id}");
+                            var userLogResult = await LogActivityAsync(activeUserId,
+                                (int)challengeTaskDetails.ActivityCount,
+                                book);
+
+                            // update record with user log result
+                            _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId} and BookId {userLogResult.BookId}");
+                            await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
+                                updateStatus.ChallengeTask.Id,
+                                userLogResult.UserLogId,
+                                userLogResult.BookId);
+                        }
+                        if (updateStatus.WasComplete)
+                        {
+                            // person un-completed the task
+                            // unwind the points they earned
+                            var challengeTaskInfo = await _challengeRepository
+                                .GetUserChallengeTaskResultAsync(activeUserId,
+                                    updateStatus.ChallengeTask.Id);
+                            if (challengeTaskInfo == null)
+                            {
+                                _logger.LogError($"Unable to unwind points for {activeUserId} on {updateStatus.ChallengeTask.Id} - no UserLogId recorded");
+                            }
+                            else
+                            {
+                                _logger.LogDebug($"Unwinding points for {activeUserId} earned in UserLogId {challengeTaskInfo.UserLogId}");
+                                await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId);
+                                // remove the title
+                                if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book
+                                    && challengeTaskInfo.BookId != null)
+                                {
+                                    _logger.LogDebug($"Removing for {activeUserId} book registration {challengeTaskInfo.BookId}");
+                                    await RemoveBookAsync(activeUserId, (int)challengeTaskInfo.BookId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             int pointsAwarded = (int)challenge.PointsAwarded;
             int completedTasks = challengeTasks.Where(_ => _.IsCompleted == true).Count();
             if (completedTasks >= challenge.TasksToComplete)
