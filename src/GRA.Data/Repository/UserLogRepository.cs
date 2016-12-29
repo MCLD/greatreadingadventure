@@ -57,6 +57,14 @@ namespace GRA.Data.Repository
                         userLog.Description = translation.TranslationDescriptionPastTense;
                     }
                 }
+                if (userLog.BadgeId != null)
+                {
+                    userLog.BadgeFilename = _context.Badges
+                        .AsNoTracking()
+                        .Where(_ => _.Id == userLog.BadgeId)
+                        .SingleOrDefault()
+                        .Filename;
+                }
             }
 
             return userLogs;

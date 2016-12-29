@@ -222,6 +222,10 @@ namespace GRA.Domain.Service
                     UserId = activeUserId,
                     ChallengeId = challengeId
                 };
+                if (challenge.BadgeId != null)
+                {
+                    userLog.BadgeId = challenge.BadgeId;
+                }
                 await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
                 // update the score in the user record

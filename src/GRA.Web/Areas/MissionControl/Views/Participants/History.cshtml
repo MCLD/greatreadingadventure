@@ -47,6 +47,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Activity</th>
+                            <th>Badge</th>
                             <th>Points</th>
                             @if (Model.CanRemoveHistory)
                             {
@@ -60,6 +61,18 @@
                             <tr>
                                 <td>@history.CreatedAt</td>
                                 <td>@Html.Raw(history.Description)</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(history.BadgeFilename))
+                                    {
+                                        <div style="text-align:center;">
+                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" asp-append-version="true" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @: &nbsp;
+                                    }
+                                </td>
                                 <td>@history.PointsEarned</td>
                                 @if (Model.CanRemoveHistory)
                                 {
@@ -77,7 +90,7 @@
                             </tr>
                         }
                         <tr class="total-row">
-                            <td colspan="2" style="text-align:right">Total Points:</td>
+                            <td colspan="3" style="text-align:right">Total Points:</td>
                             <td colspan="2">@Model.TotalPoints</td>
                         </tr>
                     </tbody>

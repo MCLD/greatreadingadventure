@@ -326,9 +326,12 @@ namespace GRA.Controllers
                     Description = item.Description,
                     PointsEarned = item.PointsEarned,
                 };
+                if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
+                {
+                    itemModel.BadgeFilename = _pathResolver.ResolveContentPath(item.BadgeFilename);
+                }
                 viewModel.Historys.Add(itemModel);
             }
-
             return View(viewModel);
         }
 
