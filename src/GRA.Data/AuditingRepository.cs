@@ -169,6 +169,13 @@ namespace GRA.Data
 
         protected virtual async Task UpdateAsync(int userId, DbEntity dbEntity, string original)
         {
+            var created = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == dbEntity.Id)
+                .Select(_ => new Tuple<int, DateTime>(_.CreatedBy, _.CreatedAt))
+                .SingleOrDefaultAsync();
+            dbEntity.CreatedBy = created.Item1;
+            dbEntity.CreatedAt = created.Item2;
             DbSet.Update(dbEntity);
             await AuditLog(userId, dbEntity, original);
         }
@@ -184,7 +191,10 @@ namespace GRA.Data
         public virtual async Task<DomainEntity> UpdateSaveNoAuditAsync(DomainEntity domainEntity)
         {
             var dbEntity = await DbSet.FindAsync(domainEntity.Id);
+            var created = new Tuple<int, DateTime>(dbEntity.CreatedBy, dbEntity.CreatedAt);
             _mapper.Map<DomainEntity, DbEntity>(domainEntity, dbEntity);
+            dbEntity.CreatedBy = created.Item1;
+            dbEntity.CreatedAt = created.Item2;
             DbSet.Update(dbEntity);
             await SaveAsync();
             return await GetByIdAsync(domainEntity.Id);

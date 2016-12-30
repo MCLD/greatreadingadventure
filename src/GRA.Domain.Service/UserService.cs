@@ -5,6 +5,7 @@ using GRA.Domain.Repository;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using GRA.Domain.Service.Abstract;
+using System.Linq;
 
 namespace GRA.Domain.Service
 {
@@ -16,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IStaticAvatarRepository _staticAvatarRepository;
         private readonly IUserLogRepository _userLogRepository;
@@ -29,6 +31,7 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             INotificationRepository notificationRepository,
             IProgramRepository programRepository,
+            IRoleRepository roleRepository,
             ISiteRepository siteRepository,
             IStaticAvatarRepository staticAvatarRepository,
             IUserLogRepository userLogRepository,
@@ -44,6 +47,7 @@ namespace GRA.Domain.Service
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository,
                 nameof(staticAvatarRepository));
@@ -201,6 +205,7 @@ namespace GRA.Domain.Service
             {
                 // users can only update some of their own fields
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
+                currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
                 currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
@@ -233,6 +238,7 @@ namespace GRA.Domain.Service
                 // admin users can update anything except siteid
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
                 userToUpdate.SiteId = currentEntity.SiteId;
+                userToUpdate.IsAdmin = await UserHasRoles(userToUpdate.Id);
                 return await _userRepository.UpdateSaveAsync(requestedByUserId, userToUpdate);
             }
             else
@@ -441,6 +447,12 @@ namespace GRA.Domain.Service
         public async Task ClearNotificationsForUser()
         {
             await _notificationRepository.RemoveByUserId(GetActiveUserId());
+        }
+
+        private async Task<bool> UserHasRoles(int userId)
+        {
+            var roles = await _roleRepository.GetPermisisonNamesForUserAsync(userId);
+            return roles != null && roles.Count() > 0;
         }
     }
 }
