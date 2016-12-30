@@ -25,5 +25,6 @@ namespace GRA.Domain.Model
         public bool CanParticipantDelete { get; set; }
         public int? InReplyToId { get; set; }
         public int? ThreadId { get; set; }
+        public bool IsBroadcast { get; set; }
     }
 }

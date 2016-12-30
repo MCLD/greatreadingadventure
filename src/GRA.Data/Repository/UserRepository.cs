@@ -286,5 +286,14 @@ namespace GRA.Data.Repository
                     .ToListAsync()
             };
         }
+
+        public async Task<IEnumerable<int>> GetAllUserIds(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.IsDeleted == false)
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
     }
 }

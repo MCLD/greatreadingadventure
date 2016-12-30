@@ -283,6 +283,46 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<int> MCSendBroadcastAsync(Mail mail)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.MailParticipants))
+            {
+                int siteId = GetClaimId(ClaimType.SiteId);
+
+                mail.FromUserId = 0;
+                mail.CanParticipantDelete = true;
+                mail.IsNew = true;
+                mail.IsDeleted = false;
+                mail.SiteId = siteId;
+                mail.IsBroadcast = true;
+
+                mail.ToUserId = null;
+                await _mailRepository.AddSaveAsync(authId, mail);
+
+                int count = 0;
+                foreach (int userId in await _userRepository.GetAllUserIds(siteId))
+                {
+                    mail.ToUserId = userId;
+                    await _mailRepository.AddAsync(authId, mail);
+                    count++;
+
+                    if (count % 1000 == 0)
+                    {
+                        await _mailRepository.SaveAsync();
+                    }
+                }
+                await _mailRepository.SaveAsync();
+                return count;
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to send broadcast mails.");
+                throw new Exception("Permission denied");
+            }
+        }
+
         public async Task<Mail> MCSendReplyAsync(Mail mail)
         {
             var authId = GetClaimId(ClaimType.UserId);

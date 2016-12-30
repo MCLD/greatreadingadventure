@@ -23,6 +23,7 @@ namespace GRA.Data.Repository
             return await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false
+                       && _.IsBroadcast == false
                        && _.SiteId == siteId)
                 .OrderByDescending(_ => _.CreatedAt)
                 .Skip(skip)
@@ -35,7 +36,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
+                .Where(_ => _.IsDeleted == false && _.SiteId == siteId && _.IsBroadcast == false)
                 .CountAsync();
         }
 

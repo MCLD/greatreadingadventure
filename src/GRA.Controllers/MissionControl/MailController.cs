@@ -83,13 +83,21 @@ namespace GRA.Controllers.MissionControl
                 await _mailService.MCMarkAsReadAsync(id);
             }
 
-            var participant = await _userService.GetDetails(mail.ToUserId ?? mail.FromUserId);
-            string participantLink = Url.Action("Detail", "Participants", new { id = participant.Id });
-            string participantName = participant.FirstName;
-
-            if (!string.IsNullOrWhiteSpace(participant.Username))
+            string participantLink = string.Empty;
+            string participantName = string.Empty;
+            int from = mail.ToUserId ?? mail.FromUserId;
+            if (from > 0)
             {
-                participantName += $" ({participant.Username})";
+                var participant = await _userService.GetDetails(from);
+
+                participantLink = Url.Action("Detail", "Participants", new { id = participant.Id });
+                participantName = participant.FirstName;
+
+                if (!string.IsNullOrWhiteSpace(participant.Username))
+                {
+                    participantName += $" ({participant.Username})";
+                }
+
             }
 
             MailDetailViewModel viewModel = new MailDetailViewModel()
@@ -184,6 +192,29 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Delete(int id)
         {
             await _mailService.RemoveAsync(id);
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Policy.MailParticipants)]
+        [HttpGet]
+        public IActionResult SendBroadcast()
+        {
+            return View();
+        }
+
+        [Authorize(Policy.MailParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> SendBroadcast(SendBroadcastViewModel viewModel)
+        {
+            var mail = new Mail
+            {
+                Body = viewModel.Body,
+                Subject = viewModel.Subject
+            };
+
+            int mailsSent = await _mailService.MCSendBroadcastAsync(mail);
+
+            ShowAlertSuccess($"{mailsSent} broadcast messages sent.", "envelope");
             return RedirectToAction("Index");
         }
     }

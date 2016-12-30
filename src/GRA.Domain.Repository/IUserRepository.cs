@@ -9,6 +9,7 @@ namespace GRA.Domain.Repository
     {
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
         Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
+        Task<IEnumerable<int>> GetAllUserIds(int siteId);
         Task<User> GetByUsernameAsync(string username);
         Task<int> GetCountAsync(int siteId, string search = null);
         Task<int> GetCountAsync(StatusSummary request);
