@@ -23,9 +23,19 @@ namespace GRA.Data.Repository
 
         public async Task AddRoleAsync(int currentUserId, int userId, int roleId)
         {
+            var userLookup = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == userId && _.IsDeleted == false)
+                .SingleOrDefaultAsync();
+
+            if(userLookup == null)
+            {
+                throw new GraException($"Unable to add roles to user {userId}.");
+            }
+
             var userRoleAssignment = new Model.UserRole
             {
-                UserId = userId,
+                UserId = userLookup.Id,
                 RoleId = roleId,
                 CreatedBy = currentUserId,
                 CreatedAt = DateTime.Now
@@ -42,13 +52,13 @@ namespace GRA.Data.Repository
         }
         public async Task<User> GetByUsernameAsync(string username)
         {
-            var dbUser = await DbSet
+            var lookupUser = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Username == username)
+                .Where(_ => _.Username == username && _.IsDeleted == false)
                 .SingleOrDefaultAsync();
-            if (dbUser != null)
+            if (lookupUser != null)
             {
-                return _mapper.Map<Model.User, User>(dbUser);
+                return _mapper.Map<Model.User, User>(lookupUser);
             }
             else
             {
@@ -65,18 +75,18 @@ namespace GRA.Data.Repository
                 PasswordIsValid = false
             };
 
-            var dbUser = await DbSet
-                .Where(_ => _.Username == username)
+            var lookupUser = await DbSet
+                .Where(_ => _.Username == username && _.IsDeleted == false)
                 .SingleOrDefaultAsync();
-            if (dbUser != null)
+            if (lookupUser != null)
             {
                 result.FoundUser = true;
                 result.PasswordIsValid =
-                    _passwordHasher.VerifyHashedPassword(dbUser.PasswordHash, password);
+                    _passwordHasher.VerifyHashedPassword(lookupUser.PasswordHash, password);
                 if (result.PasswordIsValid)
                 {
-                    result.User = _mapper.Map<Model.User, User>(dbUser);
-                    dbUser.LastAccess = DateTime.Now;
+                    result.User = _mapper.Map<Model.User, User>(lookupUser);
+                    lookupUser.LastAccess = DateTime.Now;
                     await SaveAsync();
                 }
             }
@@ -111,37 +121,36 @@ namespace GRA.Data.Repository
                         || _.Email.Contains(search)));
             }
 
-            IQueryable<Model.User> orderedUserList = null;
             switch (sortBy)
             {
                 case SortUsersBy.FirstName:
-                    orderedUserList = filteredUserList
+                    filteredUserList = filteredUserList
                         .OrderBy(_ => _.FirstName)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.LastName:
-                    orderedUserList = filteredUserList
+                    filteredUserList = filteredUserList
                         .OrderBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.RegistrationDate:
-                    orderedUserList = filteredUserList
+                    filteredUserList = filteredUserList
                         .OrderBy(_ => _.CreatedAt)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.Username:
-                    orderedUserList = filteredUserList
+                    filteredUserList = filteredUserList
                         .OrderBy(_ => _.Username)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName);
                     break;
             }
 
-            return await orderedUserList
+            return await filteredUserList
                 .Skip(skip)
                 .Take(take)
                 .ProjectTo<User>()
@@ -248,7 +257,7 @@ namespace GRA.Data.Repository
                 .Include(_ => _.Branch)
                 .Include(_ => _.Program)
                 .Include(_ => _.System)
-                .Where(_ => _.Id == id)
+                .Where(_ => _.Id == id && _.IsDeleted == false)
                 .ProjectTo<User>()
                 .SingleOrDefaultAsync();
         }
@@ -257,7 +266,7 @@ namespace GRA.Data.Repository
         {
             var userIdLookup = await DbSet
                 .AsNoTracking()
-                .Where(_ => _.Email == email)
+                .Where(_ => _.Email == email && _.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (userIdLookup == null)
@@ -270,7 +279,9 @@ namespace GRA.Data.Repository
                 Id = userIdLookup.Id,
                 Data = await DbSet
                     .AsNoTracking()
-                    .Where(_ => _.Email == email && !string.IsNullOrEmpty(_.Username))
+                    .Where(_ => _.Email == email 
+                        && !string.IsNullOrEmpty(_.Username)
+                        && _.IsDeleted == false)
                     .Select(_ => _.Username)
                     .ToListAsync()
             };

@@ -85,6 +85,12 @@ namespace GRA.Domain.Service
             {
                 var badge = await _badgeRepository.GetByIdAsync((int)program.JoinBadgeId);
                 await _badgeRepository.AddUserBadge(registeredUser.Id, badge.Id);
+                await _userLogRepository.AddAsync(registeredUser.Id, new UserLog
+                {
+                    PointsEarned = 0,
+                    IsDeleted = false,
+                    BadgeId = badge.Id
+                });
                 notification.BadgeId = badge.Id;
                 notification.BadgeFilename = badge.Filename;
             }

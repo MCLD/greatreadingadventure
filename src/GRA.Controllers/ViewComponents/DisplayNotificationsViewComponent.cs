@@ -92,10 +92,8 @@ namespace GRA.Controllers.ViewComponents
             {
                 if (totalNotifications > MaxNotifications)
                 {
-                    summaryText = $"...and <a href='{Url.Action("History", "Profile")}'>other activities</a> ";
+                    summaryText = $"...and <a href='{Url.Action("History", "Profile")}'>other activities</a>!";
                 }
-
-                summaryText += $"for a total of <strong>{totalPointsEarned} points!</strong>";
             }
 
             DisplayNotificationsViewModel viewModel = new DisplayNotificationsViewModel()

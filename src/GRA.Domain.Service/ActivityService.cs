@@ -102,11 +102,32 @@ namespace GRA.Domain.Service
                 userToLog.Id,
                 pointsEarned);
 
+            string activityDescription = "for <strong>";
+            if (translation.TranslationDescriptionPresentTense.Contains("{0}"))
+            {
+                activityDescription += string.Format(
+                    translation.TranslationDescriptionPresentTense,
+                    userLog.ActivityEarned);
+                if (userLog.ActivityEarned == 1)
+                {
+                    activityDescription += $" {translation.ActivityDescription}";
+                }
+                else
+                {
+                    activityDescription += $" {translation.ActivityDescriptionPlural}";
+                }
+            }
+            else
+            {
+                activityDescription = $"{translation.TranslationDescriptionPresentTense} {translation.ActivityDescription}";
+            }
+            activityDescription += "</strong>";
+
             // create the notification record
             var notification = new Notification
             {
                 PointsEarned = pointsEarned,
-                Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong>!",
+                Text = $"<span class=\"fa fa-star\"></span> You earned <strong>{pointsEarned} points</strong> {activityDescription}!",
                 UserId = userToLog.Id
             };
 
@@ -115,7 +136,7 @@ namespace GRA.Domain.Service
             if (book != null && !string.IsNullOrWhiteSpace(book.Title))
             {
                 bookId = await AddBookAsync(GetActiveUserId(), book);
-                notification.Text += $" The book <strong><em>{book.Title}</em> by {book.Author}</strong> was added to your book list.";
+                notification.Text += $" The book <strong><em>{book.Title}</em></strong> by <strong>{book.Author}</strong> was added to your book list.";
             }
 
             await _notificationRepository.AddSaveAsync(authUserId, notification);
@@ -386,7 +407,13 @@ namespace GRA.Domain.Service
                 {
                     var badge = await _badgeRepository.GetByIdAsync((int)program.AchieverBadgeId);
                     await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
-                    notification.Text += " You've earned the badge: {badge.Name}!";
+                    await _userLogRepository.AddAsync(activeUserId, new UserLog
+                    {
+                        PointsEarned = 0,
+                        IsDeleted = false,
+                        BadgeId = badge.Id
+                    });
+                    notification.Text += " You've also earned a badge!";
                     notification.BadgeId = badge.Id;
                     notification.BadgeFilename = badge.Filename;
                 }

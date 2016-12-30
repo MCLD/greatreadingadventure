@@ -51,11 +51,22 @@ namespace GRA.Data.Repository
                         userLog.Description = string.Format(
                             translation.TranslationDescriptionPastTense,
                             userLog.ActivityEarned);
+                        if(userLog.ActivityEarned == 1)
+                        {
+                            userLog.Description += $" {translation.ActivityDescription}";
+                        }
+                        else
+                        {
+                            userLog.Description += $" {translation.ActivityDescriptionPlural}";
+                        }
                     }
                     else
                     {
-                        userLog.Description = translation.TranslationDescriptionPastTense;
+                        userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
                     }
+                    userLog.Description =
+                        userLog.Description.Substring(0, 1).ToUpper()
+                        + userLog.Description.Substring(1);
                 }
                 if (userLog.BadgeId != null)
                 {

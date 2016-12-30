@@ -79,8 +79,8 @@ namespace GRA.Domain.Service
                 PointsEarned = 10,
                 ProgramId = program.Id,
                 TranslationName = "One book, ten points",
-                TranslationDescriptionPastTense = "Read {0} book",
-                TranslationDescriptionPresentTense = "Read {0} book"
+                TranslationDescriptionPastTense = "read {0}",
+                TranslationDescriptionPresentTense = "reading {0}"
             };
             pointTranslation = await _pointTranslationRepository.AddSaveAsync(userId,
                 pointTranslation);

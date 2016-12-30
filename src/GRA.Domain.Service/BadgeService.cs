@@ -34,7 +34,7 @@ namespace GRA.Domain.Service
                 contentDir = _config[ConfigurationKey.ContentPath];
             }
             contentDir = System.IO.Path.Combine(contentDir,
-                    $"site{GetClaimId(ClaimType.SiteId)}",
+                    $"site{GetCurrentSiteId()}",
                     BadgePath);
 
             if (!System.IO.Directory.Exists(contentDir))
@@ -46,7 +46,7 @@ namespace GRA.Domain.Service
 
         private string GetUrlPath(string filename)
         {
-            return $"site{GetClaimId(ClaimType.SiteId)}/{BadgePath}/{filename}";
+            return $"site{GetCurrentSiteId()}/{BadgePath}/{filename}";
         }
 
         private string WriteBadgeFile(Badge badge, byte[] imageFile)
@@ -61,6 +61,7 @@ namespace GRA.Domain.Service
 
         public async Task<Badge> AddBadgeAsync(Badge badge, byte[] imageFile)
         {
+            badge.SiteId = GetCurrentSiteId();
             var result = await _badgeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), badge);
 
             result.Filename = WriteBadgeFile(result, imageFile);
@@ -70,6 +71,7 @@ namespace GRA.Domain.Service
 
         public async Task<Badge> UpdateBadgeAsync(Badge badge)
         {
+            badge.SiteId = GetCurrentSiteId();
             return await _badgeRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), badge);
         }
 
