@@ -57,6 +57,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - [AutoMapper](http://automapper.org/): A convention-based object-object mapper.
 - Source on GitHub: [automapper/automapper](https://github.com/AutoMapper/AutoMapper) - [MIT License](https://github.com/AutoMapper/AutoMapper/blob/master/LICENSE.txt)
 
+### Bootstrap-DatetimePicker 
+- Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/) 
+- Source on GitHub: [Eonasdan/bootstrap-datetimepicker](https://github.com/Eonasdan/bootstrap-datetimepicker) - [MIT License](https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
+
 ### CommonMark.js
 - [CommonMark](http://commonmark.org/) parser and renderer in JavaScript
 - Source on GitHub: [jgm/commonmark.js](https://github.com/jgm/commonmark.js) - [MIT License](https://github.com/jgm/commonmark.js/blob/master/LICENSE)

@@ -16,10 +16,12 @@
         EditParticipants,
         LogActivityForAny,
         MailParticipants,
+        PerformDrawing,
         ReadAllMail,
         RemoveChallenges,
         ViewParticipantList,
         ViewParticipantDetails,
-        ViewUnpublishedPages
+        ViewUnpublishedPages,
+        ViewUserDrawings
     }
 }

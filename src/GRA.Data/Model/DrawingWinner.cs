@@ -9,7 +9,6 @@ namespace GRA.Data.Model
         public int UserId { get; set; }
         public User User { get; set; }
         public DateTime? RedeemedAt { get; set; }
-        public int MailId { get; set; }
-        public Mail Mail { get; set; }
+        public int? MailId { get; set; }
     }
 }

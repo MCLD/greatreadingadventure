@@ -138,6 +138,7 @@ namespace GRA.Web
             services.AddScoped<BadgeService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
+            services.AddScoped<DrawingService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
             services.AddScoped<InitialSetupService>();

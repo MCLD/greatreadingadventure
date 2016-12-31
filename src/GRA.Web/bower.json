@@ -6,6 +6,7 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "font-awesome": "4.6.1"
+    "font-awesome": "4.6.1",
+    "eonasdan-bootstrap-datetimepicker": "4.17.37"
   }
 }

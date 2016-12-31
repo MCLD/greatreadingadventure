@@ -13,6 +13,10 @@
             </li>
             <li ActiveBy routeKey="Action" value="Books"><a asp-action="Books" asp-route-id="@Model.Id">Books</a></li>
             <li ActiveBy routeKey="Action" value="History"><a asp-action="History" asp-route-id="@Model.Id">History</a></li>
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserDrawings.ToString()))
+            {
+                <li ActiveBy routeKey="Action" value="Drawings"><a asp-action="Drawings" asp-route-id="@Model.Id">Drawings</a></li>
+            }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
             {
                 <li ActiveBy routeKey="Action" value="Mail"><a asp-action="Mail" asp-route-id="@Model.Id">Mail</a></li>

@@ -11,11 +11,11 @@ namespace GRA.Controllers
     [Authorize]
     public class AvatarController : Base.UserController
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<AvatarController> _logger;
         private readonly StaticAvatarService _staticAvatarService;
         private readonly UserService _userService;
 
-        public AvatarController(ILogger<HomeController> logger,
+        public AvatarController(ILogger<AvatarController> logger,
             ServiceFacade.Controller context,
             StaticAvatarService staticAvatarService,
             UserService userService)

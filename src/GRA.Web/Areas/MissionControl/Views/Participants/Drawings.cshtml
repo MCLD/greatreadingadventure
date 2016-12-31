@@ -1,0 +1,61 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.DrawingListViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.DrawingWinners.Count() == 0)
+        {
+            <div class="alert alert-warning">No Drawings</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Redeemed?</th>
+                            <th>Prize</th>
+                            <th>Redemption Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var drawing in Model.DrawingWinners)
+                        {
+                            <tr>
+                                <td>
+                                    @if (drawing.RedeemedAt.HasValue)
+                                    {
+                                        @:<strong>Reedemed</strong> at @drawing.RedeemedAt.Value.ToString()
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Participants" asp-action="RedeemWinner" method="post" role="form">
+                                            <input id="drawingId" name="drawingId" value="@drawing.DrawingId" type="hidden" />
+                                            <input id="userId" name="userId" value="@drawing.UserId" type="hidden" />
+                                            <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                                            <button type="submit" class="btn btn-success btn-xs">
+                                                <span class="fa fa-gift"></span>
+                                                Available, click to redeem!
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                                <td>@drawing.DrawingName</td>
+                                <td>@drawing.DrawingRedemptionInstructions</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <a asp-action="Index" class="btn btn-default">Return to Participants</a>
+</div>

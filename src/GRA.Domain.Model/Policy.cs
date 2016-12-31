@@ -16,10 +16,12 @@
         public const string EditParticipants = "EditParticipants";
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
+        public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
         public const string RemoveChallenges = "RemoveChallenges";
         public const string ViewParticipantList = "ViewParticipantList";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewUnpublishedPages = "ViewUnpublishedPages";
+        public const string ViewUserDrawings = "ViewUserDrawings";
     }
 }

@@ -20,6 +20,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ILogger<ParticipantsController> _logger;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
+        private readonly DrawingService _drawingService;
         private readonly MailService _mailService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -27,6 +28,7 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             ActivityService activityService,
             AuthenticationService authenticationService,
+            DrawingService drawingService,
             MailService mailService,
             SiteService siteService,
             UserService userService)
@@ -36,6 +38,7 @@ namespace GRA.Controllers.MissionControl
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _drawingService = Require.IsNotNull(drawingService, nameof(drawingService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
@@ -510,6 +513,54 @@ namespace GRA.Controllers.MissionControl
         {
             await _activityService.RemoveActivityAsync(userId, id);
             return RedirectToAction("History", new { id = userId });
+        }
+        #endregion
+
+        #region Drawings
+        [Authorize(Policy = Policy.ViewUserDrawings)]
+        public async Task<IActionResult> Drawings(int id, int page = 1)
+        {
+            int take = 15;
+            int skip = take * (page - 1);
+
+            var drawingList = await _userService.GetPaginatedUserDrawingListAsync(id, skip, take);
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
+            {
+                ItemCount = drawingList.Count,
+                CurrentPage = page,
+                ItemsPerPage = take
+            };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
+
+            var user = await _userService.GetDetails(id);
+            SetPageTitle(user);
+
+            DrawingListViewModel viewModel = new DrawingListViewModel()
+            {
+                DrawingWinners = drawingList.Data,
+                PaginateModel = paginateModel,
+                Id = id,
+                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                HeadOfHouseholdId = user.HouseholdHeadUserId,
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RedeemWinner(int drawingId, int userId, int page = 1)
+        {
+            await _drawingService.RedeemWinnerAsync(drawingId, userId);
+            return RedirectToAction("Drawings", new { id = userId, page = page });
         }
         #endregion
 

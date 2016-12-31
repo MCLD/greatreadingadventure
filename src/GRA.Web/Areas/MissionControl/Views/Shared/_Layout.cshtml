@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/ErrorStyles.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" asp-append-version="true" />
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet"
@@ -31,6 +32,7 @@
               href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
               asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" asp-append-version="true" />
     </environment>
     @RenderSection("styles", required: false)
     <style>
@@ -77,6 +79,10 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index">Participants</a></li>
+                    }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="Drawing"><a asp-controller="Drawing" asp-action="Index">Drawing</a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditChallenges.ToString()))
                     {
@@ -141,6 +147,8 @@
         <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+        <script src="~/lib/moment/min/moment.min.js" asp-append-version="true"></script>
+        <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js" asp-append-version="true"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -164,6 +172,8 @@
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
                 asp-append-version="true">
         </script>
+        <script src="~/lib/moment/min/moment.min.js" asp-append-version="true"></script>
+        <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js" asp-append-version="true"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
     @RenderSection("scripts", required: false)

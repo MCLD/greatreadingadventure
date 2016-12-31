@@ -1,0 +1,66 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingListViewModel
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a asp-action="Criteria" class="btn btn-default">View Criteria</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Drawings.Count() == 0)
+        {
+            <div class="alert alert-warning">No Drawings</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Criteria</th>
+                            <th>Date</th>
+                            <th>Winners</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var drawing in Model.Drawings)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Detail" asp-route-id="@drawing.Id" class="rowlink">
+                                        @drawing.Name
+                                    </a>
+                                </td>
+                                <td>@drawing.DrawingCriterion.Name</td>
+                                <td>@drawing.CreatedAt.ToString("d")</td>
+                                <td>@drawing.WinnerCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+    </script>
+}

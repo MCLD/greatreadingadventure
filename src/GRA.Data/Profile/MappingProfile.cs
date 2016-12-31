@@ -13,6 +13,7 @@
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
+            CreateMap<Model.DrawingWinner, Domain.Model.DrawingWinner>().ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();

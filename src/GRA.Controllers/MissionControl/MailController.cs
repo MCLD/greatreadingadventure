@@ -14,10 +14,10 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ReadAllMail)]
     public class MailController : Base.MCController
     {
-        private readonly ILogger<ParticipantsController> _logger;
+        private readonly ILogger<MailController> _logger;
         private readonly MailService _mailService;
         private readonly UserService _userService;
-        public MailController(ILogger<ParticipantsController> logger,
+        public MailController(ILogger<MailController> logger,
             ServiceFacade.Controller context,
             MailService mailService,
             UserService userService)
@@ -41,6 +41,14 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = take
             };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
 
             MailListViewModel viewModel = new MailListViewModel()
             {
@@ -64,6 +72,14 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = take
             };
+            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = paginateModel.LastPage ?? 1
+                    });
+            }
 
             MailListViewModel viewModel = new MailListViewModel()
             {
