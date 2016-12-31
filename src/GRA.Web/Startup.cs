@@ -94,6 +94,7 @@ namespace GRA.Web
             });
             services.TryAddSingleton(_ => Configuration);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddResponseCompression();
             services.AddMemoryCache();
             services.AddMvc();
 
@@ -196,6 +197,8 @@ namespace GRA.Web
             }
 
             app.ApplicationServices.GetService<Data.Context>().Migrate();
+
+            app.UseResponseCompression();
 
             // configure static files with 7 day cache
             app.UseStaticFiles(new StaticFileOptions()
