@@ -46,27 +46,30 @@ namespace GRA.Data.Repository
                         .AsNoTracking()
                         .Where(_ => _.Id == userLog.PointTranslationId)
                         .SingleOrDefault();
-                    if (translation.TranslationDescriptionPastTense.Contains("{0}"))
+                    if (translation != null)
                     {
-                        userLog.Description = string.Format(
-                            translation.TranslationDescriptionPastTense,
-                            userLog.ActivityEarned);
-                        if(userLog.ActivityEarned == 1)
+                        if (translation.TranslationDescriptionPastTense.Contains("{0}"))
                         {
-                            userLog.Description += $" {translation.ActivityDescription}";
+                            userLog.Description = string.Format(
+                                translation.TranslationDescriptionPastTense,
+                                userLog.ActivityEarned);
+                            if (userLog.ActivityEarned == 1)
+                            {
+                                userLog.Description += $" {translation.ActivityDescription}";
+                            }
+                            else
+                            {
+                                userLog.Description += $" {translation.ActivityDescriptionPlural}";
+                            }
                         }
                         else
                         {
-                            userLog.Description += $" {translation.ActivityDescriptionPlural}";
+                            userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
                         }
+                        userLog.Description =
+                            userLog.Description.Substring(0, 1).ToUpper()
+                            + userLog.Description.Substring(1);
                     }
-                    else
-                    {
-                        userLog.Description = $"{translation.TranslationDescriptionPastTense} {translation.ActivityDescription}";
-                    }
-                    userLog.Description =
-                        userLog.Description.Substring(0, 1).ToUpper()
-                        + userLog.Description.Substring(1);
                 }
                 if (userLog.BadgeId != null)
                 {

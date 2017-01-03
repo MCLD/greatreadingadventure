@@ -409,9 +409,11 @@ namespace GRA.Domain.Service
                     await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
                     await _userLogRepository.AddAsync(activeUserId, new UserLog
                     {
+                        UserId = whoEarnedUserId,
                         PointsEarned = 0,
                         IsDeleted = false,
-                        BadgeId = badge.Id
+                        BadgeId = badge.Id,
+                        Description = $"You reached the goal of {program.AchieverPointAmount} points!"
                     });
                     notification.Text += " You've also earned a badge!";
                     notification.BadgeId = badge.Id;
