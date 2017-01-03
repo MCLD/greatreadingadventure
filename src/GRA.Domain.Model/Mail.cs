@@ -26,5 +26,6 @@ namespace GRA.Domain.Model
         public int? InReplyToId { get; set; }
         public int? ThreadId { get; set; }
         public bool IsBroadcast { get; set; }
+        public int? DrawingId { get; set; }
     }
 }

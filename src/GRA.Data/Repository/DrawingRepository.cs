@@ -136,5 +136,11 @@ namespace GRA.Data.Repository
                 throw new Exception($"DrawingWinner DrawingId {drawingId} UserId {userId} could not be found.");
             }
         }
+
+        public async Task AddWinnerAsync(DrawingWinner winner)
+        {
+            await _context.DrawingWinners
+                .AddAsync(_mapper.Map<Model.DrawingWinner>(winner));
+        }
     }
 }

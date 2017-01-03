@@ -8,5 +8,7 @@ namespace GRA.Domain.Repository
     {
         Task<IEnumerable<DrawingCriterion>> PageAllAsync(int siteId, int skip, int take);
         Task<int> GetCountAsync(int siteId);
+        Task<int> GetEligibleUserCountAsync(int criterionId);
+        Task<ICollection<int>> GetEligibleUserIdsAsync(int criterionId);
     }
 }

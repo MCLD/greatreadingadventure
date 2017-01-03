@@ -73,11 +73,11 @@
     <div class="form-group">
         <a asp-action="Criteria" class="btn btn-default">Return to Criteria List</a>
         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
-            <span class="buttonText">Edit Criteria</span>
+            <span class="buttonText">Save Criteria</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
         <button type="submit" id="Drawing" name="Drawing" value="Drawing" class="btn btn-success">
-            <span class="buttonText">Edit and Perform Drawing</span>
+            <span class="buttonText">Save and Perform Drawing</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
@@ -88,7 +88,6 @@
     <script>
         $("[id^=picker]").datetimepicker({
             allowInputToggle: true,
-            defaultDate: moment().date(),
             sideBySide: true,
             icons: {
                 time: "fa fa-clock-o",

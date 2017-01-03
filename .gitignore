@@ -248,6 +248,9 @@ src/GRA.Web/content/
 
 src/GRA.Web/Properties/PublishProfiles/
 
+# some bower packages use a "build" directory, un-exclude those
+!src/GRA.Web/wwwroot/lib/**/[Bb]uild/*
+
 # for now exclude Migrations until the database stablizes a little
 src/GRA.Data.SQLite/Migrations
 src/GRA.Data.SqlServer/Migrations

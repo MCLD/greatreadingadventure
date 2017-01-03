@@ -2,7 +2,7 @@
 
 @section styles
 {
-    <link rel="stylesheet" href="~/css/WMD.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/WMD.min.css" asp-append-version="true" />
 }
 
 <a asp-action="Preview" asp-route-stub="@Model.Page.Stub" class="btn btn-default" style="margin:10px 0;"> Full Preview</a>
@@ -83,7 +83,7 @@
 @section scripts
 {
     <script src="~/js/commonmark.min.js" asp-append-version="true"></script>
-    <script src="~/js/WMD.js" asp-append-version="true"></script>
+    <script src="~/js/WMD.min.js" asp-append-version="true"></script>
 
     <script>
         $(document).ready(function() {

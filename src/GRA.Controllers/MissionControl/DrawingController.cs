@@ -66,8 +66,8 @@ namespace GRA.Controllers.MissionControl
         {
             int take = 15;
             int skip = take * (page - 1);
-            
-            var drawing = await _drawingService.GetDetails(id, skip, take);
+
+            var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -107,41 +107,41 @@ namespace GRA.Controllers.MissionControl
         {
             await _drawingService.RemoveWinnerAsync(drawingId, winnerId);
             return RedirectToAction("Detail", new { id = drawingId, page = page });
-        } 
+        }
 
         public async Task<IActionResult> New(int id)
         {
             var drawing = new Drawing()
             {
                 DrawingCriterionId = id,
-                DrawingCriterion = await _drawingService.GetCriterionDetails(id),
+                DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
                 WinnerCount = 1
             };
-            drawing.DrawingCriterion.EligibleCount = _drawingService.GetEligibleCountAsync(id);
+            drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
 
             return View(drawing);
         }
 
         [HttpPost]
-        public IActionResult New(Drawing model)
+        public async Task<IActionResult> New(Drawing model)
         {
             if (string.IsNullOrWhiteSpace(model.NotificationSubject)
                 && !string.IsNullOrWhiteSpace(model.NotificationMessage))
             {
-                ModelState.AddModelError("NotificationSubject", 
+                ModelState.AddModelError("NotificationSubject",
                     "A subject is required to accompany the message");
             }
 
             if (!string.IsNullOrWhiteSpace(model.NotificationSubject)
                 && string.IsNullOrWhiteSpace(model.NotificationMessage))
             {
-                ModelState.AddModelError("NotificationMessage", 
+                ModelState.AddModelError("NotificationMessage",
                     "A message is required to accompany the subject");
             }
 
             if (ModelState.IsValid)
             {
-                var drawing =  _drawingService.PerformDrawing(model);
+                var drawing = await _drawingService.PerformDrawingAsync(model);
                 return RedirectToAction("Detail", new { id = drawing.Id });
             }
             else
@@ -196,7 +196,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> CriteriaCreate(CriterionDetailViewModel model, 
+        public async Task<IActionResult> CriteriaCreate(CriterionDetailViewModel model,
             string Drawing)
         {
             if (ModelState.IsValid)
@@ -216,7 +216,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     return RedirectToAction("New", new { id = criterion.Id });
                 }
-                
+
             }
             else
             {
@@ -230,19 +230,20 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> CriteriaDetail(int id)
         {
             PageTitle = "Criteria";
-            var criterion = await _drawingService.GetCriterionDetails(id);
-            var brancList = await _siteService.GetBranches(1);
+            var criterion = await _drawingService.GetCriterionDetailsAsync(id);
+            var branchList = await _siteService.GetBranches(1);
+            var site = await GetCurrentSiteAsync();
             CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
             {
                 Criterion = criterion,
-                BranchList = new SelectList(brancList.ToList(), "Id", "Name"),
+                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 ReadABook = criterion.ActivityAmount.HasValue
             };
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CriteriaDetail(CriterionDetailViewModel model, 
+        public async Task<IActionResult> CriteriaDetail(CriterionDetailViewModel model,
             string Drawing)
         {
             if (ModelState.IsValid)
