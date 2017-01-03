@@ -18,7 +18,7 @@ namespace GRA
 
             var errors = new StringBuilder();
 
-            if (string.IsNullOrEmpty(password) || password.Length <= minimumLength)
+            if (string.IsNullOrEmpty(password) || password.Length < minimumLength)
             {
                 errors.AppendLine($"The password you've provided is too short, it must be at least {minimumLength} characters long.");
             }

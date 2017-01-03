@@ -85,7 +85,7 @@ namespace GRA.Controllers
                 {
                     string recoveryUrl = Url.Action("PasswordRecovery", "SignIn", null, HttpContext.Request.Scheme);
                     await _authenticationService.GenerateTokenAndEmail(username, recoveryUrl);
-                    AlertSuccess = $"A password recovery email has been sent to the email of '{username}'";
+                    AlertSuccess = $"A password recovery email has been sent to the email of <strong>{username}</strong>.";
                 }
                 catch (GraException gex)
                 {
@@ -112,7 +112,7 @@ namespace GRA.Controllers
                 try
                 {
                     await _authenticationService.EmailAllUsernames(email);
-                    AlertSuccess = $"A list of usernames associated with {email} has been emailed to you";
+                    AlertSuccess = $"A list of usernames associated with <strong>{email}</strong> has been sent.";
                 }
                 catch (GraException gex)
                 {

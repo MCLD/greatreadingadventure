@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Model;
+﻿using GRA.Domain.Model;
 using GRA.Domain.Repository;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -77,33 +76,7 @@ namespace GRA.Domain.Service
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
-            var program = await _programRepository.GetByIdAsync(registeredUser.ProgramId);
-            var site = await _siteRepository.GetByIdAsync(registeredUser.SiteId);
-
-            var notification = new Notification
-            {
-                PointsEarned = 0,
-                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
-                UserId = registeredUser.Id,
-                IsJoining = true
-            };
-
-            if (program.JoinBadgeId != null)
-            {
-                var badge = await _badgeRepository.GetByIdAsync((int)program.JoinBadgeId);
-                await _badgeRepository.AddUserBadge(registeredUser.Id, badge.Id);
-                await _userLogRepository.AddAsync(registeredUser.Id, new UserLog
-                {
-                    UserId = registeredUser.Id,
-                    PointsEarned = 0,
-                    IsDeleted = false,
-                    BadgeId = badge.Id,
-                    Description = $"Joined {site.Name}!"
-                });
-                notification.BadgeId = badge.Id;
-                notification.BadgeFilename = badge.Filename;
-            }
-            await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
+            await JoinedProgramNotificationBadge(registeredUser);
 
             return registeredUser;
         }
@@ -401,6 +374,7 @@ namespace GRA.Domain.Service
                 memberToAdd.CanBeDeleted = true;
                 memberToAdd.IsLockedOut = false;
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
+                await JoinedProgramNotificationBadge(registeredUser);
             }
             else
             {
@@ -433,7 +407,7 @@ namespace GRA.Domain.Service
                 _passwordValidator.Validate(password);
 
                 user.Username = memberToRegister.Username;
-                await _userRepository.UpdateSaveAsync(authUserId, user);
+                var registeredUser = await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository
                     .SetUserPasswordAsync(authUserId, user.Id, password);
             }
@@ -479,6 +453,37 @@ namespace GRA.Domain.Service
         {
             var roles = await _roleRepository.GetPermisisonNamesForUserAsync(userId);
             return roles != null && roles.Count() > 0;
+        }
+
+        private async Task JoinedProgramNotificationBadge(User registeredUser)
+        {
+            var program = await _programRepository.GetByIdAsync(registeredUser.ProgramId);
+            var site = await _siteRepository.GetByIdAsync(registeredUser.SiteId);
+
+            var notification = new Notification
+            {
+                PointsEarned = 0,
+                Text = $"<span class=\"fa fa-thumbs-o-up\"></span> You've successfully joined <strong>{site.Name}</strong>!",
+                UserId = registeredUser.Id,
+                IsJoining = true
+            };
+
+            if (program.JoinBadgeId != null)
+            {
+                var badge = await _badgeRepository.GetByIdAsync((int)program.JoinBadgeId);
+                await _badgeRepository.AddUserBadge(registeredUser.Id, badge.Id);
+                await _userLogRepository.AddAsync(registeredUser.Id, new UserLog
+                {
+                    UserId = registeredUser.Id,
+                    PointsEarned = 0,
+                    IsDeleted = false,
+                    BadgeId = badge.Id,
+                    Description = $"Joined {site.Name}!"
+                });
+                notification.BadgeId = badge.Id;
+                notification.BadgeFilename = badge.Filename;
+            }
+            await _notificationRepository.AddSaveAsync(registeredUser.Id, notification);
         }
     }
 }

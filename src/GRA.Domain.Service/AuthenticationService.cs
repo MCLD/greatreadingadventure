@@ -16,6 +16,7 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
         private readonly IRecoveryTokenRepository _recoveryTokenRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly ISiteRepository _siteRepository;
         private readonly EmailService _emailService;
 
         public AuthenticationService(ILogger<AuthenticationService> logger,
@@ -25,6 +26,7 @@ namespace GRA.Domain.Service
             IUserRepository userRepository,
             IRecoveryTokenRepository recoveryTokenRepository,
             IRoleRepository roleRepository,
+            ISiteRepository siteRepository,
             EmailService emailService) : base(logger, userContextProvider)
         {
             _tokenGenerator = Require.IsNotNull(tokenGenerator, nameof(tokenGenerator));
@@ -33,6 +35,7 @@ namespace GRA.Domain.Service
             _recoveryTokenRepository = Require.IsNotNull(recoveryTokenRepository,
                 nameof(recoveryTokenRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
+            _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _emailService = Require.IsNotNull(emailService, nameof(emailService));
         }
 
@@ -159,15 +162,36 @@ namespace GRA.Domain.Service
             });
             _logger.LogInformation($"Inserted token for user {user.Id}.");
 
-            string subject = "Password reset";
-            string mailBody = $"Your password reset token is: {tokenString}";
-            mailBody += $"\n\r{recoveryUrl}?username={username}&token={tokenString}";
+            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
 
-            await _emailService.Send(user.Id, subject, mailBody);
+            string subject = $"{site.Name} password recovery";
+            string mailBody = $"{site.Name} has received a request for a password recovery."
+                + "\n\rAccess the password recovery page in order to set a new password:"
+                + $"\n\r  {recoveryUrl}?username={username}&token={tokenString}"
+
+                + $"\n\r\n\rIf that link does not work work, please visit:"
+                + $"\n\r  {recoveryUrl}"
+                + $"\n\rand enter the following:"
+                + $"\n\r  Username: {username}"
+                + $"\n\r  Token: {tokenString}";
+
+            string htmlBody = $"<p>{site.Name} has received a request for a password recovery.</p>"
+                + "<p>Access the "
+                + $"<a href=\"{recoveryUrl}?username={username}&token={tokenString}\">"
+                + "password recovery page</a> in order to set a new password.</p>"
+                + "<p>If that link does not work, please visit: "
+                + $"<a href=\"{recoveryUrl}\">{recoveryUrl}</a> "
+                + "and enter the following:<ul>"
+                + $"<li>Username:{username}</li>"
+                + $"<li>Token: {tokenString}</li></ul></p>";
+
+            await _emailService.Send(user.Id, subject, mailBody, htmlBody);
         }
 
         public async Task EmailAllUsernames(string email)
         {
+            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
+
             var lookupEmail = email.Trim();
             var usernames = await _userRepository.GetUserIdAndUsernames(lookupEmail);
 
@@ -176,15 +200,22 @@ namespace GRA.Domain.Service
                 throw new GraException($"There are no usernames associated with email address: '{lookupEmail}'.");
             }
 
-            var sb = new StringBuilder($"The following usernames are associated with '{lookupEmail}':");
+            var sb = new StringBuilder($"{site.Name} has received a request for usernames associated with this email address.");
+            var sbH = new StringBuilder($"<p>{site.Name} has received a request for usernames associated with this email address.</p>");
+            sbH.AppendLine($"<p>The following usernames are associated with <strong>{lookupEmail}</strong>:<ul>");
             sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine($"The following usernames are associated with '{lookupEmail}':");
+            sb.AppendLine();
+            
             foreach (string username in usernames.Data)
             {
                 sb.AppendLine($"- {username}");
+                sbH.AppendLine($"<li>{username}</li>");
             }
-
-            string subject = "Usernames associated with your email address";
-            await _emailService.Send(usernames.Id, subject, sb.ToString());
+            sbH.AppendLine("</ul></p>");
+            string subject = $"{site.Name} usernames associated with your email address";
+            await _emailService.Send(usernames.Id, subject, sb.ToString(), sbH.ToString());
         }
     }
 }

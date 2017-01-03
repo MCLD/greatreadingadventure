@@ -118,7 +118,9 @@ namespace GRA.Data.Repository
                     && (_.Username.Contains(search)
                         || _.FirstName.Contains(search)
                         || _.LastName.Contains(search)
-                        || _.Email.Contains(search)));
+                        || _.Email.Contains(search)
+                        || (_.FirstName + " " + _.LastName).Contains(search)
+                        || (_.LastName + " " + _.FirstName).Contains(search)));
             }
 
             switch (sortBy)
