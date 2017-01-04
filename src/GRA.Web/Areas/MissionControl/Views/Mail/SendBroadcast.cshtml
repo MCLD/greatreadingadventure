@@ -1,5 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.SendBroadcastViewModel
 
+@Html.Partial("_MailPartial")
+
 <form asp-controller="Mail" asp-action="SendBroadcast" method="post" role="form">
     <div class="row row-spacing">
         <div class="col-sm-8 col-sm-offset-2">

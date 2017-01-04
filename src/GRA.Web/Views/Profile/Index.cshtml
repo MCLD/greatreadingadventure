@@ -18,6 +18,16 @@
             <input asp-for="User.CardNumber" type="hidden" />
             <input asp-for="User.PostalCode" type="hidden" />
 
+            @if (!string.IsNullOrWhiteSpace(Model.User.Username))
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="User.Username" class="control-label"></label>
+                        <input asp-for="User.Username" class="form-control" readonly />
+                    </div>
+                </div>
+            }
+
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="User.FirstName" class="control-label"></label>
@@ -37,7 +47,7 @@
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="User.Email" class="control-label"></label>
-                    <input asp-for="User.Email" class="form-control" type="email"/>
+                    <input asp-for="User.Email" class="form-control" type="email" />
                     <span asp-validation-for="User.Email" class="text-danger"></span>
                 </div>
             </div>
@@ -45,7 +55,7 @@
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="User.PhoneNumber" class="control-label"></label>
-                    <input asp-for="User.PhoneNumber" class="form-control"  type="tel"/>
+                    <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
                     <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
                 </div>
             </div>

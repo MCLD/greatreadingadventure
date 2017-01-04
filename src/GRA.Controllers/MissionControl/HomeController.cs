@@ -61,8 +61,8 @@ namespace GRA.Controllers.MissionControl
             // show the at-a-glance report
             int currentUserBranchId = GetId(ClaimType.BranchId);
 
-            var siteStatus = await _reportService.GetCurrentStats(new StatusSummary());
-            var branchStatus = await _reportService.GetCurrentStats(new StatusSummary
+            var siteStatus = await _reportService.GetCurrentStatsAsync(new StatusSummary());
+            var branchStatus = await _reportService.GetCurrentStatsAsync(new StatusSummary
             {
                 BranchId = currentUserBranchId
             });

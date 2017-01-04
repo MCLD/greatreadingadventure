@@ -208,6 +208,18 @@ namespace GRA.Data.Repository
                 earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
             }
 
+            if (request.StartDate != null)
+            {
+                earnedFilter = earnedFilter
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                earnedFilter = earnedFilter
+                    .Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
             // group them by point translation id
             var earnedTotals = await earnedFilter
                 .GroupBy(_ => _.PointTranslationId)
