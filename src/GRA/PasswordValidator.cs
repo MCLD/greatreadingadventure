@@ -12,7 +12,7 @@ namespace GRA
             // TODO move these items to configuration
             int minimumLength = 6;
             bool requireDigit = true;
-            bool requireSymbol = true;
+            bool requireSymbol = false;
             bool requireLower = false;
             bool requireUpper = false;
 
