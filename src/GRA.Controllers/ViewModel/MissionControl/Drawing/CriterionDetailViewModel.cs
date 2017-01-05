@@ -13,5 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Drawing
         public SelectList BranchList { get; set; }
         [DisplayName("Require participant to have read a book")]
         public bool ReadABook { get; set; }
+
+        public int EligibleCount { get; set; }
     }
 }

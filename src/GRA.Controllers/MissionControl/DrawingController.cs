@@ -139,10 +139,26 @@ namespace GRA.Controllers.MissionControl
                     "A message is required to accompany the subject");
             }
 
+            if (model.WinnerCount > model.DrawingCriterion.EligibleCount)
+            {
+                ModelState.AddModelError("WinnerCount", "Cannot have more Winners than Eligible Participants");
+            }
+
             if (ModelState.IsValid)
             {
-                var drawing = await _drawingService.PerformDrawingAsync(model);
-                return RedirectToAction("Detail", new { id = drawing.Id });
+                try
+                {
+                    var drawing = await _drawingService.PerformDrawingAsync(model);
+                    return RedirectToAction("Detail", new { id = drawing.Id });
+                }
+                catch (GraException gex)
+                {
+                    AlertInfo = gex.Message;
+                    ModelState["DrawingCriterion.EligibleCount"].RawValue = 
+                        await _drawingService.GetEligibleCountAsync(model.DrawingCriterionId);
+
+                    return View(model);
+                }
             }
             else
             {
@@ -237,7 +253,8 @@ namespace GRA.Controllers.MissionControl
             {
                 Criterion = criterion,
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                ReadABook = criterion.ActivityAmount.HasValue
+                ReadABook = criterion.ActivityAmount.HasValue,
+                EligibleCount = await _drawingService.GetEligibleCountAsync(id)
             };
             return View(viewModel);
         }

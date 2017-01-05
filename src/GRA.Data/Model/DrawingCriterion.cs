@@ -20,5 +20,6 @@ namespace GRA.Data.Model
         public DateTime? EndOfPeriod { get; set; }
         public int? ActivityAmount { get; set; }
         public int? PointTranslationId { get; set; }
+        public bool IncludeAdmin { get; set; }
     }
 }

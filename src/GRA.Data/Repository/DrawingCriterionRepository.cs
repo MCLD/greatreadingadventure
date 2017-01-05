@@ -74,6 +74,11 @@ namespace GRA.Data.Repository
                 users = users.Where(_ => _.BranchId == criterion.BranchId);
             }
 
+            if (!criterion.IncludeAdmin)
+            {
+                users = users.Where(_ => _.IsAdmin == false);
+            }
+
             var userIds = users.Select(_ => _.Id);
             IQueryable<int> activityUsers = null;
             IQueryable<int> pointUsers = null;

@@ -68,6 +68,17 @@
         </div>
     </div>
 
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Criterion.IncludeAdmin" class="control-label"></label>
+            <select asp-for="Criterion.IncludeAdmin" class="form-control">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="Criterion.IncludeAdmin" class="text-danger"></span>
+        </div>
+    </div>
+
     <div class="form-group">
         <a asp-action="Criteria" class="btn btn-default">Return to Criteria List</a>
         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">

@@ -24,6 +24,8 @@ namespace GRA.Domain.Model
         public DateTime? EndOfPeriod { get; set; }
         public int? ActivityAmount { get; set; }
         public int? PointTranslationId { get; set; }
+        [DisplayName("Include Admin")]
+        public bool IncludeAdmin { get; set; }
 
         public string BranchName { get; set; }
         [DisplayName("Eligible Count")]
