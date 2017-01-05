@@ -20,9 +20,9 @@ namespace GRA.Domain.Model
         [DisplayName("# of Winners")]
         [Range(1, Int32.MaxValue, ErrorMessage = "There must be at least 1 winner")]
         public int WinnerCount { get; set; }
-        [DisplayName("Notification Subject")]
+        [DisplayName("Mail Subject")]
         public string NotificationSubject { get; set; }
-        [DisplayName("Notification Message")]
+        [DisplayName("Mail Message")]
         public string NotificationMessage { get; set; }
 
         public DrawingCriterion DrawingCriterion { get; set; }
