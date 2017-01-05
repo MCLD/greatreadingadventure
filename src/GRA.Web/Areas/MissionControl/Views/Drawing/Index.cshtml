@@ -2,7 +2,7 @@
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        <a asp-action="Criteria" class="btn btn-default">View Criteria</a>
+        <a asp-action="Criteria" class="btn btn-default">Drawing Criteria</a>
     </div>
 </div>
 
@@ -52,13 +52,13 @@
 @section scripts
 {
     <script>
-        $(document).ready(function() {
-            $('.td-class').each(function() {
+        $(document).ready(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
+        $(window).resize(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });

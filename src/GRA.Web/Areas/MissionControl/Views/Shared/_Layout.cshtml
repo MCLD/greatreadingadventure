@@ -80,13 +80,19 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index">Participants</a></li>
                     }
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
-                    {
-                        <li ActiveBy routeKey="Controller" value="Drawing"><a asp-controller="Drawing" asp-action="Index">Drawing</a></li>
-                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.EditChallenges.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                    }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="Drawing">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Drawings"><span class="fa fa-trophy"></span> <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Drawing" asp-action="Criteria">Drawing Criteria</a></li>
+                                <li><a asp-controller="Drawing" asp-action="Index">Drawings</a></li>
+                            </ul>
+                        </li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllReporting.ToString()))
                     {
@@ -114,7 +120,7 @@
         </div>
 
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
-        {
+            {
             <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
@@ -122,7 +128,7 @@
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
-        {
+            {
             <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
@@ -130,7 +136,7 @@
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
-        {
+            {
             <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
@@ -138,7 +144,7 @@
             </div>
         }
         @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
-        {
+            {
             <div class="row mc-alertrow">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                     <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
@@ -187,7 +193,7 @@
     </environment>
     @RenderSection("scripts", required: false)
     <script>
-        $(function() {
+        $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>
