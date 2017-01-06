@@ -26,7 +26,16 @@
                                 <td>
                                     @if (drawing.RedeemedAt.HasValue)
                                     {
-                                        @:<strong>Reedemed</strong> at @drawing.RedeemedAt.Value.ToString()
+                                        <form asp-controller="Participants" asp-action="UndoRedemption" method="post" role="form">
+                                            <strong>Reedemed</strong> at @drawing.RedeemedAt.Value.ToString()
+
+                                            <input id="drawingId" name="drawingId" value="@drawing.DrawingId" type="hidden" />
+                                            <input id="userId" name="userId" value="@drawing.UserId" type="hidden" />
+                                            <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                                            <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs">
+                                                Undo
+                                            </button>
+                                        </form>
                                     }
                                     else
                                     {

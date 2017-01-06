@@ -557,9 +557,18 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        [Authorize(Policy = Policy.ViewUserDrawings)]
         public async Task<IActionResult> RedeemWinner(int drawingId, int userId, int page = 1)
         {
             await _drawingService.RedeemWinnerAsync(drawingId, userId);
+            return RedirectToAction("Drawings", new { id = userId, page = page });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.ViewUserDrawings)]
+        public async Task<IActionResult> UndoRedemption(int drawingId, int userId, int page = 1)
+        {
+            await _drawingService.UndoRedemptionAsnyc(drawingId, userId);
             return RedirectToAction("Drawings", new { id = userId, page = page });
         }
         #endregion

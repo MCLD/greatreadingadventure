@@ -119,6 +119,28 @@ namespace GRA.Data.Repository
             }
         }
 
+        public async Task UndoRedemptionAsync(int drawingId, int userId)
+        {
+            var drawingWinner = await _context.DrawingWinners
+                .AsNoTracking()
+                .Where(_ => _.DrawingId == drawingId && _.UserId == userId)
+                .SingleOrDefaultAsync();
+
+            if (drawingWinner != null)
+            {
+                if (drawingWinner.RedeemedAt.HasValue)
+                {
+                    drawingWinner.RedeemedAt = null;
+                    _context.DrawingWinners.Update(drawingWinner);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                throw new Exception($"DrawingWinner DrawingId {drawingId} UserId {userId} could not be found.");
+            }
+        }
+
         public async Task RemoveWinnerAsync(int drawingId, int userId)
         {
             var drawingWinner = await _context.DrawingWinners

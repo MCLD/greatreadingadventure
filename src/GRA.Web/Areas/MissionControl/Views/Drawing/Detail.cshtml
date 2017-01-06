@@ -88,7 +88,16 @@
                 <td>
                     @if (winner.RedeemedAt.HasValue)
                     {
-                        @:<strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
+                        <form asp-controller="Drawing" asp-action="UndoRedemption" method="post" role="form">
+                            <strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
+
+                            <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
+                            <input id="winnerId" name="winnerId" value="@winner.UserId" type="hidden" />
+                            <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
+                            <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs">
+                                Undo
+                            </button>
+                        </form>
                     }
                     else
                     {

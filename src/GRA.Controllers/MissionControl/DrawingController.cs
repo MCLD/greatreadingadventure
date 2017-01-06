@@ -103,6 +103,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
+        public async Task<IActionResult> UndoRedemption(int drawingId, int winnerId, int page = 1)
+        {
+            await _drawingService.UndoRedemptionAsnyc(drawingId, winnerId);
+            return RedirectToAction("Detail", new { id = drawingId, page = page });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> RemoveWinner(int drawingId, int winnerId, int page = 1)
         {
             await _drawingService.RemoveWinnerAsync(drawingId, winnerId);

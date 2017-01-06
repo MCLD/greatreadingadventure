@@ -231,6 +231,21 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task UndoRedemptionAsnyc(int drawingId, int userId)
+        {
+            int authUserId = GetClaimId(ClaimType.UserId);
+            if (HasPermission(Permission.PerformDrawing)
+                || HasPermission(Permission.ViewUserDrawings))
+            {
+                await _drawingRepository.UndoRedemptionAsync(drawingId, userId);
+            }
+            else
+            {
+                _logger.LogError($"User {authUserId} doesn't have permission to undo redemption user {userId} from drawing {drawingId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
         public async Task RemoveWinnerAsync(int drawingId, int userId)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
