@@ -112,7 +112,8 @@ namespace GRA.Data.Repository
 
                 var userLog = _context.UserLogs
                     .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false);
+                    .Where(_ => _.IsDeleted == false
+                    && pointUserStart.Contains(_.UserId));
 
                 if (criterion.StartOfPeriod != null)
                 {
