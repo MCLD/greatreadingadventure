@@ -106,26 +106,34 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Detail(int id)
         {
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-            var branchList = await _siteService.GetBranches(user.SystemId);
-            var programList = await _siteService.GetProgramList();
-            var systemList = await _siteService.GetSystemList();
-
-            ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
+            try
             {
-                User = user,
-                Id = user.Id,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanEditDetails = UserHasPermission(Permission.EditParticipants),
-                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                SystemList = new SelectList(systemList.ToList(), "Id", "Name")
-            };
-            return View(viewModel);
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+                var branchList = await _siteService.GetBranches(user.SystemId);
+                var programList = await _siteService.GetProgramList();
+                var systemList = await _siteService.GetSystemList();
+
+                ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
+                {
+                    User = user,
+                    Id = user.Id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants),
+                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                    ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                    SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -158,93 +166,109 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Household(int id, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            User headOfHousehold = new User();
-
-            if (user.HouseholdHeadUserId.HasValue)
+            try
             {
-                headOfHousehold = await _userService
-                    .GetDetails(user.HouseholdHeadUserId.Value);
+                int take = 15;
+                int skip = take * (page - 1);
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                User headOfHousehold = new User();
+
+                if (user.HouseholdHeadUserId.HasValue)
+                {
+                    headOfHousehold = await _userService
+                        .GetDetails(user.HouseholdHeadUserId.Value);
+                }
+                else
+                {
+                    headOfHousehold = user;
+                }
+
+                var household = await _userService
+                    .GetPaginatedFamilyListAsync(headOfHousehold.Id, skip, take);
+
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = household.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                HouseholdListViewModel viewModel = new HouseholdListViewModel()
+                {
+                    Users = household.Data,
+                    PaginateModel = paginateModel,
+                    Id = id,
+                    HouseholdCount = household.Count,
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanEditDetails = UserHasPermission(Permission.EditParticipants),
+                    Head = headOfHousehold
+                };
+
+                return View(viewModel);
             }
-            else
+            catch (GraException gex)
             {
-                headOfHousehold = user;
+                ShowAlertWarning("Unable to view participant's household: ", gex);
+                return RedirectToAction("Index");
             }
-
-            var household = await _userService
-                .GetPaginatedFamilyListAsync(headOfHousehold.Id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
-            {
-                ItemCount = household.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-
-            HouseholdListViewModel viewModel = new HouseholdListViewModel()
-            {
-                Users = household.Data,
-                PaginateModel = paginateModel,
-                Id = id,
-                HouseholdCount = household.Count,
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanEditDetails = UserHasPermission(Permission.EditParticipants),
-                Head = headOfHousehold
-            };
-
-            return View(viewModel);
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> AddHouseholdMember(int id)
         {
-            var headOfHousehold = await _userService.GetDetails(id);
-            if (headOfHousehold.HouseholdHeadUserId != null)
+            try
             {
-                headOfHousehold = await _userService
-                    .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+                var headOfHousehold = await _userService.GetDetails(id);
+                if (headOfHousehold.HouseholdHeadUserId != null)
+                {
+                    headOfHousehold = await _userService
+                        .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
+                }
+
+                SetPageTitle(headOfHousehold, "Add Household Member");
+
+                var userBase = new User()
+                {
+                    LastName = headOfHousehold.LastName,
+                    Email = headOfHousehold.Email,
+                    PhoneNumber = headOfHousehold.PhoneNumber,
+                    BranchId = headOfHousehold.BranchId,
+                    ProgramId = headOfHousehold.ProgramId,
+                    SystemId = headOfHousehold.SystemId
+                };
+
+                var branchList = await _siteService.GetBranches(headOfHousehold.SystemId);
+                var programList = await _siteService.GetProgramList();
+                var systemList = await _siteService.GetSystemList();
+
+                HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
+                {
+                    User = userBase,
+                    Id = id,
+                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                    ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                    SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+                };
+
+                return View("HouseholdAdd", viewModel);
             }
-
-            SetPageTitle(headOfHousehold, "Add Household Member");
-
-            var userBase = new User()
+            catch (GraException gex)
             {
-                LastName = headOfHousehold.LastName,
-                Email = headOfHousehold.Email,
-                PhoneNumber = headOfHousehold.PhoneNumber,
-                BranchId = headOfHousehold.BranchId,
-                ProgramId = headOfHousehold.ProgramId,
-                SystemId = headOfHousehold.SystemId
-            };
-
-            var branchList = await _siteService.GetBranches(headOfHousehold.SystemId);
-            var programList = await _siteService.GetProgramList();
-            var systemList = await _siteService.GetSystemList();
-
-            HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
-            {
-                User = userBase,
-                Id = id,
-                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                SystemList = new SelectList(systemList.ToList(), "Id", "Name")
-            };
-
-            return View("HouseholdAdd", viewModel);
+                ShowAlertWarning("Unable to view participant's household: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -282,19 +306,27 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> RegisterHouseholdMember(int id)
         {
-            var user = await _userService.GetDetails(id);
-            if (!string.IsNullOrWhiteSpace(user.Username))
+            try
             {
-                return RedirectToAction("Household", new { id = id });
+                var user = await _userService.GetDetails(id);
+                if (!string.IsNullOrWhiteSpace(user.Username))
+                {
+                    return RedirectToAction("Household", new { id = id });
+                }
+                SetPageTitle(user, "Register Household Memeber");
+
+                HouseholdRegisterViewModel viewModel = new HouseholdRegisterViewModel()
+                {
+                    Id = id
+                };
+
+                return View("HouseholdRegister", viewModel);
             }
-            SetPageTitle(user, "Register Household Memeber");
-
-            HouseholdRegisterViewModel viewModel = new HouseholdRegisterViewModel()
+            catch (GraException gex)
             {
-                Id = id
-            };
-
-            return View("HouseholdRegister", viewModel);
+                ShowAlertWarning("Unable to view participant's registration: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -330,42 +362,50 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Books(int id, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            var books = await _userService.GetPaginatedUserBookListAsync(id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            try
             {
-                ItemCount = books.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                int take = 15;
+                int skip = take * (page - 1);
+
+                var books = await _userService.GetPaginatedUserBookListAsync(id, skip, take);
+
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = books.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                BookListViewModel viewModel = new BookListViewModel()
+                {
+                    Books = books.Data.ToList(),
+                    PaginateModel = paginateModel,
+                    Id = id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanModifyBooks = UserHasPermission(Permission.LogActivityForAny)
+                };
+
+                return View(viewModel);
             }
-
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            BookListViewModel viewModel = new BookListViewModel()
+            catch (GraException gex)
             {
-                Books = books.Data.ToList(),
-                PaginateModel = paginateModel,
-                Id = id,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanModifyBooks = UserHasPermission(Permission.LogActivityForAny)
-            };
-
-            return View(viewModel);
+                ShowAlertWarning("Unable to view participant's books: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
@@ -393,14 +433,22 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> AddBook(int id)
         {
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user, "Add Book");
-
-            BookAddViewModel viewModel = new BookAddViewModel()
+            try
             {
-                Id = id
-            };
-            return View(viewModel);
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user, "Add Book");
+
+                BookAddViewModel viewModel = new BookAddViewModel()
+                {
+                    Id = id
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's books: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
 
@@ -437,75 +485,83 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> History(int id, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-            var history = await _userService
-                .GetPaginatedUserHistoryAsync(id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            try
             {
-                ItemCount = history.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
+                int take = 15;
+                int skip = take * (page - 1);
+                var history = await _userService
+                    .GetPaginatedUserHistoryAsync(id, skip, take);
 
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            HistoryListViewModel viewModel = new HistoryListViewModel()
-            {
-                Historys = new List<HistoryItemViewModel>(),
-                PaginateModel = paginateModel,
-                Id = id,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
-                TotalPoints = user.PointsEarned
-            };
-
-            bool editChallenges = UserHasPermission(Permission.EditChallenges);
-
-            foreach (var item in history.Data)
-            {
-                if (item.ChallengeId != null)
+                PaginateViewModel paginateModel = new PaginateViewModel()
                 {
-                    string url = "";
-                    if (editChallenges)
-                    {
-                        url = Url.Action("Edit", "Challenges", new { id = item.ChallengeId });
-                    }
-                    else
-                    {
-                        url = Url.Action("Detail", "Challenges",
-                        new { area = "", id = item.ChallengeId });
-                    }
-                    item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
-                }
-                HistoryItemViewModel itemModel = new HistoryItemViewModel()
-                {
-                    Id = item.Id,
-                    CreatedAt = item.CreatedAt.ToString("d"),
-                    Description = item.Description,
-                    PointsEarned = item.PointsEarned,
+                    ItemCount = history.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
                 };
-                if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
                 {
-                    itemModel.BadgeFilename = _pathResolver.ResolveContentPath(item.BadgeFilename);
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
                 }
-                viewModel.Historys.Add(itemModel);
-            }
 
-            return View(viewModel);
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                HistoryListViewModel viewModel = new HistoryListViewModel()
+                {
+                    Historys = new List<HistoryItemViewModel>(),
+                    PaginateModel = paginateModel,
+                    Id = id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
+                    TotalPoints = user.PointsEarned
+                };
+
+                bool editChallenges = UserHasPermission(Permission.EditChallenges);
+
+                foreach (var item in history.Data)
+                {
+                    if (item.ChallengeId != null)
+                    {
+                        string url = "";
+                        if (editChallenges)
+                        {
+                            url = Url.Action("Edit", "Challenges", new { id = item.ChallengeId });
+                        }
+                        else
+                        {
+                            url = Url.Action("Detail", "Challenges",
+                            new { area = "", id = item.ChallengeId });
+                        }
+                        item.Description = $"<a target='_blank' href='{url}'>{item.Description}</a>";
+                    }
+                    HistoryItemViewModel itemModel = new HistoryItemViewModel()
+                    {
+                        Id = item.Id,
+                        CreatedAt = item.CreatedAt.ToString("d"),
+                        Description = item.Description,
+                        PointsEarned = item.PointsEarned,
+                    };
+                    if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
+                    {
+                        itemModel.BadgeFilename = _pathResolver.ResolveContentPath(item.BadgeFilename);
+                    }
+                    viewModel.Historys.Add(itemModel);
+                }
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's history: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
@@ -520,40 +576,48 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ViewUserDrawings)]
         public async Task<IActionResult> Drawings(int id, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            var drawingList = await _userService.GetPaginatedUserDrawingListAsync(id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            try
             {
-                ItemCount = drawingList.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                int take = 15;
+                int skip = take * (page - 1);
+
+                var drawingList = await _userService.GetPaginatedUserDrawingListAsync(id, skip, take);
+
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = drawingList.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                DrawingListViewModel viewModel = new DrawingListViewModel()
+                {
+                    DrawingWinners = drawingList.Data,
+                    PaginateModel = paginateModel,
+                    Id = id,
+                    HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                };
+
+                return View(viewModel);
             }
-
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            DrawingListViewModel viewModel = new DrawingListViewModel()
+            catch (GraException gex)
             {
-                DrawingWinners = drawingList.Data,
-                PaginateModel = paginateModel,
-                Id = id,
-                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
-            };
-
-            return View(viewModel);
+                ShowAlertWarning("Unable to view participant's drawings: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -577,60 +641,76 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<IActionResult> Mail(int id, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            var mail = await _mailService.GetUserPaginatedAsync(id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            try
             {
-                ItemCount = mail.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
+                int take = 15;
+                int skip = take * (page - 1);
+
+                var mail = await _mailService.GetUserPaginatedAsync(id, skip, take);
+
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = mail.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                MailListViewModel viewModel = new MailListViewModel()
+                {
+                    Mails = mail.Data,
+                    PaginateModel = paginateModel,
+                    Id = id,
+                    HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
+                    CanSendMail = UserHasPermission(Permission.MailParticipants)
+                };
+                return View(viewModel);
             }
-
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            MailListViewModel viewModel = new MailListViewModel()
+            catch (GraException gex)
             {
-                Mails = mail.Data,
-                PaginateModel = paginateModel,
-                Id = id,
-                HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
-                CanSendMail = UserHasPermission(Permission.MailParticipants)
-            };
-            return View(viewModel);
+                ShowAlertWarning("Unable to view participant's mail: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.ReadAllMail)]
         public async Task<IActionResult> MailDetail(int id)
         {
-            var mail = await _mailService.GetDetails(id);
-            var userId = mail.ToUserId ?? mail.FromUserId;
-
-            var user = await _userService.GetDetails(userId);
-            SetPageTitle(user, (mail.ToUserId.HasValue ? "To" : "From"));
-
-            MailDetailViewModel viewModel = new MailDetailViewModel
+            try
             {
-                Mail = mail,
-                Id = userId,
-                CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail)
-            };
+                var mail = await _mailService.GetDetails(id);
+                var userId = mail.ToUserId ?? mail.FromUserId;
 
-            return View(viewModel);
+                var user = await _userService.GetDetails(userId);
+                SetPageTitle(user, (mail.ToUserId.HasValue ? "To" : "From"));
+
+                MailDetailViewModel viewModel = new MailDetailViewModel
+                {
+                    Mail = mail,
+                    Id = userId,
+                    CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail)
+                };
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view mail: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.DeleteAnyMail)]
@@ -645,14 +725,22 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.MailParticipants)]
         public async Task<IActionResult> MailSend(int id)
         {
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user, "Send Mail");
-
-            MailSendViewModel viewModel = new MailSendViewModel()
+            try
             {
-                Id = user.Id
-            };
-            return View(viewModel);
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user, "Send Mail");
+
+                MailSendViewModel viewModel = new MailSendViewModel()
+                {
+                    Id = user.Id
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's mail: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.MailParticipants)]
@@ -684,19 +772,29 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditParticipants)]
         public async Task<IActionResult> PasswordReset(int id)
         {
-            var user = await _userService.GetDetails(id);
-            SetPageTitle(user);
-
-            PasswordResetViewModel viewModel = new PasswordResetViewModel()
+            try
             {
-                Id = id,
-                HouseholdCount = await _userService
-                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                HeadOfHouseholdId = user.HouseholdHeadUserId,
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
-            };
 
-            return View(viewModel);
+
+                var user = await _userService.GetDetails(id);
+                SetPageTitle(user);
+
+                PasswordResetViewModel viewModel = new PasswordResetViewModel()
+                {
+                    Id = id,
+                    HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                };
+
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view participant's password reset: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.EditParticipants)]

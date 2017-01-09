@@ -95,13 +95,21 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Edit(string stub)
         {
-            PagesEditViewModel viewModel = new PagesEditViewModel()
+            try
             {
-                Page = await _pageService.GetByStubAsync(stub),
-                CanEdit = UserHasPermission(Permission.EditPages)
-            };
-            PageTitle = "Edit Page";
-            return View(viewModel);
+                PagesEditViewModel viewModel = new PagesEditViewModel()
+                {
+                    Page = await _pageService.GetByStubAsync(stub),
+                    CanEdit = UserHasPermission(Permission.EditPages)
+                };
+                PageTitle = "Edit Page";
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view page: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy.EditPages)]
@@ -130,16 +138,23 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Preview(string stub)
         {
-            var page = await _pageService.GetByStubAsync(stub);
-            PageTitle = $"Preview - {page.Title}";
-
-            PagePreviewViewModel viewModel = new PagePreviewViewModel()
+            try
             {
-                Content = CommonMark.CommonMarkConverter.Convert(page.Content),
-                Stub = stub
-            };
+                var page = await _pageService.GetByStubAsync(stub);
+                PageTitle = $"Preview - {page.Title}";
 
-            return View(viewModel);
+                PagePreviewViewModel viewModel = new PagePreviewViewModel()
+                {
+                    Content = CommonMark.CommonMarkConverter.Convert(page.Content),
+                    Stub = stub
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view page: ", gex);
+                return RedirectToAction("Index");
+            }
         }
     }
 }

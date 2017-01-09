@@ -93,39 +93,47 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Detail(int id)
         {
-            var mail = await _mailService.GetDetails(id);
-            if (mail.ToUserId == null && mail.IsNew)
+            try
             {
-                await _mailService.MCMarkAsReadAsync(id);
-            }
-
-            string participantLink = string.Empty;
-            string participantName = string.Empty;
-            int from = mail.ToUserId ?? mail.FromUserId;
-            if (from > 0)
-            {
-                var participant = await _userService.GetDetails(from);
-
-                participantLink = Url.Action("Detail", "Participants", new { id = participant.Id });
-                participantName = participant.FirstName;
-
-                if (!string.IsNullOrWhiteSpace(participant.Username))
+                var mail = await _mailService.GetDetails(id);
+                if (mail.ToUserId == null && mail.IsNew)
                 {
-                    participantName += $" ({participant.Username})";
+                    await _mailService.MCMarkAsReadAsync(id);
                 }
 
-            }
+                string participantLink = string.Empty;
+                string participantName = string.Empty;
+                int from = mail.ToUserId ?? mail.FromUserId;
+                if (from > 0)
+                {
+                    var participant = await _userService.GetDetails(from);
 
-            MailDetailViewModel viewModel = new MailDetailViewModel()
+                    participantLink = Url.Action("Detail", "Participants", new { id = participant.Id });
+                    participantName = participant.FirstName;
+
+                    if (!string.IsNullOrWhiteSpace(participant.Username))
+                    {
+                        participantName += $" ({participant.Username})";
+                    }
+
+                }
+
+                MailDetailViewModel viewModel = new MailDetailViewModel()
+                {
+                    Mail = mail,
+                    SentMessage = (mail.ToUserId == null ? "from" : "to"),
+                    ParticipantLink = participantLink,
+                    ParticipantName = participantName,
+                    CanDelete = UserHasPermission(Permission.DeleteAnyMail),
+                    CanMail = UserHasPermission(Permission.MailParticipants)
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
             {
-                Mail = mail,
-                SentMessage = (mail.ToUserId == null ? "from" : "to"),
-                ParticipantLink = participantLink,
-                ParticipantName = participantName,
-                CanDelete = UserHasPermission(Permission.DeleteAnyMail),
-                CanMail = UserHasPermission(Permission.MailParticipants)
-            };
-            return View(viewModel);
+                ShowAlertWarning("Unable to view mail: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy.MailParticipants)]
@@ -148,32 +156,40 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy.MailParticipants)]
         public async Task<IActionResult> Reply(int id)
         {
-            var mail = await _mailService.GetDetails(id);
-            if (mail.ToUserId == null)
+            try
             {
-                var participant = await _userService.GetDetails(mail.FromUserId);
-                string participantLink =
-                    Url.Action("Detail", "Participants", new { id = participant.Id });
-                string participantName = participant.FullName;
-                if (!string.IsNullOrEmpty(participant.Username))
+                var mail = await _mailService.GetDetails(id);
+                if (mail.ToUserId == null)
                 {
-                    participantName += $" ({participant.Username})";
+                    var participant = await _userService.GetDetails(mail.FromUserId);
+                    string participantLink =
+                        Url.Action("Detail", "Participants", new { id = participant.Id });
+                    string participantName = participant.FullName;
+                    if (!string.IsNullOrEmpty(participant.Username))
+                    {
+                        participantName += $" ({participant.Username})";
+                    }
+
+                    MailReplyViewModel viewModel = new MailReplyViewModel()
+                    {
+                        Subject = $"Re: {mail.Subject}",
+                        InReplyToId = mail.Id,
+                        InReplyToSubject = mail.Subject,
+                        ParticipantLink = participantLink,
+                        ParticipantName = participantName
+                    };
+
+                    return View(viewModel);
                 }
-
-                MailReplyViewModel viewModel = new MailReplyViewModel()
+                else
                 {
-                    Subject = $"Re: {mail.Subject}",
-                    InReplyToId = mail.Id,
-                    InReplyToSubject = mail.Subject,
-                    ParticipantLink = participantLink,
-                    ParticipantName = participantName
-                };
-
-                return View(viewModel);
+                    return RedirectToAction("Detail", new { id = id });
+                }
             }
-            else
+            catch (GraException gex)
             {
-                return RedirectToAction("Detail", new { id = id });
+                ShowAlertWarning("Unable to view mail: ", gex);
+                return RedirectToAction("Index");
             }
         }
 

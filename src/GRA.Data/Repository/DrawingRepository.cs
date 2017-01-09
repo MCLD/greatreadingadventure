@@ -47,22 +47,24 @@ namespace GRA.Data.Repository
                 .Include(_ => _.DrawingCriterion)
                 .Where(_ => _.Id == id)
                 .ProjectTo<Drawing>()
-                .SingleAsync();
+                .SingleOrDefaultAsync();
 
-            if (drawing != null)
+            if (drawing == null)
             {
-                drawing.Winners = await _context.DrawingWinners
-                    .AsNoTracking()
-                    .Include(_ => _.User)
-                    .Where(_ => _.DrawingId == id && _.User.IsDeleted == false)
-                    .OrderBy(_ => _.User.LastName)
-                    .ThenBy(_ => _.User.FirstName)
-                    .ThenBy(_ => _.UserId)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<DrawingWinner>()
-                    .ToListAsync();
+                throw new Exception($"Drawing id {id} could not be found.");
             }
+
+            drawing.Winners = await _context.DrawingWinners
+                .AsNoTracking()
+                .Include(_ => _.User)
+                .Where(_ => _.DrawingId == id && _.User.IsDeleted == false)
+                .OrderBy(_ => _.User.LastName)
+                .ThenBy(_ => _.User.FirstName)
+                .ThenBy(_ => _.UserId)
+                .Skip(skip)
+                .Take(take)
+                .ProjectTo<DrawingWinner>()
+                .ToListAsync();
             return drawing;
         }
 
@@ -103,7 +105,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.DrawingId == drawingId && _.UserId == userId)
                 .SingleOrDefaultAsync();
-            
+
             if (drawingWinner != null)
             {
                 if (!drawingWinner.RedeemedAt.HasValue)

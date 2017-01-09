@@ -103,24 +103,13 @@ namespace GRA.Domain.Service
         {
             var siteId = GetCurrentSiteId();
             var page = await _pageRepository.GetByStubAsync(siteId, pageStub);
-            if (page == null)
-            {
-                return null;
-            }
-            if (page.IsPublished)
+            if (page != null && (page.IsPublished || HasPermission(Permission.ViewUnpublishedPages)))
             {
                 return page;
             }
             else
             {
-                if(HasPermission(Permission.ViewUnpublishedPages))
-                {
-                    return page;
-                }
-                else
-                {
-                    return null;
-                }
+                throw new GraException("The requested page could not be accessed or does not exist.");
             }
         }
 

@@ -2,6 +2,7 @@
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace GRA.Domain.Service
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
         }
 
-        public async Task<DataWithCount<IEnumerable<Drawing>>> 
+        public async Task<DataWithCount<IEnumerable<Drawing>>>
             GetPaginatedDrawingListAsync(int skip, int take)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
@@ -50,11 +51,18 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
-                return new DataWithCount<Drawing>
+                try
                 {
-                    Data = await _drawingRepository.GetByIdAsync(id, skip, take),
-                    Count = await _drawingRepository.GetWinnerCountAsync(id)
-                };
+                    return new DataWithCount<Drawing>
+                    {
+                        Data = await _drawingRepository.GetByIdAsync(id, skip, take),
+                        Count = await _drawingRepository.GetWinnerCountAsync(id)
+                    };
+                }
+                catch (Exception)
+                {
+                    throw new GraException("The requested drawing could not be accessed or does not exist.");
+                }
             }
             else
             {
@@ -88,7 +96,14 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
-                return await _drawingCriterionRepository.GetByIdAsync(id);
+                try
+                {
+                    return await _drawingCriterionRepository.GetByIdAsync(id);
+                }
+                catch (Exception)
+                {
+                    throw new GraException("The requested criteria could not be accessed or does not exist.");
+                }
             }
             else
             {

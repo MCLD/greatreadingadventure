@@ -85,7 +85,16 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id, string sitePath = null)
         {
-            var challenge = await _challengeService.GetChallengeDetailsAsync(id);
+            Challenge challenge = new Domain.Model.Challenge();
+            try
+            {
+                challenge = await _challengeService.GetChallengeDetailsAsync(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view challenge: ", gex);
+                return RedirectToAction("Index");
+            }
             var siteStage = GetSiteStage();
 
             if (!string.IsNullOrEmpty(challenge.BadgeFilename))

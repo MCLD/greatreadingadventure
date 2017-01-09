@@ -192,6 +192,11 @@ namespace GRA.Controllers
             }
         }
 
+        public IActionResult RegisterHouseholdMember()
+        {
+            return RedirectToAction("Household");
+        }
+
         [HttpPost]
         public async Task<IActionResult> RegisterHouseholdMember(HouseholdRegisterViewModel model)
         {
@@ -313,7 +318,7 @@ namespace GRA.Controllers
                 TotalPoints = user.PointsEarned
             };
 
-            foreach(var item in history.Data)
+            foreach (var item in history.Data)
             {
                 if (item.ChallengeId != null)
                 {

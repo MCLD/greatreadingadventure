@@ -24,14 +24,16 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Index(string stub)
         {
-            var page = await _pageService.GetByStubAsync(stub);
-            if (page == null 
-                || (!page.IsPublished && !UserHasPermission(Permission.ViewUnpublishedPages)))
+            try
+            {
+                var page = await _pageService.GetByStubAsync(stub);
+                PageTitle = page.Title;
+                return View("Index", CommonMark.CommonMarkConverter.Convert(page.Content));
+            }
+            catch (GraException)
             {
                 return StatusCode(404);
             }
-            PageTitle = page.Title;
-            return View("Index", CommonMark.CommonMarkConverter.Convert(page.Content));
         }
     }
 }

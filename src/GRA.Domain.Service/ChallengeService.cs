@@ -50,7 +50,12 @@ namespace GRA.Domain.Service
                 userId = GetActiveUserId();
             }
             var challenge = await _challengeRepository.GetByIdAsync(challengeId, userId);
+            if (challenge == null)
+            {
+                throw new GraException("The requested challenge could not be accessed or does not exist.");
+            }
             await AddBadgeFilename(challenge);
+
             return challenge;
         }
 

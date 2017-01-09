@@ -67,8 +67,9 @@ namespace GRA.Controllers
                 }
                 return View(mail);
             }
-            catch (GraException)
+            catch (GraException gex)
             {
+                ShowAlertWarning("Unable to read mail: ", gex);
                 return RedirectToAction("Index");
             }
         }
@@ -86,8 +87,9 @@ namespace GRA.Controllers
                 };
                 return View(viewModel);
             }
-            catch (GraException)
+            catch (GraException gex)
             {
+                ShowAlertWarning("Unable to reply to mail: ", gex);
                 return RedirectToAction("Index");
             }
         }

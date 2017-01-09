@@ -128,21 +128,24 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(int id)
         {
             Challenge challenge = new Challenge();
-            if (TempData.ContainsKey(TempEditChallenge))
+            try
             {
-                challenge = Newtonsoft.Json.JsonConvert
-                    .DeserializeObject<Challenge>((string)TempData[TempEditChallenge]);
+                if (TempData.ContainsKey(TempEditChallenge))
+                {
+                    challenge = Newtonsoft.Json.JsonConvert
+                        .DeserializeObject<Challenge>((string)TempData[TempEditChallenge]);
 
-                var tasks = await _challengeService.GetChallengeTasksAsync(id);
-                challenge.Tasks = tasks.ToList();
+                    var tasks = await _challengeService.GetChallengeTasksAsync(id);
+                    challenge.Tasks = tasks.ToList();
+                }
+                else
+                {
+                    challenge = await _challengeService.GetChallengeDetailsAsync(id);
+                }
             }
-            else
+            catch (GraException gex)
             {
-                challenge = await _challengeService.GetChallengeDetailsAsync(id);
-            }
-            if (challenge == null)
-            {
-                ShowAlertDanger("The requested challenge could not be accessed or does not exist");
+                ShowAlertWarning("Unable to view challenge: ", gex);
                 return RedirectToAction("Index");
             }
 

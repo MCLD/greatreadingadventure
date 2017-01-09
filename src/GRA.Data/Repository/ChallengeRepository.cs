@@ -86,61 +86,61 @@ namespace GRA.Data.Repository
             var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
-                .SingleAsync());
+                .SingleOrDefaultAsync());
 
             if (challenge != null)
             {
                 challenge.Tasks = await _context.ChallengeTasks
-                    .AsNoTracking()
-                    .Where(_ => _.ChallengeId == id)
-                    .OrderBy(_ => _.Position)
-                    .ProjectTo<ChallengeTask>()
-                    .ToListAsync();
+                .AsNoTracking()
+                .Where(_ => _.ChallengeId == id)
+                .OrderBy(_ => _.Position)
+                .ProjectTo<ChallengeTask>()
+                .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
-            }
 
-            var challengeTaskTypes = await _context.ChallengeTaskTypes
-                .AsNoTracking()
-                .ToDictionaryAsync(_ => _.Id);
 
-            foreach (var task in challenge.Tasks)
-            {
-                task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
-                task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
-            }
-
-            if (userId != null)
-            {
-                // determine if challenge is completed
-                var challengeStatus = await _context.UserLogs
+                var challengeTaskTypes = await _context.ChallengeTaskTypes
                     .AsNoTracking()
-                    .Where(_ => _.UserId == userId && _.ChallengeId == id)
-                    .SingleOrDefaultAsync();
-                if (challengeStatus != null)
+                    .ToDictionaryAsync(_ => _.Id);
+
+                foreach (var task in challenge.Tasks)
                 {
-                    challenge.IsCompleted = true;
-                    challenge.CompletedAt = challengeStatus.CreatedAt;
+                    task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
+                    task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
                 }
 
-                var userChallengeTasks = await _context.UserChallengeTasks
-                    .AsNoTracking()
-                    .Where(_ => _.UserId == (int)userId)
-                    .ToListAsync();
-
-                foreach (var userChallengeTask in userChallengeTasks)
+                if (userId != null)
                 {
-                    var task = challenge.Tasks
-                        .Where(_ => _.Id == userChallengeTask.ChallengeTaskId)
-                        .SingleOrDefault();
-                    if (task != null && userChallengeTask.IsCompleted)
+                    // determine if challenge is completed
+                    var challengeStatus = await _context.UserLogs
+                        .AsNoTracking()
+                        .Where(_ => _.UserId == userId && _.ChallengeId == id)
+                        .SingleOrDefaultAsync();
+                    if (challengeStatus != null)
                     {
-                        task.IsCompleted = true;
-                        task.CompletedAt = userChallengeTask.CreatedAt;
+                        challenge.IsCompleted = true;
+                        challenge.CompletedAt = challengeStatus.CreatedAt;
+                    }
+
+                    var userChallengeTasks = await _context.UserChallengeTasks
+                        .AsNoTracking()
+                        .Where(_ => _.UserId == (int)userId)
+                        .ToListAsync();
+
+                    foreach (var userChallengeTask in userChallengeTasks)
+                    {
+                        var task = challenge.Tasks
+                            .Where(_ => _.Id == userChallengeTask.ChallengeTaskId)
+                            .SingleOrDefault();
+                        if (task != null && userChallengeTask.IsCompleted)
+                        {
+                            task.IsCompleted = true;
+                            task.CompletedAt = userChallengeTask.CreatedAt;
+                        }
                     }
                 }
             }
-
             return challenge;
         }
 

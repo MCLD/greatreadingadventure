@@ -133,6 +133,7 @@ namespace GRA.Domain.Service
                 };
 
                 var arthur = await _userRepository.AddSaveAsync(userId, newUser);
+                await _userRepository.SetUserPasswordAsync(userId, arthur.Id, "123123");
 
                 await _mailRepository.AddSaveAsync(userId, new Mail
                 {

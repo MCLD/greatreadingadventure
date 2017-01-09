@@ -67,32 +67,40 @@ namespace GRA.Controllers.MissionControl
             int take = 15;
             int skip = take * (page - 1);
 
-            var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            try
             {
-                ItemCount = drawing.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
+                var drawing = await _drawingService.GetDetailsAsync(id, skip, take);
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        id = id,
-                        page = paginateModel.LastPage ?? 1
-                    });
+                PaginateViewModel paginateModel = new PaginateViewModel()
+                {
+                    ItemCount = drawing.Count,
+                    CurrentPage = page,
+                    ItemsPerPage = take
+                };
+
+                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            id = id,
+                            page = paginateModel.LastPage ?? 1
+                        });
+                }
+
+                DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
+                {
+                    Drawing = drawing.Data,
+                    PaginateModel = paginateModel
+                };
+
+                return View(viewModel);
             }
-
-            DrawingDetailViewModel viewModel = new DrawingDetailViewModel()
+            catch (GraException gex)
             {
-                Drawing = drawing.Data,
-                PaginateModel = paginateModel
-            };
-
-            return View(viewModel);
+                ShowAlertWarning("Unable to view drawing: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -118,15 +126,23 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> New(int id)
         {
-            var drawing = new Drawing()
+            try
             {
-                DrawingCriterionId = id,
-                DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
-                WinnerCount = 1
-            };
-            drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
+                var drawing = new Drawing()
+                {
+                    DrawingCriterionId = id,
+                    DrawingCriterion = await _drawingService.GetCriterionDetailsAsync(id),
+                    WinnerCount = 1
+                };
+                drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
 
-            return View(drawing);
+                return View(drawing);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view new drawing: ", gex);
+                return RedirectToAction("Criteria");
+            }
         }
 
         [HttpPost]
@@ -161,7 +177,7 @@ namespace GRA.Controllers.MissionControl
                 catch (GraException gex)
                 {
                     AlertInfo = gex.Message;
-                    ModelState["DrawingCriterion.EligibleCount"].RawValue = 
+                    ModelState["DrawingCriterion.EligibleCount"].RawValue =
                         await _drawingService.GetEligibleCountAsync(model.DrawingCriterionId);
 
                     return View(model);
@@ -252,18 +268,26 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> CriteriaDetail(int id)
         {
-            PageTitle = "Drawing Criteria";
-            var criterion = await _drawingService.GetCriterionDetailsAsync(id);
-            var branchList = await _siteService.GetBranches(1);
-            var site = await GetCurrentSiteAsync();
-            CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
+            try
             {
-                Criterion = criterion,
-                BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
-                ReadABook = criterion.ActivityAmount.HasValue,
-                EligibleCount = await _drawingService.GetEligibleCountAsync(id)
-            };
-            return View(viewModel);
+                PageTitle = "Drawing Criteria";
+                var criterion = await _drawingService.GetCriterionDetailsAsync(id);
+                var branchList = await _siteService.GetBranches(1);
+                var site = await GetCurrentSiteAsync();
+                CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
+                {
+                    Criterion = criterion,
+                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                    ReadABook = criterion.ActivityAmount.HasValue,
+                    EligibleCount = await _drawingService.GetEligibleCountAsync(id)
+                };
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view criteria: ", gex);
+                return RedirectToAction("Criteria");
+            }
         }
 
         [HttpPost]

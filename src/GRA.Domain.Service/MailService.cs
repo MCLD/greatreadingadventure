@@ -76,12 +76,16 @@ namespace GRA.Domain.Service
             var activeUserId = GetActiveUserId();
             bool canReadAll = HasPermission(Permission.ReadAllMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
+            if (mail == null)
+            {
+                throw new GraException("The requested mail could not be accessed or does not exist.");
+            }
             if (mail.FromUserId == activeUserId || mail.ToUserId == activeUserId || canReadAll)
             {
                 return mail;
             }
             _logger.LogError($"User {activeUserId} doesn't have permission to view details for message {mailId}.");
-            throw new Exception("Permission denied.");
+            throw new GraException("Permission denied.");
         }
 
         public async Task<Mail> GetParticipantMailAsync(int mailId)
@@ -96,12 +100,12 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    throw new GraException("Mail belongs to someone else.");
+                    throw new Exception();
                 }
             }
             catch (Exception)
             {
-                throw new GraException("Mail doesn't exist");
+                throw new GraException("The requested mail could not be accessed or does not exist.");
             }
         }
 
@@ -255,7 +259,7 @@ namespace GRA.Domain.Service
         public async Task<Mail> MCSendAsync(Mail mail)
         {
             var authId = GetClaimId(ClaimType.UserId);
-            
+
             if (HasPermission(Permission.MailParticipants))
             {
                 var user = await _userRepository.GetByIdAsync(mail.ToUserId.Value);
@@ -342,7 +346,7 @@ namespace GRA.Domain.Service
                 _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
                 if (inReplyToMail.IsRepliedTo == false)
                 {
-                    
+
                     await _mailRepository.MarkAdminReplied(inReplyToMail.Id);
                     _memoryCache.Remove($"{CacheKey.UnhandledMailCount}?s{siteId}");
                 }

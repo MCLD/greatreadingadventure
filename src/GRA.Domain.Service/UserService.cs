@@ -152,21 +152,25 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             var authUser = await _userRepository.GetByIdAsync(authUserId);
             var requestedUser = await _userRepository.GetByIdAsync(userId);
+            if (requestedUser == null)
+            {
+                throw new GraException("The requested participant could not be accessed or does not exist.");
+            }
             if (authUserId == userId
                 || requestedUser.HouseholdHeadUserId == authUserId
                 || authUser.HouseholdHeadUserId == userId
                 || HasPermission(Permission.ViewParticipantDetails))
             {
-                var user = await _userRepository.GetByIdAsync(userId);
-                if (user.AvatarId != null)
+                if (requestedUser.AvatarId != null)
                 {
-                    var avatar = await _staticAvatarRepository.GetByIdAsync((int)user.AvatarId);
+                    var avatar = await _staticAvatarRepository
+                        .GetByIdAsync((int)requestedUser.AvatarId);
                     if (avatar != null)
                     {
-                        user.StaticAvatarFilename = avatar.Filename;
+                        requestedUser.StaticAvatarFilename = avatar.Filename;
                     }
                 }
-                return user;
+                return requestedUser;
             }
             else
             {
