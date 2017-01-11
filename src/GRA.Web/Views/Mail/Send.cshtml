@@ -1,28 +1,39 @@
 ﻿@model GRA.Controllers.ViewModel.Mail.MailCreateViewModel
 
-<form asp-controller="Mail" asp-action="Send" method="post" role="form">
-    <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Subject" class="control-label"></label>
-            <input asp-for="Subject" class="form-control" />
-            <span asp-validation-for="Subject" class="text-danger"></span>
-        </div>
-    </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Send Mail</span>
+            </div>
+            <div class="panel-body">
+                <form asp-controller="Mail" asp-action="Send" method="post" role="form">
+                    <div class="row row-spacing">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <label asp-for="Subject" class="control-label"></label>
+                            <input asp-for="Subject" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+                    </div>
 
-    <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Body" class="control-label"></label>
-            <textarea asp-for="Body" class="form-control"></textarea>
-            <span asp-validation-for="Body" class="text-danger"></span>
-        </div>
-    </div>
+                    <div class="row row-spacing">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <label asp-for="Body" class="control-label"></label>
+                            <textarea asp-for="Body" class="form-control"></textarea>
+                            <span asp-validation-for="Body" class="text-danger"></span>
+                        </div>
+                    </div>
 
-    <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
-            <button type="submit" class="btn btn-primary">
-                Send Mail
-            </button>
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
+                            <button type="submit" class="btn btn-primary">
+                                Send Mail
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</form>
+</div>

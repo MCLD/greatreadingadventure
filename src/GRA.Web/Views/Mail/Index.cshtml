@@ -1,43 +1,53 @@
 ﻿@model GRA.Controllers.ViewModel.Mail.MailListViewModel
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        @if (Model.Mail.Count() == 0)
-        {
-            <div class="alert alert-warning">No Mail</div>
-        }
-        else
-        {
-            <div>
-                <table class="table table-condensed table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Subject</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var mail in Model.Mail)
-                        {
-                            <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
-                                <td>@mail.CreatedAt.ToString("d")</td>
-                                <td>@mail.Subject</td>
-                                <td>
-                                    <a asp-action="Read" asp-route-id="@mail.Id" class="btn btn-default btn-xs">
-                                        Read
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Mail</span>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
-        }
-        <a asp-action="Send" class="btn btn-primary">Send Mail</a>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        @if (Model.Mail.Count() == 0)
+                        {
+                            <div class="alert alert-warning">No Mail</div>
+                        }
+                        else
+                        {
+                            <div>
+                                <table class="table table-condensed table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Subject</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var mail in Model.Mail)
+                                        {
+                                            <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
+                                                <td>@mail.CreatedAt.ToString("d")</td>
+                                                <td>@mail.Subject</td>
+                                                <td>
+                                                    <a asp-action="Read" asp-route-id="@mail.Id" class="btn btn-default btn-xs">
+                                                        Read
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if (Model.PaginateModel.MaxPage > 1)
+                            {
+                                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                            }
+                        }
+                        <a asp-action="Send" class="btn btn-primary">Send Mail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

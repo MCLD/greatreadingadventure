@@ -3,36 +3,43 @@
 <form asp-controller="Mail" asp-action="Reply" method="post" role="form">
     <input asp-for="InReplyToId" type="hidden" />
     <input asp-for="InReplyToSubject" type="hidden" />
-    
-    <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <p style="font-size:large"><strong>Reply to:</strong> @Model.InReplyToSubject</p>
-        </div>
-    </div>
-    
-    <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Subject" class="control-label"></label>
-            <input asp-for="Subject" class="form-control" />
-            <span asp-validation-for="Subject" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row row-spacing">
-        <div class="col-sm-8 col-sm-offset-2">
-            <label asp-for="Body" class="control-label"></label>
-            <textarea asp-for="Body" class="form-control"></textarea>
-            <span asp-validation-for="Body" class="text-danger"></span>
-        </div>
-    </div>
 
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
-            <a asp-action="Read" asp-route-id="@Model.InReplyToId" class="btn btn-default">Return to Mail</a>
-            <button type="submit" class="btn btn-primary">
-                Send Reply
-            </button>
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead">
+                        <strong>Reply to:</strong> @Model.InReplyToSubject
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="row row-spacing">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <label asp-for="Subject" class="control-label"></label>
+                            <input asp-for="Subject" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <label asp-for="Body" class="control-label"></label>
+                            <textarea asp-for="Body" class="form-control"></textarea>
+                            <span asp-validation-for="Body" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <a asp-action="Index" class="btn btn-default">Return to Mail List</a>
+                            <a asp-action="Read" asp-route-id="@Model.InReplyToId" class="btn btn-default">Return to Mail</a>
+                            <button type="submit" class="btn btn-primary">
+                                Send Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>
