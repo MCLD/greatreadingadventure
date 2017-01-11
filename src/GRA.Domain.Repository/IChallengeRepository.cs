@@ -6,14 +6,19 @@ namespace GRA.Domain.Repository
 {
     public interface IChallengeRepository : IRepository<Challenge>
     {
-        Task<int> GetChallengeCountAsync(int siteId, string search = null);
+        Task<int> GetChallengeCountAsync(int siteId, string search = default(string));
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
-        Task<Challenge> GetByIdAsync(int id, int? userId = null);
-        Task<IEnumerable<Challenge>> PageAllAsync(
+        Task<Challenge> GetByIdAsync(int id, int? userId = default(int));
+        Task<ICollection<Challenge>> PageAllAsync(
             int siteId,
             int skip,
             int take,
-            string search = null);
+            string search = default(string));
+        Task<IEnumerable<int>> PageIdsAsync(
+            int siteId,
+            int skip,
+            int take,
+            string search = default(string));
         Task<IEnumerable<ChallengeTaskUpdateStatus>>
             UpdateUserChallengeTasksAsync(int userId, IEnumerable<ChallengeTask> challengeTasks);
         Task UpdateUserChallengeTaskAsync(

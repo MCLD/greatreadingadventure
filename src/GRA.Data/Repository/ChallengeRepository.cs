@@ -18,7 +18,7 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<Challenge>>
+        public async Task<ICollection<Challenge>>
             PageAllAsync(int siteId, int skip, int take, string search = null)
         {
             if (string.IsNullOrEmpty(search))
@@ -98,7 +98,6 @@ namespace GRA.Data.Repository
                 .ToListAsync();
 
                 await GetChallengeTasksTypeAsync(challenge.Tasks);
-
 
                 var challengeTaskTypes = await _context.ChallengeTaskTypes
                     .AsNoTracking()
@@ -268,5 +267,42 @@ namespace GRA.Data.Repository
                 };
             }
         }
+
+        public async Task<IEnumerable<int>>
+            PageIdsAsync(int siteId, int skip, int take, string search = null)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId)
+                    .OrderBy(_ => _.Name)
+                    .ThenBy(_ => _.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(_ => _.Id)
+                    .ToListAsync();
+            }
+            else
+            {
+                return await DbSet
+                    .AsNoTracking()
+                    .Include(_ => _.Tasks)
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId
+                        && (_.Name.Contains(search)
+                        || _.Description.Contains(search)
+                        || _.Tasks.Any(_t => _t.Title.Contains(search))
+                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
+                    .OrderBy(_ => _.Name)
+                    .ThenBy(_ => _.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(_ => _.Id)
+                    .ToListAsync();
+            }
+        }
+
     }
 }

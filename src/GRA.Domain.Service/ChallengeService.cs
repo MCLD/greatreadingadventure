@@ -5,6 +5,7 @@ using GRA.Domain.Repository;
 using GRA.Domain.Model;
 using System.Threading.Tasks;
 using GRA.Domain.Service.Abstract;
+using System.Linq;
 
 namespace GRA.Domain.Service
 {
@@ -32,8 +33,32 @@ namespace GRA.Domain.Service
             int take,
             string search = null)
         {
+            ICollection<Challenge> challenges = null;
             int siteId = GetCurrentSiteId();
-            var challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search);
+            if (GetAuthUser().Identity.IsAuthenticated)
+            {
+                var userLookupChallenges = new List<Challenge>();
+                int userId = GetActiveUserId();
+                var challengeIds = await _challengeRepository.PageIdsAsync(siteId, skip, take, search);
+                foreach (var challengeId in challengeIds)
+                {
+                    var challengeStatus = await _challengeRepository.GetByIdAsync(challengeId, userId);
+                    int completed = challengeStatus.Tasks.Count(_ => _.IsCompleted == true);
+                    if(completed > 0)
+                    {
+                        challengeStatus.Status = $"Completed {completed} of {challengeStatus.TasksToComplete} tasks.";
+                        challengeStatus.PercentComplete = (int)(completed * 100 / challengeStatus.TasksToComplete);
+                        challengeStatus.CompletedTasks = completed;
+                    }
+
+                    userLookupChallenges.Add(challengeStatus);
+                }
+                challenges = userLookupChallenges;
+            }
+            else
+            {
+                challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search);
+            }
             await AddBadgeFilenames(challenges);
             return new DataWithCount<IEnumerable<Challenge>>
             {

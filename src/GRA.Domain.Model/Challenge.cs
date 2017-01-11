@@ -41,6 +41,9 @@ namespace GRA.Domain.Model
         public IEnumerable<ChallengeTask> Tasks { get; set; }
         public bool? IsCompleted { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public string Status { get; set; }
+        public int? PercentComplete { get; set; }
+        public int? CompletedTasks { get; set; }
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
     }
