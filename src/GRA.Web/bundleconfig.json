@@ -16,6 +16,12 @@
     }
   },
   {
+    "outputFileName": "wwwroot/css/missioncontrol.min.css",
+    "inputFiles": [
+      "wwwroot/css/missioncontrol.css"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/js/WMD.min.js",
     "inputFiles": [
       "wwwroot/js/WMD.js"

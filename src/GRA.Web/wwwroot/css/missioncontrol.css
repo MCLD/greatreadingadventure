@@ -1,0 +1,40 @@
+﻿.mc-menu-button {
+    color: white;
+}
+
+.mc-alertrow {
+    margin-top: 1em;
+}
+
+.ataglance-pill {
+    border: 1px solid;
+    border-radius: 1rem;
+    font-size: 2rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: dimgray;
+    color: white;
+}
+
+@media only screen and (min-width : 768px) {
+    .ataglance-pill {
+        font-size: 1.5rem;
+    }
+}
+
+@media only screen and (min-width : 992px) {
+    .ataglance-pill {
+        font-size: 1.5rem;
+    }
+}
+
+.ataglance-pill-steelblue {
+    background-color: steelblue;
+    color: white;
+}
+
+.ataglance-pill-seagreen {
+    background-color: seagreen;
+    color: white;
+}

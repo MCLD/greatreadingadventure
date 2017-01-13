@@ -50,7 +50,7 @@ p.footer {
     font-size: 0.8em;
 }
 
-.gra-navbar-brand > span.gra-pagetitle {
+.gra-navbar-brand > .gra-pagetitle {
     color: black;
 }
 
@@ -73,14 +73,6 @@ ul.navbar-nav li.active {
 
 .gra-menu-button {
     border: 1px solid #ccc;
-}
-
-.mc-menu-button {
-    color: white;
-}
-
-.mc-alertrow {
-    margin-top: 1em;
 }
 
 .alert > ul {
@@ -144,6 +136,7 @@ ul.navbar-nav li.active {
     background-color: rgb(215, 240, 240);
     font-weight: bold;
 }
+
 .unread-mail {
     font-weight: bold;
 }
@@ -156,7 +149,30 @@ ul.navbar-nav li.active {
     width: 110px;
     height: auto;
 }
+
 .badge-lg {
     width: 210px;
     height: auto;
+}
+
+.field-validation-error {
+    color: #f00;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #f00;
+    background-color: #fee;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #f00;
+}
+
+.validation-summary-valid {
+    display: none;
 }

@@ -50,6 +50,7 @@ namespace GRA.Controllers.MissionControl
                     TotalUsers = stats.Sum(_ => _.RegisteredUsers),
                     TotalBooksRead = stats.Sum(_ => _.ActivityEarnings.Sum(m => m.Value)),
                     TotalChallengesCompleted = stats.Sum(_ => _.CompletedChallenges),
+                    TotalBadgesEarned = stats.Sum(_ => _.BadgesEarned),
                     TotalPointsEarned = stats.Sum(_ => _.PointsEarned)
                 };
                 return View(viewModel);

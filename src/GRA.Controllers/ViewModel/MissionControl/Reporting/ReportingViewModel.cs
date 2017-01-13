@@ -10,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public int TotalBooksRead { get; set; }
         public int TotalChallengesCompleted { get; set; }
         public int TotalPointsEarned { get; set; }
+        public int TotalBadgesEarned { get; set; }
     }
 }

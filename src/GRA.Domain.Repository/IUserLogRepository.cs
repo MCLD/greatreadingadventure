@@ -12,5 +12,6 @@ namespace GRA.Domain.Repository
         Task<int> CompletedChallengeCountAsync(StatusSummary request);
         Task<int> PointsEarnedTotalAsync(StatusSummary request);
         Task<Dictionary<string, int>> ActivityEarningsTotalAsync(StatusSummary request);
+        Task<int> EarnedBadgeCountAsync(StatusSummary request);
     }
 }

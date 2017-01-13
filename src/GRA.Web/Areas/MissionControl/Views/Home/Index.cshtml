@@ -1,55 +1,45 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AtAGlanceViewModel
 
-@section styles {
-    <style>
-        .ataglance-pill {
-            border: 1px solid;
-            border-radius: 1rem;
-            font-size: 2rem;
-            padding: 1rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .ataglance-pill-steelblue {
-            background-color: steelblue;
-            border-color: steelblue;
-            color: white;
-        }
-
-        .ataglance-pill-forestgreen {
-            background-color: forestgreen;
-            border-color: forestgreen;
-            color: white;
-        }
-    </style>
-}
-
 <div class="row row-spacing" style="text-align: center;">
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-user"></span>
-            @Model.SiteStatus.RegisteredUsers users
+            <span class="fa fa-user fa-2x"></span><br />
+            @Model.SiteStatus.RegisteredUsers participants
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-hashtag"></span>
+            <span class="fa fa-hashtag fa-2x"></span><br />
             @Model.SiteStatus.PointsEarned points
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
-            <span class="fa fa-trophy"></span>
+            <span class="fa fa-trophy fa-2x"></span><br />
             @Model.SiteStatus.CompletedChallenges challenges
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-steelblue">
+            <span class="fa fa-shield fa-2x"></span><br />
+            @Model.FilteredStatus.BadgesEarned badges
         </div>
     </div>
     @foreach (var item in Model.SiteStatus.ActivityEarnings)
     {
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-steelblue">
-                <span class="fa fa-book"></span>
+                <span class="fa fa-book fa-2x"></span><br />
                 @item.Value @item.Key
+            </div>
+        </div>
+    }
+    @if (Model.SiteStatus.DaysUntilEnd != null)
+    {
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-steelblue">
+                <span class="fa fa-calendar fa-2x"></span><br />
+                @Model.SiteStatus.DaysUntilEnd days left
             </div>
         </div>
     }
@@ -62,30 +52,45 @@
 </div>
 
 <div class="row row-spacing" style="text-align: center;">
-    <div class="col-sm-3">
-        <div class="ataglance-pill ataglance-pill-forestgreen">
-            <span class="fa fa-user"></span>
-            @Model.FilteredStatus.RegisteredUsers users
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-seagreen">
+            <span class="fa fa-user fa-2x"></span><br />
+            @Model.FilteredStatus.RegisteredUsers participants
         </div>
     </div>
-    <div class="col-sm-3">
-        <div class="ataglance-pill ataglance-pill-forestgreen">
-            <span class="fa fa-hashtag"></span>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-seagreen">
+            <span class="fa fa-hashtag fa-2x"></span><br />
             @Model.FilteredStatus.PointsEarned points
         </div>
     </div>
-    <div class="col-sm-3">
-        <div class="ataglance-pill ataglance-pill-forestgreen">
-            <span class="fa fa-trophy"></span>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-seagreen">
+            <span class="fa fa-trophy fa-2x"></span><br />
             @Model.FilteredStatus.CompletedChallenges challenges
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="ataglance-pill ataglance-pill-seagreen">
+            <span class="fa fa-shield fa-2x"></span><br />
+            @Model.FilteredStatus.BadgesEarned badges
         </div>
     </div>
     @foreach (var item in Model.FilteredStatus.ActivityEarnings)
     {
-        <div class="col-sm-3">
-            <div class="ataglance-pill ataglance-pill-forestgreen">
-                <span class="fa fa-book"></span>
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-seagreen">
+                <span class="fa fa-book fa-2x"></span><br />
                 @item.Value @item.Key
+            </div>
+        </div>
+    }
+    @if (Model.FilteredStatus.DaysUntilEnd != null)
+    {
+        <div class="col-sm-2">
+            <div class="ataglance-pill ataglance-pill-seagreen">
+                <span class="fa fa-calendar fa-2x"></span><br />
+                @Model.FilteredStatus.DaysUntilEnd days left
             </div>
         </div>
     }

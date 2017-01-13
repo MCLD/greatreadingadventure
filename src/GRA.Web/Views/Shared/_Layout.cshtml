@@ -14,7 +14,6 @@
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/ErrorStyles.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" asp-append-version="true" />
     </environment>
     <environment names="Staging,Production">
@@ -27,9 +26,6 @@
               asp-append-version="true" />
         <link rel="stylesheet"
               href="~/css/site.min.css"
-              asp-append-version="true" />
-        <link rel="stylesheet"
-              href="~/css/ErrorStyles.min.css"
               asp-append-version="true" />
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
@@ -62,14 +58,14 @@
                 <ul class="nav navbar-nav">
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.AccessMissionControl.ToString()))
                     {
-                        <li><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="gra-mclink"><span class="fa fa-rocket"></span></a></li>
+                        <li><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="gra-mclink"><span class="fa fa-rocket"></span><span class="visible-xs-inline"> Mission Control</span></a></li>
                     }
-                    <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index"><span class="fa fa-home"></span></a></li>
+                    <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index" title="Home"><span class="fa fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li ActiveBy routeKey="Controller" value="Mail">
+                        <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
                             <a asp-controller="Mail" asp-action="Index">
-                                <span class="fa fa-envelope"></span>
+                                <span class="fa fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
                                 @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                 {
                                     <span class="label label-default label-as-badge">
@@ -160,8 +156,8 @@
     @if (Context.Items[GRA.Controllers.ItemKey.GoogleAnalytics] != null)
     {
         <script>
-            (function(i, s, o, g, r, a, m) {
-                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function() {
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
                     (i[r].q = i[r].q || []).push(arguments)
                 }, i[r].l = 1 * new Date(); a = s.createElement(o),
                 m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
@@ -172,13 +168,13 @@
     }
     @RenderSection("scripts", required: false)
     <script>
-        $(function() {
+        $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
         @if (Context.Items[GRA.Controllers.ItemKey.NotificationsModal] != null)
         {
             @: $('#notificationsModal').modal('show');
-        }
+                                        }
     </script>
 </body>
 </html>

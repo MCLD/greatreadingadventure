@@ -21,5 +21,7 @@ namespace GRA.Domain.Model
         public int PointsEarned { get; set; }
         public Dictionary<string, int> ActivityEarnings { get; set; }
         public int CompletedChallenges { get; set; }
+        public int BadgesEarned { get; set; }
+        public int? DaysUntilEnd { get; set; }
     }
 }

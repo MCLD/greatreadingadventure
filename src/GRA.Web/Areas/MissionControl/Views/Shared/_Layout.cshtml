@@ -14,7 +14,7 @@
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/ErrorStyles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/missioncontrol.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" asp-append-version="true" />
     </environment>
@@ -27,7 +27,7 @@
               asp-fallback-test-value="absolute"
               asp-append-version="true" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/ErrorStyles.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/missioncontrol.min.css" asp-append-version="true" />
         <link rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
@@ -55,8 +55,8 @@
                 <a asp-controller="Home"
                    asp-action="Index"
                    class="navbar-brand mc-navbar-brand">
-                    <span class="fa fa-space-shuttle"></span>
-                    Mission Control: <grasite property="pageTitle"></grasite>
+                    <span class="fa fa-rocket"></span>
+                    Mission Control
                 </a>
             </div>
             <div class="navbar-collapse navbar-right collapse">
@@ -66,7 +66,7 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Mail">
                             <a asp-controller="Mail" asp-action="Index" title="Mail">
-                                <span class="fa fa-envelope-o"></span>
+                                <span class="fa fa-envelope-o"></span><span class="visible-xs-inline"> Mail</span>
                                 @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
                                 {
                                     <span class="label label-default label-as-badge">
@@ -87,7 +87,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Drawing">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Drawings"><span class="fa fa-trophy"></span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Drawings"><span class="fa fa-trophy"></span><span class="visible-xs-inline"> Drawings</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Drawing" asp-action="Criteria">Drawing Criteria</a></li>
                                 <li><a asp-controller="Drawing" asp-action="Index">Drawings</a></li>
@@ -97,7 +97,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllReporting.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Reporting">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="fa fa-table"></span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="fa fa-table"></span><span class="visible-xs-inline"> Reporting</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Reporting" asp-action="Index">Branch Report</a></li>
                             </ul>
@@ -105,7 +105,7 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="Pages"><a asp-controller="Pages" asp-action="Index" title="Pages"><span class="fa fa-file-text-o"></span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Pages"><a asp-controller="Pages" asp-action="Index" title="Pages"><span class="fa fa-file-text-o"></span><span class="visible-xs-inline"> Pages</span></a></li>
                     }
                     <li><a asp-controller="Home" asp-action="Signout">Sign Out</a></li>
                 </ul>

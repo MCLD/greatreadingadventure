@@ -2,20 +2,21 @@
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
 using GRA.Domain.Model;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
     public class UserContextProvider : IUserContextProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SiteLookupService _simpleSiteService;
+        private readonly SiteLookupService _siteLookupService;
 
         public UserContextProvider(IHttpContextAccessor httpContextAccessor,
-            SiteLookupService simpleSiteService)
+            SiteLookupService siteLookupService)
         {
             _httpContextAccessor = Require.IsNotNull(httpContextAccessor,
                 nameof(httpContextAccessor));
-            _simpleSiteService = Require.IsNotNull(simpleSiteService, nameof(simpleSiteService));
+            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }
         public UserContext GetContext()
         {
@@ -33,6 +34,12 @@ namespace GRA.Controllers
                     ?? new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId);
             }
             return userContext;
+        }
+
+        public async Task<Site> GetCurrentSiteAsync()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            return await _siteLookupService.GetByIdAsync((int)httpContext.Items[ItemKey.SiteId]);
         }
     }
 }

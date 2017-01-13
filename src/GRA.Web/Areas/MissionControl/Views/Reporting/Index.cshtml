@@ -46,6 +46,7 @@
                 <td>Registered Users</td>
                 <td>Books Read</td>
                 <td>Challenges Completed</td>
+                <td>Badges Earned</td>
                 <td>Points Earned</td>
             </tr>
         </thead>
@@ -57,6 +58,7 @@
                     <td>@summary.RegisteredUsers</td>
                     <td>@summary.ActivityEarnings.Sum(m => m.Value)</td>
                     <td>@summary.CompletedChallenges</td>
+                    <td>@summary.BadgesEarned</td>
                     <td>@summary.PointsEarned</td>
                 </tr>
             }
@@ -65,6 +67,7 @@
                 <td>@Model.TotalUsers</td>
                 <td>@Model.TotalBooksRead</td>
                 <td>@Model.TotalChallengesCompleted</td>
+                <td>@Model.TotalBadgesEarned</td>
                 <td>@Model.TotalPointsEarned</td>
             </tr>
         </tbody>

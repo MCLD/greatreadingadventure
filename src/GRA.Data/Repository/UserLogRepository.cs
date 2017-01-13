@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace GRA.Data.Repository
 {
@@ -244,6 +245,34 @@ namespace GRA.Data.Repository
             }
 
             return result;
+        }
+
+        public async Task<int> EarnedBadgeCountAsync(StatusSummary request)
+        {
+            var eligibleUserIds = await GetEligibleUserIds(request);
+
+            var badgeCount = DbSet
+                .AsNoTracking()
+                .Where(_ => _.BadgeId != null);
+
+            if (eligibleUserIds != null)
+            {
+                badgeCount = badgeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
+            }
+
+            if (request.StartDate != null)
+            {
+                badgeCount = badgeCount
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                badgeCount = badgeCount
+                    .Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
+            return await badgeCount.CountAsync();
         }
     }
 }

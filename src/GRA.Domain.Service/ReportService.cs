@@ -50,6 +50,8 @@ namespace GRA.Domain.Service
                     .ActivityEarningsTotalAsync(request);
                 summary.CompletedChallenges = await _userLogRepository
                      .CompletedChallengeCountAsync(request);
+                summary.BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request);
+                summary.DaysUntilEnd = await GetDaysUntilEnd();
                 _memoryCache.Set(cacheKey,
                     summary,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
@@ -101,7 +103,9 @@ namespace GRA.Domain.Service
                             ActivityEarnings = await _userLogRepository
                                 .ActivityEarningsTotalAsync(request),
                             CompletedChallenges = await _userLogRepository
-                                .CompletedChallengeCountAsync(request)
+                                .CompletedChallengeCountAsync(request),
+                            BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request),
+                            DaysUntilEnd = await GetDaysUntilEnd()
                         });
                     }
                 }
@@ -113,6 +117,20 @@ namespace GRA.Domain.Service
                 _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
                 throw new Exception("Permission denied.");
             }
+        }
+
+        public async Task<int?> GetDaysUntilEnd()
+        {
+            var site = await _userContextProvider.GetCurrentSiteAsync();
+            if(site.ProgramEnds == null)
+            {
+                return null;
+            }
+            if(site.ProgramEnds <= DateTime.Now)
+            {
+                return 0;
+            }
+            return ((DateTime)site.ProgramEnds - DateTime.Now).Days;
         }
     }
 }
