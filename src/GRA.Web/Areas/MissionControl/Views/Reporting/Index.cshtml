@@ -55,20 +55,20 @@
             {
                 <tr>
                     <td>@summary.BranchName</td>
-                    <td>@summary.RegisteredUsers</td>
-                    <td>@summary.ActivityEarnings.Sum(m => m.Value)</td>
-                    <td>@summary.CompletedChallenges</td>
-                    <td>@summary.BadgesEarned</td>
-                    <td>@summary.PointsEarned</td>
+                    <td>@summary.RegisteredUsers.ToString("N0")</td>
+                    <td>@summary.ActivityEarnings.Sum(m => m.Value).ToString("N0")</td>
+                    <td>@summary.CompletedChallenges.ToString("N0")</td>
+                    <td>@summary.BadgesEarned.ToString("N0")</td>
+                    <td>@summary.PointsEarned.ToString("N0")</td>
                 </tr>
             }
             <tr class="total-row">
                 <td style="text-align:right">Total:</td>
-                <td>@Model.TotalUsers</td>
-                <td>@Model.TotalBooksRead</td>
-                <td>@Model.TotalChallengesCompleted</td>
-                <td>@Model.TotalBadgesEarned</td>
-                <td>@Model.TotalPointsEarned</td>
+                <td>@Model.TotalUsers.ToString("N0")</td>
+                <td>@Model.TotalBooksRead.ToString("N0")</td>
+                <td>@Model.TotalChallengesCompleted.ToString("N0")</td>
+                <td>@Model.TotalBadgesEarned.ToString("N0")</td>
+                <td>@Model.TotalPointsEarned.ToString("N0")</td>
             </tr>
         </tbody>
     </table>

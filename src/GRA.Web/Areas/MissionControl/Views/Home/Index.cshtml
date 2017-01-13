@@ -4,25 +4,25 @@
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-user fa-2x"></span><br />
-            @Model.SiteStatus.RegisteredUsers participants
+            @Model.SiteStatus.RegisteredUsers.ToString("N0") participants
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-hashtag fa-2x"></span><br />
-            @Model.SiteStatus.PointsEarned points
+            @Model.SiteStatus.PointsEarned.ToString("N0") points
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-trophy fa-2x"></span><br />
-            @Model.SiteStatus.CompletedChallenges challenges
+            @Model.SiteStatus.CompletedChallenges.ToString("N0") challenges
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-shield fa-2x"></span><br />
-            @Model.FilteredStatus.BadgesEarned badges
+            @Model.FilteredStatus.BadgesEarned.ToString("N0") badges
         </div>
     </div>
     @foreach (var item in Model.SiteStatus.ActivityEarnings)
@@ -30,7 +30,7 @@
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-steelblue">
                 <span class="fa fa-book fa-2x"></span><br />
-                @item.Value @item.Key
+                @item.Value.ToString("N0") @item.Key
             </div>
         </div>
     }
@@ -55,25 +55,25 @@
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-seagreen">
             <span class="fa fa-user fa-2x"></span><br />
-            @Model.FilteredStatus.RegisteredUsers participants
+            @Model.FilteredStatus.RegisteredUsers.ToString("N0") participants
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-seagreen">
             <span class="fa fa-hashtag fa-2x"></span><br />
-            @Model.FilteredStatus.PointsEarned points
+            @Model.FilteredStatus.PointsEarned.ToString("N0") points
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-seagreen">
             <span class="fa fa-trophy fa-2x"></span><br />
-            @Model.FilteredStatus.CompletedChallenges challenges
+            @Model.FilteredStatus.CompletedChallenges.ToString("N0") challenges
         </div>
     </div>
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-seagreen">
             <span class="fa fa-shield fa-2x"></span><br />
-            @Model.FilteredStatus.BadgesEarned badges
+            @Model.FilteredStatus.BadgesEarned.ToString("N0") badges
         </div>
     </div>
     @foreach (var item in Model.FilteredStatus.ActivityEarnings)
@@ -81,7 +81,7 @@
         <div class="col-sm-2">
             <div class="ataglance-pill ataglance-pill-seagreen">
                 <span class="fa fa-book fa-2x"></span><br />
-                @item.Value @item.Key
+                @item.Value.ToString("N0") @item.Key
             </div>
         </div>
     }
