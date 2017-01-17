@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GRA.Domain.Model;
 using GRA.Domain.Repository;
-using System.Threading.Tasks;
-using GRA.Domain.Model;
 using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -11,6 +13,7 @@ namespace GRA.Domain.Service
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IMailRepository _mailRepository;
+        private readonly IProgramRepository _programRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
         private readonly ActivityService _activityService;
@@ -18,6 +21,7 @@ namespace GRA.Domain.Service
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IMailRepository mailRepository,
+            IProgramRepository programRepository,
             ISiteRepository siteRepository,
             IUserRepository userRepository,
             ActivityService activityService
@@ -28,14 +32,40 @@ namespace GRA.Domain.Service
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
+            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
         }
 
+        private int ProgramIdSearch(IEnumerable<Program> programs,  string nameContains)
+        {
+            if (programs.Count() == 1)
+            {
+                return programs.First().Id;
+            }
+            var matches = programs
+                .Where(_ => _.Name.Contains(nameContains))
+                .FirstOrDefault();
+            if(matches == null)
+            {
+                return programs.First().Id;
+            }
+            else
+            {
+                return matches.Id;
+            }
+        }
+
         public async Task InsertSampleData(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
+
+            var programs = await _programRepository.GetAllAsync(user.SiteId);
+            int prereaderProgramId = ProgramIdSearch(programs, "Prereader");
+            int kidsProgramId = ProgramIdSearch(programs, "Kid");
+            int teensProgramId = ProgramIdSearch(programs, "Teen");
+            int adultProgramId = ProgramIdSearch(programs, "Adult");
 
             //insert sample data
             var challenge = new Challenge
@@ -59,14 +89,14 @@ namespace GRA.Domain.Service
             {
                 ChallengeId = challenge.Id,
                 Title = "Be excellent to each other",
-                ChallengeTaskType = Model.ChallengeTaskType.Action,
+                ChallengeTaskType = ChallengeTaskType.Action,
                 Position = positionCounter++
             });
             await _challengeTaskRepository.AddSaveAsync(userId, new ChallengeTask
             {
                 ChallengeId = challenge.Id,
                 Title = "Party on, dudes!",
-                ChallengeTaskType = Model.ChallengeTaskType.Action,
+                ChallengeTaskType = ChallengeTaskType.Action,
                 Position = positionCounter++
             });
 
@@ -93,7 +123,7 @@ namespace GRA.Domain.Service
                 Title = "Slaughterhouse-Five, or The Children's Crusade: A Duty-Dance with Death",
                 Author = "Kurt Vonnegut",
                 Isbn = "978-0385333849",
-                ChallengeTaskType = Model.ChallengeTaskType.Book,
+                ChallengeTaskType = ChallengeTaskType.Book,
                 Position = positionCounter++
             });
 
@@ -103,7 +133,7 @@ namespace GRA.Domain.Service
                 Title = "Stories of Your Life and Others",
                 Author = "Ted Chiang",
                 Isbn = "978-1101972120",
-                ChallengeTaskType = Model.ChallengeTaskType.Book,
+                ChallengeTaskType = ChallengeTaskType.Book,
                 Position = positionCounter++
             });
 
@@ -113,7 +143,7 @@ namespace GRA.Domain.Service
                 Title = "Have Space Suit - Will Travel",
                 Author = "Robert A. Heinlein",
                 Isbn = "978-1416505495",
-                ChallengeTaskType = Model.ChallengeTaskType.Book,
+                ChallengeTaskType = ChallengeTaskType.Book,
                 Position = positionCounter++
             });
 
@@ -126,7 +156,7 @@ namespace GRA.Domain.Service
                     SiteId = user.SiteId,
                     BranchId = user.BranchId,
                     SystemId = user.SystemId,
-                    ProgramId = user.ProgramId,
+                    ProgramId = adultProgramId,
                     FirstName = "Arthur",
                     LastName = "Weasley",
                     Username = "aweasley"
@@ -172,12 +202,14 @@ namespace GRA.Domain.Service
                 newUser.FirstName = "Bill";
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Charlie";
+                newUser.ProgramId = teensProgramId;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Fred";
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "George";
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Percy";
+                newUser.ProgramId = adultProgramId;
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();
 
@@ -197,15 +229,18 @@ namespace GRA.Domain.Service
                 await _activityService.LogActivityAsync(hermione.Id, 1);
                 await _activityService.LogActivityAsync(hermione.Id, 1);
 
+                newUser.ProgramId = kidsProgramId;
                 newUser.FirstName = "Rose";
                 newUser.LastName = "Granger-Weasley";
                 await _userRepository.AddAsync(userId, newUser);
+                newUser.ProgramId = prereaderProgramId;
                 newUser.FirstName = "Hugo";
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();
 
                 newUser.FirstName = "Harry";
                 newUser.LastName = "Potter";
+                newUser.ProgramId = adultProgramId;
                 newUser.HouseholdHeadUserId = null;
                 var harry = await _userRepository.AddSaveAsync(userId, newUser);
 
@@ -218,9 +253,12 @@ namespace GRA.Domain.Service
                 await _activityService.LogActivityAsync(ginny.Id, 1);
 
                 newUser.FirstName = "James";
+                newUser.ProgramId = teensProgramId;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Albus";
+                newUser.ProgramId = kidsProgramId;
                 await _userRepository.AddAsync(userId, newUser);
+                newUser.FirstName = "Lily";
                 newUser.FirstName = "Lily";
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();

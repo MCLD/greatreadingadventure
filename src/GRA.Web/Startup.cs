@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -119,7 +120,7 @@ namespace GRA.Web
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
 
             // utilities
-            services.AddScoped<Domain.Service.Abstract.IUserContextProvider, Controllers.UserContextProvider>();
+            services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
             services.AddScoped<Abstract.IPasswordValidator, PasswordValidator>();
             services.AddScoped<Abstract.IPathResolver, PathResolver>();
@@ -141,7 +142,6 @@ namespace GRA.Web
             services.AddScoped<DrawingService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
-            services.AddScoped<InitialSetupService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
             services.AddScoped<ReportService>();
@@ -150,6 +150,9 @@ namespace GRA.Web
             services.AddScoped<SiteService>();
             services.AddScoped<StaticAvatarService>();
             services.AddScoped<UserService>();
+
+            // service resolution
+            services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
 
             // repositories
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();

@@ -1,5 +1,4 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Repository;
+﻿using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
-    public class InitialSetupService : BaseService<InitialSetupService>
+    public class SetupSingleProgramService
+        : BaseService<SetupSingleProgramService>, IInitialSetupService
     {
         private readonly IAuthorizationCodeRepository _authorizationCodeRepository;
         private readonly IBranchRepository _branchRepository;
@@ -17,21 +17,17 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
 
-        public InitialSetupService(ILogger<InitialSetupService> logger,
+        public SetupSingleProgramService(ILogger<SetupSingleProgramService> logger,
             IAuthorizationCodeRepository authorizationCodeRepository,
-            IBookRepository bookRepository,
             IBranchRepository branchRepository,
-            IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
-            IMailRepository mailRepository,
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
-            ISiteRepository siteRepository,
             ISystemRepository systemRepository,
-            IUserRepository userRepository,
             IPointTranslationRepository pointTranslationRepository) : base(logger)
         {
-            _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository, nameof(authorizationCodeRepository));
+            _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
+                nameof(authorizationCodeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
@@ -43,7 +39,7 @@ namespace GRA.Domain.Service
                 nameof(pointTranslationRepository));
         }
 
-        public async Task Insert(int siteId, string initialAuthorizationCode, int userId = -1)
+        public async Task InsertAsync(int siteId, string initialAuthorizationCode, int userId = -1)
         {
             //_config[ConfigurationKey.InitialAuthorizationCode]
             // this is the data required for a user to register
@@ -92,7 +88,7 @@ namespace GRA.Domain.Service
             });
 
             // add code to make first user system administrator
-            await _authorizationCodeRepository.AddSaveAsync(userId, new AuthorizationCode
+            await _authorizationCodeRepository.AddSaveAsync(userId, new Model.AuthorizationCode
             {
                 Code = initialAuthorizationCode.Trim().ToLower(),
                 Description = "Initial code to grant system administrator status.",
@@ -117,12 +113,12 @@ namespace GRA.Domain.Service
             }
             await _roleRepository.SaveAsync();
 
-            foreach (var value in Enum.GetValues(typeof(ChallengeTaskType)))
+            foreach (var value in Enum.GetValues(typeof(Model.ChallengeTaskType)))
             {
-                if ((ChallengeTaskType)value == ChallengeTaskType.Book)
+                if ((Model.ChallengeTaskType)value == Model.ChallengeTaskType.Book)
                 {
                     await _challengeTaskRepository.AddChallengeTaskTypeAsync(userId,
-                        value.ToString(), 
+                        value.ToString(),
                         1,
                         pointTranslation.Id);
                 }

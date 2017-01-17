@@ -6,6 +6,6 @@ namespace GRA.Domain.Repository
 {
     public interface IProgramRepository : IRepository<Program>
     {
-        Task<IEnumerable<Program>> GetAllAsync(int systemId);
+        Task<IEnumerable<Program>> GetAllAsync(int siteId);
     }
 }

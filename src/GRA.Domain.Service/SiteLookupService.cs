@@ -16,13 +16,13 @@ namespace GRA.Domain.Service
         private readonly IConfigurationRoot _config;
         private readonly IMemoryCache _memoryCache;
         private readonly ISiteRepository _siteRepository;
-        private readonly InitialSetupService _initialSetupService;
+        private readonly IInitialSetupService _initialSetupService;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
             IConfigurationRoot config,
             IMemoryCache memoryCache,
             ISiteRepository siteRepository,
-            InitialSetupService initialSetupService) : base(logger)
+            IInitialSetupService initialSetupService) : base(logger)
         {
 
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
@@ -126,7 +126,7 @@ namespace GRA.Domain.Service
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);
 
-            await _initialSetupService.Insert(site.Id,
+            await _initialSetupService.InsertAsync(site.Id,
                 _config[ConfigurationKey.InitialAuthorizationCode]);
 
             return new List<Site>
