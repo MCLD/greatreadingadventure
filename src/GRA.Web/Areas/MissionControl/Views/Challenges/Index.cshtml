@@ -42,25 +42,27 @@
 
 -->
 
-<form asp-controller="Challenges" asp-action="Index" asp-route-search="@Model.Search" method="get" role="form">
+<form asp-controller="Challenges" asp-route-search="@Model.Search" method="get" role="form">
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-8">
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
             <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="Index" class="btn btn-default">Clear</a>
+            <a asp-controller="Challenges" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
 
 
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        <a asp-action="Create" class="btn btn-default">Create a new challenge</a>
+@if (Model.CanAddChallenges)
+{
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <a asp-action="Create" class="btn btn-default">Create a new challenge</a>
+        </div>
     </div>
-</div>
+}
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
@@ -76,7 +78,11 @@
                         <tr>
                             <th>Name</th>
                             <th>Badge</th>
-                            <th>&nbsp;</th>
+                            <th>Active</th>
+                            @if (Model.CanDeleteChallenges)
+                            {
+                                <th>&nbsp;</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
@@ -84,9 +90,16 @@
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="Edit" asp-route-id="@challenge.Id" class="rowlink">
+                                    @if (Model.CanEditChallenges)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@challenge.Id" class="rowlink">
+                                            @challenge.Name
+                                        </a>
+                                    }
+                                    else
+                                    {
                                         @challenge.Name
-                                    </a>
+                                    }
                                 </td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
@@ -98,16 +111,29 @@
                                         @: &nbsp;
                                     }
                                 </td>
-                                <td class="on-top">
-                                    <button type="button"
-                                            class="btn btn-danger btn-xs"
-                                            data-toggle="modal"
-                                            data-target="#deleteModal"
-                                            data-id="@challenge.Id"
-                                            data-name="@challenge.Name">
-                                        <span class="fa fa-remove" aria-hidden="true"></span>
-                                    </button>
+                                <td>
+                                    @if (challenge.IsActive)
+                                    {
+                                        <span class="fa fa-lg fa-check text-success"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-lg fa-ban text-danger"></span>
+                                    }
                                 </td>
+                                @if (Model.CanDeleteChallenges)
+                                {
+                                    <td class="on-top">
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@challenge.Id"
+                                                data-name="@challenge.Name">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -124,6 +150,8 @@
 @section scripts
 {
     <script>
+        @if (Model.CanEditChallenges) {
+        <text>
         $(window).on("load", function() {
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
@@ -134,7 +162,11 @@
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
+        </text>
+        }
 
+        @if (Model.CanDeleteChallenges) {
+        <text>
         $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
@@ -143,5 +175,7 @@
             modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
             modal.find('#Id').val(id);
         })
+        </text>
+        }
     </script>
 }

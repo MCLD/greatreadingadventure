@@ -133,6 +133,13 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label class="control-label">Status</label>
+            <input class="form-control" value=@(Model.Challenge.IsActive ? "Active" : "Inactive") ignore disabled />
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label asp-for="Challenge.Name" class="control-label"></label>
             <input asp-for="Challenge.Name" class="form-control ignore" />
             <span asp-validation-for="Challenge.Name" class="text-danger"></span>
@@ -173,7 +180,7 @@
             }
         </div>
         @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
-            {
+        {
             <div class="col-xs-12 col-sm-4 col-md-3">
                 <input asp-for="BadgePath" type="hidden" />
                 <img class="img-thumbnail badge-lg"
@@ -201,10 +208,18 @@
 
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
-        <button type="submit" asp-action="Edit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+        <button type="submit" asp-action="Edit" name="Submit" value="Edit" class="btn btn-primary btn-spinner">
             <span class="buttonText">Save Changes</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
+        @if (Model.CanActivate)
+        {
+            <input asp-for="CanActivate" type="hidden" />
+            <button type="submit" asp-action="Edit" name="Submit" value="Activate" class="btn btn-success btn-spinner">
+                <span class="buttonText">Save and Activate</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
     </div>
 
     <h3>
@@ -220,9 +235,9 @@
             </tr>
         </thead>
         @if (Model.Challenge.Tasks != null)
-            {
+        {
             @foreach (var task in Model.Challenge.Tasks)
-                {
+            {
                 <tr>
                     <td class="td-class">
                         <input type="submit" asp-action="OpenModifyTask" asp-route-taskId="@task.Id" hidden />
@@ -261,7 +276,7 @@
 
 @section scripts {
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             @if (Model.AddTask)
             {
                 <text>$('#addModal').modal('show');</text>
@@ -271,34 +286,36 @@
                 <text>$('#editModal').modal('show');</text>
             }
 
-            $('.td-class').each(function () {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
 
-            $(':file').on('fileselect', function (event, numFiles, label) {
+            $(':file').on('fileselect', function(event, numFiles, label) {
                 var input = $(this).parents('.input-group').find(':text'),
                     log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-                if (input.length) {
+                if (input.length)
+                {
                     input.val(log);
                     $('.btn-file').removeClass('btn-default');
                     $('.btn-file').addClass('btn-success');
                 }
-                else {
+                else
+                {
                     input.val('');
                     $('.btn-file').addClass('btn-default');
                     $('.btn-file').removeClass('btn-success');
                 }
             });
 
-            $('#clearFile').on("click", function () {
+            $('#clearFile').on("click", function() {
                 $('#BadgeImage').val('');
                 $('.btn-file').addClass('btn-default');
                 $('.btn-file').removeClass('btn-success');
                 $('#selectedFile').val('');
             });
 
-            $(document).on('change', ':file', function () {
+            $(document).on('change', ':file', function() {
                 var input = $(this),
                     numFiles = input.get(0).files ? input.get(0).files.length : 1,
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
@@ -306,8 +323,8 @@
             });
         });
 
-        $(window).resize(function () {
-            $('.td-class').each(function () {
+        $(window).resize(function() {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
@@ -316,21 +333,21 @@
             ignore: ".ignore"
         });
 
-        $('.rowlink').on('click', function () {
+        $('.rowlink').on('click', function() {
             $(this).siblings('input:first').click();
         });
 
-        $('#deleteModal').on('show.bs.modal', function (event) {
+        $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the task "' + name + '" ?');
-            modal.find('#DeleteTask').attr("formaction", function (i, val) {
+            modal.find('#DeleteTask').attr("formaction", function(i, val) {
                 return val + '/' + id;
             });
         })
-        $('#addModal, #editModal').on('hidden.bs.modal', function () {
+        $('#addModal, #editModal').on('hidden.bs.modal', function() {
             var form = $(this).parents('form:first');
             form.attr('action', '@Url.Action("CloseTask")');
             form.validate().cancelSubmit = true;

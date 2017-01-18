@@ -19,73 +19,115 @@ namespace GRA.Data.Repository
         }
 
         public async Task<ICollection<Challenge>>
-            PageAllAsync(int siteId, int skip, int take, string search = null)
+            PageAllAsync(int siteId,
+            int skip,
+            int take,
+            string search = null,
+            string filterBy = null,
+            int? filterId = null)
         {
-            if (string.IsNullOrEmpty(search))
-            {
-                return await DbSet
-                    .AsNoTracking()
+            var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId)
-                    .OrderBy(_ => _.Name)
+                        && _.SiteId == siteId);
+
+            if (filterBy == "Active")
+            {
+                challenges = challenges.Where(_ => _.IsActive == true);
+            }
+            else if (filterBy == "User")
+            {
+                challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
+            }
+            else if (filterBy == "Pending")
+            {
+                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                challenges = challenges.Where(_ => _.Name.Contains(search)
+                        || _.Description.Contains(search)
+                        || _.Tasks.Any(_t => _t.Title.Contains(search))
+                        || _.Tasks.Any(_t => _t.Author.Contains(search)));
+            }
+
+            return await challenges.OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id)
                     .Skip(skip)
                     .Take(take)
                     .ProjectTo<Challenge>()
                     .ToListAsync();
-            }
-            else
-            {
-                return await DbSet
-                    .AsNoTracking()
-                    .Include(_ => _.Tasks)
-                    .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId
-                        && (_.Name.Contains(search)
-                        || _.Description.Contains(search)
-                        || _.Tasks.Any(_t => _t.Title.Contains(search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
-                    .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<Challenge>()
-                    .ToListAsync();
-            }
         }
 
-        public async Task<int> GetChallengeCountAsync(int siteId, string search = null)
+        public async Task<int> GetChallengeCountAsync(int siteId,
+            string search = null,
+            string filterBy = null,
+            int? filterId = null)
         {
-            if (string.IsNullOrEmpty(search))
+            var challenges = _context.Challenges.AsNoTracking()
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId);
+
+            if (filterBy == "Active")
             {
-                var challenges = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == siteId)
-                .ToListAsync();
-                return challenges.Count();
+                challenges = challenges.Where(_ => _.IsActive == true);
             }
-            else
+            else if (filterBy == "User")
             {
-                var challenges = await DbSet
-                .AsNoTracking()
-                .Include(_ => _.Tasks)
-                .Where(_ => _.IsDeleted == false
-                    && _.SiteId == siteId
-                        && (_.Name.Contains(search)
+                challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
+            }
+            else if (filterBy == "Pending")
+            {
+                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                challenges = challenges.Where(_ => _.Name.Contains(search)
                         || _.Description.Contains(search)
                         || _.Tasks.Any(_t => _t.Title.Contains(search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
-                .ToListAsync();
-                return challenges.Count();
+                        || _.Tasks.Any(_t => _t.Author.Contains(search)));
             }
 
+            return await challenges.CountAsync();
         }
 
-        public async Task<Challenge> GetByIdAsync(int id, int? userId = null)
+        public new async Task<Challenge> GetByIdAsync(int id)
         {
             var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
+                .SingleOrDefaultAsync());
+
+            if (challenge != null)
+            {
+                challenge.Tasks = await _context.ChallengeTasks
+                .AsNoTracking()
+                .Where(_ => _.ChallengeId == id)
+                .OrderBy(_ => _.Position)
+                .ProjectTo<ChallengeTask>()
+                .ToListAsync();
+
+                await GetChallengeTasksTypeAsync(challenge.Tasks);
+
+                var challengeTaskTypes = await _context.ChallengeTaskTypes
+                    .AsNoTracking()
+                    .ToDictionaryAsync(_ => _.Id);
+
+                foreach (var task in challenge.Tasks)
+                {
+                    task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
+                    task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
+                }
+            }
+            return challenge;
+        }
+
+        public async Task<Challenge> GetActiveByIdAsync(int id, int? userId = null)
+        {
+            var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.Id == id && _.IsActive == true)
                 .SingleOrDefaultAsync());
 
             if (challenge != null)
@@ -276,7 +318,8 @@ namespace GRA.Data.Repository
                 return await DbSet
                     .AsNoTracking()
                     .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId)
+                        && _.SiteId == siteId
+                        && _.IsActive == true)
                     .OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id)
                     .Skip(skip)
@@ -291,6 +334,7 @@ namespace GRA.Data.Repository
                     .Include(_ => _.Tasks)
                     .Where(_ => _.IsDeleted == false
                         && _.SiteId == siteId
+                        && _.IsActive == true
                         && (_.Name.Contains(search)
                         || _.Description.Contains(search)
                         || _.Tasks.Any(_t => _t.Title.Contains(search))
@@ -304,5 +348,15 @@ namespace GRA.Data.Repository
             }
         }
 
+        public async Task SetValidationAsync(int userId, int challengeId, bool valid)
+        {
+            var challenge = await DbSet.Where(_ => _.Id == challengeId).SingleOrDefaultAsync();
+            if (challenge != null)
+            {
+                challenge.IsValid = valid;
+                DbSet.Update(challenge);
+                await base.SaveAsync();
+            }
+        }
     }
 }

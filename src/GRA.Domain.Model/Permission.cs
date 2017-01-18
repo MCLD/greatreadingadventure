@@ -6,6 +6,7 @@
         AddCategories,
         AddChallenges,
         AddPages,
+        ActivateChallenges,
         DeleteAnyMail,
         DeleteCategories,
         DeletePages,
@@ -20,9 +21,10 @@
         ReadAllMail,
         RemoveChallenges,
         SendBroadcastMail,
+        ViewAllChallenges,
+        ViewAllReporting,
         ViewParticipantList,
         ViewParticipantDetails,
-        ViewAllReporting,
         ViewUnpublishedPages,
         ViewUserDrawings
     }

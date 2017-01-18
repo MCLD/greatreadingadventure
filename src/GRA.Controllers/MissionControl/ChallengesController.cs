@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    [Authorize(Policy = Policy.EditChallenges)]
+    [Authorize(Policy = Policy.ViewAllChallenges)]
     public class ChallengesController : Base.MCController
     {
         private const string NewTask = "NewTask";
@@ -38,13 +38,69 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(string Search, string FilterBy, int page = 1)
         {
+            var viewModel = await GetChallengeList(null, Search, page);
+
+            if (viewModel.PaginateModel.MaxPage > 0
+                && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.PaginateModel.LastPage ?? 1
+                    });
+            }
+
+            return View("Index", viewModel);
+        }
+
+        [Authorize(Policy = Policy.AddChallenges)]
+        public async Task<IActionResult> MyChallenges(string Search, int page = 1)
+        {
+            PageTitle = "My Challenges";
+
+            var viewModel = await GetChallengeList("User", Search, page);
+
+            if (viewModel.PaginateModel.MaxPage > 0
+                && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.PaginateModel.LastPage ?? 1
+                    });
+            }
+
+            return View("Index", viewModel);
+        }
+
+        [Authorize(Policy = Policy.ActivateChallenges)]
+        public async Task<IActionResult> Pending(string Search, int page = 1)
+        {
+            PageTitle = "Pending Challenges";
+
+            var viewModel = await GetChallengeList("Pending", Search, page);
+
+            if (viewModel.PaginateModel.MaxPage > 0
+                && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+            {
+                return RedirectToRoute(
+                    new
+                    {
+                        page = viewModel.PaginateModel.LastPage ?? 1
+                    });
+            }
+
+            return View("Index", viewModel);
+        }
+
+        private async Task<ChallengesListViewModel> GetChallengeList(string filter,
+            string search, int page)
+        {
             int take = 15;
             int skip = take * (page - 1);
 
             var challengeList = await _challengeService
-                .GetPaginatedChallengeListAsync(skip, take, Search);
-
-            ChallengesListViewModel viewModel = new ChallengesListViewModel();
+                .MCGetPaginatedChallengeListAsync(skip, take, search, filter);
 
             foreach (var challenge in challengeList.Data)
             {
@@ -54,8 +110,6 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            viewModel.Challenges = challengeList.Data;
-
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = challengeList.Count,
@@ -63,25 +117,26 @@ namespace GRA.Controllers.MissionControl
                 ItemsPerPage = take
             };
 
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
+            ChallengesListViewModel viewModel = new ChallengesListViewModel()
             {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
-            viewModel.PaginateModel = paginateModel;
+                Challenges = challengeList.Data,
+                PaginateModel = paginateModel,
+                CanAddChallenges = UserHasPermission(Permission.AddChallenges),
+                CanDeleteChallenges = UserHasPermission(Permission.RemoveChallenges),
+                CanEditChallenges = UserHasPermission(Permission.EditChallenges)
+            };
 
-            return View(viewModel);
+            return viewModel;
         }
 
+        [Authorize(Policy = Policy.AddChallenges)]
         public IActionResult Create()
         {
             PageTitle = "Create Challenge";
             return View("Create");
         }
 
+        [Authorize(Policy = Policy.AddChallenges)]
         [HttpPost]
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
@@ -125,22 +180,22 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> Edit(int id)
         {
             Challenge challenge = new Challenge();
             try
             {
+                challenge = await _challengeService.MCGetChallengeDetailsAsync(id);
                 if (TempData.ContainsKey(TempEditChallenge))
                 {
-                    challenge = Newtonsoft.Json.JsonConvert
+                    var storedChallenge = Newtonsoft.Json.JsonConvert
                         .DeserializeObject<Challenge>((string)TempData[TempEditChallenge]);
 
-                    var tasks = await _challengeService.GetChallengeTasksAsync(id);
-                    challenge.Tasks = tasks.ToList();
-                }
-                else
-                {
-                    challenge = await _challengeService.GetChallengeDetailsAsync(id);
+                    challenge.Name = storedChallenge.Name;
+                    challenge.Description = storedChallenge.Description;
+                    challenge.PointsAwarded = storedChallenge.PointsAwarded;
+                    challenge.TasksToComplete = storedChallenge.TasksToComplete;
                 }
             }
             catch (GraException gex)
@@ -149,11 +204,22 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction("Index");
             }
 
+            if (challenge.TasksToComplete >  challenge.Tasks.Count())
+            {
+                AlertInfo = "The challenge does not have enough tasks to be completable";
+            }
+
+            bool canActivate = challenge.IsValid
+                && !challenge.IsActive
+                && UserHasPermission(Permission.ActivateChallenges);
+
+
             ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
             {
                 Challenge = challenge,
                 TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
-                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList()
+                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
+                CanActivate = canActivate
             };
 
             if (challenge.BadgeId != null)
@@ -180,8 +246,9 @@ namespace GRA.Controllers.MissionControl
             return View("Edit", viewModel);
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
-        public async Task<IActionResult> Edit(ChallengesDetailViewModel model)
+        public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
             if (model.BadgeImage != null)
             {
@@ -223,9 +290,23 @@ namespace GRA.Controllers.MissionControl
                         }
                     }
                 }
-
-                await _challengeService.EditChallengeAsync(challenge);
-                AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
+                try
+                {
+                    var savedChallenge = await _challengeService.EditChallengeAsync(challenge);
+                    AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified";
+                    if (Submit == "Activate" && UserHasPermission(Permission.ActivateChallenges))
+                    {
+                        if (savedChallenge.IsValid)
+                        {
+                            await _challengeService.ActivateChallengeAsync(savedChallenge);
+                            AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully modified and activated";
+                        }
+                    }
+                }
+                catch (GraException gex)
+                {
+                    AlertWarning = gex.Message;
+                }
                 return RedirectToAction("Edit", new { id = model.Challenge.Id });
             }
             else
@@ -237,6 +318,7 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
+        [Authorize(Policy = Policy.RemoveChallenges)]
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -245,6 +327,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         #region Task methods
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public IActionResult CloseTask(ChallengesDetailViewModel viewModel)
         {
@@ -253,6 +336,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public IActionResult OpenAddTask(ChallengesDetailViewModel viewModel)
         {
@@ -262,6 +346,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public async Task<IActionResult> AddTask(ChallengesDetailViewModel viewModel)
         {
@@ -285,6 +370,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public IActionResult OpenModifyTask(ChallengesDetailViewModel viewModel, int taskId)
         {
@@ -294,6 +380,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public async Task<IActionResult> ModifyTask(ChallengesDetailViewModel viewModel)
         {
@@ -316,6 +403,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
         {
@@ -326,6 +414,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public async Task<IActionResult>
             DecreaseTaskSort(ChallengesDetailViewModel viewModel, int id)
@@ -337,6 +426,7 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
 
+        [Authorize(Policy = Policy.EditChallenges)]
         [HttpPost]
         public async Task<IActionResult>
             IncreaseTaskSort(ChallengesDetailViewModel viewModel, int id)

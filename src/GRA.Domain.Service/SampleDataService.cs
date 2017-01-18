@@ -77,6 +77,7 @@ namespace GRA.Domain.Service
                 Description = "This is a challenge encourging you to get along with others!",
                 IsActive = false,
                 IsDeleted = false,
+                IsValid = true,
                 PointsAwarded = 10,
                 TasksToComplete = 2,
                 RelatedBranchId = user.BranchId
@@ -109,6 +110,7 @@ namespace GRA.Domain.Service
                 Description = "Read some excellent science fiction!",
                 IsActive = false,
                 IsDeleted = false,
+                IsValid = true,
                 PointsAwarded = 10,
                 TasksToComplete = 2,
                 RelatedBranchId = user.BranchId

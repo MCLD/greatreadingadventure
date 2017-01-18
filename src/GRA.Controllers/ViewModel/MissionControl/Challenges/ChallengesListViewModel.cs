@@ -13,5 +13,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public int SystemCount { get; set; }
         public int BranchCount { get; set; }
         public int MineCount { get; set; }
+        public bool CanAddChallenges { get; set; }
+        public bool CanDeleteChallenges { get; set; }
+        public bool CanEditChallenges { get; set; }
     }
 }

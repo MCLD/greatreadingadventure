@@ -11,5 +11,6 @@ namespace GRA.Controllers.ViewModel.Challenges
         public IEnumerable<GRA.Domain.Model.Challenge> Challenges { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
+        public bool IsActive { get; set; }
     }
 }

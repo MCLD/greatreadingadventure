@@ -230,7 +230,7 @@ namespace GRA.Domain.Service
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
 
-            var challenge = await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
+            var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
 
             if (challenge.IsCompleted == true)
             {
@@ -242,7 +242,7 @@ namespace GRA.Domain.Service
                 challengeTasks);
 
             // re-fetch challenge with tasks completed
-            challenge = await _challengeRepository.GetByIdAsync(challengeId, activeUserId);
+            challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
 
             // loop tasks to see if we need to perform any additional point translation/book tasks
             foreach (var updateStatus in updateStatuses)
