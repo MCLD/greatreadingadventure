@@ -24,6 +24,7 @@ namespace GRA.Domain.Model
         public string NotificationSubject { get; set; }
         [DisplayName("Mail Message")]
         public string NotificationMessage { get; set; }
+        public bool IsArchived { get; set; }
 
         public DrawingCriterion DrawingCriterion { get; set; }
         public IEnumerable<DrawingWinner> Winners { get; set; }

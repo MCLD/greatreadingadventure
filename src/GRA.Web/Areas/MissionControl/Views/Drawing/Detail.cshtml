@@ -123,14 +123,21 @@
                     </a>
                 </td>
                 <td>
-                    <button type="button"
-                            class="btn btn-danger btn-xs"
-                            data-toggle="modal"
-                            data-target="#deleteModal"
-                            data-id="@winner.UserId"
-                            data-name="@winner.UserFirstName @winner.UserLastName">
-                        <span class="fa fa-remove" aria-hidden="true"></span>
-                    </button>
+                    @if (!winner.RedeemedAt.HasValue)
+                    {
+                        <button type="button"
+                                class="btn btn-danger btn-xs"
+                                data-toggle="modal"
+                                data-target="#deleteModal"
+                                data-id="@winner.UserId"
+                                data-name="@winner.UserFirstName @winner.UserLastName">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                        </button>
+                    }
+                    else
+                    {
+                        @:&nbsp;
+                    }
                 </td>
             </tr>
         }

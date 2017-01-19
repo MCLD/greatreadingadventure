@@ -18,12 +18,12 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<Drawing>> PageAllAsync(int siteId, int skip, int take)
+        public async Task<IEnumerable<Drawing>> PageAllAsync(int siteId, int skip, int take, bool archived)
         {
             return await DbSet
                     .AsNoTracking()
                     .Include(_ => _.DrawingCriterion)
-                    .Where(_ => _.DrawingCriterion.SiteId == siteId)
+                    .Where(_ => _.DrawingCriterion.SiteId == siteId && _.IsArchived == archived)
                     .OrderByDescending(_ => _.Id)
                     .Skip(skip)
                     .Take(take)
@@ -31,12 +31,12 @@ namespace GRA.Data.Repository
                     .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId)
+        public async Task<int> GetCountAsync(int siteId, bool archived)
         {
             return await DbSet
                 .AsNoTracking()
                 .Include(_ => _.DrawingCriterion)
-                .Where(_ => _.DrawingCriterion.SiteId == siteId)
+                .Where(_ => _.DrawingCriterion.SiteId == siteId && _.IsArchived == archived)
                 .CountAsync();
         }
 
@@ -97,6 +97,15 @@ namespace GRA.Data.Repository
                 .Where(_ => _.UserId == userId)
                 .ProjectTo<DrawingWinner>()
                 .CountAsync();
+        }
+
+        public async Task<DrawingWinner> GetDrawingWinnerById(int drawingId, int userId)
+        {
+            return await _context.DrawingWinners
+                .AsNoTracking()
+                .Where(_ => _.DrawingId == drawingId && _.UserId == userId)
+                .ProjectTo<DrawingWinner>()
+                .SingleOrDefaultAsync();
         }
 
         public async Task RedeemWinnerAsync(int drawingId, int userId)
@@ -165,6 +174,16 @@ namespace GRA.Data.Repository
         {
             await _context.DrawingWinners
                 .AddAsync(_mapper.Map<Model.DrawingWinner>(winner));
+        }
+
+        public async Task SetArchivedAsync(int userId, int drawingId, bool archive)
+        {
+            var drawing = _mapper.Map<Model.Drawing, Drawing>(await DbSet.Where(_ => _.Id == drawingId).SingleOrDefaultAsync());
+            if (drawing != null)
+            {
+                drawing.IsArchived = archive;
+                await UpdateSaveAsync(userId, drawing);
+            }
         }
     }
 }

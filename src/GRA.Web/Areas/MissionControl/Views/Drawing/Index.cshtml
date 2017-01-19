@@ -3,6 +3,14 @@
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a asp-action="Criteria" class="btn btn-default">Drawing Criteria</a>
+        @if (Model.Archived)
+        {
+            <a asp-action="Index" class="btn btn-default">Drawing List</a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-route-FilterBy="Archived" class="btn btn-default">Archived Drawings</a>
+        }
     </div>
 </div>
 

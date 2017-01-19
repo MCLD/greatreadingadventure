@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,12 +31,18 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Drawing";
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string FilterBy, int page = 1)
         {
-            int take = 15;
+            int take = 2;
             int skip = take * (page - 1);
 
-            var drawingList = await _drawingService.GetPaginatedDrawingListAsync(skip, take);
+            bool archived = String.Equals(FilterBy, "Archived", StringComparison.OrdinalIgnoreCase);
+            if (archived)
+            {
+                PageTitle = "Archived Drawings";
+            }
+
+            var drawingList = await _drawingService.GetPaginatedDrawingListAsync(skip, take, archived);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -56,7 +63,8 @@ namespace GRA.Controllers.MissionControl
             DrawingListViewModel viewModel = new DrawingListViewModel()
             {
                 Drawings = drawingList.Data,
-                PaginateModel = paginateModel
+                PaginateModel = paginateModel,
+                Archived = archived
             };
 
             return View(viewModel);
@@ -120,7 +128,14 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RemoveWinner(int drawingId, int winnerId, int page = 1)
         {
-            await _drawingService.RemoveWinnerAsync(drawingId, winnerId);
+            try
+            {
+                await _drawingService.RemoveWinnerAsync(drawingId, winnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete winner: ", gex);
+            }
             return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
 

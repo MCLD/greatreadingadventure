@@ -27,7 +27,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Drawing>>>
-            GetPaginatedDrawingListAsync(int skip, int take)
+            GetPaginatedDrawingListAsync(int skip, int take, bool archived)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
@@ -35,8 +35,8 @@ namespace GRA.Domain.Service
                 int siteId = GetCurrentSiteId();
                 return new DataWithCount<IEnumerable<Drawing>>
                 {
-                    Data = await _drawingRepository.PageAllAsync(siteId, skip, take),
-                    Count = await _drawingRepository.GetCountAsync(siteId)
+                    Data = await _drawingRepository.PageAllAsync(siteId, skip, take, archived),
+                    Count = await _drawingRepository.GetCountAsync(siteId, archived)
                 };
             }
             else
@@ -266,7 +266,21 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.PerformDrawing))
             {
-                await _drawingRepository.RemoveWinnerAsync(drawingId, userId);
+                var winner = await _drawingRepository.GetDrawingWinnerById(drawingId, userId);
+                if (!winner.RedeemedAt.HasValue)
+                {
+                    await _drawingRepository.RemoveWinnerAsync(drawingId, userId);
+                    var winnerCount = await _drawingRepository.GetWinnerCountAsync(drawingId);
+                    if (winnerCount == 0)
+                    {
+                        await _drawingRepository.SetArchivedAsync(authUserId, drawingId, true);
+                    }
+                }
+                else
+                {
+                    _logger.LogError($"User {authUserId} cannot remove user {userId} from drawing {drawingId}.");
+                    throw new GraException("Winners who have claimed their prize cannot be removed.");
+                }
             }
             else
             {

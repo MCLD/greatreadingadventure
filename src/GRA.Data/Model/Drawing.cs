@@ -19,6 +19,7 @@ namespace GRA.Data.Model
         public int WinnerCount { get; set; }
         public string NotificationSubject { get; set; }
         public string NotificationMessage { get; set; }
+        public bool IsArchived { get; set; }
 
         public virtual ICollection<DrawingWinner> Winners { get; set; }
     }
