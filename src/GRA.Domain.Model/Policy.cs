@@ -17,6 +17,7 @@
         public const string EditParticipants = "EditParticipants";
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
+        public const string ManageSchools = "ManageSchools";
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
         public const string RemoveChallenges = "RemoveChallenges";

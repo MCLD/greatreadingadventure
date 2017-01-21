@@ -63,7 +63,7 @@ namespace GRA.Domain.Service.Abstract
         protected int GetActiveUserId()
         {
             var userContext = GetUserContext();
-            if(userContext == null
+            if (userContext == null
                || !userContext.User.Identity.IsAuthenticated
                || userContext.ActiveUserId == null)
             {
@@ -85,9 +85,18 @@ namespace GRA.Domain.Service.Abstract
         protected void VerifyCanLog()
         {
             var userContext = GetUserContext();
-            if(userContext.SiteStage != SiteStage.ProgramOpen)
+            if (userContext.SiteStage != SiteStage.ProgramOpen)
             {
                 throw new GraException("The program is not open for activity at this time.");
+            }
+        }
+
+        protected void VerifyPermission(Permission permission)
+        {
+            if (!HasPermission(permission))
+            {
+                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
+                throw new GraException("Permission denied.");
             }
         }
     }

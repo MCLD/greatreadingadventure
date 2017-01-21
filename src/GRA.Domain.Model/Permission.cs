@@ -17,6 +17,7 @@
         EditParticipants,
         LogActivityForAny,
         MailParticipants,
+        ManageSchools,
         PerformDrawing,
         ReadAllMail,
         RemoveChallenges,

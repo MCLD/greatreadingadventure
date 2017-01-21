@@ -57,5 +57,8 @@ namespace GRA.Domain.Model
                 return FirstName + " " + LastName;
             }
         }
+        public int? Age { get; set; }
+        public int? SchoolId { get; set; }
+        public int? EnteredSchoolId { get; set; }
     }
 }

@@ -67,7 +67,9 @@ namespace GRA.Domain.Service
                 Position = programCount++,
                 AgeRequired = true,
                 AskAge = true,
-                SchoolRequired = false
+                SchoolRequired = false,
+                AskSchool = false,
+                AgeMaximumAllowed = 4
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 

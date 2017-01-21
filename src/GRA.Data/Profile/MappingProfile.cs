@@ -15,6 +15,7 @@
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
             CreateMap<Model.DrawingWinner, Domain.Model.DrawingWinner>().ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
+            CreateMap<Model.EnteredSchool, Domain.Model.EnteredSchool>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();
@@ -22,6 +23,9 @@
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>().ReverseMap();
             CreateMap<Model.Role, Domain.Model.Role>().ReverseMap();
+            CreateMap<Model.School, Domain.Model.School>().ReverseMap();
+            CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>().ReverseMap();
+            CreateMap<Model.SchoolType, Domain.Model.SchoolType>().ReverseMap();
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
             CreateMap<Model.StaticAvatar, Domain.Model.StaticAvatar>().ReverseMap();
             CreateMap<Model.System, Domain.Model.System>().ReverseMap();

@@ -17,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
         private readonly ActivityService _activityService;
+        private readonly SchoolService _schoolService;
         public SampleDataService(ILogger<SampleDataService> logger,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
@@ -24,8 +25,8 @@ namespace GRA.Domain.Service
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
             IUserRepository userRepository,
-            ActivityService activityService
-            ) : base(logger)
+            ActivityService activityService,
+            SchoolService schoolService) : base(logger)
         {
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
@@ -36,9 +37,10 @@ namespace GRA.Domain.Service
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
         }
 
-        private int ProgramIdSearch(IEnumerable<Program> programs,  string nameContains)
+        private int ProgramIdSearch(IEnumerable<Program> programs, string nameContains)
         {
             if (programs.Count() == 1)
             {
@@ -47,7 +49,7 @@ namespace GRA.Domain.Service
             var matches = programs
                 .Where(_ => _.Name.Contains(nameContains))
                 .FirstOrDefault();
-            if(matches == null)
+            if (matches == null)
             {
                 return programs.First().Id;
             }
@@ -149,6 +151,16 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
+            var district = await _schoolService.AddDistrict("International Confederation of Wizards");
+            var typeInstitute = await _schoolService.AddSchoolType("Institute");
+            var typeAcademy = await _schoolService.AddSchoolType("Academy");
+            var typeSchool = await _schoolService.AddSchoolType("School of Witchcraft and Wizardry");
+
+            var schoolHogwarts = await _schoolService.AddSchool("Hogwarts", district.Id, typeSchool.Id);
+            await _schoolService.AddSchool("Ilvermorny", district.Id, typeSchool.Id);
+            var schoolBeauxbatons = await _schoolService.AddSchool("Beauxbatons", district.Id, typeAcademy.Id);
+            var schoolDurmstrang = await _schoolService.AddSchool("Durmstrang", district.Id, typeInstitute.Id);
+
             var userCheck = await _userRepository.GetByUsernameAsync("aweasley");
             if (userCheck == null)
             {
@@ -204,6 +216,7 @@ namespace GRA.Domain.Service
                 newUser.FirstName = "Bill";
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Charlie";
+                newUser.SchoolId = schoolHogwarts.Id;
                 newUser.ProgramId = teensProgramId;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Fred";
@@ -212,6 +225,7 @@ namespace GRA.Domain.Service
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Percy";
                 newUser.ProgramId = adultProgramId;
+                newUser.SchoolId = default(int?);
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();
 
@@ -234,6 +248,7 @@ namespace GRA.Domain.Service
                 newUser.ProgramId = kidsProgramId;
                 newUser.FirstName = "Rose";
                 newUser.LastName = "Granger-Weasley";
+                newUser.SchoolId = schoolBeauxbatons.Id;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.ProgramId = prereaderProgramId;
                 newUser.FirstName = "Hugo";
@@ -244,6 +259,7 @@ namespace GRA.Domain.Service
                 newUser.LastName = "Potter";
                 newUser.ProgramId = adultProgramId;
                 newUser.HouseholdHeadUserId = null;
+                newUser.SchoolId = default(int?);
                 var harry = await _userRepository.AddSaveAsync(userId, newUser);
 
                 newUser.FirstName = "Ginevra";
@@ -256,12 +272,14 @@ namespace GRA.Domain.Service
 
                 newUser.FirstName = "James";
                 newUser.ProgramId = teensProgramId;
+                newUser.SchoolId = schoolDurmstrang.Id;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Albus";
                 newUser.ProgramId = kidsProgramId;
+                newUser.SchoolId = schoolHogwarts.Id;
                 await _userRepository.AddAsync(userId, newUser);
                 newUser.FirstName = "Lily";
-                newUser.FirstName = "Lily";
+                newUser.SchoolId = default(int?);
                 await _userRepository.AddAsync(userId, newUser);
                 await _userRepository.SaveAsync();
             }

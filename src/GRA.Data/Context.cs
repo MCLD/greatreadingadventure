@@ -95,6 +95,7 @@ namespace GRA.Data
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingWinner> DrawingWinners { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
+        public DbSet<Model.EnteredSchool> EnteredSchools { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
         public DbSet<Model.Page> Pages { get; set; }
@@ -104,6 +105,9 @@ namespace GRA.Data
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
         public DbSet<Model.RolePermission> RolePermissions { get; set; }
+        public DbSet<Model.School> Schools { get; set; }
+        public DbSet<Model.SchoolDistrict> SchoolDistricts { get; set; }
+        public DbSet<Model.SchoolType> SchoolTypes { get; set; }
         public DbSet<Model.Site> Sites { get; set; }
         public DbSet<Model.StaticAvatar> StaticAvatars { get; set; }
         public DbSet<Model.System> Systems { get; set; }

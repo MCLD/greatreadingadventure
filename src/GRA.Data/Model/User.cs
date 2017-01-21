@@ -50,5 +50,9 @@ namespace GRA.Data.Model
         public int? HouseholdHeadUserId { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
+
+        public int? Age { get; set; }
+        public int? SchoolId { get; set; }
+        public int? EnteredSchoolId { get; set; }
     }
 }

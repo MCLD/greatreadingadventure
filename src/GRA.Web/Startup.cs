@@ -146,6 +146,7 @@ namespace GRA.Web
             services.AddScoped<PageService>();
             services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
+            services.AddScoped<SchoolService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
             services.AddScoped<StaticAvatarService>();
@@ -165,6 +166,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
+            services.AddScoped<Domain.Repository.IEnteredSchoolRepository, Data.Repository.EnteredSchoolRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
             services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
@@ -172,6 +174,9 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
+            services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
+            services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
+            services.AddScoped<Domain.Repository.ISchoolTypeRepository, Data.Repository.SchoolTypeRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.IStaticAvatarRepository, Data.Repository.StaticAvatarRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
