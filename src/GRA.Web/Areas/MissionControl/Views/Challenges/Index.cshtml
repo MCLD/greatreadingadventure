@@ -27,29 +27,50 @@
     </div>
 </div>
 
-<!-- Hide filter and search
-
-<div class="row">
-    <div class="col-xs-12">
-        <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="FilterBy" value=""><a asp-action="Index" asp-route-Search="@Model.Search">All</a></li>
-            <li ActiveBy routeKey="FilterBy" value="System"><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="System">System</a></li>
-            <li ActiveBy routeKey="FilterBy" value="Branch"><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="Branch">Branch</a></li>
-            <li ActiveBy routeKey="FilterBy" value="Mine"><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="Mine">Mine</a></li>
-        </ul>
+@if (Model.ShowNav)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-pills" style="padding: 10px 0;">
+                <li ActiveBy routeKey="FilterBy" value=""><a asp-action="Index" asp-route-Search="@Model.Search">All</a></li>
+                <li ActiveBy routeKey="FilterBy" value="System">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        @(Model.SystemName ?? "System") <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach (var system in Model.SystemList)
+                        {
+                            <li><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="System" asp-route-FilterId="@system.Id">@system.Name</a></li>
+                        }
+                    </ul>
+                </li>
+                <li ActiveBy routeKey="FilterBy" value="Branch">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        @(Model.BranchName ?? "Branch") <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach (var branch in Model.BranchList)
+                        {
+                            <li><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="Branch" asp-route-FilterId="@branch.Id">@branch.Name</a></li>
+                        }
+                    </ul>
+                </li>
+                <li ActiveBy routeKey="FilterBy" value="Mine"><a asp-action="Index" asp-route-Search="@Model.Search" asp-route-FilterBy="Mine">Mine</a></li>
+            </ul>
+        </div>
     </div>
-</div>
+}
 
--->
-
-<form asp-controller="Challenges" asp-route-search="@Model.Search" method="get" role="form">
+<form asp-controller="Challenges" asp-action="Index" method="get" role="form">
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-8">
+            <input asp-for="FilterBy"  type="hidden"/>
+            <input asp-for="FilterId" type="hidden" />
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
             <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-controller="Challenges" class="btn btn-default">Clear</a>
+            <a asp-route-FilterBy="@Model.FilterBy" asp-route-FilterId="@Model.FilterId" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>

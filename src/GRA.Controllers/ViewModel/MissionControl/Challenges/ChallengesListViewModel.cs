@@ -9,12 +9,15 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
         public string FilterBy { get; set; }
-        public int AllCount { get; set; }
-        public int SystemCount { get; set; }
-        public int BranchCount { get; set; }
-        public int MineCount { get; set; }
+        public int? FilterId { get; set; }
+        public string SystemName { get; set; }
+        public string BranchName { get; set; }
+        public bool ShowNav { get; set; }
         public bool CanAddChallenges { get; set; }
         public bool CanDeleteChallenges { get; set; }
         public bool CanEditChallenges { get; set; }
+
+        public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
+        public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
     }
 }

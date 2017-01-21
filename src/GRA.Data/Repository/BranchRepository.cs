@@ -16,7 +16,19 @@ namespace GRA.Data.Repository
             ILogger<BranchRepository> logger) : base(repositoryFacade, logger)
         {
         }
-        public async Task<IEnumerable<Branch>> GetAllAsync(int systemId)
+
+        public async Task<IEnumerable<Branch>> GetAllAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(_ => _.System)
+                .Where(_ => _.System.SiteId == siteId)
+                .OrderBy(_ => _.Name)
+                .ProjectTo<Branch>()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Branch>> GetBySystemAsync(int systemId)
         {
             return await DbSet
                 .AsNoTracking()

@@ -106,6 +106,11 @@ namespace GRA.Web
                     options.AddPolicy(permisisonName.ToString(),
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
                 }
+
+                options.AddPolicy(Domain.Model.Policy.ActivateChallenges, 
+                    _ => _.RequireClaim(ClaimType.Permission, 
+                        Domain.Model.Permission.ActivateAllChallenges.ToString(), 
+                        Domain.Model.Permission.ActivateSystemChallenges.ToString()));
             });
 
             // path validator

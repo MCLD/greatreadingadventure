@@ -12,20 +12,26 @@ namespace GRA.Domain.Service
     public class ChallengeService : Abstract.BaseUserService<ChallengeService>
     {
         private readonly IBadgeRepository _badgeRepository;
+        private readonly IBranchRepository _branchRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
+            IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
-            IChallengeTaskRepository challengeTaskRepository) : base(logger, userContextProvider)
+            IChallengeTaskRepository challengeTaskRepository,
+            IUserRepository userRepository) : base(logger, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
+            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
+            _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
@@ -78,13 +84,39 @@ namespace GRA.Domain.Service
             if (HasPermission(Permission.ViewAllChallenges))
             {
                 int siteId = GetCurrentSiteId();
-                if (filterBy == "User")
+                if (!string.IsNullOrWhiteSpace(filterBy))
                 {
-                    filterId = authUserId;
+                    if (filterBy.Equals("Mine", StringComparison.OrdinalIgnoreCase))
+                    {
+                        filterId = authUserId;
+                    }
+                    else if (filterBy.Equals("Branch", StringComparison.OrdinalIgnoreCase)
+                        && filterId == null)
+                    {
+                        var user = await _userRepository.GetByIdAsync(authUserId);
+                        filterId = user.BranchId;
+                    }
+                    else if (filterBy.Equals("System", StringComparison.OrdinalIgnoreCase)
+                        && filterId == null)
+                    {
+                        var user = await _userRepository.GetByIdAsync(authUserId);
+                        filterId = user.BranchId;
+                    }
+                    else if (filterBy.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                        if (HasPermission(Permission.ActivateAllChallenges)) { }
+                        else if (HasPermission(Permission.ActivateSystemChallenges))
+                        {
+                            filterId = GetClaimId(ClaimType.SystemId);
+                        }
+                        else
+                        {
+                            _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
+                            throw new Exception("Permission denied.");
+                        }
                 }
 
                 var challenges = await _challengeRepository
-                    .PageAllAsync(siteId, skip, take, search, filterBy, filterId);
+                .PageAllAsync(siteId, skip, take, search, filterBy, filterId);
                 await AddBadgeFilenames(challenges);
                 return new DataWithCount<IEnumerable<Challenge>>
                 {
@@ -133,8 +165,19 @@ namespace GRA.Domain.Service
 
         public async Task<Challenge> AddChallengeAsync(Challenge challenge)
         {
+            int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.AddChallenges))
             {
+                if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
+                {
+                    var branch = await _branchRepository
+                        .GetByIdAsync(challenge.LimitToBranchId.Value);
+                    if (branch.SystemId != challenge.LimitToSystemId.Value)
+                    {
+                        _logger.LogError($"User {authUserId} cannot set challenge limitaion branch {challenge.LimitToBranchId.Value} for system {challenge.LimitToSystemId.Value}");
+                        throw new GraException("Invalid branch limitation.");
+                    }
+                }
                 challenge.IsActive = false;
                 challenge.IsDeleted = false;
                 challenge.IsValid = false;
@@ -144,8 +187,7 @@ namespace GRA.Domain.Service
                 return await _challengeRepository
                     .AddSaveAsync(GetClaimId(ClaimType.UserId), challenge);
             }
-            int userId = GetClaimId(ClaimType.UserId);
-            _logger.LogError($"User {userId} doesn't have permission to add a challenge.");
+            _logger.LogError($"User {authUserId} doesn't have permission to add a challenge.");
             throw new Exception("Permission denied.");
         }
 
@@ -154,6 +196,16 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
+                if (challenge.LimitToSystemId.HasValue && challenge.LimitToBranchId.HasValue)
+                {
+                    var branch = await _branchRepository
+                        .GetByIdAsync(challenge.LimitToBranchId.Value);
+                    if (branch.SystemId != challenge.LimitToSystemId.Value)
+                    {
+                        _logger.LogError($"User {authUserId} cannot set challenge limitaion branch {challenge.LimitToBranchId.Value} for system {challenge.LimitToSystemId.Value}");
+                        throw new GraException("Invalid branch limitation.");
+                    }
+                }
                 var currentChallenge = await _challengeRepository.GetByIdAsync(challenge.Id);
                 challenge.SiteId = currentChallenge.SiteId;
                 challenge.RelatedBranchId = currentChallenge.RelatedBranchId;
@@ -178,7 +230,9 @@ namespace GRA.Domain.Service
         public async Task ActivateChallengeAsync(Challenge challenge)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.ActivateChallenges))
+            if (HasPermission(Permission.ActivateAllChallenges)
+                || ((HasPermission(Permission.ActivateSystemChallenges))
+                    && challenge.RelatedSystemId == GetClaimId(ClaimType.SystemId)))
             {
                 if (challenge.IsValid)
                 {
@@ -257,7 +311,8 @@ namespace GRA.Domain.Service
                     .RemoveSaveAsync(GetClaimId(ClaimType.UserId), taskId);
 
                 var challenge = await _challengeRepository.GetByIdAsync(task.ChallengeId);
-                if (challenge.TasksToComplete > challenge.Tasks.Count() && challenge.IsValid)
+                if (challenge.TasksToComplete > challenge.Tasks.Count()
+                    && (challenge.IsValid || challenge.IsActive))
                 {
                     await _challengeRepository.SetValidationAsync(authUserId, challenge.Id, false);
                 }

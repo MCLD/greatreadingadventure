@@ -16,5 +16,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         [DisplayName("Image")]
         public IFormFile BadgeImage { get; set; }
         public bool CanActivate { get; set; }
+
+        public SelectList SystemList { get; set; }
+        public SelectList BranchList { get; set; }
+        public SelectList ProgramList { get; set; }
     }
 }

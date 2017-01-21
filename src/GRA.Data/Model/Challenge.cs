@@ -30,6 +30,10 @@ namespace GRA.Data.Model
         public int PointsAwarded { get; set; }
         public int TasksToComplete { get; set; }
 
+        public int? LimitToSystemId { get; set; }
+        public int? LimitToBranchId { get; set; }
+        public int? LimitToProgramId { get; set; }
+
         public virtual ICollection<ChallengeTask> Tasks { get; set; }
         public int? BadgeId { get; set; }
     }

@@ -3,10 +3,12 @@
     public sealed class Policy
     {
         public const string AccessMissionControl = "AccessMissionControl";
+        public const string ActivateAllChallenges = "ActivateAllChallenges";
+        public const string ActivateChallenges = "ActivateChallenges";
+        public const string ActivateSystemChallenges = "ActivateSystemChallenges";
         public const string AddCategories = "AddCategories";
         public const string AddChallenges = "AddChallenges";
         public const string AddPages = "AddPages";
-        public const string ActivateChallenges = "ActivateChallenges";
         public const string DeleteAnyMail = "DeleteAnyMail";
         public const string DeleteCategories = "DeleteCategories";
         public const string DeletePages = "DeletePages";

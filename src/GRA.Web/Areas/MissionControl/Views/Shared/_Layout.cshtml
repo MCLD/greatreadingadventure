@@ -86,11 +86,8 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Challenges"><span class="fa fa-trophy"></span><span class="visible-xs-inline"> Challenges</span><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Challenges" asp-action="Index">All Challenges</a></li>
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.AddChallenges.ToString()))
-                                {
-                                    <li><a asp-controller="Challenges" asp-action="MyChallenges">My Challenges</a></li>
-                                }
-                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ActivateChallenges.ToString()))
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ActivateAllChallenges.ToString())
+                                    || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ActivateSystemChallenges.ToString()))
                                 {
                                     <li><a asp-controller="Challenges" asp-action="Pending">Pending Challenges</a></li>
                                 }

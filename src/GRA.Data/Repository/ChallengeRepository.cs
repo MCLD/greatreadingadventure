@@ -26,30 +26,7 @@ namespace GRA.Data.Repository
             string filterBy = null,
             int? filterId = null)
         {
-            var challenges = _context.Challenges.AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId);
-
-            if (filterBy == "Active")
-            {
-                challenges = challenges.Where(_ => _.IsActive == true);
-            }
-            else if (filterBy == "User")
-            {
-                challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
-            }
-            else if (filterBy == "Pending")
-            {
-                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
-            }
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                challenges = challenges.Where(_ => _.Name.Contains(search)
-                        || _.Description.Contains(search)
-                        || _.Tasks.Any(_t => _t.Title.Contains(search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(search)));
-            }
+            var challenges = GetChallenges(siteId, search, filterBy, filterId);
 
             return await challenges.OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id)
@@ -64,21 +41,51 @@ namespace GRA.Data.Repository
             string filterBy = null,
             int? filterId = null)
         {
+            var challenges = GetChallenges(siteId, search, filterBy, filterId); 
+
+            return await challenges.CountAsync();
+        }
+
+        private IQueryable<Data.Model.Challenge> GetChallenges(int siteId,
+            string search = null,
+            string filterBy = null,
+            int? filterId = null)
+        {
             var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false
                         && _.SiteId == siteId);
 
-            if (filterBy == "Active")
+            if (!string.IsNullOrWhiteSpace(filterBy))
             {
-                challenges = challenges.Where(_ => _.IsActive == true);
-            }
-            else if (filterBy == "User")
-            {
-                challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
-            }
-            else if (filterBy == "Pending")
-            {
-                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
+                switch (filterBy.ToLower())
+                {
+                    case "active":
+                        challenges = challenges.Where(_ => _.IsActive == true);
+                        break;
+
+                    case "mine":
+                        challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
+                        break;
+
+                    case "branch":
+                        challenges = challenges.Where(_ => _.RelatedBranchId == filterId.Value);
+                        break;
+
+                    case "system":
+                        challenges = challenges.Where(_ => _.RelatedSystemId == filterId.Value);
+                        break;
+
+                    case "pending":
+                        challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
+                        if (filterId.HasValue)
+                        {
+                            challenges = challenges.Where(_ => _.RelatedSystemId == filterId.Value);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             if (!string.IsNullOrEmpty(search))
@@ -89,7 +96,7 @@ namespace GRA.Data.Repository
                         || _.Tasks.Any(_t => _t.Author.Contains(search)));
             }
 
-            return await challenges.CountAsync();
+            return challenges;
         }
 
         public new async Task<Challenge> GetByIdAsync(int id)
@@ -354,6 +361,10 @@ namespace GRA.Data.Repository
             if (challenge != null)
             {
                 challenge.IsValid = valid;
+                if (!valid)
+                {
+                    challenge.IsActive = false;
+                }
                 DbSet.Update(challenge);
                 await base.SaveAsync();
             }

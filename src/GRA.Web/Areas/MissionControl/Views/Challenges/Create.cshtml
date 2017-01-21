@@ -34,6 +34,36 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
+            <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
+                <option value="">No</option>
+            </select>
+            <span asp-validation-for="Challenge.LimitToSystemId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Challenge.LimitToBranchId" class="control-label"></label>
+            <select asp-for="Challenge.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
+                <option value="">No</option>
+            </select>
+            <span asp-validation-for="Challenge.LimitToBranchId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Challenge.LimitToProgramId" class="control-label"></label>
+            <select asp-for="Challenge.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
+                <option value="">No</option>
+            </select>
+            <span asp-validation-for="Challenge.LimitToProgramId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label class="control-label">Add a badge</label>
             <div class="input-group">
                 <label class="input-group-btn">
@@ -94,6 +124,21 @@
                     numFiles = input.get(0).files ? input.get(0).files.length : 1,
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
                 input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $("#Challenge_LimitToSystemId").on("change", function() {
+                var systemId = $(this).val();
+                var branchList = $("#Challenge_LimitToBranchId");
+                var branchId = branchList.val();
+                var url = "@Url.Action("GetBranches")";
+
+                $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+                    branchList.empty();
+                    branchList.append(new Option("No"));
+                    $.each(response, function(index, item) {
+                        branchList.append(new Option(item.text, item.value, item.selected))
+                    });
+                });
             });
 
             $('#Submit').on("click", function(e) {

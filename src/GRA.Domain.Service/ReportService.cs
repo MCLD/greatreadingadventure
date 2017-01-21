@@ -83,7 +83,7 @@ namespace GRA.Domain.Service
                 var result = new List<StatusSummary>();
                 foreach (var systemId in systemIds)
                 {
-                    var branches = await _branchRepository.GetAllAsync(systemId);
+                    var branches = await _branchRepository.GetBySystemAsync(systemId);
                     foreach (var branch in branches)
                     {
                         request.SystemId = systemId;
