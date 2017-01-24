@@ -21,10 +21,11 @@ namespace GRA.Domain.Repository
             string search = default(string),
             string filterBy = default(string),
             int? filterId = null);
-        Task<IEnumerable<int>> PageIdsAsync(
+        Task<DataWithCount<IEnumerable<int>>> PageIdsAsync(
             int siteId,
             int skip,
             int take,
+            int userId,
             string search = default(string));
         Task<IEnumerable<ChallengeTaskUpdateStatus>>
             UpdateUserChallengeTasksAsync(int userId, IEnumerable<ChallengeTask> challengeTasks);

@@ -40,13 +40,14 @@ namespace GRA.Domain.Service
             string search = null)
         {
             ICollection<Challenge> challenges = null;
+            int challengeCount;
             int siteId = GetCurrentSiteId();
             if (GetAuthUser().Identity.IsAuthenticated)
             {
                 var userLookupChallenges = new List<Challenge>();
                 int userId = GetActiveUserId();
-                var challengeIds = await _challengeRepository.PageIdsAsync(siteId, skip, take, search);
-                foreach (var challengeId in challengeIds)
+                var challengeIds = await _challengeRepository.PageIdsAsync(siteId, skip, take, userId, search);
+                foreach (var challengeId in challengeIds.Data)
                 {
                     var challengeStatus = await _challengeRepository.GetActiveByIdAsync(challengeId, userId);
                     int completed = challengeStatus.Tasks.Count(_ => _.IsCompleted == true);
@@ -60,16 +61,18 @@ namespace GRA.Domain.Service
                     userLookupChallenges.Add(challengeStatus);
                 }
                 challenges = userLookupChallenges;
+                challengeCount = challengeIds.Count;
             }
             else
             {
-                challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search, "Active");
+                challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search, "Open");
+                challengeCount = await _challengeRepository.GetChallengeCountAsync(siteId, search, "Open");
             }
             await AddBadgeFilenames(challenges);
             return new DataWithCount<IEnumerable<Challenge>>
             {
                 Data = challenges,
-                Count = await _challengeRepository.GetChallengeCountAsync(siteId, search, "Active")
+                Count = challengeCount
             };
         }
 

@@ -392,7 +392,7 @@
 
             $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
                 branchList.empty();
-                branchList.append(new Option("No"));
+                branchList.append(new Option("No", ""));
                 $.each(response, function(index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected))
                 });

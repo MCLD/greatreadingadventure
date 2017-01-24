@@ -63,6 +63,13 @@ namespace GRA.Data.Repository
                         challenges = challenges.Where(_ => _.IsActive == true);
                         break;
 
+                    case "open":
+                        challenges = challenges.Where(_ => _.IsActive == true 
+                        && _.LimitToSystemId == null 
+                        && _.LimitToBranchId == null 
+                        && _.LimitToProgramId == null);
+                        break;
+
                     case "mine":
                         challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
                         break;
@@ -317,41 +324,59 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<IEnumerable<int>>
-            PageIdsAsync(int siteId, int skip, int take, string search = null)
+        public async Task<DataWithCount<IEnumerable<int>>>
+            PageIdsAsync(int siteId, int skip, int take, int userId, string search = null)
         {
+            var user = await _context.Users.FindAsync(userId);
+
             if (string.IsNullOrEmpty(search))
             {
-                return await DbSet
+                var challenges = DbSet
                     .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId
-                        && _.IsActive == true)
-                    .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .Select(_ => _.Id)
-                    .ToListAsync();
-            }
-            else
-            {
-                return await DbSet
-                    .AsNoTracking()
-                    .Include(_ => _.Tasks)
                     .Where(_ => _.IsDeleted == false
                         && _.SiteId == siteId
                         && _.IsActive == true
+                        && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
+                        && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
+                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId))
+                    .OrderBy(_ => _.Name)
+                    .ThenBy(_ => _.Id);
+                    
+                return new DataWithCount<IEnumerable<int>>()
+                {
+                    Data = await challenges
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(_ => _.Id)
+                    .ToListAsync(),
+                    Count = await challenges.CountAsync()
+                };
+            }
+            else
+            {
+                var challenges = DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.IsDeleted == false
+                        && _.SiteId == siteId
+                        && _.IsActive == true
+                        && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
+                        && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
+                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
                         && (_.Name.Contains(search)
                         || _.Description.Contains(search)
                         || _.Tasks.Any(_t => _t.Title.Contains(search))
                         || _.Tasks.Any(_t => _t.Author.Contains(search))))
                     .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id)
+                    .ThenBy(_ => _.Id);
+                return new DataWithCount<IEnumerable<int>>()
+                {
+                    Data = await challenges
                     .Skip(skip)
                     .Take(take)
                     .Select(_ => _.Id)
-                    .ToListAsync();
+                    .ToListAsync(),
+                    Count = await challenges.CountAsync()
+                };
             }
         }
 
