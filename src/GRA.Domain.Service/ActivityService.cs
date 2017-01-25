@@ -51,6 +51,12 @@ namespace GRA.Domain.Service
             Book book = null)
         {
             VerifyCanLog();
+
+            if (activityAmountEarned < 0)
+            {
+                throw new GraException($"Cannot log negative activity amounts!");
+            }
+
             if (book != null)
             {
                 if (string.IsNullOrWhiteSpace(book.Title)
@@ -433,6 +439,13 @@ namespace GRA.Domain.Service
             {
                 return await _userRepository.UpdateSaveAsync(activeUserId, earnedUser);
             }
+        }
+
+        public async Task<PointTranslation> GetUserPointTranslationAsync()
+        {
+            var user = await _userRepository.GetByIdAsync(GetActiveUserId());
+            return await _pointTranslationRepository.GetByIdAsync(user.ProgramId);
+
         }
 
         private async Task<User>

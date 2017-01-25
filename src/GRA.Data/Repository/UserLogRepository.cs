@@ -237,14 +237,36 @@ namespace GRA.Data.Repository
                 int earnedSum = earned.ActivityTotal ?? 0;
                 int pointTranslationId = (int)earned.PointTranslationId;
 
-                string description = earnedSum == 1
-                    ? translationLookup[pointTranslationId].ActivityDescription
-                    : translationLookup[pointTranslationId].ActivityDescriptionPlural;
+                string description = translationLookup[pointTranslationId].ActivityDescription;
 
-                result.Add(description, earnedSum);
+                if (result.ContainsKey(description))
+                {
+                    result[description] += earnedSum;
+                }
+                else
+                {
+                    result.Add(description, earnedSum);
+                }
             }
 
-            return result;
+            Dictionary<string, int> namedResult = new Dictionary<string, int>();
+            foreach (var item in result)
+            {
+                if (item.Value > 1)
+                {
+                    var name = translationLookup.Values
+                        .Where(_ => _.ActivityDescription == item.Key)
+                        .Select(_ => _.ActivityDescriptionPlural)
+                        .FirstOrDefault();
+                    namedResult.Add(name, item.Value);
+                }
+                else
+                {
+                    namedResult.Add(item.Key, item.Value);
+                }
+            }
+
+            return namedResult;
         }
 
         public async Task<int> EarnedBadgeCountAsync(StatusSummary request)

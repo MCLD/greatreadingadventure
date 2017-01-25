@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +14,9 @@ namespace GRA.Controllers
 {
     public class HomeController : Base.UserController
     {
+        private const string ActivityErrorMessage = "ActivityErrorMessage";
         private const string AuthorMissingTitle = "AuthorMissingTitle";
+        private const string ModelData = "ModelData";
         private const int BadgesToDisplay = 6;
 
         private readonly ILogger<HomeController> _logger;
@@ -64,17 +67,33 @@ namespace GRA.Controllers
                 {
                     badge.Filename = _pathResolver.ResolveContentPath(badge.Filename);
                 }
+
+                var pointTranslation = await _activityService.GetUserPointTranslationAsync();
                 DashboardViewModel viewModel = new DashboardViewModel()
                 {
                     FirstName = user.FirstName,
                     CurrentPointTotal = user.PointsEarned,
                     AvatarPath = avatar.Filename,
+                    SingleEvent = pointTranslation.IsSingleEvent,
+                    ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data
                 };
+                if (TempData.ContainsKey(ModelData))
+                {
+                    var model = Newtonsoft.Json.JsonConvert
+                        .DeserializeObject<DashboardViewModel>((string)TempData[ModelData]);
+                    viewModel.ActivityAmount = model.ActivityAmount;
+                    viewModel.Title = model.Title;
+                    viewModel.Author = model.Author;
+                }
+                if (TempData.ContainsKey(ActivityErrorMessage))
+                {
+                    ModelState.AddModelError("ActivityAmount", (string)TempData[ActivityErrorMessage]);
+                    viewModel.ActivityAmount = null;
+                }
                 if (TempData.ContainsKey(AuthorMissingTitle))
                 {
-                    viewModel.Author = (string)TempData[AuthorMissingTitle];
-                    ModelState.AddModelError("Title", "Please include the Title of the book");
+                    ModelState.AddModelError("Title", (string)TempData[AuthorMissingTitle]);
                 }
 
                 return View("Dashboard", viewModel);
@@ -140,14 +159,31 @@ namespace GRA.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult LogActivity()
+        {
+            return RedirectToAction("Index");
+        }
+
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> LogBook(DashboardViewModel viewModel)
+        public async Task<IActionResult> LogActivity(DashboardViewModel viewModel)
         {
+            bool valid = true;
+            if (!viewModel.SingleEvent 
+                && (viewModel.ActivityAmount == null || viewModel.ActivityAmount <= 0))
+            {
+                valid = false;
+                TempData[ActivityErrorMessage] = "Please enter a whole number greater than 0.";
+            }
             if (string.IsNullOrWhiteSpace(viewModel.Title)
                 && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
-                TempData[AuthorMissingTitle] = viewModel.Author;
+                valid = false;
+                TempData[AuthorMissingTitle] = "Please include the Title of the book";
+            }
+            if (!valid)
+            {
+                TempData[ModelData] = Newtonsoft.Json.JsonConvert.SerializeObject(viewModel);
             }
             else
             {
@@ -156,7 +192,8 @@ namespace GRA.Controllers
                     Author = viewModel.Author,
                     Title = viewModel.Title
                 };
-                await _activityService.LogActivityAsync(GetActiveUserId(), 1, book);
+                await _activityService
+                    .LogActivityAsync(GetActiveUserId(), viewModel.ActivityAmount ?? 1, book);
             }
             return RedirectToAction("Index");
         }
