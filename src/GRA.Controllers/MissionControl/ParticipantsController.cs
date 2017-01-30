@@ -446,7 +446,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view participant's books: ", gex);
+                ShowAlertWarning("Unable to add book for participant: ", gex);
                 return RedirectToAction("Index");
             }
         }
@@ -774,8 +774,6 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-
-
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 

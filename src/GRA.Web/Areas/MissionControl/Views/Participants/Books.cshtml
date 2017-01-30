@@ -51,7 +51,7 @@
                                 <th>Date</th>
                                 <th>Title</th>
                                 <th>Author</th>
-                                <th width="80">&nbsp;</th>
+                                <th width="100">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,7 +80,7 @@
                                                 asp-action="EditBook"
                                                 asp-route-listId="@i"
                                                 class="btn btn-primary btn-xs editBook">
-                                            <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                            <span class="fa fa-2x fa-save" aria-hidden="true"></span>
                                         </button>
                                         <button type="button"
                                                 class="btn btn-danger btn-xs"
@@ -89,7 +89,7 @@
                                                 data-target="#deleteModal"
                                                 data-id="@Model.Books[i].Id"
                                                 data-name="@Model.Books[i].Title">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                            <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>
                                 </tr>

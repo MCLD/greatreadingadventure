@@ -7,5 +7,8 @@ namespace GRA.Domain.Repository
     public interface ISchoolTypeRepository : IRepository<SchoolType>
     {
         Task<ICollection<SchoolType>> GetAllAsync(int siteId, int? districtId = default(int?));
+        Task<DataWithCount<ICollection<SchoolType>>> GetPaginatedListAsync(int siteId,
+            int skip,
+            int take);
     }
 }

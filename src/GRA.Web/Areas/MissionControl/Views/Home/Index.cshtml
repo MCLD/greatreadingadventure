@@ -22,7 +22,7 @@
     <div class="col-sm-2">
         <div class="ataglance-pill ataglance-pill-steelblue">
             <span class="fa fa-shield fa-2x"></span><br />
-            @Model.FilteredStatus.BadgesEarned.ToString("N0") badges
+            @Model.SiteStatus.BadgesEarned.ToString("N0") badges
         </div>
     </div>
     @foreach (var item in Model.SiteStatus.ActivityEarnings)

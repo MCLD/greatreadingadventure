@@ -33,7 +33,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(string FilterBy, int page = 1)
         {
-            int take = 2;
+            int take = 15;
             int skip = take * (page - 1);
 
             bool archived = String.Equals(FilterBy, "Archived", StringComparison.OrdinalIgnoreCase);

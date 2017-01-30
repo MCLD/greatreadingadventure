@@ -47,5 +47,36 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .AnyAsync(_ => _.SiteId == siteId && _.SchoolId == schoolId);
         }
+
+        public async Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(int siteId,
+            int skip,
+            int take,
+            int? districtId = default(int?),
+            int? typeId = default(int?))
+        {
+            var schoolList = DbSet
+                .AsNoTracking();
+
+            if (districtId != null)
+            {
+                schoolList = schoolList.Where(_ => _.SchoolDistrictId == (int)districtId);
+            }
+
+            if (typeId != null)
+            {
+                schoolList = schoolList.Where(_ => _.SchoolTypeId == (int)typeId);
+            }
+
+            return new DataWithCount<ICollection<School>>()
+            {
+                Data = await schoolList
+                    .OrderBy(_ => _.Name)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<School>()
+                    .ToListAsync(),
+                Count = await schoolList.CountAsync()
+            };
+        }
     }
 }

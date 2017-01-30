@@ -35,10 +35,15 @@ namespace GRA.Controllers.Helper
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
             var routeData = url.ActionContext.RouteData.Values;
             string routeValue = routeData[routeKey] as string ?? url.ActionContext.HttpContext.Request.Query[routeKey].ToString();
-            
-            if (String.Equals(value, routeValue, StringComparison.OrdinalIgnoreCase))
+
+            string[] valueList = value.Split(',');
+
+            foreach (var item in valueList)
             {
-                output.Attributes.Add("class", "active");
+                if (String.Equals(item.Trim(), routeValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    output.Attributes.Add("class", "active");
+                }
             }
             output.Attributes.Remove(new TagHelperAttribute("ActiveBy"));
         }

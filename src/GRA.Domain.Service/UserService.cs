@@ -277,18 +277,14 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<Book>>>
+        public async Task<DataWithCount<ICollection<Book>>>
             GetPaginatedUserBookListAsync(int userId, int skip, int take)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                return new DataWithCount<IEnumerable<Book>>
-                {
-                    Data = await _bookRepository.GetForUserAsync(userId),
-                    Count = await _bookRepository.GetCountForUserAsync(userId)
-                };
+                return await _bookRepository.GetPaginatedListForUserAsync(userId, skip, take);
             }
             else
             {

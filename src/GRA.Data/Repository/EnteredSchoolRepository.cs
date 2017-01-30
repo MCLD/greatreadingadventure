@@ -5,6 +5,8 @@ using GRA.Domain.Repository;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using AutoMapper.QueryableExtensions;
 
 namespace GRA.Data.Repository
 {
@@ -31,6 +33,25 @@ namespace GRA.Data.Repository
             _context.Users.UpdateRange(users);
 
             await RemoveSaveAsync(userId, enteredSchoolId);
+        }
+
+        public async Task<DataWithCount<ICollection<EnteredSchool>>> GetPaginatedListAsync(int siteId,
+            int skip,
+            int take)
+        {
+            var schoolList = DbSet
+                .AsNoTracking();
+
+            return new DataWithCount<ICollection<EnteredSchool>>()
+            {
+                Data = await schoolList
+                    .OrderBy(_ => _.Name)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<EnteredSchool>()
+                    .ToListAsync(),
+                Count = await schoolList.CountAsync()
+            };
         }
     }
 }

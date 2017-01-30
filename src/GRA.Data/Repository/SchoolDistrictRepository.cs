@@ -26,5 +26,24 @@ namespace GRA.Data.Repository
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();
         }
+
+        public async Task<DataWithCount<ICollection<SchoolDistrict>>> GetPaginatedListAsync(int siteId,
+            int skip,
+            int take)
+        {
+            var districtList = DbSet
+                .AsNoTracking();
+
+            return new DataWithCount<ICollection<SchoolDistrict>>()
+            {
+                Data = await districtList
+                    .OrderBy(_ => _.Name)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<SchoolDistrict>()
+                    .ToListAsync(),
+                Count = await districtList.CountAsync()
+            };
+        }
     }
 }

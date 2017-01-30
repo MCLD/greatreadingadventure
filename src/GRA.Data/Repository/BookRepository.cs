@@ -64,5 +64,26 @@ namespace GRA.Data.Repository
             _context.UserBooks.Remove(joinRecord);
             await RemoveSaveAsync(requestedByUserId, bookId);
         }
+
+        public async Task<DataWithCount<ICollection<Book>>> GetPaginatedListForUserAsync(int userId,
+            int skip,
+            int take)
+        {
+            var books = _context.UserBooks
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.Book);
+
+            return new DataWithCount<ICollection<Book>>()
+            {
+                Data = await books
+                    .OrderBy(_ => _.CreatedAt)
+                    .Skip(skip)
+                    .Take(take)
+                    .ProjectTo<Book>()
+                    .ToListAsync(),
+                Count = await books.CountAsync()
+            };
+        }
     }
 }

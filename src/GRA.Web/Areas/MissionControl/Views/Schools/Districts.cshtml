@@ -1,0 +1,174 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Schools.DistrictListViewModel
+
+@Html.Partial("_SchoolsPartial")
+
+<div class="row">
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Schools" asp-action="AddDistrict" method="post" role="form" style="display:inline">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addModalLabel">Add district</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="District.Name" class="control-label"></label>
+                            <input asp-for="District.Name" class="form-control" />
+                            <span asp-validation-for="District.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Schools" asp-action="EditDistrict" method="post" role="form" style="display:inline">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">Edit district</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="District_Id" name="District.Id" type="hidden" />
+                            <label asp-for="District.Name" class="control-label"></label>
+                            <input asp-for="District.Name" class="form-control" />
+                            <span asp-validation-for="District.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete district</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="Schools" asp-action="DeleteDistrict" method="post" role="form" style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a class="btn btn-default"
+           data-toggle="modal"
+           data-target="#addModal">Add a School District</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.SchoolDistricts.Count() == 0)
+        {
+            <div class="alert alert-warning">No School Districts</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th width="100">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var district in Model.SchoolDistricts)
+                        {
+                            <tr>
+                                <td>
+                                    @district.Name
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="@district.Id"
+                                            data-name="@district.Name">
+                                        <span class="fa fa-2x fa-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            style="margin-left:16px;"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@district.Id"
+                                            data-name="@district.Name">
+                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $('#editModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#editModalLabel').text('Edit district - "' + name + '"');
+            modal.find('#District_Id').val(id);
+            modal.find('#District_Name').val(name);
+        })
+
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to delete the school district "' + name + '" ?');
+            modal.find('#Id').val(id);
+        })
+    </script>
+}
