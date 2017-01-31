@@ -19,8 +19,6 @@ namespace GRA.Data.Model
         [Required]
         public DateTime StartsAt { get; set; }
         [Required]
-        public DateTime EndsAt { get; set; }
-        [Required]
         public bool AllDay { get; set; }
 
         [Required]
@@ -37,5 +35,6 @@ namespace GRA.Data.Model
         public int? AtLocationId { get; set; }
 
         public int? ProgramId { get; set; }
+        public int? ParentEventId { get; set; }
     }
 }
