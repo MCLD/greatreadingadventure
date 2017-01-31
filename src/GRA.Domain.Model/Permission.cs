@@ -18,6 +18,8 @@
         EditParticipants,
         LogActivityForAny,
         MailParticipants,
+        ManageEvents,
+        ManageLocations,
         ManageSchools,
         PerformDrawing,
         ReadAllMail,

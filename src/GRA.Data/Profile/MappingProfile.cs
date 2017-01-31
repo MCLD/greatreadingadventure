@@ -16,6 +16,8 @@
             CreateMap<Model.DrawingWinner, Domain.Model.DrawingWinner>().ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
             CreateMap<Model.EnteredSchool, Domain.Model.EnteredSchool>().ReverseMap();
+            CreateMap<Model.Event, Domain.Model.Event>().ReverseMap();
+            CreateMap<Model.Location, Domain.Model.Location>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();
             CreateMap<Model.Page, Domain.Model.Page>().ReverseMap();

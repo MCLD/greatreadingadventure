@@ -96,6 +96,8 @@ namespace GRA.Data
         public DbSet<Model.DrawingWinner> DrawingWinners { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.EnteredSchool> EnteredSchools { get; set; }
+        public DbSet<Model.Event> Events { get; set; }
+        public DbSet<Model.Location> Locations { get; set; }
         public DbSet<Model.Mail> Mails { get; set; }
         public DbSet<Model.Notification> Notifications { get; set; }
         public DbSet<Model.Page> Pages { get; set; }
