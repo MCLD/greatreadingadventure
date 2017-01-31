@@ -14,6 +14,7 @@
         {
             <div class="alert alert-warning">Click below to create a household</div>
             <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+            <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
         }
         else
         {
@@ -131,6 +132,7 @@
             @if (Model.AuthUserIsHead)
             {
                 <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
             }
         }
     </div>

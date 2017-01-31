@@ -136,7 +136,7 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                RedirectToAction("Household");
+                return RedirectToAction("Household");
             }
 
             var userBase = new User()
@@ -170,7 +170,7 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
-                RedirectToAction("Household");
+                return RedirectToAction("Household");
             }
 
             if (ModelState.IsValid)
@@ -190,6 +190,43 @@ namespace GRA.Controllers
 
                 return View("HouseholdAdd", model);
             }
+        }
+
+        public async Task<IActionResult> AddExistingParticipant()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                return RedirectToAction("Household");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddExistingParticipant(HouseholdExistingViewModel model)
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                return RedirectToAction("Household");
+            }
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string addedMembers = await _userService
+                        .AddParticipantToHouseholdAsync(model.Username, model.Password);
+                    ShowAlertSuccess(addedMembers + " has been added to your household");
+                    return RedirectToAction("Household");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Could not add participant to household: ", gex.Message);
+                }
+            }
+                return View(model);
         }
 
         public IActionResult RegisterHouseholdMember()

@@ -449,6 +449,46 @@ namespace GRA.Domain.Service
             await _notificationRepository.RemoveByUserId(GetActiveUserId());
         }
 
+        public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
+        {
+            var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                throw new GraException("Only a household head can add members");
+            }
+
+            var authenticationResult = await _userRepository.AuthenticateUserAsync(username, password);
+            if (!authenticationResult.PasswordIsValid)
+            {
+                throw new GraException("The username and password entered do not match");
+            }
+            if (authenticationResult.User.Id == authUser.Id)
+            {
+                throw new GraException("You cannot add yourself");
+            }
+            bool hasFamily = false;
+            if (authenticationResult.User.HouseholdHeadUserId == null)
+            {
+                var household = await _userRepository
+                    .GetHouseholdAsync(authenticationResult.User.Id);
+                foreach (var member in household)
+                {
+                    hasFamily = true;
+                    member.HouseholdHeadUserId = authUser.Id;
+                    await _userRepository.UpdateSaveAsync(authUser.Id, member);
+                }
+            }
+            authenticationResult.User.HouseholdHeadUserId = authUser.Id;
+            await _userRepository.UpdateSaveAsync(authUser.Id, authenticationResult.User);
+            string addedMembers = authenticationResult.User.FullName;
+            if (hasFamily)
+            {
+                addedMembers += " and their household";
+            }
+            return addedMembers;
+
+        }
+
         private async Task<bool> UserHasRoles(int userId)
         {
             var roles = await _roleRepository.GetPermisisonNamesForUserAsync(userId);

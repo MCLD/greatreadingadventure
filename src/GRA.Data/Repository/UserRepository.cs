@@ -297,5 +297,18 @@ namespace GRA.Data.Repository
                 .Select(_ => _.Id)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
+                .Where(_ => _.IsDeleted == false
+                       && _.HouseholdHeadUserId == householdHeadUserId)
+                .ProjectTo<User>()
+                .ToListAsync();
+        }
     }
 }

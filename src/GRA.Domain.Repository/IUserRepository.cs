@@ -23,5 +23,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Model.User>>
             PageHouseholdAsync(int householdHeadUserId, int skip, int take);
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
+        Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId);
     }
 }
