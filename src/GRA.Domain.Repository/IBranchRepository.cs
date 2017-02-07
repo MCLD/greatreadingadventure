@@ -8,5 +8,6 @@ namespace GRA.Domain.Repository
     {
         Task<IEnumerable<Branch>> GetAllAsync(int siteId);
         Task<IEnumerable<Branch>> GetBySystemAsync(int systemId);
+        Task<bool> ValidateAsync(int branchId, int systemId);
     }
 }

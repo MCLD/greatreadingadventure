@@ -37,5 +37,13 @@ namespace GRA.Data.Repository
                 .ProjectTo<Branch>()
                 .ToListAsync();
         }
+
+        public async Task<bool> ValidateAsync(int branchId, int systemId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == branchId && _.SystemId == systemId)
+                .AnyAsync();
+        }
     }
 }

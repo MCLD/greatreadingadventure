@@ -388,9 +388,9 @@
             var systemId = $(this).val();
             var branchList = $("#Challenge_LimitToBranchId");
             var branchId = branchList.val();
-            var url = "@Url.Action("GetBranches")";
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
                 branchList.empty();
                 branchList.append(new Option("No", ""));
                 $.each(response, function(index, item) {

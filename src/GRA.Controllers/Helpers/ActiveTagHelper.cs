@@ -42,7 +42,16 @@ namespace GRA.Controllers.Helper
             {
                 if (String.Equals(item.Trim(), routeValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    output.Attributes.Add("class", "active");
+                    var existingClass = output.Attributes.FirstOrDefault(f => f.Name == "class");
+                    var cssClass = string.Empty;
+                    if (existingClass != null)
+                    {
+                        cssClass = existingClass.Value.ToString();
+                        output.Attributes.Remove(existingClass);
+                    }
+                    cssClass = cssClass + " active";
+                    var ta = new TagHelperAttribute("class", cssClass);
+                    output.Attributes.Add(ta);
                 }
             }
             output.Attributes.Remove(new TagHelperAttribute("ActiveBy"));

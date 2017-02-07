@@ -28,13 +28,15 @@ namespace GRA.Data.Repository
                     .OrderBy(_ => _.Name)
                     .ProjectTo<SchoolType>()
                     .ToListAsync();
-            } else
+            }
+            else
             {
                 return await _context.Schools
                     .AsNoTracking()
                     .Where(_ => _.SchoolDistrictId == (int)districtId)
                     .Select(_ => _.SchoolType)
-                    .OrderBy(_=> _.Name)
+                    .Distinct()
+                    .OrderBy(_ => _.Name)
                     .ProjectTo<SchoolType>()
                     .ToListAsync();
             }

@@ -78,5 +78,13 @@ namespace GRA.Data.Repository
                 Count = await schoolList.CountAsync()
             };
         }
+
+        public async Task<bool> ValidateAsync(int schoolId, int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == schoolId && _.SiteId == siteId)
+                .AnyAsync();
+        }
     }
 }

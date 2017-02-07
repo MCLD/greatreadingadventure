@@ -259,6 +259,7 @@ namespace GRA.Data.Repository
                 .Include(_ => _.Branch)
                 .Include(_ => _.Program)
                 .Include(_ => _.System)
+                .Include(_ => _.EnteredSchool)
                 .Where(_ => _.Id == id && _.IsDeleted == false)
                 .ProjectTo<User>()
                 .SingleOrDefaultAsync();

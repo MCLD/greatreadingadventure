@@ -176,3 +176,14 @@ ul.navbar-nav li.active {
 .validation-summary-valid {
     display: none;
 }
+
+.join-header {
+    color: lightgrey;
+    font-size: 20px;
+    text-align: center;
+}
+
+.join-header .active {
+    color: black;
+    font-weight: bold;
+}

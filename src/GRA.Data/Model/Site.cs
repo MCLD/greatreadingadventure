@@ -43,5 +43,8 @@ namespace GRA.Data.Model
         public bool CollectPreregistrationEmails { get; set; }
         [MaxLength(150)]
         public string MetaDescription { get; set; }
+
+        public bool RequirePostalCode { get; set; }
+        public bool SinglePageSignUp { get; set; }
     }
 }

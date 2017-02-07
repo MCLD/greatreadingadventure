@@ -30,9 +30,9 @@ namespace GRA.Controllers
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, int page = 1, string sitePath = null)
+        public async Task<IActionResult> Index(string Search, int page = 1)
         {
-            int siteId = GetCurrentSiteId(sitePath);
+            int siteId = GetCurrentSiteId();
             int take = 15;
             int skip = take * (page - 1);
 
@@ -93,7 +93,7 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Detail(int id, string sitePath = null)
+        public async Task<IActionResult> Detail(int id)
         {
             Challenge challenge = new Domain.Model.Challenge();
             try

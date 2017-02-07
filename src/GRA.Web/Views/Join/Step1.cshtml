@@ -1,0 +1,98 @@
+﻿@model GRA.Controllers.ViewModel.Join.Step1ViewModel
+
+@Html.Partial("_MultiStepPartial")
+
+<form asp-controller="Join" asp-action="Step1" method="post" role="form" novalidate>
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead"><grasite property="name"></grasite> - Join Now!</span>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @if (Model.RequirePostalCode)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="PostalCode" class="control-label"></label>
+                                <input asp-for="PostalCode" class="form-control" />
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.SystemList.Count() > 1)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="SystemId" class="control-label"></label>
+                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="SystemId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <input asp-for="SystemId" type="hidden" />
+                    }
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="BranchId" class="control-label"></label>
+                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Next Step <span class="fa fa-arrow-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $("#SystemId").on("change", function() {
+            var systemId = $(this).val();
+            var branchList = $("#BranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function(response) {
+                branchList.empty();
+                if (response.length > 1)
+                {
+                    branchList.append(new Option("", "-1"));
+                }
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected))
+                });
+            });
+        });
+    </script>
+}

@@ -17,5 +17,7 @@ namespace GRA.Domain.Repository
             int take,
             int? districtId = default(int?),
             int? typeId = default(int?));
+
+        Task<bool> ValidateAsync(int schoolId, int siteId);
     }
 }

@@ -34,17 +34,21 @@ namespace GRA.Domain.Model
         [Phone]
         [MaxLength(15)]
         public string PhoneNumber { get; set; }
+        [DisplayName("Zip Code")]
         [MaxLength(32)]
         public string PostalCode { get; set; }
         [MaxLength(64)]
         public string CardNumber { get; set; }
         public DateTime? LastAccess { get; set; }
         [DisplayName("Branch")]
+        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
         public int BranchId { get; set; }
         [DisplayName("System")]
+        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
         public int SystemId { get; set; }
         public int PointsEarned { get; set; }
         [DisplayName("Program")]
+        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
         public int ProgramId { get; set; }
         public string StaticAvatarFilename { get; set; }
         public int? AvatarId { get; set; }
@@ -58,7 +62,10 @@ namespace GRA.Domain.Model
             }
         }
         public int? Age { get; set; }
+        [DisplayName("School")]
         public int? SchoolId { get; set; }
         public int? EnteredSchoolId { get; set; }
+        [DisplayName("School Name")]
+        public string EnteredSchoolName { get; set; }
     }
 }

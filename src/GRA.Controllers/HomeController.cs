@@ -44,7 +44,7 @@ namespace GRA.Controllers
             _userService = Require.IsNotNull(userService, nameof(userService));
         }
 
-        public async Task<IActionResult> Index(string sitePath = null)
+        public async Task<IActionResult> Index()
         {
             var site = await GetCurrentSiteAsync();
             if (site != null)

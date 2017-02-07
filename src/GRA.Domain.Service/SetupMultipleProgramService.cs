@@ -69,7 +69,7 @@ namespace GRA.Domain.Service
                 AskAge = true,
                 SchoolRequired = false,
                 AskSchool = false,
-                AgeMaximumAllowed = 4
+                AgeMaximum = 4
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 
@@ -96,7 +96,9 @@ namespace GRA.Domain.Service
                 AgeRequired = true,
                 AskAge = true,
                 SchoolRequired = true,
-                AskSchool = true
+                AskSchool = true,
+                AgeMaximum = 11,
+                AgeMinimum = 5
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 
@@ -112,7 +114,9 @@ namespace GRA.Domain.Service
                 AgeRequired = true,
                 AskAge = true,
                 SchoolRequired = false,
-                AskSchool = true
+                AskSchool = true,
+                AgeMaximum = 17,
+                AgeMinimum = 12
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 
@@ -128,7 +132,8 @@ namespace GRA.Domain.Service
                 AgeRequired = false,
                 AskAge = false,
                 SchoolRequired = false,
-                AskSchool = false
+                AskSchool = false,
+                AgeMinimum = 18
             };
             program = await _programRepository.AddSaveAsync(userId, program);
 

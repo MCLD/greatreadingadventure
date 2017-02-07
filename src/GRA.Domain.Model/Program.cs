@@ -26,8 +26,8 @@ namespace GRA.Domain.Model
 
         public string FromEmailName { get; set; }
         public string FromEmailAddress { get; set; }
-        public int? AgeMaximumAllowed { get; set; }
-        public int? AgeMinimumAllowed { get; set; }
+        public int? AgeMaximum { get; set; }
+        public int? AgeMinimum { get; set; }
 
     }
 }

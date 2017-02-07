@@ -141,15 +141,15 @@ namespace GRA.Controllers.Base
             return new UserClaimLookup(AuthUser).GetId(claimType);
         }
 
-        protected int GetCurrentSiteId(string sitePath = null)
+        protected int GetCurrentSiteId()
         {
             var context = _userContextProvider.GetContext();
             return context.SiteId;
         }
 
-        protected async Task<Site> GetCurrentSiteAsync(string sitePath = null)
+        protected async Task<Site> GetCurrentSiteAsync()
         {
-            return await _siteLookupService.GetByIdAsync(GetCurrentSiteId(sitePath));
+            return await _siteLookupService.GetByIdAsync(GetCurrentSiteId());
         }
 
         protected int GetActiveUserId()

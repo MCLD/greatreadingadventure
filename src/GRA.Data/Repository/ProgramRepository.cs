@@ -25,5 +25,13 @@ namespace GRA.Data.Repository
                .ProjectTo<Program>()
                .ToListAsync();
         }
+
+        public async Task<bool> ValidateAsync(int programId, int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == programId && _.SiteId == siteId)
+                .AnyAsync();
+        }
     }
 }

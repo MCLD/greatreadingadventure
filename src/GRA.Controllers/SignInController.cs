@@ -24,9 +24,9 @@ namespace GRA.Controllers
             PageTitle = "Sign In";
         }
 
-        public async Task<IActionResult> Index(string sitePath = null, string ReturnUrl = null)
+        public async Task<IActionResult> Index(string ReturnUrl = null)
         {
-            var site = await GetCurrentSiteAsync(sitePath);
+            var site = await GetCurrentSiteAsync();
             PageTitle = $"Sign In to {site.Name}";
 
             SignInViewModel viewModel = new SignInViewModel();
@@ -35,7 +35,7 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(SignInViewModel model, string sitePath = null)
+        public async Task<IActionResult> Index(SignInViewModel model)
         {
             if (ModelState.IsValid)
             {

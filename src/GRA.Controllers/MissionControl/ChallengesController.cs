@@ -526,24 +526,5 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
         }
         #endregion
-
-        public async Task<JsonResult> GetBranches(int? systemId, int? branchId)
-        {
-            if (systemId.HasValue)
-            {
-                var branchList = (await _siteService
-                    .GetBranches(systemId.Value))
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                return Json(new SelectList(branchList, "Id", "Name", branchId));
-            }
-            else
-            {
-                var branchList = (await _siteService.GetAllBranches())
-                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                    .ThenBy(_ => _.Name);
-                return Json(new SelectList(branchList, "Id", "Name", branchId));
-            }
-        }
     }
 }

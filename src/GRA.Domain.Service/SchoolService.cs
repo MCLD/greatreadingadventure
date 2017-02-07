@@ -50,6 +50,19 @@ namespace GRA.Domain.Service
             return await _schoolRepository.GetAllAsync(GetCurrentSiteId(), districtId, typeId);
         }
 
+        public async Task<SchoolDetails> GetSchoolDetailsAsync(int schoolId)
+        {
+            var school = await _schoolRepository.GetByIdAsync(schoolId);
+            return new SchoolDetails()
+            {
+                Schools = await _schoolRepository.GetAllAsync(GetCurrentSiteId(),
+                    school.SchoolDistrictId,
+                    school.SchoolTypeId),
+                SchoolDisctrictId = school.SchoolDistrictId,
+                SchoolTypeId = school.SchoolTypeId
+            };
+        }
+
         public async Task<EnteredSchool> AddEnteredSchool(string schoolName, int districtId)
         {
             var district = await _schoolDistrictRepository.GetByIdAsync(districtId);
@@ -63,8 +76,7 @@ namespace GRA.Domain.Service
                 Name = schoolName,
                 SchoolDistrictId = districtId
             };
-            return await _enteredSchoolRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
-                enteredSchool);
+            return await _enteredSchoolRepository.AddSaveNoAuditAsync(enteredSchool);
         }
 
         public async Task<School> AddEnteredSchoolToList(int enteredSchoolId,
@@ -86,6 +98,13 @@ namespace GRA.Domain.Service
                 enteredSchoolId,
                 newSchool.Id);
             return newSchool;
+        }
+
+        public async Task RemoveEnteredSchoolAsync(int enteredSchoolId)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+            await _enteredSchoolRepository
+                    .RemoveSaveAsync(authUserId, enteredSchoolId);
         }
 
         public async Task<SchoolDistrict> AddDistrict(string districtName)
