@@ -22,6 +22,8 @@
         public const string ManageSchools = "ManageSchools";
         public const string ManageEvents = "ManageEvents";
         public const string ManageLocations = "ManageLocations";
+        public const string ManageTriggers = "ManageTriggers";
+        public const string ManageVendorCodes = "ManageVendorCodes";
         public const string PerformDrawing = "PerformDrawing";
         public const string ReadAllMail = "ReadAllMail";
         public const string RemoveChallenges = "RemoveChallenges";

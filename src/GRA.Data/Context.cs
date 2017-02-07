@@ -42,6 +42,10 @@ namespace GRA.Data
                 .HasKey(_ => new { _.DrawingId, _.UserId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
+            modelBuilder.Entity<Model.TriggerBadge>()
+                .HasKey(_ => new { _.TriggerId, _.BadgeId });
+            modelBuilder.Entity<Model.TriggerChallenge>()
+                .HasKey(_ => new { _.TriggerId, _.ChallengeId });
             modelBuilder.Entity<Model.UserBadge>()
                 .HasKey(_ => new { _.UserId, _.BadgeId });
             modelBuilder.Entity<Model.UserBook>()
@@ -50,6 +54,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
             modelBuilder.Entity<Model.UserRole>()
                 .HasKey(_ => new { _.UserId, _.RoleId });
+            modelBuilder.Entity<Model.UserTrigger>()
+                .HasKey(_ => new { _.UserId, _.TriggerId });
 
             // add indexing as needed
             // https://docs.microsoft.com/en-us/ef/core/modeling/indexes
@@ -113,11 +119,17 @@ namespace GRA.Data
         public DbSet<Model.Site> Sites { get; set; }
         public DbSet<Model.StaticAvatar> StaticAvatars { get; set; }
         public DbSet<Model.System> Systems { get; set; }
+        public DbSet<Model.Trigger> Triggers { get; set; }
+        public DbSet<Model.TriggerBadge> TriggerBadges { get; set; }
+        public DbSet<Model.TriggerChallenge> TriggerChallenges { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
+        public DbSet<Model.UserTrigger> UserTriggers { get; set; }
+        public DbSet<Model.VendorCode> VendorCodes { get; set; }
+        public DbSet<Model.VendorCodeType> VendorCodeTypes { get; set; }
     }
 }

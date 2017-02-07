@@ -31,8 +31,11 @@
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
             CreateMap<Model.StaticAvatar, Domain.Model.StaticAvatar>().ReverseMap();
             CreateMap<Model.System, Domain.Model.System>().ReverseMap();
+            CreateMap<Model.Trigger, Domain.Model.Trigger>().ReverseMap();
             CreateMap<Model.User, Domain.Model.User>().ReverseMap();
             CreateMap<Model.UserLog, Domain.Model.UserLog>().ReverseMap();
+            CreateMap<Model.VendorCode, Domain.Model.VendorCode>().ReverseMap();
+            CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>().ReverseMap();
         }
     }
 }

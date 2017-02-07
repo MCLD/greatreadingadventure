@@ -21,6 +21,8 @@
         ManageEvents,
         ManageLocations,
         ManageSchools,
+        ManageTriggers,
+        ManageVendorCodes,
         PerformDrawing,
         ReadAllMail,
         RemoveChallenges,
@@ -30,6 +32,6 @@
         ViewParticipantList,
         ViewParticipantDetails,
         ViewUnpublishedPages,
-        ViewUserDrawings
+        ViewUserDrawings,
     }
 }

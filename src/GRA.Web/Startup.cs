@@ -131,6 +131,7 @@ namespace GRA.Web
             services.AddScoped<Abstract.IPathResolver, PathResolver>();
             services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
+            services.AddScoped<Abstract.ICodeGenerator, CodeGenerator>();
 
             // filters
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
@@ -155,7 +156,9 @@ namespace GRA.Web
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
             services.AddScoped<StaticAvatarService>();
+            services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
+            services.AddScoped<VendorCodeService>();
 
             // service resolution
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
@@ -185,8 +188,11 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
             services.AddScoped<Domain.Repository.IStaticAvatarRepository, Data.Repository.StaticAvatarRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
+            services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();
             services.AddScoped<Domain.Repository.IUserLogRepository, Data.Repository.UserLogRepository>();
             services.AddScoped<Domain.Repository.IUserRepository, Data.Repository.UserRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodeRepository, Data.Repository.VendorCodeRepository>();
+            services.AddScoped<Domain.Repository.IVendorCodeTypeRepository, Data.Repository.VendorCodeTypeRepository>();
 
             services.AddAutoMapper();
         }

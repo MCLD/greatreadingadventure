@@ -18,6 +18,7 @@ namespace GRA.Domain.Service.Abstract
         private UserContext _userContext = null;
         private ClaimsPrincipal _currentUser = null;
         private int? _currentUserSiteId = null;
+        private Permission? _managementPermission = null;
 
         protected UserContext GetUserContext()
         {
@@ -93,6 +94,26 @@ namespace GRA.Domain.Service.Abstract
 
         protected void VerifyPermission(Permission permission)
         {
+            if (!HasPermission(permission))
+            {
+                _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        protected void SetManagementPermission(Permission permission)
+        {
+            _managementPermission = permission;
+        }
+
+        protected void VerifyManagementPermission()
+        {
+            if (_managementPermission == null)
+            {
+                _logger.LogError("VerifyManagementPermission called before SetManagementPermission.");
+                throw new System.Exception("An error occurred verifying permissions.");
+            }
+            var permission = (Permission)_managementPermission;
             if (!HasPermission(permission))
             {
                 _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");

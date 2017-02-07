@@ -2,6 +2,7 @@
 using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
+using GRA.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -237,14 +238,27 @@ namespace GRA.Data
             try
             {
                 await _context.SaveChangesAsync();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(null, ex, $"An error occurred in SaveAsync: {ex.Message}");
-                if(ex.InnerException != null)
+                if (ex.InnerException != null)
                 {
                     _logger.LogError(null, ex.InnerException, $"Inner exception: {ex.InnerException.Message}");
                 }
                 throw ex;
+            }
+        }
+
+        protected IQueryable<DbEntity> ApplyPagination(IQueryable<DbEntity> queryable, Filter filter)
+        {
+            if (filter.Skip != null && filter.Take != null)
+            {
+                return queryable.Skip((int)filter.Skip).Take((int)filter.Take);
+            }
+            else
+            {
+                return queryable;
             }
         }
     }
