@@ -167,13 +167,16 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.AddChallenges)]
         public async Task<IActionResult> Create()
         {
+            var site = await GetCurrentSiteAsync();
             PageTitle = "Create Challenge";
 
-            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
-            {
-
-            };
+            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel();
+            
             viewModel = await GetDetailLists(viewModel);
+            if (site.MaxPointsPerChallengeTask.HasValue)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+            }
 
             return View(viewModel);
         }
@@ -182,6 +185,16 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
+            var site = await GetCurrentSiteAsync();
+            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue 
+                && model.Challenge.TasksToComplete != 0)
+            {
+                double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+                {
+                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                }
+            }
             if (model.BadgeImage != null)
             {
                 if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
@@ -231,6 +244,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.EditChallenges)]
         public async Task<IActionResult> Edit(int id)
         {
+            var site = await GetCurrentSiteAsync();
             Challenge challenge = new Challenge();
             try
             {
@@ -274,6 +288,11 @@ namespace GRA.Controllers.MissionControl
                 CanActivate = canActivate
             };
 
+            if (site.MaxPointsPerChallengeTask.HasValue)
+            {
+                viewModel.MaxPointsMessage = $"(Up to {site.MaxPointsPerChallengeTask.Value} points per required task)";
+            }
+
             if (challenge.BadgeId != null)
             {
                 var challengeBadge = await _badgeService.GetByIdAsync((int)challenge.BadgeId);
@@ -305,6 +324,16 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(ChallengesDetailViewModel model, string Submit)
         {
+            var site = await GetCurrentSiteAsync();
+            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
+                && model.Challenge.TasksToComplete != 0)
+            {
+                double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
+                if (pointsPerChallenge > site.MaxPointsPerChallengeTask)
+                {
+                    ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
+                }
+            }
             if (model.BadgeImage != null)
             {
                 if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
