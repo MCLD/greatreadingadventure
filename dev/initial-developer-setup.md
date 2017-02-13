@@ -27,6 +27,10 @@ Initial database setup and configuration can be done utilizing the `dotnet` comm
 
     `dotnet ef --startup-project ../GRA.Web migrations add initial`
 
+  4. Create or update the database to the migration:
+
+    `dotnet ef --startup-project ../GRA.Web database update`
+
 ### Configuration
 
 The `GRA.Web` project has the [Secret Manager](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets#secret-manager) enabled. You may want to issue a command such as:
