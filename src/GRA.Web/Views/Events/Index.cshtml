@@ -1,0 +1,223 @@
+﻿@model GRA.Controllers.ViewModel.Events.EventsListViewModel
+
+<div class="row">
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div id="detailModalContent" class="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Events</span>
+            </div>
+            <div class="panel-body">
+                <form asp-controller="Events" asp-action="Index" method="post" role="form">
+                    <input asp-for="UseLocation" type="hidden" />
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-6">
+                            <label asp-for="StartDate" class="control-label"></label>
+                            <div class="input-group date" id="pickerStart">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                                <input asp-for="StartDate" type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <label asp-for="EndDate" class="control-label"></label>
+                            <div class="input-group date" id="pickerEnd">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                                <input asp-for="EndDate" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="ProgramId" class="control-label"></label>
+                            <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                <option>All Programs</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="SystemId" class="control-label"></label>
+                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                    <option></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="BranchId" class="control-label"></label>
+                                <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <label asp-for="LocationId" class="control-label"></label>
+                            <select asp-for="LocationId" asp-items="Model.LocationList" class="form-control">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-xs-8">
+                            <input asp-for="Search"
+                                   class="form-control"
+                                   placeholder="Enter text to search for an event here" />
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="col-xs-6">
+                                <input type="submit" value="Search" class="btn btn-default btn-block" style="margin-right: 8px;" />
+                            </div>
+                            <div class="col-xs-6">
+                                <a asp-action="Index" class="btn btn-default btn-block">Clear</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        @if (Model.Events.Count() == 0)
+                        {
+                            <div class="alert alert-warning">No Events</div>
+                        }
+                        else
+                        {
+                            <div>
+                                <table class="table table-condensed table-bordered link-table">
+                                    <thead>
+                                        <tr>
+                                            <th>What</th>
+                                            <th>When</th>
+                                            <th>Where</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var eventItem in Model.Events)
+                                        {
+                                            <tr>
+                                                <td class="td-class">
+                                                    <a asp-action="Detail"
+                                                       asp-route-id="@eventItem.Id"
+                                                       data-id="@eventItem.Id"
+                                                       class="rowlink">
+                                                        @eventItem.Name
+                                                    </a>
+                                                </td>
+                                                <td>@eventItem.StartsAt.ToString("d") @(!eventItem.AllDay ? "at " + eventItem.StartsAt.ToString("t") : "")</td>
+                                                <td>@eventItem.EventLocationName</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if (Model.PaginateModel.MaxPage > 1)
+                            {
+                                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        var test;
+
+        $(document).ready(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+
+        $("#SystemId").on("change", function(e) {
+            if (e.originalEvent)
+            {
+                $('#UseLocation').val("");
+                $("#LocationId").val("");
+            }
+            var systemId = $(this).val();
+            var branchList = $("#BranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true" }, function(response) {
+                branchList.empty();
+                branchList.append(new Option("", ""));
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected))
+                });
+            });
+        });
+
+        $("#BranchId").on("change", function(e) {
+
+            $('#UseLocation').val("");
+            $("#LocationId").val("");
+        });
+
+        $("#LocationId").on("change", function(e) {
+            $("#BranchId").val("");
+            $('#UseLocation').val("true");
+            if ($("#SystemId").val() != "")
+            {
+                $("#SystemId").val("").change();
+            }
+        });
+
+        $("[id^=picker]").datetimepicker({
+            format: "MM/DD/YYYY",
+            allowInputToggle: true,
+            useCurrent: false,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $(".rowlink").on('click', function(e) {
+            e.preventDefault();
+            $("#detailModal").modal("show");
+            var id = $(this).data("id");
+            var url = "@Url.Action("GetDetails")";
+            $.get(url, { eventId: id }, function(response) {
+                $("#detailModalContent").html(response);
+            });
+        });
+
+        $("#detailModal").on('hidden.bs.modal', function() {
+            $("#detailModalContent").html("");
+        });
+
+    </script>
+}

@@ -1,6 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -17,25 +18,16 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<int> CountAsync(int siteId,
-            Filter filter = null,
-            string search = null,
-            bool activeOnly = true)
+        public async Task<int> CountAsync(Filter filter)
         {
-            return await ApplyFilters(siteId, filter, search, activeOnly)
+            return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Event>> PageAsync(int siteId,
-            int skip,
-            int take,
-            Filter filter = null,
-            string search = null,
-            bool activeOnly = true)
+        public async Task<ICollection<Event>> PageAsync(Filter filter)
         {
-            var events = await ApplyFilters(siteId, filter, search, activeOnly)
-                .Skip(skip)
-                .Take(take)
+            var events = await ApplyFilters(filter)
+                .ApplyPagination(filter)
                 .ProjectTo<Event>()
                 .ToListAsync();
             await AddLocationData(events);
@@ -89,24 +81,20 @@ namespace GRA.Data.Repository
             }
         }
 
-        private IQueryable<Model.Event> ApplyFilters(int siteId,
-            Filter filter = null,
-            string search = null,
-            bool activeOnly = true)
+        private IQueryable<Model.Event> ApplyFilters(Filter filter)
         {
             // site id filter
             var events = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
+                .Where(_ => _.SiteId == filter.SiteId);
 
             // active-only filter
-            if (activeOnly)
+            if (filter.IsActive.HasValue)
             {
-                events = events.Where(_ => _.IsActive == true);
+                events = events.Where(_ => _.IsActive == filter.IsActive);
             }
 
             // apply filter
-
             // collect branch ids
             var branchIds = new HashSet<int?>();
             if (filter.BranchIds != null)
@@ -154,14 +142,32 @@ namespace GRA.Data.Repository
                 events = events.Where(_ => filter.ProgramIds.Contains(_.ProgramId));
             }
 
-            // apply search
-            if (!string.IsNullOrEmpty(search))
+            // filter by dates
+            if (filter.StartDate != null)
             {
-                events = events.Where(_ => _.Name.Contains(search)
-                    || _.Description.Contains(search));
+                events = events.Where(_ => _.StartsAt.Date >= filter.StartDate.Value.Date);
+            }
+            if (filter.EndDate != null)
+            {
+                events = events.Where(_ => _.StartsAt.Date <= filter.EndDate.Value.Date);
+            }
+
+            // apply search
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                events = events.Where(_ => _.Name.Contains(filter.Search)
+                    || _.Description.Contains(filter.Search));
             }
 
             return events;
+        }
+
+        public async Task<bool> LocationInUse(int siteId, int locationId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.AtLocationId == locationId)
+                .AnyAsync();
         }
     }
 }

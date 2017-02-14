@@ -22,6 +22,7 @@ namespace GRA.Data.Model
         public bool AllDay { get; set; }
 
         [Required]
+        [MaxLength(1500)]
         public string Description { get; set; }
 
         [Required]
@@ -29,6 +30,7 @@ namespace GRA.Data.Model
         [Required]
         public bool IsValid { get; set; }
 
+        [MaxLength(300)]
         public string ExternalLink { get; set; }
 
         public int? AtBranchId { get; set; }

@@ -45,5 +45,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == branchId && _.SystemId == systemId)
                 .AnyAsync();
         }
+
+        public async Task<bool> ValidateBySiteAsync(int branchId, int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Include(_ => _.System)
+                .Where(_ => _.Id == branchId && _.System.SiteId == siteId)
+                .AnyAsync();
+        }
     }
 }

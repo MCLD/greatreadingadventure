@@ -23,7 +23,8 @@ namespace GRA.Data.Repository
             int? typeId = default(int?))
         {
             var schoolList = DbSet
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId);
 
             if (districtId != null)
             {
@@ -55,7 +56,8 @@ namespace GRA.Data.Repository
             int? typeId = default(int?))
         {
             var schoolList = DbSet
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId);
 
             if (districtId != null)
             {

@@ -1,0 +1,55 @@
+﻿@model GRA.Controllers.ViewModel.Events.EventsDetailViewModel
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="detailModalLabel">Event: @Model.Event.Name</h4>
+</div>
+<div class="modal-body">
+    <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>@Model.Event.StartsAt.ToString("d") @(!Model.Event.AllDay ? "at " + Model.Event.StartsAt.ToString("t") : "")</div>
+
+    <div class="row-spacing">@Model.Event.Description</div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
+    {
+        <div class="row-spacing" style="font-size:medium;"><strong>Event Link: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.ExternalLink</a></div>
+    }
+    <div class="row-spacing" style="font-size:medium;">
+        <table>
+            <tr>
+                <td><strong>Where:&nbsp;</strong></td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(Model.Event.EventLocationLink))
+                    {
+                        @Model.Event.EventLocationName
+                    }
+                    else
+                    {
+                        <a target="_blank" href="@Model.Event.EventLocationLink">@Model.Event.EventLocationName</a>
+                    }
+                </td>
+            </tr>
+            @if (!string.IsNullOrWhiteSpace(Model.Event.EventLocationAddress))
+            {
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>@Model.Event.EventLocationAddress</td>
+                </tr>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Event.EventLocationTelephone))
+            {
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>@Model.Event.EventLocationTelephone</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ProgramString))
+    {
+        <div class="row-spacing" style="font-size:medium;">@Model.ProgramString</div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+</div>

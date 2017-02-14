@@ -1,0 +1,123 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsListViewModel
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete event</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="Events" asp-action="Delete" method="post" role="form" style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.CanManageLocations)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <ul class="nav nav-pills" style="padding: 10px 0;">
+                <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
+                <li ActiveBy routeKey="Action" value="Locations"><a asp-action="Locations">Locations</a></li>
+            </ul>
+        </div>
+    </div>
+}
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a asp-action="Create" class="btn btn-default">Create a new event</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Events.Count() == 0)
+        {
+            <div class="alert alert-warning">No Events</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Branch/Locations</th>
+                            <th>Start Date</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var eventItem in Model.Events)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Edit" asp-route-id="@eventItem.Id" class="rowlink">
+                                        @eventItem.Name
+                                    </a>
+                                </td>
+                                <td>@eventItem.EventLocationName</td>
+                                <td>@eventItem.StartsAt.ToString("d")</td>
+                                <td class="on-top">
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@eventItem.Id"
+                                            data-name="@eventItem.Name">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to delete the event "' + name + '" ?');
+            modal.find('#Id').val(id);
+        })
+    </script>
+}

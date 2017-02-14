@@ -22,6 +22,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
                 .OrderBy(_ => _.Name)
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();
@@ -32,7 +33,8 @@ namespace GRA.Data.Repository
             int take)
         {
             var districtList = DbSet
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId);
 
             return new DataWithCount<ICollection<SchoolDistrict>>()
             {

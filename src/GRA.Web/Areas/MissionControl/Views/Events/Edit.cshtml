@@ -1,0 +1,230 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsDetailViewModel
+
+@if (Model.CanManageLocations)
+{
+    <div class="row">
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+            <div class="modal-dialog" role="document">
+                <form>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="addModalLabel">Add location</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label asp-for="Location.Name" class="control-label"></label>
+                                <input asp-for="Location.Name" class="form-control" />
+                                <span asp-validation-for="Location.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Location.Address" class="control-label"></label>
+                                <input asp-for="Location.Address" class="form-control" />
+                                <span asp-validation-for="Location.Address" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Location.Url" class="control-label"></label>
+                                <input asp-for="Location.Url" class="form-control" />
+                                <span asp-validation-for="Location.Url" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Location.Telephone" class="control-label"></label>
+                                <input asp-for="Location.Telephone" class="form-control" />
+                                <span asp-validation-for="Location.Telephone" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button id="addLocation" type="button" class="btn btn-primary pull-right" aria-label="Confirm">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-controller="Events" asp-action="Edit" method="post" role="form">
+
+    <input asp-for="UseLocation" type="hidden" />
+    <input asp-for="Event.Id" type="hidden" />
+    <input asp-for="Event.IsActive" type="hidden" />
+    <input asp-for="Event.IsValid" type="hidden" />
+    <input asp-for="Event.ParentEventId" type="hidden" />
+    <input asp-for="Event.RelatedBranchId" type="hidden" />
+    <input asp-for="Event.RelatedSystemId" type="hidden" />
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Event.Name" class="control-label"></label>
+            <input asp-for="Event.Name" class="form-control" />
+            <span asp-validation-for="Event.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8 col-sm-10 row-spacing">
+            <label asp-for="Event.StartsAt" class="control-label"></label>
+            <div class="input-group date" id="pickerStart">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="Event.StartsAt" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="Event.StartsAt" class="text-danger"></span>
+        </div>
+        <div class="col-xs-4 col-sm-2 row-spacing">
+            <label asp-for="Event.AllDay" class="control-label center-label" style="text-align:center;"></label>
+            <input asp-for="Event.AllDay" class="form-control form-checkbox" />
+            <span asp-validation-for="Event.AllDay" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Event.Description" class="control-label"></label>
+            <textarea asp-for="Event.Description" class="form-control" rows="5"> </textarea>
+            <span asp-validation-for="Event.Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Event.ExternalLink" class="control-label"></label>
+            <input asp-for="Event.ExternalLink" class="form-control" />
+            <span asp-validation-for="Event.ExternalLink" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="branchGroup" class="row row-spacing @(Model.UseLocation ? "hide" : "" )">
+        <div class="col-xs-12">
+            <label asp-for="Event.AtBranchId" class="control-label"></label>
+            <label style="font-size: 12px;">
+                <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View Location list</a>
+            </label>
+            <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
+                <option></option>
+            </select>
+            <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
+        <div class="col-xs-12">
+            <label asp-for="Event.AtLocationId" class="control-label"></label>
+            <a id="viewBranchList" style="text-decoration:none;cursor:pointer">View Location list</a>
+            <input asp-for="CanManageLocations" type="hidden" />
+            <div style="display:flex">
+                <select asp-for="Event.AtLocationId" asp-items="Model.LocationList" class="form-control">
+                    <option></option>
+                </select>
+                @if (Model.CanManageLocations)
+                {
+                    <button type="button" class="btn btn-primary btn-xs" style="margin-left:8px;"
+                            data-toggle="modal" data-target="#addModal">
+                        <span class="fa fa-2x fa-plus"></span>
+                    </button>
+                }
+            </div>
+            <span asp-validation-for="Event.AtLocationId" class="text-danger"></span>
+
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Event.ProgramId" class="control-label"></label>
+            <select asp-for="Event.ProgramId" asp-items="Model.ProgramList" class="form-control">
+                <option value="">All Programs</option>
+            </select>
+            <span asp-validation-for="Event.ProgramId" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <a asp-action="Create" asp-route-id="@Model.Event.Id" class="btn btn-default">Copy Event</a>
+        <button type="submit" class="btn btn-primary">
+            <span class="buttonText">Edit Event</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        $("#pickerStart").datetimepicker({
+            @if (Model.Event != null && Model.Event.AllDay)
+            {
+                <text>format: "MM/DD/YYYY",</text>
+            }
+            allowInputToggle: true,
+            sideBySide: true,
+            useCurrent: false,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $("#Event_AllDay").on("change", function() {
+            if ($("#Event_AllDay").is(":checked"))
+            {
+                $('#pickerStart').data("DateTimePicker").format("MM/DD/YYYY")
+            }
+            else
+            {
+                $('#pickerStart').data("DateTimePicker").format("MM/DD/YYYY hh:mm A")
+            }
+        });
+
+        $("#viewLocationList").on("click", function() {
+            $("#branchGroup").addClass("hide");
+            $("#locationGroup").removeClass("hide");
+            $("#UseLocation").val("true");
+        });
+
+        $("#viewBranchList").on("click", function() {
+            $("#locationGroup").addClass("hide");
+            $("#branchGroup").removeClass("hide");
+            $("#UseLocation").val("false");
+        });
+        @if (Model.CanManageLocations)
+        {
+        <text>
+        $(document).on("click", "#addLocation", function() {
+
+            var name = $("#Location_Name");
+            if (name.valid())
+            {
+                var address = $("#Location_Address");
+                var url = $("#Location_Url");
+                var telephone = $("#Location_Telephone");
+                var jsonUrl = "@Url.Action("AddLocationReturnList", "Events")";
+                var locationList = $("#Event_AtLocationId");
+                $.getJSON(jsonUrl, { name: name.val(), address: address.val(), url: url.val(), telephone: telephone.val() }, function(response) {
+                    locationList.empty();
+                    locationList.append(new Option("", ""));
+                    $.each(response, function(index, item) {
+                        locationList.append(new Option(item.text, item.value, item.selected))
+                    });
+                    $("#addModal").modal("hide");
+                    name.val("");
+                    address.val("");
+                    url.val("");
+                    telephone.val("");
+                });
+            }
+        });
+        </text>
+        }
+    </script>
+}

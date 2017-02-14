@@ -40,7 +40,8 @@ namespace GRA.Data.Repository
             int take)
         {
             var schoolList = DbSet
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId);
 
             return new DataWithCount<ICollection<EnteredSchool>>()
             {

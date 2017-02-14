@@ -25,6 +25,7 @@ namespace GRA.Data.Repository
             {
                 return await DbSet
                     .AsNoTracking()
+                    .Where(_ => _.SiteId == siteId)
                     .OrderBy(_ => _.Name)
                     .ProjectTo<SchoolType>()
                     .ToListAsync();
@@ -33,7 +34,7 @@ namespace GRA.Data.Repository
             {
                 return await _context.Schools
                     .AsNoTracking()
-                    .Where(_ => _.SchoolDistrictId == (int)districtId)
+                    .Where(_ => _.SiteId == siteId && _.SchoolDistrictId == (int)districtId)
                     .Select(_ => _.SchoolType)
                     .Distinct()
                     .OrderBy(_ => _.Name)
@@ -47,7 +48,8 @@ namespace GRA.Data.Repository
             int take)
         {
             var typeList = DbSet
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId);
 
             return new DataWithCount<ICollection<SchoolType>>()
             {

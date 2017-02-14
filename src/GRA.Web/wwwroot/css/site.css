@@ -187,3 +187,12 @@ ul.navbar-nav li.active {
     color: black;
     font-weight: bold;
 }
+
+.center-label {
+    text-align: center;
+    width: 100%;
+}
+
+.form-checkbox {
+    margin: 0 !important;
+}

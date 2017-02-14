@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GRA.Domain.Model
 {
@@ -12,5 +13,17 @@ namespace GRA.Domain.Model
         public ICollection<int?> ProgramIds { get; set; }
         public ICollection<int?> LocationIds { get; set; }
         public string Search { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+        public Filter(int? page = null)
+        {
+            this.Take = 15;
+            if (page.HasValue)
+            {
+                this.Skip = this.Take * (page - 1);
+            }
+        }
     }
 }

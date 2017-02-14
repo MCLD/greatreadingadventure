@@ -12,38 +12,41 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly IProgramRepository _programRepository;
         public EventService(ILogger<EventService> logger,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IEventRepository eventRepository,
-            ILocationRepository locationRepository) : base(logger, userContextProvider)
+            ILocationRepository locationRepository,
+            IProgramRepository programRepository) : base(logger, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _locationRepository = Require.IsNotNull(locationRepository, nameof(locationRepository));
+            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Event>>>
-            GetPaginatedListAsync(int skip,
-            int take,
-            Filter filter = null,
-            string search = null,
+            GetPaginatedListAsync(Filter filter,
             bool isMissionControl = false)
         {
             ICollection<Event> data = null;
             int count;
 
+            filter.SiteId = GetCurrentSiteId();
+
             if (isMissionControl)
             {
                 VerifyPermission(Permission.ManageEvents);
-                data = await _eventRepository.PageAsync(GetCurrentSiteId(), skip, take, filter, search, false);
-                count = await _eventRepository.CountAsync(GetCurrentSiteId(), filter, search, false);
+                data = await _eventRepository.PageAsync(filter);
+                count = await _eventRepository.CountAsync(filter);
             }
             else
             {
                 // paginate for public
-                data = await _eventRepository.PageAsync(GetCurrentSiteId(), skip, take, filter, search, true);
-                count = await _eventRepository.CountAsync(GetCurrentSiteId(), filter, search, true);
+                filter.IsActive = true;
+                data = await _eventRepository.PageAsync(filter);
+                count = await _eventRepository.CountAsync(filter);
             }
 
             foreach (var item in data)
@@ -96,6 +99,7 @@ namespace GRA.Domain.Service
             graEvent.SiteId = GetCurrentSiteId();
             graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+            await ValidateEvent(graEvent);
             return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
 
@@ -103,18 +107,31 @@ namespace GRA.Domain.Service
         {
             VerifyPermission(Permission.ManageEvents);
             graEvent.SiteId = GetCurrentSiteId();
+            await ValidateEvent(graEvent);
             return await _eventRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
 
-        public async Task Remove(Event graEvent)
+        public async Task Remove(int eventId)
         {
             VerifyPermission(Permission.ManageEvents);
-            await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), graEvent.Id);
+            await _eventRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), eventId);
         }
 
         public async Task<ICollection<Location>> GetLocations()
         {
             return await _locationRepository.GetAll(GetCurrentSiteId());
+        }
+
+        public async Task<DataWithCount<ICollection<Location>>> GetPaginatedLocationsListAsync(
+            Filter filter)
+        {
+            VerifyPermission(Permission.ManageLocations);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Location>>
+            {
+                Data = await _locationRepository.PageAsync(filter),
+                Count = await _locationRepository.CountAsync(filter)
+            };
         }
 
         public async Task<Location> AddLocation(Location location)
@@ -134,7 +151,39 @@ namespace GRA.Domain.Service
         public async Task RemoveLocation(int locationId)
         {
             VerifyPermission(Permission.ManageLocations);
+            if (await _eventRepository.LocationInUse(GetCurrentSiteId(), locationId))
+            {
+                throw new GraException("The location is being used by events.");
+            }
             await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
+        }
+
+        private async Task ValidateEvent(Event graEvent)
+        {
+            if (graEvent.AtBranchId.HasValue)
+            {
+                if (!(await _branchRepository.ValidateBySiteAsync(
+                    graEvent.AtBranchId.Value, graEvent.SiteId)))
+                {
+                    throw new GraException("Invalid Branch selection.");
+                }
+            }
+            if (graEvent.AtLocationId.HasValue)
+            {
+                if (!(await _locationRepository.ValidateAsync(
+                    graEvent.AtLocationId.Value, graEvent.SiteId)))
+                {
+                    throw new GraException("Invalid Location selection.");
+                }
+            }
+            if (graEvent.ProgramId.HasValue)
+            {
+                if (!(await _programRepository.ValidateAsync(
+                    graEvent.ProgramId.Value, graEvent.SiteId)))
+                {
+                    throw new GraException("Invalid Program selection.");
+                }
+            }
         }
     }
 }
