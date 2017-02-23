@@ -53,5 +53,6 @@ namespace GRA.Domain.Model
         public int? CompletedTasks { get; set; }
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
+        public bool HasDependents { get; set; }
     }
 }

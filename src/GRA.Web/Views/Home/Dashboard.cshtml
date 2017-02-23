@@ -86,6 +86,32 @@
                     </form>
                 </div>
             }
+            <div class="well">
+                <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form">
+                    <div class="row row-spacing" style="text-align:center;">
+                        <div class="col-xs-12">
+                            <strong style="font-size:x-large">Secret Code</strong>
+                            <p style="font-size:small">Secret codes can be found by attending library events and on promotional materials. If&nbsp;you&nbsp;find&nbsp;one,&nbsp;enter&nbsp;it&nbsp;below!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row row-spacing">
+                        <div class="col-xs-12">
+                            <label asp-for="SecretCode" class="control-label"></label>
+                            <input asp-for="SecretCode" class="form-control" />
+                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                            {
+                                <span>@Html.Raw(Model.SecretCodeMessage)</span>
+                            }
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn center-block btn-success btn-lg btn-spinner-no-validate">
+                        <span class="buttonText">Submit Code</span>
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                </form>
+            </div>
         }
         else
         {

@@ -407,5 +407,27 @@ namespace GRA.Domain.Service
             _logger.LogError($"User {activeId} doesn't have permission remove mail {mailId}.");
             throw new Exception("Permission denied.");
         }
+
+        public async Task<Mail> SendSystemMailAsync(Mail mail)
+        {
+            var user = await _userRepository.GetByIdAsync(mail.ToUserId.Value);
+            if (user != null)
+            {
+                mail.FromUserId = 0;
+                mail.IsNew = true;
+                mail.IsDeleted = false;
+                mail.CreatedAt = DateTime.Now;
+                mail.SiteId = GetClaimId(ClaimType.SiteId);
+
+                _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
+
+                return await _mailRepository.AddSaveNoAuditAsync(mail);
+            }
+            else
+            {
+                throw new GraException("User doesn't exist");
+            }
+        }
+
     }
 }

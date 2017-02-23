@@ -183,16 +183,42 @@ ul.navbar-nav li.active {
     text-align: center;
 }
 
-.join-header .active {
-    color: black;
-    font-weight: bold;
-}
+    .join-header .active {
+        color: black;
+        font-weight: bold;
+    }
 
 .center-label {
     text-align: center;
     width: 100%;
 }
 
-.form-checkbox {
-    margin: 0 !important;
+input.form-checkbox {
+    margin: 0;
 }
+
+.page-button {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+    .page-button:hover {
+        z-index: 2;
+        color: #23527c;
+        background-color: #eee;
+        border-color: #ddd;
+    }
+
+    .page-button.disabled {
+        color: #777;
+        cursor: not-allowed;
+        background-color: #fff;
+        border-color: #ddd;
+    }

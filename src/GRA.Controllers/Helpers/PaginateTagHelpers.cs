@@ -32,6 +32,9 @@ namespace GRA.Controllers.Helper
         [HtmlAttributeName("paginateModel")]
         public PaginateViewModel paginateModel { get; set; }
 
+        [HtmlAttributeName("asButtons")]
+        public bool asButtons { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContextData);
@@ -41,27 +44,27 @@ namespace GRA.Controllers.Helper
 
             string firstPage = paginateModel.FirstPage == null
                                ? null
-                               : QueryBuilder(url, paginateModel.FirstPage);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(firstPage, "fast-backward"));
+                               : QueryBuilder(url, paginateModel.FirstPage, asButtons);
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(firstPage, "fast-backward", asButtons));
 
             string previousPage = paginateModel.PreviousPage == null
                                   ? null
-                                  : QueryBuilder(url, paginateModel.PreviousPage);
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(previousPage, "backward"));
+                                  : QueryBuilder(url, paginateModel.PreviousPage, asButtons);
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(previousPage, "backward", asButtons));
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(paginateModel.CurrentPage.ToString()));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(paginateModel.CurrentPage.ToString(), asButtons));
 
             string nextPage = paginateModel.NextPage == null
                               ? null
-                              : QueryBuilder(url, paginateModel.NextPage);
+                              : QueryBuilder(url, paginateModel.NextPage, asButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(nextPage, "forward"));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(nextPage, "forward", asButtons));
 
             string lastPage = paginateModel.LastPage == null
                               ? null
-                              : QueryBuilder(url, paginateModel.LastPage);
+                              : QueryBuilder(url, paginateModel.LastPage, asButtons);
 
-            ulTag.InnerHtml.AppendHtml(PaginatorLi(lastPage, "fast-forward"));
+            ulTag.InnerHtml.AppendHtml(PaginatorLi(lastPage, "fast-forward", asButtons));
 
             TagBuilder navTag = new TagBuilder("nav");
             navTag.TagRenderMode = TagRenderMode.Normal;
@@ -69,58 +72,104 @@ namespace GRA.Controllers.Helper
             output.Content.SetHtmlContent(navTag);
         }
 
-        private static TagBuilder PaginatorLi(string text)
+        private static TagBuilder PaginatorLi(string text, bool asButtons)
         {
-            TagBuilder aTag = new TagBuilder("a");
-            aTag.MergeAttribute("href", "#");
-            aTag.MergeAttribute("onclick", "return false;");
-            aTag.InnerHtml.SetHtmlContent(text);
-            aTag.TagRenderMode = TagRenderMode.Normal;
-
             TagBuilder liTag = new TagBuilder("li");
             liTag.TagRenderMode = TagRenderMode.Normal;
             liTag.MergeAttribute("class", "disabled");
-            liTag.InnerHtml.SetHtmlContent(aTag);
 
-            return liTag;
-        }
-
-        private static TagBuilder PaginatorLi(string pageUrl, string glyph)
-        {
-            TagBuilder liTag = new TagBuilder("li");
-            liTag.TagRenderMode = TagRenderMode.Normal;
-            TagBuilder aTag = new TagBuilder("a");
-            aTag.TagRenderMode = TagRenderMode.Normal;
-            TagBuilder spanTag = new TagBuilder("span");
-            spanTag.TagRenderMode = TagRenderMode.Normal;
-            spanTag.MergeAttribute("class", string.Format("fa fa-{0}", glyph));
-            if (pageUrl == null)
+            if (asButtons)
             {
-                liTag.MergeAttribute("class", "disabled");
-                aTag.MergeAttribute("href", "#");
-                aTag.MergeAttribute("onclick", "return false;");
+                TagBuilder buttonTag = new TagBuilder("button");
+                buttonTag.TagRenderMode = TagRenderMode.Normal;
+                buttonTag.InnerHtml.SetHtmlContent(text);
+                buttonTag.MergeAttribute("class", "page-button disabled");
+                liTag.InnerHtml.SetHtmlContent(buttonTag);
             }
             else
             {
-                aTag.MergeAttribute("href", pageUrl);
+                TagBuilder aTag = new TagBuilder("a");
+                aTag.MergeAttribute("href", "#");
+                aTag.MergeAttribute("onclick", "return false;");
+                aTag.InnerHtml.SetHtmlContent(text);
+                aTag.TagRenderMode = TagRenderMode.Normal;
+                liTag.InnerHtml.SetHtmlContent(aTag);
             }
-            aTag.InnerHtml.SetHtmlContent(spanTag);
-            liTag.InnerHtml.SetHtmlContent(aTag);
+
             return liTag;
         }
 
-        private static string QueryBuilder(IUrlHelper url, int? page)
+        private static TagBuilder PaginatorLi(string pageUrl, string glyph, bool asButtons)
         {
-            var routeValues = new RouteValueDictionary();
-            foreach (var query in url.ActionContext.HttpContext.Request.Query)
+            TagBuilder liTag = new TagBuilder("li");
+            liTag.TagRenderMode = TagRenderMode.Normal;
+            TagBuilder spanTag = new TagBuilder("span");
+            spanTag.TagRenderMode = TagRenderMode.Normal;
+            spanTag.MergeAttribute("class", string.Format("fa fa-{0}", glyph));
+            if (asButtons)
             {
-                if (!(String.Equals(query.Key, "page", StringComparison.OrdinalIgnoreCase)))
+                TagBuilder buttonTag = new TagBuilder("button");
+                buttonTag.TagRenderMode = TagRenderMode.Normal;
+                buttonTag.MergeAttribute("class", "page-button");
+                if (pageUrl == null)
                 {
-                    routeValues.Add(query.Key, query.Value);
+                    buttonTag.AddCssClass("disabled");
+                    liTag.MergeAttribute("class", "disabled");
+                }
+                else
+                {
+                    buttonTag.MergeAttribute("data-page", pageUrl);
+                }
+                buttonTag.InnerHtml.SetHtmlContent(spanTag);
+                liTag.InnerHtml.SetHtmlContent(buttonTag);
+            }
+            else
+            {
+                TagBuilder aTag = new TagBuilder("a");
+                aTag.TagRenderMode = TagRenderMode.Normal;
+                if (pageUrl == null)
+                {
+                    liTag.MergeAttribute("class", "disabled");
+                    aTag.MergeAttribute("href", "#");
+                    aTag.MergeAttribute("onclick", "return false;");
+                }
+                else
+                {
+                    aTag.MergeAttribute("href", pageUrl);
+                }
+
+                aTag.InnerHtml.SetHtmlContent(spanTag);
+                liTag.InnerHtml.SetHtmlContent(aTag);
+            }
+            return liTag;
+        }
+
+        private static string QueryBuilder(IUrlHelper url, int? page, bool asButtons)
+        {
+            if (asButtons)
+            {
+                if (page.HasValue)
+                {
+                    return page.ToString();
+                }
+                else
+                {
+                    return null;
                 }
             }
-            routeValues.Add("page", page);
-            return url.RouteUrl(routeValues);
+            else
+            {
+                var routeValues = new RouteValueDictionary();
+                foreach (var query in url.ActionContext.HttpContext.Request.Query)
+                {
+                    if (!(String.Equals(query.Key, "page", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        routeValues.Add(query.Key, query.Value);
+                    }
+                }
+                routeValues.Add("page", page);
+                return url.RouteUrl(routeValues);
+            }
         }
     }
 }

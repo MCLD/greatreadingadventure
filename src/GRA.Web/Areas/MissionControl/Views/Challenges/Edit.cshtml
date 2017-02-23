@@ -1,6 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
 
-<form asp-controller="Challenges" method="post" role="form" enctype="multipart/form-data">
+<form asp-controller="Challenges" method="post" role="form" enctype="multipart/form-data" style="padding: 10px 0;">
 
     @if (Model.AddTask)
     {
@@ -131,6 +131,44 @@
     <input asp-for="Challenge.Id" type="hidden" />
     <input asp-for="Challenge.BadgeId" type="hidden" />
     <input asp-for="MaxPointsMessage" type="hidden" />
+    <input asp-for="CanViewTriggers" type="hidden" />
+
+    @if (Model.DependentTriggers.Count > 0)
+    {
+        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Dependent Triggers
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        The following trigger(s) depend on this challenge:
+                        <ul>
+                            @foreach (var trigger in Model.DependentTriggers)
+                            {
+                                @if (Model.CanViewTriggers)
+                                {
+                                    <li>
+                                        <a target="_blank" href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @trigger.Name
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <div class="row row-spacing">
         <div class="col-xs-12">

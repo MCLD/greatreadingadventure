@@ -18,8 +18,14 @@ namespace GRA.Domain.Service
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
+        private readonly IVendorCodeRepository _vendorCodeRepository;
+        private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
+        private readonly MailService _mailService;
+
+        private ICollection<int> _queuedTriggerIds;
 
         public ActivityService(ILogger<UserService> logger,
             IUserContextProvider userContext,
@@ -29,8 +35,12 @@ namespace GRA.Domain.Service
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
+            ITriggerRepository triggerRepository,
             IUserRepository userRepository,
-            IUserLogRepository userLogRepository) : base(logger, userContext)
+            IUserLogRepository userLogRepository,
+            IVendorCodeRepository vendorCodeRepository,
+            IVendorCodeTypeRepository vendorCodeTypeRepository,
+            MailService mailService) : base(logger, userContext)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
@@ -41,9 +51,15 @@ namespace GRA.Domain.Service
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository,
                 nameof(userLogRepository));
+            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository,
+                nameof(vendorCodeRepository));
+            _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository,
+                nameof(vendorCodeTypeRepository));
+            _mailService = Require.IsNotNull(mailService, nameof(mailService));
         }
 
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
@@ -100,14 +116,15 @@ namespace GRA.Domain.Service
             {
                 userLog.AwardedBy = activeUserId;
             }
-            var userLogSaved = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
+            userLog = await _userLogRepository.AddSaveAsync(activeUserId, userLog);
 
             // update the score in the user record
-            var postUpdateUser = await AddPointsSaveAsync(authUserId,
+            userToLog = await AddPointsSaveAsync(authUserId,
                 activeUserId,
                 userToLog.Id,
                 pointsEarned);
 
+            // prepare the notification text
             string activityDescription = "for <strong>";
             if (translation.TranslationDescriptionPresentTense.Contains("{0}"))
             {
@@ -146,9 +163,10 @@ namespace GRA.Domain.Service
             }
 
             await _notificationRepository.AddSaveAsync(authUserId, notification);
+
             return new ActivityLogResult
             {
-                UserLogId = userLogSaved.Id,
+                UserLogId = userLog.Id,
                 BookId = bookId
             };
         }
@@ -341,12 +359,10 @@ namespace GRA.Domain.Service
                     pointsAwarded);
 
                 string badgeNotification = null;
-                Badge badge = null;
-                if (challenge.BadgeId != null)
+                Badge badge = await AwardBadgeAsync(activeUserId, challenge.BadgeId);
+                if (badge != null)
                 {
-                    badge = await _badgeRepository.GetByIdAsync((int)challenge.BadgeId);
                     badgeNotification = $" and a badge";
-                    await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
                 }
 
                 // create the notification record
@@ -409,10 +425,10 @@ namespace GRA.Domain.Service
                     IsAchiever = true
                 };
 
-                if (program.AchieverBadgeId != null)
+                var badge = await AwardBadgeAsync(activeUserId, program.AchieverBadgeId);
+
+                if (badge != null)
                 {
-                    var badge = await _badgeRepository.GetByIdAsync((int)program.AchieverBadgeId);
-                    await _badgeRepository.AddUserBadge(activeUserId, badge.Id);
                     await _userLogRepository.AddAsync(activeUserId, new UserLog
                     {
                         UserId = whoEarnedUserId,
@@ -433,19 +449,22 @@ namespace GRA.Domain.Service
             if (activeUserId == earnedUser.Id
                 || authUserId == earnedUser.HouseholdHeadUserId)
             {
-                return await _userRepository.UpdateSaveNoAuditAsync(earnedUser);
+                earnedUser = await _userRepository.UpdateSaveNoAuditAsync(earnedUser);
             }
             else
             {
-                return await _userRepository.UpdateSaveAsync(activeUserId, earnedUser);
+                earnedUser = await _userRepository.UpdateSaveAsync(activeUserId, earnedUser);
             }
+
+            await AwardTriggersAsync(earnedUser.Id);
+
+            return earnedUser;
         }
 
         public async Task<PointTranslation> GetUserPointTranslationAsync()
         {
             var user = await _userRepository.GetByIdAsync(GetActiveUserId());
             return await _pointTranslationRepository.GetByIdAsync(user.ProgramId);
-
         }
 
         private async Task<User>
@@ -480,6 +499,222 @@ namespace GRA.Domain.Service
             }
 
             return await _userRepository.UpdateSaveAsync(currentUserId, removeUser);
+        }
+
+        private async Task<Badge> AwardBadgeAsync(int userId, int? badgeId)
+        {
+            Badge badge = null;
+            if (badgeId != null)
+            {
+                badge = await _badgeRepository.GetByIdAsync((int)badgeId);
+                await _badgeRepository.AddUserBadge(userId, (int)badgeId);
+            }
+            return badge;
+        }
+
+        private async Task AwardTriggersAsync(int userId)
+        {
+            // load the initial list of triggers that might have been achieved
+            var triggers = await _triggerRepository.GetTriggersAsync(userId);
+            do
+            {
+                if (_queuedTriggerIds == null || _queuedTriggerIds.Count() == 0)
+                {
+                    // this is our first check, we're not nested
+                    _queuedTriggerIds = triggers.Select(_ => _.Id).ToList();
+                }
+                else
+                {
+                    // we've already checked triggers so don't double-award any that are queued
+                    triggers = triggers
+                        .Where(_ => !_queuedTriggerIds.Contains(_.Id))
+                        .ToList();
+
+                    // update the queue with everything we're working on
+                    _queuedTriggerIds = _queuedTriggerIds
+                        .Union(triggers.Select(_ => _.Id))
+                        .ToList();
+                }
+
+                // if any triggers came back let's check them
+                while (triggers.Count() > 0)
+                {
+                    // pull the first trigger off the list and remove it from the list
+                    var trigger = triggers.First();
+                    triggers.Remove(trigger);
+
+                    // add that we've processed this trigger for this user
+                    await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
+
+                    // if there are points to be awarded, do that now
+                    if (trigger.AwardPoints > 0)
+                    {
+                        // this call will recursively call this method in case any additional
+                        // point-based triggers are fired by this action
+                        await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
+                            GetActiveUserId(),
+                            userId,
+                            trigger.AwardPoints);
+                    }
+
+                    // every trigger awards a badge
+                    var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
+
+                    // log the notification
+                    await _notificationRepository.AddSaveAsync(userId, new Notification
+                    {
+                        PointsEarned = trigger.AwardPoints,
+                        UserId = userId,
+                        Text = trigger.AwardMessage,
+                        BadgeId = trigger.AwardBadgeId,
+                        BadgeFilename = badge.Filename
+                    });
+
+                    // add the award to the user's history
+                    await _userLogRepository.AddSaveAsync(userId, new UserLog
+                    {
+                        UserId = userId,
+                        PointsEarned = trigger.AwardPoints,
+                        IsDeleted = false,
+                        BadgeId = trigger.AwardBadgeId,
+                        Description = trigger.AwardMessage
+                    });
+
+                    // award any vendor code that is necessary
+                    await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
+
+                    // remove this item from the queued list of triggers
+                    _queuedTriggerIds.Remove(trigger.Id);
+                }
+
+                // reload the list in case a trigger triggered another trigger :rage4:
+                triggers = await _triggerRepository.GetTriggersAsync(userId);
+            } while (triggers.Count() > 0);
+        }
+
+        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId)
+        {
+            if (vendorCodeTypeId != null)
+            {
+                var codeType = await _vendorCodeTypeRepository.GetByIdAsync((int)vendorCodeTypeId);
+                try
+                {
+                    var assignedCode = await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
+                    await _mailService.SendSystemMailAsync(new Mail
+                    {
+                        ToUserId = userId,
+                        CanParticipantDelete = false,
+                        Subject = codeType.MailSubject,
+                        Body = codeType.Mail.Contains("{Code}")
+                            ? codeType.Mail.Replace("{Code}", assignedCode.Code)
+                            : codeType.Mail + " " + assignedCode.Code
+                    });
+                }
+                catch (Exception)
+                {
+                    await _mailService.SendSystemMailAsync(new Mail
+                    {
+                        ToUserId = userId,
+                        CanParticipantDelete = true,
+                        Subject = codeType.MailSubject,
+                        Body = codeType.Mail.Contains("{Code}")
+                            ? codeType.Mail.Replace("{Code}", $"{codeType.Description} not available - please contact us.")
+                            : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
+                    });
+
+                    // TODO let admin know that vendor code assignment didn't work?
+                }
+            }
+        }
+
+        public async Task LogSecretCodeAsync(int userIdToLog, string secretCode)
+        {
+            VerifyCanLog();
+
+            if(string.IsNullOrWhiteSpace(secretCode))
+            {
+                throw new GraException("You must enter a code!");
+            }
+
+            int activeUserId = GetActiveUserId();
+            int authUserId = GetClaimId(ClaimType.UserId);
+            var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
+
+            bool loggingAsAdminUser = HasPermission(Permission.LogActivityForAny);
+
+            if (activeUserId != userIdToLog
+                && authUserId != userToLog.HouseholdHeadUserId
+                && !loggingAsAdminUser)
+            {
+                string error = $"User id {activeUserId} cannot log a code for user id {userIdToLog}";
+                _logger.LogError(error);
+                throw new GraException("You do not have permission to apply that code.");
+            }
+
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
+
+            if(trigger == null)
+            {
+                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            }
+
+            // check if this user's gotten this code
+            var alreadyDone 
+                = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
+            if(alreadyDone != null)
+            {
+                throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
+            }
+
+
+            // add that we've processed this trigger for this user
+            await _triggerRepository.AddTriggerActivationAsync(userIdToLog, trigger.Id);
+
+            // every trigger awards a badge
+            var badge = await AwardBadgeAsync(userIdToLog, trigger.AwardBadgeId);
+
+            // log the notification
+            await _notificationRepository.AddSaveAsync(authUserId, new Notification
+            {
+                PointsEarned = trigger.AwardPoints,
+                UserId = userIdToLog,
+                Text = trigger.AwardMessage,
+                BadgeId = trigger.AwardBadgeId,
+                BadgeFilename = badge.Filename
+            });
+
+            // add the award to the user's history
+            var userLog = new UserLog
+            {
+                UserId = userIdToLog,
+                PointsEarned = trigger.AwardPoints,
+                IsDeleted = false,
+                BadgeId = trigger.AwardBadgeId,
+                Description = trigger.AwardMessage
+            };
+
+            if (activeUserId != userToLog.Id)
+            {
+                userLog.AwardedBy = activeUserId;
+            }
+
+            await _userLogRepository.AddSaveAsync(authUserId, userLog);
+
+            // award any vendor code that is necessary
+            await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
+
+            // if there are points to be awarded, do that now, also check for other triggers
+            if (trigger.AwardPoints > 0)
+            {
+                await AddPointsSaveAsync(authUserId,
+                    activeUserId,
+                    userIdToLog,
+                    trigger.AwardPoints);
+            }
+            else
+            {
+                await AwardTriggersAsync(userIdToLog);
+            }
         }
     }
 }

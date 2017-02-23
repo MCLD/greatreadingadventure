@@ -102,7 +102,7 @@ namespace GRA.Controllers.MissionControl
             {
                 var auth = await _authenticationService
                     .RevalidateUserAsync(GetId(ClaimType.UserId));
-                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: {role}.";
+                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: <strong>{role}</strong>.";
                 await LoginUserAsync(auth);
                 return RedirectToRoute(new
                 {

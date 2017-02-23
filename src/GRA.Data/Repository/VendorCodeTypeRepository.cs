@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -18,24 +19,35 @@ namespace GRA.Data.Repository
         {
         }
 
+        public async Task<ICollection<VendorCodeType>> GetAllAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .ProjectTo<VendorCodeType>()
+                .ToListAsync();
+        }
+
         // honors site id, skip, and take
         public async Task<int> CountAsync(Filter filter)
         {
-            return await ApplySiteIdPagination(filter).CountAsync();
+            return await ApplyFilters(filter).CountAsync();
         }
 
         // honors site id, skip, and take
         public async Task<ICollection<VendorCodeType>> PageAsync(Filter filter)
         {
-            return await ApplySiteIdPagination(filter)
+            return await ApplyFilters(filter)
+                .ApplyPagination(filter)
                 .ProjectTo<VendorCodeType>()
                 .ToListAsync();
         }
 
-        private IQueryable<Model.VendorCodeType> ApplySiteIdPagination(Filter filter)
+        private IQueryable<Model.VendorCodeType> ApplyFilters(Filter filter)
         {
-            var filteredData = DbSet.AsNoTracking().Where(_ => _.SiteId == filter.SiteId);
-            return ApplyPagination(filteredData, filter);
+            return DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
         }
     }
 }

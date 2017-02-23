@@ -2,6 +2,7 @@
 {
     public enum Permission
     {
+        AccessFlightController,
         AccessMissionControl,
         ActivateAllChallenges,
         ActivateSystemChallenges,

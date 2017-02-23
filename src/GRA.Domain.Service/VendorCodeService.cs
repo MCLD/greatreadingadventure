@@ -25,6 +25,12 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
         }
 
+        public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
+        {
+            VerifyManagementPermission();
+            return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
         public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(Filter filter)
         {
             VerifyManagementPermission();
@@ -77,7 +83,7 @@ namespace GRA.Domain.Service
             {
                 IsUsed = false,
                 SiteId = codeType.SiteId,
-                VendorCodeTypeId = codeType.Id
+                VendorCodeTypeId = codeType.Id,
             };
             for (; count <= System.Math.Min(numberOfCodes, 5000); count++)
             {

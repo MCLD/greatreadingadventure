@@ -1,0 +1,480 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersDetailViewModel
+
+<div class="row">
+    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="lead">Add requirement</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills" style="padding: 10px 0;">
+                                        <li id="All" class="active requirementScope">
+                                            <a>All</a>
+                                        </li>
+                                        <li id="System" class="requirementScope">
+                                            <a>My System</a>
+                                        </li>
+                                        <li id="Branch" class="requirementScope">
+                                            <a>My Branch</a>
+                                        </li>
+                                        <li id="Mine" class="requirementScope">
+                                            <a>Mine</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-8">
+                                    <input id="searchText" class="form-control"
+                                           placeholder="Enter text to search for an event here" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="col-xs-6">
+                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchMessage" class="row hide">
+                                <div class="col-xs-12">
+                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="modalRequirementList" class="col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Triggers" asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" style="padding: 10px 0;">
+    <input asp-for="BadgeRequiredList" type="hidden" />
+    <input asp-for="ChallengeRequiredList" type="hidden" />
+    <input asp-for="IsSecretCode" type="hidden" />
+    @if (Model.Action == "Edit")
+    {
+        <input asp-for="Trigger.Id" type="hidden" />
+        <input asp-for="Trigger.RelatedBranchId" type="hidden" />
+        <input asp-for="Trigger.RelatedSystemId" type="hidden" />
+        <input asp-for="Trigger.AwardBadgeId" type="hidden" />
+    }
+
+    @if (Model.DependentTriggers?.Count > 0)
+    {
+        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Dependent Triggers
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        The following trigger(s) depend on this trigger:
+                        <ul>
+                            @foreach (var trigger in Model.DependentTriggers)
+                            {
+                                <li>
+                                    <a target="_blank" href="@Url.Action("Edit", new { id = trigger.Id })"> @trigger.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Trigger.Name" class="control-label"></label>
+            <input asp-for="Trigger.Name" class="form-control" />
+            <span asp-validation-for="Trigger.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <p>Triggers can be activated by a Secret Code <em>or</em> a set of Requirements</p>
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class=@(Model.IsSecretCode ? "active" : "")>
+            <a id="codeTab" href="#secretCode" aria-controls="secretCode" role="tab" data-toggle="tab">Secret Code</a>
+        </li>
+        <li role="presentation" class=@(Model.IsSecretCode ? "" : "active")>
+            <a id="requirementsTab" href="#requirements" aria-controls="requirements" role="tab" data-toggle="tab">Requirements</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "active" : "")" id="secretCode">
+            <div class="row" style="padding: 10px 0;">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.SecretCode" class="control-label"></label>
+                    <input asp-for="Trigger.SecretCode" class="form-control" />
+                    <span asp-validation-for="Trigger.SecretCode" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane @(Model.IsSecretCode ? "" : "active")" id="requirements">
+            <h3>Requirements</h3>
+
+            <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.Points" class="control-label"></label>
+                    <input asp-for="Trigger.Points" class="form-control" />
+                    <span asp-validation-for="Trigger.Points" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.ItemsRequired" class="control-label"></label>
+                    <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
+                    <span asp-validation-for="Trigger.ItemsRequired" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="TriggerRequirements" class="control-label"></label>
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td>Badge</td>
+                                <td width="42px">&nbsp;</td>
+                            </tr>
+                        </thead>
+                        <tbody id="requirementList">
+                            @if (Model.TriggerRequirements != null)
+                            {
+                                @foreach (var requirement in Model.TriggerRequirements)
+                                {
+                                    <tr>
+                                        <td>
+                                            @requirement.Name
+                                        </td>
+                                        <td>
+                                            <span class="fa fa-2x @requirement.Icon"></span>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                            {
+                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                     asp-append-version="true" />
+                                            }
+                                            else
+                                            {
+                                                <text>&nbsp;</text>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    id="removeRequirementButton"
+                                                    class="btn btn-primary btn-xs"
+                                                    data-badgeid="@requirement.BadgeId"
+                                                    data-challengeid="@requirement.ChallengeId">
+                                                <span class="fa fa-2x fa-minus" aria-hidden="true"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-12">
+                    <button type="button" id="addButton" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <h3>Limit</h3>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.LimitToSystemId" class="control-label"></label>
+                    <select asp-for="Trigger.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
+                        <option value="">No</option>
+                    </select>
+                    <span asp-validation-for="Trigger.LimitToSystemId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.LimitToBranchId" class="control-label"></label>
+                    <select asp-for="Trigger.LimitToBranchId" asp-items="Model.BranchList" class="form-control">
+                        <option value="">No</option>
+                    </select>
+                    <span asp-validation-for="Trigger.LimitToBranchId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.LimitToProgramId" class="control-label"></label>
+                    <select asp-for="Trigger.LimitToProgramId" asp-items="Model.ProgramList" class="form-control">
+                        <option value="">No</option>
+                    </select>
+                    <span asp-validation-for="Trigger.LimitToProgramId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Awards</h3>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Trigger.AwardMessage" class="control-label"></label>
+            <textarea asp-for="Trigger.AwardMessage" class="form-control"></textarea>
+            <span asp-validation-for="Trigger.AwardMessage" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+            {
+                <label class="control-label">Edit Badge</label>
+            }
+            else
+            {
+                <label class="control-label">Award Badge</label>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+            {
+            <div class="col-xs-12 col-sm-4 col-md-3">
+                <input asp-for="BadgePath" type="hidden" />
+                <img class="img-thumbnail badge-lg"
+                     src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                     asp-append-version="true" />
+            </div>
+        }
+        <div class="@(!string.IsNullOrWhiteSpace(Model.BadgePath) ? "col-xs-12 col-sm-8 col-md-9" : "col-xs-12")">
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly id="selectedFile">
+            </div>
+            <div>
+                <span asp-validation-for="BadgeImage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Trigger.AwardPoints" class="control-label"></label>
+            <input asp-for="Trigger.AwardPoints" min="0" value="0" class="form-control" />
+            <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
+        </div>
+    </div>
+
+    @if (Model.VendorCodeTypeList.Count() > 0)
+    {
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
+                <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
+                    <option value="">No</option>
+                </select>
+                <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" class="btn btn-primary">
+            <span class="buttonText">@Model.Action Trigger</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        var badgeIds = $("#BadgeRequiredList").val();
+        var challengeIds = $("#ChallengeRequiredList").val();
+        var requirementsUrl = "@Url.Action("GetRequirementList")";
+        var page = 1;
+        var scope = "All";
+        var search = "";
+        var thisBadge = $("#Trigger_AwardBadgeId").val();
+
+        function UpdateRequirementsList() {
+            $.get(requirementsUrl,
+                {
+                    badgeIds: badgeIds,
+                    challengeIds: challengeIds,
+                    scope: scope,
+                    search: search,
+                    page: page,
+                    thisBadge: thisBadge
+                }, function(response) {
+                    $("#modalRequirementList").html(response);
+                });
+        }
+
+        $("#addButton").on('click', function(e) {
+            $("#listModal").modal("show");
+            UpdateRequirementsList();
+        });
+
+        $(document).on("click", "#addRequirementButton", function() {
+            var badgeId = $(this).data("badgeid");
+            var challengeId = $(this).data("challengeid");
+
+            if (challengeId != "")
+            {
+                $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val() + "<" + challengeId + ">");
+                challengeIds = $("#ChallengeRequiredList").val();
+            }
+            else if (badgeId != "")
+            {
+                $("#BadgeRequiredList").val($("#BadgeRequiredList").val() + "<" + badgeId + ">");
+                badgeIds = $("#BadgeRequiredList").val();
+            }
+            var row = $(this).parent().parent();
+            $("#requirementList").append(row);
+            $(this).children().removeClass("fa-plus");
+            $(this).children().addClass("fa-minus");
+            $(this).attr("id", "removeRequirementButton");
+
+            UpdateRequirementsList();
+        });
+
+        $(document).on("click", "#removeRequirementButton", function() {
+            var badgeId = $(this).data("badgeid");
+            var challengeId = $(this).data("challengeid");
+
+            if (challengeId != "")
+            {
+                $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val().replace("<" + challengeId + ">", ""));
+                challengeIds = $("#ChallengeRequiredList").val();
+            }
+            else if (badgeId != "")
+            {
+                $("#BadgeRequiredList").val($("#BadgeRequiredList").val().replace("<" + badgeId + ">", ""));
+                badgeIds = $("#BadgeRequiredList").val();
+            }
+            $(this).parent().parent().remove();
+        });
+
+        $(".requirementScope").on("click", function(e) {
+            e.preventDefault();
+            $(this).siblings().removeClass("active");
+            $(this).addClass().addClass("active");
+            scope = $(this).attr("id");
+            page = 1;
+            UpdateRequirementsList();
+        });
+
+        $("#searchButton").on("click", function() {
+            search = $("#searchText").val();
+            if (search != "")
+            {
+                $("#searchMessage").removeClass("hide");
+                $("#searchTerm").html(search);
+            }
+            else
+            {
+                $("#searchMessage").addClass("hide");
+            }
+            page = 1;
+            UpdateRequirementsList();
+        })
+
+        $("#clearButton").on("click", function() {
+            $("#searchText").val("");
+            search = "";
+            $("#searchMessage").addClass("hide");
+            page = 1;
+            UpdateRequirementsList();
+        })
+
+        $(document).on("click", ".page-button", function() {
+            if (!$(this).hasClass("disabled"))
+            {
+                page = $(this).data("page");
+                UpdateRequirementsList();
+            }
+        });
+
+        $("#Trigger_LimitToSystemId").on("change", function() {
+            var systemId = $(this).val();
+            var branchList = $("#Trigger_LimitToBranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
+                branchList.empty();
+                branchList.append(new Option("No", ""));
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected))
+                });
+            });
+        });
+
+        $("#codeTab").on('show.bs.tab', function() {
+            $("#IsSecretCode").val("true");
+        });
+
+        $("#requirementsTab").on('show.bs.tab', function() {
+            $("#IsSecretCode").val("false");
+        });
+
+        $(':file').on('fileselect', function(event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length)
+            {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').addClass('btn-success');
+            }
+            else
+            {
+                input.val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+            }
+        });
+
+        $(document).on('change', ':file', function() {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
+}

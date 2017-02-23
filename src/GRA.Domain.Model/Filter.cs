@@ -8,10 +8,13 @@ namespace GRA.Domain.Model
         public int? SiteId { get; set; }
         public int? Skip { get; set; }
         public int? Take { get; set; }
-        public ICollection<int?> SystemIds { get; set; }
-        public ICollection<int?> BranchIds { get; set; }
+        public ICollection<int> UserIds { get; set; }
+        public ICollection<int> SystemIds { get; set; }
+        public ICollection<int> BranchIds { get; set; }
         public ICollection<int?> ProgramIds { get; set; }
         public ICollection<int?> LocationIds { get; set; }
+        public ICollection<int> BadgeIds { get; set; }
+        public ICollection<int> ChallengeIds { get; set; }
         public string Search { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? StartDate { get; set; }

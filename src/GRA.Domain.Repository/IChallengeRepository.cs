@@ -36,5 +36,6 @@ namespace GRA.Domain.Repository
             int? bookId);
         Task<ActivityLogResult> GetUserChallengeTaskResultAsync(int userId, int challengeTaskId);
         Task SetValidationAsync(int userId, int challengeId, bool valid);
+        Task<bool> HasDependentsAsync(int challengeId);
     }
 }

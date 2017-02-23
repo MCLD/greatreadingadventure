@@ -44,7 +44,7 @@ namespace GRA.Controllers
             // ignore location if branch has value
             if (branch.HasValue)
             {
-                filter.BranchIds = new List<int?>() { branch.Value };
+                filter.BranchIds = new List<int>() { branch.Value };
             }
             else if (location.HasValue)
             {

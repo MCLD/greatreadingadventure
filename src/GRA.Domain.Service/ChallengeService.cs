@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
@@ -23,6 +24,7 @@ namespace GRA.Domain.Service
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
+            ITriggerRepository triggerRepository,
             IUserRepository userRepository) : base(logger, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
@@ -31,6 +33,7 @@ namespace GRA.Domain.Service
                 nameof(challengeRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
+            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
@@ -259,6 +262,10 @@ namespace GRA.Domain.Service
         {
             if (HasPermission(Permission.RemoveChallenges))
             {
+                if (await _challengeRepository.HasDependentsAsync(challengeId))
+                {
+                    throw new GraException("Challenge has dependents");
+                }
                 await _challengeRepository
                     .RemoveSaveAsync(GetClaimId(ClaimType.UserId), challengeId);
             }
@@ -363,6 +370,11 @@ namespace GRA.Domain.Service
                 userId = GetActiveUserId();
             }
             return await _challengeRepository.GetChallengeTasksAsync(challengeId, userId);
+        }
+
+        public async Task<ICollection<Trigger>> GetDependentsAsync(int challengeId)
+        {
+            return await _triggerRepository.GetChallengeDependentsAsync(challengeId);
         }
 
         private async Task AddBadgeFilename(Challenge challenge)

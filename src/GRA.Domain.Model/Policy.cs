@@ -2,6 +2,7 @@
 {
     public sealed class Policy
     {
+        public const string AccessFlightController = "AccessFlightController";
         public const string AccessMissionControl = "AccessMissionControl";
         public const string ActivateAllChallenges = "ActivateAllChallenges";
         public const string ActivateChallenges = "ActivateChallenges";

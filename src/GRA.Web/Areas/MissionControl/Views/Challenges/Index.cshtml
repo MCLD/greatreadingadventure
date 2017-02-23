@@ -16,7 +16,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                     <form asp-controller="Challenges" asp-action="Delete" method="post" role="form" style="display:inline">
                         <input id="Id" name="Id" type="hidden" />
-                        <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                        <button id="modal-deleteButton" type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                             Delete
                         </button>
@@ -150,7 +150,8 @@
                                                 data-toggle="modal"
                                                 data-target="#deleteModal"
                                                 data-id="@challenge.Id"
-                                                data-name="@challenge.Name">
+                                                data-name="@challenge.Name"
+                                                data-hasDependents="@challenge.HasDependents">
                                             <span class="fa fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>
@@ -192,9 +193,19 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
+            var hasDependents = button.data('hasdependents');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
             modal.find('#Id').val(id);
+            if (hasDependents == "True")
+            {
+                modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
+                modal.find("#modal-deleteButton").hide();
+            }
+            else
+            {
+                modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
+                modal.find("#modal-deleteButton").show();
+            }
         })
         </text>
         }

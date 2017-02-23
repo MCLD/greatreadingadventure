@@ -12,14 +12,18 @@ namespace GRA.Data.Model
         public int RelatedSystemId { get; set; }
         [Required]
         public int RelatedBranchId { get; set; }
+        public bool IsDeleted { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; }
 
         public int Points { get; set; }
         [MaxLength(50)]
         public string SecretCode { get; set; }
+        public int ItemsRequired { get; set; }
 
         public ICollection<TriggerBadge> RequiredBadges { get; set; }
         public ICollection<TriggerChallenge> RequiredChallenges { get; set; }
-
 
         public int? LimitToSystemId { get; set; }
         [ForeignKey("LimitToSystemId")]

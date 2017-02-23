@@ -101,7 +101,7 @@ namespace GRA.Data.Repository
             {
                 foreach (var branchId in filter.BranchIds)
                 {
-                    if (branchId != null && !branchIds.Contains(branchId))
+                    if (!branchIds.Contains(branchId))
                     {
                         branchIds.Add(branchId);
                     }

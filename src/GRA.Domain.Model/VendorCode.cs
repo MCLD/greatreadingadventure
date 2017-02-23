@@ -9,7 +9,7 @@ namespace GRA.Domain.Model
         public string Code { get; set; }
         public bool IsUsed { get; set; }
         public DateTime DateUsed { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public DateTime? OrderDate { get; set; }
         public DateTime? ShipDate { get; set; }
 

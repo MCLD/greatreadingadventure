@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GRA.Domain.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         [DisplayName("Image")]
         public IFormFile BadgeImage { get; set; }
         public bool CanActivate { get; set; }
+        public bool CanViewTriggers { get; set; }
         public string MaxPointsMessage { get; set; }
+        public ICollection<Trigger> DependentTriggers { get; set; }
 
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }

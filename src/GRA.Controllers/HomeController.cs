@@ -17,6 +17,7 @@ namespace GRA.Controllers
         private const string ActivityErrorMessage = "ActivityErrorMessage";
         private const string AuthorMissingTitle = "AuthorMissingTitle";
         private const string ModelData = "ModelData";
+        private const string SecretCodeMessage = "SecretCodeMessage";
         private const int BadgesToDisplay = 6;
 
         private readonly ILogger<HomeController> _logger;
@@ -95,6 +96,10 @@ namespace GRA.Controllers
                 {
                     ModelState.AddModelError("Title", (string)TempData[AuthorMissingTitle]);
                 }
+                if (TempData.ContainsKey(SecretCodeMessage))
+                {
+                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                }
 
                 return View("Dashboard", viewModel);
             }
@@ -169,7 +174,7 @@ namespace GRA.Controllers
         public async Task<IActionResult> LogActivity(DashboardViewModel viewModel)
         {
             bool valid = true;
-            if (!viewModel.SingleEvent 
+            if (!viewModel.SingleEvent
                 && (viewModel.ActivityAmount == null || viewModel.ActivityAmount <= 0))
             {
                 valid = false;
@@ -194,6 +199,21 @@ namespace GRA.Controllers
                 };
                 await _activityService
                     .LogActivityAsync(GetActiveUserId(), viewModel.ActivityAmount ?? 1, book);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> LogSecretCode(DashboardViewModel viewModel)
+        {
+            try
+            {
+                await _activityService.LogSecretCodeAsync(GetActiveUserId(), viewModel.SecretCode);
+            }
+            catch (GraException gex)
+            {
+                TempData[SecretCodeMessage] = gex.Message;
             }
             return RedirectToAction("Index");
         }

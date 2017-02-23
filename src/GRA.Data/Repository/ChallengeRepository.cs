@@ -28,12 +28,19 @@ namespace GRA.Data.Repository
         {
             var challenges = GetChallenges(siteId, search, filterBy, filterId);
 
-            return await challenges.OrderBy(_ => _.Name)
+            var challengeList = await challenges.OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id)
                     .Skip(skip)
                     .Take(take)
                     .ProjectTo<Challenge>()
                     .ToListAsync();
+
+            foreach (var challenge in challengeList)
+            {
+                challenge.HasDependents = await HasDependentsAsync(challenge.Id);
+            }
+
+            return challengeList;
         }
 
         public async Task<int> GetChallengeCountAsync(int siteId,
@@ -41,7 +48,7 @@ namespace GRA.Data.Repository
             string filterBy = null,
             int? filterId = null)
         {
-            var challenges = GetChallenges(siteId, search, filterBy, filterId); 
+            var challenges = GetChallenges(siteId, search, filterBy, filterId);
 
             return await challenges.CountAsync();
         }
@@ -64,9 +71,9 @@ namespace GRA.Data.Repository
                         break;
 
                     case "open":
-                        challenges = challenges.Where(_ => _.IsActive == true 
-                        && _.LimitToSystemId == null 
-                        && _.LimitToBranchId == null 
+                        challenges = challenges.Where(_ => _.IsActive == true
+                        && _.LimitToSystemId == null
+                        && _.LimitToBranchId == null
                         && _.LimitToProgramId == null);
                         break;
 
@@ -341,7 +348,7 @@ namespace GRA.Data.Repository
                         && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId))
                     .OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id);
-                    
+
                 return new DataWithCount<IEnumerable<int>>()
                 {
                     Data = await challenges
@@ -393,6 +400,14 @@ namespace GRA.Data.Repository
                 DbSet.Update(challenge);
                 await base.SaveAsync();
             }
+        }
+
+        public async Task<bool> HasDependentsAsync(int challengeId)
+        {
+            return await _context.TriggerChallenges
+                .AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .AnyAsync();
         }
     }
 }

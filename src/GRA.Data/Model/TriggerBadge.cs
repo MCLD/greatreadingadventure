@@ -11,9 +11,5 @@ namespace GRA.Data.Model
         [Required]
         public int BadgeId { get; set; }
         public Badge Badge { get; set; }
-        [Required]
-        public int CreatedBy { get; set; }
-        [Required]
-        public DateTime CreatedAt { get; set; }
     }
 }

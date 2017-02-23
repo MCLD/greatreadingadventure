@@ -1,0 +1,59 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.RequirementListViewModel
+
+@if (Model.Requirements.Count() == 0)
+{
+    <div class="alert alert-warning">No Requirements found</div>
+}
+else
+{
+    <div>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Type</td>
+                    <td>Badge</td>
+                    <td width="42px">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var requirement in Model.Requirements)
+                {
+                    <tr>
+                        <td>
+                            @requirement.Name
+                        </td>
+                        <td>
+                            <span class="fa fa-2x @requirement.Icon"></span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                            {
+                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                     asp-append-version="true" />
+                            }
+                            else
+                            {
+                                <text>&nbsp;</text>
+                            }
+                        </td>
+                        <td>
+                            <button type="button"
+                                    id="addRequirementButton"
+                                    class="btn btn-primary btn-xs"
+                                    data-badgeid="@requirement.BadgeId"
+                                    data-challengeid="@requirement.ChallengeId">
+                                <span class="fa fa-2x fa-plus" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.PaginateModel.MaxPage > 1)
+    {
+        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
+    }
+}

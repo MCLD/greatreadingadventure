@@ -171,7 +171,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Create Challenge";
 
             ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel();
-            
+
             viewModel = await GetDetailLists(viewModel);
             if (site.MaxPointsPerChallengeTask.HasValue)
             {
@@ -186,7 +186,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create(ChallengesDetailViewModel model)
         {
             var site = await GetCurrentSiteAsync();
-            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue 
+            if (site.MaxPointsPerChallengeTask.HasValue && model.Challenge.TasksToComplete.HasValue
                 && model.Challenge.TasksToComplete != 0)
             {
                 double pointsPerChallenge = (double)model.Challenge.PointsAwarded / model.Challenge.TasksToComplete.Value;
@@ -285,7 +285,9 @@ namespace GRA.Controllers.MissionControl
                 Challenge = challenge,
                 TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
                     .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
-                CanActivate = canActivate
+                CanActivate = canActivate,
+                CanViewTriggers = UserHasPermission(Permission.ManageTriggers),
+                DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id)
             };
 
             if (site.MaxPointsPerChallengeTask.HasValue)
@@ -402,6 +404,9 @@ namespace GRA.Controllers.MissionControl
                 model.Challenge.Tasks = tasks.ToList();
                 PageTitle = $"Edit Challenge - {model.Challenge.Name}";
                 model = await GetDetailLists(model);
+                model.DependentTriggers = await _challengeService
+                    .GetDependentsAsync(model.Challenge.Id);
+
                 return View(model);
             }
         }
@@ -439,7 +444,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _challengeService.RemoveChallengeAsync(id);
+            try
+            {
+                await _challengeService.RemoveChallengeAsync(id);
+                ShowAlertSuccess("Challenge deleted.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete challenge: ", gex.Message);
+            }
             return RedirectToAction("Index");
         }
 
