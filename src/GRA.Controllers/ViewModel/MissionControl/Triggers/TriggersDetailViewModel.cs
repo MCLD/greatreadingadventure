@@ -20,7 +20,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public string ChallengeRequiredList { get; set; }
 
         public string BadgePath { get; set; }
-        public IFormFile BadgeImage { get; set; }
+        public IFormFile BadgeUploadImage { get; set; }
+        public string BadgeMakerUrl { get; set; }
+        public bool UseBadgeMaker { get; set; }
+        public string BadgeMakerImage { get; set; }
 
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }

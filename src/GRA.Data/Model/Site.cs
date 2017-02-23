@@ -48,5 +48,8 @@ namespace GRA.Data.Model
         public bool SinglePageSignUp { get; set; }
 
         public int? MaxPointsPerChallengeTask { get; set; }
+
+        public string FromEmailName { get; set; }
+        public string FromEmailAddress { get; set; }
     }
 }

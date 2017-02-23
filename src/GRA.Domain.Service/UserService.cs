@@ -448,12 +448,12 @@ namespace GRA.Domain.Service
             // if the program doesn't have an email address assigned, perform that action here
             // TODO in the future this should be replaced with the initial setup process
             var user = await _userRepository.GetByIdAsync(userId);
-            var program = await _programRepository.GetByIdAsync(user.ProgramId);
-            if (string.IsNullOrEmpty(program.FromEmailAddress))
+            var site = await _siteRepository.GetByIdAsync(user.SiteId);
+            if (string.IsNullOrEmpty(site.FromEmailAddress))
             {
-                program.FromEmailAddress = user.Email;
-                program.FromEmailName = user.FullName;
-                await _programRepository.UpdateSaveAsync(userId, program);
+                site.FromEmailAddress = user.Email;
+                site.FromEmailName = user.FullName;
+                await _siteRepository.UpdateSaveAsync(userId, site);
             }
 
             user.IsAdmin = true;

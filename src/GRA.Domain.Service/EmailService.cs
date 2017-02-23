@@ -28,10 +28,10 @@ namespace GRA.Domain.Service
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
         }
 
-        private bool CanSendMailTo(Program program, Site site)
+        private bool CanSendMailTo(Site site)
         {
-            return !string.IsNullOrEmpty(program.FromEmailAddress)
-                && !string.IsNullOrEmpty(program.FromEmailName)
+            return !string.IsNullOrEmpty(site.FromEmailAddress)
+                && !string.IsNullOrEmpty(site.FromEmailName)
                 && !string.IsNullOrEmpty(site.OutgoingMailHost)
                 && site.OutgoingMailPort != null;
         }
@@ -39,25 +39,23 @@ namespace GRA.Domain.Service
         public async Task<bool> CanSendMailTo(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            var program = await _programRepository.GetByIdAsync(user.ProgramId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
 
-            return CanSendMailTo(program, site);
+            return CanSendMailTo(site);
         }
 
         public async Task Send(int userId, string subject, string body, string htmlBody = null)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            var program = await _programRepository.GetByIdAsync(user.ProgramId);
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
             var message = new MimeMessage();
 
-            if(!CanSendMailTo(program, site))
+            if(!CanSendMailTo(site))
             {
                 throw new GraException("Sending email is not configured.");
             }
 
-            message.From.Add(new MailboxAddress(program.FromEmailName, program.FromEmailAddress));
+            message.From.Add(new MailboxAddress(site.FromEmailName, site.FromEmailAddress));
 
             if (!string.IsNullOrWhiteSpace(_config[ConfigurationKey.EmailOverride]))
             {

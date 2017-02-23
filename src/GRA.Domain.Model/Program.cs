@@ -24,8 +24,6 @@ namespace GRA.Domain.Model
         public bool SchoolRequired { get; set; }
         public int Position { get; set; }
 
-        public string FromEmailName { get; set; }
-        public string FromEmailAddress { get; set; }
         public int? AgeMaximum { get; set; }
         public int? AgeMinimum { get; set; }
 

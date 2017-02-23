@@ -9,5 +9,13 @@ namespace GRA.Controllers.Base
         public MCController(ServiceFacade.Controller context) : base(context)
         {
         }
+
+        protected string GetBadgeMakerUrl(string origin, string email)
+        {
+            string URL = "https://www.openbadges.me/designer.html";
+            URL = URL + $"?origin={origin}";
+            URL = URL + $"&email={email}";
+            return URL;
+        }
     }
 }

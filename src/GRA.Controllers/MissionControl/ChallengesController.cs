@@ -168,9 +168,15 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Create()
         {
             var site = await GetCurrentSiteAsync();
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             PageTitle = "Create Challenge";
 
-            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel();
+
+            ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
+            {
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                UseBadgeMaker = true
+            };
 
             viewModel = await GetDetailLists(viewModel);
             if (site.MaxPointsPerChallengeTask.HasValue)
@@ -195,13 +201,14 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
                 }
             }
-            if (model.BadgeImage != null)
+            if (model.BadgeUploadImage != null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".png")
+                if (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
+                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
+                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png")
                 {
-                    ModelState.AddModelError("BadgeImage", "Please use a .jpg or .png image");
+                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image");
                 }
             }
             if (ModelState.IsValid)
@@ -209,22 +216,36 @@ namespace GRA.Controllers.MissionControl
                 try
                 {
                     var challenge = model.Challenge;
-                    if (model.BadgeImage != null)
+                    if (model.BadgeUploadImage != null
+                        || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                     {
-                        using (var fileStream = model.BadgeImage.OpenReadStream())
+                        byte[] badgeBytes;
+                        string filename;
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
+                            (model.BadgeUploadImage != null || model.UseBadgeMaker))
                         {
-                            using (var ms = new MemoryStream())
-                            {
-                                fileStream.CopyTo(ms);
-                                var badgeBytes = ms.ToArray();
-                                var newBadge = new Badge
-                                {
-                                    Filename = Path.GetFileName(model.BadgeImage.FileName),
-                                };
-                                var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
-                                challenge.BadgeId = badge.Id;
-                            }
+                            var badgeString = model.BadgeMakerImage.Split(',').Last();
+                            badgeBytes = Convert.FromBase64String(badgeString);
+                            filename = "badge.png";
                         }
+                        else
+                        {
+                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            {
+                                using (var ms = new MemoryStream())
+                                {
+                                    fileStream.CopyTo(ms);
+                                    badgeBytes = ms.ToArray();
+                                }
+                            }
+                            filename = Path.GetFileName(model.BadgeUploadImage.FileName);
+                        }
+                        Badge newBadge = new Badge()
+                        {
+                            Filename = filename
+                        };
+                        var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                        challenge.BadgeId = badge.Id;
                     }
                     challenge = await _challengeService.AddChallengeAsync(challenge);
                     AlertSuccess = $"Challenge '<strong>{challenge.Name}</strong>' was successfully created";
@@ -245,6 +266,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Edit(int id)
         {
             var site = await GetCurrentSiteAsync();
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             Challenge challenge = new Challenge();
             try
             {
@@ -287,7 +309,9 @@ namespace GRA.Controllers.MissionControl
                     .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
                 CanActivate = canActivate,
                 CanViewTriggers = UserHasPermission(Permission.ManageTriggers),
-                DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id)
+                DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id),
+                BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
+                UseBadgeMaker = true
             };
 
             if (site.MaxPointsPerChallengeTask.HasValue)
@@ -336,44 +360,58 @@ namespace GRA.Controllers.MissionControl
                     ModelState.AddModelError("Challenge.PointsAwarded", $"Too many points awarded.");
                 }
             }
-            if (model.BadgeImage != null)
+            if (model.BadgeUploadImage != null
+                && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker))
             {
-                if (Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpg"
-                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".jpeg"
-                    && Path.GetExtension(model.BadgeImage.FileName).ToLower() != ".png")
+                if (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
+                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
+                    && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png")
                 {
-                    ModelState.AddModelError("BadgeImage", "Please use a .jpg or .png image");
+                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image");
                 }
             }
             if (ModelState.IsValid)
             {
                 var challenge = model.Challenge;
-                if (model.BadgeImage != null)
+                if (model.BadgeUploadImage != null
+                        || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))
                 {
-                    using (var fileStream = model.BadgeImage.OpenReadStream())
+                    byte[] badgeBytes;
+                    string filename;
+                    if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
+                        (model.BadgeUploadImage != null || model.UseBadgeMaker))
                     {
-                        using (var ms = new MemoryStream())
+                        var badgeString = model.BadgeMakerImage.Split(',').Last();
+                        badgeBytes = Convert.FromBase64String(badgeString);
+                        filename = "badge.png";
+                    }
+                    else
+                    {
+                        using (var fileStream = model.BadgeUploadImage.OpenReadStream())
                         {
-                            fileStream.CopyTo(ms);
-                            var badgeBytes = ms.ToArray();
-                            if (challenge.BadgeId == null)
+                            using (var ms = new MemoryStream())
                             {
-                                var newBadge = new Badge
-                                {
-                                    Filename = Path.GetFileName(model.BadgeImage.FileName),
-                                };
-                                var badge = await _badgeService
-                                    .AddBadgeAsync(newBadge, badgeBytes);
-                                challenge.BadgeId = badge.Id;
-                            }
-                            else
-                            {
-                                var existing = await _badgeService
-                                    .GetByIdAsync((int)challenge.BadgeId);
-                                existing.Filename = Path.GetFileName(model.BadgePath);
-                                await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
+                                fileStream.CopyTo(ms);
+                                badgeBytes = ms.ToArray();
                             }
                         }
+                        filename = Path.GetFileName(model.BadgeUploadImage.FileName);
+                    }
+                    if (challenge.BadgeId == null)
+                    {
+                        Badge newBadge = new Badge()
+                        {
+                            Filename = filename
+                        };
+                        var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                        challenge.BadgeId = badge.Id;
+                    }
+                    else
+                    {
+                        var existing = await _badgeService
+                                    .GetByIdAsync((int)challenge.BadgeId);
+                        existing.Filename = Path.GetFileName(model.BadgePath);
+                        await _badgeService.ReplaceBadgeFileAsync(existing, badgeBytes);
                     }
                 }
                 try

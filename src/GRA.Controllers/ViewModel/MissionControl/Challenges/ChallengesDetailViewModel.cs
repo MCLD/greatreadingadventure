@@ -15,10 +15,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool AddTask { get; set; }
         public string BadgePath { get; set; }
         [DisplayName("Image")]
-        public IFormFile BadgeImage { get; set; }
+        public IFormFile BadgeUploadImage { get; set; }
         public bool CanActivate { get; set; }
         public bool CanViewTriggers { get; set; }
         public string MaxPointsMessage { get; set; }
+        public string BadgeMakerUrl { get; set; }
+        public bool UseBadgeMaker { get; set; }
+        public string BadgeMakerImage { get; set; }
         public ICollection<Trigger> DependentTriggers { get; set; }
 
         public SelectList SystemList { get; set; }

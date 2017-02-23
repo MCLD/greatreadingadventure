@@ -1,6 +1,19 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Triggers.TriggersDetailViewModel
 
 <div class="row">
+    <div class="modal fade iframe-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
+        <span id="closeIframe" class="iframe-close fa fa-stack fa-lg">
+            <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
+            <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
+        </span>
+        <div class="iframe-container">
+            <iframe id="badgeMaker" class="badge-maker"></iframe>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
     <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="row">
@@ -67,6 +80,9 @@
     <input asp-for="BadgeRequiredList" type="hidden" />
     <input asp-for="ChallengeRequiredList" type="hidden" />
     <input asp-for="IsSecretCode" type="hidden" />
+    <input asp-for="UseBadgeMaker" type="hidden" />
+    <input asp-for="BadgeMakerUrl" type="hidden" />
+    <input asp-for="BadgeMakerImage" type="hidden" />
     @if (Model.Action == "Edit")
     {
         <input asp-for="Trigger.Id" type="hidden" />
@@ -265,26 +281,51 @@
                 <label class="control-label">Award Badge</label>
             }
         </div>
-        @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
             {
-            <div class="col-xs-12 col-sm-4 col-md-3">
                 <input asp-for="BadgePath" type="hidden" />
-                <img class="img-thumbnail badge-lg"
+                <img id="badgeImage" class="img-thumbnail badge-lg"
                      src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
                      asp-append-version="true" />
-            </div>
-        }
-        <div class="@(!string.IsNullOrWhiteSpace(Model.BadgePath) ? "col-xs-12 col-sm-8 col-md-9" : "col-xs-12")">
-            <div class="input-group">
-                <label class="input-group-btn">
-                    <span class="btn btn-default btn-file">
-                        <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeImage" accept=".png,.jpg,.jpeg" style="display: none;" />
-                    </span>
-                </label>
-                <input type="text" class="form-control" readonly id="selectedFile">
-            </div>
-            <div>
-                <span asp-validation-for="BadgeImage" class="text-danger"></span>
+            }
+            else
+            {
+                <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+            }
+            <span  asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
+        </div>
+
+        <div class="col-xs-12 col-sm-8 col-md-9">
+            <ul class="nav nav-tabs" role="tablist" style="margin-bottom:10px;">
+                <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
+                    <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                </li>
+                <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
+                    <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                    <button id="openMaker" type="button" class="btn btn-default">
+                        <span class="fa fa-certificate"></span> Create a Badge
+                    </button>
+                </div>
+                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" readonly id="selectedFile">
+                    </div>
+                    <div>
+                        <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -298,7 +339,7 @@
     </div>
 
     @if (Model.VendorCodeTypeList.Count() > 0)
-    {
+            {
         <div class="row row-spacing">
             <div class="col-xs-12">
                 <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
@@ -461,6 +502,9 @@
                 input.val(log);
                 $('.btn-file').removeClass('btn-default');
                 $('.btn-file').addClass('btn-success');
+                $("#badgeImage").removeAttr("src");
+                $("#badgeImage").height(200);
+                $("#BadgeMakerImage").val("");
             }
             else
             {
@@ -475,6 +519,35 @@
                 numFiles = input.get(0).files ? input.get(0).files.length : 1,
                 label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
             input.trigger('fileselect', [numFiles, label]);
+        });
+
+        $("#badgeTab").on('show.bs.tab', function() {
+            $("#UseBadgeMaker").val("true");
+        });
+
+        $("#uploadTab").on('show.bs.tab', function() {
+            $("#UseBadgeMaker").val("false");
+        });
+
+        $("#openMaker").on("click", function() {
+            $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
+            $("#badgeModal").modal("show");
+        });
+
+        $("#closeIframe").on("click", function() {
+            $("#badgeModal").modal("hide");
+        });
+
+        $(window).on("message", function(e) {
+            $("#badgeModal").modal("hide");
+            var data = e.originalEvent.data;
+            $("#badgeImage").attr("src", data);
+            $("#badgeImage").height(200);
+            $("#BadgeMakerImage").val(data);
+            $('#BadgeUploadImage').val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+            $('#selectedFile').val('');
         });
     </script>
 }
