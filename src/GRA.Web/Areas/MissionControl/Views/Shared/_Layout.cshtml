@@ -78,7 +78,7 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewParticipantList.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index"><span class="fa fa-users"></span><span class="visible-xs-inline"> Participats</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Participants"><a asp-controller="Participants" asp-action="Index" title="Participants"><span class="fa fa-users"></span><span class="visible-xs-inline"> Participants</span></a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewAllChallenges.ToString()))
                     {
@@ -95,7 +95,7 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageEvents.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span></a></li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                     {
@@ -119,7 +119,7 @@
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Pages, Schools">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="fa fa-gear"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fa fa-gear"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
                                 {
@@ -132,7 +132,7 @@
                             </ul>
                         </li>
                     }
-                    <li><a asp-controller="Home" asp-action="Signout">Sign Out</a></li>
+                    <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                 </ul>
             </div>
         </div>

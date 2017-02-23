@@ -57,28 +57,13 @@ namespace GRA.Web
             {
                 if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSqlServer]))
                 {
-                    Configuration[ConfigurationKey.DefaultCSSqlServer] 
+                    Configuration[ConfigurationKey.DefaultCSSqlServer]
                         = DefaultConnectionString.SqlServer;
                 }
                 if (string.IsNullOrEmpty(Configuration[ConfigurationKey.DefaultCSSQLite]))
                 {
-                    Configuration[ConfigurationKey.DefaultCSSQLite] 
+                    Configuration[ConfigurationKey.DefaultCSSQLite]
                         = DefaultConnectionString.SQLite;
-                }
-            }
-
-            string contentDirectory = Configuration[ConfigurationKey.ContentDirectory];
-
-            if (!string.IsNullOrEmpty(contentDirectory) && !Directory.Exists(contentDirectory))
-            {
-                try
-                {
-                    Directory.CreateDirectory(contentDirectory);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Unable to create directory '{contentDirectory}' in {Directory.GetCurrentDirectory()}");
-                    throw (ex);
                 }
             }
         }
@@ -107,9 +92,9 @@ namespace GRA.Web
                         _ => _.RequireClaim(ClaimType.Permission, permisisonName.ToString()));
                 }
 
-                options.AddPolicy(Domain.Model.Policy.ActivateChallenges, 
-                    _ => _.RequireClaim(ClaimType.Permission, 
-                        Domain.Model.Permission.ActivateAllChallenges.ToString(), 
+                options.AddPolicy(Domain.Model.Policy.ActivateChallenges,
+                    _ => _.RequireClaim(ClaimType.Permission,
+                        Domain.Model.Permission.ActivateAllChallenges.ToString(),
                         Domain.Model.Permission.ActivateSystemChallenges.ToString()));
             });
 
@@ -236,12 +221,44 @@ namespace GRA.Web
                 }
             });
 
+            string contentPath = null;
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.ContentDirectory]))
+            {
+                contentPath = Configuration[ConfigurationKey.ContentDirectory];
+            }
+            else
+            {
+                contentPath = Path.Combine(Directory.GetCurrentDirectory(), "content");
+            }
+
+            if (!Directory.Exists(contentPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(contentPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Unable to create directory '{contentPath}' in {Directory.GetCurrentDirectory()}");
+                    throw (ex);
+                }
+            }
+
+            string pathString = null;
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.ContentPath]))
+            {
+                pathString = "/" + Configuration[ConfigurationKey.ContentPath];
+            }
+            else
+            {
+                pathString = "/content";
+            }
+
             // configure /content with 7 day cache
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "content")),
-                RequestPath = new PathString("/content"),
+                FileProvider = new PhysicalFileProvider(contentPath),
+                RequestPath = new PathString(pathString),
                 OnPrepareResponse = _ =>
                 {
                     var headers = _.Context.Response.GetTypedHeaders();
