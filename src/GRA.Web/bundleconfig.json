@@ -1,14 +1,14 @@
 [
   {
-    "outputFileName": "wwwroot/css/site.min.css",
+    "outputFileName": "wwwroot/css/gra.min.css",
     "inputFiles": [
-      "wwwroot/css/site.css"
+      "wwwroot/css/gra.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/js/site.min.js",
+    "outputFileName": "wwwroot/js/gra.min.js",
     "inputFiles": [
-      "wwwroot/js/site.js"
+      "wwwroot/js/gra.js"
     ],
     "minify": {
       "enabled": true,

@@ -36,7 +36,10 @@
     "AutoMapper": "5.2.0",
     "Serilog.Extensions.Logging.File": "1.0.0",
     "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final",
-    "Microsoft.AspNetCore.ResponseCompression": "1.0.0"
+    "Microsoft.AspNetCore.ResponseCompression": "1.0.0",
+    "Microsoft.AspNetCore.DataProtection.Extensions": "1.1.0",
+    "Microsoft.Extensions.Caching.SqlServer": "1.1.0",
+    "Serilog.Settings.Configuration": "2.2.0"
   },
 
   "tools": {

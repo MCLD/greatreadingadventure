@@ -3,6 +3,7 @@ using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,14 +20,13 @@ namespace GRA.Web
 {
     public class Startup
     {
-        private IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
+        private readonly IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
         {
             { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
             { ConfigurationKey.DefaultPageTitle, "Great Reading Adventure" },
             { ConfigurationKey.DefaultSitePath, "gra" },
             { ConfigurationKey.DefaultFooter, "This site is running the open source <a href=\"http://www.greatreadingadventure.com/\">Great Reading Adventure</a> software developed by the <a href=\"https://mcldaz.org/\">Maricopa County Library District</a> with support by the <a href=\"http://www.azlibrary.gov/\">Arizona State Library, Archives and Public Records</a>, a division of the Secretary of State, and with federal funds from the <a href=\"http://www.imls.gov/\">Institute of Museum and Library Services</a>." },
             { ConfigurationKey.InitialAuthorizationCode, "gra4adminmagic" },
-            //{ ConfigurationKey.ContentDirectory, @"c:\inetpub\content\" },
             { ConfigurationKey.ContentPath, "content" }
         };
 
@@ -41,9 +42,12 @@ namespace GRA.Web
             {
                 builder.AddUserSecrets();
             }
-            builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
 
             foreach (var configKey in _defaultSettings.Keys)
             {
@@ -82,6 +86,20 @@ namespace GRA.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddResponseCompression();
             services.AddMemoryCache();
+
+            // check for a connection string for storing sessions in a database table
+            string sessionCs = Configuration.GetConnectionString("SqlServerSessions");
+            string sessionSchema = Configuration[ConfigurationKey.SqlSessionSchemaName] ?? "dbo";
+            string sessionTable = Configuration[ConfigurationKey.SqlSessionTable] ?? "Sessions";
+            if (!string.IsNullOrEmpty(sessionCs))
+            {
+                services.AddDistributedSqlServerCache(_ =>
+                {
+                    _.ConnectionString = sessionCs;
+                    _.SchemaName = sessionSchema;
+                    _.TableName = sessionTable;
+                });
+            }
             services.AddMvc();
 
             services.AddAuthorization(options =>
@@ -190,9 +208,7 @@ namespace GRA.Web
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddFile("Logs/gra-{Date}.txt");
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddSerilog();
 
             if (env.IsDevelopment())
             {
@@ -271,14 +287,24 @@ namespace GRA.Web
 
             app.UseSession();
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            // set cookie authentication options
+            var cookieAuthOptions = new CookieAuthenticationOptions
             {
                 AuthenticationScheme = Controllers.Authentication.SchemeGRACookie,
                 LoginPath = new PathString("/SignIn/"),
                 AccessDeniedPath = new PathString("/"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
-            });
+            };
+
+            // if there's a data protection path, set it up - for clustered/multi-server configs
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
+            {
+                cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
+                    new DirectoryInfo(Configuration[ConfigurationKey.DataProtectionPath]));
+            }
+
+            app.UseCookieAuthentication(cookieAuthOptions);
 
             // sitePath is also referenced in GRA.Controllers.Filter.SiteFilter
             app.UseMvc(routes =>
