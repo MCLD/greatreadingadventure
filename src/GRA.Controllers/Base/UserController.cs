@@ -51,7 +51,7 @@ namespace GRA.Controllers.Base
                 DynamicAvatarPaths = new Dictionary<int, string>()
             };
             var dynamicAvatarString = new StringBuilder();
-            if (!problem)
+            if (avatarLayerElement != null && !problem)
             {
                 int zIndex = 1;
                 int siteId = GetCurrentSiteId();

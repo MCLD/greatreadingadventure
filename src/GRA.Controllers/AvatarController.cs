@@ -147,12 +147,25 @@ namespace GRA.Controllers
 
             if (details.DynamicAvatarPaths.Count == 0)
             {
-                return RedirectToRoute(new
+                var defaultDynamic = await _dynamicAvatarService.GetDefaultAvatarAsync();
+                if (defaultDynamic == null || defaultDynamic.Count() == 0)
                 {
-                    controller = "Avatar",
-                    action = "Index",
-                    id = string.Empty
-                });
+                    return RedirectToRoute(new
+                    {
+                        controller = "Home",
+                        action = "Index",
+                        id = string.Empty
+                    });
+                }
+                else
+                {
+                    return RedirectToRoute(new
+                    {
+                        controller = "Avatar",
+                        action = "Index",
+                        id = string.Empty
+                    });
+                }
             }
 
             return View("DynamicIndex", details);
