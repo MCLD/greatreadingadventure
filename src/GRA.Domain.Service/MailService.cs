@@ -429,5 +429,19 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<bool> UserHasUnreadAsync(int userId)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId || HasPermission(Permission.ReadAllMail))
+            {
+                return await _mailRepository.UserHasUnreadAsync(userId);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to view messages for {userId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
     }
 }

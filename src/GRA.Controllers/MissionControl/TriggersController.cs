@@ -86,12 +86,14 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = true,
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                 BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
                 VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Name")
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description")
             };
+
             PageTitle = "Create Trigger";
             return View("Detail", viewModel);
         }
@@ -234,7 +236,7 @@ namespace GRA.Controllers.MissionControl
             }
             model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
             model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Name");
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)
@@ -257,6 +259,7 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 DependentTriggers = await _triggerService.GetDependentsAsync(trigger.AwardBadgeId),
                 TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
                 BadgeRequiredList = string.Join("", trigger.BadgeIds
@@ -267,7 +270,7 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
                 VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Name")
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description")
             };
             foreach (var requirement in viewModel.TriggerRequirements)
             {
@@ -417,7 +420,7 @@ namespace GRA.Controllers.MissionControl
             }
             model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
             model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Name");
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)

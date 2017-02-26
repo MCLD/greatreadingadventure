@@ -98,5 +98,19 @@ namespace GRA.Domain.Service
 
             return --count;
         }
+
+        public async Task<string> GetUserVendorCodeAsync(int userId)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId || HasPermission(Permission.ViewParticipantDetails))
+            {
+                return await _vendorCodeRepository.GetUserVendorCode(userId);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to view details for {userId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
     }
 }

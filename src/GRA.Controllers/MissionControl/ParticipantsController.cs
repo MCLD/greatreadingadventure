@@ -17,6 +17,9 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ViewParticipantList)]
     public class ParticipantsController : Base.MCController
     {
+        private const string MinutesReadMessage = "MinutesReadMessage";
+        private const string SecretCodeMessage = "SecretCodeMessage";
+
         private readonly ILogger<ParticipantsController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
@@ -26,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+        private readonly VendorCodeService _vendorCodeService;
         public ParticipantsController(ILogger<ParticipantsController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
@@ -34,7 +38,8 @@ namespace GRA.Controllers.MissionControl
             MailService mailService,
             SchoolService schoolService,
             SiteService siteService,
-            UserService userService)
+            UserService userService,
+            VendorCodeService vendorCodeService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
@@ -47,6 +52,7 @@ namespace GRA.Controllers.MissionControl
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
+            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
             PageTitle = "Participants";
         }
 
@@ -280,57 +286,54 @@ namespace GRA.Controllers.MissionControl
 
         #region Household
         [Authorize(Policy = Policy.ViewParticipantDetails)]
-        public async Task<IActionResult> Household(int id, int page = 1)
+        public async Task<IActionResult> Household(int id)
         {
             try
             {
-                int take = 15;
-                int skip = take * (page - 1);
-
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
-                User headOfHousehold = new User();
+                User head = new User();
 
                 if (user.HouseholdHeadUserId.HasValue)
                 {
-                    headOfHousehold = await _userService
+                    head = await _userService
                         .GetDetails(user.HouseholdHeadUserId.Value);
                 }
                 else
                 {
-                    headOfHousehold = user;
+                    head = user;
+                }
+                head.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
+                bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);
+                if (ReadAllMail)
+                {
+                    head.HasNewMail = await _mailService.UserHasUnreadAsync(head.Id);
                 }
 
-                var household = await _userService
-                    .GetPaginatedFamilyListAsync(headOfHousehold.Id, skip, take);
-
-                PaginateViewModel paginateModel = new PaginateViewModel()
-                {
-                    ItemCount = household.Count,
-                    CurrentPage = page,
-                    ItemsPerPage = take
-                };
-                if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-                {
-                    return RedirectToRoute(
-                        new
-                        {
-                            page = paginateModel.LastPage ?? 1
-                        });
-                }
+                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail);
 
                 HouseholdListViewModel viewModel = new HouseholdListViewModel()
                 {
-                    Users = household.Data,
-                    PaginateModel = paginateModel,
+                    Users = household,
                     Id = id,
-                    HouseholdCount = household.Count,
+                    HouseholdCount = household.Count(),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
-                    Head = headOfHousehold
+                    CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
+                    CanReadMail = ReadAllMail,
+                    Head = head
                 };
+
+                if (TempData.ContainsKey(MinutesReadMessage))
+                {
+                    viewModel.MinutesReadMessage = (string)TempData[MinutesReadMessage];
+                }
+                if (TempData.ContainsKey(SecretCodeMessage))
+                {
+                    viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                }
 
                 return View(viewModel);
             }
@@ -339,6 +342,82 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Unable to view participant's household: ", gex);
                 return RedirectToAction("Index");
             }
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        public async Task<IActionResult> HouseholdApplyMinutesRead(HouseholdListViewModel model)
+        {
+            if (model.MinutesRead < 1)
+            {
+                TempData[MinutesReadMessage] = "You must enter how many minutes!";
+            }
+
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                List<int> userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(Int32.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    await _activityService.LogHouseholdMinutesAsync(userSelection, model.MinutesRead);
+                    ShowAlertSuccess("Minutes applied!");
+                }
+                catch (GraException gex)
+                {
+                    TempData[MinutesReadMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[MinutesReadMessage] = "No household members selected.";
+            }
+
+            return RedirectToAction("Household", new { id = model.Id });
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.SecretCode))
+            {
+                TempData[SecretCodeMessage] = "You must enter a code!";
+            }
+
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                List<int> userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(Int32.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    var codeApplied = await _activityService
+                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
+                    if (codeApplied)
+                    {
+                        ShowAlertSuccess("Secret Code applied!");
+                    }
+                    else
+                    {
+                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
+                    }
+                }
+                catch (GraException gex)
+                {
+                    TempData[SecretCodeMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[SecretCodeMessage] = "No household members selected.";
+            }
+
+            return RedirectToAction("Household", new { id = model.Id });
         }
 
         [Authorize(Policy = Policy.EditParticipants)]

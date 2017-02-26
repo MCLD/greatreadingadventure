@@ -159,5 +159,12 @@ namespace GRA.Data.Repository
             await base.UpdateAsync(userId, entity, null);
             await base.SaveAsync();
         }
+
+        public async Task<bool> UserHasUnreadAsync(int userId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.ToUserId == userId && _.IsNew == true && _.IsDeleted == false)
+                .AnyAsync();
+        }
     }
 }

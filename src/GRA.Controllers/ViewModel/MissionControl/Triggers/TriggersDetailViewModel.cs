@@ -25,6 +25,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
 
+        public bool EditVendorCode { get; set; }
+
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,28 +17,40 @@ namespace GRA.Controllers
     [Authorize]
     public class ProfileController : Base.UserController
     {
+        private const string MinutesReadMessage = "MinutesReadMessage";
+        private const string SecretCodeMessage = "SecretCodeMessage";
+
         private readonly ILogger<ProfileController> _logger;
         private readonly AutoMapper.IMapper _mapper;
+        private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
+        private readonly MailService _mailService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
+        private readonly VendorCodeService _vendorCodeService;
 
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
             Abstract.IPasswordValidator passwordValidator,
+            ActivityService activityService,
             AuthenticationService authenticationService,
+            MailService mailService,
             SchoolService schoolService,
             SiteService siteService,
-            UserService userService) : base(context)
+            UserService userService,
+            VendorCodeService vendorCodeService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _mapper = context.Mapper;
+            _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
+            _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
             PageTitle = "My Profile";
         }
 
@@ -196,54 +209,129 @@ namespace GRA.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Household(int page = 1)
+        public async Task<IActionResult> Household()
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
-            User activeUser = await _userService.GetDetails(GetActiveUserId());
+            var hasAccount = true;
+            var activeUserId = GetActiveUserId();
+            if (authUser.Id != activeUserId)
+            {
+                User activeUser = await _userService.GetDetails(activeUserId);
+                if (string.IsNullOrWhiteSpace(activeUser.Username))
+                {
+                    hasAccount = false;
+                }
+            }
 
             User headUser = null;
-            if (authUser.HouseholdHeadUserId != null)
+            bool authUserIsHead = !authUser.HouseholdHeadUserId.HasValue;
+            if (!authUserIsHead)
             {
                 headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
             }
+            else
+            {
+                authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
+                authUser.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+            }
 
             var household = await _userService
-                .GetPaginatedFamilyListAsync(authUser.HouseholdHeadUserId ?? authUser.Id, skip, take);
-
-            // authUser is the head of the family
-            bool authUserIsHead =
-                authUser.Id == household.Data.FirstOrDefault()?.HouseholdHeadUserId;
-
-            PaginateViewModel paginateModel = new PaginateViewModel()
-            {
-                ItemCount = household.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
-            };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = paginateModel.LastPage ?? 1
-                    });
-            }
+                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead, authUserIsHead);
 
             HouseholdListViewModel viewModel = new HouseholdListViewModel()
             {
-                Users = household.Data,
-                PaginateModel = paginateModel,
-                HouseholdCount = household.Count,
-                HasAccount = !string.IsNullOrWhiteSpace(activeUser.Username),
+                Users = household,
+                HouseholdCount = household.Count(),
+                HasAccount = hasAccount,
                 Head = headUser ?? authUser,
                 AuthUserIsHead = authUserIsHead,
-                ActiveUser = GetActiveUserId()
+                ActiveUser = activeUserId
             };
 
+            if (TempData.ContainsKey(MinutesReadMessage))
+            {
+                viewModel.MinutesReadMessage = (string)TempData[MinutesReadMessage];
+            }
+            if (TempData.ContainsKey(SecretCodeMessage))
+            {
+                viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+            }
+
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> HouseholdApplyMinutesRead(HouseholdListViewModel model)
+        {
+            if (model.MinutesRead < 1)
+            {
+                TempData[MinutesReadMessage] = "You must enter how many minutes!";
+            }
+
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                List<int> userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(Int32.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    await _activityService.LogHouseholdMinutesAsync(userSelection, model.MinutesRead);
+                    ShowAlertSuccess("Minutes applied!");
+                }
+                catch (GraException gex)
+                {
+                    TempData[MinutesReadMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[MinutesReadMessage] = "No household members selected.";
+            }
+
+            return RedirectToAction("Household");
+        }
+
+        public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.SecretCode))
+            {
+                TempData[SecretCodeMessage] = "You must enter a code!";
+            }
+
+            else if (!string.IsNullOrWhiteSpace(model.UserSelection))
+            {
+                List<int> userSelection = model.UserSelection
+                    .Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(Int32.Parse)
+                    .Distinct()
+                    .ToList();
+                try
+                {
+                    var codeApplied = await _activityService
+                        .LogHouseholdSecretCodeAsync(userSelection, model.SecretCode);
+                    if (codeApplied)
+                    {
+                        ShowAlertSuccess("Secret Code applied!");
+                    }
+                    else
+                    {
+                        TempData[SecretCodeMessage] = "All selected members have already entered that Secret Code.";
+                    }
+                }
+                catch (GraException gex)
+                {
+                    TempData[SecretCodeMessage] = gex.Message;
+                }
+            }
+            else
+            {
+                TempData[SecretCodeMessage] = "No household members selected.";
+            }
+
+            return RedirectToAction("Household");
         }
 
         public async Task<IActionResult> AddHouseholdMember()
@@ -364,7 +452,7 @@ namespace GRA.Controllers
                         model.User.EnteredSchoolName = null;
                     }
 
-                    await _userService.AddHouseholdMemberAsync(authUser.Id, model.User, 
+                    await _userService.AddHouseholdMemberAsync(authUser.Id, model.User,
                         model.SchoolDistrictId);
                     AlertSuccess = "Added household member";
                     return RedirectToAction("Household");
@@ -437,7 +525,7 @@ namespace GRA.Controllers
             {
                 return RedirectToAction("Household");
             }
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -452,7 +540,7 @@ namespace GRA.Controllers
                     ShowAlertDanger("Could not add participant to household: ", gex.Message);
                 }
             }
-                return View(model);
+            return View(model);
         }
 
         public IActionResult RegisterHouseholdMember()
@@ -496,7 +584,7 @@ namespace GRA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAs(int loginId)
+        public async Task<IActionResult> LoginAs(int loginId, bool goToMail = false)
         {
             var user = await _userService.GetDetails(loginId);
             var authUser = GetId(ClaimType.UserId);
@@ -507,7 +595,14 @@ namespace GRA.Controllers
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
                 ShowAlertSuccess($"You are now signed in as {user.FullName}.", "user");
             }
-            return RedirectToRoute(new { controller = "Home", action = "Index" });
+            if (goToMail)
+            {
+                return RedirectToAction("Index", "Mail");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public async Task<IActionResult> Books(int page = 1)

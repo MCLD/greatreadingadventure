@@ -631,7 +631,7 @@ namespace GRA.Domain.Service
         {
             VerifyCanLog();
 
-            if(string.IsNullOrWhiteSpace(secretCode))
+            if (string.IsNullOrWhiteSpace(secretCode))
             {
                 throw new GraException("You must enter a code!");
             }
@@ -653,15 +653,15 @@ namespace GRA.Domain.Service
 
             var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
 
-            if(trigger == null)
+            if (trigger == null)
             {
                 throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
             }
 
             // check if this user's gotten this code
-            var alreadyDone 
+            var alreadyDone
                 = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
-            if(alreadyDone != null)
+            if (alreadyDone != null)
             {
                 throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
             }
@@ -715,6 +715,142 @@ namespace GRA.Domain.Service
             {
                 await AwardTriggersAsync(userIdToLog);
             }
+        }
+
+        public async Task LogHouseholdMinutesAsync(List<int> userIds, int minutesRead)
+        {
+            VerifyCanLog();
+
+            if (minutesRead < 1)
+            {
+                throw new GraException($"Minutes read must be at least 1.");
+            }
+            int authUserId = GetClaimId(ClaimType.UserId);
+            
+            if (!HasPermission(Permission.LogActivityForAny))
+            {
+                var authUser = await _userRepository.GetByIdAsync(authUserId);
+                if (authUser.HouseholdHeadUserId.HasValue)
+                {
+                    string error = $"User id {authUserId} cannot log minutes for a household";
+                    _logger.LogError(error);
+                    throw new GraException("Permission denied.");
+                }
+
+                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
+                .Select(_ => _.Id).ToList();
+                householdList.Add(authUserId);
+                if (userIds.Except(householdList).Any())
+                {
+                    string error = $"User id {authUserId} cannot log minutes for {userIds.Except(householdList).First()}";
+                    _logger.LogError(error);
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            foreach (var userId in userIds)
+            {
+                await LogActivityAsync(userId, minutesRead);
+            }
+
+        }
+
+        public async Task<bool> LogHouseholdSecretCodeAsync(List<int> userIds, string secretCode)
+        {
+            VerifyCanLog();
+
+            if (string.IsNullOrWhiteSpace(secretCode))
+            {
+                throw new GraException("You must enter a code!");
+            }
+            int authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.LogActivityForAny))
+            {
+                var authUser = await _userRepository.GetByIdAsync(authUserId);
+                if (authUser.HouseholdHeadUserId.HasValue)
+                {
+                    string error = $"User id {authUserId} cannot log codes for a household";
+                    _logger.LogError(error);
+                    throw new GraException("Permission denied.");
+                }
+
+                var householdList = (await _userRepository.GetHouseholdAsync(authUserId))
+                    .Select(_ => _.Id).ToList();
+                householdList.Add(authUserId);
+                if (userIds.Except(householdList).Any())
+                {
+                    string error = $"User id {authUserId} cannot log codes for {userIds.Except(householdList).First()}";
+                    _logger.LogError(error);
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
+
+            if (trigger == null)
+            {
+                throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
+            }
+
+            var codeApplied = false;
+
+            foreach (var userId in userIds)
+            {
+                var alreadyDone
+                = await _triggerRepository.CheckTriggerActivationAsync(userId, trigger.Id);
+                if (alreadyDone != null)
+                {
+                    continue;
+                }
+
+                await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
+
+                // every trigger awards a badge
+                var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
+
+                // log the notification
+                await _notificationRepository.AddSaveAsync(authUserId, new Notification
+                {
+                    PointsEarned = trigger.AwardPoints,
+                    UserId = userId,
+                    Text = trigger.AwardMessage,
+                    BadgeId = trigger.AwardBadgeId,
+                    BadgeFilename = badge.Filename
+                });
+
+                // add the award to the user's history
+                var userLog = new UserLog
+                {
+                    UserId = userId,
+                    PointsEarned = trigger.AwardPoints,
+                    IsDeleted = false,
+                    BadgeId = trigger.AwardBadgeId,
+                    Description = trigger.AwardMessage
+                };
+
+                userLog.AwardedBy = authUserId;
+
+                await _userLogRepository.AddSaveAsync(authUserId, userLog);
+
+                // award any vendor code that is necessary
+                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
+
+                // if there are points to be awarded, do that now, also check for other triggers
+                if (trigger.AwardPoints > 0)
+                {
+                    await AddPointsSaveAsync(authUserId,
+                        authUserId,
+                        userId,
+                        trigger.AwardPoints);
+                }
+                else
+                {
+                    await AwardTriggersAsync(userId);
+                }
+                codeApplied = true;
+            }
+            return codeApplied;
         }
     }
 }

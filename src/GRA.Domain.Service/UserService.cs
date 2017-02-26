@@ -16,6 +16,7 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IBranchRepository _branchRepository;
         private readonly IDrawingRepository _drawingRepository;
+        private readonly IMailRepository _mailRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IProgramRepository _programRepository;
         private readonly IRoleRepository _roleRepository;
@@ -25,6 +26,7 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
         public UserService(ILogger<UserService> logger,
@@ -35,6 +37,7 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             IBranchRepository branchRepository,
             IDrawingRepository drawingRepository,
+            IMailRepository mailRepository,
             INotificationRepository notificationRepository,
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
@@ -44,6 +47,7 @@ namespace GRA.Domain.Service
             ISystemRepository systemRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
+            IVendorCodeRepository vendorCodeRepository,
             SampleDataService configurationService,
             SchoolService schoolService)
             : base(logger, userContextProvider)
@@ -55,6 +59,7 @@ namespace GRA.Domain.Service
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
+            _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
@@ -66,6 +71,7 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
+            _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
             _configurationService = Require.IsNotNull(configurationService,
                 nameof(configurationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
@@ -607,7 +613,54 @@ namespace GRA.Domain.Service
                 addedMembers += " and their household";
             }
             return addedMembers;
+        }
 
+        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId,
+            bool includeVendorCode, bool includeMail)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (!HasPermission(Permission.ViewParticipantDetails)
+                && householdHeadUserId != authId)
+            {
+                var authUser = await _userRepository.GetByIdAsync(authId);
+                if (authUser.HouseholdHeadUserId != householdHeadUserId)
+                {
+                    _logger.LogError($"User {authId} doesn't have permission to view details for {householdHeadUserId}.");
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            var household = await _userRepository.GetHouseholdAsync(householdHeadUserId);
+
+            if (includeVendorCode || includeMail)
+            {
+                if (householdHeadUserId != authId)
+                {
+                    if (includeVendorCode && !HasPermission(Permission.ViewParticipantDetails))
+                    {
+                        _logger.LogError($"User {authId} doesn't have permission to vendor codes for {householdHeadUserId}.");
+                        throw new GraException("Permission denied.");
+                    }
+                    if (includeMail && !HasPermission(Permission.ReadAllMail))
+                    {
+                        _logger.LogError($"User {authId} doesn't have permission to view mail for {householdHeadUserId}.");
+                        throw new GraException("Permission denied.");
+                    }
+                }
+
+                foreach (var member in household)
+                {
+                    if (includeMail)
+                    {
+                        member.HasNewMail = await _mailRepository.UserHasUnreadAsync(member.Id);
+                    }
+                    if (includeVendorCode)
+                    {
+                        member.VendorCode = await _vendorCodeRepository.GetUserVendorCode(member.Id);
+                    }
+                }
+            }
+            return household;
         }
 
         private async Task<bool> UserHasRoles(int userId)

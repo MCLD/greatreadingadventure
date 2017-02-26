@@ -17,5 +17,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Mail>> PageUserInboxAsync(int userId, int skip, int take);
         Task<int> GetUserUnreadCountAsync(int userId);
         Task MarkAsReadAsync(int mailId);
+        Task<bool> UserHasUnreadAsync(int userId);
     }
 }

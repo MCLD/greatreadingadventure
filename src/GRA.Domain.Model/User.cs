@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -69,5 +70,8 @@ namespace GRA.Domain.Model
         public string EnteredSchoolName { get; set; }
         [MaxLength(16)]
         public string DynamicAvatar { get; set; }
+
+        public bool HasNewMail { get; set; }
+        public string VendorCode { get; set; }
     }
 }

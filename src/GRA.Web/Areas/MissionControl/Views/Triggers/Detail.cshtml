@@ -12,7 +12,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
         <div class="modal-dialog modal-lg" role="document">
@@ -83,6 +82,7 @@
     <input asp-for="UseBadgeMaker" type="hidden" />
     <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
+    <input asp-for="EditVendorCode" type="hidden" />
     @if (Model.Action == "Edit")
     {
         <input asp-for="Trigger.Id" type="hidden" />
@@ -294,7 +294,7 @@
             {
                 <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
             }
-            <span  asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
+            <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
         </div>
 
         <div class="col-xs-12 col-sm-8 col-md-9">
@@ -337,18 +337,20 @@
             <span asp-validation-for="Trigger.AwardPoints" class="text-danger"></span>
         </div>
     </div>
-
-    @if (Model.VendorCodeTypeList.Count() > 0)
-            {
-        <div class="row row-spacing">
-            <div class="col-xs-12">
-                <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
-                <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
-                    <option value="">No</option>
-                </select>
-                <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+    @if (Model.EditVendorCode || Model.Trigger?.AwardVendorCodeTypeId != null)
+    {
+        if (Model.VendorCodeTypeList.Count() > 0)
+        {
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.AwardVendorCodeTypeId" class="control-label"></label>
+                    <select asp-for="Trigger.AwardVendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control" disabled>
+                        <option value="">No</option>
+                    </select>
+                    <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+                </div>
             </div>
-        </div>
+        }
     }
 
     <div class="form-group">
@@ -370,6 +372,13 @@
         var scope = "All";
         var search = "";
         var thisBadge = $("#Trigger_AwardBadgeId").val();
+
+        $(document).ready(function() {
+            if ("@Model.EditVendorCode" == "True")
+            {
+                $("#Trigger_AwardVendorCodeTypeId").prop("disabled", false);
+            }
+        });
 
         function UpdateRequirementsList() {
             $.get(requirementsUrl,

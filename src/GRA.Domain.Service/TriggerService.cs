@@ -60,6 +60,11 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             trigger.SiteId = GetCurrentSiteId();
             await ValidateTriggerAsync(trigger);
+            if (!HasPermission(Permission.ManageVendorCodes))
+            {
+                var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
+                trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
+            }
             return await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);
         }

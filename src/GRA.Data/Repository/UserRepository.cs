@@ -28,7 +28,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == userId && _.IsDeleted == false)
                 .SingleOrDefaultAsync();
 
-            if(userLookup == null)
+            if (userLookup == null)
             {
                 throw new GraException($"Unable to add roles to user {userId}.");
             }
@@ -199,17 +199,17 @@ namespace GRA.Data.Repository
                 userCount = userCount.Where(_ => _.CreatedAt <= request.EndDate);
             }
 
-            if(request.ProgramId != null)
+            if (request.ProgramId != null)
             {
                 userCount = userCount.Where(_ => _.ProgramId == request.ProgramId);
             }
 
-            if(request.SystemId != null)
+            if (request.SystemId != null)
             {
                 userCount = userCount.Where(_ => _.SystemId == request.SystemId);
             }
 
-            if(request.BranchId != null)
+            if (request.BranchId != null)
             {
                 userCount = userCount.Where(_ => _.BranchId == request.BranchId);
             }
@@ -225,6 +225,27 @@ namespace GRA.Data.Repository
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
             await base.SaveAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetHouseholdListAsync(int householdHeadUserId)
+        {
+            var household = DbSet
+                .AsNoTracking()
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
+                .Where(_ => _.IsDeleted == false
+                       && _.HouseholdHeadUserId == householdHeadUserId)
+                .ProjectTo<User>();
+
+            return await (from users in household
+                          join mail in _context.Mails.Where(_ => _.IsNew)
+                          on users.Id equals mail.ToUserId
+                          select new User
+                          {
+                              HasNewMail = true
+                          })
+                         .ToListAsync();
         }
 
         public async Task<IEnumerable<User>>
@@ -282,7 +303,7 @@ namespace GRA.Data.Repository
                 Id = userIdLookup.Id,
                 Data = await DbSet
                     .AsNoTracking()
-                    .Where(_ => _.Email == email 
+                    .Where(_ => _.Email == email
                         && !string.IsNullOrEmpty(_.Username)
                         && _.IsDeleted == false)
                     .Select(_ => _.Username)
@@ -301,7 +322,7 @@ namespace GRA.Data.Repository
 
         public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId)
         {
-            return await DbSet
+            var household = await DbSet
                 .AsNoTracking()
                 .Include(_ => _.Branch)
                 .Include(_ => _.Program)
@@ -310,6 +331,9 @@ namespace GRA.Data.Repository
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .ProjectTo<User>()
                 .ToListAsync();
+
+            
+            return household;
         }
     }
 }
