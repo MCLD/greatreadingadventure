@@ -147,9 +147,30 @@ namespace GRA.Controllers
 
             if (details.DynamicAvatarPaths.Count == 0)
             {
+                // the requested avatar was not found, show the user's avatar
+                var currentUser = await _userService.GetDetails(GetActiveUserId());
+                if (!string.IsNullOrEmpty(currentUser.DynamicAvatar))
+                {
+                    // validate avatar
+                    details = await GetDynamicAvatarDetailsAsync(currentUser.DynamicAvatar,
+                        _dynamicAvatarService);
+                    if (details.DynamicAvatarPaths != null && details.DynamicAvatarPaths.Count() > 0)
+                    {
+                        // user has a valid avatar, redirect to that
+                        return RedirectToRoute(new
+                        {
+                            controller = "Avatar",
+                            action = "Index",
+                            id = details.DynamicAvatarString
+                        });
+                    }
+                }
+
+                // check for a default avatar
                 var defaultDynamic = await _dynamicAvatarService.GetDefaultAvatarAsync();
                 if (defaultDynamic == null || defaultDynamic.Count() == 0)
                 {
+                    // there is no default avatar, redirect to home page, avatars not configured
                     return RedirectToRoute(new
                     {
                         controller = "Home",
@@ -159,11 +180,17 @@ namespace GRA.Controllers
                 }
                 else
                 {
+                    // build a url with the default avatar
+                    var defaultId = new StringBuilder();
+                    foreach (var key in defaultDynamic.Keys)
+                    {
+                        defaultId.Append(defaultDynamic[key].ToString("x2"));
+                    }
                     return RedirectToRoute(new
                     {
                         controller = "Avatar",
                         action = "Index",
-                        id = string.Empty
+                        id = defaultId.ToString()
                     });
                 }
             }
