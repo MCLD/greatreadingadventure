@@ -1,12 +1,10 @@
-﻿using GRA.Controllers.ViewModel;
-using GRA.Controllers.ViewModel.Home;
+﻿using GRA.Controllers.ViewModel.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +20,7 @@ namespace GRA.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EmailReminderService _emailReminderService;
         private readonly SiteService _siteService;
         private readonly StaticAvatarService _staticAvatarService;
@@ -29,6 +28,7 @@ namespace GRA.Controllers
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            DynamicAvatarService dynamicAvatarService,
             EmailReminderService emailReminderService,
             SiteService siteService,
             StaticAvatarService staticAvatarService,
@@ -37,6 +37,8 @@ namespace GRA.Controllers
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
+                nameof(dynamicAvatarService));
             _emailReminderService = Require.IsNotNull(emailReminderService,
                 nameof(emailReminderService));
             _staticAvatarService = Require.IsNotNull(staticAvatarService,
@@ -56,11 +58,22 @@ namespace GRA.Controllers
             {
                 // signed-in users can view the dashboard
                 var user = await _userService.GetDetails(GetActiveUserId());
-                StaticAvatar avatar = new StaticAvatar();
-                if (user.AvatarId != null)
+                string staticAvatarPath = null;
+                DynamicAvatarDetails dynamicAvatarDetails = null;
+
+                if (site.UseDynamicAvatars)
                 {
-                    avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
-                    avatar.Filename = _pathResolver.ResolveContentPath(avatar.Filename);
+                    dynamicAvatarDetails = await GetDynamicAvatarDetailsAsync(user.DynamicAvatar,
+                        _dynamicAvatarService);
+                }
+                else
+                {
+                    StaticAvatar avatar = new StaticAvatar();
+                    if (user.AvatarId != null)
+                    {
+                        avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
+                        staticAvatarPath = _pathResolver.ResolveContentPath(avatar.Filename);
+                    }
                 }
 
                 var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
@@ -74,11 +87,20 @@ namespace GRA.Controllers
                 {
                     FirstName = user.FirstName,
                     CurrentPointTotal = user.PointsEarned,
-                    AvatarPath = avatar.Filename,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data
                 };
+
+                if (!string.IsNullOrEmpty(staticAvatarPath))
+                {
+                    viewModel.AvatarPath = staticAvatarPath;
+                }
+                if (dynamicAvatarDetails.DynamicAvatarPaths.Count > 0)
+                {
+                    viewModel.DynamicAvatarPaths = dynamicAvatarDetails.DynamicAvatarPaths;
+                }
+
                 if (TempData.ContainsKey(ModelData))
                 {
                     var model = Newtonsoft.Json.JsonConvert

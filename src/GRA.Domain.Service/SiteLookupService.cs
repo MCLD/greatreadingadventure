@@ -121,7 +121,8 @@ namespace GRA.Domain.Service
                 RegistrationOpens = DateTime.Now,
                 ProgramStarts = DateTime.Now,
                 ProgramEnds = DateTime.Now.AddDays(60),
-                AccessClosed = DateTime.Now.AddDays(90)
+                AccessClosed = DateTime.Now.AddDays(90),
+                UseDynamicAvatars = true
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);

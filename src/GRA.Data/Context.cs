@@ -40,6 +40,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
             modelBuilder.Entity<Model.DrawingWinner>()
                 .HasKey(_ => new { _.DrawingId, _.UserId });
+            modelBuilder.Entity<Model.DynamicAvatarElement>()
+                .HasKey(_ => new { _.Id, _.DynamicAvatarLayerId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.TriggerBadge>()
@@ -100,6 +102,8 @@ namespace GRA.Data
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingWinner> DrawingWinners { get; set; }
+        public DbSet<Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
+        public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.EnteredSchool> EnteredSchools { get; set; }
         public DbSet<Model.Event> Events { get; set; }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace GRA
 {
@@ -15,14 +16,43 @@ namespace GRA
             _config = config;
         }
 
-        public string ResolveContentPath(string filePath)
+        public string ResolveContentPath(string filePath = default(string))
         {
             string path = _config[ConfigurationKey.ContentPath];
-            if (!path.EndsWith("/"))
+            if (string.IsNullOrEmpty(path))
             {
-                path += "/";
+                path = "content";
             }
-            return path + filePath;
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (!path.EndsWith("/") && !filePath.StartsWith("/"))
+                {
+                    path += "/";
+                }
+                path += filePath;
+            }
+            return path;
+        }
+
+        public string ResolveContentFilePath(string filePath = default(string))
+        {
+            string path = null;
+            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ContentDirectory]))
+            {
+                path = _config[ConfigurationKey.ContentDirectory];
+            }
+            else
+            {
+                path = Path.Combine(Directory.GetCurrentDirectory(), "content");
+            }
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                return Path.Combine(path, filePath);
+            }
+            else
+            {
+                return path;
+            }
         }
     }
 }

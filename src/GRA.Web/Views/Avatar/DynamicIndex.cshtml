@@ -1,0 +1,67 @@
+﻿@model GRA.Controllers.DynamicAvatarDetails
+<form asp-controller="Avatar" asp-action="DynamicIndex" method="post" role="form">
+    <input asp-for="DynamicAvatarString" type="hidden" />
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="row">
+                <table style="margin-left:auto; margin-right:auto">
+                    <tr>
+                        <td>
+                            <button asp-action="Decrease" asp-controller="Avatar" asp-route-id="3" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-left"></span>
+                            </button>
+                        </td>
+                        <td rowspan="3">
+                            <div class="dynamic-avatar-container">
+                                @foreach (var zIndex in Model.DynamicAvatarPaths.Keys)
+                                {
+                                    <img src="~/@Model.DynamicAvatarPaths[zIndex]" style="z-index: @zIndex" class="dynamic-avatar" />
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <button asp-action="Increase" asp-controller="Avatar" asp-route-id="3" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-right"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button asp-action="Decrease" asp-controller="Avatar" asp-route-id="2" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-left"></span>
+                            </button>
+                        </td>
+                        <td>
+                            <button asp-action="Increase" asp-controller="Avatar" asp-route-id="2" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-right"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button asp-action="Decrease" asp-controller="Avatar" asp-route-id="1" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-left"></span>
+                            </button>
+                        </td>
+                        <td>
+                            <button asp-action="Increase" asp-controller="Avatar" asp-route-id="1" class="btn btn-link">
+                                <span class="fa fa-lg fa-chevron-right"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row" style="width:100%; text-align:center;">
+                <div class="col-sm-6 col-sm-push-6" style="margin-bottom:10px;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Select Avatar
+                    </button>
+                </div>
+
+                <div class="col-sm-6 col-sm-pull-6">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-default btn-lg">Return to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

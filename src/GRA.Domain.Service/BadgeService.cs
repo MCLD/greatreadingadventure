@@ -1,4 +1,5 @@
-﻿using GRA.Domain.Model;
+﻿using GRA.Abstract;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Configuration;
@@ -13,26 +14,21 @@ namespace GRA.Domain.Service
         const string BadgePath = "badges";
         private readonly IConfigurationRoot _config;
         private readonly IBadgeRepository _badgeRepository;
+        private readonly IPathResolver _pathResolver;
         public BadgeService(ILogger<BadgeService> logger,
             IUserContextProvider userContextProvider,
             IConfigurationRoot config,
-            IBadgeRepository badgeRepository) : base(logger, userContextProvider)
+            IBadgeRepository badgeRepository,
+            IPathResolver pathResolver) : base(logger, userContextProvider)
         {
-            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _config = Require.IsNotNull(config, nameof(config));
+            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
+            _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
         }
 
         private string GetFilePath(string filename)
         {
-            string contentDir = null;
-            if (!string.IsNullOrEmpty(_config[ConfigurationKey.ContentDirectory]))
-            {
-                contentDir = _config[ConfigurationKey.ContentDirectory];
-            }
-            else
-            {
-                contentDir = _config[ConfigurationKey.ContentPath];
-            }
+            string contentDir = _pathResolver.ResolveContentFilePath();
             contentDir = System.IO.Path.Combine(contentDir,
                     $"site{GetCurrentSiteId()}",
                     BadgePath);

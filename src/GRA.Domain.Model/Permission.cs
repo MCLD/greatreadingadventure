@@ -19,6 +19,7 @@
         EditParticipants,
         LogActivityForAny,
         MailParticipants,
+        ManageAvatars,
         ManageEvents,
         ManageLocations,
         ManageSchools,

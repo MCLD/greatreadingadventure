@@ -217,6 +217,7 @@ namespace GRA.Domain.Service
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber;
+                currentEntity.DynamicAvatar = userToUpdate.DynamicAvatar;
                 currentEntity.Email = userToUpdate.Email;
                 currentEntity.FirstName = userToUpdate.FirstName;
                 currentEntity.LastName = userToUpdate.LastName;

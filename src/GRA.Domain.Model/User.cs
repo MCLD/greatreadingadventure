@@ -67,5 +67,7 @@ namespace GRA.Domain.Model
         public int? EnteredSchoolId { get; set; }
         [DisplayName("School Name")]
         public string EnteredSchoolName { get; set; }
+        [MaxLength(16)]
+        public string DynamicAvatar { get; set; }
     }
 }

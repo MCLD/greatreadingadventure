@@ -3,7 +3,20 @@
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3" style="text-align: center;">
         <p>
-            @if (!string.IsNullOrEmpty(Model.AvatarPath))
+            @if (Model.DynamicAvatarPaths != null && Model.DynamicAvatarPaths.Count() > 0)
+            {
+                <a asp-controller="Avatar" asp-action="Index">
+                    <div class="dynamic-avatar-container-square">
+                        @foreach (var zIndex in Model.DynamicAvatarPaths.Keys)
+                        {
+                            <img src="~/@Model.DynamicAvatarPaths[zIndex]"
+                                 style="z-index: @zIndex"
+                                 class="dynamic-avatar" />
+                        }
+                    </div>
+                </a>
+            }
+            else if (!string.IsNullOrEmpty(Model.AvatarPath))
             {
                 <a asp-controller="Avatar" asp-action="Index">
                     <img src="~/@Model.AvatarPath"
@@ -94,7 +107,7 @@
                             <p style="font-size:small">Secret codes can be found by attending library events and on promotional materials. If&nbsp;you&nbsp;find&nbsp;one,&nbsp;enter&nbsp;it&nbsp;below!</p>
                         </div>
                     </div>
-                    
+
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="SecretCode" class="control-label"></label>

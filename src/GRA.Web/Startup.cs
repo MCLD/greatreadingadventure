@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
@@ -149,6 +150,7 @@ namespace GRA.Web
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
             services.AddScoped<DrawingService>();
+            services.AddScoped<DynamicAvatarService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
             services.AddScoped<EventService>();
@@ -174,6 +176,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
+            services.AddScoped<Domain.Repository.IDynamicAvatarElementRepository, Data.Repository.DynamicAvatarElementRepository>();
+            services.AddScoped<Domain.Repository.IDynamicAvatarLayerRepository, Data.Repository.DynamicAvatarLayerRepository>();
             services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
@@ -206,7 +210,8 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IPathResolver pathResolver)
         {
             loggerFactory.AddSerilog();
 
@@ -237,15 +242,7 @@ namespace GRA.Web
                 }
             });
 
-            string contentPath = null;
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.ContentDirectory]))
-            {
-                contentPath = Configuration[ConfigurationKey.ContentDirectory];
-            }
-            else
-            {
-                contentPath = Path.Combine(Directory.GetCurrentDirectory(), "content");
-            }
+            string contentPath = pathResolver.ResolveContentFilePath();
 
             if (!Directory.Exists(contentPath))
             {
@@ -260,14 +257,10 @@ namespace GRA.Web
                 }
             }
 
-            string pathString = null;
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.ContentPath]))
+            string pathString = pathResolver.ResolveContentPath();
+            if(!pathString.StartsWith("/"))
             {
-                pathString = "/" + Configuration[ConfigurationKey.ContentPath];
-            }
-            else
-            {
-                pathString = "/content";
+                pathString = "/" + pathString;
             }
 
             // configure /content with 7 day cache

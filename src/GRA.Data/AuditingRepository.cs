@@ -3,6 +3,7 @@ using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
 using GRA.Domain.Model;
+using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +28,8 @@ namespace GRA.Data
         private DbSet<DbEntity> _dbSet;
         private DbSet<AuditLog> _auditSet;
 
-        internal AuditingRepository(ServiceFacade.Repository repositoryFacade, ILogger logger)
+        internal AuditingRepository(ServiceFacade.Repository repositoryFacade,
+            ILogger<IRepository<DomainEntity>> logger)
         {
             if (repositoryFacade == null)
             {
