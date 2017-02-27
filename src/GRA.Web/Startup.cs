@@ -78,6 +78,15 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
+            {
+                string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
+                string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator] 
+                    ?? "gra";
+                services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
+            }
+
             // Add framework services.
             services.AddSession(_ =>
             {
@@ -293,8 +302,9 @@ namespace GRA.Web
             // if there's a data protection path, set it up - for clustered/multi-server configs
             if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
             {
+                string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
                 cookieAuthOptions.DataProtectionProvider = DataProtectionProvider.Create(
-                    new DirectoryInfo(Configuration[ConfigurationKey.DataProtectionPath]));
+                    new DirectoryInfo(Path.Combine(protectionPath, "cookies")));
             }
 
             app.UseCookieAuthentication(cookieAuthOptions);
