@@ -29,34 +29,56 @@
 
 <div class="row">
     <div class="col-xs-12">
+        <div style="font-size:large;padding-top:10px;">Created By:</div>
         <ul class="nav nav-pills" style="padding: 10px 0;">
-            <li ActiveBy routeKey="FilterBy" value=""><a asp-route-Search="@Model.Search">@(Model.ShowSystem ? "All" : "System")</a></li>
             @if (Model.ShowSystem)
             {
-                <li ActiveBy routeKey="FilterBy" value="System">
+                <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program">All</a></li>
+                <li class="@(Model.ActiveNav == "System" ? "active" : "")">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         @(Model.SystemName ?? "System") <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         @foreach (var system in Model.SystemList)
                         {
-                            <li><a asp-route-Search="@Model.Search" asp-route-FilterBy="System" asp-route-FilterId="@system.Id">@system.Name</a></li>
+                            <li><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-System="@system.Id">@system.Name</a></li>
                         }
                     </ul>
                 </li>
             }
-            <li ActiveBy routeKey="FilterBy" value="Branch">
+            else
+            {
+                <li class="@(Model.ActiveNav == "System" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program">@Model.SystemName</a></li>
+            }
+            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     @(Model.BranchName ?? "Branch") <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-FilterBy="Branch" asp-route-FilterId="@branch.Id">@branch.Name</a></li>
+                        <li><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Branch="@branch.Id">@branch.Name</a></li>
                     }
                 </ul>
             </li>
-            <li ActiveBy routeKey="FilterBy" value="Mine"><a asp-route-Search="@Model.Search" asp-route-FilterBy="Mine">Mine</a></li>
+            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Mine="True">Mine</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <span style="font-size:large;padding-top:10px;">Limited to Program:</span>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a asp-route-Search="@Model.Search" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
+            <li><a asp-route-Search="@Model.Search" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
+            @foreach (var program in Model.ProgramList)
+            {
+                <li><a asp-route-Search="@Model.Search" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+            }
         </ul>
     </div>
 </div>
@@ -64,13 +86,27 @@
 <form asp-controller="Challenges" method="get" role="form">
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-8">
-            <input asp-for="FilterBy" type="hidden" />
-            <input asp-for="FilterId" type="hidden" />
             <input asp-for="Search" class="form-control" />
+            @if (Model.Program.HasValue)
+            {
+                <input asp-for="Program" type="hidden" />
+            }
+            @if (Model.System.HasValue)
+            {
+                <input asp-for="System" type="hidden" />
+            }
+            @if (Model.Branch.HasValue)
+            {
+                <input asp-for="Branch" type="hidden" />
+            }
+            @if (Model.Mine == true)
+            {
+                <input asp-for="Mine" type="hidden" />
+            }
         </div>
         <div class="col-xs-4">
             <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-route-FilterBy="@Model.FilterBy" asp-route-FilterId="@Model.FilterId" class="btn btn-default">Clear</a>
+            <a asp-route-Program="@Model.Program" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
@@ -174,13 +210,13 @@
     <script>
         @if (Model.CanEditChallenges) {
         <text>
-        $(window).on("load", function () {
-            $('.td-class').each(function () {
+        $(window).on("load", function() {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function () {
-            $('.td-class').each(function () {
+        $(window).resize(function() {
+            $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
@@ -189,18 +225,20 @@
 
         @if (Model.CanDeleteChallenges) {
         <text>
-        $('#deleteModal').on('show.bs.modal', function (event) {
+        $('#deleteModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
             var hasDependents = button.data('hasdependents');
             var modal = $(this);
             modal.find('#Id').val(id);
-            if (hasDependents == "True") {
+            if (hasDependents == "True")
+            {
                 modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
                 modal.find("#modal-deleteButton").hide();
             }
-            else {
+            else
+            {
                 modal.find('#modal-text').text('Are you sure you wish to delete the challenge "' + name + '" ?');
                 modal.find("#modal-deleteButton").show();
             }

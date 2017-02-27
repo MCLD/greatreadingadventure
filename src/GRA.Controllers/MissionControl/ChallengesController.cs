@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,13 +40,53 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, string FilterBy, int? FilterId, int page = 1)
+        public async Task<IActionResult> Index(string Search, int? Program, int? System, int? Branch,
+            bool? Mine, int page = 1)
         {
             try
             {
-                var viewModel = await GetChallengeList(FilterBy, Search, page, FilterId);
+                var viewModel = await GetChallengeList(Search, Program, System, Branch, Mine, page);
                 viewModel.ShowSystem = true;
 
+                if (viewModel.PaginateModel.MaxPage > 0
+                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Policy = Policy.ActivateChallenges)]
+        public async Task<IActionResult> Pending(string Search, int? System, int? Branch,
+            int? Program, bool? Mine, int page = 1)
+        {
+            try
+            {
+                PageTitle = "Pending Challenges";
+
+                if (!UserHasPermission(Permission.ActivateAllChallenges))
+                {
+                    System = GetId(ClaimType.SystemId);
+                    if (Branch.HasValue && !(await _siteService.ValidateBranch(
+                        Branch.Value, System.Value)))
+                    {
+                        Branch = GetId(ClaimType.BranchId);
+                    }
+                }
+                var viewModel = await GetChallengeList(Search, Program, System, Branch, Mine, page, true);
+
+                viewModel.ShowSystem = UserHasPermission(Permission.ActivateAllChallenges);
                 if (viewModel.PaginateModel.MaxPage > 0
                     && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
                 {
@@ -62,44 +103,47 @@ namespace GRA.Controllers.MissionControl
             {
                 _logger.LogError($"Invalid challenge filter by User {GetId(ClaimType.UserId)}: {ex}");
                 ShowAlertDanger("Invalid filter parameters.");
-                return RedirectToAction("Index");
+                return RedirectToAction("Pending");
             }
         }
 
-        [Authorize(Policy = Policy.ActivateChallenges)]
-        public async Task<IActionResult> Pending(string Search, string FilterBy, int? FilterId, int page = 1)
+        private async Task<ChallengesListViewModel> GetChallengeList(string Search, int? Program,
+            int? System, int? Branch, bool? Mine, int page = 1, bool pending = false)
         {
-            PageTitle = "Pending Challenges";
-
-            int pendingFor = -1;
-            if (!UserHasPermission(Permission.ActivateAllChallenges))
+            Domain.Model.Filter filter = new Domain.Model.Filter(page);
+            if (!string.IsNullOrWhiteSpace(Search))
             {
-                pendingFor = GetId(ClaimType.SystemId);
+                filter.Search = Search;
             }
-            var viewModel = await GetChallengeList(FilterBy, Search, page, FilterId, pendingFor);
-
-            viewModel.ShowSystem = UserHasPermission(Permission.ActivateAllChallenges);
-            if (viewModel.PaginateModel.MaxPage > 0
-                && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+            if (System.HasValue)
             {
-                return RedirectToRoute(
-                    new
-                    {
-                        page = viewModel.PaginateModel.LastPage ?? 1
-                    });
+                filter.SystemIds = new List<int>() { System.Value };
             }
-
-            return View("Index", viewModel);
-        }
-
-        private async Task<ChallengesListViewModel> GetChallengeList(string filterBy,
-              string search, int page, int? filterId = null, int? pendingFor = null)
-        {
-            int take = 15;
-            int skip = take * (page - 1);
-
+            if (Branch.HasValue)
+            {
+                filter.BranchIds = new List<int>() { Branch.Value };
+            }
+            if (Program.HasValue)
+            {
+                if (Program.Value == 0)
+                {
+                    filter.ProgramIds = new List<int?>() { null };
+                }
+                else
+                {
+                    filter.ProgramIds = new List<int?>() { Program.Value };
+                }
+            }
+            if (Mine == true)
+            {
+                filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
+            }
+            if (pending)
+            {
+                filter.IsActive = false;
+            }
             var challengeList = await _challengeService
-                .MCGetPaginatedChallengeListAsync(skip, take, search, filterBy, filterId, pendingFor);
+                .MCGetPaginatedChallengeListAsync(filter);
 
             foreach (var challenge in challengeList.Data)
             {
@@ -112,55 +156,78 @@ namespace GRA.Controllers.MissionControl
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = challengeList.Count,
-                CurrentPage = page,
-                ItemsPerPage = take
+                CurrentPage = (filter.Skip.Value / filter.Take.Value) + 1,
+                ItemsPerPage = filter.Take.Value
             };
 
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
-
             ChallengesListViewModel viewModel = new ChallengesListViewModel()
             {
                 Challenges = challengeList.Data,
                 PaginateModel = paginateModel,
-                FilterBy = filterBy,
-                FilterId = filterId,
-                Search = search,
+                Search = filter.Search,
+                System = System,
+                Branch = Branch,
+                Program = Program,
+                Mine = Mine,
                 CanAddChallenges = UserHasPermission(Permission.AddChallenges),
                 CanDeleteChallenges = UserHasPermission(Permission.RemoveChallenges),
                 CanEditChallenges = UserHasPermission(Permission.EditChallenges),
-                SystemList = systemList
+                SystemList = systemList,
+                ProgramList = await _siteService.GetProgramList()
             };
-
-            if (!string.IsNullOrWhiteSpace(filterBy))
-            {
-                if (filterBy.Equals("System", StringComparison.OrdinalIgnoreCase))
-                {
-                    var systemId = filterId ?? GetId(ClaimType.SystemId);
-                    viewModel.SystemName = systemList
-                        .Where(_ => _.Id == systemId).SingleOrDefault().Name;
-                    viewModel.BranchList = (await _siteService.GetBranches(systemId))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                }
-                else if (filterBy.Equals("Branch", StringComparison.OrdinalIgnoreCase))
-                {
-                    var branchId = filterId ?? GetId(ClaimType.BranchId);
-                    var branch = await _siteService.GetBranchByIdAsync(branchId);
-                    viewModel.BranchName = branch.Name;
-                    viewModel.SystemName = systemList
-                        .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
-                    viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
-                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
-                        .ThenBy(_ => _.Name);
-                }
-            }
-
-            if (viewModel.BranchList == null)
+            if (Mine == true)
             {
                 viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
                         .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
                         .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Mine";
+                if (pending && !UserHasPermission(Permission.ActivateAllChallenges))
+                {
+                    viewModel.SystemName = systemList
+                    .Where(_ => _.Id == GetId(ClaimType.SystemId)).SingleOrDefault().Name;
+                }
+            }
+            else if (Branch.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(viewModel.Branch.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (System.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == viewModel.System.Value).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(viewModel.System.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+
+            if (Program.HasValue)
+            {
+                if (Program.Value > 0)
+                {
+                    viewModel.ProgramName =
+                        (await _siteService.GetProgramByIdAsync(Program.Value)).Name;
+                }
+                else
+                {
+                    viewModel.ProgramName = "Not Limited";
+                }
             }
 
             return viewModel;

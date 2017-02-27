@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using GRA.Domain.Model;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -19,22 +20,16 @@ namespace GRA.Data.Repository
         }
 
         public async Task<ICollection<Challenge>>
-            PageAllAsync(int siteId,
-            int skip,
-            int take,
-            string search = null,
-            string filterBy = null,
-            int? filterId = null,
-            int? pendingFor = null)
+            PageAllAsync(Filter filter)
         {
-            var challenges = GetChallenges(siteId, search, filterBy, filterId, pendingFor);
+            var challenges = ApplyFilters(filter);
 
-            var challengeList = await challenges.OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<Challenge>()
-                    .ToListAsync();
+            var challengeList = await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ThenBy(_ => _.Id)
+                .ApplyPagination(filter)
+                .ProjectTo<Challenge>()
+                .ToListAsync();
 
             foreach (var challenge in challengeList)
             {
@@ -44,74 +39,43 @@ namespace GRA.Data.Repository
             return challengeList;
         }
 
-        public async Task<int> GetChallengeCountAsync(int siteId,
-            string search = null,
-            string filterBy = null,
-            int? filterId = null,
-            int? pendingFor = null)
+        public async Task<int> GetChallengeCountAsync(Filter filter)
         {
-            var challenges = GetChallenges(siteId, search, filterBy, filterId, pendingFor);
-
-            return await challenges.CountAsync();
+            return await ApplyFilters(filter).CountAsync();
         }
 
-        private IQueryable<Data.Model.Challenge> GetChallenges(int siteId,
-            string search = null,
-            string filterBy = null,
-            int? filterId = null,
-            int? pendingFor = null)
+        private IQueryable<Data.Model.Challenge> ApplyFilters(Filter filter)
         {
             var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId);
+                        && _.SiteId == filter.SiteId);
 
-            if (!string.IsNullOrWhiteSpace(filterBy))
+            if (filter.SystemIds?.Any() == true)
             {
-                switch (filterBy.ToLower())
-                {
-                    case "active":
-                        challenges = challenges.Where(_ => _.IsActive == true);
-                        break;
-
-                    case "open":
-                        challenges = challenges.Where(_ => _.IsActive == true
-                        && _.LimitToSystemId == null
-                        && _.LimitToBranchId == null
-                        && _.LimitToProgramId == null);
-                        break;
-
-                    case "mine":
-                        challenges = challenges.Where(_ => _.CreatedBy == filterId.Value);
-                        break;
-
-                    case "branch":
-                        challenges = challenges.Where(_ => _.RelatedBranchId == filterId.Value);
-                        break;
-
-                    case "system":
-                        challenges = challenges.Where(_ => _.RelatedSystemId == filterId.Value);
-                        break;
-
-                    default:
-                        break;
-                }
+                challenges = challenges.Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
             }
-
-            if (pendingFor.HasValue)
+            if (filter.BranchIds?.Any() == true)
             {
-                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
-                if (pendingFor > 0)
-                {
-                    challenges = challenges.Where(_ => _.RelatedSystemId == pendingFor.Value);
-                }
+                challenges = challenges.Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
             }
-
-            if (!string.IsNullOrEmpty(search))
+            if (filter.ProgramIds?.Any() == true)
             {
-                challenges = challenges.Where(_ => _.Name.Contains(search)
-                        || _.Description.Contains(search)
-                        || _.Tasks.Any(_t => _t.Title.Contains(search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(search)));
+                challenges = challenges.Where(_ => filter.ProgramIds.Contains(_.LimitToProgramId));
+            }
+            if (filter.UserIds?.Any() == true)
+            {
+                challenges = challenges.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                challenges = challenges.Where(_ => _.Name.Contains(filter.Search)
+                        || _.Description.Contains(filter.Search)
+                        || _.Tasks.Any(_t => _t.Title.Contains(filter.Search))
+                        || _.Tasks.Any(_t => _t.Author.Contains(filter.Search)));
+            }
+            if (filter.IsActive.HasValue)
+            {
+                challenges = challenges.Where(_ => _.IsActive == filter.IsActive.Value);
             }
 
             return challenges;

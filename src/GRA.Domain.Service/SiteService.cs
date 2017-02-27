@@ -65,6 +65,12 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<bool> ValidateBranch(int branchId, int systemId)
+        {
+            var blah = await _branchRepository.ValidateAsync(branchId, systemId);
+            return await _branchRepository.ValidateAsync(branchId, systemId);
+        }
+
         public async Task<IEnumerable<Program>> GetProgramList()
         {
             return await _programRepository.GetAllAsync(GetCurrentSiteId());

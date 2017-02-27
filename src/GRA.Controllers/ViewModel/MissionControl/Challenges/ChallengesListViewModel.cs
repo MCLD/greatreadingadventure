@@ -8,10 +8,14 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public IEnumerable<GRA.Domain.Model.Challenge> Challenges { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
-        public string FilterBy { get; set; }
-        public int? FilterId { get; set; }
+        public int? System { get; set; }
+        public int? Branch { get; set; }
+        public int? Program { get; set; }
+        public bool? Mine { get; set; }
+        public string ActiveNav { get; set; }
         public string SystemName { get; set; }
         public string BranchName { get; set; }
+        public string ProgramName { get; set; }
         public bool ShowSystem { get; set; }
         public bool CanAddChallenges { get; set; }
         public bool CanDeleteChallenges { get; set; }
@@ -19,5 +23,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
+        public IEnumerable<GRA.Domain.Model.Program> ProgramList { get; set; }
     }
 }

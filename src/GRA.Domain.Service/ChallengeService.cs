@@ -68,8 +68,16 @@ namespace GRA.Domain.Service
             }
             else
             {
-                challenges = await _challengeRepository.PageAllAsync(siteId, skip, take, search, "Open");
-                challengeCount = await _challengeRepository.GetChallengeCountAsync(siteId, search, "Open");
+                Filter filter = new Filter()
+                {
+                    SiteId = siteId,
+                    Skip = skip,
+                    Take = take,
+                    Search = search,
+                    IsActive = true
+                };
+                challenges = await _challengeRepository.PageAllAsync(filter);
+                challengeCount = await _challengeRepository.GetChallengeCountAsync(filter);
             }
             await AddBadgeFilenames(challenges);
             return new DataWithCount<IEnumerable<Challenge>>
@@ -80,50 +88,33 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
-            MCGetPaginatedChallengeListAsync(int skip,
-            int take,
-            string search = null,
-            string filterBy = null,
-            int? filterId = null,
-            int? pendingFor = null)
+            MCGetPaginatedChallengeListAsync(Filter filter)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.ViewAllChallenges))
             {
-                int siteId = GetCurrentSiteId();
-                if (!string.IsNullOrWhiteSpace(filterBy))
+                if (filter.IsActive == false)
                 {
-                    if (filterBy.Equals("Mine", StringComparison.OrdinalIgnoreCase))
-                    {
-                        filterId = authUserId;
-                    }
-                    else if (filterBy.Equals("Branch", StringComparison.OrdinalIgnoreCase)
-                        && filterId == null)
-                    {
-                        var user = await _userRepository.GetByIdAsync(authUserId);
-                        filterId = user.BranchId;
-                    }
-                    else if (filterBy.Equals("System", StringComparison.OrdinalIgnoreCase)
-                        && filterId == null)
-                    {
-                        var user = await _userRepository.GetByIdAsync(authUserId);
-                        filterId = user.BranchId;
-                    }
-                    else if (pendingFor.HasValue && !HasPermission(Permission.ActivateAllChallenges)
-                            && (!HasPermission(Permission.ActivateSystemChallenges) || pendingFor < 1))
+                    if (!HasPermission(Permission.ActivateSystemChallenges) && !HasPermission(Permission.ActivateAllChallenges))
                     {
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
                         throw new Exception("Permission denied.");
                     }
+                    else if (!HasPermission(Permission.ActivateAllChallenges) 
+                        && filter.SystemIds?.FirstOrDefault() != GetClaimId(ClaimType.SystemId))
+                    {
+                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges for system.");
+                        throw new Exception("Permission denied.");
+                    }
                 }
 
-                var challenges = await _challengeRepository
-                .PageAllAsync(siteId, skip, take, search, filterBy, filterId, pendingFor);
+                filter.SiteId = GetCurrentSiteId();
+                var challenges = await _challengeRepository.PageAllAsync(filter);
                 await AddBadgeFilenames(challenges);
                 return new DataWithCount<IEnumerable<Challenge>>
                 {
                     Data = challenges,
-                    Count = await _challengeRepository.GetChallengeCountAsync(siteId, search, filterBy, filterId, pendingFor)
+                    Count = await _challengeRepository.GetChallengeCountAsync(filter)
                 };
             }
             _logger.LogError($"User {authUserId} doesn't have permission to view all challenges.");
