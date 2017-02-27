@@ -284,6 +284,73 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
+        #region Log Activity
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        public async Task<IActionResult> LogActivity(int id)
+        {
+            var user = await _userService.GetDetails(id);
+            SetPageTitle(user);
+
+            LogActivityViewModel viewModel = new LogActivityViewModel()
+            {
+                Id = id,
+                HouseholdCount = await _userService
+                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+            };
+
+            return View(viewModel);
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
+        public async Task<IActionResult> LogActivity(LogActivityViewModel model, bool isSecretCode)
+        {
+            var user = await _userService.GetDetails(model.Id);
+            SetPageTitle(user);
+
+            if (!model.IsSecretCode)
+            {
+                if (!model.MinutesRead.HasValue || model.MinutesRead.Value < 1)
+                {
+                    ModelState.AddModelError("MinutesRead", "Enter a number greater than 0.");
+                }
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await _activityService.LogActivityAsync(model.Id, model.MinutesRead.Value);
+                        ShowAlertSuccess("Minutes applied!");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger("Unable to apply minutes: ", gex.Message);
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(model.SecretCode))
+                {
+                    ModelState.AddModelError("SecretCode", "Enter a secret code.");
+                }
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await _activityService.LogSecretCodeAsync(model.Id, model.SecretCode);
+                        ShowAlertSuccess("Secret Code applied!");
+                    }
+                    catch (GraException gex)
+                    {
+                        ShowAlertDanger("Unable to apply secret code: ", gex.Message);
+                    }
+                }
+            }
+            return View(model);
+        }
+        #endregion
+
         #region Household
         [Authorize(Policy = Policy.ViewParticipantDetails)]
         public async Task<IActionResult> Household(int id)

@@ -10,7 +10,8 @@ namespace GRA.Domain.Repository
             int siteId, 
             string search = default(string), 
             string filterBy = default(string),
-            int? filterId = null);
+            int? filterId = null,
+            int? pendingFor = null);
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
         new Task<Challenge> GetByIdAsync(int id);
         Task<Challenge> GetActiveByIdAsync(int id, int? userId = default(int));
@@ -20,7 +21,8 @@ namespace GRA.Domain.Repository
             int take,
             string search = default(string),
             string filterBy = default(string),
-            int? filterId = null);
+            int? filterId = null,
+            int? pendingFor = null);
         Task<DataWithCount<IEnumerable<int>>> PageIdsAsync(
             int siteId,
             int skip,

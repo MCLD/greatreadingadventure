@@ -1,0 +1,67 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.LogActivityViewModel
+
+@Html.Partial("_ParticipantPartial")
+
+<form asp-controller="Participants" asp-action="LogActivity" method="post" role="form">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="HouseholdCount" type="hidden" />
+    <input asp-for="HasAccount" type="hidden" />
+    <input asp-for="IsSecretCode" value="False" type="hidden" />
+
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12 col-sm-6 row-spacing">
+            <table>
+                <tr>
+                    <td style="padding-right:6px;">Apply</td>
+                    <td width="80px">
+                        <input asp-for="MinutesRead" value="" class="form-control" />
+                    </td>
+                    <td style="padding-left:6px;">
+                        <button type="submit" class="btn btn-primary">Minutes Read</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2"><span asp-validation-for="MinutesRead" class="text-danger"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-xs-12 col-sm-6 row-spacing">
+            <table>
+                <tr>
+                    <td style="padding-right:6px;">Apply</td>
+                    <td width="200px">
+                        <input asp-for="SecretCode" value="" class="form-control codeInput" />
+                    </td>
+                    <td style="padding-left:6px;">
+                        <button type="submit" class="btn btn-primary codeButton">Secret Code</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2"><span asp-validation-for="SecretCode" class="text-danger"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        $(".codeInput").on("keyup keypress", function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                $("#IsSecretCode").val("True");
+                $("form").submit();
+            }
+        });
+
+        $(".codeButton").on("click", function (e) {
+            e.preventDefault();
+            $("#IsSecretCode").val("True");
+            $("form").submit();
+        });
+    </script>
+}

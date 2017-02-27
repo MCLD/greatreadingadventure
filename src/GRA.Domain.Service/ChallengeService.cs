@@ -84,7 +84,8 @@ namespace GRA.Domain.Service
             int take,
             string search = null,
             string filterBy = null,
-            int? filterId = null)
+            int? filterId = null,
+            int? pendingFor = null)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.ViewAllChallenges))
@@ -108,26 +109,21 @@ namespace GRA.Domain.Service
                         var user = await _userRepository.GetByIdAsync(authUserId);
                         filterId = user.BranchId;
                     }
-                    else if (filterBy.Equals("Pending", StringComparison.OrdinalIgnoreCase))
-                        if (HasPermission(Permission.ActivateAllChallenges)) { }
-                        else if (HasPermission(Permission.ActivateSystemChallenges))
-                        {
-                            filterId = GetClaimId(ClaimType.SystemId);
-                        }
-                        else
-                        {
-                            _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
-                            throw new Exception("Permission denied.");
-                        }
+                    else if (pendingFor.HasValue && !HasPermission(Permission.ActivateAllChallenges)
+                            && (!HasPermission(Permission.ActivateSystemChallenges) || pendingFor < 1))
+                    {
+                        _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
+                        throw new Exception("Permission denied.");
+                    }
                 }
 
                 var challenges = await _challengeRepository
-                .PageAllAsync(siteId, skip, take, search, filterBy, filterId);
+                .PageAllAsync(siteId, skip, take, search, filterBy, filterId, pendingFor);
                 await AddBadgeFilenames(challenges);
                 return new DataWithCount<IEnumerable<Challenge>>
                 {
                     Data = challenges,
-                    Count = await _challengeRepository.GetChallengeCountAsync(siteId, search, filterBy, filterId)
+                    Count = await _challengeRepository.GetChallengeCountAsync(siteId, search, filterBy, filterId, pendingFor)
                 };
             }
             _logger.LogError($"User {authUserId} doesn't have permission to view all challenges.");

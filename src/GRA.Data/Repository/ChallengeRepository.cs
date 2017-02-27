@@ -24,9 +24,10 @@ namespace GRA.Data.Repository
             int take,
             string search = null,
             string filterBy = null,
-            int? filterId = null)
+            int? filterId = null,
+            int? pendingFor = null)
         {
-            var challenges = GetChallenges(siteId, search, filterBy, filterId);
+            var challenges = GetChallenges(siteId, search, filterBy, filterId, pendingFor);
 
             var challengeList = await challenges.OrderBy(_ => _.Name)
                     .ThenBy(_ => _.Id)
@@ -46,9 +47,10 @@ namespace GRA.Data.Repository
         public async Task<int> GetChallengeCountAsync(int siteId,
             string search = null,
             string filterBy = null,
-            int? filterId = null)
+            int? filterId = null,
+            int? pendingFor = null)
         {
-            var challenges = GetChallenges(siteId, search, filterBy, filterId);
+            var challenges = GetChallenges(siteId, search, filterBy, filterId, pendingFor);
 
             return await challenges.CountAsync();
         }
@@ -56,7 +58,8 @@ namespace GRA.Data.Repository
         private IQueryable<Data.Model.Challenge> GetChallenges(int siteId,
             string search = null,
             string filterBy = null,
-            int? filterId = null)
+            int? filterId = null,
+            int? pendingFor = null)
         {
             var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false
@@ -89,16 +92,17 @@ namespace GRA.Data.Repository
                         challenges = challenges.Where(_ => _.RelatedSystemId == filterId.Value);
                         break;
 
-                    case "pending":
-                        challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
-                        if (filterId.HasValue)
-                        {
-                            challenges = challenges.Where(_ => _.RelatedSystemId == filterId.Value);
-                        }
-                        break;
-
                     default:
                         break;
+                }
+            }
+
+            if (pendingFor.HasValue)
+            {
+                challenges = challenges.Where(_ => _.IsValid && !_.IsActive);
+                if (pendingFor > 0)
+                {
+                    challenges = challenges.Where(_ => _.RelatedSystemId == pendingFor.Value);
                 }
             }
 

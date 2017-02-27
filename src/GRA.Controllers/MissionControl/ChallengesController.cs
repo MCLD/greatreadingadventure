@@ -41,14 +41,10 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(string Search, string FilterBy, int? FilterId, int page = 1)
         {
-            if (String.Equals(FilterBy, "Pending", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("Pending", new { Search = Search });
-            }
             try
             {
                 var viewModel = await GetChallengeList(FilterBy, Search, page, FilterId);
-                viewModel.ShowNav = true;
+                viewModel.ShowSystem = true;
 
                 if (viewModel.PaginateModel.MaxPage > 0
                     && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
@@ -71,12 +67,18 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.ActivateChallenges)]
-        public async Task<IActionResult> Pending(string Search, int page = 1)
+        public async Task<IActionResult> Pending(string Search, string FilterBy, int? FilterId, int page = 1)
         {
             PageTitle = "Pending Challenges";
 
-            var viewModel = await GetChallengeList("Pending", Search, page);
+            int pendingFor = -1;
+            if (!UserHasPermission(Permission.ActivateAllChallenges))
+            {
+                pendingFor = GetId(ClaimType.SystemId);
+            }
+            var viewModel = await GetChallengeList(FilterBy, Search, page, FilterId, pendingFor);
 
+            viewModel.ShowSystem = UserHasPermission(Permission.ActivateAllChallenges);
             if (viewModel.PaginateModel.MaxPage > 0
                 && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
             {
@@ -91,13 +93,13 @@ namespace GRA.Controllers.MissionControl
         }
 
         private async Task<ChallengesListViewModel> GetChallengeList(string filterBy,
-              string search, int page, int? filterId = null)
+              string search, int page, int? filterId = null, int? pendingFor = null)
         {
             int take = 15;
             int skip = take * (page - 1);
 
             var challengeList = await _challengeService
-                .MCGetPaginatedChallengeListAsync(skip, take, search, filterBy, filterId);
+                .MCGetPaginatedChallengeListAsync(skip, take, search, filterBy, filterId, pendingFor);
 
             foreach (var challenge in challengeList.Data)
             {

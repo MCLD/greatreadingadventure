@@ -2,6 +2,10 @@
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Detail"><a asp-action="Detail" asp-route-id="@Model.Id">Details</a></li>
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.LogActivityForAny.ToString()))
+            {
+                <li ActiveBy routeKey="Action" value="LogActivity"><a asp-action="LogActivity" asp-route-id="@Model.Id">Log Activity</a></li>
+            }
             <li ActiveBy routeKey="Action" value="Household">
                 <a asp-action="Household" asp-route-id="@Model.Id">
                     Household

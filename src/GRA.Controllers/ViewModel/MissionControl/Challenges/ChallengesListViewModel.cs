@@ -12,7 +12,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public int? FilterId { get; set; }
         public string SystemName { get; set; }
         public string BranchName { get; set; }
-        public bool ShowNav { get; set; }
+        public bool ShowSystem { get; set; }
         public bool CanAddChallenges { get; set; }
         public bool CanDeleteChallenges { get; set; }
         public bool CanEditChallenges { get; set; }
