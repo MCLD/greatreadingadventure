@@ -267,11 +267,19 @@ namespace GRA.Controllers.MissionControl
                 ChallengeRequiredList = string.Join("", trigger.ChallengeIds
                 .Select(_ => "<" + _.ToString() + ">")),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
                 VendorCodeTypeList = new SelectList(
                     (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description")
             };
+            if (viewModel.Trigger.LimitToSystemId.HasValue)
+            {
+                viewModel.BranchList = new SelectList(
+                    (await _siteService.GetBranches(viewModel.Trigger.LimitToSystemId.Value)), "Id", "Name");
+            }
+            else
+            {
+                viewModel.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+            }
             foreach (var requirement in viewModel.TriggerRequirements)
             {
                 if (!string.IsNullOrWhiteSpace(requirement.BadgePath))

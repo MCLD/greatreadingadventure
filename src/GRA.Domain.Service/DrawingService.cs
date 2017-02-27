@@ -11,19 +11,28 @@ namespace GRA.Domain.Service
 {
     public class DrawingService : Abstract.BaseUserService<DrawingService>
     {
+        private readonly IBranchRepository _branchRepository;
         private readonly IDrawingRepository _drawingRepository;
         private readonly IDrawingCriterionRepository _drawingCriterionRepository;
         private readonly IMailRepository _mailRepository;
+        private readonly IProgramRepository _programRepository;
+        private readonly ISystemRepository _systemRepository;
         public DrawingService(ILogger<DrawingService> logger,
             IUserContextProvider userContextProvider,
+            IBranchRepository branchRepository,
             IDrawingRepository drawingRepository,
             IDrawingCriterionRepository drawingCriterionRepository,
-            IMailRepository mailRepository) : base(logger, userContextProvider)
+            IMailRepository mailRepository,
+            IProgramRepository programRepository,
+            ISystemRepository systemRepository) : base(logger, userContextProvider)
         {
+            _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _drawingCriterionRepository = Require.IsNotNull(drawingCriterionRepository,
                 nameof(drawingCriterionRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
+            _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
         }
 
         public async Task<DataWithCount<IEnumerable<Drawing>>>
@@ -286,6 +295,43 @@ namespace GRA.Domain.Service
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to remove user {userId} from drawing {drawingId}.");
                 throw new GraException("Permission denied.");
+            }
+        }
+
+        private async Task ValidateCriterionAsync(DrawingCriterion criterion)
+        {
+            if (criterion.SystemId.HasValue)
+            {
+                if (!(await _systemRepository.ValidateAsync(
+                    criterion.SystemId.Value, criterion.SiteId)))
+                {
+                    throw new GraException("Invalid System selection.");
+                }
+                if (criterion.BranchId.HasValue)
+                {
+                    if (!(await _branchRepository.ValidateAsync(
+                        criterion.BranchId.Value, criterion.SystemId.Value)))
+                    {
+                        throw new GraException("Invalid Branch selection.");
+                    }
+                }
+            }
+            else if (criterion.BranchId.HasValue)
+            {
+                if (!(await _branchRepository.ValidateBySiteAsync(
+                    criterion.BranchId.Value, criterion.SiteId)))
+                {
+                    throw new GraException("Invalid Branch selection.");
+                }
+            }
+
+            if (criterion.ProgramId.HasValue)
+            {
+                if (!(await _programRepository.ValidateAsync(
+                    criterion.ProgramId.Value, criterion.SiteId)))
+                {
+                    throw new GraException("Invalid Program selection.");
+                }
             }
         }
     }

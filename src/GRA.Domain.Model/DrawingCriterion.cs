@@ -10,7 +10,9 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
+        [DisplayName("Program")]
         public int? ProgramId { get; set; }
+        [DisplayName("System")]
         public int? SystemId { get; set; }
         [DisplayName("Branch")]
         public int? BranchId { get; set; }

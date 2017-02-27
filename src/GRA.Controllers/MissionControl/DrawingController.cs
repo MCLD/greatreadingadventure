@@ -241,10 +241,11 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Drawing Criteria";
 
-            var brancList = await _siteService.GetBranches(1);
             CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
             {
-                BranchList = new SelectList(brancList.ToList(), "Id", "Name")
+                SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
+                BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
+                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
             };
             return View(viewModel);
         }
@@ -275,8 +276,17 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 PageTitle = "Drawing Criteria";
-                var brancList = await _siteService.GetBranches(1);
-                model.BranchList = new SelectList(brancList.ToList(), "Id", "Name");
+                model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+                if (model.Criterion.SystemId.HasValue)
+                {
+                    model.BranchList = new SelectList(
+                        (await _siteService.GetBranches(model.Criterion.SystemId.Value)), "Id", "Name");
+                }
+                else
+                {
+                    model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                }
+                model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
                 return View(model);
             }
         }
@@ -287,15 +297,24 @@ namespace GRA.Controllers.MissionControl
             {
                 PageTitle = "Drawing Criteria";
                 var criterion = await _drawingService.GetCriterionDetailsAsync(id);
-                var branchList = await _siteService.GetBranches(1);
                 var site = await GetCurrentSiteAsync();
                 CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
                 {
                     Criterion = criterion,
-                    BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
+                    SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
+                    ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
                     ReadABook = criterion.ActivityAmount.HasValue,
                     EligibleCount = await _drawingService.GetEligibleCountAsync(id)
                 };
+                if (viewModel.Criterion.SystemId.HasValue)
+                {
+                    viewModel.BranchList = new SelectList(
+                        (await _siteService.GetBranches(viewModel.Criterion.SystemId.Value)), "Id", "Name");
+                }
+                else
+                {
+                    viewModel.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                }
                 return View(viewModel);
             }
             catch (GraException gex)
@@ -335,8 +354,17 @@ namespace GRA.Controllers.MissionControl
             else
             {
                 PageTitle = "Drawing Criteria";
-                var brancList = await _siteService.GetBranches(1);
-                model.BranchList = new SelectList(brancList.ToList(), "Id", "Name");
+                model.SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name");
+                if (model.Criterion.SystemId.HasValue)
+                {
+                    model.BranchList = new SelectList(
+                        (await _siteService.GetBranches(model.Criterion.SystemId.Value)), "Id", "Name");
+                }
+                else
+                {
+                    model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
+                }
+                model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
                 return View(model);
             }
         }
