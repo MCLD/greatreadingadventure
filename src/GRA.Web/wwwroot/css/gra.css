@@ -223,25 +223,6 @@ input.form-checkbox {
         border-color: #ddd;
     }
 
-.dynamic-avatar-container {
-    width: 280px;
-    height: 400px;
-    position: relative;
-}
-
-.dynamic-avatar-container-square {
-    width: 280px;
-    height: 220px;
-    position: relative;
-    overflow: hidden;
-}
-
-.dynamic-avatar {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
 .text-strong {
     font-weight: bold;
 }
@@ -272,3 +253,66 @@ input.form-checkbox {
         color: unset;
         text-decoration: none;
     }
+
+/* Responsive avatar display */
+
+.dynamic-avatar-container {
+    width: 280px;
+    height: 400px;
+    position: relative;
+}
+
+.dynamic-avatar-container-dashboard {
+    width: 280px;
+    height: 220px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+    .dynamic-avatar-container-dashboard img {
+        width: 280px;
+    }
+
+.dynamic-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    .dynamic-avatar-container-dashboard {
+        width: 170px;
+        height: 134px;
+    }
+
+        .dynamic-avatar-container-dashboard img {
+            width: 170px;
+        }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+    .dynamic-avatar-container-dashboard {
+        width: 220px;
+        height: 170px;
+    }
+
+        .dynamic-avatar-container-dashboard img {
+            width: 220px;
+        }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+    .dynamic-avatar-container-dashboard {
+        width: 280px;
+        height: 220px;
+    }
+
+        .dynamic-avatar-container-dashboard img {
+            width: 280px;
+        }
+}

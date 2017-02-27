@@ -6,7 +6,7 @@
             @if (Model.DynamicAvatarPaths != null && Model.DynamicAvatarPaths.Count() > 0)
             {
                 <a asp-controller="Avatar" asp-action="Index">
-                    <div class="dynamic-avatar-container-square">
+                    <div class="dynamic-avatar-container-dashboard">
                         @foreach (var zIndex in Model.DynamicAvatarPaths.Keys)
                         {
                             <img src="~/@Model.DynamicAvatarPaths[zIndex]"
