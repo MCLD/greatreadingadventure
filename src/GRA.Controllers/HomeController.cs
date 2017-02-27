@@ -96,7 +96,8 @@ namespace GRA.Controllers
                 {
                     viewModel.AvatarPath = staticAvatarPath;
                 }
-                if (dynamicAvatarDetails.DynamicAvatarPaths.Count > 0)
+                if (dynamicAvatarDetails != null
+                    && dynamicAvatarDetails.DynamicAvatarPaths.Count > 0)
                 {
                     viewModel.DynamicAvatarPaths = dynamicAvatarDetails.DynamicAvatarPaths;
                 }
