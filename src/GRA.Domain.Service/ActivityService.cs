@@ -24,6 +24,7 @@ namespace GRA.Domain.Service
         private readonly IUserLogRepository _userLogRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
+        private readonly ICodeSanitizer _codeSanitizer;
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
 
@@ -43,6 +44,7 @@ namespace GRA.Domain.Service
             IUserLogRepository userLogRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
+            ICodeSanitizer codeSanitizer,
             MailService mailService,
             PrizeWinnerService prizeWinnerService) : base(logger, userContext)
         {
@@ -65,6 +67,7 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository,
                 nameof(vendorCodeTypeRepository));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
                 nameof(prizeWinnerService));
         }
@@ -649,6 +652,8 @@ namespace GRA.Domain.Service
                 throw new GraException("You must enter a code!");
             }
 
+            secretCode = _codeSanitizer.Sanitize(secretCode);
+
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
             var userToLog = await _userRepository.GetByIdAsync(userIdToLog);
@@ -745,7 +750,7 @@ namespace GRA.Domain.Service
                 throw new GraException($"Minutes read must be at least 1.");
             }
             int authUserId = GetClaimId(ClaimType.UserId);
-
+            
             if (!HasPermission(Permission.LogActivityForAny))
             {
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
@@ -782,6 +787,9 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("You must enter a code!");
             }
+
+            secretCode = _codeSanitizer.Sanitize(secretCode);
+
             int authUserId = GetClaimId(ClaimType.UserId);
 
             if (!HasPermission(Permission.LogActivityForAny))

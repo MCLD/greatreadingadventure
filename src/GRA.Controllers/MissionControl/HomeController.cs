@@ -1,4 +1,5 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Home;
+﻿using GRA.Abstract;
+using GRA.Controllers.ViewModel.MissionControl.Home;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,16 @@ namespace GRA.Controllers.MissionControl
         private readonly SampleDataService _sampleDataService;
         private readonly UserService _userService;
         private readonly SiteService _siteService;
+
+        private readonly ICodeSanitizer _codeSanitizer;
         public HomeController(ILogger<HomeController> logger,
             AuthenticationService authenticationService,
             ReportService reportService,
             SampleDataService sampleDataService,
             UserService userService,
             SiteService siteService,
-            ServiceFacade.Controller context)
+            ServiceFacade.Controller context,
+            ICodeSanitizer codeSanitizer)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
@@ -34,6 +38,8 @@ namespace GRA.Controllers.MissionControl
                 nameof(sampleDataService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
+
             PageTitle = "Mission Control";
         }
 
@@ -95,8 +101,10 @@ namespace GRA.Controllers.MissionControl
                 });
             }
 
+            string sanitized = _codeSanitizer.Sanitize(viewmodel.AuthorizationCode, 255);
+
             string role
-                = await _userService.ActivateAuthorizationCode(viewmodel.AuthorizationCode);
+                = await _userService.ActivateAuthorizationCode(sanitized);
 
             if (!string.IsNullOrEmpty(role))
             {

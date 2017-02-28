@@ -145,6 +145,7 @@ namespace GRA.Web
             services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
             services.AddScoped<Abstract.ICodeGenerator, CodeGenerator>();
+            services.AddScoped<ICodeSanitizer, CodeSanitizer>();
 
             // filters
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
