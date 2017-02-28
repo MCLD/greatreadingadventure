@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.ViewModel.Profile
+﻿
+namespace GRA.Controllers.ViewModel.Profile
 {
     public class HistoryItemViewModel
     {

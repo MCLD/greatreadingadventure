@@ -33,8 +33,8 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Index(ReportingViewModel model)
         {
-            if (model.Request.StartDate.HasValue 
-                && model.Request.EndDate.HasValue 
+            if (model.Request.StartDate.HasValue
+                && model.Request.EndDate.HasValue
                 && model.Request.EndDate <= model.Request.StartDate)
             {
                 ModelState.AddModelError("Request.EndDate", "The End Date must be after the Start Date");

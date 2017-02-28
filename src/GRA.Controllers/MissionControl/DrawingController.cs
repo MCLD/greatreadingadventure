@@ -16,7 +16,6 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.PerformDrawing)]
     public class DrawingController : Base.MCController
     {
-
         private readonly ILogger<DrawingController> _logger;
         private readonly DrawingService _drawingService;
         private readonly PrizeWinnerService _prizeWinnerService;
@@ -274,7 +273,6 @@ namespace GRA.Controllers.MissionControl
                 {
                     return RedirectToAction("New", new { id = criterion.Id });
                 }
-
             }
             else
             {

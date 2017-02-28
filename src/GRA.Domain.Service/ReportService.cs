@@ -122,11 +122,11 @@ namespace GRA.Domain.Service
         public async Task<int?> GetDaysUntilEnd()
         {
             var site = await _userContextProvider.GetCurrentSiteAsync();
-            if(site.ProgramEnds == null)
+            if (site.ProgramEnds == null)
             {
                 return null;
             }
-            if(site.ProgramEnds <= DateTime.Now)
+            if (site.ProgramEnds <= DateTime.Now)
             {
                 return 0;
             }

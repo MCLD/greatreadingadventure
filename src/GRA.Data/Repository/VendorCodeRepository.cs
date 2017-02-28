@@ -30,7 +30,7 @@ namespace GRA.Data.Repository
                     && _.UserId == null)
                 .FirstOrDefaultAsync();
 
-            if(unusedCode == null)
+            if (unusedCode == null)
             {
                 _logger.LogCritical($"No available vendor codes of type {vendorCodeTypeId} to assign to {userId}.");
                 throw new Exception("No available vendor code to assign.");

@@ -8,6 +8,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Pages
         public List<GRA.Domain.Model.Page> Pages { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public bool CanAddPage { get; set; }
-        public bool CanDeletePage { get; set; }   
+        public bool CanDeletePage { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace GRA.Domain.Service
             var site = await _siteRepository.GetByIdAsync(user.SiteId);
             var message = new MimeMessage();
 
-            if(!CanSendMailTo(site))
+            if (!CanSendMailTo(site))
             {
                 throw new GraException("Sending email is not configured.");
             }
@@ -95,7 +95,8 @@ namespace GRA.Domain.Service
                 try
                 {
                     await client.SendAsync(message);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     _logger.LogError($"Unable to send email: {ex.Message}");
                     throw new GraException("Unable to send email.", ex);

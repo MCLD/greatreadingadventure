@@ -1,4 +1,5 @@
-﻿namespace GRA
+﻿
+namespace GRA
 {
     public sealed class ClaimType
     {

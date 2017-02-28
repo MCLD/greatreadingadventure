@@ -1,4 +1,5 @@
-﻿namespace GRA.Domain.Model
+﻿
+namespace GRA.Domain.Model
 {
     public class DataWithCount<DataType>
     {

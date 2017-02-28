@@ -25,6 +25,5 @@ namespace GRA.Domain.Model
         public string TranslationDescriptionPresentTense { get; set; }
         [Required]
         public string TranslationDescriptionPastTense { get; set; }
-
     }
 }

@@ -7,7 +7,7 @@ namespace GRA
     {
         public string Sanitize(string code, int length = 50)
         {
-            if(string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(code))
             {
                 throw new ArgumentNullException(nameof(code));
             }
@@ -16,7 +16,7 @@ namespace GRA
                 .Trim()
                 .ToLower();
 
-            if(resultString.Length > length)
+            if (resultString.Length > length)
             {
                 resultString = resultString.Substring(0, length);
             }

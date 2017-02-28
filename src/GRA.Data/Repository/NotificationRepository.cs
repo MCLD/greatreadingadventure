@@ -31,7 +31,7 @@ namespace GRA.Data.Repository
         public async Task RemoveByUserId(int userId)
         {
             var notifications = DbSet.Where(_ => _.UserId == userId);
-            foreach(var notification in notifications)
+            foreach (var notification in notifications)
             {
                 DbSet.Remove(notification);
             }

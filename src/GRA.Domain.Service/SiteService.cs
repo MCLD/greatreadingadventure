@@ -33,7 +33,6 @@ namespace GRA.Domain.Service
 
         public async Task<IEnumerable<Model.System>> GetSystemList()
         {
-
             return await _systemRepository.GetAllAsync(GetCurrentSiteId());
         }
 
@@ -55,7 +54,7 @@ namespace GRA.Domain.Service
         public async Task<string> GetBranchName(int branchId)
         {
             var branch = await _branchRepository.GetByIdAsync(branchId);
-            if(branch == null)
+            if (branch == null)
             {
                 throw new GraException("Could not find branch.");
             }

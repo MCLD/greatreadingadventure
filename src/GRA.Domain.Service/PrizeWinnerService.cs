@@ -139,7 +139,7 @@ namespace GRA.Domain.Service
         public async Task<int> GetUserWinCount(int userId, bool? redeemed = null)
         {
             VerifyManagementPermission();
-            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId, 
+            return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
                 redeemed);
         }
     }

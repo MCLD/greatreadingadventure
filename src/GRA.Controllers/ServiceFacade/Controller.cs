@@ -23,7 +23,7 @@ namespace GRA.Controllers.ServiceFacade
             Mapper = Require.IsNotNull(mapper, nameof(mapper));
             Config = Require.IsNotNull(config, nameof(config));
             PathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
-            UserContextProvider = Require.IsNotNull(userContextProvider, 
+            UserContextProvider = Require.IsNotNull(userContextProvider,
                 nameof(userContextProvider));
             SiteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
         }

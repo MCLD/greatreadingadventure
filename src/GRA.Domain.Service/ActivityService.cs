@@ -239,7 +239,6 @@ namespace GRA.Domain.Service
                 _logger.LogError($"User {requestedByUserId} doesn't have permission to remove a book for {userId}.");
                 throw new GraException("Permission denied.");
             }
-
         }
 
         public async Task UpdateBookAsync(int userId, Book book)
@@ -750,7 +749,7 @@ namespace GRA.Domain.Service
                 throw new GraException($"Minutes read must be at least 1.");
             }
             int authUserId = GetClaimId(ClaimType.UserId);
-            
+
             if (!HasPermission(Permission.LogActivityForAny))
             {
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
@@ -776,7 +775,6 @@ namespace GRA.Domain.Service
             {
                 await LogActivityAsync(userId, minutesRead);
             }
-
         }
 
         public async Task<bool> LogHouseholdSecretCodeAsync(List<int> userIds, string secretCode)

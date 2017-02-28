@@ -17,6 +17,5 @@ namespace GRA.Domain.Model
         public bool IsFooter { get; set; }
         [DisplayName("Publish this page")]
         public bool IsPublished { get; set; }
-        
     }
 }

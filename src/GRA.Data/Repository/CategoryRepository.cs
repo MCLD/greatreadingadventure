@@ -12,7 +12,7 @@ namespace GRA.Data.Repository
     public class CategoryRepository :
         AuditingRepository<Model.Category, Domain.Model.Category>, ICategoryRepository
     {
-        public CategoryRepository(ServiceFacade.Repository repositoryFacade, 
+        public CategoryRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<CategoryRepository> logger) : base(repositoryFacade, logger)
         {
         }

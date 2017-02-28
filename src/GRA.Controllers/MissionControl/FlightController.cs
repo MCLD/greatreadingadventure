@@ -134,7 +134,7 @@ namespace GRA.Controllers.MissionControl
                 layer = await _dynamicAvatarService.AddLayerAsync(layer);
                 var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{layerNumber}");
                 var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
-                if(!Directory.Exists(destinationPath))
+                if (!Directory.Exists(destinationPath))
                 {
                     Directory.CreateDirectory(destinationPath);
                 }

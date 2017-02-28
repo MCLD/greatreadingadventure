@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.ViewModel.MissionControl.Pages
+﻿
+namespace GRA.Controllers.ViewModel.MissionControl.Pages
 {
     public class PagePreviewViewModel
     {

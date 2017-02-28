@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.ViewModel.MissionControl.Home
+﻿
+namespace GRA.Controllers.ViewModel.MissionControl.Home
 {
     public class AuthorizationCodeViewModel
     {

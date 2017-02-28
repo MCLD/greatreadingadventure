@@ -12,7 +12,8 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.Role, Domain.Model.Role>, IRoleRepository
     {
         public RoleRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<RoleRepository> logger) : base(repositoryFacade, logger) { }
+            ILogger<RoleRepository> logger) : base(repositoryFacade, logger)
+        { }
 
         public async Task AddPermissionAsync(int userId, string name)
         {

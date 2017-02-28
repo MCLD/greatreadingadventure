@@ -115,7 +115,6 @@ namespace GRA.Controllers.MissionControl
                     {
                         participantName += $" ({participant.Username})";
                     }
-
                 }
 
                 MailDetailViewModel viewModel = new MailDetailViewModel()

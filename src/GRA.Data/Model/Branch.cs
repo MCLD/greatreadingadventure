@@ -21,6 +21,5 @@ namespace GRA.Data.Model
         public string Telephone { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
-
     }
 }

@@ -207,7 +207,7 @@ namespace GRA.Domain.Service
             sb.AppendLine();
             sb.AppendLine($"The following usernames are associated with '{lookupEmail}':");
             sb.AppendLine();
-            
+
             foreach (string username in usernames.Data)
             {
                 sb.AppendLine($"- {username}");

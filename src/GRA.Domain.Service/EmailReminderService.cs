@@ -27,7 +27,7 @@ namespace GRA.Domain.Service
             {
                 throw new ArgumentNullException(nameof(signUpSource));
             }
-            var alreadySubscribed 
+            var alreadySubscribed
                 = await _emailReminderRepository.ExistsEmailSourceAsync(email, signUpSource);
             if (!alreadySubscribed)
             {

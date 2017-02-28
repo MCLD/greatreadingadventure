@@ -9,6 +9,7 @@ namespace GRA
         public GraException(string message) : base(message) { }
 
         public GraException(string message, Exception innerException)
-            : base(message, innerException) { }
+            : base(message, innerException)
+        { }
     }
 }

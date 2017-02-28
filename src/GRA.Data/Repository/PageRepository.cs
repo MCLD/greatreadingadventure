@@ -53,7 +53,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                .AsNoTracking()
-               .Where(_ => _.SiteId == siteId 
+               .Where(_ => _.SiteId == siteId
                && _.IsFooter == true
                && _.IsPublished == true)
                .OrderBy(_ => _.Title)

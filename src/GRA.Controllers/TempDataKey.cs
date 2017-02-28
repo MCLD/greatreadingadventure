@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers
+﻿
+namespace GRA.Controllers
 {
     public static class TempDataKey
     {

@@ -48,24 +48,32 @@ namespace GRA.Controllers.Base
             ViewData[ViewDataKey.Title] = pageTitle;
         }
 
-        protected string AlertDanger {
-            set {
+        protected string AlertDanger
+        {
+            set
+            {
                 TempData[TempDataKey.AlertDanger] = value;
             }
         }
 
-        protected string AlertWarning {
-            set {
+        protected string AlertWarning
+        {
+            set
+            {
                 TempData[TempDataKey.AlertWarning] = value;
             }
         }
-        protected string AlertInfo {
-            set {
+        protected string AlertInfo
+        {
+            set
+            {
                 TempData[TempDataKey.AlertInfo] = value;
             }
         }
-        protected string AlertSuccess {
-            set {
+        protected string AlertSuccess
+        {
+            set
+            {
                 TempData[TempDataKey.AlertSuccess] = value;
             }
         }
@@ -120,8 +128,10 @@ namespace GRA.Controllers.Base
             }
         }
 
-        protected ClaimsPrincipal AuthUser {
-            get {
+        protected ClaimsPrincipal AuthUser
+        {
+            get
+            {
                 return HttpContext.User;
             }
         }
@@ -233,6 +243,5 @@ namespace GRA.Controllers.Base
                 AlertInfo = $"{Fa("check-circle")} {message}";
             }
         }
-
     }
 }

@@ -100,7 +100,7 @@ namespace GRA.Domain.Service
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges.");
                         throw new Exception("Permission denied.");
                     }
-                    else if (!HasPermission(Permission.ActivateAllChallenges) 
+                    else if (!HasPermission(Permission.ActivateAllChallenges)
                         && filter.SystemIds?.FirstOrDefault() != GetClaimId(ClaimType.SystemId))
                     {
                         _logger.LogError($"User {authUserId} doesn't have permission to view pending challenges for system.");

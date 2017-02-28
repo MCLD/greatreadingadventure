@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.ViewModel.MissionControl.Participants
+﻿
+namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
     public class HistoryItemViewModel
     {

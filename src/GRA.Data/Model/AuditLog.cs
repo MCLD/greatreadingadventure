@@ -5,7 +5,6 @@ namespace GRA.Data.Model
 {
     public class AuditLog : Abstract.BaseDbEntity
     {
-
         [Required]
         [MaxLength(255)]
         public string EntityType { get; set; }

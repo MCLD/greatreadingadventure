@@ -12,7 +12,8 @@ namespace GRA.Data.Repository
         : AuditingRepository<Model.ChallengeTask, Domain.Model.ChallengeTask>, IChallengeTaskRepository
     {
         public ChallengeTaskRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<ChallengeTaskRepository> logger) : base(repositoryFacade, logger) { }
+            ILogger<ChallengeTaskRepository> logger) : base(repositoryFacade, logger)
+        { }
 
         public override async Task<Domain.Model.ChallengeTask> GetByIdAsync(int id)
         {

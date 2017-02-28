@@ -25,7 +25,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.EnteredSchoolId == enteredSchoolId)
                 .ToListAsync();
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 user.SchoolId = schoolId;
                 user.EnteredSchoolId = default(int?);

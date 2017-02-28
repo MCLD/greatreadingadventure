@@ -80,7 +80,6 @@ namespace GRA.Controllers
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                 SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
-
             };
 
             if (systemList.Count() == 1)
@@ -450,7 +449,6 @@ namespace GRA.Controllers
 
                 TempData[TempStep2] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
                 return RedirectToAction("Step3");
-
             }
 
             PageTitle = $"{site.Name} - Join Now!";

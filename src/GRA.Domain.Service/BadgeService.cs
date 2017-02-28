@@ -11,7 +11,7 @@ namespace GRA.Domain.Service
 {
     public class BadgeService : Abstract.BaseUserService<BadgeService>
     {
-        const string BadgePath = "badges";
+        private const string BadgePath = "badges";
         private readonly IConfigurationRoot _config;
         private readonly IBadgeRepository _badgeRepository;
         private readonly IPathResolver _pathResolver;

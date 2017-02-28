@@ -14,7 +14,8 @@ namespace GRA.Data.Repository
         IPointTranslationRepository
     {
         public PointTranslationRepository(ServiceFacade.Repository repositoryFacade,
-            ILogger<PointTranslationRepository> logger) : base(repositoryFacade, logger) { }
+            ILogger<PointTranslationRepository> logger) : base(repositoryFacade, logger)
+        { }
 
         public async Task<PointTranslation> GetByProgramIdAsync(int programId)
         {
@@ -23,7 +24,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.ProgramId == programId)
                 .SingleOrDefaultAsync();
 
-            if(translation == null)
+            if (translation == null)
             {
                 return null;
             }

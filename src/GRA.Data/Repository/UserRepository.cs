@@ -332,7 +332,7 @@ namespace GRA.Data.Repository
                 .ProjectTo<User>()
                 .ToListAsync();
 
-            
+
             return household;
         }
     }

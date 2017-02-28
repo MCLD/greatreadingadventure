@@ -81,7 +81,7 @@ namespace GRA.Web
             if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
             {
                 string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
-                string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator] 
+                string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator]
                     ?? "gra";
                 services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
                     .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
@@ -270,7 +270,7 @@ namespace GRA.Web
             }
 
             string pathString = pathResolver.ResolveContentPath();
-            if(!pathString.StartsWith("/"))
+            if (!pathString.StartsWith("/"))
             {
                 pathString = "/" + pathString;
             }

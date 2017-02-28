@@ -57,8 +57,10 @@ namespace GRA.Domain.Model
         public string BranchName { get; set; }
         public string SystemName { get; set; }
         public string ProgramName { get; set; }
-        public string FullName {
-            get {
+        public string FullName
+        {
+            get
+            {
                 return FirstName + " " + LastName;
             }
         }

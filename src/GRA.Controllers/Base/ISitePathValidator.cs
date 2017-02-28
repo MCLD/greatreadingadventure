@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.Base
+﻿
+namespace GRA.Controllers.Base
 {
     public interface ISitePathValidator
     {

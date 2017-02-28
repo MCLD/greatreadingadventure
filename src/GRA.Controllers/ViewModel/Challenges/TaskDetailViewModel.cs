@@ -1,4 +1,5 @@
-﻿namespace GRA.Controllers.ViewModel.Challenges
+﻿
+namespace GRA.Controllers.ViewModel.Challenges
 {
     public class TaskDetailViewModel
     {

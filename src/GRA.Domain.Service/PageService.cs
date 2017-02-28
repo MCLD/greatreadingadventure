@@ -39,7 +39,7 @@ namespace GRA.Domain.Service
 
         public async Task<Page> AddPageAsync(Page page)
         {
-            if(HasPermission(Permission.AddPages))
+            if (HasPermission(Permission.AddPages))
             {
                 var siteId = GetClaimId(ClaimType.SiteId);
                 var existingPage = await _pageRepository.GetByStubAsync(siteId, page.Stub);
@@ -62,7 +62,7 @@ namespace GRA.Domain.Service
 
         public async Task DeletePageAsync(int id)
         {
-            if(HasPermission(Permission.DeletePages))
+            if (HasPermission(Permission.DeletePages))
             {
                 await _pageRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), id);
             }
@@ -76,7 +76,7 @@ namespace GRA.Domain.Service
 
         public async Task<Page> EditPageAsync(Page page)
         {
-            if(HasPermission(Permission.EditPages))
+            if (HasPermission(Permission.EditPages))
             {
                 var siteId = GetClaimId(ClaimType.SiteId);
                 var currentPage = await _pageRepository

@@ -24,7 +24,6 @@ namespace GRA.Domain.Service
             ISiteRepository siteRepository,
             IInitialSetupService initialSetupService) : base(logger)
         {
-
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
             _config = Require.IsNotNull(config, nameof(config));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(_siteRepository));
@@ -72,9 +71,9 @@ namespace GRA.Domain.Service
 
         public SiteStage GetSiteStageAsync(Site site)
         {
-            if (site.AccessClosed == null 
-                && site.ProgramEnds == null 
-                && site.ProgramStarts == null 
+            if (site.AccessClosed == null
+                && site.ProgramEnds == null
+                && site.ProgramStarts == null
                 && site.RegistrationOpens == null)
             {
                 return SiteStage.ProgramOpen;
@@ -84,15 +83,15 @@ namespace GRA.Domain.Service
             {
                 return SiteStage.AccessClosed;
             }
-            if(site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
+            if (site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
             {
                 return SiteStage.ProgramEnded;
             }
-            if(site.ProgramStarts != null && DateTime.Now >= site.ProgramStarts)
+            if (site.ProgramStarts != null && DateTime.Now >= site.ProgramStarts)
             {
                 return SiteStage.ProgramOpen;
             }
-            if(site.RegistrationOpens != null && DateTime.Now >= site.RegistrationOpens)
+            if (site.RegistrationOpens != null && DateTime.Now >= site.RegistrationOpens)
             {
                 return SiteStage.RegistrationOpen;
             }

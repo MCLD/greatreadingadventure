@@ -13,7 +13,7 @@ namespace GRA.Data.Repository
     public class LocationRepository
         : AuditingRepository<Model.Location, Domain.Model.Location>, ILocationRepository
     {
-        public LocationRepository(ServiceFacade.Repository repositoryFacade, 
+        public LocationRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<LocationRepository> logger) : base(repositoryFacade, logger)
         {
         }

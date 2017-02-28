@@ -94,13 +94,17 @@ namespace GRA.Data
             await AuditSet.AddAsync(audit);
         }
 
-        protected DbSet<AuditLog> AuditSet {
-            get {
+        protected DbSet<AuditLog> AuditSet
+        {
+            get
+            {
                 return _auditSet;
             }
         }
-        protected DbSet<DbEntity> DbSet {
-            get {
+        protected DbSet<DbEntity> DbSet
+        {
+            get
+            {
                 return _dbSet ?? (_dbSet = _context.Set<DbEntity>());
             }
         }

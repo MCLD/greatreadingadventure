@@ -25,7 +25,7 @@ namespace GRA.Data.Model
         public bool SchoolRequired { get; set; }
         [Required]
         public int Position { get; set; }
-        
+
         public int? AgeMaximum { get; set; }
         public int? AgeMinimum { get; set; }
     }

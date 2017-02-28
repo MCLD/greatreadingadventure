@@ -33,7 +33,7 @@ namespace GRA.Domain.Service
             _drawingCriterionRepository = Require.IsNotNull(drawingCriterionRepository,
                 nameof(drawingCriterionRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
-            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository, 
+            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
                 nameof(prizeWinnerRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));

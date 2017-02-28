@@ -320,7 +320,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.ManageLocations)]
-        public async Task<JsonResult> AddLocationReturnList (string name, 
+        public async Task<JsonResult> AddLocationReturnList(string name,
             string address, string url, string telephone)
         {
             if (!string.IsNullOrWhiteSpace(url))

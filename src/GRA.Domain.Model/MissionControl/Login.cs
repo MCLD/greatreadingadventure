@@ -1,4 +1,5 @@
-﻿namespace GRA.Domain.Model.MissionControl
+﻿
+namespace GRA.Domain.Model.MissionControl
 {
     public class Login
     {

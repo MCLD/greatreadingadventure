@@ -15,9 +15,9 @@ namespace GRA.Domain.Repository
         Task<int> GetCountAsync(StatusSummary request);
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
         Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email);
-        Task<IEnumerable<Model.User>> PageAllAsync(int siteId, 
-            int skip, 
-            int take, 
+        Task<IEnumerable<Model.User>> PageAllAsync(int siteId,
+            int skip,
+            int take,
             string search = null,
             SortUsersBy sortBy = SortUsersBy.LastName);
         Task<IEnumerable<Model.User>>

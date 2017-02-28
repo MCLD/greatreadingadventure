@@ -13,6 +13,5 @@ namespace GRA.Data.Model
         public int CreatedBy { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
-
     }
 }

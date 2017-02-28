@@ -61,7 +61,7 @@ namespace GRA.Domain.Service
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
-            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository, 
+            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
                 nameof(prizeWinnerRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));

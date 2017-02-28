@@ -1,4 +1,5 @@
-﻿namespace GRA.Abstract
+﻿
+namespace GRA.Abstract
 {
     public interface IPathResolver
     {

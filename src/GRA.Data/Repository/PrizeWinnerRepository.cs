@@ -31,9 +31,9 @@ namespace GRA.Data.Repository
             return await prizeWinners.CountAsync();
         }
 
-        public async Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId, 
-            int userId, 
-            int skip, 
+        public async Task<ICollection<PrizeWinner>> PageByWinnerAsync(int siteId,
+            int userId,
+            int skip,
             int take)
         {
             return await DbSet

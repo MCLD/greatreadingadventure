@@ -22,7 +22,8 @@ namespace GRA.Controllers.Filter
             ResourceExecutionDelegate next)
         {
             var httpContext = context.HttpContext;
-            try {
+            try
+            {
                 var userId = new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId);
                 var activeId = httpContext.Session.GetInt32(SessionKey.ActiveUserId);
                 if (userId != activeId)
@@ -34,7 +35,7 @@ namespace GRA.Controllers.Filter
             {
                 _logger.LogDebug($"Attempted Mission Control access while not logged in: {ex.Message}");
             }
-            
+
             if (httpContext.User.HasClaim(ClaimType.Permission,
                 Domain.Model.Permission.ReadAllMail.ToString()))
             {

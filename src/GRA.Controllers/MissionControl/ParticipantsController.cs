@@ -386,7 +386,7 @@ namespace GRA.Controllers.MissionControl
                         .GetUserWinCount(head.Id, false)) > 0;
                 }
 
-                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail, 
+                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail,
                     ViewUserPrizes);
 
                 HouseholdListViewModel viewModel = new HouseholdListViewModel()

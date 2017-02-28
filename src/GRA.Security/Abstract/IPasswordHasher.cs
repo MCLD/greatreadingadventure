@@ -1,4 +1,5 @@
-﻿namespace GRA.Security.Abstract
+﻿
+namespace GRA.Security.Abstract
 {
     public interface IPasswordHasher
     {

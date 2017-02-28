@@ -78,7 +78,7 @@ namespace GRA.Controllers
                 PaginateModel = paginateModel,
                 Search = Search,
                 IsActive = isActive
-        };
+            };
 
             if (!string.IsNullOrWhiteSpace(Search))
             {

@@ -15,7 +15,7 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             ICategoryRepository categoryRepository) : base(logger, userContextProvider)
         {
-            _categoryRepository = Require.IsNotNull(categoryRepository, 
+            _categoryRepository = Require.IsNotNull(categoryRepository,
                 nameof(categoryRepository));
         }
 

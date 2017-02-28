@@ -36,9 +36,9 @@ namespace GRA.Data.Profile
             CreateMap<Model.StaticAvatar, Domain.Model.StaticAvatar>().ReverseMap();
             CreateMap<Model.System, Domain.Model.System>().ReverseMap();
             CreateMap<Model.Trigger, Domain.Model.Trigger>()
-                .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src 
+                .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src
                 => src.RequiredBadges.Select(_ => _.BadgeId).ToList()))
-                .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(src 
+                .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(src
                 => src.RequiredChallenges.Select(_ => _.ChallengeId).ToList()))
                 .ReverseMap();
             CreateMap<Model.User, Domain.Model.User>().ReverseMap();

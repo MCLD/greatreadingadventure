@@ -346,7 +346,6 @@ namespace GRA.Domain.Service
                 _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
                 if (inReplyToMail.IsRepliedTo == false)
                 {
-
                     await _mailRepository.MarkAdminReplied(inReplyToMail.Id);
                     _memoryCache.Remove($"{CacheKey.UnhandledMailCount}?s{siteId}");
                 }
@@ -442,6 +441,5 @@ namespace GRA.Domain.Service
                 throw new GraException("Permission denied.");
             }
         }
-
     }
 }

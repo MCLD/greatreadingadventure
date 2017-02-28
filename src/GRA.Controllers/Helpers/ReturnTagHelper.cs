@@ -33,7 +33,6 @@ namespace GRA.Controllers.Helpers
 
         public ReturnTagHelper(IHtmlGenerator generator) : base(generator)
         {
-            
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)

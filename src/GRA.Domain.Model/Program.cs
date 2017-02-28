@@ -26,6 +26,5 @@ namespace GRA.Domain.Model
 
         public int? AgeMaximum { get; set; }
         public int? AgeMinimum { get; set; }
-
     }
 }

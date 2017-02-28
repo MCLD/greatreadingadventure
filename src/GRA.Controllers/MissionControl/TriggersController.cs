@@ -537,7 +537,6 @@ namespace GRA.Controllers.MissionControl
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
                     .Select(Int32.Parse)
                     .ToList());
-
             }
             if (badgeList.Count > 0)
             {
