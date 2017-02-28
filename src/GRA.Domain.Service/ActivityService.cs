@@ -66,8 +66,8 @@ namespace GRA.Domain.Service
                 nameof(vendorCodeRepository));
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository,
                 nameof(vendorCodeTypeRepository));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _codeSanitizer = Require.IsNotNull(codeSanitizer, nameof(codeSanitizer));
+            _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
                 nameof(prizeWinnerService));
         }
