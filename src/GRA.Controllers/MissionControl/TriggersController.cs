@@ -161,6 +161,25 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Trigger.SecretCode", "That Secret Code already exists.");
             }
 
+            if (model.AwardsPrize)
+            {
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
+                {
+                    ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
+                }
+            }
+            if (model.AwardsMail)
+            {
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardMailSubject))
+                {
+                    ModelState.AddModelError("Trigger.AwardMailSubject", "The Mail Subject field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardMail))
+                {
+                    ModelState.AddModelError("Trigger.AwardMail", "The Mail Message field is required.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -181,6 +200,16 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.SecretCode = null;
                         model.Trigger.BadgeIds = badgeRequiredList;
                         model.Trigger.ChallengeIds = challengeRequiredList;
+                    }
+                    if (!model.AwardsPrize)
+                    {
+                        model.Trigger.AwardPrizeName = "";
+                        model.Trigger.AwardPrizeRedemptionInstructions = "";
+                    }
+                    if (!model.AwardsMail)
+                    {
+                        model.Trigger.AwardMailSubject = "";
+                        model.Trigger.AwardMail = "";
                     }
 
                     if (model.BadgeUploadImage != null
@@ -260,6 +289,8 @@ namespace GRA.Controllers.MissionControl
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
+                AwardsMail = !string.IsNullOrWhiteSpace(trigger.AwardMailSubject),
+                AwardsPrize = !string.IsNullOrWhiteSpace(trigger.AwardPrizeName),
                 DependentTriggers = await _triggerService.GetDependentsAsync(trigger.AwardBadgeId),
                 TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
                 BadgeRequiredList = string.Join("", trigger.BadgeIds
@@ -354,6 +385,24 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("Trigger.SecretCode", "That Secret Code already exists.");
             }
+            if (model.AwardsPrize)
+            {
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardPrizeName))
+                {
+                    ModelState.AddModelError("Trigger.AwardPrizeName", "The Prize Name field is required.");
+                }
+            }
+            if (model.AwardsMail)
+            {
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardMailSubject))
+                {
+                    ModelState.AddModelError("Trigger.AwardMailSubject", "The Mail Subject field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(model.Trigger.AwardMail))
+                {
+                    ModelState.AddModelError("Trigger.AwardMail", "The Mail Message field is required.");
+                }
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -374,6 +423,16 @@ namespace GRA.Controllers.MissionControl
                         model.Trigger.SecretCode = null;
                         model.Trigger.BadgeIds = badgeRequiredList;
                         model.Trigger.ChallengeIds = challengeRequiredList;
+                    }
+                    if (!model.AwardsPrize)
+                    {
+                        model.Trigger.AwardPrizeName = "";
+                        model.Trigger.AwardPrizeRedemptionInstructions = "";
+                    }
+                    if (!model.AwardsMail)
+                    {
+                        model.Trigger.AwardMailSubject = "";
+                        model.Trigger.AwardMail = "";
                     }
                     if (model.BadgeUploadImage != null
                         || !string.IsNullOrWhiteSpace(model.BadgeMakerImage))

@@ -17,9 +17,17 @@
             </li>
             <li ActiveBy routeKey="Action" value="Books"><a asp-action="Books" asp-route-id="@Model.Id">Books</a></li>
             <li ActiveBy routeKey="Action" value="History"><a asp-action="History" asp-route-id="@Model.Id">History</a></li>
-            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserDrawings.ToString()))
+            @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUserPrizes.ToString()))
             {
-                <li ActiveBy routeKey="Action" value="Drawings"><a asp-action="Drawings" asp-route-id="@Model.Id">Drawings</a></li>
+                <li ActiveBy routeKey="Action" value="Prizes">
+                    <a asp-action="Prizes" asp-route-id="@Model.Id">
+                        Prizes
+                        @if (Model.PrizeCount > 0)
+                        {
+                            <span class="label label-default label-as-badge">@(Model.PrizeCount)</span>
+                        }
+                    </a>
+                </li>
             }
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
             {

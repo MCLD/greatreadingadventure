@@ -92,7 +92,7 @@
                             <strong>Reedemed</strong> at @winner.RedeemedAt.Value.ToString()
 
                             <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
-                            <input id="winnerId" name="winnerId" value="@winner.UserId" type="hidden" />
+                            <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                             <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs">
                                 Undo
@@ -103,7 +103,7 @@
                     {
                         <form asp-controller="Drawing" asp-action="RedeemWinner" method="post" role="form">
                             <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
-                            <input id="winnerId" name="winnerId" value="@winner.UserId" type="hidden" />
+                            <input id="prizeWinnerId" name="prizeWinnerId" value="@winner.Id" type="hidden" />
                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                             <button type="submit" class="btn btn-success btn-xs">
                                 <span class="fa fa-gift"></span>

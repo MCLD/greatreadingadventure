@@ -27,5 +27,6 @@ namespace GRA.Domain.Model
         public int? ThreadId { get; set; }
         public bool IsBroadcast { get; set; }
         public int? DrawingId { get; set; }
+        public int? TriggerId { get; set; }
     }
 }

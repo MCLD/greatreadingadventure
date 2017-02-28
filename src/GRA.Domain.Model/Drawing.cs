@@ -27,6 +27,6 @@ namespace GRA.Domain.Model
         public bool IsArchived { get; set; }
 
         public DrawingCriterion DrawingCriterion { get; set; }
-        public IEnumerable<DrawingWinner> Winners { get; set; }
+        public IEnumerable<PrizeWinner> Winners { get; set; }
     }
 }

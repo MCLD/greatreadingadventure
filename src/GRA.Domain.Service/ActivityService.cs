@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
+        private readonly IDrawingRepository _drawingRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
@@ -24,6 +25,7 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         private readonly MailService _mailService;
+        private readonly PrizeWinnerService _prizeWinnerService;
 
         private ICollection<int> _queuedTriggerIds;
 
@@ -32,6 +34,7 @@ namespace GRA.Domain.Service
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
+            IDrawingRepository drawingRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -40,12 +43,14 @@ namespace GRA.Domain.Service
             IUserLogRepository userLogRepository,
             IVendorCodeRepository vendorCodeRepository,
             IVendorCodeTypeRepository vendorCodeTypeRepository,
-            MailService mailService) : base(logger, userContext)
+            MailService mailService,
+            PrizeWinnerService prizeWinnerService) : base(logger, userContext)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
+            _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -60,6 +65,8 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository,
                 nameof(vendorCodeTypeRepository));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
+                nameof(prizeWinnerService));
         }
 
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
@@ -583,6 +590,12 @@ namespace GRA.Domain.Service
                     // award any vendor code that is necessary
                     await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
 
+                    // send mail if applicable
+                    int? mailId = await SendMailAsync(userId, trigger);
+
+                    // award prize if applicable
+                    await AwardPrizeAsync(userId, trigger, mailId);
+
                     // remove this item from the queued list of triggers
                     _queuedTriggerIds.Remove(trigger.Id);
                 }
@@ -703,6 +716,12 @@ namespace GRA.Domain.Service
             // award any vendor code that is necessary
             await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
 
+            // send mail if applicable
+            int? mailId = await SendMailAsync(activeUserId, trigger);
+
+            // award prize if applicable
+            await AwardPrizeAsync(activeUserId, trigger, mailId);
+
             // if there are points to be awarded, do that now, also check for other triggers
             if (trigger.AwardPoints > 0)
             {
@@ -726,7 +745,7 @@ namespace GRA.Domain.Service
                 throw new GraException($"Minutes read must be at least 1.");
             }
             int authUserId = GetClaimId(ClaimType.UserId);
-            
+
             if (!HasPermission(Permission.LogActivityForAny))
             {
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
@@ -836,6 +855,12 @@ namespace GRA.Domain.Service
                 // award any vendor code that is necessary
                 await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
 
+                // send mail if applicable
+                int? mailId = await SendMailAsync(userId, trigger);
+
+                // award prize if applicable
+                await AwardPrizeAsync(userId, trigger, mailId);
+
                 // if there are points to be awarded, do that now, also check for other triggers
                 if (trigger.AwardPoints > 0)
                 {
@@ -851,6 +876,47 @@ namespace GRA.Domain.Service
                 codeApplied = true;
             }
             return codeApplied;
+        }
+
+        private async Task<int?> SendMailAsync(int userId, Trigger trigger)
+        {
+            if (!string.IsNullOrEmpty(trigger.AwardMailSubject)
+                && !string.IsNullOrEmpty(trigger.AwardMail))
+            {
+                var mail = await _mailService.MCSendAsync(new Mail
+                {
+                    Body = trigger.AwardMail,
+                    Subject = trigger.AwardMailSubject,
+                    ToUserId = userId,
+                    TriggerId = trigger.Id,
+                });
+
+                return mail.Id;
+            }
+            return null;
+        }
+
+        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId)
+        {
+            if (!string.IsNullOrEmpty(trigger.AwardPrizeName))
+            {
+                var prize = new PrizeWinner
+                {
+                    CreatedBy = userId,
+                    CreatedAt = DateTime.Now,
+                    TriggerId = trigger.Id,
+                    PrizeName = trigger.AwardPrizeName,
+                    PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions,
+                    UserId = userId
+                };
+
+                if (mailId != null)
+                {
+                    prize.MailId = mailId;
+                }
+
+                await _prizeWinnerService.AddPrizeWinnerAsync(prize);
+            }
         }
     }
 }

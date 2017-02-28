@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly IDrawingRepository _drawingRepository;
         private readonly IDrawingCriterionRepository _drawingCriterionRepository;
         private readonly IMailRepository _mailRepository;
+        private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         public DrawingService(ILogger<DrawingService> logger,
@@ -23,6 +24,7 @@ namespace GRA.Domain.Service
             IDrawingRepository drawingRepository,
             IDrawingCriterionRepository drawingCriterionRepository,
             IMailRepository mailRepository,
+            IPrizeWinnerRepository prizeWinnerRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository) : base(logger, userContextProvider)
         {
@@ -31,6 +33,8 @@ namespace GRA.Domain.Service
             _drawingCriterionRepository = Require.IsNotNull(drawingCriterionRepository,
                 nameof(drawingCriterionRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
+            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository, 
+                nameof(prizeWinnerRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
         }
@@ -200,8 +204,9 @@ namespace GRA.Domain.Service
                     int random = System.Math.Abs(System.BitConverter.ToInt32(randomBytes, 0));
                     int randomUserId = remainingUsers.ElementAt(random % remainingUsers.Count());
 
-                    var winner = new DrawingWinner
+                    var winner = new PrizeWinner
                     {
+                        SiteId = siteId,
                         DrawingId = drawing.Id,
                         UserId = randomUserId
                     };
@@ -223,7 +228,7 @@ namespace GRA.Domain.Service
                     }
 
                     // add the winner - does not perform a save
-                    await _drawingRepository.AddWinnerAsync(winner);
+                    await _prizeWinnerRepository.AddAsync(authUserId, winner);
 
                     // remove them so they aren't drawn twice
                     remainingUsers.Remove(randomUserId);
@@ -236,64 +241,6 @@ namespace GRA.Domain.Service
             else
             {
                 _logger.LogError($"User {authUserId} doesn't have permission to perform drawings.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task RedeemWinnerAsync(int drawingId, int userId)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing)
-                || HasPermission(Permission.ViewUserDrawings))
-            {
-                await _drawingRepository.RedeemWinnerAsync(drawingId, userId);
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to redeem user {userId} from drawing {drawingId}.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task UndoRedemptionAsnyc(int drawingId, int userId)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing)
-                || HasPermission(Permission.ViewUserDrawings))
-            {
-                await _drawingRepository.UndoRedemptionAsync(drawingId, userId);
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to undo redemption user {userId} from drawing {drawingId}.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
-        public async Task RemoveWinnerAsync(int drawingId, int userId)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.PerformDrawing))
-            {
-                var winner = await _drawingRepository.GetDrawingWinnerById(drawingId, userId);
-                if (!winner.RedeemedAt.HasValue)
-                {
-                    await _drawingRepository.RemoveWinnerAsync(drawingId, userId);
-                    var winnerCount = await _drawingRepository.GetWinnerCountAsync(drawingId);
-                    if (winnerCount == 0)
-                    {
-                        await _drawingRepository.SetArchivedAsync(authUserId, drawingId, true);
-                    }
-                }
-                else
-                {
-                    _logger.LogError($"User {authUserId} cannot remove user {userId} from drawing {drawingId}.");
-                    throw new GraException("Winners who have claimed their prize cannot be removed.");
-                }
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to remove user {userId} from drawing {drawingId}.");
                 throw new GraException("Permission denied.");
             }
         }

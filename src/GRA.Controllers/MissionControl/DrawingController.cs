@@ -19,14 +19,17 @@ namespace GRA.Controllers.MissionControl
 
         private readonly ILogger<DrawingController> _logger;
         private readonly DrawingService _drawingService;
+        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SiteService _siteService;
         public DrawingController(ILogger<DrawingController> logger,
             ServiceFacade.Controller context,
             DrawingService drawingService,
+            PrizeWinnerService prizeWinnerService,
             SiteService siteService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _drawingService = Require.IsNotNull(drawingService, nameof(drawingService));
+            _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             PageTitle = "Drawing";
         }
@@ -112,25 +115,25 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> RedeemWinner(int drawingId, int winnerId, int page = 1)
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int drawingId, int page = 1)
         {
-            await _drawingService.RedeemWinnerAsync(drawingId, winnerId);
+            await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
             return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UndoRedemption(int drawingId, int winnerId, int page = 1)
+        public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int drawingId, int page = 1)
         {
-            await _drawingService.UndoRedemptionAsnyc(drawingId, winnerId);
+            await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
             return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveWinner(int drawingId, int winnerId, int page = 1)
+        public async Task<IActionResult> RemoveWinner(int prizeWinnerId, int drawingId, int page = 1)
         {
             try
             {
-                await _drawingService.RemoveWinnerAsync(drawingId, winnerId);
+                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
             }
             catch (GraException gex)
             {

@@ -12,13 +12,14 @@ namespace GRA.Domain.Model
         public bool IsDeleted { get; set; }
         [Required]
         [MaxLength(255)]
+        [DisplayName("Trigger name")]
         public string Name { get; set; }
-
+        [DisplayName("Must have this many points")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} cannot be less than {1}.")]
         public int? Points { get; set; }
         [MaxLength(50)]
-        [DisplayName("Secret Code")]
-        [RegularExpression("([a-zA-Z0-9]+)", ErrorMessage = "Only alphanumeric characters are allowed.")]
+        [DisplayName("Secret code")]
+        [RegularExpression("([a-zA-Z0-9]+)", ErrorMessage = "Only letters and numbers are allowed.")]
         public string SecretCode { get; set; }
         [DisplayName("Items Required")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} cannot be less than {1}.")]
@@ -35,16 +36,30 @@ namespace GRA.Domain.Model
 
         [Required]
         [MaxLength(1000)]
-        [DisplayName("Award Message")]
+        [DisplayName("Notification")]
         public string AwardMessage { get; set; }
         [Required]
         public int AwardBadgeId { get; set; }
         public string AwardBadgeFilename { get; set; }
-        [DisplayName("Award Vendor Code")]
+        [DisplayName("Award vendor code")]
         public int? AwardVendorCodeTypeId { get; set; }
-        [DisplayName("Award Points")]
-        [Range (0, int.MaxValue, ErrorMessage = "{0} cannot be less than {1}.")]
+        [DisplayName("Award points")]
+        [Range(0, int.MaxValue, ErrorMessage = "{0} cannot be less than {1}.")]
         public int AwardPoints { get; set; }
         public bool HasDependents { get; set; }
+
+        [MaxLength(500)]
+        [DisplayName("Mail subject")]
+        public string AwardMailSubject { get; set; }
+        [MaxLength(2000)]
+        [DisplayName("Mail message")]
+        public string AwardMail { get; set; }
+
+        [MaxLength(255)]
+        [DisplayName("Prize name")]
+        public string AwardPrizeName { get; set; }
+        [MaxLength(1000)]
+        [DisplayName("Redepemption instructions")]
+        public string AwardPrizeRedemptionInstructions { get; set; }
     }
 }

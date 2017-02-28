@@ -15,9 +15,9 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IBranchRepository _branchRepository;
-        private readonly IDrawingRepository _drawingRepository;
         private readonly IMailRepository _mailRepository;
         private readonly INotificationRepository _notificationRepository;
+        private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly IProgramRepository _programRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ISchoolRepository _schoolRepository;
@@ -36,9 +36,9 @@ namespace GRA.Domain.Service
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IBranchRepository branchRepository,
-            IDrawingRepository drawingRepository,
             IMailRepository mailRepository,
             INotificationRepository notificationRepository,
+            IPrizeWinnerRepository prizeWinnerRepository,
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISchoolRepository schoolRepository,
@@ -58,10 +58,11 @@ namespace GRA.Domain.Service
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
-            _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
+            _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository, 
+                nameof(prizeWinnerRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
             _schoolRepository = Require.IsNotNull(schoolRepository, nameof(schoolRepository));
@@ -407,27 +408,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<DrawingWinner>>>
-            GetPaginatedUserDrawingListAsync(int userId,
-            int skip,
-            int take)
-        {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.ViewUserDrawings))
-            {
-                return new DataWithCount<IEnumerable<DrawingWinner>>
-                {
-                    Data = await _drawingRepository.PageUserAsync(userId, skip, take),
-                    Count = await _drawingRepository.GetUserWinCountAsync(userId)
-                };
-            }
-            else
-            {
-                _logger.LogError($"User {authUserId} doesn't have permission to view drawinsg for {userId}.");
-                throw new GraException("Permission denied.");
-            }
-        }
-
         public async Task<string>
             ActivateAuthorizationCode(string authorizationCode)
         {
@@ -616,7 +596,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId,
-            bool includeVendorCode, bool includeMail)
+            bool includeVendorCode, bool includeMail, bool includePrize = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.ViewParticipantDetails)
@@ -632,7 +612,7 @@ namespace GRA.Domain.Service
 
             var household = await _userRepository.GetHouseholdAsync(householdHeadUserId);
 
-            if (includeVendorCode || includeMail)
+            if (includeVendorCode || includeMail || includePrize)
             {
                 if (householdHeadUserId != authId)
                 {
@@ -648,11 +628,22 @@ namespace GRA.Domain.Service
                     }
                 }
 
+                if (includePrize && !HasPermission(Permission.ViewUserPrizes))
+                {
+                    _logger.LogError($"User {authId} doesn't have permission to view prizes for {householdHeadUserId}.");
+                    throw new GraException("Permission denied.");
+                }
+
                 foreach (var member in household)
                 {
                     if (includeMail)
                     {
                         member.HasNewMail = await _mailRepository.UserHasUnreadAsync(member.Id);
+                    }
+                    if (includePrize)
+                    {
+                        member.HasUnclaimedPrize = (await _prizeWinnerRepository
+                            .CountByWinningUserId(GetCurrentSiteId(), member.Id, false)) > 0;
                     }
                     if (includeVendorCode)
                     {

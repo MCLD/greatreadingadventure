@@ -24,8 +24,8 @@ namespace GRA.Controllers.MissionControl
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
-        private readonly DrawingService _drawingService;
         private readonly MailService _mailService;
+        private readonly PrizeWinnerService _prizeWinnerService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -34,8 +34,8 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             ActivityService activityService,
             AuthenticationService authenticationService,
-            DrawingService drawingService,
             MailService mailService,
+            PrizeWinnerService prizeWinnerService,
             SchoolService schoolService,
             SiteService siteService,
             UserService userService,
@@ -47,8 +47,8 @@ namespace GRA.Controllers.MissionControl
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
-            _drawingService = Require.IsNotNull(drawingService, nameof(drawingService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
@@ -133,6 +133,7 @@ namespace GRA.Controllers.MissionControl
                     Id = user.Id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
@@ -296,6 +297,7 @@ namespace GRA.Controllers.MissionControl
                 Id = id,
                 HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
 
@@ -373,23 +375,32 @@ namespace GRA.Controllers.MissionControl
                 }
                 head.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
                 bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);
+                bool ViewUserPrizes = UserHasPermission(Permission.ViewUserPrizes);
                 if (ReadAllMail)
                 {
                     head.HasNewMail = await _mailService.UserHasUnreadAsync(head.Id);
                 }
+                if (ViewUserPrizes)
+                {
+                    head.HasUnclaimedPrize = (await _prizeWinnerService
+                        .GetUserWinCount(head.Id, false)) > 0;
+                }
 
-                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail);
+                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail, 
+                    ViewUserPrizes);
 
                 HouseholdListViewModel viewModel = new HouseholdListViewModel()
                 {
                     Users = household,
                     Id = id,
                     HouseholdCount = household.Count(),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
                     CanReadMail = ReadAllMail,
+                    CanViewPrizes = ViewUserPrizes,
                     Head = head
                 };
 
@@ -758,6 +769,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanModifyBooks = UserHasPermission(Permission.LogActivityForAny)
@@ -881,6 +893,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
@@ -936,22 +949,20 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
-        #region Drawings
-        [Authorize(Policy = Policy.ViewUserDrawings)]
-        public async Task<IActionResult> Drawings(int id, int page = 1)
+        #region Prizes
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        public async Task<IActionResult> Prizes(int id, int page = 1)
         {
             try
             {
-                int take = 15;
-                int skip = take * (page - 1);
-
-                var drawingList = await _userService.GetPaginatedUserDrawingListAsync(id, skip, take);
+                Domain.Model.Filter filter = new Domain.Model.Filter(page);
+                var prizeList = await _prizeWinnerService.PageUserPrizes(id, filter);
 
                 PaginateViewModel paginateModel = new PaginateViewModel()
                 {
-                    ItemCount = drawingList.Count,
+                    ItemCount = prizeList.Count,
                     CurrentPage = page,
-                    ItemsPerPage = take
+                    ItemsPerPage = filter.Take.Value
                 };
                 if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
                 {
@@ -965,12 +976,13 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
-                DrawingListViewModel viewModel = new DrawingListViewModel()
+                PrizeListViewModel viewModel = new PrizeListViewModel()
                 {
-                    DrawingWinners = drawingList.Data,
+                    PrizeWinners = prizeList.Data,
                     PaginateModel = paginateModel,
                     Id = id,
                     HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username)
                 };
@@ -979,25 +991,25 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view participant's drawings: ", gex);
+                ShowAlertWarning("Unable to view participant's prizes: ", gex);
                 return RedirectToAction("Index");
             }
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ViewUserDrawings)]
-        public async Task<IActionResult> RedeemWinner(int drawingId, int userId, int page = 1)
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int userId, int page = 1)
         {
-            await _drawingService.RedeemWinnerAsync(drawingId, userId);
-            return RedirectToAction("Drawings", new { id = userId, page = page });
+            await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+            return RedirectToAction("Prizes", new { id = userId, page = page });
         }
 
         [HttpPost]
-        [Authorize(Policy = Policy.ViewUserDrawings)]
-        public async Task<IActionResult> UndoRedemption(int drawingId, int userId, int page = 1)
+        [Authorize(Policy = Policy.ViewUserPrizes)]
+        public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int userId, int page = 1)
         {
-            await _drawingService.UndoRedemptionAsnyc(drawingId, userId);
-            return RedirectToAction("Drawings", new { id = userId, page = page });
+            await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
+            return RedirectToAction("Prizes", new { id = userId, page = page });
         }
         #endregion
 
@@ -1036,6 +1048,7 @@ namespace GRA.Controllers.MissionControl
                     PaginateModel = paginateModel,
                     Id = id,
                     HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
@@ -1146,6 +1159,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username)
                 };

@@ -1,12 +1,12 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.DrawingListViewModel
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.PrizeListViewModel
 
 @Html.Partial("_ParticipantPartial")
 
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
-        @if (Model.DrawingWinners.Count() == 0)
+        @if (Model.PrizeWinners.Count() == 0)
         {
-            <div class="alert alert-warning">No Drawings</div>
+            <div class="alert alert-warning">No Prizes</div>
         }
         else
         {
@@ -20,17 +20,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var drawing in Model.DrawingWinners)
+                        @foreach (var prizeWinner in Model.PrizeWinners)
                         {
                             <tr>
                                 <td>
-                                    @if (drawing.RedeemedAt.HasValue)
+                                    @if (prizeWinner.RedeemedAt.HasValue)
                                     {
                                         <form asp-controller="Participants" asp-action="UndoRedemption" method="post" role="form">
-                                            <strong>Reedemed</strong> at @drawing.RedeemedAt.Value.ToString()
+                                            <strong>Reedemed</strong> at @prizeWinner.RedeemedAt.Value.ToString()
 
-                                            <input id="drawingId" name="drawingId" value="@drawing.DrawingId" type="hidden" />
-                                            <input id="userId" name="userId" value="@drawing.UserId" type="hidden" />
+                                            <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
+                                            <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs">
                                                 Undo
@@ -40,8 +40,8 @@
                                     else
                                     {
                                         <form asp-controller="Participants" asp-action="RedeemWinner" method="post" role="form">
-                                            <input id="drawingId" name="drawingId" value="@drawing.DrawingId" type="hidden" />
-                                            <input id="userId" name="userId" value="@drawing.UserId" type="hidden" />
+                                            <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
+                                            <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                                             <button type="submit" class="btn btn-success btn-xs">
                                                 <span class="fa fa-gift"></span>
@@ -50,8 +50,8 @@
                                         </form>
                                     }
                                 </td>
-                                <td>@drawing.DrawingName</td>
-                                <td>@drawing.DrawingRedemptionInstructions</td>
+                                <td>@prizeWinner.PrizeName</td>
+                                <td>@prizeWinner.PrizeRedemptionInstructions</td>
                             </tr>
                         }
                     </tbody>

@@ -72,6 +72,7 @@ namespace GRA.Domain.Model
         public string DynamicAvatar { get; set; }
 
         public bool HasNewMail { get; set; }
+        public bool HasUnclaimedPrize { get; set; }
         public string VendorCode { get; set; }
     }
 }

@@ -17,10 +17,12 @@ namespace GRA.Data.Model
         public string RedemptionInstructions { get; set; }
         [Range(1, Int32.MaxValue)]
         public int WinnerCount { get; set; }
+        [MaxLength(255)]
         public string NotificationSubject { get; set; }
+        [MaxLength(2000)]
         public string NotificationMessage { get; set; }
         public bool IsArchived { get; set; }
 
-        public virtual ICollection<DrawingWinner> Winners { get; set; }
+        public virtual ICollection<PrizeWinner> Winners { get; set; }
     }
 }

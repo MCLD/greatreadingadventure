@@ -45,5 +45,13 @@ namespace GRA.Data.Model
         public int? AwardVendorCodeTypeId { get; set; }
         public VendorCodeType AwardVendorCodeType { get; set; }
         public int AwardPoints { get; set; }
+        [MaxLength(500)]
+        public string AwardMailSubject { get; set; }
+        [MaxLength(2000)]
+        public string AwardMail { get; set; }
+        [MaxLength(255)]
+        public string AwardPrizeName { get; set; }
+        [MaxLength(1000)]
+        public string AwardPrizeRedemptionInstructions { get; set; }
     }
 }

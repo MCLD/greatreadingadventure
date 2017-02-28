@@ -11,6 +11,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     {
         public int Id { get; set; }
         public int HouseholdCount { get; set; }
+        public int PrizeCount { get; set; }
         public bool HasAccount { get; set; }
         [DisplayName("Minutes Read")]
         public int? MinutesRead { get; set; }

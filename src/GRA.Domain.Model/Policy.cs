@@ -35,6 +35,6 @@
         public const string ViewParticipantList = "ViewParticipantList";
         public const string ViewParticipantDetails = "ViewParticipantDetails";
         public const string ViewUnpublishedPages = "ViewUnpublishedPages";
-        public const string ViewUserDrawings = "ViewUserDrawings";
+        public const string ViewUserPrizes = "ViewUserPrizes";
     }
 }

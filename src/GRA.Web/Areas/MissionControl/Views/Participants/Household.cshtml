@@ -74,6 +74,10 @@
                                 {
                                     <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
                                 }
+                                @if (Model.CanViewPrizes)
+                                {
+                                    <th width="36px"><span class="fa fa-gift fa-lg"></span></th>
+                                }
                                 <th>User</th>
                                 <th>Points Earned</th>
                                 <th>Book Code</th>
@@ -103,6 +107,22 @@
                                         </a>
                                     </td>
 
+                                }
+                                @if (Model.CanViewPrizes)
+                                {
+                                    <td class="on-top" style="vertical-align:middle;">
+                                        <a class="plain-link" asp-action="Prizes" asp-route-id="@Model.Head.Id">
+                                            @if (Model.Head.HasUnclaimedPrize)
+                                            {
+                                                <span class="fa fa-gift fa-lg"></span>
+                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-gift fa-lg" style="color:grey;"></span>
+                                            }
+                                        </a>
+                                    </td>
                                 }
                                 <td class="td-class">
                                     <a asp-action="Detail" asp-route-id="@Model.Head.Id" class="rowlink">
@@ -144,6 +164,22 @@
                                                 else
                                                 {
                                                     <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                }
+                                            </a>
+                                        </td>
+                                    }
+                                    @if (Model.CanViewPrizes)
+                                    {
+                                        <td class="on-top" style="vertical-align:middle;">
+                                            <a class="plain-link" asp-action="Prizes" asp-route-id="@user.Id">
+                                                @if (user.HasUnclaimedPrize)
+                                                {
+                                                    <span class="fa fa-gift fa-lg"></span>
+                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="fa fa-gift fa-lg" style="color:grey;"></span>
                                                 }
                                             </a>
                                         </td>

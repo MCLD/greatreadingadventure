@@ -165,6 +165,7 @@ namespace GRA.Web
             services.AddScoped<EventService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
+            services.AddScoped<PrizeWinnerService>();
             services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolService>();
@@ -198,6 +199,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();
             services.AddScoped<Domain.Repository.IPageRepository, Data.Repository.PageRepository>();
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
+            services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();

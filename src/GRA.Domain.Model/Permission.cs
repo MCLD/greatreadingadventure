@@ -34,6 +34,6 @@
         ViewParticipantList,
         ViewParticipantDetails,
         ViewUnpublishedPages,
-        ViewUserDrawings,
+        ViewUserPrizes,
     }
 }

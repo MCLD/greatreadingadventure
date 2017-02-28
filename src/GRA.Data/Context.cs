@@ -38,8 +38,6 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
-            modelBuilder.Entity<Model.DrawingWinner>()
-                .HasKey(_ => new { _.DrawingId, _.UserId });
             modelBuilder.Entity<Model.DynamicAvatarElement>()
                 .HasKey(_ => new { _.Id, _.DynamicAvatarLayerId });
             modelBuilder.Entity<Model.RolePermission>()
@@ -64,7 +62,7 @@ namespace GRA.Data
             modelBuilder.Entity<Model.EmailReminder>()
                 .HasIndex(_ => new { _.Email, _.SignUpSource })
                 .IsUnique();
-            modelBuilder.Entity<Model.DrawingWinner>()
+            modelBuilder.Entity<Model.PrizeWinner>()
                 .HasIndex(_ => new { _.DrawingId, _.UserId, _.RedeemedAt })
                 .IsUnique();
             modelBuilder.Entity<Model.Notification>()
@@ -101,7 +99,6 @@ namespace GRA.Data
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
-        public DbSet<Model.DrawingWinner> DrawingWinners { get; set; }
         public DbSet<Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
         public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
@@ -113,6 +110,7 @@ namespace GRA.Data
         public DbSet<Model.Page> Pages { get; set; }
         public DbSet<Model.Permission> Permissions { get; set; }
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
+        public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
