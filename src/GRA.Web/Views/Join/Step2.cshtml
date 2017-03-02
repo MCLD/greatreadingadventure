@@ -162,7 +162,7 @@
                         typeList.append(new Option("", ""));
                     }
                     $.each(response, function(index, item) {
-                        typeList.append(new Option(item.text, item.value, item.selected))
+                        typeList.append(new Option(item.text, item.value, item.selected, item.selected))
                     });
                     UpdateSchoolList(districtId, typeList.val());
                 });
@@ -208,7 +208,7 @@
                     schoolList.empty();
                     schoolList.append(new Option("", ""));
                     $.each(response, function(index, item) {
-                        schoolList.append(new Option(item.text, item.value, item.selected))
+                        schoolList.append(new Option(item.text, item.value, item.selected, item.selected))
                     });
                 });
             }

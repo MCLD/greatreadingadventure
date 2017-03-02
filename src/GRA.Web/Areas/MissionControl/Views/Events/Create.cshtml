@@ -207,7 +207,7 @@
                         locationList.empty();
                         locationList.append(new Option("", ""));
                         $.each(response, function(index, item) {
-                            locationList.append(new Option(item.text, item.value, item.selected))
+                            locationList.append(new Option(item.text, item.value, item.selected, item.selected))
                         });
                         $("#addModal").modal("hide");
                         name.val("");

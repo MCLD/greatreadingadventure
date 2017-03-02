@@ -90,7 +90,7 @@
                     branchList.append(new Option("", "-1"));
                 }
                 $.each(response, function(index, item) {
-                    branchList.append(new Option(item.text, item.value, item.selected))
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
         });
