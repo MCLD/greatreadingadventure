@@ -49,5 +49,16 @@ namespace GRA.Domain.Model
         public string FromEmailAddress { get; set; }
 
         public bool UseDynamicAvatars { get; set; }
+        [MaxLength(100)]
+        public string SiteLogoUrl { get; set; }
+        [MaxLength(100)]
+        public string FacebookAppId { get; set; }
+        [MaxLength(100)]
+        public string FacebookImageUrl { get; set; }
+        public bool? TwitterLargeCard { get; set; }
+        [MaxLength(100)]
+        public string TwitterCardImageUrl { get; set; }
+        [MaxLength(15)]
+        public string TwitterUsername { get; set; }
     }
 }
