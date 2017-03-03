@@ -11,5 +11,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix household minute logging error when signed in as another user.
 - Fix permission with sending mail for triggers.
 - Fix issue with drop-down auto-selection in IE.
+- Fix showing a response to a pre-open mail sign-up if no address is provided.
 
 ## [4.0.0-alpha1] - 2017-02-28

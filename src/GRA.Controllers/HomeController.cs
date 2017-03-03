@@ -163,8 +163,8 @@ namespace GRA.Controllers
             {
                 await _emailReminderService
                     .AddEmailReminderAsync(viewModel.Email, viewModel.SignUpSource);
+                ShowAlertInfo("Thanks! We'll let you know when you can join the program.", "envelope");
             }
-            ShowAlertInfo("Thanks! We'll let you know when you can join the program.", "envelope");
             return RedirectToAction("Index");
         }
 

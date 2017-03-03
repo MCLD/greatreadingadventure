@@ -167,7 +167,7 @@ namespace GRA.Controllers.Helpers
             output.Content.AppendHtml(Environment.NewLine);
             output.Content.AppendHtml(MetaTag("og:url", GetSiteUrl(site)));
             output.Content.AppendHtml(Environment.NewLine);
-            if (string.IsNullOrEmpty(site.FacebookImageUrl))
+            if (!string.IsNullOrEmpty(site.FacebookImageUrl))
             {
                 output.Content.AppendHtml(MetaTag("og:image", site.FacebookImageUrl));
                 output.Content.AppendHtml(Environment.NewLine);
