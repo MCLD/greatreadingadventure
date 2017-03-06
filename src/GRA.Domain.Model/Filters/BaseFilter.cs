@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GRA.Domain.Model
+namespace GRA.Domain.Model.Filters
 {
-    public class Filter
+    public class BaseFilter
     {
         public int? SiteId { get; set; }
         public int? Skip { get; set; }
@@ -20,7 +20,7 @@ namespace GRA.Domain.Model
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public Filter(int? page = null)
+        public BaseFilter(int? page = null)
         {
             this.Take = 15;
             if (page.HasValue)

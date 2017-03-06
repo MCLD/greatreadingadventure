@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,11 +7,11 @@ namespace GRA.Domain.Repository
 {
     public interface IChallengeRepository : IRepository<Challenge>
     {
-        Task<int> GetChallengeCountAsync(Filter filter);
+        Task<int> GetChallengeCountAsync(BaseFilter filter);
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
         new Task<Challenge> GetByIdAsync(int id);
         Task<Challenge> GetActiveByIdAsync(int id, int? userId = default(int));
-        Task<ICollection<Challenge>> PageAllAsync(Filter filter);
+        Task<ICollection<Challenge>> PageAllAsync(BaseFilter filter);
         Task<DataWithCount<IEnumerable<int>>> PageIdsAsync(
             int siteId,
             int skip,

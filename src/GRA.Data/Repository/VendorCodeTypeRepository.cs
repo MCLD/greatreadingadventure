@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Repository.Extensions;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Data.Repository
 {
@@ -29,13 +30,13 @@ namespace GRA.Data.Repository
         }
 
         // honors site id, skip, and take
-        public async Task<int> CountAsync(Filter filter)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter).CountAsync();
         }
 
         // honors site id, skip, and take
-        public async Task<ICollection<VendorCodeType>> PageAsync(Filter filter)
+        public async Task<ICollection<VendorCodeType>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -43,7 +44,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<Model.VendorCodeType> ApplyFilters(Filter filter)
+        private IQueryable<Model.VendorCodeType> ApplyFilters(BaseFilter filter)
         {
             return DbSet
                 .AsNoTracking()

@@ -6,6 +6,7 @@ using GRA.Domain.Model;
 using System.Threading.Tasks;
 using GRA.Domain.Service.Abstract;
 using System.Linq;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Service
 {
@@ -68,7 +69,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                Filter filter = new Filter()
+                BaseFilter filter = new BaseFilter()
                 {
                     SiteId = siteId,
                     Skip = skip,
@@ -88,7 +89,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Challenge>>>
-            MCGetPaginatedChallengeListAsync(Filter filter)
+            MCGetPaginatedChallengeListAsync(BaseFilter filter)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.ViewAllChallenges))

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -41,7 +42,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page);
+            BaseFilter filter = new BaseFilter(page);
 
             var triggerList = await _triggerService.GetPaginatedListAsync(filter);
 
@@ -520,7 +521,7 @@ namespace GRA.Controllers.MissionControl
             int page = 1,
             int? thisBadge = null)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page)
+            BaseFilter filter = new BaseFilter(page)
             {
                 Search = search
             };

@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -111,18 +112,16 @@ namespace GRA.Domain.Service
             return registeredUser;
         }
 
-        public async Task<DataWithCount<IEnumerable<User>>> GetPaginatedUserListAsync(int skip,
-            int take,
-            string search = null,
-            SortUsersBy sortBy = SortUsersBy.LastName)
+        public async Task<DataWithCount<IEnumerable<User>>> GetPaginatedUserListAsync(
+            UserFilter filter)
         {
-            int siteId = GetClaimId(ClaimType.SiteId);
             if (HasPermission(Permission.ViewParticipantList))
             {
+                filter.SiteId = GetClaimId(ClaimType.SiteId);
                 return new DataWithCount<IEnumerable<User>>
                 {
-                    Data = await _userRepository.PageAllAsync(siteId, skip, take, search, sortBy),
-                    Count = await _userRepository.GetCountAsync(siteId, search)
+                    Data = await _userRepository.PageAllAsync(filter),
+                    Count = await _userRepository.GetCountAsync(filter)
                 };
             }
             else
@@ -498,7 +497,7 @@ namespace GRA.Domain.Service
             if (authUserId == (int)memberToRegister.HouseholdHeadUserId
                || HasPermission(Permission.EditParticipants))
             {
-                var user = await GetDetails(memberToRegister.Id);
+                var user = await _userRepository.GetByIdAsync(memberToRegister.Id);
                 if (!string.IsNullOrWhiteSpace(user.Username))
                 {
                     _logger.LogError($"User {authUserId} cannot register household member {memberToRegister.Id} who is already registered.");
@@ -652,6 +651,89 @@ namespace GRA.Domain.Service
                 }
             }
             return household;
+        }
+
+        public async Task PromoteToHeadOfHouseholdAsync(int userId)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (!HasPermission(Permission.EditParticipants))
+            {
+                _logger.LogError($"User {authId} doesn't have permission to promote household members to head.");
+                throw new GraException("Permission denied.");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId); ;
+            if (string.IsNullOrWhiteSpace(user.Username))
+            {
+                _logger.LogError($"User {userId} cannot be promoted to head of household without a username.");
+                throw new GraException("User does not have a username.");
+            }
+            if (!user.HouseholdHeadUserId.HasValue)
+            {
+                _logger.LogError($"User {userId} cannot be promoted to head of household.");
+                throw new GraException("User does not have a household or is already the head.");
+            }
+            var headUser = await _userRepository.GetByIdAsync(user.HouseholdHeadUserId.Value);
+            var household = await _userRepository.GetHouseholdAsync(user.HouseholdHeadUserId.Value);
+
+            user.HouseholdHeadUserId = null;
+            await _userRepository.UpdateSaveAsync(authId, user);
+            headUser.HouseholdHeadUserId = user.Id;
+            await _userRepository.UpdateSaveAsync(authId, headUser);
+            foreach (var member in household)
+            {
+                if (member.Id != user.Id)
+                {
+                    member.HouseholdHeadUserId = user.Id;
+                    await _userRepository.UpdateAsync(authId, member);
+                }
+            }
+            await _userRepository.SaveAsync();
+        }
+
+        public async Task RemoveFromHouseholdAsync(int userId)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (!HasPermission(Permission.EditParticipants))
+            {
+                _logger.LogError($"User {authId} doesn't have permission to remove household members.");
+                throw new GraException("Permission denied.");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (string.IsNullOrWhiteSpace(user.Username))
+            {
+                _logger.LogError($"User {userId} cannot be removed from a household without a username.");
+                throw new GraException("Participant does not have a username.");
+            }
+            if (!user.HouseholdHeadUserId.HasValue)
+            {
+                _logger.LogError($"User {userId} cannot be removed from a household.");
+                throw new GraException("Participant does not have a household or is the head.");
+            }
+            user.HouseholdHeadUserId = null;
+            await _userRepository.UpdateSaveAsync(authId, user);
+        }
+
+        public async Task MCAddParticipantToHouseholdAsync(int householdId, int userToAddId)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+            if (!HasPermission(Permission.EditParticipants))
+            {
+                _logger.LogError($"User {authId} doesn't add existing participants to household.");
+                throw new GraException("Permission denied.");
+            }
+            var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
+            if (userToAdd.HouseholdHeadUserId.HasValue 
+                || (await _userRepository.GetHouseholdCountAsync(userToAddId)) > 0)
+            {
+                _logger.LogError($"User {authId} cannot add {userToAddId} to a different household.");
+                throw new GraException("Participant already belongs to a household.");
+            }
+            var user = await _userRepository.GetByIdAsync(householdId);
+            userToAdd.HouseholdHeadUserId = user.HouseholdHeadUserId ?? user.Id;
+
+            await _userRepository.UpdateSaveAsync(authId, userToAdd);
         }
 
         private async Task<bool> UserHasRoles(int userId)

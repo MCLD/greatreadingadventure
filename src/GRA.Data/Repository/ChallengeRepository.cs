@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using GRA.Domain.Model;
 using GRA.Domain.Repository.Extensions;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Data.Repository
 {
@@ -20,7 +21,7 @@ namespace GRA.Data.Repository
         }
 
         public async Task<ICollection<Challenge>>
-            PageAllAsync(Filter filter)
+            PageAllAsync(BaseFilter filter)
         {
             var challenges = ApplyFilters(filter);
 
@@ -39,12 +40,12 @@ namespace GRA.Data.Repository
             return challengeList;
         }
 
-        public async Task<int> GetChallengeCountAsync(Filter filter)
+        public async Task<int> GetChallengeCountAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter).CountAsync();
         }
 
-        private IQueryable<Data.Model.Challenge> ApplyFilters(Filter filter)
+        private IQueryable<Data.Model.Challenge> ApplyFilters(BaseFilter filter)
         {
             var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false

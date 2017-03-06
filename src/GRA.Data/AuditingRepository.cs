@@ -3,6 +3,7 @@ using GRA.Abstract;
 using GRA.Data.Abstract;
 using GRA.Data.Model;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -256,7 +257,7 @@ namespace GRA.Data
             }
         }
 
-        protected IQueryable<DbEntity> ApplyPagination(IQueryable<DbEntity> queryable, Filter filter)
+        protected IQueryable<DbEntity> ApplyPagination(IQueryable<DbEntity> queryable, BaseFilter filter)
         {
             if (filter.Skip != null && filter.Take != null)
             {

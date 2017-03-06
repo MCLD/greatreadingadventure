@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -100,14 +101,14 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<PrizeWinner>>>
-            PageUserPrizes(int userId, Filter filter = default(Filter))
+            PageUserPrizes(int userId, BaseFilter filter = default(BaseFilter))
         {
             VerifyManagementPermission();
 
             int siteId = GetCurrentSiteId();
             if (filter == null)
             {
-                filter = new Filter();
+                filter = new BaseFilter();
             }
 
             var prizes = await _prizeWinnerRepository

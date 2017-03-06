@@ -10,6 +10,7 @@ using System;
 using GRA.Domain.Repository.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Data.Repository
 {
@@ -64,13 +65,13 @@ namespace GRA.Data.Repository
         }
 
         // honors site id, skip, and take
-        public async Task<int> CountAsync(Filter filter)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Trigger>> PageAsync(Filter filter)
+        public async Task<ICollection<Trigger>> PageAsync(BaseFilter filter)
         {
             var triggerList = await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -85,7 +86,7 @@ namespace GRA.Data.Repository
             return triggerList;
         }
 
-        private IQueryable<Model.Trigger> ApplyFilters(Filter filter)
+        private IQueryable<Model.Trigger> ApplyFilters(BaseFilter filter)
         {
             return DbSet
                 .AsNoTracking()
@@ -251,13 +252,13 @@ namespace GRA.Data.Repository
             return requirements.OrderBy(_ => _.Name).ToList();
         }
 
-        public async Task<int> CountRequirementsAsync(Filter filter)
+        public async Task<int> CountRequirementsAsync(BaseFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(Filter filter)
+        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .OrderBy(_ => _.Name)
@@ -265,7 +266,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(Filter filter)
+        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(BaseFilter filter)
         {
             // Badge and Trigger lists
             var requirements = (from challenges in _context.Challenges

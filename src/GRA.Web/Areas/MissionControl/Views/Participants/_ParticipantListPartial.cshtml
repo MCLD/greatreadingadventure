@@ -1,0 +1,50 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsListViewModel
+
+@if (Model.Users.Count() == 0)
+{
+    <div class="alert alert-warning">No Participants found.</div>
+}
+else
+{
+    <div>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>User</td>
+                    <td>Branch</td>
+                    <td>Program</td>
+                    <td width="42px">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            <div>@user.FullName</div>
+                            <div>@user.Username</div>
+                        </td>
+                        <td>
+                            @user.BranchName
+                        </td>
+                        <td>
+                            @user.ProgramName
+                        </td>
+                        <td>
+                            <button type="submit"
+                                    class="btn btn-primary btn-xs"
+                                    asp-action="HouseholdAddExistingParticipant"
+                                    asp-route-userToAddId="@user.Id">
+                                <span class="fa fa-2x fa-plus" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.PaginateModel.MaxPage > 1)
+    {
+        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
+    }
+}

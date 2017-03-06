@@ -1,6 +1,7 @@
 ﻿using GRA.Controllers.ViewModel.MissionControl.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -110,7 +111,7 @@ namespace GRA.Controllers.MissionControl
         private async Task<ChallengesListViewModel> GetChallengeList(string Search, int? Program,
             int? System, int? Branch, bool? Mine, int page = 1, bool pending = false)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page);
+            BaseFilter filter = new BaseFilter(page);
             if (!string.IsNullOrWhiteSpace(Search))
             {
                 filter.Search = Search;

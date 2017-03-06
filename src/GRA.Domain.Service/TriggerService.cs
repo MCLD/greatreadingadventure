@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
         }
 
-        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(Filter filter)
+        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
@@ -103,7 +104,7 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
         }
 
-        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(Filter filter)
+        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();

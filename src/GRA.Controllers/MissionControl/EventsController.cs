@@ -1,6 +1,7 @@
 ﻿using GRA.Controllers.ViewModel.MissionControl.Events;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page);
+            BaseFilter filter = new BaseFilter(page);
 
             var eventList = await _eventService.GetPaginatedListAsync(filter, true);
 
@@ -228,7 +229,7 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.ManageLocations)]
         public async Task<IActionResult> Locations(int page = 1)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page);
+            BaseFilter filter = new BaseFilter(page);
 
             var locationList = await _eventService.GetPaginatedLocationsListAsync(filter);
 

@@ -1,5 +1,7 @@
 ﻿using GRA.Controllers.ViewModel.Events;
 using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -36,7 +38,7 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null)
         {
-            Domain.Model.Filter filter = new Domain.Model.Filter(page)
+            BaseFilter filter = new BaseFilter(page)
             {
                 Search = search,
             };

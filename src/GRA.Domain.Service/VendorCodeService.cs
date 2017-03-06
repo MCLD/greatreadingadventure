@@ -1,5 +1,6 @@
 ﻿using GRA.Abstract;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ namespace GRA.Domain.Service
             return await _vendorCodeTypeRepository.GetAllAsync(GetCurrentSiteId());
         }
 
-        public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(Filter filter)
+        public async Task<DataWithCount<ICollection<VendorCodeType>>> GetTypePaginatedListAsync(BaseFilter filter)
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();

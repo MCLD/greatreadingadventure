@@ -21,5 +21,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string MinutesReadMessage { get; set; }
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }
+
+        public int SystemId { get; set; }
+
+        public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
+        public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
     }
 }

@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Add database fields and front-end display for social.
+- Add adding existing participant to household in Mission Control.
 
 ### Fixed
 - Fix household minute logging error when signed in as another user.

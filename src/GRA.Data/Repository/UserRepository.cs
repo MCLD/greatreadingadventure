@@ -1,6 +1,8 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -93,93 +95,91 @@ namespace GRA.Data.Repository
             return result;
         }
 
-        public async Task<IEnumerable<User>> PageAllAsync(int siteId,
-            int skip,
-            int take,
-            string search = null,
-            SortUsersBy sortBy = SortUsersBy.LastName)
+        public async Task<IEnumerable<User>> PageAllAsync(UserFilter filter)
         {
-            var userList = DbSet
-                .AsNoTracking()
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System);
+            var userList = ApplyUserFilter(filter);
 
-            IQueryable<Model.User> filteredUserList = null;
-            if (string.IsNullOrEmpty(search))
-            {
-                filteredUserList = userList.Where(_ => _.IsDeleted == false
-                    && _.SiteId == siteId);
-            }
-            else
-            {
-                filteredUserList = userList.Where(_ => _.IsDeleted == false
-                    && _.SiteId == siteId
-                    && (_.Username.Contains(search)
-                        || _.FirstName.Contains(search)
-                        || _.LastName.Contains(search)
-                        || _.Email.Contains(search)
-                        || (_.FirstName + " " + _.LastName).Contains(search)
-                        || (_.LastName + " " + _.FirstName).Contains(search)));
-            }
-
-            switch (sortBy)
+            switch (filter.SortBy)
             {
                 case SortUsersBy.FirstName:
-                    filteredUserList = filteredUserList
-                        .OrderBy(_ => _.FirstName)
-                        .ThenBy(_ => _.LastName)
-                        .ThenBy(_ => _.Username);
+                    userList = userList
+                    .OrderBy(_ => _.FirstName)
+                    .ThenBy(_ => _.LastName)
+                    .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.LastName:
-                    filteredUserList = filteredUserList
+                    userList = userList
                         .OrderBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.RegistrationDate:
-                    filteredUserList = filteredUserList
+                    userList = userList
                         .OrderBy(_ => _.CreatedAt)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName)
                         .ThenBy(_ => _.Username);
                     break;
                 case SortUsersBy.Username:
-                    filteredUserList = filteredUserList
-                        .OrderBy(_ => _.Username)
+                    userList = userList
+                        .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
+                        .ThenBy(_ => _.Username)
                         .ThenBy(_ => _.LastName)
                         .ThenBy(_ => _.FirstName);
                     break;
             }
 
-            return await filteredUserList
-                .Skip(skip)
-                .Take(take)
+            return await userList
+                .ApplyPagination(filter)
+                .Include(_ => _.Branch)
+                .Include(_ => _.Program)
+                .Include(_ => _.System)
                 .ProjectTo<User>()
                 .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId, string search = null)
+        public async Task<int> GetCountAsync(UserFilter filter)
         {
-            IQueryable<Model.User> userCount = null;
-            if (string.IsNullOrEmpty(search))
+            return await ApplyUserFilter(filter)
+                .CountAsync();
+        }
+
+        private IQueryable<Model.User> ApplyUserFilter(UserFilter filter)
+        {
+            var userList = DbSet.AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
+
+            if (filter.SystemIds != null)
             {
-                userCount = DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId);
-            }
-            else
-            {
-                userCount = DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false && _.SiteId == siteId
-                        && (_.Username.Contains(search)
-                        || _.FirstName.Contains(search)
-                        || _.LastName.Contains(search)
-                        || _.Email.Contains(search)));
+                userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
             }
 
-            return await userCount.CountAsync();
+            else if (filter.BranchIds != null)
+            {
+                userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                userList = userList.Where(_ => _.Username.Contains(filter.Search)
+                        || (_.FirstName + " " + _.LastName).Contains(filter.Search)
+                        || _.Email.Contains(filter.Search));
+            }
+            
+            if (filter.CanAddToHousehold)
+            {
+                var householdHeadList = DbSet.AsNoTracking()
+                    .Where(_ => _.HouseholdHeadUserId.HasValue)
+                    .Select(u => u.HouseholdHeadUserId)
+                    .Distinct();
+
+                userList = userList
+                    .Where(_ => !filter.UserIds.Contains(_.Id) 
+                        && !householdHeadList.Contains(_.Id) 
+                        && !_.HouseholdHeadUserId.HasValue);
+            }
+
+            return userList;
         }
 
         public async Task<int> GetCountAsync(StatusSummary request)

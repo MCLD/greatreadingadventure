@@ -1,5 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -27,13 +28,13 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<int> CountAsync(Filter filter)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Location>> PageAsync(Filter filter)
+        public async Task<ICollection<Location>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -41,7 +42,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<Model.Location> ApplyFilters(Filter filter)
+        private IQueryable<Model.Location> ApplyFilters(BaseFilter filter)
         {
             return DbSet
                 .AsNoTracking()

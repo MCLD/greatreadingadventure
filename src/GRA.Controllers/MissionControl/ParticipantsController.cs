@@ -1,6 +1,7 @@
 ﻿using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,28 +60,23 @@ namespace GRA.Controllers.MissionControl
         #region Index
         public async Task<IActionResult> Index(string search, string sort, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
-
-            DataWithCount<IEnumerable<User>> participantsList = new DataWithCount<IEnumerable<User>>();
+            UserFilter filter = new UserFilter(page)
+            {
+                Search = search
+            };
 
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
             {
-                SortUsersBy userSort = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
-                participantsList = await _userService
-                .GetPaginatedUserListAsync(skip, take, search, userSort);
+                filter.SortBy = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
             }
-            else
-            {
-                participantsList = await _userService
-                .GetPaginatedUserListAsync(skip, take, search);
-            }
+
+            var participantsList = await _userService.GetPaginatedUserListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = participantsList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -389,6 +385,12 @@ namespace GRA.Controllers.MissionControl
                 var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail,
                     ViewUserPrizes);
 
+                var systemId = GetId(ClaimType.SystemId);
+                var branchList = (await _siteService.GetBranches(systemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId));
+                var systemList = (await _siteService.GetSystemList())
+                    .OrderByDescending(_ => _.Id == systemId);
+
                 HouseholdListViewModel viewModel = new HouseholdListViewModel()
                 {
                     Users = household,
@@ -401,7 +403,10 @@ namespace GRA.Controllers.MissionControl
                     CanLogActivity = UserHasPermission(Permission.LogActivityForAny),
                     CanReadMail = ReadAllMail,
                     CanViewPrizes = ViewUserPrizes,
-                    Head = head
+                    Head = head,
+                    SystemId = systemId,
+                    BranchList = branchList,
+                    SystemList = systemList
                 };
 
                 if (TempData.ContainsKey(MinutesReadMessage))
@@ -423,6 +428,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
         public async Task<IActionResult> HouseholdApplyMinutesRead(HouseholdListViewModel model)
         {
             if (model.MinutesRead < 1)
@@ -457,6 +463,7 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
         public async Task<IActionResult> HouseholdApplySecretCode(HouseholdListViewModel model)
         {
             if (string.IsNullOrWhiteSpace(model.SecretCode))
@@ -496,6 +503,38 @@ namespace GRA.Controllers.MissionControl
             }
 
             return RedirectToAction("Household", new { id = model.Id });
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdPromote(int id, int promoteId)
+        {
+            try
+            {
+                await _userService.PromoteToHeadOfHouseholdAsync(promoteId);
+                ShowAlertSuccess("Participant promoted to head of household.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not promote to head of household: ", gex.Message);
+            }
+            return RedirectToAction("Household", new { id = id });
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdRemove(int id, int removeId)
+        {
+            try
+            {
+                await _userService.RemoveFromHouseholdAsync(removeId);
+                ShowAlertSuccess("Participant removed from household.");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not remove from household: ", gex.Message);
+            }
+            return RedirectToAction("Household", new { id = id });
         }
 
         [Authorize(Policy = Policy.EditParticipants)]
@@ -731,6 +770,62 @@ namespace GRA.Controllers.MissionControl
             return View("HouseholdRegister", model);
         }
 
+        [Authorize(Policy = Policy.EditParticipants)]
+        [HttpPost]
+        public async Task<IActionResult> HouseholdAddExistingParticipant(int Id,
+            int userToAddId)
+        {
+            try
+            {
+                await _userService.MCAddParticipantToHouseholdAsync(Id, userToAddId);
+                ShowAlertSuccess("Participant has been added to household!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to add participant to household: ", gex);
+            }
+
+            return RedirectToAction("Household", new { id = Id });
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> HouseholdGetParticipantsList(int userId,
+            int? systemId,
+            int? branchId,
+            string search,
+            int page = 1)
+        {
+            UserFilter filter = new UserFilter(page)
+            {
+                UserIds = new List<int>() { userId },
+                Search = search,
+                CanAddToHousehold = true
+            };
+            if (branchId.HasValue)
+            {
+                filter.BranchIds = new List<int>() { branchId.Value };
+            }
+            else if (systemId.HasValue)
+            {
+                filter.SystemIds = new List<int>() { systemId.Value };
+            }
+
+            var participants = await _userService.GetPaginatedUserListAsync(filter);
+
+            PaginateViewModel paginateModel = new PaginateViewModel()
+            {
+                ItemCount = participants.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            ParticipantsListViewModel viewModel = new ParticipantsListViewModel()
+            {
+                Users = participants.Data,
+                PaginateModel = paginateModel
+            };
+
+            return PartialView("_ParticipantListPartial", viewModel);
+        }
         #endregion
 
         #region Books
@@ -955,7 +1050,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                Domain.Model.Filter filter = new Domain.Model.Filter(page);
+                BaseFilter filter = new BaseFilter(page);
                 var prizeList = await _prizeWinnerService.PageUserPrizes(id, filter);
 
                 PaginateViewModel paginateModel = new PaginateViewModel()

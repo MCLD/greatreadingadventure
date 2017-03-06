@@ -1,5 +1,6 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +19,13 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<int> CountAsync(Filter filter)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Event>> PageAsync(Filter filter)
+        public async Task<ICollection<Event>> PageAsync(BaseFilter filter)
         {
             var events = await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -81,7 +82,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        private IQueryable<Model.Event> ApplyFilters(Filter filter)
+        private IQueryable<Model.Event> ApplyFilters(BaseFilter filter)
         {
             // site id filter
             var events = DbSet

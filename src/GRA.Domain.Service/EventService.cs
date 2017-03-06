@@ -4,6 +4,7 @@ using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Service
 {
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Event>>>
-            GetPaginatedListAsync(Filter filter,
+            GetPaginatedListAsync(BaseFilter filter,
             bool isMissionControl = false)
         {
             ICollection<Event> data = null;
@@ -123,7 +124,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<Location>>> GetPaginatedLocationsListAsync(
-            Filter filter)
+            BaseFilter filter)
         {
             VerifyPermission(Permission.ManageLocations);
             filter.SiteId = GetCurrentSiteId();
