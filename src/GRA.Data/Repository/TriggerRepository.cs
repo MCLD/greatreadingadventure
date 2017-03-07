@@ -144,11 +144,10 @@ namespace GRA.Data.Repository
             // create a list of triggers to remove based on badge and challenge earnings
             var itemsToRemove = new List<Model.Trigger>();
 
-            // get a list of triggers that fire based on badge earnings
-            var badgeTriggers = triggers
-                .Where(_ => _.RequiredBadges != null && _.RequiredBadges.Count > 0);
+            // get a list of triggers that fire based on badge or challenge earnings
+            var itemTriggers = triggers.Where(_ => _.ItemsRequired > 0);
 
-            if (badgeTriggers.Count() > 0)
+            if (itemTriggers.Count() > 0)
             {
                 // get the user's badges
                 var userBadgeIds = _context.UserBadges
@@ -156,36 +155,35 @@ namespace GRA.Data.Repository
                     .Where(_ => _.UserId == userId)
                     .Select(_ => _.BadgeId);
 
-                foreach (var eligibleTrigger in badgeTriggers)
-                {
-                    var requiredBadges = eligibleTrigger.RequiredBadges.Select(_ => _.BadgeId);
-                    // check for badge eligibility
-                    if (requiredBadges.Except(userBadgeIds).Any())
-                    {
-                        // requires badges the user doesn't have
-                        itemsToRemove.Add(eligibleTrigger);
-                    }
-                }
-            }
-
-            // get a list of triggers that fire based on challenge earnings
-            var challengeTriggers = triggers
-                .Where(_ => _.RequiredChallenges != null && _.RequiredChallenges.Count > 0);
-
-            if (challengeTriggers.Count() > 0)
-            {
-                // user's challenges
+                // get the user's challenges
                 var userChallengeIds = _context.UserLogs
                     .AsNoTracking()
                     .Where(_ => _.UserId == userId && _.ChallengeId != null)
                     .Select(_ => _.ChallengeId.Value);
 
-                foreach (var eligibleTrigger in challengeTriggers)
+                foreach (var eligibleTrigger in itemTriggers)
                 {
-                    var requiredChallenges = eligibleTrigger.RequiredChallenges.Select(_ => _.ChallengeId);
-                    if (requiredChallenges.Except(userChallengeIds).Any())
+                    int itemsCompleted = 0;
+
+                    // get the number of completed badges
+                    if (eligibleTrigger.RequiredBadges != null 
+                        && eligibleTrigger.RequiredBadges.Count > 0)
                     {
-                        // requires challenges the user doesn't have
+                        itemsCompleted += eligibleTrigger.RequiredBadges
+                            .Select(_ => _.BadgeId).Intersect(userBadgeIds).Count();
+                    }
+
+                    // get the number of completed challenges
+                    if (eligibleTrigger.RequiredChallenges != null
+                        && eligibleTrigger.RequiredChallenges.Count > 0)
+                    {
+                        itemsCompleted += eligibleTrigger.RequiredChallenges
+                            .Select(_ => _.ChallengeId).Intersect(userChallengeIds).Count();
+                    }
+
+                    // remove the trigger if not enough items completed
+                    if (itemsCompleted < eligibleTrigger.ItemsRequired)
+                    {
                         itemsToRemove.Add(eligibleTrigger);
                     }
                 }

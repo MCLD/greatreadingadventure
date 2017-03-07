@@ -207,9 +207,8 @@
                     Participants will have to have all of the achievements you select in order to
                     receive the award.
                 </p>
+                <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
             </div>
-
-            <span asp-validation-for="TriggerRequirements" style="font-weight:bold;"></span>
 
             <div class="col-xs-12 form-group">
                 <label asp-for="Trigger.Points" class="control-label col-sm-4"></label>
@@ -219,66 +218,77 @@
                 </div>
             </div>
 
-            <div class="col-xs-12 form-group">
-                <label asp-for="Trigger.ItemsRequired" class="control-label col-sm-4"></label>
-                <div class="col-sm-8">
-                    <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
-                    <span asp-validation-for="Trigger.ItemsRequired" class="text-danger"></span>
-                </div>
-            </div>
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1" style="margin-top: 2rem;">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Require Challenges and Triggers</h3>
+                    </div>
+                    <div class="panel-body">
 
-            <div class="col-xs-12 col-sm-10 col-sm-offset-1 trigger-requirements-box">
-                <div>
-                    <label asp-for="TriggerRequirements" class="control-label"></label>
-                    <table class="table table-condensed table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <td>Name</td>
-                                <td>Type</td>
-                                <td>Badge</td>
-                                <td width="42px">&nbsp;</td>
-                            </tr>
-                        </thead>
-                        <tbody id="requirementList">
-                            @if (Model.TriggerRequirements != null)
-                            {
-                                @foreach (var requirement in Model.TriggerRequirements)
-                                {
+                        <div class="form-inline" style="margin-bottom: 1em;">
+                            <p class="form-control-static"><strong>Participant must have earned</strong></p>
+                            <input asp-for="Trigger.ItemsRequired" class="form-control" min="0" />
+                            <p class="form-control-static"><strong>of the following:</strong></p>
+                            <span asp-validation-for="Trigger.ItemsRequired" class="text-danger" />
+                        </div>
+                        <div>
+
+                        </div>
+                        <div>
+                            <table class="table table-condensed table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            @requirement.Name
-                                        </td>
-                                        <td>
-                                            <span class="fa fa-2x @requirement.Icon"></span>
-                                        </td>
-                                        <td>
-                                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
-                                            {
-                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                                     asp-append-version="true" />
-                                            }
-                                            else
-                                            {
-                                                <text>&nbsp;</text>
-                                            }
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                    id="removeRequirementButton"
-                                                    class="btn btn-primary btn-xs"
-                                                    data-badgeid="@requirement.BadgeId"
-                                                    data-challengeid="@requirement.ChallengeId">
-                                                <span class="fa fa-2x fa-minus" aria-hidden="true"></span>
-                                            </button>
-                                        </td>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Badge</th>
+                                        <th width="42px">&nbsp;</th>
                                     </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody id="requirementList">
+                                    <tr id="noRequirements" class="@(Model.TriggerRequirements?.Count > 0 ? "hide" : "")">
+                                        <td colspan="4"><em>No challenges or triggers required.</em></td>
+                                    </tr>
+                                    @if (Model.TriggerRequirements != null)
+                                    {
+                                        foreach (var requirement in Model.TriggerRequirements)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @requirement.Name
+                                                </td>
+                                                <td>
+                                                    <span class="fa fa-2x @requirement.Icon"></span>
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                                    {
+                                                        <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                             src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                             asp-append-version="true" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>&nbsp;</text>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <button type="button"
+                                                            id="removeRequirementButton"
+                                                            class="btn btn-link btn-xs"
+                                                            data-badgeid="@requirement.BadgeId"
+                                                            data-challengeid="@requirement.ChallengeId">
+                                                        <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" id="addButton" class="btn btn-warning">Add Challenges or Triggers</button>
+                    </div>
                 </div>
-                <button type="button" id="addButton" class="btn btn-primary">Add Challenges or Triggers</button>
             </div>
 
             <div class="col-xs-12 form-group">
@@ -499,8 +509,9 @@
         var search = "";
         var thisBadge = $("#Trigger_AwardBadgeId").val();
 
-        $(document).ready(function () {
-            if ("@Model.EditVendorCode" == "True") {
+        $(document).ready(function() {
+            if ("@Model.EditVendorCode" == "True")
+            {
                 $("#Trigger_AwardVendorCodeTypeId").prop("disabled", false);
             }
         });
@@ -514,53 +525,62 @@
                     search: search,
                     page: page,
                     thisBadge: thisBadge
-                }, function (response) {
+                }, function(response) {
                     $("#modalRequirementList").html(response);
                 });
         }
 
-        $("#addButton").on('click', function (e) {
+        $("#addButton").on('click', function(e) {
             $("#listModal").modal("show");
             UpdateRequirementsList();
         });
 
-        $(document).on("click", "#addRequirementButton", function () {
+        $(document).on("click", "#addRequirementButton", function() {
             var badgeId = $(this).data("badgeid");
             var challengeId = $(this).data("challengeid");
 
-            if (challengeId != "") {
+            if (challengeId != "")
+            {
                 $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val() + "<" + challengeId + ">");
                 challengeIds = $("#ChallengeRequiredList").val();
             }
-            else if (badgeId != "") {
+            else if (badgeId != "")
+            {
                 $("#BadgeRequiredList").val($("#BadgeRequiredList").val() + "<" + badgeId + ">");
                 badgeIds = $("#BadgeRequiredList").val();
             }
+            $("#noRequirements").addClass("hide");
             var row = $(this).parent().parent();
             $("#requirementList").append(row);
-            $(this).children().removeClass("fa-plus");
-            $(this).children().addClass("fa-minus");
+            $(this).children().removeClass("fa-plus-circle text-primary");
+            $(this).children().addClass("fa-minus-circle text-danger");
             $(this).attr("id", "removeRequirementButton");
-
+            $("#noRequirements").addClass("hide");
             UpdateRequirementsList();
         });
 
-        $(document).on("click", "#removeRequirementButton", function () {
+        $(document).on("click", "#removeRequirementButton", function() {
             var badgeId = $(this).data("badgeid");
             var challengeId = $(this).data("challengeid");
 
-            if (challengeId != "") {
+            if (challengeId != "")
+            {
                 $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val().replace("<" + challengeId + ">", ""));
                 challengeIds = $("#ChallengeRequiredList").val();
             }
-            else if (badgeId != "") {
+            else if (badgeId != "")
+            {
                 $("#BadgeRequiredList").val($("#BadgeRequiredList").val().replace("<" + badgeId + ">", ""));
                 badgeIds = $("#BadgeRequiredList").val();
             }
             $(this).parent().parent().remove();
+            if (badgeIds == "" && challengeIds == "")
+            {
+                $("#noRequirements").removeClass("hide");
+            }
         });
 
-        $(".requirementScope").on("click", function (e) {
+        $(".requirementScope").on("click", function(e) {
             e.preventDefault();
             $(this).siblings().removeClass("active");
             $(this).addClass().addClass("active");
@@ -569,20 +589,22 @@
             UpdateRequirementsList();
         });
 
-        $("#searchButton").on("click", function () {
+        $("#searchButton").on("click", function() {
             search = $("#searchText").val();
-            if (search != "") {
+            if (search != "")
+            {
                 $("#searchMessage").removeClass("hide");
                 $("#searchTerm").html(search);
             }
-            else {
+            else
+            {
                 $("#searchMessage").addClass("hide");
             }
             page = 1;
             UpdateRequirementsList();
         })
 
-        $("#clearButton").on("click", function () {
+        $("#clearButton").on("click", function() {
             $("#searchText").val("");
             search = "";
             $("#searchMessage").addClass("hide");
@@ -590,41 +612,43 @@
             UpdateRequirementsList();
         })
 
-        $(document).on("click", ".page-button", function () {
-            if (!$(this).hasClass("disabled")) {
+        $(document).on("click", ".page-button", function() {
+            if (!$(this).hasClass("disabled"))
+            {
                 page = $(this).data("page");
                 UpdateRequirementsList();
             }
         });
 
-        $("#Trigger_LimitToSystemId").on("change", function () {
+        $("#Trigger_LimitToSystemId").on("change", function() {
             var systemId = $(this).val();
             var branchList = $("#Trigger_LimitToBranchId");
             var branchId = branchList.val();
             var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
 
-            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function (response) {
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "true", prioritize: "true" }, function(response) {
                 branchList.empty();
                 branchList.append(new Option("No", ""));
-                $.each(response, function (index, item) {
+                $.each(response, function(index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
         });
 
-        $("#codeTab").on('show.bs.tab', function () {
+        $("#codeTab").on('show.bs.tab', function() {
             $("#IsSecretCode").val("true");
         });
 
-        $("#requirementsTab").on('show.bs.tab', function () {
+        $("#requirementsTab").on('show.bs.tab', function() {
             $("#IsSecretCode").val("false");
         });
 
-        $(':file').on('fileselect', function (event, numFiles, label) {
+        $(':file').on('fileselect', function(event, numFiles, label) {
             var input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles = ' files selected' : label;
 
-            if (input.length) {
+            if (input.length)
+            {
                 input.val(log);
                 $('.btn-file').removeClass('btn-default');
                 $('.btn-file').addClass('btn-success');
@@ -632,38 +656,39 @@
                 $("#badgeImage").height(200);
                 $("#BadgeMakerImage").val("");
             }
-            else {
+            else
+            {
                 input.val('');
                 $('.btn-file').addClass('btn-default');
                 $('.btn-file').removeClass('btn-success');
             }
         });
 
-        $(document).on('change', ':file', function () {
+        $(document).on('change', ':file', function() {
             var input = $(this),
                 numFiles = input.get(0).files ? input.get(0).files.length : 1,
                 label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
             input.trigger('fileselect', [numFiles, label]);
         });
 
-        $("#badgeTab").on('show.bs.tab', function () {
+        $("#badgeTab").on('show.bs.tab', function() {
             $("#UseBadgeMaker").val("true");
         });
 
-        $("#uploadTab").on('show.bs.tab', function () {
+        $("#uploadTab").on('show.bs.tab', function() {
             $("#UseBadgeMaker").val("false");
         });
 
-        $("#openMaker").on("click", function () {
+        $("#openMaker").on("click", function() {
             $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
             $("#badgeModal").modal("show");
         });
 
-        $("#closeIframe").on("click", function () {
+        $("#closeIframe").on("click", function() {
             $("#badgeModal").modal("hide");
         });
 
-        $(window).on("message", function (e) {
+        $(window).on("message", function(e) {
             $("#badgeModal").modal("hide");
             var data = e.originalEvent.data;
             $("#badgeImage").attr("src", data);
@@ -675,20 +700,20 @@
             $('#selectedFile').val('');
         });
 
-        $("#collapsePrize").on("show.bs.collapse", function () {
+        $("#collapsePrize").on("show.bs.collapse", function() {
             $("#AwardsPrize").val("true");
             $("#prizeIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
         });
-        $("#collapsePrize").on("hide.bs.collapse", function () {
+        $("#collapsePrize").on("hide.bs.collapse", function() {
             $("#AwardsPrize").val("false");
             $("#prizeIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
         });
 
-        $("#collapseMail").on("show.bs.collapse", function () {
+        $("#collapseMail").on("show.bs.collapse", function() {
             $("#AwardsMail").val("true");
             $("#mailIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
         });
-        $("#collapseMail").on("hide.bs.collapse", function () {
+        $("#collapseMail").on("hide.bs.collapse", function() {
             $("#AwardsMail").val("false");
             $("#mailIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
         });
