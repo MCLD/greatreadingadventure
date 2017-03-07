@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Data
 {
@@ -85,6 +87,21 @@ namespace GRA.Data
         public void Migrate()
         {
             Database.Migrate();
+        }
+
+        public async Task MigrateAsync()
+        {
+            await Database.MigrateAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetMigrationsListAsync()
+        {
+            return await Database.GetAppliedMigrationsAsync();
+        }
+
+        public async Task<string> GetCurrentMigrationAsync()
+        {
+            return (await Database.GetAppliedMigrationsAsync()).Last();
         }
 
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
