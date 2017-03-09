@@ -1,4 +1,5 @@
-﻿namespace GRA.Domain.Model.Filters
+﻿
+namespace GRA.Domain.Model.Filters
 {
     public class UserFilter : BaseFilter
     {
@@ -11,5 +12,4 @@
             SortBy = SortUsersBy.LastName;
         }
     }
-    
 }

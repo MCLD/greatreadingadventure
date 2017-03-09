@@ -724,7 +724,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Permission denied.");
             }
             var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
-            if (userToAdd.HouseholdHeadUserId.HasValue 
+            if (userToAdd.HouseholdHeadUserId.HasValue
                 || (await _userRepository.GetHouseholdCountAsync(userToAddId)) > 0)
             {
                 _logger.LogError($"User {authId} cannot add {userToAddId} to a different household.");

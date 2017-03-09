@@ -165,7 +165,7 @@ namespace GRA.Data.Repository
                         || (_.FirstName + " " + _.LastName).Contains(filter.Search)
                         || _.Email.Contains(filter.Search));
             }
-            
+
             if (filter.CanAddToHousehold)
             {
                 var householdHeadList = DbSet.AsNoTracking()
@@ -174,8 +174,8 @@ namespace GRA.Data.Repository
                     .Distinct();
 
                 userList = userList
-                    .Where(_ => !filter.UserIds.Contains(_.Id) 
-                        && !householdHeadList.Contains(_.Id) 
+                    .Where(_ => !filter.UserIds.Contains(_.Id)
+                        && !householdHeadList.Contains(_.Id)
                         && !_.HouseholdHeadUserId.HasValue);
             }
 

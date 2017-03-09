@@ -46,7 +46,7 @@ namespace GRA.Controllers.MissionControl
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     .InformationalVersion;
                 int build = Assembly.GetEntryAssembly().GetName().Version.Build;
-                if(build != 0)
+                if (build != 0)
                 {
                     thisAssemblyVersion += " build " + build;
                 }
@@ -70,7 +70,7 @@ namespace GRA.Controllers.MissionControl
                 .GetReferencedAssemblies()
                 .Where(_ => _.Name.StartsWith("GRA"));
 
-            foreach(var assemblyName in assemblies)
+            foreach (var assemblyName in assemblies)
             {
                 var version = Assembly.Load(assemblyName)
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()

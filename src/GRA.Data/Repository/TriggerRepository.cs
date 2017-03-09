@@ -166,7 +166,7 @@ namespace GRA.Data.Repository
                     int itemsCompleted = 0;
 
                     // get the number of completed badges
-                    if (eligibleTrigger.RequiredBadges != null 
+                    if (eligibleTrigger.RequiredBadges != null
                         && eligibleTrigger.RequiredBadges.Count > 0)
                     {
                         itemsCompleted += eligibleTrigger.RequiredBadges
