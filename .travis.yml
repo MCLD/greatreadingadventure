@@ -5,9 +5,9 @@ matrix:
       dist: trusty
       sudo: required
       mono: none
-      dotnet: 1.0.0-preview2-003131
+      dotnet: 1.0.1
 before_script:
   - dotnet --info
   - dotnet restore
 script:
-  - dotnet --verbose build src/GRA.Web
+  - dotnet build

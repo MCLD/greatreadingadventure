@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>GRA.Data</AssemblyName>
+    <PackageId>GRA.Data</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>4.0.0-alpha2</Version>
+    <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GRA\GRA.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Repository\GRA.Domain.Repository.csproj" />
+    <ProjectReference Include="..\GRA.Security\GRA.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="1.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

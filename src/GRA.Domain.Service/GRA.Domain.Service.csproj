@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>GRA.Domain.Service</AssemblyName>
+    <PackageId>GRA.Domain.Service</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>4.0.0-alpha2</Version>
+    <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GRA\GRA.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Repository\GRA.Domain.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="1.10.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
+    <PackageReference Include="SmartFormat.NET" Version="2.0.0" />
+    <PackageReference Include="System.Security.Claims" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

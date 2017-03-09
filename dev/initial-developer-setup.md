@@ -2,11 +2,11 @@
 
 ## Development environment
 
-- Windows: [Visual Studio 2015](https://www.visualstudio.com/vs/)
+- Windows: [Visual Studio 2017](https://www.visualstudio.com/vs/)
 - Linux, macOS, Windows: [Visual Studio Code](https://code.visualstudio.com/)
   - Ensure you [install the C# extension](https://code.visualstudio.com/docs/runtimes/dotnet)
 
-*Currently version 4 of the GRA uses .NET Core 1.1. The project infrastructure is still set up to use `project.json` files and not `.csproj` files so Visual Studio 2017 RC cannot be used without performing a `dotnet migrate` from the root directory of the project. For now, the suggestion is to continue using Visual Studio 2015 or Visual Studio Code.*
+*The project has been migrated to use Visual Studio 2017 `.csproj` files and no longer uses the `project.json` project files as in Visual Studio 2015.*
 
 ## Initial developer setup
 
@@ -16,27 +16,27 @@ The project ships with the Microsoft SQL Server data provider configured. If you
 
 ### Database migration
 
-Initial database setup and configuration can be done utilizing the `dotnet` command line tool.
+Initial database setup and configuration can be done utilizing the [`dotnet ef`](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet) command line tool or the [Package Manager Console](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell). Here are steps for using `dotnet ef`:
 
   1. Navigate to the appropriate project directory for your database provider (e.g. `src/GRA.Data.SqlServer` or `src/GRA.Data.SQLite`).
   2. Check if a database migration exists:
 
-    `dotnet ef --startup-project ../GRA.Web migrations list`
+    `dotnet ef -s ../GRA.Web migrations list`
 
   3. If no migrations exist, create one:
 
-    `dotnet ef --startup-project ../GRA.Web migrations add initial`
+    `dotnet ef -s ../GRA.Web migrations add initial`
 
-  4. Create or update the database to the migration:
+  4. Create or update the database to the migration (necessary for SQLite, possibly not for SQL Server but won't hurt):
 
-    `dotnet ef --startup-project ../GRA.Web database update`
+    `dotnet ef -s ../GRA.Web database update`
 
 ### Configuration
 
 The `GRA.Web` project has the [Secret Manager](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets#secret-manager) enabled. You may want to issue a command such as:
 
 ```c#
-  dotnet user-secrets set GraEmailOverride your@email.address 
+  dotnet user-secrets set GraEmailOverride your@email.address
 ```
 
 To ensure that no errant emails are sent out during development. There are other settings you may want to configure through this manner such as `GraDefaultOutgoingMailHost` and `GraDefaultOutgoingMailPort`. Review `Startup.cs` for more configuration settings.

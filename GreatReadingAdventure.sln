@@ -1,42 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0324DE44-14C1-4203-A624-5BE8BD75153E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E31857E8-98F8-4579-B9C2-7C6079EF234F}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		CREDITS.md = CREDITS.md
 		global.json = global.json
 		README.md = README.md
-		THANKS.md = THANKS.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Web", "src\GRA.Web\GRA.Web.xproj", "{62E47447-A4E5-40FC-8CA7-12A0FBE46915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Web", "src\GRA.Web\GRA.Web.csproj", "{62E47447-A4E5-40FC-8CA7-12A0FBE46915}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Domain.Model", "src\GRA.Domain.Model\GRA.Domain.Model.xproj", "{293BC215-8191-4DC8-8906-557F93FC1605}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Domain.Model", "src\GRA.Domain.Model\GRA.Domain.Model.csproj", "{293BC215-8191-4DC8-8906-557F93FC1605}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Controllers", "src\GRA.Controllers\GRA.Controllers.xproj", "{8B78E9A9-0F87-4775-9859-F627851A2545}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Controllers", "src\GRA.Controllers\GRA.Controllers.csproj", "{8B78E9A9-0F87-4775-9859-F627851A2545}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Data", "src\GRA.Data\GRA.Data.xproj", "{E6F2731C-50A5-49DB-8E8B-7990B9ECB901}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Data", "src\GRA.Data\GRA.Data.csproj", "{E6F2731C-50A5-49DB-8E8B-7990B9ECB901}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Data.SqlServer", "src\GRA.Data.SqlServer\GRA.Data.SqlServer.xproj", "{F428384E-D728-4026-9EFB-097C5EE09792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Data.SqlServer", "src\GRA.Data.SqlServer\GRA.Data.SqlServer.csproj", "{F428384E-D728-4026-9EFB-097C5EE09792}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Data.SQLite", "src\GRA.Data.SQLite\GRA.Data.SQLite.xproj", "{EC468258-8B51-4CB2-9077-9CA9ACC6C330}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Data.SQLite", "src\GRA.Data.SQLite\GRA.Data.SQLite.csproj", "{EC468258-8B51-4CB2-9077-9CA9ACC6C330}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{6BA5FF75-C5CE-45BC-8836-B2E689A571A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{D9635F58-2DE0-478F-A675-FE0760C82B33}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Domain.Repository", "src\GRA.Domain.Repository\GRA.Domain.Repository.xproj", "{94881B74-B873-49C5-93EB-0A4E1DA8F821}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Domain.Repository", "src\GRA.Domain.Repository\GRA.Domain.Repository.csproj", "{94881B74-B873-49C5-93EB-0A4E1DA8F821}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Domain.Service", "src\GRA.Domain.Service\GRA.Domain.Service.xproj", "{1CA195AD-0045-4FE8-839B-E32166C318F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Domain.Service", "src\GRA.Domain.Service\GRA.Domain.Service.csproj", "{1CA195AD-0045-4FE8-839B-E32166C318F4}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA.Security", "src\GRA.Security\GRA.Security.xproj", "{74C2C606-EED9-45BB-85C4-5A2316E54103}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA.Security", "src\GRA.Security\GRA.Security.csproj", "{74C2C606-EED9-45BB-85C4-5A2316E54103}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GRA", "src\GRA\GRA.xproj", "{E8041040-29F4-43F7-A9DF-EFCED64B22F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GRA", "src\GRA\GRA.csproj", "{E8041040-29F4-43F7-A9DF-EFCED64B22F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

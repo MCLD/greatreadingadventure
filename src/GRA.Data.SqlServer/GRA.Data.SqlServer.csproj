@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>GRA.Data.SqlServer</AssemblyName>
+    <PackageId>GRA.Data.SqlServer</PackageId>
+    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>4.0.0-alpha2</Version>
+    <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GRA\GRA.csproj" />
+    <ProjectReference Include="..\GRA.Data\GRA.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

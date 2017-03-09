@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>GRA.Controllers</AssemblyName>
+    <PackageId>GRA.Controllers</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>4.0.0-alpha2</Version>
+    <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
+    <PackageLicenseUrl>https://github.com/mcld/greatreadingadventure/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.greatreadingadventure.com/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mcld/greatreadingadventure/</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GRA\GRA.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Repository\GRA.Domain.Repository.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Service\GRA.Domain.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="1.2.0" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="SmartFormat.NET" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>
