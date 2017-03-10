@@ -77,6 +77,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - A cross-platform .NET library for IMAP, POP3, and SMTP.
 - Source on GitHub: [jstedfast/MailKit](https://github.com/jstedfast/MailKit) - [MIT License](https://github.com/jstedfast/MailKit/blob/master/License.md)
 
+### Newtonsoft.Json
+- [Json.NET](http://www.newtonsoft.com/json): A high-performance JSON framework for .NET.
+- Source on GitHub: [JamesNK/Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - [MIT License](https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md)
+
 ### PasswordHasher
 - Securely hash passwords for storage in the database and for valiating logins.
 - Adapted code from the [ASP.NET Identity PasswordHasher class](https://github.com/aspnet/Identity/blob/dev/src/Microsoft.AspNetCore.Identity/PasswordHasher.cs)
@@ -85,6 +89,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### PageDown
 - Markdown to HTML converter and editor [hg-git clone](http://code.google.com/p/pagedown/)
 - Source on GitHub: [ujifgc/pagedown](https://github.com/ujifgc/pagedown) - [MIT License](https://github.com/ujifgc/pagedown/blob/master/LICENSE.txt)
+
+### Serilog
+- [Serilog](https://serilog.net/): Simple .NET logging with fully-structured events
+- Source on GitHub: [serilog/serilog](https://github.com/serilog/serilog) - [Apache License, Version 2.0](https://github.com/serilog/serilog/blob/dev/LICENSE)
 
 ### Slugify.js
 - Javascript text replacement to slugify strings.

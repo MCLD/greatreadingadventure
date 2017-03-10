@@ -16,6 +16,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace GRA.Web
 {
@@ -49,6 +50,12 @@ namespace GRA.Web
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
+
+            Log.Logger.Warning("Great Reading Adventure v{0} starting up in {1}",
+                Assembly.GetEntryAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                    .InformationalVersion,
+                env.WebRootPath);
 
             foreach (var configKey in _defaultSettings.Keys)
             {

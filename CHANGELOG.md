@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [Unreleased]
+### Added
+- Slack logging capability (see appsettings.json for configuration)
+
 ## [4.0.0-alpha2] - 2017-03-08
 ### Added
 - Add database fields and front-end display for social.

@@ -60,6 +60,7 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="1.1.1" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="2.2.0" />
+    <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.2-beta" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
