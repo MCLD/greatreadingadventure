@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Slack logging capability (see appsettings.json for configuration)
 
+### Changed
+- Override Microsoft logging to limit severity to Error and higher
+
 ## [4.0.0-alpha2] - 2017-03-08
 ### Added
 - Add database fields and front-end display for social.

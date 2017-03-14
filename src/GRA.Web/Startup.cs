@@ -49,6 +49,7 @@ namespace GRA.Web
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
+                .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
                 .CreateLogger();
 
             Log.Logger.Warning("Great Reading Adventure v{0} starting up in {1}",
