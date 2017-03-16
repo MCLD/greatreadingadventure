@@ -84,6 +84,7 @@ namespace GRA.Controllers.Helper
                 buttonTag.TagRenderMode = TagRenderMode.Normal;
                 buttonTag.InnerHtml.SetHtmlContent(text);
                 buttonTag.MergeAttribute("class", "page-button disabled");
+                buttonTag.MergeAttribute("type", "button");
                 liTag.InnerHtml.SetHtmlContent(buttonTag);
             }
             else
@@ -111,6 +112,7 @@ namespace GRA.Controllers.Helper
                 TagBuilder buttonTag = new TagBuilder("button");
                 buttonTag.TagRenderMode = TagRenderMode.Normal;
                 buttonTag.MergeAttribute("class", "page-button");
+                buttonTag.MergeAttribute("type", "button");
                 if (pageUrl == null)
                 {
                     buttonTag.AddCssClass("disabled");
