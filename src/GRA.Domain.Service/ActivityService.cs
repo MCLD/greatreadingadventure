@@ -28,8 +28,6 @@ namespace GRA.Domain.Service
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
 
-        private ICollection<int> _queuedTriggerIds;
-
         public ActivityService(ILogger<UserService> logger,
             IUserContextProvider userContext,
             IBadgeRepository badgeRepository,
@@ -402,7 +400,8 @@ namespace GRA.Domain.Service
         private async Task<User> AddPointsSaveAsync(int authUserId,
             int activeUserId,
             int whoEarnedUserId,
-            int pointsEarned)
+            int pointsEarned,
+            bool checkTriggers = true)
         {
             if (pointsEarned < 0)
             {
@@ -466,7 +465,10 @@ namespace GRA.Domain.Service
                 earnedUser = await _userRepository.UpdateSaveAsync(activeUserId, earnedUser);
             }
 
-            await AwardTriggersAsync(earnedUser.Id);
+            if (checkTriggers)
+            {
+                await AwardTriggersAsync(earnedUser.Id);
+            }
 
             return earnedUser;
         }
@@ -526,86 +528,68 @@ namespace GRA.Domain.Service
         {
             // load the initial list of triggers that might have been achieved
             var triggers = await _triggerRepository.GetTriggersAsync(userId);
-            do
+            // if three are no triggers in the current query or in the queue then we are done
+            if (triggers == null || triggers.Count() == 0)
             {
-                if (_queuedTriggerIds == null || _queuedTriggerIds.Count() == 0)
+                return;
+            }
+
+            // if any triggers came back let's check them
+            while (triggers.Count() > 0)
+            {
+                // pull the first trigger off the list and remove it from the list
+                var trigger = triggers.First();
+                triggers.Remove(trigger);
+
+                // add that we've processed this trigger for this user
+                await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
+
+                // if there are points to be awarded, do that now
+                if (trigger.AwardPoints > 0)
                 {
-                    // this is our first check, we're not nested
-                    _queuedTriggerIds = triggers.Select(_ => _.Id).ToList();
-                }
-                else
-                {
-                    // we've already checked triggers so don't double-award any that are queued
-                    triggers = triggers
-                        .Where(_ => !_queuedTriggerIds.Contains(_.Id))
-                        .ToList();
-
-                    // update the queue with everything we're working on
-                    _queuedTriggerIds = _queuedTriggerIds
-                        .Union(triggers.Select(_ => _.Id))
-                        .ToList();
-                }
-
-                // if any triggers came back let's check them
-                while (triggers.Count() > 0)
-                {
-                    // pull the first trigger off the list and remove it from the list
-                    var trigger = triggers.First();
-                    triggers.Remove(trigger);
-
-                    // add that we've processed this trigger for this user
-                    await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
-
-                    // if there are points to be awarded, do that now
-                    if (trigger.AwardPoints > 0)
-                    {
-                        // this call will recursively call this method in case any additional
-                        // point-based triggers are fired by this action
-                        await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
-                            GetActiveUserId(),
-                            userId,
-                            trigger.AwardPoints);
-                    }
-
-                    // every trigger awards a badge
-                    var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
-
-                    // log the notification
-                    await _notificationRepository.AddSaveAsync(userId, new Notification
-                    {
-                        PointsEarned = trigger.AwardPoints,
-                        UserId = userId,
-                        Text = trigger.AwardMessage,
-                        BadgeId = trigger.AwardBadgeId,
-                        BadgeFilename = badge.Filename
-                    });
-
-                    // add the award to the user's history
-                    await _userLogRepository.AddSaveAsync(userId, new UserLog
-                    {
-                        UserId = userId,
-                        PointsEarned = trigger.AwardPoints,
-                        IsDeleted = false,
-                        BadgeId = trigger.AwardBadgeId,
-                        Description = trigger.AwardMessage
-                    });
-
-                    // award any vendor code that is necessary
-                    await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
-
-                    // send mail if applicable
-                    int? mailId = await SendMailAsync(userId, trigger);
-
-                    // award prize if applicable
-                    await AwardPrizeAsync(userId, trigger, mailId);
-
-                    // remove this item from the queued list of triggers
-                    _queuedTriggerIds.Remove(trigger.Id);
+                    // this call will recursively call this method in case any additional
+                    // point-based triggers are fired by this action
+                    await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
+                        GetActiveUserId(),
+                        userId,
+                        trigger.AwardPoints,
+                        checkTriggers: false);
                 }
 
-                // reload the list in case a trigger triggered another trigger :rage4:
-                triggers = await _triggerRepository.GetTriggersAsync(userId);
-            } while (triggers.Count() > 0);
+                // every trigger awards a badge
+                var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
+
+                // log the notification
+                await _notificationRepository.AddSaveAsync(userId, new Notification
+                {
+                    PointsEarned = trigger.AwardPoints,
+                    UserId = userId,
+                    Text = trigger.AwardMessage,
+                    BadgeId = trigger.AwardBadgeId,
+                    BadgeFilename = badge.Filename
+                });
+
+                // add the award to the user's history
+                await _userLogRepository.AddSaveAsync(userId, new UserLog
+                {
+                    UserId = userId,
+                    PointsEarned = trigger.AwardPoints,
+                    IsDeleted = false,
+                    BadgeId = trigger.AwardBadgeId,
+                    Description = trigger.AwardMessage
+                });
+
+                // award any vendor code that is necessary
+                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
+
+                // send mail if applicable
+                int? mailId = await SendMailAsync(userId, trigger);
+
+                // award prize if applicable
+                await AwardPrizeAsync(userId, trigger, mailId);
+            }
+
+            await AwardTriggersAsync(userId);
         }
 
         private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId)

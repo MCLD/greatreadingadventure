@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Fix pagination for MC household add existing participant list
+- Fix infinite recursion loop in triggers
 
 ## [4.0.0-alpha2] - 2017-03-08
 ### Added
