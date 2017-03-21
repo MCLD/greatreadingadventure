@@ -316,3 +316,7 @@ input.form-checkbox {
             width: 280px;
         }
 }
+
+.gra-search-container {
+    margin-bottom: 0.25em;
+}
