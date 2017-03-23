@@ -8,9 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Slack logging capability (see appsettings.json for configuration)
 - Add filtering to MC participants list
 - Add search and filtering to triggers and events lists
+- Mission Control interface for managing dynamic avatars
 
 ### Changed
 - Override Microsoft logging to limit severity to Error and higher
+- Configure dynamic avatar parts in groups to make management easier
 
 ### Fixed
 - Fix pagination for MC household add existing participant list

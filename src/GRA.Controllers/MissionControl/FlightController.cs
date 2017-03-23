@@ -7,6 +7,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -119,41 +121,68 @@ namespace GRA.Controllers.MissionControl
                 return View("Index");
             }
 
+            string[] allowedExtensions = { ".png", ".jpg", ".gif" };
+
+            var avatars = new Dictionary<int, DynamicAvatar>();
+
             int layerCount = 0;
             int elementCount = 0;
             foreach (var layerDirectory in Directory.EnumerateDirectories(path))
             {
                 layerCount++;
                 string layerString = Path.GetFileNameWithoutExtension(layerDirectory).Substring(5);
-                int layerNumber = Convert.ToInt32(layerString);
+                int layerPosition = Convert.ToInt32(layerString);
+
                 var layer = new DynamicAvatarLayer
                 {
-                    Name = $"Layer {layerNumber}",
-                    Position = layerNumber
+                    Name = $"Layer {layerPosition}",
+                    Position = layerPosition
                 };
+
                 layer = await _dynamicAvatarService.AddLayerAsync(layer);
-                var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{layerNumber}");
+
+                var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{layer.Id}");
                 var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
+
                 if (!Directory.Exists(destinationPath))
                 {
                     Directory.CreateDirectory(destinationPath);
                 }
 
                 int elementNumber = 0;
-                foreach (var avatarElement in Directory.EnumerateFiles(layerDirectory))
+                foreach (var avatarElementPath in Directory.EnumerateFiles(layerDirectory))
                 {
-                    elementCount++;
-                    var extension = Path.GetExtension(avatarElement);
-                    elementNumber++;
+                    var extension = Path.GetExtension(avatarElementPath).ToLower();
+
+                    // Mac often adds hidden files which we don't want to create avatars for
+                    if (!allowedExtensions.Contains(extension))
+                        continue;
+
+                    if (!avatars.ContainsKey(elementNumber))
+                    {
+                        var newAvatar = new DynamicAvatar();
+                        newAvatar.Name = $"Avatar {elementNumber}";
+                        newAvatar.Position = elementNumber;
+
+                        newAvatar = await _dynamicAvatarService.AddAvatarAsync(newAvatar);
+                        avatars.Add(elementNumber, newAvatar);
+                    }
+
+                    var avatar = avatars[elementNumber];
+
                     var element = new DynamicAvatarElement
                     {
+                        DynamicAvatarId = avatar.Id,
                         DynamicAvatarLayerId = layer.Id,
-                        Name = $"Layer {layerNumber} element {elementNumber}",
-                        Position = elementNumber
                     };
+
                     element = await _dynamicAvatarService.AddElementAsync(element);
-                    System.IO.File.Copy(avatarElement,
+
+                    System.IO.File.Copy(avatarElementPath,
                         Path.Combine(destinationPath, $"{element.Id}{extension}"));
+
+                    elementCount++;
+                    elementNumber++;
                 }
             }
             AlertSuccess = $"Inserted {elementCount} elements on {layerCount} layers.";

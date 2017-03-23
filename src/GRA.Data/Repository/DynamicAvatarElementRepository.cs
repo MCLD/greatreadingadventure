@@ -25,11 +25,6 @@ namespace GRA.Data.Repository
                 .AnyAsync();
         }
 
-        public override Task<DynamicAvatarElement> GetByIdAsync(int id)
-        {
-            throw new System.Exception("Can not look up dynamic avatar elements by id only.");
-        }
-
         public async Task<DynamicAvatarElement> GetByIdLayerAsync(int id, int dynamicAvatarLayerId)
         {
             var entity = await DbSet
@@ -45,121 +40,97 @@ namespace GRA.Data.Repository
 
         public async Task<int> GetFirstElement(int dynamicAvatarLayerId)
         {
-            var entity = await DbSet
+            var element = await _context.DynamicAvatars
                 .AsNoTracking()
-                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
                 .OrderBy(_ => _.Position)
+                .SelectMany(_ => _.Elements)
+                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
                 .FirstOrDefaultAsync();
 
-            if (entity == null)
+            if (element == null)
             {
                 throw new Exception($"Couldn't find first element for layer {dynamicAvatarLayerId}");
             }
 
-            return entity.Id;
+            return element.Id;
         }
-
-        public async Task<int> GetIdByLayerIdAsync(int dynamicAvatarLayerId)
-        {
-            var entity = await DbSet
-                .AsNoTracking()
-                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
-                .OrderBy(_ => _.Position)
-                .FirstOrDefaultAsync();
-            if (entity == null)
-            {
-                throw new Exception("Couldn't find an appropriate avatar part!");
-            }
-            return entity.Id;
-        }
-
         public async Task<int> GetLastElement(int dynamicAvatarLayerId)
         {
-            var entity = await DbSet
+            var element = await _context.DynamicAvatars
                 .AsNoTracking()
-                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
                 .OrderByDescending(_ => _.Position)
+                .SelectMany(_ => _.Elements)
+                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
                 .FirstOrDefaultAsync();
 
-            if (entity == null)
+            if (element == null)
             {
                 throw new Exception($"Couldn't find first element for layer {dynamicAvatarLayerId}");
             }
 
-            return entity.Id;
+            return element.Id;
         }
 
         public async Task<int?> GetNextElement(int dynamicAvatarLayerId, int elementId)
         {
-            int? position = await GetPosition(dynamicAvatarLayerId, elementId);
-            if (position != null)
+            var element = await DbSet.AsNoTracking()
+                                      .Where(_ => _.Id == elementId)
+                                      .SingleOrDefaultAsync();
+
+            if (element == null)
             {
-                var nextElement = await DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId
-                        && _.Position > position)
-                    .OrderBy(_ => _.Position)
-                    .FirstOrDefaultAsync();
-                if (nextElement != null)
-                {
-                    return nextElement.Id;
-                }
+                throw new Exception($"Couldn't find  element {elementId}");
             }
+
+            var avatar = await _context.DynamicAvatars.AsNoTracking()
+                                    .Where(_ => _.Id == element.DynamicAvatarId)
+                                    .SingleOrDefaultAsync();
+
+            var nextElement = await _context.DynamicAvatars
+                .AsNoTracking()
+                .Where(_ => _.Position > avatar.Position)
+                .OrderBy(_ => _.Position)
+                .SelectMany(_ => _.Elements)
+                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
+                .FirstOrDefaultAsync();
+
+            if (nextElement != null)
+            {
+                return nextElement.Id;
+            }
+
             return await GetFirstElement(dynamicAvatarLayerId);
         }
 
         public async Task<int?> GetPreviousElement(int dynamicAvatarLayerId, int elementId)
         {
-            int? position = await GetPosition(dynamicAvatarLayerId, elementId);
-            if (position != null)
-            {
-                var previousElement = await DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId
-                        && _.Position < position)
-                    .OrderByDescending(_ => _.Position)
-                    .FirstOrDefaultAsync();
-                if (previousElement != null)
-                {
-                    return previousElement.Id;
-                }
-            }
-            return await GetLastElement(dynamicAvatarLayerId);
-        }
+            var element = await DbSet.AsNoTracking()
+                                     .Where(_ => _.Id == elementId)
+                                     .SingleOrDefaultAsync();
 
-        public override async Task<DynamicAvatarElement> AddSaveAsync(int userId, DynamicAvatarElement domainEntity)
-        {
-            var nextId = await DbSet
+            if (element == null)
+            {
+                throw new Exception($"Couldn't find  element {elementId}");
+            }
+
+            var avatar = await _context.DynamicAvatars.AsNoTracking()
+                                                      .Where(_ => _.Id == element.DynamicAvatarId)
+                                                      .SingleOrDefaultAsync();
+
+            var previousElement = await _context.DynamicAvatars
                 .AsNoTracking()
-                .Where(_ => _.DynamicAvatarLayerId == domainEntity.DynamicAvatarLayerId)
-                .OrderByDescending(_ => _.Id)
+                .Where(_ => _.Position < avatar.Position)
+                .OrderByDescending(_ => _.Position)
+                .SelectMany(_ => _.Elements)
+                .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId)
                 .FirstOrDefaultAsync();
 
-            if (nextId != null)
+            if (previousElement != null)
             {
-                domainEntity.Id = nextId.Id + 1;
-            }
-            else
-            {
-                domainEntity.Id = 1;
+                return previousElement.Id;
             }
 
-            return await base.AddSaveAsync(userId, domainEntity);
-        }
-
-        private async Task<int?> GetPosition(int dynamicAvatarLayerId, int elementId)
-        {
-            var currentPosition = await DbSet
-             .AsNoTracking()
-             .Where(_ => _.DynamicAvatarLayerId == dynamicAvatarLayerId && _.Id == elementId)
-             .FirstOrDefaultAsync();
-
-            if (currentPosition == null)
-            {
-                return null;
-            }
-
-            return currentPosition.Position;
+            return await GetLastElement(dynamicAvatarLayerId);
         }
     }
 }

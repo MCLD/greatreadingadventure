@@ -1,0 +1,150 @@
+@model GRA.Controllers.ViewModel.MissionControl.DynamicAvatars.AvatarsListViewModel
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete Avatar</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="DynamicAvatars" asp-action="Delete" method="post" role="form" style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button id="modal-deleteButton" type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form asp-controller="DynamicAvatars" asp-action="Index" method="get" role="form">
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+        </div>
+    </div>
+</form>
+
+
+@if (Model.CanAddAvatars)
+{
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <a asp-action="Create" class="btn btn-default">Create a new avatar</a>
+        </div>
+    </div>
+}
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Avatars.Count() == 0)
+        {
+            <div class="alert alert-warning">No Avatars</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            @if (Model.CanDeleteAvatars)
+                            {
+                                <th>&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var avatar in Model.Avatars)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    @if (Model.CanEditAvatars)
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@avatar.Id" class="rowlink">
+                                            @avatar.Name
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @avatar.Name
+                                    }
+                                </td>
+                                <td>
+                                    @avatar.Position
+                                </td>
+                                @if (Model.CanDeleteAvatars)
+                                {
+                                    <td class="on-top">
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@avatar.Id"
+                                                data-name="@avatar.Name">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        @if (Model.CanEditAvatars) {
+        <text>
+        $(window).on("load", function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        </text>
+        }
+
+        @if (Model.CanDeleteAvatars) {
+        <text>
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#Id').val(id);
+
+            modal.find('#modal-text').text('Are you sure you wish to delete the avatar "' + name + '" ?');
+            modal.find("#modal-deleteButton").show();
+        })
+        </text>
+        }
+    </script>
+}

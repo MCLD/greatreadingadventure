@@ -103,6 +103,10 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span></a></li>
                     }
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageAvatars.ToString()))
+                    {
+                        <li ActiveBy routeKey="Controller" value="DynamicAvatars"><a asp-controller="DynamicAvatars" asp-action="Index" title="DynamicAvatars"><span class="fa fa-picture-o"></span><span class="visible-xs-inline">Avatars</span></a></li> 
+                    }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Drawing">

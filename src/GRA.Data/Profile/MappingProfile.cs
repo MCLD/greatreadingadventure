@@ -16,6 +16,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>().ReverseMap();
+            CreateMap<Model.DynamicAvatar, Domain.Model.DynamicAvatar>().ReverseMap();
             CreateMap<Model.DynamicAvatarElement, Domain.Model.DynamicAvatarElement>().ReverseMap();
             CreateMap<Model.DynamicAvatarLayer, Domain.Model.DynamicAvatarLayer>().ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();

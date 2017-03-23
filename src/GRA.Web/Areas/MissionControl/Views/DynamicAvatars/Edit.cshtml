@@ -1,0 +1,75 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.DynamicAvatars.AvatarsDetailViewModel
+
+<form asp-controller="DynamicAvatars" asp-action="Edit" method="post" enctype="multipart/form-data" role="form">
+
+    <input asp-for="Avatar.Id" type="hidden" />
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Avatar.Name" class="control-label"></label>
+            <input asp-for="Avatar.Name" class="form-control" />
+            <span asp-validation-for="Avatar.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <label asp-for="Avatar.Position" class="control-label"></label>
+            <input asp-for="Avatar.Position" class="form-control" />
+            <span asp-validation-for="Avatar.Position" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" class="btn btn-primary">
+            <span class="buttonText">Save Avatar</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+    @if (Model.Elements != null)
+    {
+        @foreach (var element in Model.Elements)
+        {
+            <hr />
+            @Html.Partial("_EditElement", element)
+        }
+    }
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var root = $(this).parent().parent().parent();
+                var input = root.find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length)
+                {
+                    input.val(log);
+                    root.find('.btn-file').removeClass('btn-default');
+                    root.find('.btn-file').addClass('btn-success');
+                }
+                else
+                {
+                    input.val('');
+                    root.find('.btn-file').addClass('btn-default');
+                    root.find('.btn-file').removeClass('btn-success');
+                }
+
+            });
+        });
+
+    </script>
+}

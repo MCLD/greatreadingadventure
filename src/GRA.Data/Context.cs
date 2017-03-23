@@ -40,8 +40,6 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
-            modelBuilder.Entity<Model.DynamicAvatarElement>()
-                .HasKey(_ => new { _.Id, _.DynamicAvatarLayerId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.TriggerBadge>()
@@ -116,6 +114,7 @@ namespace GRA.Data
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
+        public DbSet<Model.DynamicAvatar> DynamicAvatars { get; set; }
         public DbSet<Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
         public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }

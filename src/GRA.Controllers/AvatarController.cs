@@ -182,6 +182,7 @@ namespace GRA.Controllers
                 {
                     // build a url with the default avatar
                     var defaultId = new StringBuilder();
+
                     foreach (var key in defaultDynamic.Keys)
                     {
                         defaultId.Append(defaultDynamic[key].ToString("x2"));
@@ -207,25 +208,25 @@ namespace GRA.Controllers
             return await IncreaseOrDecrease(id, details, false);
         }
 
-        private async Task<IActionResult> IncreaseOrDecrease(int id, DynamicAvatarDetails details, bool increase)
+        private async Task<IActionResult> IncreaseOrDecrease(int layerNumber, DynamicAvatarDetails details, bool increase)
         {
             var newValue = new StringBuilder();
             int counter = 0;
             foreach (string elementIdHex in details.DynamicAvatarString.SplitInParts(2))
             {
                 counter++;
-                if (counter == id)
+                if (counter == layerNumber)
                 {
                     int elementIdInt = Convert.ToInt32(elementIdHex, 16);
                     if (increase)
                     {
                         elementIdInt
-                            = await _dynamicAvatarService.GetNextElement(counter, elementIdInt);
+                            = await _dynamicAvatarService.GetNextElement(layerNumber, elementIdInt);
                     }
                     else
                     {
                         elementIdInt
-                            = await _dynamicAvatarService.GetPreviousElement(counter, elementIdInt);
+                            = await _dynamicAvatarService.GetPreviousElement(layerNumber, elementIdInt);
                     }
                     newValue.Append(elementIdInt.ToString("x2"));
                 }

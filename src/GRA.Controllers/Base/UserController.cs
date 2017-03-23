@@ -46,6 +46,7 @@ namespace GRA.Controllers.Base
                     }
                 }
             }
+
             var details = new DynamicAvatarDetails
             {
                 DynamicAvatarPaths = new Dictionary<int, string>()

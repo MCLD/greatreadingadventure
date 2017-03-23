@@ -1,0 +1,45 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.DynamicAvatars.AvatarsElementDetailViewModel
+
+<h3>@Model.Layer.Name</h3>
+
+<form asp-controller="DynamicAvatars" asp-action="EditElement" method="post" enctype="multipart/form-data" role="form">
+    <input asp-for="Element.Id" type="hidden" />
+    <input asp-for="Create" type="hidden"/>
+    <input asp-for="AvatarId" type="hidden" />
+    <input asp-for="Layer.Id" type="hidden" />
+
+    @if (Model.Element != null)
+    {
+        <div class="row row-spacing">
+            <div class="col-xs-12 col-sm-4 col-md-3">
+                    <img id="elementImage" class="img-thumbnail badge-lg"
+                        src="~/content/@(Model.BaseAvatarUrl)/layer@(Model.Layer.Id)/@(Model.Element.Id).png?@DateTime.Now.ToString("yyMMddHHmmss")"
+                        asp-append-version="true" />
+            </div>
+        </div>
+    } 
+
+    <div class="row row-spacing">
+        <div class="image-upload col-xs-12 col-sm-8 col-md-6">
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span>Select Image<input type="file" name="UploadImage" id="UploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly id="selectedFile">
+            </div>
+            <div>
+                <span asp-validation-for="UploadImage" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="buttonText">Save</span>
+            </button>
+        </div>
+    </div>
+</form>

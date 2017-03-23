@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using GRA.Domain.Repository;
 using GRA.Domain.Model;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
 using System.Linq;
+
 
 namespace GRA.Data.Repository
 {
@@ -16,6 +17,15 @@ namespace GRA.Data.Repository
         public DynamicAvatarLayerRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<DynamicAvatarLayerRepository> logger) : base(repositoryFacade, logger)
         {
+        }
+
+        public async Task<ICollection<DynamicAvatarLayer>> GetAllAsync()
+        {
+            return await DbSet
+               .AsNoTracking()
+               .OrderBy(_ => _.Position)
+               .ProjectTo<DynamicAvatarLayer>()
+               .ToListAsync();
         }
 
         public async Task<ICollection<int>> GetLayerIdsAsync()
