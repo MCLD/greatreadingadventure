@@ -27,6 +27,84 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-xs-12">
+        <div style="font-size:large;padding-top:10px;">Created By:</div>
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
+            <li class="@(Model.ActiveNav == "System" ? "active" : "")">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.SystemName ?? "System") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    @foreach (var system in Model.SystemList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                    }
+                </ul>
+            </li>
+            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.BranchName ?? "Branch") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    @foreach (var branch in Model.BranchList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                    }
+                </ul>
+            </li>
+            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="True">Mine</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <span style="font-size:large;">Limited to Program:</span>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">Show All</a></li>
+            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine" asp-route-ProgramId="0">Not Limited</a></li>
+            @foreach (var program in Model.ProgramList)
+            {
+                <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+            }
+        </ul>
+    </div>
+</div>
+
+<form asp-controller="Triggers" asp-action="Index" method="get" role="form">
+    @if (Model.SystemId.HasValue)
+    {
+        <input asp-for="SystemId" type="hidden" />
+    }
+    @if (Model.BranchId.HasValue)
+    {
+        <input asp-for="BranchId" type="hidden" />
+    }
+    @if (Model.Mine == true)
+    {
+        <input asp-for="Mine" type="hidden" />
+    }
+    @if (Model.ProgramId.HasValue)
+    {
+        <input asp-for="ProgramId" type="hidden" />
+    }
+
+    <div class="row row-spacing">
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Mine="@Model.Mine" class="btn btn-default">Clear</a>
+        </div>
+    </div>
+</form>
+
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         <a asp-action="Create" class="btn btn-default">Create a new trigger</a>

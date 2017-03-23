@@ -102,30 +102,72 @@ namespace GRA.Data.Repository
             switch (filter.SortBy)
             {
                 case SortUsersBy.FirstName:
-                    userList = userList
-                    .OrderBy(_ => _.FirstName)
-                    .ThenBy(_ => _.LastName)
-                    .ThenBy(_ => _.Username);
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.FirstName)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.Username);
+                    }
                     break;
                 case SortUsersBy.LastName:
-                    userList = userList
-                        .OrderBy(_ => _.LastName)
-                        .ThenBy(_ => _.FirstName)
-                        .ThenBy(_ => _.Username);
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName)
+                            .ThenBy(_ => _.Username);
+                    }
                     break;
                 case SortUsersBy.RegistrationDate:
-                    userList = userList
-                        .OrderBy(_ => _.CreatedAt)
-                        .ThenBy(_ => _.LastName)
-                        .ThenBy(_ => _.FirstName)
-                        .ThenBy(_ => _.Username);
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderByDescending(_ => _.CreatedAt)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName)
+                            .ThenByDescending(_ => _.Username);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => _.CreatedAt)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName)
+                            .ThenBy(_ => _.Username);
+                    }
                     break;
                 case SortUsersBy.Username:
-                    userList = userList
-                        .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
-                        .ThenBy(_ => _.Username)
-                        .ThenBy(_ => _.LastName)
-                        .ThenBy(_ => _.FirstName);
+                    if (filter.OrderDescending)
+                    {
+                        userList = userList
+                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
+                            .ThenByDescending(_ => _.Username)
+                            .ThenByDescending(_ => _.LastName)
+                            .ThenByDescending(_ => _.FirstName);
+                    }
+                    else
+                    {
+                        userList = userList
+                            .OrderBy(_ => string.IsNullOrWhiteSpace(_.Username))
+                            .ThenBy(_ => _.Username)
+                            .ThenBy(_ => _.LastName)
+                            .ThenBy(_ => _.FirstName);
+                    }
                     break;
             }
 
@@ -149,14 +191,18 @@ namespace GRA.Data.Repository
             var userList = DbSet.AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
 
-            if (filter.SystemIds != null)
+            if (filter.SystemIds?.Any() == true)
             {
                 userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
             }
-
-            else if (filter.BranchIds != null)
+            else if (filter.BranchIds?.Any() == true)
             {
                 userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
+            }
+            
+            if (filter.ProgramIds?.Any() == true)
+            {
+                userList = userList.Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))

@@ -143,6 +143,12 @@ namespace GRA.Data.Repository
                 events = events.Where(_ => filter.ProgramIds.Contains(_.ProgramId));
             }
 
+            // filter by user ids
+            if (filter.UserIds != null)
+            {
+                events = events.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+
             // filter by dates
             if (filter.StartDate != null)
             {

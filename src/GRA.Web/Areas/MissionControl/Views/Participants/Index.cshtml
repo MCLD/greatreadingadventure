@@ -30,14 +30,72 @@
     </div>
 }
 
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-ProgramId="@Model.ProgramId">All</a></li>
+            <li class="@(Model.ActiveNav == "System" ? "active" : "")">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.SystemName ?? "System") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    @foreach (var system in Model.SystemList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@system.Id" asp-route-ProgramId="@Model.ProgramId">@system.Name</a></li>
+                    }
+                </ul>
+            </li>
+            <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(Model.BranchName ?? "Branch") <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    @foreach (var branch in Model.BranchList)
+                    {
+                        <li><a asp-route-Search="@Model.Search" asp-route-BranchId="@branch.Id" asp-route-ProgramId="@Model.ProgramId">@branch.Name</a></li>
+                    }
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <span style="font-size:large;">Program:</span>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            @(Model.ProgramName ?? "Show All") <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">Show All</a></li>
+            @foreach (var program in Model.ProgramList)
+            {
+                <li><a asp-route-Search="@Model.Search" asp-route-ProgramId="@program.Id" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId">@program.Name</a></li>
+            }
+        </ul>
+    </div>
+</div>
+
 <form asp-controller="Participants" asp-action="Index" method="get" role="form">
-    <div class="row" style="padding: 10px 0;">
+    @if (Model.SystemId.HasValue)
+    {
+        <input asp-for="SystemId" type="hidden" />
+    }
+    @if (Model.BranchId.HasValue)
+    {
+        <input asp-for="BranchId" type="hidden" />
+    }
+    @if (Model.ProgramId.HasValue)
+    {
+        <input asp-for="ProgramId" type="hidden" />
+    }
+    <div class="row row-spacing">
         <div class="col-xs-8">
             <input asp-for="Search" class="form-control" />
         </div>
         <div class="col-xs-4">
             <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-action="Index" class="btn btn-default">Clear</a>
+            <a asp-action="Index" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" class="btn btn-default">Clear</a>
         </div>
     </div>
 </form>
@@ -63,10 +121,10 @@
                 <table class="table table-condensed table-bordered @(Model.CanViewDetails ? "link-table" : "table-striped")">
                     <thead>
                         <tr>
-                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(3)">Registered</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(0)">First Name</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(1)">Last Name</a></th>
-                            <th><a sort asp-route-Search="@Model.Search" asp-route-Sort="@Model.SortUsers.GetValue(2)">Username</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Sort="@Model.SortUsers.GetValue(3)" asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(3).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Registered</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Sort="@Model.SortUsers.GetValue(0)" asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(0).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">First Name</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Sort="@Model.SortUsers.GetValue(1)" asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(1).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Last Name</a></th>
+                            <th><a sort asp-route-Search="@Model.Search" asp-route-SystemId="@Model.SystemId" asp-route-BranchId="@Model.BranchId" asp-route-ProgramId="@Model.ProgramId" asp-route-Sort="@Model.SortUsers.GetValue(2)" asp-route-Order="@(Model.Sort == Model.SortUsers.GetValue(2).ToString() && !Model.IsDescending ? "Descending" : "Ascending")">Username</a></th>
                             <th>Email Address</th>
                             <th>Branch</th>
                             <th hidden>Program</th>

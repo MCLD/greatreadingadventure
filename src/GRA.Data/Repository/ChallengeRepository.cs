@@ -23,8 +23,6 @@ namespace GRA.Data.Repository
         public async Task<ICollection<Challenge>>
             PageAllAsync(BaseFilter filter)
         {
-            var challenges = ApplyFilters(filter);
-
             var challengeList = await ApplyFilters(filter)
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)

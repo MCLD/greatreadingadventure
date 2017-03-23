@@ -40,17 +40,42 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Triggers";
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string search,
+            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
             BaseFilter filter = new BaseFilter(page);
 
-            var triggerList = await _triggerService.GetPaginatedListAsync(filter);
-
-            foreach (var trigger in triggerList.Data)
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                trigger.AwardBadgeFilename =
-                    _pathResolver.ResolveContentPath(trigger.AwardBadgeFilename);
+                filter.Search = search;
             }
+
+            if (mine == true)
+            {
+                filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
+            }
+            else if (branchId.HasValue)
+            {
+                filter.BranchIds = new List<int>() { branchId.Value };
+            }
+            else if (systemId.HasValue)
+            {
+                filter.SystemIds = new List<int>() { systemId.Value };
+            }
+
+            if (programId.HasValue)
+            {
+                if (programId.Value > 0)
+                {
+                    filter.ProgramIds = new List<int?>() { programId.Value };
+                }
+                else
+                {
+                    filter.ProgramIds = new List<int?>() { null };
+                }
+            }
+
+            var triggerList = await _triggerService.GetPaginatedListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
@@ -58,7 +83,6 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
                 return RedirectToRoute(
@@ -68,11 +92,73 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
+            foreach (var trigger in triggerList.Data)
+            {
+                trigger.AwardBadgeFilename =
+                    _pathResolver.ResolveContentPath(trigger.AwardBadgeFilename);
+            }
+
+            var systemList = (await _siteService.GetSystemList())
+                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
+
             TriggersListViewModel viewModel = new TriggersListViewModel()
             {
                 Triggers = triggerList.Data,
                 PaginateModel = paginateModel,
+                Search = search,
+                SystemId = systemId,
+                BranchId = branchId,
+                ProgramId = programId,
+                Mine = mine,
+                SystemList = systemList,
+                ProgramList = await _siteService.GetProgramList()
             };
+            if (mine == true)
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Mine";
+            }
+            else if (branchId.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (systemId.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+            if (programId.HasValue)
+            {
+                if (programId.Value > 0)
+                {
+                    viewModel.ProgramName =
+                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+                }
+                else
+                {
+                    viewModel.ProgramName = "Not Limited";
+                }
+            }
 
             return View(viewModel);
         }

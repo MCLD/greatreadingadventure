@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Slack logging capability (see appsettings.json for configuration)
+- Add filtering to MC participants list
+- Add search and filtering to triggers and events lists
 
 ### Changed
 - Override Microsoft logging to limit severity to Error and higher

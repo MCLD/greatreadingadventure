@@ -58,16 +58,33 @@ namespace GRA.Controllers.MissionControl
         }
 
         #region Index
-        public async Task<IActionResult> Index(string search, string sort, int page = 1)
+        public async Task<IActionResult> Index(string search, string sort, string order,
+            int? systemId, int? branchId, int? programId, int page = 1)
         {
-            UserFilter filter = new UserFilter(page)
-            {
-                Search = search
-            };
+            UserFilter filter = new UserFilter(page);
 
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filter.Search = search;
+            }
+            if (branchId.HasValue)
+            {
+                filter.BranchIds = new List<int>() { branchId.Value };
+            }
+            else if (systemId.HasValue)
+            {
+                filter.SystemIds = new List<int>() { systemId.Value };
+            }
+            if (programId.HasValue)
+            {
+                filter.ProgramIds = new List<int?>() { programId.Value };
+            }
+
+            bool isDescending = String.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortUsersBy), sort))
             {
                 filter.SortBy = (SortUsersBy)Enum.Parse(typeof(SortUsersBy), sort);
+                filter.OrderDescending = isDescending;
             }
 
             var participantsList = await _userService.GetPaginatedUserListAsync(filter);
@@ -87,15 +104,59 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
+            var systemList = (await _siteService.GetSystemList())
+                .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
+
             ParticipantsListViewModel viewModel = new ParticipantsListViewModel()
             {
                 Users = participantsList.Data,
                 PaginateModel = paginateModel,
                 Search = search,
+                Sort = sort,
+                IsDescending = isDescending,
+                SystemId = systemId,
+                BranchId = branchId,
+                ProgramId = programId,
                 CanRemoveParticipant = UserHasPermission(Permission.DeleteParticipants),
                 CanViewDetails = UserHasPermission(Permission.ViewParticipantDetails),
-                SortUsers = Enum.GetValues(typeof(SortUsersBy))
+                SortUsers = Enum.GetValues(typeof(SortUsersBy)),
+                SystemList = systemList,
+                ProgramList = await _siteService.GetProgramList()
             };
+
+            if (branchId.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(branchId.Value);
+                viewModel.BranchName = branch.Name;
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == branch.SystemId).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(branch.SystemId))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "Branch";
+            }
+            else if (systemId.HasValue)
+            {
+                viewModel.SystemName = systemList
+                    .Where(_ => _.Id == systemId.Value).SingleOrDefault().Name;
+                viewModel.BranchList = (await _siteService.GetBranches(systemId.Value))
+                    .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "System";
+            }
+            else
+            {
+                viewModel.BranchList = (await _siteService.GetBranches(GetId(ClaimType.SystemId)))
+                        .OrderByDescending(_ => _.Id == GetId(ClaimType.BranchId))
+                        .ThenBy(_ => _.Name);
+                viewModel.ActiveNav = "All";
+            }
+            if (programId.HasValue)
+            {
+                    viewModel.ProgramName =
+                        (await _siteService.GetProgramByIdAsync(programId.Value)).Name;
+            }
+
             return View(viewModel);
         }
 

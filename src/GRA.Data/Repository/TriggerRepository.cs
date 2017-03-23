@@ -88,9 +88,36 @@ namespace GRA.Data.Repository
 
         private IQueryable<Model.Trigger> ApplyFilters(BaseFilter filter)
         {
-            return DbSet
+            var triggerList = DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.SiteId == filter.SiteId);
+
+            if (filter.SystemIds?.Any() == true)
+            {
+                triggerList = triggerList.Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
+            }
+
+            if (filter.BranchIds?.Any() == true)
+            {
+                triggerList = triggerList.Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
+            }
+
+            if (filter.UserIds?.Any() == true)
+            {
+                triggerList = triggerList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+
+            if (filter.ProgramIds?.Any() == true)
+            {
+                triggerList = triggerList.Where(_ => filter.ProgramIds.Contains(_.LimitToProgramId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                triggerList = triggerList.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            return triggerList;
         }
 
         public async Task<Trigger> GetByCodeAsync(int siteId, string secretCode)
