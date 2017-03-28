@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Controllers.Attributes;
 
 namespace GRA.Controllers
 {
@@ -178,6 +179,7 @@ namespace GRA.Controllers
             return File(calendarBytes, "text/calendar", $"{filename}.ics");
         }
 
+        [PreventQuestionnaireRedirect]
         public async Task<IActionResult> Signout()
         {
             if (AuthUser.Identity.IsAuthenticated)

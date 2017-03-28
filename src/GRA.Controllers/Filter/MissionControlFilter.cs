@@ -11,11 +11,19 @@ namespace GRA.Controllers.Filter
     {
         private readonly ILogger<MissionControlFilter> _logger;
         private readonly MailService _mailService;
+        private readonly QuestionnaireService _questionnaireService;
+        private readonly UserService _userService;
 
-        public MissionControlFilter(ILogger<MissionControlFilter> logger, MailService mailService)
+        public MissionControlFilter(ILogger<MissionControlFilter> logger,
+            MailService mailService,
+            QuestionnaireService questionnaireService,
+            UserService userService)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _questionnaireService = Require.IsNotNull(questionnaireService,
+                nameof(questionnaireService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
         }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
@@ -29,6 +37,18 @@ namespace GRA.Controllers.Filter
                 if (userId != activeId)
                 {
                     httpContext.Session.SetInt32(SessionKey.ActiveUserId, userId);
+                    var user = await _userService.GetDetails(userId);
+                    var questionnaireId = await _questionnaireService
+                            .GetRequiredQuestionnaire(user.Id, user.Age);
+                    if (questionnaireId.HasValue)
+                    {
+                        httpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                            questionnaireId.Value);
+                    }
+                    else
+                    {
+                        httpContext.Session.Remove(SessionKey.PendingQuestionnaire);
+                    }
                 }
             }
             catch (Exception ex)

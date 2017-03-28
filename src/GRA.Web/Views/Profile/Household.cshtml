@@ -8,6 +8,18 @@
 
 @Html.Partial("_ProfilePartial")
 
+<div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br />
+                Activity cannot be logged for this participant until they log in and answer a questionnaire.
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         @if (Model.Users.Count() == 0)
@@ -156,7 +168,15 @@
                                     @if (Model.AuthUserIsHead)
                                     {
                                         <td style="vertical-align:middle;">
-                                            <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                            @if (!user.HasPendingQuestionnaire)
+                                            {
+                                                <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                            }
+                                            else
+                                            {
+                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+
+                                            }
                                         </td>
                                         <td style="vertical-align:middle;">
                                             <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
@@ -357,5 +377,10 @@
             });
             $("#UserSelection").val(selectionArray);
         };
+
+        $(".pendingQuestionnaire").on("click", function () {
+
+
+        });
     </script>
 }

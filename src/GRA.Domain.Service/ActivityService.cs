@@ -19,6 +19,7 @@ namespace GRA.Domain.Service
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
+        private readonly IRequiredQuestionnaireRepository _requiredQuestionnaireRepository;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
@@ -37,6 +38,7 @@ namespace GRA.Domain.Service
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
+            IRequiredQuestionnaireRepository requiredQuestionnaireRepository,
             ITriggerRepository triggerRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository,
@@ -56,6 +58,8 @@ namespace GRA.Domain.Service
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
+            _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository, 
+                nameof(requiredQuestionnaireRepository));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository,
@@ -104,6 +108,14 @@ namespace GRA.Domain.Service
                 string error = $"User id {activeUserId} cannot log activity for user id {userIdToLog}";
                 _logger.LogError(error);
                 throw new GraException("Permission denied.");
+            }
+
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
+                userToLog.Age)).Any())
+            {
+                string error = $"User id {activeUserId} cannot log activity for user id {userIdToLog} who has a pending questionnaire.";
+                _logger.LogError(error);
+                throw new GraException("Activity cannot be logged while there is a pending questionnaire to be taken.");
             }
 
             var translation
@@ -212,17 +224,26 @@ namespace GRA.Domain.Service
             var activeUser = await _userRepository.GetByIdAsync(activeUserId);
             int authUserId = GetClaimId(ClaimType.UserId);
 
-            if (userId == activeUserId
-                || activeUser.HouseholdHeadUserId == authUserId
-                || HasPermission(Permission.LogActivityForAny))
-            {
-                return await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
-            }
-            else
+            if (userId != activeUserId
+                && activeUser.HouseholdHeadUserId != authUserId
+                && !HasPermission(Permission.LogActivityForAny))
             {
                 _logger.LogError($"User {activeUserId} doesn't have permission to add a book for {userId}.");
                 throw new GraException("Permission denied.");
             }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), user.Id,
+                user.Age)).Any())
+            {
+                string error = $"User id {activeUserId} cannot add a book for user {userId} who has a pending questionnaire.";
+                _logger.LogError(error);
+                throw new GraException("Books cannot be added while there is a pending questionnaire to be taken.");
+            }
+
+
+            return await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
         }
 
         public async Task RemoveBookAsync(int userId, int bookId)
@@ -261,6 +282,16 @@ namespace GRA.Domain.Service
             VerifyCanLog();
             int activeUserId = GetActiveUserId();
             int authUserId = GetClaimId(ClaimType.UserId);
+
+            var activeUser = await _userRepository.GetByIdAsync(activeUserId);
+
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), activeUser.Id,
+                activeUser.Age)).Any())
+            {
+                string error = $"User id {activeUserId} cannot complete challenges tasks while having a pending questionnaire.";
+                _logger.LogError(error);
+                throw new GraException("Challenge tasks cannot be completed while there is a pending questionnaire to be taken.");
+            }
 
             var challenge = await _challengeRepository.GetActiveByIdAsync(challengeId, activeUserId);
 
@@ -627,7 +658,8 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task LogSecretCodeAsync(int userIdToLog, string secretCode)
+        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode, 
+            bool householdLogging = false)
         {
             VerifyCanLog();
 
@@ -653,6 +685,14 @@ namespace GRA.Domain.Service
                 throw new GraException("You do not have permission to apply that code.");
             }
 
+            if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
+                userToLog.Age)).Any())
+            {
+                string error = $"User id {activeUserId} cannot log secret code for user {userToLog} who has a pending questionnaire.";
+                _logger.LogError(error);
+                throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
+            }
+
             var trigger = await _triggerRepository.GetByCodeAsync(GetCurrentSiteId(), secretCode);
 
             if (trigger == null)
@@ -665,9 +705,16 @@ namespace GRA.Domain.Service
                 = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
             if (alreadyDone != null)
             {
-                throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
+                if (householdLogging)
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
+                }
+                
             }
-
 
             // add that we've processed this trigger for this user
             await _triggerRepository.AddTriggerActivationAsync(userIdToLog, trigger.Id);
@@ -723,6 +770,7 @@ namespace GRA.Domain.Service
             {
                 await AwardTriggersAsync(userIdToLog);
             }
+            return true;
         }
 
         public async Task LogHouseholdMinutesAsync(List<int> userIds, int minutesRead)
@@ -807,64 +855,10 @@ namespace GRA.Domain.Service
 
             foreach (var userId in userIds)
             {
-                var alreadyDone
-                = await _triggerRepository.CheckTriggerActivationAsync(userId, trigger.Id);
-                if (alreadyDone != null)
+                if (await LogSecretCodeAsync(userId, secretCode, true))
                 {
-                    continue;
+                    codeApplied = true;
                 }
-
-                await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
-
-                // every trigger awards a badge
-                var badge = await AwardBadgeAsync(userId, trigger.AwardBadgeId);
-
-                // log the notification
-                await _notificationRepository.AddSaveAsync(authUserId, new Notification
-                {
-                    PointsEarned = trigger.AwardPoints,
-                    UserId = userId,
-                    Text = trigger.AwardMessage,
-                    BadgeId = trigger.AwardBadgeId,
-                    BadgeFilename = badge.Filename
-                });
-
-                // add the award to the user's history
-                var userLog = new UserLog
-                {
-                    UserId = userId,
-                    PointsEarned = trigger.AwardPoints,
-                    IsDeleted = false,
-                    BadgeId = trigger.AwardBadgeId,
-                    Description = trigger.AwardMessage
-                };
-
-                userLog.AwardedBy = authUserId;
-
-                await _userLogRepository.AddSaveAsync(authUserId, userLog);
-
-                // award any vendor code that is necessary
-                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
-
-                // send mail if applicable
-                int? mailId = await SendMailAsync(userId, trigger);
-
-                // award prize if applicable
-                await AwardPrizeAsync(userId, trigger, mailId);
-
-                // if there are points to be awarded, do that now, also check for other triggers
-                if (trigger.AwardPoints > 0)
-                {
-                    await AddPointsSaveAsync(authUserId,
-                        authUserId,
-                        userId,
-                        trigger.AwardPoints);
-                }
-                else
-                {
-                    await AwardTriggersAsync(userId);
-                }
-                codeApplied = true;
             }
             return codeApplied;
         }

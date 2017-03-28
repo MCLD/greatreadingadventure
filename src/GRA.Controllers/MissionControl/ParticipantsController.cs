@@ -27,6 +27,7 @@ namespace GRA.Controllers.MissionControl
         private readonly AuthenticationService _authenticationService;
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -37,6 +38,7 @@ namespace GRA.Controllers.MissionControl
             AuthenticationService authenticationService,
             MailService mailService,
             PrizeWinnerService prizeWinnerService,
+            QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
             UserService userService,
@@ -50,6 +52,8 @@ namespace GRA.Controllers.MissionControl
                 nameof(authenticationService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
+            _questionnaireService = Require.IsNotNull(questionnaireService,
+                nameof(questionnaireService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
@@ -352,8 +356,10 @@ namespace GRA.Controllers.MissionControl
             LogActivityViewModel viewModel = new LogActivityViewModel()
             {
                 Id = id,
+                HasPendingQuestionnaire = (await _questionnaireService
+                    .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
                 HouseholdCount = await _userService
-                        .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
@@ -431,6 +437,8 @@ namespace GRA.Controllers.MissionControl
                     head = user;
                 }
                 head.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
+                head.HasPendingQuestionnaire = (await _questionnaireService
+                    .GetRequiredQuestionnaire(head.Id, head.Age)).HasValue;
                 bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);
                 bool ViewUserPrizes = UserHasPermission(Permission.ViewUserPrizes);
                 if (ReadAllMail)
@@ -443,7 +451,7 @@ namespace GRA.Controllers.MissionControl
                         .GetUserWinCount(head.Id, false)) > 0;
                 }
 
-                var household = await _userService.GetHouseholdAsync(head.Id, true, ReadAllMail,
+                var household = await _userService.GetHouseholdAsync(head.Id, true, true, ReadAllMail,
                     ViewUserPrizes);
 
                 var systemId = GetId(ClaimType.SystemId);
@@ -923,6 +931,8 @@ namespace GRA.Controllers.MissionControl
                     Books = books.Data.ToList(),
                     PaginateModel = paginateModel,
                     Id = id,
+                    HasPendingQuestionnaire = (await _questionnaireService
+                        .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),

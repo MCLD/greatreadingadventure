@@ -25,6 +25,7 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly MailService _mailService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly UserService _userService;
@@ -36,6 +37,7 @@ namespace GRA.Controllers
             ActivityService activityService,
             AuthenticationService authenticationService,
             MailService mailService,
+            QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
             UserService userService,
@@ -47,6 +49,8 @@ namespace GRA.Controllers
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _questionnaireService = Require.IsNotNull(questionnaireService,
+                nameof(questionnaireService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
@@ -236,7 +240,8 @@ namespace GRA.Controllers
             }
 
             var household = await _userService
-                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead, authUserIsHead);
+                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead, 
+                authUserIsHead, authUserIsHead);
 
             HouseholdListViewModel viewModel = new HouseholdListViewModel()
             {
@@ -593,6 +598,17 @@ namespace GRA.Controllers
             if ((user.Id == authUser || user.HouseholdHeadUserId == authUser) && activeUser != loginId)
             {
                 HttpContext.Session.SetInt32(SessionKey.ActiveUserId, loginId);
+                var questionnaireId = await _questionnaireService
+                    .GetRequiredQuestionnaire(user.Id, user.Age);
+                if (questionnaireId.HasValue)
+                {
+                    HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                        questionnaireId.Value);
+                }
+                else
+                {
+                    HttpContext.Session.Remove(SessionKey.PendingQuestionnaire);
+                }
                 ShowAlertSuccess($"You are now signed in as {user.FullName}.", "user");
             }
             if (goToMail)

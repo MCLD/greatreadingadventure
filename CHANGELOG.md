@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add filtering to MC participants list
 - Add search and filtering to triggers and events lists
 - Mission Control interface for managing dynamic avatars
+- Add Mission Control questionnaire entry
+- Add participant required questionnaire entry
 
 ### Changed
 - Override Microsoft logging to limit severity to Error and higher

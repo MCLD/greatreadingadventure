@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     public class LogActivityViewModel
     {
         public int Id { get; set; }
+        public bool HasPendingQuestionnaire { get; set; }
         public int HouseholdCount { get; set; }
         public int PrizeCount { get; set; }
         public bool HasAccount { get; set; }

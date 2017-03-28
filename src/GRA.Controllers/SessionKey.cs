@@ -7,5 +7,6 @@ namespace GRA.Controllers
         public const string ActiveUserId = "ActiveUserId";
         public const string ChallengeSearch = "ChallengeSearch";
         public const string ChallengePage = "ChallengePage";
+        public const string PendingQuestionnaire = "PendingQuestionnaire";
     }
 }

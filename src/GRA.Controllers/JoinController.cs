@@ -8,6 +8,7 @@ using GRA.Domain.Service;
 using GRA.Domain.Model;
 using GRA.Controllers.ViewModel.Shared;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace GRA.Controllers
 {
@@ -21,12 +22,14 @@ namespace GRA.Controllers
         private readonly AuthenticationService _authenticationService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
             SchoolService schoolService,
             SiteService siteService,
+            QuestionnaireService questionnaireService,
             UserService userService)
                 : base(context)
         {
@@ -36,6 +39,8 @@ namespace GRA.Controllers
                 nameof(authenticationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _questionnaireService = Require.IsNotNull(questionnaireService,
+                nameof(questionnaireService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Join";
         }
@@ -183,8 +188,16 @@ namespace GRA.Controllers
                 {
                     await _userService.RegisterUserAsync(user, model.Password,
                         model.SchoolDistrictId);
-                    await LoginUserAsync(await _authenticationService
-                        .AuthenticateUserAsync(user.Username, model.Password));
+                    var loginAttempt = await _authenticationService
+                        .AuthenticateUserAsync(user.Username, model.Password);
+                    await LoginUserAsync(loginAttempt);
+                    var questionnaireId = await _questionnaireService
+                            .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
+                    if (questionnaireId.HasValue)
+                    {
+                        HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                            questionnaireId.Value);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -545,8 +558,16 @@ namespace GRA.Controllers
                         step2.SchoolDistrictId);
                     TempData.Remove(TempStep1);
                     TempData.Remove(TempStep2);
-                    await LoginUserAsync(await _authenticationService
-                        .AuthenticateUserAsync(user.Username, model.Password));
+                    var loginAttempt = await _authenticationService
+                        .AuthenticateUserAsync(user.Username, model.Password);
+                    await LoginUserAsync(loginAttempt);
+                    var questionnaireId = await _questionnaireService
+                            .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
+                    if (questionnaireId.HasValue)
+                    {
+                        HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                            questionnaireId.Value);
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }

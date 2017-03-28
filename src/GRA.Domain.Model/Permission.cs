@@ -23,6 +23,7 @@ namespace GRA.Domain.Model
         ManageAvatars,
         ManageEvents,
         ManageLocations,
+        ManageQuestionnaires,
         ManageSchools,
         ManageTriggers,
         ManageVendorCodes,

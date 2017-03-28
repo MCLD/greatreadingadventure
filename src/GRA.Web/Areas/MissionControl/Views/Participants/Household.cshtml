@@ -14,6 +14,18 @@
 
 @Html.Partial("_ParticipantPartial")
 
+<div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br />
+                Activity cannot be logged for this participant until they log in and answer a questionnaire.
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (Model.CanEditDetails)
 {
     <div class="row">
@@ -240,7 +252,14 @@
                                 @if (Model.CanLogActivity)
                                 {
                                     <td class="on-top" style="vertical-align:middle;">
-                                        <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
+                                        @if (!Model.Head.HasPendingQuestionnaire)
+                                        {
+                                            <input class="userSelection" type="checkbox" data-id="@Model.Head.Id" />
+                                        }
+                                        else
+                                        {
+                                            <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                        }
                                     </td>
                                 }
                                 @if (Model.CanReadMail)
@@ -305,7 +324,14 @@
                                     @if (Model.CanLogActivity)
                                     {
                                         <td class="on-top" style="vertical-align:middle;">
-                                            <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                            @if (!user.HasPendingQuestionnaire)
+                                            {
+                                                <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                            }
+                                            else
+                                            {
+                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                            }
                                         </td>
                                     }
                                     @if (Model.CanReadMail)

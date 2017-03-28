@@ -3,6 +3,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GRA.Controllers
 {
@@ -10,16 +11,20 @@ namespace GRA.Controllers
     {
         private readonly ILogger<SignInController> _logger;
         private readonly AuthenticationService _authenticationService;
+        private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
+            QuestionnaireService questionnaireService,
             UserService userService)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _questionnaireService = Require.IsNotNull(questionnaireService,
+                nameof(questionnaireService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             PageTitle = "Sign In";
         }
@@ -47,6 +52,13 @@ namespace GRA.Controllers
                     if (loginAttempt.PasswordIsValid)
                     {
                         await LoginUserAsync(loginAttempt);
+                        var questionnaireId = await _questionnaireService
+                            .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
+                        if (questionnaireId.HasValue)
+                        {
+                            HttpContext.Session.SetInt32(SessionKey.PendingQuestionnaire,
+                                questionnaireId.Value);
+                        }
                         if (!string.IsNullOrEmpty(model.ReturnUrl))
                         {
                             return Redirect(model.ReturnUrl);

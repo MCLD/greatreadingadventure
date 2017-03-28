@@ -61,30 +61,36 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.AccessMissionControl.ToString()))
+                    @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ShowMissionControl))
                     {
                         <li><a asp-area="MissionControl" asp-controller="Home" asp-action="Index" title="Mission Control" data-toggle="tooltip" data-placement="bottom" class="gra-mclink"><span class="fa fa-rocket"></span><span class="visible-xs-inline"> Mission Control</span></a></li>
                     }
-                    <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index" title="Home"><span class="fa fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
-                    @if (User.Identity.IsAuthenticated)
+                    @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                     {
-                        <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
-                            <a asp-controller="Mail" asp-action="Index">
-                                <span class="fa fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
-                                @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
-                                {
-                                    <span class="label label-default label-as-badge">
-                                        @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
-                                    </span>
-                                }
-                            </a>
-                        </li>
+                        <li ActiveBy routeKey="Controller" value="Home"><a asp-controller="Home" asp-action="Index" title="Home"><span class="fa fa-home"></span><span class="visible-xs-inline"> Home</span></a></li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li ActiveBy routeKey="Controller" value="Mail" title="Mail">
+                                <a asp-controller="Mail" asp-action="Index">
+                                    <span class="fa fa-envelope"></span><span class="visible-xs-inline"> Mail</span>
+                                    @if ((int)Context.Items[GRA.Controllers.ItemKey.UnreadCount] > 0)
+                                    {
+                                        <span class="label label-default label-as-badge">
+                                            @Context.Items[GRA.Controllers.ItemKey.UnreadCount]
+                                        </span>
+                                    }
+                                </a>
+                            </li>
+                        }
+                        <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                        <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
                     }
-                    <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
-                    <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li ActiveBy routeKey="Controller" value="Profile"><a asp-controller="Profile" asp-action="Index">My Profile</a></li>
+                        @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <li ActiveBy routeKey="Controller" value="Profile"><a asp-controller="Profile" asp-action="Index">My Profile</a></li>
+                        }
                         <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                     }
                     else

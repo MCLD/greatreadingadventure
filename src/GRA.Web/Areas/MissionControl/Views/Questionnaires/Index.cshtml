@@ -1,0 +1,120 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Questionnaires.QuestionnairesListViewModel
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete Questionnaire</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="Questionnaires" asp-action="Delete" method="post" role="form" style="display:inline">
+                        <input id="Id" name="Id" type="hidden" />
+                        <button id="modal-deleteButton" type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a asp-action="Create" class="btn btn-default">Create a new questionnaire</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Questionnaires.Count() == 0)
+        {
+            <div class="alert alert-warning">No Questionnaires found.</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th># of Questions</th>
+                            <th>Status</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var questionnaire in Model.Questionnaires)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Edit" asp-route-id="@questionnaire.Id" class="rowlink">
+                                        @questionnaire.Name
+                                    </a>
+                                </td>
+                                <td>@questionnaire.Questions.Count</td>
+                                <td>
+                                    @if (questionnaire.IsLocked)
+                                    {
+                                        <span class="fa fa-lg fa-lock"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-lg fa-unlock"></span>
+                                    }
+                                </td>
+                                <td class="on-top">
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@questionnaire.Id"
+                                            data-name="@questionnaire.Name">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(window).on("load", function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function() {
+            $('.td-class').each(function() {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+
+        $('#deleteModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#Id').val(id);
+            modal.find('#modal-text').text('Are you sure you wish to delete the questionnaire "' + name + '" ?');
+        })
+    </script>
+}

@@ -46,12 +46,16 @@ namespace GRA.Data
                 .HasKey(_ => new { _.TriggerId, _.BadgeId });
             modelBuilder.Entity<Model.TriggerChallenge>()
                 .HasKey(_ => new { _.TriggerId, _.ChallengeId });
+            modelBuilder.Entity<Model.UserAnswer>()
+                .HasKey(_ => new { _.UserId, _.AnswerId });
             modelBuilder.Entity<Model.UserBadge>()
                 .HasKey(_ => new { _.UserId, _.BadgeId });
             modelBuilder.Entity<Model.UserBook>()
                 .HasKey(_ => new { _.UserId, _.BookId });
             modelBuilder.Entity<Model.UserChallengeTask>()
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
+            modelBuilder.Entity<Model.UserQuestionnaire>()
+                .HasKey(_ => new { _.UserId, _.QuestionnaireId });
             modelBuilder.Entity<Model.UserRole>()
                 .HasKey(_ => new { _.UserId, _.RoleId });
             modelBuilder.Entity<Model.UserTrigger>()
@@ -102,6 +106,7 @@ namespace GRA.Data
             return (await Database.GetAppliedMigrationsAsync()).Last();
         }
 
+        public DbSet<Model.Answer> Answers { get; set; }
         public DbSet<Model.AuditLog> AuditLogs { get; set; }
         public DbSet<Model.AuthorizationCode> AuthorizationCodes { get; set; }
         public DbSet<Model.Badge> Badges { get; set; }
@@ -128,7 +133,10 @@ namespace GRA.Data
         public DbSet<Model.PointTranslation> PointTranslations { get; set; }
         public DbSet<Model.PrizeWinner> PrizeWinners { get; set; }
         public DbSet<Model.Program> Programs { get; set; }
+        public DbSet<Model.Questionnaire> Questionnaires { get; set; }
+        public DbSet<Model.Question> Questions { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
+        public DbSet<Model.RequiredQuestionnaire> RequiredQuestionnaires { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
         public DbSet<Model.RolePermission> RolePermissions { get; set; }
         public DbSet<Model.School> Schools { get; set; }
@@ -142,9 +150,11 @@ namespace GRA.Data
         public DbSet<Model.TriggerChallenge> TriggerChallenges { get; set; }
         public DbSet<Model.UserLog> UserLogs { get; set; }
         public DbSet<Model.User> Users { get; set; }
+        public DbSet<Model.UserAnswer> UserAnswers { get; set; }
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
+        public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }
         public DbSet<Model.VendorCode> VendorCodes { get; set; }

@@ -273,27 +273,6 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        public async Task<IEnumerable<User>> GetHouseholdListAsync(int householdHeadUserId)
-        {
-            var household = DbSet
-                .AsNoTracking()
-                .Include(_ => _.Branch)
-                .Include(_ => _.Program)
-                .Include(_ => _.System)
-                .Where(_ => _.IsDeleted == false
-                       && _.HouseholdHeadUserId == householdHeadUserId)
-                .ProjectTo<User>();
-
-            return await (from users in household
-                          join mail in _context.Mails.Where(_ => _.IsNew)
-                          on users.Id equals mail.ToUserId
-                          select new User
-                          {
-                              HasNewMail = true
-                          })
-                         .ToListAsync();
-        }
-
         public async Task<IEnumerable<User>>
             PageHouseholdAsync(int householdHeadUserId, int skip, int take)
         {
@@ -377,7 +356,6 @@ namespace GRA.Data.Repository
                        && _.HouseholdHeadUserId == householdHeadUserId)
                 .ProjectTo<User>()
                 .ToListAsync();
-
 
             return household;
         }

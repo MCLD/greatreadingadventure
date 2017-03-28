@@ -9,40 +9,53 @@
     <input asp-for="IsSecretCode" value="False" type="hidden" />
 
     <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <table>
-                <tr>
-                    <td style="padding-right:6px;">Apply</td>
-                    <td width="80px">
-                        <input asp-for="MinutesRead" value="" class="form-control" />
-                    </td>
-                    <td style="padding-left:6px;">
-                        <button type="submit" class="btn btn-primary">Minutes Read</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2"><span asp-validation-for="MinutesRead" class="text-danger"></span></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-xs-12 col-sm-6 row-spacing">
-            <table>
-                <tr>
-                    <td style="padding-right:6px;">Apply</td>
-                    <td width="200px">
-                        <input asp-for="SecretCode" value="" class="form-control codeInput" />
-                    </td>
-                    <td style="padding-left:6px;">
-                        <button type="submit" class="btn btn-primary codeButton">Secret Code</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2"><span asp-validation-for="SecretCode" class="text-danger"></span></td>
-                </tr>
-            </table>
-        </div>
+        @if (Model.HasPendingQuestionnaire)
+        {
+            <div class="col-xs-12 row-spacing">
+                <div class="alert alert-warning">Activity cannot be logged while there is a pending questionnaire to be taken.</div>
+            </div>
+        }
+        else
+        {
+            <div class="col-xs-12 col-sm-6 row-spacing">
+                <table>
+                    <tr>
+                        <td style="padding-right:6px;">Apply</td>
+                        <td width="80px">
+                            <input asp-for="MinutesRead" value="" class="form-control" />
+                        </td>
+                        <td style="padding-left:6px;">
+                            <button type="submit" class="btn btn-primary">Minutes Read</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2"><span asp-validation-for="MinutesRead" class="text-danger"></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xs-12 col-sm-6 row-spacing">
+                <table>
+                    <tr>
+                        <td style="padding-right:6px;">Apply</td>
+                        <td width="200px">
+                            <input asp-for="SecretCode" value="" class="form-control codeInput" />
+                        </td>
+                        <td style="padding-left:6px;">
+                            <button type="submit" class="btn btn-primary codeButton">Secret Code</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2"><span asp-validation-for="SecretCode" class="text-danger"></span></td>
+                    </tr>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to Participants</a>
     </div>
 </form>
 

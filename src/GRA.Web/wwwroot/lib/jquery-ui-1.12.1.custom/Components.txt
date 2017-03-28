@@ -1,0 +1,12 @@
+http://jqueryui.com/download/#!version=1.12.1&components=101000000100000010000000010000000000000000000000
+
+Core:
+	- Widget
+	- :data Selector
+	- scrollParent
+	
+Interactions:
+	- Sortable
+	
+Widgets: 
+	- Mouse

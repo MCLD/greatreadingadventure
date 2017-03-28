@@ -175,6 +175,7 @@ namespace GRA.Web
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
             services.AddScoped<PrizeWinnerService>();
+            services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
             services.AddScoped<SchoolService>();
@@ -190,6 +191,7 @@ namespace GRA.Web
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
 
             // repositories
+            services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();
             services.AddScoped<Domain.Repository.IAuthorizationCodeRepository, Data.Repository.AuthorizationCodeRepository>();
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
@@ -212,6 +214,9 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
+            services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
+            services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
