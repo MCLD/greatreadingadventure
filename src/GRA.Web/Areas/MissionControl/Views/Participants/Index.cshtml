@@ -29,6 +29,14 @@
         </div>
     </div>
 }
+@if (Model.CanSignUpParticipants)
+{
+    <div class="row" style="padding-top:10px;">
+        <div class="col-xs-12">
+            <a asp-action="Add" class="btn btn-default">Add Participant</a>
+        </div>
+    </div>
+}
 
 <div class="row">
     <div class="col-xs-12">

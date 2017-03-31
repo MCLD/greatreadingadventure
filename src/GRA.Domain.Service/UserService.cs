@@ -84,7 +84,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
-            int? schoolDistrictId = null)
+            int? schoolDistrictId = null, bool MCRegistration = false)
         {
             VerifyCanRegister();
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
@@ -106,8 +106,17 @@ namespace GRA.Domain.Service
                     .AddEnteredSchool(user.EnteredSchoolName, schoolDistrictId.Value);
                 user.EnteredSchoolId = enteredSchool.Id;
             }
-
-            var registeredUser = await _userRepository.AddSaveAsync(0, user);
+            var registeredUser = new User();
+            if (MCRegistration)
+            {
+                registeredUser = await _userRepository.AddSaveAsync(
+                    GetClaimId(ClaimType.UserId), user);
+            }
+            else
+            {
+                registeredUser = await _userRepository.AddSaveAsync(0, user);
+            }
+             
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 

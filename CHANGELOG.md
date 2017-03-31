@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Slack logging capability (see appsettings.json for configuration)
+- Add adding participants from Mission Control
 - Add filtering to MC participants list
 - Add search and filtering to triggers and events lists
 - Mission Control interface for managing dynamic avatars

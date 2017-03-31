@@ -19,6 +19,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public string BranchName { get; set; }
         public string ProgramName { get; set; }
         public bool CanRemoveParticipant { get; set; }
+        public bool CanSignUpParticipants { get; set; }
         public bool CanViewDetails { get; set; }
         public System.Array SortUsers { get; set; }
         
