@@ -11,6 +11,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -19,17 +20,23 @@ namespace GRA.Controllers.MissionControl
     public class EventsController : Base.MCController
     {
         private readonly ILogger<EventsController> _logger;
+        private readonly BadgeService _badgeService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
+        private readonly TriggerService _triggerService;
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
+            BadgeService badgeService,
             EventService eventService,
-            SiteService siteService)
+            SiteService siteService,
+            TriggerService triggerService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
+            _triggerService = Require.IsNotNull(triggerService, nameof(TriggerService));
             PageTitle = "Events";
         }
 
@@ -152,16 +159,24 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Create Event";
 
-            var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
+            var systemList = await _siteService.GetSystemList(true);
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
             EventsDetailViewModel viewModel = new EventsDetailViewModel()
             {
+                CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
-                BranchList = new SelectList(branchList, "Id", "Name"),
+                SystemList = new SelectList(systemList, "Id", "Name"),
                 LocationList = new SelectList(locationList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name")
             };
+            if (viewModel.CanAddSecretCode)
+            {
+                var site = await GetCurrentSiteAsync();
+                var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+                viewModel.BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress);
+                viewModel.UseBadgeMaker = true;
+            }
 
             if (id.HasValue)
             {
@@ -171,6 +186,22 @@ namespace GRA.Controllers.MissionControl
                     graEvent.ParentEventId = graEvent.Id;
                 }
                 viewModel.Event = graEvent;
+                viewModel.Event.RelatedTriggerId = null;
+                if (graEvent.AtBranchId.HasValue)
+                {
+                    var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
+                    viewModel.SystemId = branch.SystemId;
+                    viewModel.BranchList = new SelectList(await _siteService
+                    .GetBranches(viewModel.SystemId, true), "Id", "Name");
+                }
+            }
+
+            if (viewModel.BranchList == null)
+            {
+                viewModel.SystemId = GetId(ClaimType.SystemId);
+                viewModel.BranchList = new SelectList(await _siteService
+                    .GetBranches(viewModel.SystemId, true), "Id", "Name");
+
             }
 
             return View(viewModel);
@@ -187,11 +218,71 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("Event.AtBranchId", "The At Branch field is required.");
             }
+            if (model.IncludeSecretCode)
+            {
+                if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
+                {
+                    ModelState.AddModelError("BadgemakerImage", "A badge is required.");
+                }
+                else if (model.BadgeUploadImage != null
+                    && (string.IsNullOrWhiteSpace(model.BadgeMakerImage) || !model.UseBadgeMaker)
+                    && (Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpg"
+                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".jpeg"
+                        && Path.GetExtension(model.BadgeUploadImage.FileName).ToLower() != ".png"))
+                {
+                    ModelState.AddModelError("BadgeUploadImage", "Please use a .jpg or .png image.");
+                }
+            }
+            else
+            {
+                ModelState.Remove(nameof(model.SecretCode));
+                ModelState.Remove(nameof(model.AwardMessage));
+                ModelState.Remove(nameof(model.AwardPoints));
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    int? triggerId = null;
+                    if (model.IncludeSecretCode)
+                    {
+                        byte[] badgeBytes;
+                        string filename;
+                        if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
+                            (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                        {
+                            var badgeString = model.BadgeMakerImage.Split(',').Last();
+                            badgeBytes = Convert.FromBase64String(badgeString);
+                            filename = "badge.png";
+                        }
+                        else
+                        {
+                            using (var fileStream = model.BadgeUploadImage.OpenReadStream())
+                            {
+                                using (var ms = new MemoryStream())
+                                {
+                                    fileStream.CopyTo(ms);
+                                    badgeBytes = ms.ToArray();
+                                }
+                            }
+                            filename = Path.GetFileName(model.BadgeUploadImage.FileName);
+                        }
+                        Badge newBadge = new Badge()
+                        {
+                            Filename = filename
+                        };
+                        var badge = await _badgeService.AddBadgeAsync(newBadge, badgeBytes);
+                        Trigger trigger = new Trigger
+                        {
+                            Name = $"Event '{model.Event.Name}' code",
+                            SecretCode = model.SecretCode,
+                            AwardMessage = model.AwardMessage,
+                            AwardPoints = model.AwardPoints,
+                            AwardBadgeId = badge.Id,
+                        };
+                        triggerId = (await _triggerService.AddAsync(trigger)).Id;
+                    }
                     if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
                     {
                         model.Event.ExternalLink = new UriBuilder(
@@ -209,6 +300,11 @@ namespace GRA.Controllers.MissionControl
                     graEvent.IsActive = true;
                     graEvent.IsValid = true;
 
+                    if (triggerId.HasValue)
+                    {
+                        graEvent.RelatedTriggerId = triggerId;
+                    }
+
                     await _eventService.Add(graEvent);
                     ShowAlertSuccess($"Event '{graEvent.Name}' created.");
                     return RedirectToAction("Index");
@@ -220,10 +316,12 @@ namespace GRA.Controllers.MissionControl
             }
             PageTitle = "Create Event";
 
-            var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
+            var systemList = await _siteService.GetSystemList(true);
+            var branchList = await _siteService.GetBranches(model.SystemId, true);
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
 
+            model.SystemList = new SelectList(systemList, "Id", "Name");
             model.BranchList = new SelectList(branchList, "Id", "Name");
             model.LocationList = new SelectList(locationList, "Id", "Name");
             model.ProgramList = new SelectList(programList, "Id", "Name");
@@ -235,6 +333,7 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Edit Event";
 
             var graEvent = await _eventService.GetDetails(id);
+            var systemList = await _siteService.GetSystemList(true);
             var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
@@ -242,11 +341,27 @@ namespace GRA.Controllers.MissionControl
             {
                 Event = graEvent,
                 UseLocation = graEvent.AtLocationId.HasValue,
+                CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
+                SystemList = new SelectList(systemList, "Id", "Name"),
                 BranchList = new SelectList(branchList, "Id", "Name"),
                 LocationList = new SelectList(locationList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name")
             };
+
+            if (graEvent.AtBranchId.HasValue)
+            {
+                var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
+                viewModel.SystemId = branch.SystemId;
+                viewModel.BranchList = new SelectList(await _siteService
+                .GetBranches(viewModel.SystemId, true), "Id", "Name");
+            }
+            else
+            {
+                viewModel.SystemId = GetId(ClaimType.SystemId);
+                viewModel.BranchList = new SelectList(await _siteService
+                    .GetBranches(viewModel.SystemId, true), "Id", "Name");
+            }
 
             return View(viewModel);
         }
@@ -263,6 +378,9 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Event.AtBranchId", "The At Branch field is required.");
             }
 
+            ModelState.Remove(nameof(model.SecretCode));
+            ModelState.Remove(nameof(model.AwardMessage));
+            ModelState.Remove(nameof(model.AwardPoints));
             if (ModelState.IsValid)
             {
                 try
@@ -293,10 +411,12 @@ namespace GRA.Controllers.MissionControl
             }
             PageTitle = "Edit Event";
 
-            var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
+            var systemList = await _siteService.GetSystemList(true);
+            var branchList = await _siteService.GetBranches(model.SystemId, true);
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
 
+            model.SystemList = new SelectList(systemList, "Id", "Name");
             model.BranchList = new SelectList(branchList, "Id", "Name");
             model.LocationList = new SelectList(locationList, "Id", "Name");
             model.ProgramList = new SelectList(programList, "Id", "Name");

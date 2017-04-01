@@ -31,14 +31,29 @@ namespace GRA.Domain.Service
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
         }
 
-        public async Task<IEnumerable<Model.System>> GetSystemList()
+        public async Task<IEnumerable<Model.System>> GetSystemList(bool prioritizeUserSystem = false)
         {
-            return await _systemRepository.GetAllAsync(GetCurrentSiteId());
+            var systemList = await _systemRepository.GetAllAsync(GetCurrentSiteId());
+            if (prioritizeUserSystem)
+            {
+                systemList = systemList
+                    .OrderByDescending(_ => _.Id == GetClaimId(ClaimType.SystemId))
+                    .ThenBy(_ => _.Name);
+            }
+            return systemList;
         }
 
-        public async Task<IEnumerable<Branch>> GetBranches(int systemId)
+        public async Task<IEnumerable<Branch>> GetBranches(int systemId, 
+            bool prioritizeUserBranch = false)
         {
-            return await _branchRepository.GetBySystemAsync(systemId);
+            var branchList = await _branchRepository.GetBySystemAsync(systemId);
+            if (prioritizeUserBranch)
+            {
+                branchList = branchList
+                    .OrderByDescending(_ => _.Id == GetClaimId(ClaimType.BranchId))
+                    .ThenBy(_ => _.Name);
+            }
+            return branchList;
         }
 
         public async Task<IEnumerable<Branch>> GetAllBranches()

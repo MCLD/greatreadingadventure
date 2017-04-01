@@ -399,25 +399,35 @@ namespace GRA.Data.Repository
         {
             var newTrigger = await base.AddSaveAsync(userId, trigger);
 
-            foreach (var badgeId in trigger.BadgeIds)
+            if (trigger.BadgeIds != null || trigger.ChallengeIds != null)
             {
-                var triggerBadge = new GRA.Data.Model.TriggerBadge()
+                if (trigger.BadgeIds != null)
                 {
-                    BadgeId = badgeId,
-                    TriggerId = newTrigger.Id
-                };
-                await _context.TriggerBadges.AddAsync(triggerBadge);
-            }
-            foreach (var challengeId in trigger.ChallengeIds)
-            {
-                var triggerChallenge = new GRA.Data.Model.TriggerChallenge()
+                    foreach (var badgeId in trigger.BadgeIds)
+                    {
+                        var triggerBadge = new GRA.Data.Model.TriggerBadge()
+                        {
+                            BadgeId = badgeId,
+                            TriggerId = newTrigger.Id
+                        };
+                        await _context.TriggerBadges.AddAsync(triggerBadge);
+                    }
+                }
+
+                if (trigger.ChallengeIds != null)
                 {
-                    ChallengeId = challengeId,
-                    TriggerId = newTrigger.Id
-                };
-                await _context.TriggerChallenges.AddAsync(triggerChallenge);
+                    foreach (var challengeId in trigger.ChallengeIds)
+                    {
+                        var triggerChallenge = new GRA.Data.Model.TriggerChallenge()
+                        {
+                            ChallengeId = challengeId,
+                            TriggerId = newTrigger.Id
+                        };
+                        await _context.TriggerChallenges.AddAsync(triggerChallenge);
+                    }
+                }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
 
             return newTrigger;
         }

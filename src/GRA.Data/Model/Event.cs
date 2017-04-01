@@ -11,6 +11,7 @@ namespace GRA.Data.Model
         public int RelatedSystemId { get; set; }
         [Required]
         public int RelatedBranchId { get; set; }
+        public int? RelatedTriggerId { get; set; }
 
         [Required]
         [MaxLength(255)]

@@ -1,5 +1,36 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Events.EventsDetailViewModel
 
+@section styles {
+    <style>
+        .tab-pane {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            border-radius: 0px 0px 5px 5px;
+            padding: 10px;
+        }
+
+        .nav-tabs {
+            margin-bottom: 0;
+        }
+    </style>
+}
+
+@if (Model.CanAddSecretCode)
+{
+    <div class="row">
+        <div class="modal fade iframe-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
+            <span id="closeIframe" class="iframe-close fa fa-stack fa-lg">
+                <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
+                <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
+            </span>
+            <div class="iframe-container">
+                <iframe id="badgeMaker" class="badge-maker"></iframe>
+            </div>
+        </div>
+    </div>
+}
+
 @if (Model.CanManageLocations)
 {
     <div class="row">
@@ -51,7 +82,7 @@
     <input asp-for="UseLocation" type="hidden" />
     <input asp-for="Event.ParentEventId" type="hidden" />
 
-    <div class="row row-spacing">
+    <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
             <label asp-for="Event.Name" class="control-label"></label>
             <input asp-for="Event.Name" class="form-control" />
@@ -93,18 +124,29 @@
         </div>
     </div>
 
-    <div id="branchGroup" class="row row-spacing @(Model.UseLocation ? "hide" : "" )">
-        <div class="col-xs-12">
-            <label asp-for="Event.AtBranchId" class="control-label"></label>
-            <label style="font-size: 12px;">
-                <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View Location list</a>
-            </label>
-            <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
-                <option></option>
-            </select>
-            <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+    <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="SystemId" class="control-label"></label>
+                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                <span asp-validation-for="SystemId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Event.AtBranchId" class="control-label"></label>
+                <label style="font-size: 12px;">
+                    <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View Location list</a>
+                </label>
+                <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
+                    <option></option>
+                </select>
+                <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+            </div>
         </div>
     </div>
+    
 
     <div id="locationGroup" class="row row-spacing @(Model.UseLocation ? "" : "hide" )">
         <div class="col-xs-12">
@@ -135,6 +177,98 @@
             <span asp-validation-for="Event.ProgramId" class="text-danger"></span>
         </div>
     </div>
+
+    @if (Model.CanAddSecretCode)
+    {
+        <input asp-for="CanAddSecretCode" type="hidden" />
+        <input asp-for="IncludeSecretCode" type="hidden" />
+        <input asp-for="UseBadgeMaker" type="hidden" />
+        <input asp-for="BadgeMakerUrl" type="hidden" />
+        <input asp-for="BadgeMakerImage" type="hidden" />
+
+        <div class="panel-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingSecretCode">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
+                            <span id="secretCodeIcon" class="fa fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
+                            Add a Secret Code with this Event
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseSecretCode" class="panel-collapse collapse @(Model.IncludeSecretCode ? "in" : "")" role="tabpanel" aria-labelledby="headingSecretCode">
+                    <div class="panel-body">
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="SecretCode" class="control-label"></label>
+                                <input asp-for="SecretCode" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
+                                <span asp-validation-for="SecretCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="AwardMessage" class="control-label"></label>
+                                <textarea asp-for="AwardMessage" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")"></textarea>
+                                <span asp-validation-for="AwardMessage" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="AwardPoints" class="control-label"></label>
+                                <input asp-for="AwardPoints" min="0" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
+                                <span asp-validation-for="AwardPoints" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label class="control-label">Award Badge</label>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-4 col-md-3">
+                                <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                                <span asp-validation-for="BadgeMakerImage" class="text-danger" style="display:block;"></span>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-8 col-md-9">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
+                                        <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                                    </li>
+                                    <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
+                                        <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                                        <button id="openMaker" type="button" class="btn btn-default">
+                                            <span class="fa fa-certificate"></span> Create a Badge
+                                        </button>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                                        <div class="input-group">
+                                            <label class="input-group-btn">
+                                                <span class="btn btn-default btn-file">
+                                                    <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                                </span>
+                                            </label>
+                                            <input type="text" class="form-control" readonly id="selectedFile">
+                                        </div>
+                                        <div>
+                                            <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 
     <div class="form-group">
@@ -190,6 +324,21 @@
             $("#UseLocation").val("false");
         });
 
+        $("#SystemId").on("change", function() {
+            var systemId = $(this).val();
+            var branchList = $("#Event_AtBranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "false", prioritize: "true" }, function(response) {
+                branchList.empty();
+                branchList.append(new Option("", ""));
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        });
+
         @if (Model.CanManageLocations)
         {
             <text>
@@ -218,6 +367,84 @@
                 }
             });
             </text>
+        }
+
+        @if (Model.CanAddSecretCode)
+        {
+        <text>
+            $.validator.setDefaults({
+                ignore: ".ignore"
+            });
+
+            $("#collapseSecretCode").on("show.bs.collapse", function() {
+                $("#IncludeSecretCode").val("true");
+                $("#secretCodeIcon").removeClass("fa-caret-right").addClass("fa-caret-down");
+                $(".secretCodeField").removeClass("ignore");
+            });
+
+            $("#collapseSecretCode").on("hide.bs.collapse", function() {
+                $("#IncludeSecretCode").val("false");
+                $("#secretCodeIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+                $(".secretCodeField").addClass("ignore");
+            });
+
+            $(':file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+                if (input.length)
+                {
+                    input.val(log);
+                    $('.btn-file').removeClass('btn-default');
+                    $('.btn-file').addClass('btn-success');
+                    $("#badgeImage").removeAttr("src");
+                    $("#badgeImage").height(200);
+                    $("#BadgeMakerImage").val("");
+                }
+                else
+                {
+                    input.val('');
+                    $('.btn-file').addClass('btn-default');
+                    $('.btn-file').removeClass('btn-success');
+                }
+            });
+
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $("#badgeTab").on('show.bs.tab', function() {
+                $("#UseBadgeMaker").val("true");
+            });
+
+            $("#uploadTab").on('show.bs.tab', function() {
+                $("#UseBadgeMaker").val("false");
+            });
+
+            $("#openMaker").on("click", function() {
+                $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
+                $("#badgeModal").modal("show");
+            });
+
+            $("#closeIframe").on("click", function() {
+                $("#badgeModal").modal("hide");
+            });
+
+            $(window).on("message", function(e) {
+                $("#badgeModal").modal("hide");
+                var data = e.originalEvent.data;
+                $("#badgeImage").attr("src", data);
+                $("#badgeImage").height(200);
+                $("#BadgeMakerImage").val(data);
+                $('#BadgeUploadImage').val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+                $('#selectedFile').val('');
+            });
+        </text>
         }
     </script>
 }

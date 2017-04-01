@@ -55,8 +55,24 @@
     <input asp-for="Event.ParentEventId" type="hidden" />
     <input asp-for="Event.RelatedBranchId" type="hidden" />
     <input asp-for="Event.RelatedSystemId" type="hidden" />
+    <input asp-for="Event.RelatedTriggerId" type="hidden" />
 
-    <div class="row row-spacing">
+    @if (Model.CanAddSecretCode)
+    {
+        <input asp-for="CanAddSecretCode" type="hidden" />
+        @if (Model.Event.RelatedTriggerId.HasValue)
+        {
+            <div class="row" style="padding-top:10px;">
+                <div class="col-xs-12">
+                    <a href="@Url.Action("Edit", "Triggers", new { id = Model.Event.RelatedTriggerId })" target="_blank" class="btn btn-default">
+                        View Related Trigger
+                    </a>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
             <label asp-for="Event.Name" class="control-label"></label>
             <input asp-for="Event.Name" class="form-control" />
@@ -98,16 +114,26 @@
         </div>
     </div>
 
-    <div id="branchGroup" class="row row-spacing @(Model.UseLocation ? "hide" : "" )">
-        <div class="col-xs-12">
-            <label asp-for="Event.AtBranchId" class="control-label"></label>
-            <label style="font-size: 12px;">
-                <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View Location list</a>
-            </label>
-            <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
-                <option></option>
-            </select>
-            <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+    <div id="branchGroup" class="@(Model.UseLocation ? "hide" : "" )">
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="SystemId" class="control-label"></label>
+                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                <span asp-validation-for="SystemId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Event.AtBranchId" class="control-label"></label>
+                <label style="font-size: 12px;">
+                    <a id="viewLocationList" style="text-decoration:none;cursor:pointer">View Location list</a>
+                </label>
+                <select asp-for="Event.AtBranchId" asp-items="Model.BranchList" class="form-control">
+                    <option></option>
+                </select>
+                <span asp-validation-for="Event.AtBranchId" class="text-danger"></span>
+            </div>
         </div>
     </div>
 
@@ -197,6 +223,22 @@
             $("#branchGroup").removeClass("hide");
             $("#UseLocation").val("false");
         });
+
+        $("#SystemId").on("change", function() {
+            var systemId = $(this).val();
+            var branchList = $("#Event_AtBranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId, listAll: "false", prioritize: "true" }, function(response) {
+                branchList.empty();
+                branchList.append(new Option("", ""));
+                $.each(response, function(index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        });
+
         @if (Model.CanManageLocations)
         {
         <text>

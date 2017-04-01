@@ -13,6 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool IsSecretCode { get; set; }
 
         public ICollection<Trigger> DependentTriggers { get; set; }
+        public ICollection<Event> RelatedEvents { get; set; }
 
         [DisplayName("Challenges and triggers the participant must have earned")]
         public ICollection<TriggerRequirement> TriggerRequirements { get; set; }

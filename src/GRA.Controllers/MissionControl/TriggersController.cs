@@ -21,12 +21,14 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<TriggersController> _logger;
         private readonly BadgeService _badgeService;
+        private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         private readonly VendorCodeService _vendorCodeService;
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
+            EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
             VendorCodeService vendorCodeService)
@@ -34,6 +36,7 @@ namespace GRA.Controllers.MissionControl
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
+            _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
             _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
@@ -408,6 +411,11 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(viewModel.Trigger.AwardBadgeFilename))
             {
                 viewModel.BadgePath = _pathResolver.ResolveContentPath(viewModel.Trigger.AwardBadgeFilename);
+            }
+
+            if (UserHasPermission(Permission.ManageEvents))
+            {
+                viewModel.RelatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
             }
             PageTitle = $"Edit Trigger - {viewModel.Trigger.Name}";
             return View("Detail", viewModel);

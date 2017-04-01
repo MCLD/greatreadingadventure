@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Mission Control interface for managing dynamic avatars
 - Add Mission Control questionnaire entry
 - Add participant required questionnaire entry
+- Add adding secret code when adding an events
+- Add related events to trigger detail page
+- Add system selection for event branch
 
 ### Changed
 - Override Microsoft logging to limit severity to Error and higher

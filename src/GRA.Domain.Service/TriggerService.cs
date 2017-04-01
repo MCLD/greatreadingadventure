@@ -11,18 +11,21 @@ namespace GRA.Domain.Service
     public class TriggerService : BaseUserService<TriggerService>
     {
         private readonly IBranchRepository _branchRepository;
+        private readonly IEventRepository _eventRepository;
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
         public TriggerService(ILogger<TriggerService> logger,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
+            IEventRepository eventRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
         ITriggerRepository triggerRepository) : base(logger, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
@@ -84,6 +87,8 @@ namespace GRA.Domain.Service
 
             await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);
+
+            await _eventRepository.DetachRelatedTrigger(triggerId);
         }
 
         public async Task<ICollection<TriggerRequirement>> GetTriggerRequirementsAsync(Trigger trigger)

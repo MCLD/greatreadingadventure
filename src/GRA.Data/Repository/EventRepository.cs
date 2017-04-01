@@ -176,5 +176,21 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && _.AtLocationId == locationId)
                 .AnyAsync();
         }
+
+        public async Task DetachRelatedTrigger(int triggerId)
+        {
+            var Events = await DbSet.Where(_ => _.RelatedTriggerId == triggerId).ToListAsync();
+            Events.Select(_ => { _.RelatedTriggerId = null; return _; }).ToList();
+            _context.UpdateRange(Events);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.RelatedTriggerId == triggerId)
+                .ProjectTo<Event>()
+                .ToListAsync();
+        }
     }
 }

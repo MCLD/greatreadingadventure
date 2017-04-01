@@ -10,5 +10,7 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
         Task<ICollection<Event>> PageAsync(BaseFilter filter);
         Task<bool> LocationInUse(int siteId, int locationId);
+        Task DetachRelatedTrigger(int triggerId);
+        Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId);
     }
 }

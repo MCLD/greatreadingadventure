@@ -159,6 +159,12 @@ namespace GRA.Domain.Service
             await _locationRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), locationId);
         }
 
+        public async Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId)
+        {
+            VerifyPermission(Permission.ManageEvents);
+            return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
+        }
+
         private async Task ValidateEvent(Event graEvent)
         {
             if (graEvent.AtBranchId.HasValue)
