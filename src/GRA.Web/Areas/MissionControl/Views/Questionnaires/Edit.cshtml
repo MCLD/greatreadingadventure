@@ -88,10 +88,11 @@
 
     <h3>Questions</h3>
 
-    @if (Model.Questionnaire.Questions.Count > 0)
-    {
-        <div id="questionList">
-            @foreach (var question in Model.Questionnaire.Questions)
+
+    <div id="questionList">
+        @if (Model.Questionnaire.Questions.Count > 0)
+        {
+            foreach (var question in Model.Questionnaire.Questions)
             {
                 <div class="orderable-row" id="question_@question.Id">
                     <span class="fa fa-reorder" style="margin-right:6px;"></span>
@@ -111,8 +112,8 @@
                     </button>
                 </div>
             }
-        </div>
-    }
+        }
+    </div>
     @if (!Model.Questionnaire.IsLocked)
     {
         <div class="form-group">
@@ -159,7 +160,7 @@
                 answerList.append(CreateAnswerRow(item.id, item.text, "update"));
             });
             answerList.find("#answer_" + correctAnswerId).find("input[type=radio]").prop("checked", "true");
-            
+
             @if (!Model.Questionnaire.IsLocked)
             {
             <text>
@@ -200,6 +201,9 @@
         {
         <text>
             $("#questionList").sortable({
+                create: function () {
+                    $("#QuestionSortOrder").val($(this).sortable("serialize"))
+                },
                 update: function () {
                     $("#QuestionSortOrder").val($(this).sortable("serialize"));
                 }
@@ -235,7 +239,6 @@
                 else {
                     $("#AnswerSortOrder").val(answerList.sortable("serialize"));
                 }
-
             });
 
             $("#saveModalForm").on("submit", function (e) {

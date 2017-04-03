@@ -38,6 +38,10 @@ namespace GRA.Controllers
             {
                 var questionList = await _questionnaireService
                     .GetQuestionsByQuestionnaireIdAsync(id, true);
+                foreach (var question in questionList)
+                {
+                    question.Text = CommonMark.CommonMarkConverter.Convert(question.Text);
+                }
                 QuestionnaireViewModel viewModel = new QuestionnaireViewModel()
                 {
                     QuestionnaireId = id,

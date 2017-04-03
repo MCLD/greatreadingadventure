@@ -125,6 +125,11 @@ namespace GRA.Controllers.MissionControl
                         await _questionnaireService.UpdateQuestionListAsync(questionnaire.Id,
                             questionOrderList);
                     }
+                    else
+                    {
+                        await _questionnaireService.UpdateQuestionListAsync(questionnaire.Id,
+                            new List<int>());
+                    }
                     ShowAlertSuccess($"Questionnaire '{questionnaire.Name}' successfully updated!");
                     return RedirectToAction("Edit", new { id = questionnaire.Id });
                 }
