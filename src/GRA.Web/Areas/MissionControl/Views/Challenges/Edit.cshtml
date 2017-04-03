@@ -1,4 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesDetailViewModel
+@using GRA.Domain.Model
 
 <div class="row">
     <div class="modal fade iframe-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
@@ -25,30 +26,43 @@
                             <h4 class="modal-title" id="addModalLabel">Add task</h4>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
-                                <label asp-for="Task.Title" class="control-label"></label>
-                                <input asp-for="Task.Title" class="form-control" />
-                                <span asp-validation-for="Task.Title" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Author" class="control-label"></label>
-                                <input asp-for="Task.Author" class="form-control" />
-                                <span asp-validation-for="Task.Author" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Isbn" class="control-label"></label>
-                                <input asp-for="Task.Isbn" class="form-control" />
-                                <span asp-validation-for="Task.Isbn" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Url" class="control-label"></label>
-                                <input asp-for="Task.Url" class="form-control" />
-                                <span asp-validation-for="Task.Url" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.ChallengeTaskType" class="control-label"></label>
-                                <select asp-for="Task.ChallengeTaskType" asp-items="Model.TaskTypes" class="form-control"></select>
-                                <span asp-validation-for="Task.ChallengeTaskType" class="text-danger"></span>
+                            <input asp-for="Task.ChallengeTaskType" type="hidden" />
+
+                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a id="actionTab" href="#action" aria-controls="action" role="tab" data-toggle="tab">Action</a>
+                                </li>
+                                <li role="presentation">
+                                    <a id="bookTab" href="#book" aria-controls="book" role="tab" data-toggle="tab">Book</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane gra-tab-pane active" id="action">
+                                    <label asp-for="Task.Title" class="control-label">Name</label>
+                                    <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." />
+                                </div>
+                                <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <input asp-for="Task.Author" class="form-control" />
+                                        <span asp-validation-for="Task.Author" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <input asp-for="Task.Isbn" class="form-control" />
+                                        <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" class="form-control" />
+                                        <span asp-validation-for="Task.Url" class="text-danger"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -77,31 +91,43 @@
                             <input asp-for="Task.Id" type="hidden" />
                             <input asp-for="Task.Position" type="hidden" />
                             <input asp-for="Task.ChallengeId" type="hidden" />
+                            <input asp-for="Task.ChallengeTaskType" type="hidden" />
 
-                            <div class="form-group">
-                                <label asp-for="Task.Title" class="control-label"></label>
-                                <input asp-for="Task.Title" class="form-control" />
-                                <span asp-validation-for="Task.Title" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Author" class="control-label"></label>
-                                <input asp-for="Task.Author" class="form-control" />
-                                <span asp-validation-for="Task.Author" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Isbn" class="control-label"></label>
-                                <input asp-for="Task.Isbn" class="form-control" />
-                                <span asp-validation-for="Task.Isbn" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.Url" class="control-label"></label>
-                                <input asp-for="Task.Url" class="form-control" />
-                                <span asp-validation-for="Task.Url" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Task.ChallengeTaskType" class="control-label"></label>
-                                <select asp-for="Task.ChallengeTaskType" asp-items="Model.TaskTypes" class="form-control"></select>
-                                <span asp-validation-for="Task.ChallengeTaskType" class="text-danger"></span>
+                            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
+                                <li role="presentation" class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? "active" : "")">
+                                    <a id="actionTab" href="#action" aria-controls="action" role="tab" data-toggle="tab">Action</a>
+                                </li>
+                                <li role="presentation" class="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? "active" : "")">
+                                    <a id="bookTab" href="#book" aria-controls="book" role="tab" data-toggle="tab">Book</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? "active" : "")" id="action">
+                                    <label asp-for="Task.Title" class="control-label">Name</label>
+                                    <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")" />
+                                </div>
+                                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? "active" : "")" id="book">
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label"></label>
+                                        <input asp-for="Task.Title" id="bookTitle" class="form-control" disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : "disabled")" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Author" class="control-label"></label>
+                                        <input asp-for="Task.Author" class="form-control" />
+                                        <span asp-validation-for="Task.Author" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Isbn" class="control-label"></label>
+                                        <input asp-for="Task.Isbn" class="form-control" />
+                                        <span asp-validation-for="Task.Isbn" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" class="form-control" />
+                                        <span asp-validation-for="Task.Url" class="text-danger"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -281,7 +307,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-8 col-md-9">
-            <ul class="nav nav-tabs" role="tablist" style="margin-bottom:10px;">
+            <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
                 <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
                     <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
                 </li>
@@ -291,13 +317,13 @@
             </ul>
 
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                     <button id="openMaker" type="button" class="btn btn-default">
                         <span class="fa fa-certificate"></span> Create a Badge
                     </button>
                 </div>
 
-                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-default btn-file">
@@ -510,6 +536,19 @@
             $('.btn-file').addClass('btn-default');
             $('.btn-file').removeClass('btn-success');
             $('#selectedFile').val('');
+        });
+
+        $("#actionTab").on('show.bs.tab', function () {
+            $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Action");
+            $("#actionTitle").removeAttr("disabled");
+            $("#bookTitle").attr("disabled", "disabled");
+        });
+
+        $("#bookTab").on('show.bs.tab', function () {
+            $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Book");
+            $("#bookTitle").removeAttr("disabled");
+            $("#actionTitle").attr("disabled", "disabled");
+
         });
     </script>
 }

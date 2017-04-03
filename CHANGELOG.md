@@ -19,10 +19,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Override Microsoft logging to limit severity to Error and higher
 - Configure dynamic avatar parts in groups to make management easier
+- Change Challenge Task Type selection to be panel-based
 
 ### Fixed
 - Fix pagination for MC household add existing participant list
 - Fix infinite recursion loop in triggers
+- Fix displaying error for trying to delete a head of household
 
 ## [4.0.0-alpha2] - 2017-03-08
 ### Added

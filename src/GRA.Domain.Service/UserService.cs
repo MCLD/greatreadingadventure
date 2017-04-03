@@ -366,12 +366,12 @@ namespace GRA.Domain.Service
                 var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
                 if (!userLookup.CanBeDeleted)
                 {
-                    throw new GraException($"User {userIdToRemove} cannot be deleted.");
+                    throw new GraException($"{userLookup.FullName} cannot be deleted.");
                 }
                 var familyCount = await _userRepository.GetHouseholdCountAsync(userIdToRemove);
                 if (familyCount > 0)
                 {
-                    throw new GraException($"User {userIdToRemove} is the head of a family. Please remove all family members first.");
+                    throw new GraException($"{userLookup.FullName} is the head of a household. Please remove all household members first.");
                 }
                 await _userRepository.RemoveSaveAsync(requestedByUserId, userIdToRemove);
             }

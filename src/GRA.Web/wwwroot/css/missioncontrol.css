@@ -76,3 +76,15 @@
     margin-bottom: 10px;
     cursor: move;
 }
+
+.gra-tab-pane {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0 0 5px 5px;
+    padding: 10px;
+}
+
+.gra-nav-tabs {
+    margin-bottom: 0;
+}

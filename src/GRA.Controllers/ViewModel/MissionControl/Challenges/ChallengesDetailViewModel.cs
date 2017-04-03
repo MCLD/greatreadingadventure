@@ -11,7 +11,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
     {
         public GRA.Domain.Model.Challenge Challenge { get; set; }
         public GRA.Domain.Model.ChallengeTask Task { get; set; }
-        public List<SelectListItem> TaskTypes { get; set; }
         public bool AddTask { get; set; }
         public string BadgePath { get; set; }
         [DisplayName("Image")]

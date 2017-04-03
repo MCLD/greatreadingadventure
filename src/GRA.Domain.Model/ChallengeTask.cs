@@ -18,6 +18,7 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Author { get; set; }
 
+        [DisplayName("ISBN")]
         [MaxLength(30)]
         public string Isbn { get; set; }
 

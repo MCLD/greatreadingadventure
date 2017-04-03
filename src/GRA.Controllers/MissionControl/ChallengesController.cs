@@ -375,8 +375,6 @@ namespace GRA.Controllers.MissionControl
             ChallengesDetailViewModel viewModel = new ChallengesDetailViewModel()
             {
                 Challenge = challenge,
-                TaskTypes = Enum.GetNames(typeof(ChallengeTaskType))
-                    .Select(m => new SelectListItem { Text = m, Value = m }).ToList(),
                 CanActivate = canActivate,
                 CanViewTriggers = UserHasPermission(Permission.ManageTriggers),
                 DependentTriggers = await _challengeService.GetDependentsAsync(challenge.Id),
@@ -595,6 +593,12 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
+                if (viewModel.Task.ChallengeTaskType == ChallengeTaskType.Action)
+                {
+                    viewModel.Task.Author = null;
+                    viewModel.Task.Isbn = null;
+                    viewModel.Task.Url = null;
+                }
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
                 await _challengeService.AddTaskAsync(viewModel.Task);
             }
@@ -629,6 +633,12 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.IsValid)
             {
+                if (viewModel.Task.ChallengeTaskType == ChallengeTaskType.Action)
+                {
+                    viewModel.Task.Author = null;
+                    viewModel.Task.Isbn = null;
+                    viewModel.Task.Url = null;
+                }
                 await _challengeService.EditTaskAsync(viewModel.Task);
             }
             else

@@ -305,7 +305,7 @@ namespace GRA.Controllers.MissionControl
                     {
                         return RedirectToAction("Index", "Participants");
                     }
-                       
+
                 }
                 catch (GraException gex)
                 {
@@ -369,8 +369,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _userService.Remove(id);
-            AlertSuccess = "Participant deleted";
+            try
+            {
+                await _userService.Remove(id);
+                AlertSuccess = "Participant deleted";
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not delete participant: ", gex);
+            }
             return RedirectToAction("Index");
         }
         #endregion
