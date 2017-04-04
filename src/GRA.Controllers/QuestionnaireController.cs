@@ -75,7 +75,7 @@ namespace GRA.Controllers
                     await _questionnaireService.SubmitQuestionnaire(model.QuestionnaireId, user.Id,
                         user.Age, questionList);
 
-                    ShowAlertSuccess("Questionnaire successfully submited!");
+                    ShowAlertSuccess("Questionnaire successfully submitted!");
                     var requiredQuestionnaire = await _questionnaireService.GetRequiredQuestionnaire(user.Id,
                         user.Age);
                     if (requiredQuestionnaire.HasValue)

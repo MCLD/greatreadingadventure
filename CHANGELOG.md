@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [4.0.0-alpha3] 2017-04-04
 ### Added
 - Slack logging capability (see appsettings.json for configuration)
 - Add adding participants from Mission Control
