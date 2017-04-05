@@ -305,7 +305,6 @@ namespace GRA.Controllers.MissionControl
                     {
                         return RedirectToAction("Index", "Participants");
                     }
-
                 }
                 catch (GraException gex)
                 {

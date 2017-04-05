@@ -201,7 +201,6 @@ namespace GRA.Controllers.MissionControl
                 viewModel.SystemId = GetId(ClaimType.SystemId);
                 viewModel.BranchList = new SelectList(await _siteService
                     .GetBranches(viewModel.SystemId, true), "Id", "Name");
-
             }
 
             return View(viewModel);

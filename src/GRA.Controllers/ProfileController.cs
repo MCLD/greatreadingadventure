@@ -240,7 +240,7 @@ namespace GRA.Controllers
             }
 
             var household = await _userService
-                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead, 
+                .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead,
                 authUserIsHead, authUserIsHead);
 
             HouseholdListViewModel viewModel = new HouseholdListViewModel()

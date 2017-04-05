@@ -52,14 +52,15 @@ namespace GRA.Data.Repository
                                     .AnyAsync();
         }
 
-        public async Task SubmitQuestionnaire(int questionnaireId, int userId, 
+        public async Task SubmitQuestionnaire(int questionnaireId, int userId,
             IList<Question> questions)
         {
             var time = DateTime.Now;
             foreach (var question in questions)
             {
                 await _context.UserAnswers.AddAsync(
-                    new Model.UserAnswer {
+                    new Model.UserAnswer
+                    {
                         AnswerId = question.ParticipantAnswer,
                         UserId = userId,
                         CreatedAt = time

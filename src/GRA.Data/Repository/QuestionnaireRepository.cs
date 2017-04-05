@@ -16,7 +16,7 @@ namespace GRA.Data.Repository
     public class QuestionnaireRepository
         : AuditingRepository<Model.Questionnaire, Questionnaire>, IQuestionnaireRepository
     {
-        public QuestionnaireRepository(ServiceFacade.Repository repositoryFacade, 
+        public QuestionnaireRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<QuestionnaireRepository> logger) : base(repositoryFacade, logger)
         {
         }

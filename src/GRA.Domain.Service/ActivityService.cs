@@ -58,7 +58,7 @@ namespace GRA.Domain.Service
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
                 nameof(pointTranslationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
-            _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository, 
+            _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository,
                 nameof(requiredQuestionnaireRepository));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
@@ -658,7 +658,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode, 
+        public async Task<bool> LogSecretCodeAsync(int userIdToLog, string secretCode,
             bool householdLogging = false)
         {
             VerifyCanLog();
@@ -713,7 +713,6 @@ namespace GRA.Domain.Service
                 {
                     throw new GraException($"You already entered the code <strong>{secretCode}</strong> on <strong>{alreadyDone:d}</strong>!");
                 }
-                
             }
 
             // add that we've processed this trigger for this user

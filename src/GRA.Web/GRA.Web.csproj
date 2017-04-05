@@ -28,6 +28,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="assets\dynamicavatars\layer1\1.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer1\2.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer1\3.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer1\4.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer1\5.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\1.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\2.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\3.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\4.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\5.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\6.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\7.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer2\8.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\1.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\2.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\3.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\4.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\5.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\6.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\7.png" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets\dynamicavatars\layer3\8.png" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\**\*;assets\**\*;**\*.cshtml;appsettings.json;web.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -43,7 +67,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="1.2.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.1.1" />
@@ -60,13 +84,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.1" />
-    <PackageReference Include="AutoMapper" Version="5.2.0" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.0" />
+    <PackageReference Include="AutoMapper" Version="6.0.2" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.1.0-preview4-final" />
     <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="1.1.1" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="2.2.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="2.3.0" />
     <PackageReference Include="Serilog.Sinks.Slack.Core" Version="0.1.2-beta" />
   </ItemGroup>
 

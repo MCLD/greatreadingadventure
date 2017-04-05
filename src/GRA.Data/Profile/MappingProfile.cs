@@ -30,7 +30,8 @@ namespace GRA.Data.Profile
             CreateMap<Model.PointTranslation, Domain.Model.PointTranslation>().ReverseMap();
             CreateMap<Model.Program, Domain.Model.Program>().ReverseMap();
             CreateMap<Model.Question, Domain.Model.Question>()
-                .ForMember(dest => dest.Answers, opt => {
+                .ForMember(dest => dest.Answers, opt =>
+                {
                     opt.MapFrom(src => src.Answers.OrderBy(_ => _.SortOrder));
                     opt.ExplicitExpansion();
                 })

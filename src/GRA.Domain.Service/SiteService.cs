@@ -43,7 +43,7 @@ namespace GRA.Domain.Service
             return systemList;
         }
 
-        public async Task<IEnumerable<Branch>> GetBranches(int systemId, 
+        public async Task<IEnumerable<Branch>> GetBranches(int systemId,
             bool prioritizeUserBranch = false)
         {
             var branchList = await _branchRepository.GetBySystemAsync(systemId);

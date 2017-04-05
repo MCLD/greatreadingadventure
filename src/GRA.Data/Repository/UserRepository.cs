@@ -199,7 +199,7 @@ namespace GRA.Data.Repository
             {
                 userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
             }
-            
+
             if (filter.ProgramIds?.Any() == true)
             {
                 userList = userList.Where(_ => filter.ProgramIds.Cast<int>().Contains(_.ProgramId));

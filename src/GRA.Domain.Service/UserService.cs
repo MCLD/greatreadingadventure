@@ -116,7 +116,7 @@ namespace GRA.Domain.Service
             {
                 registeredUser = await _userRepository.AddSaveAsync(0, user);
             }
-             
+
             await _userRepository
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
@@ -607,8 +607,8 @@ namespace GRA.Domain.Service
             return addedMembers;
         }
 
-        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId, 
-            bool includePendingQuestionnaire, bool includeVendorCode, bool includeMail, 
+        public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId,
+            bool includePendingQuestionnaire, bool includeVendorCode, bool includeMail,
             bool includePrize = false)
         {
             var authId = GetClaimId(ClaimType.UserId);
@@ -627,7 +627,7 @@ namespace GRA.Domain.Service
 
             if (includeVendorCode || includeMail || includePrize || includePendingQuestionnaire)
             {
-                if (includeMail && householdHeadUserId != authId 
+                if (includeMail && householdHeadUserId != authId
                     && !HasPermission(Permission.ReadAllMail))
                 {
                     _logger.LogError($"User {authId} doesn't have permission to view mail for {householdHeadUserId}.");

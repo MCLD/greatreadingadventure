@@ -22,7 +22,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool CanSignUpParticipants { get; set; }
         public bool CanViewDetails { get; set; }
         public System.Array SortUsers { get; set; }
-        
+
 
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }

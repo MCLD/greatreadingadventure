@@ -13,7 +13,7 @@ namespace GRA.Data.Repository
     public class QuestionRepository
         : AuditingRepository<Model.Question, Question>, IQuestionRepository
     {
-        public QuestionRepository(ServiceFacade.Repository repositoryFacade, 
+        public QuestionRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<QuestionRepository> logger) : base(repositoryFacade, logger)
         {
         }

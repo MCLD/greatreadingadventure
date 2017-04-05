@@ -27,7 +27,7 @@ namespace GRA.Controllers.Filter
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 // Check if user can access mission control and the user Id matches the active user id
-                if (httpContext.User.HasClaim(GRA.ClaimType.Permission, 
+                if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
                         GRA.Domain.Model.Permission.AccessMissionControl.ToString())
                     && httpContext.Session.GetInt32(SessionKey.ActiveUserId) ==
                         new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId))
@@ -40,7 +40,7 @@ namespace GRA.Controllers.Filter
                 {
                     var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
                     if (!controllerActionDescriptor.ControllerTypeInfo
-                            .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect)) 
+                            .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect))
                         && !controllerActionDescriptor.MethodInfo
                             .IsDefined(typeof(Attributes.PreventQuestionnaireRedirect)))
                     {

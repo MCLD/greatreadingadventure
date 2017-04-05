@@ -20,7 +20,7 @@ namespace GRA.Domain.Service
             IAnswerRepository answerRepository,
             IQuestionRepository questionRepository,
             IQuestionnaireRepository questionnaireRepository,
-            IRequiredQuestionnaireRepository requiredQuestionnaireRepository) 
+            IRequiredQuestionnaireRepository requiredQuestionnaireRepository)
             : base(logger, userContextProvider)
         {
             SetManagementPermission(Permission.ManageQuestionnaires);
@@ -171,7 +171,7 @@ namespace GRA.Domain.Service
             return await _questionRepository.GetByIdAsync(questionId);
         }
 
-        public async Task<IList<Question>> GetQuestionsByQuestionnaireIdAsync(int questionnaireId, 
+        public async Task<IList<Question>> GetQuestionsByQuestionnaireIdAsync(int questionnaireId,
             bool includeAnswers)
         {
             return await _questionRepository.GetByQuestionnaireIdAsync(questionnaireId, includeAnswers);
@@ -222,14 +222,14 @@ namespace GRA.Domain.Service
                 return null;
             }
         }
-        public async Task<bool> HasRequiredQuestionnaire(int userId, int? userAge, 
+        public async Task<bool> HasRequiredQuestionnaire(int userId, int? userAge,
             int questionnaireId)
         {
             return await _requiredQuestionnaireRepository
                 .UserHasRequiredQuestionnaire(GetCurrentSiteId(), userId, userAge, questionnaireId);
         }
 
-        public async Task SubmitQuestionnaire(int questionnaireId, int userId, int? userAge, 
+        public async Task SubmitQuestionnaire(int questionnaireId, int userId, int? userAge,
             IList<Question> questions)
         {
             var requiredQuestionnaires = await _requiredQuestionnaireRepository.
@@ -262,7 +262,7 @@ namespace GRA.Domain.Service
                 }
             }
 
-            await _requiredQuestionnaireRepository.SubmitQuestionnaire(questionnaireId, userId, 
+            await _requiredQuestionnaireRepository.SubmitQuestionnaire(questionnaireId, userId,
                 questions);
         }
     }

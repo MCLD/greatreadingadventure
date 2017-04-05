@@ -240,7 +240,6 @@ namespace GRA.Controllers.MissionControl
                             QuestionId = question.Id,
                             Text = newAnswer.Value,
                             SortOrder = answerOrderList.IndexOf(newAnswer.Key)
-
                         };
                         answer = await _questionnaireService.AddAnswerAsync(answer);
                         if (correctAnswerId == newAnswer.Key)
