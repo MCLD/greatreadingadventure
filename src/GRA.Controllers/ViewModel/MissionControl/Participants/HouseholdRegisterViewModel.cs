@@ -8,6 +8,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(36)]
         public string Username { get; set; }
 
         [Required]

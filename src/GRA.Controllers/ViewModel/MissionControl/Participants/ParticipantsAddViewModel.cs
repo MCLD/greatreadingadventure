@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     public class ParticipantsAddViewModel
     {
         [Required]
+        [MaxLength(36)]
         public string Username { get; set; }
 
         [Required]
@@ -17,13 +18,16 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         [Required]
         [DisplayName("First Name")]
+        [MaxLength(255)]
         public string FirstName { get; set; }
 
         [Required]
         [DisplayName("Last Name")]
+        [MaxLength(255)]
         public string LastName { get; set; }
 
         [DisplayName("Zip Code")]
+        [MaxLength(32)]
         public string PostalCode { get; set; }
 
         [Required]
@@ -45,14 +49,17 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [DisplayName("School")]
         public int? SchoolId { get; set; }
         [DisplayName("School Name")]
+        [MaxLength(255)]
         public string EnteredSchoolName { get; set; }
 
         [DisplayName("Email Address")]
         [EmailAddress]
+        [MaxLength(254)]
         public string Email { get; set; }
 
         [DisplayName("Phone Number")]
         [Phone]
+        [MaxLength(15)]
         public string PhoneNumber { get; set; }
 
         public bool RequirePostalCode { get; set; }

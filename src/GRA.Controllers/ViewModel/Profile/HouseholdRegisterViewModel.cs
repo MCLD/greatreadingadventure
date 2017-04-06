@@ -8,6 +8,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public int RegisterId { get; set; }
 
         [Required]
+        [MaxLength(36)]
         public string Username { get; set; }
 
         [Required]

@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Fixed
 - Fix 'assets' directory to deploy properly with default avatars
+- Fix MaxLength errors on user join and registration
 
 ## [4.0.0-alpha3] 2017-04-04
 ### Added

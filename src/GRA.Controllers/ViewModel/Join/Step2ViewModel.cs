@@ -19,6 +19,7 @@ namespace GRA.Controllers.ViewModel.Join
         [DisplayName("School")]
         public int? SchoolId { get; set; }
         [DisplayName("School Name")]
+        [MaxLength(255)]
         public string EnteredSchoolName { get; set; }
 
         public bool ShowAge { get; set; }

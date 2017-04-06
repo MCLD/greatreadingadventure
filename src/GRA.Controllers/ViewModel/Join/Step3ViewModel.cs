@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.Join
     public class Step3ViewModel
     {
         [Required]
+        [MaxLength(36)]
         public string Username { get; set; }
 
         [Required]
@@ -22,10 +23,12 @@ namespace GRA.Controllers.ViewModel.Join
 
         [DisplayName("Email Address")]
         [EmailAddress]
+        [MaxLength(254)]
         public string Email { get; set; }
 
         [DisplayName("Phone Number")]
         [Phone]
+        [MaxLength(15)]
         public string PhoneNumber { get; set; }
     }
 }
