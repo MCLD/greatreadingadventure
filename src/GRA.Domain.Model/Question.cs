@@ -13,7 +13,6 @@ namespace GRA.Domain.Model
         public string Name { get; set; }
         public int SortOrder { get; set; }
 
-        [MaxLength(1500)]
         [Required]
         public string Text { get; set; }
         public int CorrectAnswerId { get; set; }

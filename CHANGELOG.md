@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Remove maximum length from question text
+
 ### Fixed
 - Fix 'assets' directory to deploy properly with default avatars
 - Fix MaxLength errors on user join and registration
