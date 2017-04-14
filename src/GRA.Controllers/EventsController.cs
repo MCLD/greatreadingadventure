@@ -38,7 +38,7 @@ namespace GRA.Controllers
             string StartDate = null,
             string EndDate = null)
         {
-            BaseFilter filter = new BaseFilter(page)
+            EventFilter filter = new EventFilter(page)
             {
                 Search = search,
             };

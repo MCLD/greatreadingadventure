@@ -17,11 +17,14 @@ namespace GRA.Domain.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
-        [DisplayName("Starts At")]
+        [DisplayName("Start")]
         [Required]
-        public DateTime StartsAt { get; set; }
+        public DateTime StartDate { get; set; }
 
-        [DisplayName("All Day Event")]
+        [DisplayName("End")]
+        public DateTime? EndDate { get; set; }
+
+        [DisplayName("All Day")]
         [Required]
         public bool AllDay { get; set; }
 
@@ -33,6 +36,9 @@ namespace GRA.Domain.Model
         public bool IsActive { get; set; }
         [Required]
         public bool IsValid { get; set; }
+        [Required]
+        [DisplayName("Type")]
+        public bool IsCommunityExperience { get; set; }
 
         [DisplayName("Event Link")]
         [MaxLength(300)]

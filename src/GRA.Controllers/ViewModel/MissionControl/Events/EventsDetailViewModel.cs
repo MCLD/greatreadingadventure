@@ -9,6 +9,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
     {
         public GRA.Domain.Model.Event Event { get; set; }
         public bool UseLocation { get; set; }
+        public bool NewCommunityExperience { get; set; }
 
         public bool IncludeSecretCode { get; set; }
         [MaxLength(50)]

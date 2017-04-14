@@ -19,13 +19,13 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<int> CountAsync(BaseFilter filter)
+        public async Task<int> CountAsync(EventFilter filter)
         {
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Event>> PageAsync(BaseFilter filter)
+        public async Task<ICollection<Event>> PageAsync(EventFilter filter)
         {
             var events = await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -82,7 +82,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        private IQueryable<Model.Event> ApplyFilters(BaseFilter filter)
+        private IQueryable<Model.Event> ApplyFilters(EventFilter filter)
         {
             // site id filter
             var events = DbSet
@@ -93,6 +93,24 @@ namespace GRA.Data.Repository
             if (filter.IsActive.HasValue)
             {
                 events = events.Where(_ => _.IsActive == filter.IsActive);
+            }
+
+            if (filter.EventType.HasValue)
+            {
+                switch(filter.EventType.Value)
+                {
+                    case 0:
+                        events = events.Where(_ => _.IsCommunityExperience == false);
+                        break;
+
+                    case 1:
+                        events = events.Where(_ => _.IsCommunityExperience == true);
+                        break;
+
+                    default:
+                        break;
+                }
+                
             }
 
             // apply filter
@@ -152,11 +170,11 @@ namespace GRA.Data.Repository
             // filter by dates
             if (filter.StartDate != null)
             {
-                events = events.Where(_ => _.StartsAt.Date >= filter.StartDate.Value.Date);
+                events = events.Where(_ => _.StartDate.Date >= filter.StartDate.Value.Date);
             }
             if (filter.EndDate != null)
             {
-                events = events.Where(_ => _.StartsAt.Date <= filter.EndDate.Value.Date);
+                events = events.Where(_ => _.StartDate.Date <= filter.EndDate.Value.Date);
             }
 
             // apply search

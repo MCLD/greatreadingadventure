@@ -18,7 +18,10 @@ namespace GRA.Data.Model
         public string Name { get; set; }
 
         [Required]
-        public DateTime StartsAt { get; set; }
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
         [Required]
         public bool AllDay { get; set; }
 
@@ -30,6 +33,8 @@ namespace GRA.Data.Model
         public bool IsActive { get; set; }
         [Required]
         public bool IsValid { get; set; }
+        [Required]
+        public bool IsCommunityExperience { get; set; }
 
         [MaxLength(300)]
         public string ExternalLink { get; set; }

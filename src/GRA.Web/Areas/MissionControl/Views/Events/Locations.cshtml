@@ -118,6 +118,7 @@
     <div class="col-xs-12">
         <ul class="nav nav-pills" style="padding: 10px 0;">
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Events</a></li>
+            <li ActiveBy routeKey="Action" value="CommunityExperiences"><a asp-action="CommunityExperiences">Community Experiences</a></li>
             <li ActiveBy routeKey="Action" value="Locations"><a asp-action="Locations">Locations</a></li>
         </ul>
     </div>
@@ -135,7 +136,7 @@
     <div class="col-xs-12">
         @if (Model.Locations.Count() == 0)
         {
-            <div class="alert alert-warning">No Location</div>
+            <div class="alert alert-warning">No Locations</div>
         }
         else
         {

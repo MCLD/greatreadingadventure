@@ -119,7 +119,7 @@
                                                         @eventItem.Name
                                                     </a>
                                                 </td>
-                                                <td>@eventItem.StartsAt.ToString("d") @(!eventItem.AllDay ? "at " + eventItem.StartsAt.ToString("t") : "")</td>
+                                                <td>@eventItem.StartDate.ToString("d") @(!eventItem.AllDay ? "at " + eventItem.StartDate.ToString("t") : "")</td>
                                                 <td>@eventItem.EventLocationName</td>
                                             </tr>
                                         }

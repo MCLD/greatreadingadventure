@@ -43,7 +43,63 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
-            BaseFilter filter = new BaseFilter(page);
+            try
+            {
+                var viewModel = await GetEventList(0, search, systemId, branchId, mine, programId, page);
+
+                if (viewModel.PaginateModel.MaxPage > 0
+                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<IActionResult> CommunityExperiences(string search,
+            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+        {
+            try
+            {
+                var viewModel = await GetEventList(1, search, systemId, branchId, mine, programId, page);
+
+                if (viewModel.PaginateModel.MaxPage > 0
+                    && viewModel.PaginateModel.CurrentPage > viewModel.PaginateModel.MaxPage)
+                {
+                    return RedirectToRoute(
+                        new
+                        {
+                            page = viewModel.PaginateModel.LastPage ?? 1
+                        });
+                }
+                viewModel.CommunityExperience = true;
+                return View("Index", viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Invalid event filter by User {GetId(ClaimType.UserId)}: {ex}");
+                ShowAlertDanger("Invalid filter parameters.");
+                return RedirectToAction("CommunityExperiences");
+            }
+        }
+
+        private async Task<EventsListViewModel> GetEventList(int? eventType, string search,
+            int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
+        {
+            EventFilter filter = new EventFilter(page)
+            {
+                EventType = eventType
+            };
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -83,10 +139,6 @@ namespace GRA.Controllers.MissionControl
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
-            {
-                return RedirectToRoute(new { page = paginateModel.LastPage ?? 1 });
-            }
 
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
@@ -152,10 +204,10 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
-            return View(viewModel);
+            return viewModel;
         }
 
-        public async Task<IActionResult> Create(int? id)
+        public async Task<IActionResult> Create(int? id, bool communityExperience = false)
         {
             PageTitle = "Create Event";
 
@@ -202,6 +254,10 @@ namespace GRA.Controllers.MissionControl
                 viewModel.BranchList = new SelectList(await _siteService
                     .GetBranches(viewModel.SystemId, true), "Id", "Name");
             }
+            if (communityExperience)
+            {
+                viewModel.NewCommunityExperience = true;
+            }
 
             return View(viewModel);
         }
@@ -209,6 +265,21 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(EventsDetailViewModel model)
         {
+            if (model.Event.AllDay)
+            {
+                if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
+                {
+                    ModelState.AddModelError("Event.EndDate", "The End date cannot be before the Start date");
+                }
+            }
+            else
+            {
+                if (model.Event.EndDate.HasValue && model.Event.StartDate.TimeOfDay
+                    > model.Event.EndDate.Value.TimeOfDay)
+                {
+                    ModelState.AddModelError("Event.EndDate", "The End time cannot be before the Start time");
+                }
+            }
             if (model.UseLocation && !model.Event.AtLocationId.HasValue)
             {
                 ModelState.AddModelError("Event.AtLocationId", "The At Location field is required.");
@@ -243,6 +314,37 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
+                    if (model.Event.AllDay)
+                    {
+                        model.Event.StartDate = model.Event.StartDate.Date;
+                        if (model.Event.EndDate.HasValue)
+                        {
+                            if (model.Event.EndDate.Value.Date == model.Event.StartDate.Date)
+                            {
+                                model.Event.EndDate = null;
+                            }
+                            else
+                            {
+                                model.Event.EndDate = model.Event.EndDate.Value.Date;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (model.Event.EndDate.HasValue)
+                        {
+                            if (model.Event.EndDate.Value.TimeOfDay == model.Event.StartDate.TimeOfDay)
+                            {
+                                model.Event.EndDate = null;
+                            }
+                            else
+                            {
+                                model.Event.EndDate = model.Event.StartDate.Date
+                                    + model.Event.EndDate.Value.TimeOfDay;
+                            }
+                        }
+                    }
+
                     int? triggerId = null;
                     if (model.IncludeSecretCode)
                     {
@@ -306,6 +408,10 @@ namespace GRA.Controllers.MissionControl
 
                     await _eventService.Add(graEvent);
                     ShowAlertSuccess($"Event '{graEvent.Name}' created.");
+                    if (graEvent.IsCommunityExperience)
+                    {
+                        return RedirectToAction("CommunityExperiences");
+                    }
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
@@ -368,6 +474,21 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(EventsDetailViewModel model)
         {
+            if (model.Event.AllDay)
+            {
+                if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
+                {
+                    ModelState.AddModelError("Event.EndDate", "The End date cannot be before the Start date");
+                }
+            }
+            else
+            {
+                if (model.Event.EndDate.HasValue && model.Event.StartDate.TimeOfDay
+                    > model.Event.EndDate.Value.TimeOfDay)
+                {
+                    ModelState.AddModelError("Event.EndDate", "The End time cannot be before the Start time");
+                }
+            }
             if (model.UseLocation && !model.Event.AtLocationId.HasValue)
             {
                 ModelState.AddModelError("Event.AtLocationId", "The At Location field is required.");
@@ -384,6 +505,36 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
+                    if (model.Event.AllDay)
+                    {
+                        model.Event.StartDate = model.Event.StartDate.Date;
+                        if (model.Event.EndDate.HasValue)
+                        {
+                            if (model.Event.EndDate.Value.Date == model.Event.StartDate.Date)
+                            {
+                                model.Event.EndDate = null;
+                            }
+                            else
+                            {
+                                model.Event.EndDate = model.Event.EndDate.Value.Date;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (model.Event.EndDate.HasValue)
+                        {
+                            if (model.Event.EndDate.Value.TimeOfDay == model.Event.StartDate.TimeOfDay)
+                            {
+                                model.Event.EndDate = null;
+                            }
+                            else
+                            {
+                                model.Event.EndDate = model.Event.StartDate.Date
+                                    + model.Event.EndDate.Value.TimeOfDay;
+                            }
+                        }
+                    }
                     if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
                     {
                         model.Event.ExternalLink = new UriBuilder(
@@ -401,6 +552,10 @@ namespace GRA.Controllers.MissionControl
 
                     await _eventService.Edit(graEvent);
                     ShowAlertSuccess($"Event '{graEvent.Name}' edited.");
+                    if (graEvent.IsCommunityExperience)
+                    {
+                        return RedirectToAction("CommunityExperiences");
+                    }
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
@@ -423,11 +578,18 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, bool communityExperience = false)
         {
             await _eventService.Remove(id);
-            ShowAlertSuccess("Event deleted.");
-            return RedirectToAction("Index");
+            
+            if (communityExperience)
+            {
+                return RedirectToAction("CommunityExperiences");
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [Authorize(Policy = Policy.ManageLocations)]

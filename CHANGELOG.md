@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Added community experience event type
+- Added end time/date to events
+
 ### Changed
 - Changed trigger mail to require mail permissions
 - Remove maximum length from question text

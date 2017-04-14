@@ -7,8 +7,8 @@ namespace GRA.Domain.Repository
 {
     public interface IEventRepository : IRepository<Event>
     {
-        Task<int> CountAsync(BaseFilter filter);
-        Task<ICollection<Event>> PageAsync(BaseFilter filter);
+        Task<int> CountAsync(EventFilter filter);
+        Task<ICollection<Event>> PageAsync(EventFilter filter);
         Task<bool> LocationInUse(int siteId, int locationId);
         Task DetachRelatedTrigger(int triggerId);
         Task<ICollection<Event>> GetRelatedEventsForTriggerAsync(int triggerId);

@@ -80,16 +80,41 @@
         </div>
     </div>
 
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Event.IsCommunityExperience" class="control-label"></label>
+            <select asp-for="Event.IsCommunityExperience" class="form-control">
+                <option value="false">Event</option>
+                <option value="true">Community Experience</option>
+            </select>
+            <span asp-validation-for="Event.IsCommunityExperience" class="text-danger"></span>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-xs-8 col-sm-10 row-spacing">
-            <label asp-for="Event.StartsAt" class="control-label"></label>
-            <div class="input-group date" id="pickerStart">
-                <span class="input-group-addon">
-                    <span class="fa fa-calendar"></span>
-                </span>
-                <input asp-for="Event.StartsAt" type="text" class="form-control" />
+        <div class="col-xs-8 col-sm-10 ">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 row-spacing">
+                    <label asp-for="Event.StartDate" class="control-label"></label>
+                    <div class="input-group date" id="pickerStart">
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                        <input asp-for="Event.StartDate" type="text" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Event.StartDate" class="text-danger"></span>
+                </div>
+                <div class="col-xs-12 col-sm-6 row-spacing">
+                    <label asp-for="Event.EndDate" class="control-label"></label>
+                    <div class="input-group date" id="pickerEnd">
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                        <input asp-for="Event.EndDate" type="text" value="@(Model.Event.AllDay ? Model.Event.EndDate?.ToString() : Model.Event.EndDate?.ToString("t"))" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Event.EndDate" class="text-danger"></span>
+                </div>
             </div>
-            <span asp-validation-for="Event.StartsAt" class="text-danger"></span>
         </div>
         <div class="col-xs-4 col-sm-2 row-spacing">
             <label asp-for="Event.AllDay" class="control-label center-label" style="text-align:center;"></label>
@@ -190,7 +215,19 @@
             }
             allowInputToggle: true,
             sideBySide: true,
-            useCurrent: false,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $("#pickerEnd").datetimepicker({
+            format: "@(Model.Event?.AllDay == true ? "MM/DD/YYYY" : "hh:mm A")",
+            allowInputToggle: true,
             icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
@@ -204,11 +241,13 @@
         $("#Event_AllDay").on("change", function() {
             if ($("#Event_AllDay").is(":checked"))
             {
-                $('#pickerStart').data("DateTimePicker").format("MM/DD/YYYY")
+                $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY");
+                $("#pickerEnd").data("DateTimePicker").format("MM/DD/YYYY");
             }
             else
             {
-                $('#pickerStart').data("DateTimePicker").format("MM/DD/YYYY hh:mm A")
+                $("#pickerStart").data("DateTimePicker").format("MM/DD/YYYY hh:mm A");
+                $("#pickerEnd").data("DateTimePicker").format("hh:mm A");
             }
         });
 

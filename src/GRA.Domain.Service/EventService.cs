@@ -28,7 +28,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<IEnumerable<Event>>>
-            GetPaginatedListAsync(BaseFilter filter,
+            GetPaginatedListAsync(EventFilter filter,
             bool isMissionControl = false)
         {
             ICollection<Event> data = null;

@@ -5,7 +5,7 @@
     <h4 class="modal-title" id="detailModalLabel">Event: @Model.Event.Name</h4>
 </div>
 <div class="modal-body">
-    <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>@Model.Event.StartsAt.ToString("d") @(!Model.Event.AllDay ? "at " + Model.Event.StartsAt.ToString("t") : "")</div>
+    <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>@Model.Event.StartDate.ToString("d") @(!Model.Event.AllDay ? "at " + Model.Event.StartsAt.ToString("t") : "")</div>
 
     <div class="row-spacing">@Model.Event.Description</div>
 
