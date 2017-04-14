@@ -97,7 +97,7 @@ namespace GRA.Data.Repository
 
             if (filter.EventType.HasValue)
             {
-                switch(filter.EventType.Value)
+                switch (filter.EventType.Value)
                 {
                     case 0:
                         events = events.Where(_ => _.IsCommunityExperience == false);
@@ -110,7 +110,6 @@ namespace GRA.Data.Repository
                     default:
                         break;
                 }
-                
             }
 
             // apply filter

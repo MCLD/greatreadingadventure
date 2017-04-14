@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [4.0.0-alpha4] 2017-04-14
 ### Added
 - Added community experience event type
 - Added end time/date to events

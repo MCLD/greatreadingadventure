@@ -10,7 +10,6 @@ namespace GRA.Domain.Model.Filters
 
         public EventFilter(int? page = null) : base(page)
         {
-            
         }
     }
 }

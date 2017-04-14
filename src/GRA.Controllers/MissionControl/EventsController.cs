@@ -581,7 +581,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Delete(int id, bool communityExperience = false)
         {
             await _eventService.Remove(id);
-            
+
             if (communityExperience)
             {
                 return RedirectToAction("CommunityExperiences");
