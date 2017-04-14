@@ -26,6 +26,11 @@ namespace GRA.Domain.Service
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
         }
 
+        public async Task<VendorCodeType> GetTypeById(int id)
+        {
+            return await _vendorCodeTypeRepository.GetByIdAsync(id);
+        }
+
         public async Task<ICollection<VendorCodeType>> GetTypeAllAsync()
         {
             VerifyManagementPermission();

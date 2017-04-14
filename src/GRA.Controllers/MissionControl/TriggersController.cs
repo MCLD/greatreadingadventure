@@ -176,13 +176,17 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = true,
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditMail = UserHasPermission(Permission.MailParticipants),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                 BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
-                VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description")
+                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
             };
+            if (viewModel.EditMail)
+            {
+                viewModel.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
 
             PageTitle = "Create Trigger";
             return View("Detail", viewModel);
@@ -354,14 +358,18 @@ namespace GRA.Controllers.MissionControl
                 model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
             }
             model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
-            model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)
             {
                 requirement.BadgePath = _pathResolver.ResolveContentPath(requirement.BadgePath);
             }
+            if (model.EditMail)
+            {
+                model.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
+
             PageTitle = "Create Trigger";
             return View("Detail", model);
         }
@@ -378,6 +386,7 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditMail = UserHasPermission(Permission.MailParticipants),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 AwardsMail = !string.IsNullOrWhiteSpace(trigger.AwardMailSubject),
                 AwardsPrize = !string.IsNullOrWhiteSpace(trigger.AwardPrizeName),
@@ -388,10 +397,19 @@ namespace GRA.Controllers.MissionControl
                 ChallengeRequiredList = string.Join("", trigger.ChallengeIds
                 .Select(_ => "<" + _.ToString() + ">")),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
-                VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description")
+                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
             };
+
+            if (viewModel.EditVendorCode)
+            {
+                viewModel.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
+            else if (viewModel.Trigger.AwardVendorCodeTypeId.HasValue)
+            {
+                viewModel.VendorCodeType = (await _vendorCodeService
+                    .GetTypeById(viewModel.Trigger.AwardVendorCodeTypeId.Value)).Description;
+            }
             if (viewModel.Trigger.LimitToSystemId.HasValue)
             {
                 viewModel.BranchList = new SelectList(
@@ -581,13 +599,21 @@ namespace GRA.Controllers.MissionControl
                 model.BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name");
             }
             model.ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name");
-            model.VendorCodeTypeList = new SelectList(
-                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
             model.TriggerRequirements = await _triggerService
                 .GetRequirementsByIdsAsync(badgeRequiredList, challengeRequiredList);
             foreach (var requirement in model.TriggerRequirements)
             {
                 requirement.BadgePath = _pathResolver.ResolveContentPath(requirement.BadgePath);
+            }
+            if (model.EditVendorCode)
+            {
+                model.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
+            else if (model.Trigger.AwardVendorCodeTypeId.HasValue)
+            {
+                model.VendorCodeType = (await _vendorCodeService
+                    .GetTypeById(model.Trigger.AwardVendorCodeTypeId.Value)).Description;
             }
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";
             return View("Detail", model);

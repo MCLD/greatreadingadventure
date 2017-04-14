@@ -54,6 +54,15 @@ namespace GRA.Domain.Service
             trigger.SiteId = GetCurrentSiteId();
             trigger.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             trigger.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+            if (!HasPermission(Permission.ManageVendorCodes))
+            {
+                trigger.AwardVendorCodeTypeId = null;
+            }
+            if (!HasPermission(Permission.MailParticipants))
+            {
+                trigger.AwardMail = null;
+                trigger.AwardMailSubject = null;
+            }
             await ValidateTriggerAsync(trigger);
             return await _triggerRepository.AddSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);
@@ -64,10 +73,19 @@ namespace GRA.Domain.Service
             VerifyManagementPermission();
             trigger.SiteId = GetCurrentSiteId();
             await ValidateTriggerAsync(trigger);
-            if (!HasPermission(Permission.ManageVendorCodes))
+            if (!HasPermission(Permission.ManageVendorCodes)
+                || !HasPermission(Permission.MailParticipants))
             {
                 var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
-                trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
+                if (!HasPermission(Permission.ManageVendorCodes))
+                {
+                    trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
+                }
+                if (!HasPermission(Permission.MailParticipants))
+                {
+                    trigger.AwardMail = currentTrigger.AwardMail;
+                    trigger.AwardMailSubject = currentTrigger.AwardMailSubject;
+                }
             }
             return await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);

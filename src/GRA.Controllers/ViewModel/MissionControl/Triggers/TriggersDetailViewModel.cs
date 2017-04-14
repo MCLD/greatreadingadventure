@@ -26,7 +26,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
 
+        public bool EditMail { get; set; }
         public bool EditVendorCode { get; set; }
+
+        public string VendorCodeType { get; set; }
 
         public bool AwardsMail { get; set; }
         public bool AwardsPrize { get; set; }
