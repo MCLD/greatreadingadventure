@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Changed trigger mail to require mail permissions
 - Remove maximum length from question text
+- Improve vendor code generation in FlightController
 
 ### Fixed
 - Fix 'assets' directory to deploy properly with default avatars

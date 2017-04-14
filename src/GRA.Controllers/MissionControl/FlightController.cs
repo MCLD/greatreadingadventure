@@ -67,18 +67,23 @@ namespace GRA.Controllers.MissionControl
             return View();
         }
 
-        public async Task<IActionResult> CreateVendorCodesAsync()
+        [HttpPost]
+        public async Task<IActionResult> CreateVendorCodesAsync(int numberOfCodes)
         {
-            var code = await _vendorCodeService.AddTypeAsync(new VendorCodeType
+            var allCodes = await _vendorCodeService.GetTypeAllAsync();
+            var code = allCodes.FirstOrDefault();
+            if (code == null)
             {
-                Description = "Free Book Code",
-                MailSubject = "Here's your Free Book Code!",
-                Mail = "Congratulations, you've earned a free book! Your free book code is {Code}!",
-            });
-
+                code = await _vendorCodeService.AddTypeAsync(new VendorCodeType
+                {
+                    Description = "Free Book Code",
+                    MailSubject = "Here's your Free Book Code!",
+                    Mail = "Congratulations, you've earned a free book! Your free book code is {Code}!",
+                });
+            }
             var sw = new Stopwatch();
             sw.Start();
-            var generatedCount = await _vendorCodeService.GenerateVendorCodesAsync(code.Id, 50);
+            var generatedCount = await _vendorCodeService.GenerateVendorCodesAsync(code.Id, numberOfCodes);
             sw.Stop();
 
             AlertSuccess = $"Generated {generatedCount} codes in {sw.Elapsed.TotalSeconds} seconds of type: {code.Description}";
