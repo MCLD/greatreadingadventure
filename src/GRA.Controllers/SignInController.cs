@@ -101,7 +101,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertWarning("Could not recover password:", gex);
+                    ShowAlertWarning("Could not recover password: ", gex);
                 }
             }
             return View();
@@ -128,7 +128,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertWarning("Could not recover usernames:", gex.Message);
+                    ShowAlertWarning("Could not recover usernames: ", gex.Message);
                 }
             }
 
@@ -158,7 +158,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertWarning("Unable to reset password:", gex);
+                    ShowAlertWarning("Unable to reset password: ", gex);
                 }
             }
             return View(model);

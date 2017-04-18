@@ -576,7 +576,7 @@ namespace GRA.Controllers
                     }
                     catch (GraException gex)
                     {
-                        ShowAlertDanger("Unable to register household member:", gex);
+                        ShowAlertDanger("Unable to register household member: ", gex);
                     }
                 }
                 return View("HouseholdRegisterMember", model);
@@ -751,7 +751,7 @@ namespace GRA.Controllers
                     }
                     catch (GraException gex)
                     {
-                        ShowAlertDanger("Unable to change password:", gex);
+                        ShowAlertDanger("Unable to change password: ", gex);
                     }
                 }
                 else

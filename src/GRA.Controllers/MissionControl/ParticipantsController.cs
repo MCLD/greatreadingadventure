@@ -1039,7 +1039,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Unable to register household member:", gex);
+                    ShowAlertDanger("Unable to register household member: ", gex);
                 }
             }
             SetPageTitle(user, "Register Household Memeber");
@@ -1561,7 +1561,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Unable to change password:", gex);
+                    ShowAlertDanger("Unable to change password: ", gex);
                 }
             }
 
