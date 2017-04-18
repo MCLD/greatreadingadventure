@@ -4,3 +4,7 @@
 # tell linguist to ignore vendor files
 # https://github.com/github/linguist#overrides
 src/GRA.Web/wwwroot/lib/* linguist-vendored
+
+# fix CHANGELOG.md to default to union merge
+CHANGELOG merge=union
+
