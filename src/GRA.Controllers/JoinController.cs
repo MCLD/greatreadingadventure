@@ -369,11 +369,6 @@ namespace GRA.Controllers
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync();
 
-            if (programList.Count() > 1)
-            {
-                programList = programList.Prepend(new Program() { Id = -1 });
-            }
-
             Step2ViewModel viewModel = new Step2ViewModel()
             {
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),

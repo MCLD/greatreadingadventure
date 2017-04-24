@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Fixed
 - Fix alert spacing
+- Fix signup empty program exception
+- Fix signup validation messages
 
 ## [4.0.0-alpha4] 2017-04-14
 ### Added

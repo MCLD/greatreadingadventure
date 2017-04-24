@@ -32,7 +32,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         [Required]
         [DisplayName("System")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = "The System field is required.")]
         public int? SystemId { get; set; }
 
         [Required]
@@ -42,7 +42,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         [Required]
         [DisplayName("Program")]
-        [Range(0, int.MaxValue, ErrorMessage = "The Branch field is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = "The Program field is required.")]
         public int? ProgramId { get; set; }
 
         public int? Age { get; set; }
