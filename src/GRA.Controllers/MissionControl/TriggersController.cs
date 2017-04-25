@@ -182,7 +182,7 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
             };
-            if (viewModel.EditMail)
+            if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
                     (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
@@ -364,7 +364,7 @@ namespace GRA.Controllers.MissionControl
             {
                 requirement.BadgePath = _pathResolver.ResolveContentPath(requirement.BadgePath);
             }
-            if (model.EditMail)
+            if (model.EditVendorCode)
             {
                 model.VendorCodeTypeList = new SelectList(
                     (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
