@@ -171,6 +171,7 @@ namespace GRA.Web
             services.AddScoped<DynamicAvatarService>();
             services.AddScoped<EmailReminderService>();
             services.AddScoped<EmailService>();
+            services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
@@ -178,6 +179,7 @@ namespace GRA.Web
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();
             services.AddScoped<SampleDataService>();
+            services.AddScoped<SchoolImportService>();
             services.AddScoped<SchoolService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();

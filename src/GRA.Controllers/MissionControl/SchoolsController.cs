@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -18,13 +19,17 @@ namespace GRA.Controllers.MissionControl
     public class SchoolsController : Base.MCController
     {
         private readonly ILogger<SchoolsController> _logger;
+        private readonly SchoolImportService _schoolImportService;
         private readonly SchoolService _schoolService;
         public SchoolsController(ILogger<SchoolsController> logger,
             ServiceFacade.Controller context,
+            SchoolImportService schoolImportService,
             SchoolService schoolService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _schoolImportService = Require.IsNotNull(schoolImportService, 
+                nameof(schoolImportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             PageTitle = "Schools";
         }
@@ -319,6 +324,51 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertDanger("Unable to add Entered School: ", gex);
             }
             return RedirectToAction("Entered");
+        }
+
+        [HttpGet]
+        public IActionResult Import()
+        {
+            PageTitle = "Import Schools";
+            return View("Import");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Import(Microsoft.AspNetCore.Http.IFormFile schoolFileCsv)
+        {
+            PageTitle = "Import Events";
+            if (schoolFileCsv == null
+                || Path.GetExtension(schoolFileCsv.FileName).ToLower() != ".csv")
+            {
+                AlertDanger = "You must select a .csv file.";
+                ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
+            }
+
+            if (ModelState.ErrorCount == 0)
+            {
+                using (var streamReader = new StreamReader(schoolFileCsv.OpenReadStream()))
+                {
+                    (ImportStatus status, string message)
+                        = await _schoolImportService.FromCsvAsync(streamReader);
+
+                    switch (status)
+                    {
+                        case ImportStatus.Success:
+                            AlertSuccess = message;
+                            break;
+                        case ImportStatus.Info:
+                            AlertInfo = message;
+                            break;
+                        case ImportStatus.Warning:
+                            AlertWarning = message;
+                            break;
+                        case ImportStatus.Danger:
+                            AlertDanger = message;
+                            break;
+                    }
+                }
+            }
+            return RedirectToAction("Import");
         }
     }
 }

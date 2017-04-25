@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="csvhelper" Version="2.16.3" />
     <PackageReference Include="MailKit" Version="1.14.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.1" />
@@ -31,6 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
     <PackageReference Include="SmartFormat.NET" Version="2.0.0" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
+    <PackageReference Include="system.valuetuple" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

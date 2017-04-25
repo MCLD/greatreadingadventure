@@ -69,6 +69,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Implementation of [CommonMark](http://commonmark.org/) specification in C# for converting Markdown documents to HTML. Optimized for maximum performance and portability.
 - Source on GitHub: [Knagis/CommonMark.NET](https://github.com/Knagis/CommonMark.NET) - [BSD-3-Clause](https://github.com/Knagis/CommonMark.NET/blob/master/LICENSE.md)
 
+### CsvHelper
+- Library to help reading and writing CSV files [CsvHelper](https://joshclose.github.io/CsvHelper/)
+- Source on GitHub: [JoshClose/CsvHelper](https://github.com/joshclose/csvhelper) - [Apache License, Version 2.0](https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt)
+
 ### Entity Framework Core
 - [Entity Framework Core](https://github.com/aspnet/EntityFramework) is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects. It eliminates the need for most of the data-access code that developers usually need to write.
 - Source on GitHub: [aspnet/EntityFramework](https://github.com/aspnet/EntityFramework) - [Apache License, Version 2.0](https://github.com/aspnet/EntityFramework/blob/dev/LICENSE.txt)

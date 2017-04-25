@@ -21,12 +21,14 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<EventsController> _logger;
         private readonly BadgeService _badgeService;
+        private readonly EventImportService _eventImportService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
         public EventsController(ILogger<EventsController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
+            EventImportService eventImportService,
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService)
@@ -34,6 +36,7 @@ namespace GRA.Controllers.MissionControl
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
+            _eventImportService = Require.IsNotNull(eventImportService, nameof(eventImportService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _triggerService = Require.IsNotNull(triggerService, nameof(TriggerService));
@@ -704,6 +707,51 @@ namespace GRA.Controllers.MissionControl
             var newLocation = await _eventService.AddLocation(location);
             var locationList = await _eventService.GetLocations();
             return Json(new SelectList(locationList, "Id", "Name", newLocation.Id));
+        }
+
+        [HttpGet]
+        public IActionResult Import()
+        {
+            PageTitle = "Import Events";
+            return View("Import");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Import(Microsoft.AspNetCore.Http.IFormFile eventFileCsv)
+        {
+            PageTitle = "Import Events";
+            if (eventFileCsv == null
+                || Path.GetExtension(eventFileCsv.FileName).ToLower() != ".csv")
+            {
+                AlertDanger = "You must select a .csv file.";
+                ModelState.AddModelError("eventFileCsv", "You must select a .csv file.");
+            }
+
+            if (ModelState.ErrorCount == 0)
+            {
+                using (var streamReader = new StreamReader(eventFileCsv.OpenReadStream()))
+                {
+                    (ImportStatus status, string message)
+                        = await _eventImportService.FromCsvAsync(streamReader);
+
+                    switch (status)
+                    {
+                        case ImportStatus.Success:
+                            AlertSuccess = message;
+                            break;
+                        case ImportStatus.Info:
+                            AlertInfo = message;
+                            break;
+                        case ImportStatus.Warning:
+                            AlertWarning = message;
+                            break;
+                        case ImportStatus.Danger:
+                            AlertDanger = message;
+                            break;
+                    }
+                }
+            }
+            return RedirectToAction("Import");
         }
     }
 }
