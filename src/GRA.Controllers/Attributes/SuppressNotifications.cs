@@ -2,7 +2,7 @@
 
 namespace GRA.Controllers.Attributes
 {
-    public class PreventQuestionnaireRedirect : Attribute
+    public class SuppressNotifications : Attribute
     {
     }
 }

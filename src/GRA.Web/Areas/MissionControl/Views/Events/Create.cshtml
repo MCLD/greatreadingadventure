@@ -233,8 +233,9 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="SecretCode" class="control-label"></label>
+                                <span id="SecretCode-Icon" class="fa colored-icon hide"></span>
                                 <input asp-for="SecretCode" class="form-control secretCodeField @(Model.IncludeSecretCode ? "" : "ignore")" />
-                                <span asp-validation-for="SecretCode" class="text-danger"></span>
+                                <span id="SecretCode-Validation" asp-validation-for="SecretCode" class="text-danger"></span>
                             </div>
                         </div>
 
@@ -489,6 +490,36 @@
                 $('.btn-file').addClass('btn-default');
                 $('.btn-file').removeClass('btn-success');
                 $('#selectedFile').val('');
+            });
+
+            $("#SecretCode").on("change", function () {
+                if (!$(this).hasClass("input-validation-error")) {
+                    var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
+                    var icon = $("#SecretCode-Icon");
+                    icon.removeClass("hide fa-times fa-check");
+                    icon.addClass("fa-spinner fa-spin");
+                    $.post(codeCheckUrl, { secretCode: $(this).val() }, function (response) {
+                        if (response) {
+                            $("#SecretCode").removeClass("valid");
+                            $("#SecretCode").addClass("input-validation-error");
+                            $("#SecretCode-Validation").removeClass("field-validation-valid");
+                            $("#SecretCode-Validation").addClass("field-validation-error");
+                            $("#SecretCode-Validation").text("That secret code is already in use.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-times");
+                        }
+                        else {
+                            $("#SecretCode-Validation").removeClass("field-validation-valid");
+                            $("#SecretCode-Validation").text("That secret code is available.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-check");
+                        }
+                    });
+                }
+            });
+
+            $("#SecretCode").on("keypress", function () {
+                $("#SecretCode-Icon").addClass("hide");
             });
         </text>
         }

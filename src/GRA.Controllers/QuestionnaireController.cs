@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Controllers
 {
     [PreventQuestionnaireRedirect]
+    [SuppressNotifications]
     public class QuestionnaireController : Base.UserController
     {
         private readonly ILogger<QuestionnaireController> _logger;

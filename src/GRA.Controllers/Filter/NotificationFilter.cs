@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Reflection;
 
 namespace GRA.Controllers.Filter
 {
@@ -22,18 +24,29 @@ namespace GRA.Controllers.Filter
             var httpContext = context.HttpContext;
             if (httpContext.User.Identity.IsAuthenticated)
             {
-                var notifications = await _userService.GetNotificationsForUser();
-                if (notifications.Any())
+                var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+                if (!controllerActionDescriptor.ControllerTypeInfo
+                        .IsDefined(typeof(Attributes.SuppressNotifications))
+                    && !controllerActionDescriptor.MethodInfo
+                        .IsDefined(typeof(Attributes.SuppressNotifications)))
                 {
-                    httpContext.Items[ItemKey.NotificationsList] = notifications;
+                    var notifications = await _userService.GetNotificationsForUser();
+                    if (notifications.Any())
+                    {
+                        httpContext.Items[ItemKey.NotificationsList] = notifications;
+                    }
+
+                    await next();
+
+                    if (httpContext.Items[ItemKey.NotificationsDisplayed] != null
+                        && (bool)httpContext.Items[ItemKey.NotificationsDisplayed] == true)
+                    {
+                        await _userService.ClearNotificationsForUser();
+                    }
                 }
-
-                await next();
-
-                if (httpContext.Items[ItemKey.NotificationsDisplayed] != null
-                    && (bool)httpContext.Items[ItemKey.NotificationsDisplayed] == true)
+                else
                 {
-                    await _userService.ClearNotificationsForUser();
+                    await next();
                 }
             }
             else

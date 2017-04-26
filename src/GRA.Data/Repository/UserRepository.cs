@@ -359,5 +359,12 @@ namespace GRA.Data.Repository
 
             return household;
         }
+
+        public async Task<bool> UsernameInUseAsync(int siteId, string username)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.Username == username)
+                .AnyAsync();
+        }
     }
 }

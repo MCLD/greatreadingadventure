@@ -218,8 +218,11 @@
             <div class="col-xs-12 form-group-lg">
                 <label asp-for="Trigger.SecretCode" class="control-label col-sm-3"></label>
                 <div class="col-sm-9">
-                    <input asp-for="Trigger.SecretCode" class="form-control" />
-                    <span asp-validation-for="Trigger.SecretCode" class="text-danger"></span>
+                    <span id="SecretCode-Icon" style="float:left;margin-top:15px;" class="fa colored-icon hide"></span>
+                    <div style="margin-left:20px;">
+                        <input asp-for="Trigger.SecretCode" class="form-control" />
+                        <span id="SecretCode-Validation" asp-validation-for="Trigger.SecretCode" class="text-success"></span>
+                    </div>
                 </div>
             </div>
             <br style="clear: both;" />
@@ -754,6 +757,47 @@
         $("#collapseMail").on("hide.bs.collapse", function() {
             $("#AwardsMail").val("false");
             $("#mailIcon").removeClass("fa-caret-down").addClass("fa-caret-right");
+        });
+
+        $("#Trigger_SecretCode").on("blur", function () {
+            if (!$(this).hasClass("input-validation-error")) {
+                var secretCode = $(this).val();
+                if (secretCode != "") {
+                    if (secretCode != "@Model.Trigger?.SecretCode") {
+                        var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
+                        var icon = $("#SecretCode-Icon");
+                        icon.removeClass("hide fa-times fa-check");
+                        icon.addClass("fa-spinner fa-spin");
+                        $.post(codeCheckUrl, { secretCode: secretCode }, function (response) {
+                            if (response) {
+                                $("#Trigger_SecretCode").removeClass("valid");
+                                $("#Trigger_SecretCode").addClass("input-validation-error");
+                                $("#SecretCode-Validation").removeClass("field-validation-valid");
+                                $("#SecretCode-Validation").addClass("field-validation-error");
+                                $("#SecretCode-Validation").text("That secret code is already in use.");
+                                icon.removeClass("fa-spinner fa-spin");
+                                icon.addClass("fa-times");
+                            }
+                            else {
+                                $("#SecretCode-Validation").removeClass("field-validation-valid");
+                                $("#SecretCode-Validation").text("That secret code is available.");
+                                icon.removeClass("fa-spinner fa-spin");
+                                icon.addClass("fa-check");
+                            }
+                        });
+                    }
+                    else {
+                        $("#SecretCode-Icon").removeClass("hide fa-times").addClass("fa-check");
+                        $("#SecretCode-Validation").removeClass("field-validation-valid");
+                        $("#SecretCode-Validation").text("No change to secret code.");
+                    }
+                }
+            }
+        });
+
+        $("#Trigger_SecretCode").on("keypress", function () {
+            $("#SecretCode-Icon").addClass("hide");
+            $("#SecretCode-Validation").addClass("field-validation-valid");
         });
     </script>
 }

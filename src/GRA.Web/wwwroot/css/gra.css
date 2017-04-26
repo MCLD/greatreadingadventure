@@ -320,3 +320,11 @@ input.form-checkbox {
 .gra-search-container {
     margin-bottom: 0.25em;
 }
+
+.colored-icon.fa-times {
+    color: red;
+}
+
+.colored-icon.fa-check {
+    color: green;
+}

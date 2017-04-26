@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Rudimentary ability to import events from a CSV file
 - Rudimentary ability to import schools from a CSV file
+- Added unobtrusive validation to user side
+- Added ajax username/secret code available checking
+- Added suppress notifications attribute
 
 ### Fixed
 - Fix alert spacing

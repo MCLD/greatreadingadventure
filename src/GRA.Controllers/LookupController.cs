@@ -15,15 +15,18 @@ namespace GRA.Controllers
         private readonly ILogger<LookupController> _logger;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
+        private readonly UserService _userService;
 
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
              SchoolService schoolService,
-            SiteService siteService) : base(context)
+            SiteService siteService,
+            UserService userService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _userService = Require.IsNotNull(userService, nameof(userService));
         }
 
         public async Task<JsonResult> GetBranches(int? systemId,
@@ -63,6 +66,12 @@ namespace GRA.Controllers
         {
             var schoolList = await _schoolService.GetSchoolsAsync(districtId, typeId);
             return Json(new SelectList(schoolList, "Id", "Name", schoolId));
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UsernameInUse(string username)
+        {
+            return Json(await _userService.UsernameInUseAsync(username));
         }
     }
 }

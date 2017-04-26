@@ -748,6 +748,11 @@ namespace GRA.Domain.Service
             await _userRepository.UpdateSaveAsync(authId, userToAdd);
         }
 
+        public async Task<bool> UsernameInUseAsync(string username)
+        {
+            return await _userRepository.UsernameInUseAsync(GetCurrentSiteId(), username);
+        }
+
         private async Task<bool> UserHasRoles(int userId)
         {
             var roles = await _roleRepository.GetPermisisonNamesForUserAsync(userId);

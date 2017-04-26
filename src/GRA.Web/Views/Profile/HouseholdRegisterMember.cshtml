@@ -16,8 +16,9 @@
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="Username" class="control-label"></label>
+                    <span id="Username-Icon" class="fa colored-icon hide"></span>
                     <input asp-for="Username" class="form-control" autofocus />
-                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
                 </div>
             </div>
 
@@ -41,9 +42,43 @@
 
     <div class="form-group">
         <a asp-action="Household" class="btn btn-default">Return to Household</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner-no-validate">
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
             <span class="buttonText">Register Member</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>
 </form>
+
+@section scripts {
+    <script>
+        $("#Username").on("blur", function () {
+            if (!$(this).hasClass("input-validation-error")) {
+                var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
+                var icon = $("#Username-Icon");
+                icon.removeClass("hide fa-times fa-check");
+                icon.addClass("fa-spinner fa-spin");
+                $.post(usernameCheckUrl, { username: $(this).val() }, function (response) {
+                    if (response) {
+                        $("#Username").removeClass("valid");
+                        $("#Username").addClass("input-validation-error");
+                        $("#Username-Validation").removeClass("field-validation-valid");
+                        $("#Username-Validation").addClass("field-validation-error");
+                        $("#Username-Validation").text("Someone has already chosen that username.");
+                        icon.removeClass("fa-spinner fa-spin");
+                        icon.addClass("fa-times");
+                    }
+                    else {
+                        $("#Username-Validation").removeClass("field-validation-valid");
+                        $("#Username-Validation").text("The chosen username is available.");
+                        icon.removeClass("fa-spinner fa-spin");
+                        icon.addClass("fa-check");
+                    }
+                });
+            }
+        });
+
+        $("#Username").on("keypress", function () {
+            $("#Username-Icon").addClass("hide");
+        });
+    </script>
+}

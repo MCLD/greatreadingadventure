@@ -504,5 +504,12 @@ namespace GRA.Data.Repository
                 .ProjectTo<Trigger>()
                 .ToListAsync();
         }
+
+        public async Task<bool> SecretCodeInUseAsync(int siteId, string secretCode)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.SecretCode == secretCode)
+                .AnyAsync();
+        }
     }
 }

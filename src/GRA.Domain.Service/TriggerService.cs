@@ -149,6 +149,11 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerDependentsAsync(triggerId);
         }
 
+        public async Task<bool> SecretCodeInUseAsync (string username)
+        {
+            return await _triggerRepository.SecretCodeInUseAsync(GetCurrentSiteId(), username);
+        }
+
         private async Task ValidateTriggerAsync(Trigger trigger)
         {
             if (trigger.LimitToSystemId.HasValue)
