@@ -248,10 +248,10 @@ namespace GRA.Data
             }
             catch (Exception ex)
             {
-                _logger.LogError(null, ex, $"An error occurred in SaveAsync: {ex.Message}");
+                _logger.LogError($"An error occurred in SaveAsync: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    _logger.LogError(null, ex.InnerException, $"Inner exception: {ex.InnerException.Message}");
+                    _logger.LogError($"Inner exception: {ex.InnerException.Message}");
                 }
                 throw ex;
             }
