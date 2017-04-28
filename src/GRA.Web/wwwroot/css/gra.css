@@ -328,3 +328,33 @@ input.form-checkbox {
 .colored-icon.fa-check {
     color: green;
 }
+
+.questionnaire {
+    padding-bottom: 2rem;
+}
+
+    .questionnaire div.story p {
+        padding-top: 1rem;
+        font-size: 1.7rem;
+        text-indent: 3rem;
+        padding-bottom: 1rem;
+    }
+
+    .questionnaire img {
+        max-width: 640px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .questionnaire .question p {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+    }
+
+    .questionnaire .answer-selection {
+        padding-bottom: 0.5rem;
+    }

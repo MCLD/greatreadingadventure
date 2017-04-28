@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix signup empty program exception
 - Fix signup validation messages
 - Fix trigger creation exception
+- Fix error logging in AuditingRepository - wasn't logging anything
+- Improve appearance of assessments
 
 ## [4.0.0-alpha4] 2017-04-14
 ### Added
