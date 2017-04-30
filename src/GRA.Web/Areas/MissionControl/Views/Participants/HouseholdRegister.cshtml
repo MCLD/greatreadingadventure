@@ -49,7 +49,7 @@
         });
 
         $("#Username").on("blur", function () {
-            if (!$(this).hasClass("input-validation-error")) {
+            if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                 var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                 var icon = $("#Username-Icon");
                 icon.removeClass("hide fa-times fa-check");

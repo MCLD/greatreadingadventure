@@ -760,7 +760,7 @@
         });
 
         $("#Trigger_SecretCode").on("blur", function () {
-            if (!$(this).hasClass("input-validation-error")) {
+            if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                 var secretCode = $(this).val();
                 if (secretCode != "") {
                     if (secretCode != "@Model.Trigger?.SecretCode") {

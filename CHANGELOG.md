@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Added unobtrusive validation to user side
 - Added ajax username/secret code available checking
 - Added suppress notifications attribute
+- Add disable and spinner to join submit buttons
 
 ### Changed
 - Changed dynamic avatars
@@ -21,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix trigger creation exception
 - Fix error logging in AuditingRepository - wasn't logging anything
 - Improve appearance of assessments
+- Fix In Use checking on empty fields
 
 ## [4.0.0-alpha4] 2017-04-14
 ### Added

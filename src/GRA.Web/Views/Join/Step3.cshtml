@@ -63,8 +63,9 @@
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="btn btn-primary btn-lg btn-spinner">
                             <span class="fa fa-book"></span> Join!
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </div>
                 </div>
@@ -76,7 +77,7 @@
 @section scripts {
     <script>
         $("#Username").on("blur", function () {
-            if (!$(this).hasClass("input-validation-error")) {
+            if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                 var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                 var icon = $("#Username-Icon");
                 icon.removeClass("hide fa-times fa-check");

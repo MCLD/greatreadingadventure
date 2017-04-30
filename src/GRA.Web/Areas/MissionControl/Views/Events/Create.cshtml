@@ -492,8 +492,8 @@
                 $('#selectedFile').val('');
             });
 
-            $("#SecretCode").on("change", function () {
-                if (!$(this).hasClass("input-validation-error")) {
+            $("#SecretCode").on("blur", function () {
+                if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                     var codeCheckUrl = "@Url.Action("SecretCodeInUse", "Lookup")";
                     var icon = $("#SecretCode-Icon");
                     icon.removeClass("hide fa-times fa-check");

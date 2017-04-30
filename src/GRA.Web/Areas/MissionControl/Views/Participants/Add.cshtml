@@ -173,8 +173,9 @@
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
-                    <button type="submit" class="btn btn-primary pull-right">
+                    <button type="submit" class="btn btn-primary pull-right btn-spinner">
                         Add Participant
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                     </button>
                 </div>
             </div>
@@ -337,7 +338,7 @@
         }
 
         $("#Username").on("blur", function () {
-            if (!$(this).hasClass("input-validation-error")) {
+            if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
                 var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                 var icon = $("#Username-Icon");
                 icon.removeClass("hide fa-times fa-check");
