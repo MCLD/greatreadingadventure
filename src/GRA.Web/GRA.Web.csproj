@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\images\no_avatar.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="wwwroot\**\*;assets\**\*;**\*.cshtml;appsettings.json;web.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
