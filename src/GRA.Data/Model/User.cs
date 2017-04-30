@@ -55,7 +55,5 @@ namespace GRA.Data.Model
         public int? SchoolId { get; set; }
         public int? EnteredSchoolId { get; set; }
         public virtual EnteredSchool EnteredSchool { get; set; }
-        [MaxLength(16)]
-        public string DynamicAvatar { get; set; }
     }
 }

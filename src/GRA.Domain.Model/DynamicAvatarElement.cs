@@ -5,9 +5,14 @@ namespace GRA.Domain.Model
     public class DynamicAvatarElement : Abstract.BaseDomainEntity
     {
         [Required]
-        public int DynamicAvatarId { get; set; }
+        public int DynamicAvatarItemId { get; set; }
+        public DynamicAvatarItem DynamicAvatarItem { get; set; }
 
+        public int? DynamicAvatarColorId { get; set; }
+        public DynamicAvatarColor DynamicAvatarColor { get; set; }
+
+        [MaxLength(255)]
         [Required]
-        public int DynamicAvatarLayerId { get; set; }
+        public string Filename { get; set; }
     }
 }

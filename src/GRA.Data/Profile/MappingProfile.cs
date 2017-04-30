@@ -17,9 +17,20 @@ namespace GRA.Data.Profile
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>().ReverseMap();
-            CreateMap<Model.DynamicAvatar, Domain.Model.DynamicAvatar>().ReverseMap();
+            CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>().ReverseMap();
+            CreateMap<Model.DynamicAvatarColor, Domain.Model.DynamicAvatarColor>().ReverseMap();
             CreateMap<Model.DynamicAvatarElement, Domain.Model.DynamicAvatarElement>().ReverseMap();
-            CreateMap<Model.DynamicAvatarLayer, Domain.Model.DynamicAvatarLayer>().ReverseMap();
+            CreateMap<Model.DynamicAvatarItem, Domain.Model.DynamicAvatarItem>().ReverseMap();
+            CreateMap<Model.DynamicAvatarLayer, Domain.Model.DynamicAvatarLayer>()
+                .ForMember(dest => dest.DynamicAvatarColors, opt => {
+                    opt.MapFrom(src => src.DynamicAvatarColors.OrderBy(_ => _.SortOrder));
+                    opt.ExplicitExpansion();
+                })
+                .ForMember(dest => dest.DynamicAvatarItems, opt => {
+                    opt.MapFrom(src => src.DynamicAvatarItems.OrderBy(_ => _.SortOrder));
+                    opt.ExplicitExpansion();
+                })
+                .ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
             CreateMap<Model.EnteredSchool, Domain.Model.EnteredSchool>().ReverseMap();
             CreateMap<Model.Event, Domain.Model.Event>().ReverseMap();

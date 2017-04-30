@@ -1,1 +1,29 @@
-﻿
+﻿.avatar-background {
+    background-color: white;
+    margin: -20px -15px;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    .avatar-background {
+        border-radius: 8px;
+        margin: 0 -51px 0 -20px;
+        padding: 20px 51px 0 20px;
+    }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+    .avatar-background {
+        margin: 0 -28px 0 -20px;
+        padding: 20px 28px 15px 20px;
+    }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+    .avatar-background {
+        margin: 0 -14px 0 -20px;
+        padding: 20px 14px 15px 20px;
+    }
+}

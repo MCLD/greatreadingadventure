@@ -1,14 +1,13 @@
 ﻿using GRA.Domain.Model;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace GRA.Domain.Repository
 {
     public interface IDynamicAvatarElementRepository : IRepository<Model.DynamicAvatarElement>
     {
-        Task<bool> ExistsAsync(int dynamicAvatarLayerId, int id);
-        Task<int> GetFirstElement(int dynamicAvatarLayerId);
-        Task<int> GetLastElement(int dynamicAvatarLayerId);
-        Task<int?> GetNextElement(int dynamicAvatarLayerId, int elementId);
-        Task<int?> GetPreviousElement(int dynamicAvatarLayerId, int elementId);
+        Task<DynamicAvatarElement> GetByItemAndColorAsync(int item, int? color);
+        Task<ICollection<DynamicAvatarElement>> GetUserAvatarAsync(int userId);
+        Task SetUserAvatarAsync(int userId, List<int> elementIds);
     }
 }

@@ -1,7 +1,10 @@
-﻿using GRA.Controllers.ViewModel.Challenges;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Avatar;
+using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Join;
 using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Domain.Model;
+using System.Linq;
 
 namespace GRA.Controllers
 {
@@ -16,6 +19,15 @@ namespace GRA.Controllers
             CreateMap<Step3ViewModel, User>().ReverseMap();
             CreateMap<ParticipantsAddViewModel, User>().ReverseMap();
             CreateMap<TaskDetailViewModel, ChallengeTask>().ReverseMap();
+            CreateMap<DynamicAvatarLayer, DynamicAvatarJsonModel.DynamicAvatarLayer>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.DynamicAvatarItems.Select(_ => _.Id)))
+                .ForMember(dest => dest.Colors, opt => opt.MapFrom(src => src.DynamicAvatarColors
+                .Select(_ => new DynamicAvatarJsonModel.DynamicAvatarColor
+                {
+                    Id = _.Id,
+                    Value = _.Color
+                })))
+                .ReverseMap();
         }
     }
 }

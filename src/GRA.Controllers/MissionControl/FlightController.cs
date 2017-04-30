@@ -9,10 +9,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
+    [Authorize(Policy=Policy.AccessFlightController)]
     public class FlightController : Base.MCController
     {
         private readonly ILogger<FlightController> _logger;
@@ -114,87 +118,117 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> SetupDynamicAvatars()
         {
             int siteId = GetCurrentSiteId();
-            string path = Path.Combine(Directory.GetParent(_hostingEnvironment.WebRootPath).FullName,
-                "assets");
 
-            if (!Directory.Exists(path))
+            string assetPath = Path.Combine(
+                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName,"assets");
+
+            if (!Directory.Exists(assetPath))
             {
-                AlertDanger = $"Asset directory not found at: {path}";
+                AlertDanger = $"Asset directory not found at: {assetPath}";
                 return View("Index");
             }
 
-            path = Path.Combine(path, "dynamicavatars");
-            if (!Directory.Exists(path))
+            assetPath = Path.Combine(assetPath, "dynamicavatars");
+            if (!Directory.Exists(assetPath))
             {
-                AlertDanger = $"Asset directory not found at: {path}";
+                AlertDanger = $"Asset directory not found at: {assetPath}";
                 return View("Index");
             }
-
-            string[] allowedExtensions = { ".png", ".jpg", ".gif" };
-
-            var avatars = new Dictionary<int, DynamicAvatar>();
-
-            int layerCount = 0;
-            int elementCount = 0;
-            foreach (var layerDirectory in Directory.EnumerateDirectories(path))
+            
+            IEnumerable<DynamicAvatarLayer> avatarList;
+            var jsonPath = Path.Combine(assetPath, "default avatars.json");
+            using (StreamReader file = System.IO.File.OpenText(jsonPath))
             {
-                layerCount++;
-                string layerString = Path.GetFileNameWithoutExtension(layerDirectory).Substring(5);
-                int layerPosition = Convert.ToInt32(layerString);
+                var jsonString = await file.ReadToEndAsync();
+                avatarList = JsonConvert.DeserializeObject<IEnumerable<DynamicAvatarLayer>>(jsonString);
+            }
 
-                var layer = new DynamicAvatarLayer
+            foreach (var layer in avatarList)
+            {
+                var time = DateTime.Now;
+                var userId = GetId(ClaimType.UserId);
+                if (layer.DynamicAvatarColors != null)
                 {
-                    Name = $"Layer {layerPosition}",
-                    Position = layerPosition
-                };
+                    foreach (var color in layer.DynamicAvatarColors)
+                    {
+                        color.CreatedAt = time;
+                        color.CreatedBy = userId;
+                    }
+                }
+                foreach (var item in layer.DynamicAvatarItems)
+                {
+                    item.CreatedAt = time;
+                    item.CreatedBy = userId;
+                }
+                var addedLayer = await _dynamicAvatarService.AddLayerAsync(layer);
 
-                layer = await _dynamicAvatarService.AddLayerAsync(layer);
-
-                var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{layer.Id}");
+                var layerAssetPath = Path.Combine(assetPath, addedLayer.Name);
+                var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{addedLayer.Id}");
                 var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
-
                 if (!Directory.Exists(destinationPath))
                 {
                     Directory.CreateDirectory(destinationPath);
                 }
 
-                int elementNumber = 0;
-                foreach (var avatarElementPath in Directory.EnumerateFiles(layerDirectory))
+                List<DynamicAvatarElement> elementList = new List<DynamicAvatarElement>();
+                foreach (var item in addedLayer.DynamicAvatarItems)
                 {
-                    var extension = Path.GetExtension(avatarElementPath).ToLower();
-
-                    // Mac often adds hidden files which we don't want to create avatars for
-                    if (!allowedExtensions.Contains(extension))
-                        continue;
-
-                    if (!avatars.ContainsKey(elementNumber))
+                    var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
+                    var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
+                    if (!Directory.Exists(itemPath))
                     {
-                        var newAvatar = new DynamicAvatar();
-                        newAvatar.Name = $"Avatar {elementNumber}";
-                        newAvatar.Position = elementNumber;
-
-                        newAvatar = await _dynamicAvatarService.AddAvatarAsync(newAvatar);
-                        avatars.Add(elementNumber, newAvatar);
+                        Directory.CreateDirectory(itemPath);
                     }
-
-                    var avatar = avatars[elementNumber];
-
-                    var element = new DynamicAvatarElement
+                    if (addedLayer.DynamicAvatarColors.Count > 0)
                     {
-                        DynamicAvatarId = avatar.Id,
-                        DynamicAvatarLayerId = layer.Id,
-                    };
+                        foreach(var color in addedLayer.DynamicAvatarColors)
+                        {
+                            var element = new DynamicAvatarElement()
+                            {
+                                DynamicAvatarItemId = item.Id,
+                                DynamicAvatarColorId = color.Id,
+                                Filename = Path.Combine(itemRoot, $"{item.Id}_{color.Id}.png")
+                            };
+                            elementList.Add(element);
+                            System.IO.File.Copy(
+                                Path.Combine(layerAssetPath, $"{item.Name} {color.Color}.png"),
+                                Path.Combine(itemPath, $"{item.Id}_{color.Id}.png"));
+                        }
+                    }
+                    else
+                    {
+                        var element = new DynamicAvatarElement()
+                        {
+                            DynamicAvatarItemId = item.Id,
+                            Filename = Path.Combine(itemRoot, $"{item.Id}.png")
+                        };
+                        elementList.Add(element);
+                        System.IO.File.Copy(Path.Combine(layerAssetPath, $"{item.Name}.png"),
+                            Path.Combine(itemPath, $"{item.Id}.png"));
+                    }
+                }
+                await _dynamicAvatarService.AddElementListAsync(elementList);
+            }
+            
+            IEnumerable<DynamicAvatarBundle> bundleList;
+            var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
+            using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+            {
+                var jsonString = await file.ReadToEndAsync();
+                bundleList = JsonConvert.DeserializeObject<IEnumerable<DynamicAvatarBundle>>(jsonString);
+            }
 
-                    element = await _dynamicAvatarService.AddElementAsync(element);
-
-                    System.IO.File.Copy(avatarElementPath,
-                        Path.Combine(destinationPath, $"{element.Id}{extension}"));
-
-                    elementCount++;
-                    elementNumber++;
+            foreach (var bundle in bundleList)
+            {
+                List<int> items = bundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
+                bundle.DynamicAvatarItems = null;
+                var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle);
+                foreach (var item in items)
+                {
+                    await _dynamicAvatarService.AddBundleItemAsync(newBundle.Id, item);
                 }
             }
-            AlertSuccess = $"Inserted {elementCount} elements on {layerCount} layers.";
+                ShowAlertSuccess("Default dynamic avatars have been successfully added.");
             return View("Index");
         }
 

@@ -260,3 +260,6 @@ src/GRA.Web/appsettings.Release.json
 
 # exclude project-specific css
 src/GRA.Web/wwwroot/css/site.css
+
+# exclude default dynamic avatars
+src/GRA.Web/assets/dynamicavatars

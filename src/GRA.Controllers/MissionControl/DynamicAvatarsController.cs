@@ -1,4 +1,3 @@
-using GRA.Controllers.ViewModel.MissionControl.DynamicAvatars;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
@@ -14,6 +13,7 @@ using System.IO;
 
 namespace GRA.Controllers.MissionControl
 {
+    
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ManageAvatars)]
     public class DynamicAvatarsController : Base.MCController
@@ -33,7 +33,7 @@ namespace GRA.Controllers.MissionControl
 
             PageTitle = "Avatars";
         }
-
+        /*
         public async Task<IActionResult> Index(string Search, int page = 1)
         {
             var viewModel = await GetAvatarList(Search, page);
@@ -237,5 +237,6 @@ namespace GRA.Controllers.MissionControl
 
             return RedirectToAction("Edit", new { id = viewModel.AvatarId });
         }
+        */
     }
 }

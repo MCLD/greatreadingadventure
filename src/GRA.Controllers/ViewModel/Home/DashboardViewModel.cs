@@ -20,6 +20,6 @@ namespace GRA.Controllers.ViewModel.Home
         public string SecretCodeMessage { get; set; }
 
         public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
-        public Dictionary<int, string> DynamicAvatarPaths { get; set; }
+        public ICollection<GRA.Domain.Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
     }
 }

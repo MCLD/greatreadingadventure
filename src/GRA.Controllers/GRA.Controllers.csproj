@@ -33,4 +33,8 @@
     <PackageReference Include="system.valuetuple" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModel\MissionControl\DynamicAvatars\" />
+  </ItemGroup>
+
 </Project>

@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Added ajax username/secret code available checking
 - Added suppress notifications attribute
 
+### Changed
+- Changed dynamic avatars
+
 ### Fixed
 - Fix alert spacing
 - Fix signup empty program exception

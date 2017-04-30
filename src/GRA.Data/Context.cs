@@ -40,6 +40,8 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
+            modelBuilder.Entity<Model.DynamicAvatarBundleItem>()
+                .HasKey(_ => new { _.DynamicAvatarBundleId, _.DynamicAvatarItemId });
             modelBuilder.Entity<Model.RolePermission>()
                 .HasKey(_ => new { _.RoleId, _.PermissionId });
             modelBuilder.Entity<Model.TriggerBadge>()
@@ -54,6 +56,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.BookId });
             modelBuilder.Entity<Model.UserChallengeTask>()
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
+            modelBuilder.Entity<Model.UserDynamicAvatar>()
+                .HasKey(_ => new { _.UserId, _.DynamicAvatarElementId });
             modelBuilder.Entity<Model.UserQuestionnaire>()
                 .HasKey(_ => new { _.UserId, _.QuestionnaireId });
             modelBuilder.Entity<Model.UserRole>()
@@ -119,8 +123,11 @@ namespace GRA.Data
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
-        public DbSet<Model.DynamicAvatar> DynamicAvatars { get; set; }
+        public DbSet<Model.DynamicAvatarBundle> DynamicAvatarBundles { get; set; }
+        public DbSet<Model.DynamicAvatarBundleItem> DynamicAvatarBundleItems { get; set; }
+        public DbSet<Model.DynamicAvatarColor> DynamicAvatarColors { get; set; }
         public DbSet<Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }
+        public DbSet<Model.DynamicAvatarItem> DynamicAvatarItems { get; set; }
         public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
         public DbSet<Model.EnteredSchool> EnteredSchools { get; set; }
@@ -154,6 +161,7 @@ namespace GRA.Data
         public DbSet<Model.UserChallengeTask> UserChallengeTasks { get; set; }
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
+        public DbSet<Model.UserDynamicAvatar> UserDynamicAvatars { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }

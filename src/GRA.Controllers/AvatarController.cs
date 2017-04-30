@@ -8,6 +8,9 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using GRA.Domain.Model;
+using System.IO;
 
 namespace GRA.Controllers
 {
@@ -15,6 +18,7 @@ namespace GRA.Controllers
     public class AvatarController : Base.UserController
     {
         private readonly ILogger<AvatarController> _logger;
+        private readonly AutoMapper.IMapper _mapper;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly StaticAvatarService _staticAvatarService;
         private readonly UserService _userService;
@@ -27,6 +31,7 @@ namespace GRA.Controllers
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _mapper = context.Mapper;
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _staticAvatarService = Require.IsNotNull(staticAvatarService,
@@ -35,33 +40,64 @@ namespace GRA.Controllers
             PageTitle = "Avatar";
         }
 
-        public async Task<IActionResult> Index(string id)
+        public async Task<IActionResult> Index(int? id)
         {
             var currentSite = await GetCurrentSiteAsync();
             if (currentSite.UseDynamicAvatars)
             {
-                if (string.IsNullOrEmpty(id))
+                var userWardrobe = await _dynamicAvatarService.GetUserWardrobeAsync();
+                if (userWardrobe?.Count > 0)
                 {
-                    var currentUser = await _userService.GetDetails(GetActiveUserId());
-                    if (!string.IsNullOrEmpty(currentUser.DynamicAvatar))
+                    DynamicAvatarJsonModel model = new DynamicAvatarJsonModel();
+                    model.Layers = _mapper
+                        .Map<ICollection<DynamicAvatarJsonModel.DynamicAvatarLayer>>(userWardrobe);
+                    DynamicAvatarViewModel viewModel = new DynamicAvatarViewModel()
                     {
-                        return RedirectToRoute(new
-                        {
-                            controller = "Avatar",
-                            action = "Index",
-                            id = currentUser.DynamicAvatar
-                        });
-                    }
+                        Layers = userWardrobe,
+                        GroupIds = userWardrobe.Select(_ => _.GroupId).Distinct(),
+                        DefaultLayer = userWardrobe.Where(_ => _.DefaultLayer).Select(_ => _.Id).First(),
+                        ImagePath = _pathResolver.ResolveContentPath($"site{currentSite.Id}/dynamicavatars/"),
+                        AvatarPiecesJson = Newtonsoft.Json.JsonConvert.SerializeObject(model)
+                    };
+                    return View("DynamicIndex", viewModel);
                 }
-                return await DynamicIndex(id);
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
-                int? numericId = id == null ? null : (int?)Convert.ToInt32(id);
-                return await StaticIndex(numericId);
+                return null;
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> SaveAvatar(string selectionJson)
+        {
+            var currentSite = await GetCurrentSiteAsync();
+            if (currentSite.UseDynamicAvatars)
+            {
+                try
+                {
+                    var selection = Newtonsoft.Json.JsonConvert
+                        .DeserializeObject<ICollection<DynamicAvatarLayer>>(selectionJson);
+                    selection = selection.Where(_ => _.SelectedItem.HasValue).ToList();
+                    await _dynamicAvatarService.UpdateUserAvatarAsync(selection);
+                    return Json(new { success = true });
+                }
+                catch (GraException gex)
+                {
+                    return Json(new { success = false, message = gex.Message });
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /*
         [HttpPost]
         public async Task<IActionResult> Index(AvatarSelectionViewModel model)
         {
@@ -252,5 +288,6 @@ namespace GRA.Controllers
             await _userService.Update(currentUser);
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
+        */
     }
 }

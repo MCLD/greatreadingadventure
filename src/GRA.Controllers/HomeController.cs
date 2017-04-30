@@ -59,23 +59,6 @@ namespace GRA.Controllers
             {
                 // signed-in users can view the dashboard
                 var user = await _userService.GetDetails(GetActiveUserId());
-                string staticAvatarPath = null;
-                DynamicAvatarDetails dynamicAvatarDetails = null;
-
-                if (site.UseDynamicAvatars)
-                {
-                    dynamicAvatarDetails = await GetDynamicAvatarDetailsAsync(user.DynamicAvatar,
-                        _dynamicAvatarService);
-                }
-                else
-                {
-                    StaticAvatar avatar = new StaticAvatar();
-                    if (user.AvatarId != null)
-                    {
-                        avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
-                        staticAvatarPath = _pathResolver.ResolveContentPath(avatar.Filename);
-                    }
-                }
 
                 var badges = await _userService.GetPaginatedBadges(user.Id, 0, BadgesToDisplay);
                 foreach (var badge in badges.Data)
@@ -93,14 +76,26 @@ namespace GRA.Controllers
                     Badges = badges.Data
                 };
 
-                if (!string.IsNullOrEmpty(staticAvatarPath))
+                if (site.UseDynamicAvatars)
                 {
-                    viewModel.AvatarPath = staticAvatarPath;
+                    var userDynamicAvatar = await _dynamicAvatarService.GetUserAvatarAsync();
+                    if (userDynamicAvatar?.Count > 0)
+                    {
+                        var dynamicAvatarElements = userDynamicAvatar;
+                        foreach (var element in dynamicAvatarElements)
+                        {
+                            element.Filename = _pathResolver.ResolveContentPath(element.Filename);
+                        }
+                        viewModel.DynamicAvatarElements = dynamicAvatarElements;
+                    }
                 }
-                if (dynamicAvatarDetails != null
-                    && dynamicAvatarDetails.DynamicAvatarPaths.Count > 0)
+                else
                 {
-                    viewModel.DynamicAvatarPaths = dynamicAvatarDetails.DynamicAvatarPaths;
+                    if (user.AvatarId != null)
+                    {
+                        var avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
+                        viewModel.AvatarPath = _pathResolver.ResolveContentPath(avatar.Filename);
+                    }
                 }
 
                 if (TempData.ContainsKey(ModelData))
