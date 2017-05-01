@@ -3,47 +3,43 @@
 <div class="row" style="font-size: larger;">
     <div class="col-sm-3 text-center">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="lead">Avatar</span>
-            </div>
-            <div class="panel-body">
-                <p>
-                    @if (Model.DynamicAvatarElements?.Count > 0)
-                    {
-                        <a asp-controller="Avatar" asp-action="Index">
-                            <div class="dynamic-avatar-container-dashboard">
-                                @foreach (var layer in Model.DynamicAvatarElements)
-                                {
-                                    <img src="@layer.Filename"
-                                         style="z-index: @(layer.DynamicAvatarItem.DynamicAvatarLayerPosition + 1)"
-                                         class="dynamic-avatar-layer-dashboard" />
-                                }
-                            </div>
-                        </a>
-                    }
-                    else if (!string.IsNullOrEmpty(Model.AvatarPath))
-                    {
-                        <a asp-controller="Avatar" asp-action="Index">
-                            <img src="~/@Model.AvatarPath"
-                                 asp-append-version="true"
-                                 width="200" />
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Avatar" asp-action="Index">
-                            <img src="~/images/no_avatar.png"
-                                 class="img img-responsive center-block"
-                                 style="width:200px;"
-                                 asp-append-version="true" />
-                        </a>
-                    }
-                </p>
+            <p>
+                @if (Model.DynamicAvatarElements?.Count > 0)
+            {
+                    <a asp-controller="Avatar" asp-action="Index">
+                        <div class="dynamic-avatar-container-dashboard">
+                            @foreach (var layer in Model.DynamicAvatarElements)
+                            {
+                                <img src="@layer.Filename"
+                                     style="z-index: @(layer.DynamicAvatarItem.DynamicAvatarLayerPosition + 1)"
+                                     class="dynamic-avatar-layer-dashboard" />
+                            }
+                        </div>
+                    </a>
+                }
+                else if (!string.IsNullOrEmpty(Model.AvatarPath))
+                {
+                    <a asp-controller="Avatar" asp-action="Index">
+                        <img src="~/@Model.AvatarPath"
+                             asp-append-version="true"
+                             width="200" />
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Avatar" asp-action="Index">
+                        <img src="~/images/no_avatar.png"
+                             class="img img-responsive center-block"
+                             style="width:200px;"
+                             asp-append-version="true" />
+                    </a>
+                }
+            </p>
+            <div class="dashboard-activity">
                 <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
                 <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
             </div>
         </div>
-
     </div>
     <div class="col-sm-6">
         <div class="panel panel-default">

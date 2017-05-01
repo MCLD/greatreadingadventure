@@ -310,15 +310,14 @@ input.form-checkbox {
 /* Small Devices, Tablets */
 @media only screen and (min-width : 768px) {
     .dynamic-avatar-container-dashboard {
-        height: 264px;
-        width: 100%;
+        height: 220px;
+        width: 150px;
     }
 
     .dynamic-avatar-layer-dashboard {
         top: 0;
-        left: -18px;
-        height: 300px;
-        width: 180px;
+        height: 250px;
+        width: 150px;
     }
 
     .dynamic-avatar-container {
@@ -330,13 +329,13 @@ input.form-checkbox {
 /* Medium Devices, Desktops */
 @media only screen and (min-width : 992px) {
     .dynamic-avatar-container-dashboard {
-        height: 352px;
+        height: 308px;
+        width: 210px;
     }
 
     .dynamic-avatar-layer-dashboard {
-        height: 400px;
-        width: 240px;
-        left: -24px;
+        height: 350px;
+        width: 210px;
     }
 
     .dynamic-avatar-container {
@@ -367,13 +366,13 @@ input.form-checkbox {
 /* Large Devices, Wide Screens */
 @media only screen and (min-width : 1200px) {
     .dynamic-avatar-container-dashboard {
-        height: 440px;
+        height: 374px;
+        width: 255px;
     }
 
     .dynamic-avatar-layer-dashboard {
-        height: 500px;
-        width: 300px;
-        left: -30px;
+        height: 425px;
+        width: 255px;
     }
 
     .dynamic-avatar-item-selector {
@@ -427,14 +426,13 @@ input.form-checkbox {
     }
 
 .avatar-background {
-    background-color: white;
     margin: -20px -15px;
+    padding-bottom: 15px;
 }
 
 /* Small Devices, Tablets */
 @media only screen and (min-width : 768px) {
     .avatar-background {
-        border-radius: 8px;
         margin: 0 -51px 0 -20px;
         padding: 20px 51px 0 20px;
     }
@@ -483,4 +481,8 @@ input.form-checkbox {
 
 .dashboard-badge {
     padding: 0.25rem;
+}
+
+.dashboard-activity {
+    padding: 0 15px 15px 15px;
 }
