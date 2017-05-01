@@ -395,7 +395,9 @@ input.form-checkbox {
 }
 
 .questionnaire {
-    padding-bottom: 2rem;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 1rem;
 }
 
     .questionnaire div.story p {
