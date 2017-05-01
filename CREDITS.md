@@ -34,7 +34,7 @@ The Great Reading Adventure is open source software developed with the help of [
 - [AppVeyor](http://www.appveyor.com/) - continuous integration, ensuring code check-ins don't break Windows builds
 - [Discourse](https://www.discourse.org/) - powers [forum.greatreadingadventure.com](http://forums.greatreadingadventure.com)
 - [dmarcian](https://dmarcian.com/) - helps keep email spam-free
-- [Eleven Giants] (http://www.elevengiants.com/) - helped with extraction of avatars from Glitch
+- [Eleven Giants](http://www.elevengiants.com/) - helped with extraction of avatars from the Glitch public domain game art
 - [Favicon Generator. For real.](https://realfavicongenerator.net/) - generate icons for many platforms
 - [GitHub](https://github.com/) - hosts the source code, issue tracker, Wiki, [www.greatreadingadventure.com](http://www.greatreadingadventure.com/) and more
 - [GitMagic](https://gitmagic.io/) - enforces revision control guidelines

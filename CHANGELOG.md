@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [4.0.0-alpha5] 2017-05-01
 ### Added
 - Rudimentary ability to import events from a CSV file
 - Rudimentary ability to import schools from a CSV file
