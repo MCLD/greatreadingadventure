@@ -60,5 +60,6 @@ namespace GRA.Domain.Model
         public string TwitterCardImageUrl { get; set; }
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
+        public bool IsHttpsForced { get; set; }
     }
 }

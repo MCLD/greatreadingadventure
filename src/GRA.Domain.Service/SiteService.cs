@@ -97,6 +97,10 @@ namespace GRA.Domain.Service
         public async Task<string> GetBaseUrl(string scheme, string host)
         {
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
+            if(site.IsHttpsForced)
+            {
+                scheme = "https";
+            }
             if (site.IsDefault)
             {
                 return $"{scheme}://{host}";

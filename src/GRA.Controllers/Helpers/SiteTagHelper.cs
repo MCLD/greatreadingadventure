@@ -98,6 +98,10 @@ namespace GRA.Controllers.Helpers
         {
             string scheme = ViewContext.HttpContext.Request.Scheme;
             string host = ViewContext.HttpContext.Request.Host.Value;
+            if(site.IsHttpsForced)
+            {
+                scheme = "https";
+            }
             if (site.IsDefault)
             {
                 return $"{scheme}://{host}";

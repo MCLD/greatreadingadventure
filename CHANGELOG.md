@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Add field to site object to allow forcing https even if the Web server believes the request came in via http.
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added
