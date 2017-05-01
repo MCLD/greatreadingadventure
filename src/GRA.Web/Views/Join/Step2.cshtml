@@ -1,7 +1,5 @@
 ﻿@model GRA.Controllers.ViewModel.Join.Step2ViewModel
 
-@Html.Partial("_MultiStepPartial")
-
 <form asp-controller="Join" asp-action="Step2" method="post" role="form" novalidate>
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -12,6 +10,8 @@
                 <div class="panel-body">
 
                     <input asp-for="NewEnteredSchool" type="hidden" />
+
+                    @Html.Partial("_MultiStepPartial")
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">

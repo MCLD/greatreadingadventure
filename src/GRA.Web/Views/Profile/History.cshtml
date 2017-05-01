@@ -1,67 +1,73 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HistoryListViewModel
 
 <div class="row">
-    <div class="col-xs-12">
-        <span class="h2">My History</span>
-    </div>
-</div>
-
-@Html.Partial("_ProfilePartial")
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        @if (Model.Historys.Count() == 0)
-        {
-            <div class="alert alert-warning">No history to display</div>
-        }
-        else
-        {
-            <div>
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Activity</th>
-                            <th>Badge</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var history in Model.Historys)
-                        {
-                            <tr>
-                                <td>@history.CreatedAt</td>
-                                <td>@Html.Raw(history.Description)</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(history.BadgeFilename))
-                                    {
-                                        <div style="text-align:center;">
-                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" asp-append-version="true" />
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        @: &nbsp;
-                                    }
-                                </td>
-                                <td>@history.PointsEarned</td>
-                            </tr>
-                        }
-                        @if (Model.TotalPoints != 0)
-                        {
-                            <tr class="total-row">
-                                <td colspan="3" style="text-align:right">Total Points:</td>
-                                <td>@Model.TotalPoints</td>
-                            </tr>
-
-                        }
-                    </tbody>
-                </table>
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">My History</span>
             </div>
-            @if (Model.PaginateModel.MaxPage > 1)
-            {
-                <paginate paginateModel="@Model.PaginateModel"></paginate>
-            }
-        }
+            <div class="panel-body">
+
+                @Html.Partial("_ProfilePartial")
+
+                <div class="row" style="padding: 10px 0;">
+                    <div class="col-xs-12">
+                        @if (Model.Historys.Count() == 0)
+                        {
+                            <div class="alert alert-warning">No history to display</div>
+                        }
+                        else
+                        {
+                            <div>
+                                <table class="table table-condensed table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Activity</th>
+                                            <th>Badge</th>
+                                            <th>Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var history in Model.Historys)
+                                        {
+                                            <tr>
+                                                <td>@history.CreatedAt</td>
+                                                <td>@Html.Raw(history.Description)</td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(history.BadgeFilename))
+                                                    {
+                                                        <div style="text-align:center;">
+                                                            <img class="img-thumbnail badge-sm" src="~/@history.BadgeFilename" asp-append-version="true" />
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        @: &nbsp;
+                                    }
+                                                </td>
+                                                <td>@history.PointsEarned</td>
+                                            </tr>
+                                        }
+                                        @if (Model.TotalPoints != 0)
+                                        {
+                                            <tr class="total-row">
+                                                <td colspan="3" style="text-align:right">Total Points:</td>
+                                                <td>@Model.TotalPoints</td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if (Model.PaginateModel.MaxPage > 1)
+                            {
+                                <paginate paginateModel="@Model.PaginateModel"></paginate>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

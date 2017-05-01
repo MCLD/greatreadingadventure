@@ -353,7 +353,7 @@ input.form-checkbox {
         font-size: 18px;
         line-height: 1.3333333;
     }
-    
+
     .dynamic-avatar-item-selector {
         height: 200px;
         width: 50px;
@@ -423,3 +423,62 @@ input.form-checkbox {
     .questionnaire .answer-selection {
         padding-bottom: 0.5rem;
     }
+
+.avatar-background {
+    background-color: white;
+    margin: -20px -15px;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    .avatar-background {
+        border-radius: 8px;
+        margin: 0 -51px 0 -20px;
+        padding: 20px 51px 0 20px;
+    }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+    .avatar-background {
+        margin: 0 -28px 0 -20px;
+        padding: 20px 28px 15px 20px;
+    }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+    .avatar-background {
+        margin: 0 -14px 0 -20px;
+        padding: 20px 14px 15px 20px;
+    }
+}
+
+.sign-up-step {
+    padding-top: 0.8rem;
+    padding-bottom: 0;
+}
+
+    .sign-up-step p {
+        color: #999;
+    }
+
+    .sign-up-step.active {
+        background-color: #5cb85c;
+        border-color: #398439;
+        border-radius: 1rem;
+    }
+
+        .sign-up-step.active p {
+            color: white;
+        }
+
+.info-page {
+    background: white;
+    border-radius: 1rem;
+    padding: 0.25rem 2rem 0.5rem 2rem;
+}
+
+.dashboard-badge {
+    padding: 0.25rem;
+}

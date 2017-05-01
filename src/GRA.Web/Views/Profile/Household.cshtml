@@ -1,311 +1,316 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
 
 <div class="row">
-    <div class="col-xs-12">
-        <span class="h2">My Household</span>
-    </div>
-</div>
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">My Household</span>
+            </div>
+            <div class="panel-body">
 
-@Html.Partial("_ProfilePartial")
+                @Html.Partial("_ProfilePartial")
 
-<div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <br />
-                Activity cannot be logged for this participant until they log in and answer a questionnaire.
+                <div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <br />
+                                Activity cannot be logged for this participant until they log in and answer a questionnaire.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding: 10px 0;">
+                    <div class="col-xs-12">
+                        @if (Model.Users.Count() == 0)
+                        {
+                            <div class="alert alert-warning">Click below to create a household</div>
+                            <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+                            <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                        }
+                        else
+                        {
+                            <form id="form" asp-controller="Profile" method="post" role="form">
+                                @if (Model.AuthUserIsHead)
+                {
+                                    <input asp-for="UserSelection" type="hidden" />
+                                    <input asp-for="MinutesRead" type="hidden" />
+                                    <input asp-for="SecretCode" type="hidden" />
+
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 row-spacing">
+                                            <table>
+                                                <tr>
+                                                    <td style="padding-right:6px;">Apply</td>
+                                                    <td width="80px">
+                                                        <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
+                                                    </td>
+                                                    <td style="padding-left:6px;">
+                                                        <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
+                                                    </td>
+                                                </tr>
+                                                @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
+                                                {
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td colspan="2">@Model.MinutesReadMessage</td>
+                                                    </tr>
+                                                }
+                                            </table>
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 row-spacing">
+                                            <table>
+                                                <tr>
+                                                    <td style="padding-right:6px;">Apply</td>
+                                                    <td width="200px">
+                                                        <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
+                                                    </td>
+                                                    <td style="padding-left:6px;">
+                                                        <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
+                                                    </td>
+                                                </tr>
+                                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                                {
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                <div>
+                                    <table class="table table-condensed table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                @if (Model.AuthUserIsHead)
+                                                {
+                                                    <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
+                                                    <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
+                                                }
+                                                <th>User</th>
+                                                <th>Points</th>
+                                                @if (Model.AuthUserIsHead)
+                                                {
+                                                    <th>Book Code</th>
+                                                }
+                                            </tr>
+                                            <tr class="warning @(Model.ActiveUser == Model.Head.Id ? "text-strong" : null)">
+                                                @if (Model.AuthUserIsHead)
+                                                {
+                                                    <td style="vertical-align:middle;">
+                                                        <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
+                                                    </td>
+                                                    <td style="vertical-align:middle;">
+                                                        <div class="user-mail" data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
+                                                            @if (Model.Head.HasNewMail)
+                                                            {
+                                                                <span class="fa fa-envelope fa-lg"></span>
+                                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                }
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                @if (Model.ActiveUser == Model.Head.Id)
+                                                                {
+                                                                    <span class="fa fa-user"></span>
+                                                                }
+                                                                @Model.Head.FullName
+                                                            </td>
+                                                            <td>
+                                                                @if (Model.ActiveUser != Model.Head.Id && Model.AuthUserIsHead)
+                                                                {
+                                                                    <button type="submit"
+                                                                            class="btn btn-primary btn-xs"
+                                                                            style="margin-left: 6px;"
+                                                                            name="loginId"
+                                                                            value="@Model.Head.Id"
+                                                                            asp-action="LoginAs">
+                                                                        <span class="fa fa-sign-in"></span>
+                                                                        Switch To
+                                                                    </button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @:&nbsp;
+                                                }
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                @Model.Head.Username
+                                                            </td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>@Model.Head.PointsEarned</td>
+                                                @if (Model.AuthUserIsHead)
+                                                {
+                                                    <td>@Model.Head.VendorCode</td>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in Model.Users)
+                                            {
+                                                <tr class="@(Model.ActiveUser == user.Id ? "info text-strong" : null)">
+                                                    @if (Model.AuthUserIsHead)
+                                                    {
+                                                        <td style="vertical-align:middle;">
+                                                            @if (!user.HasPendingQuestionnaire)
+                                                            {
+                                                                <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+
+                                                            }
+                                                        </td>
+                                                        <td style="vertical-align:middle;">
+                                                            <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
+                                                                @if (user.HasNewMail)
+                                                                {
+                                                                    <span class="fa fa-envelope fa-lg"></span>
+                                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    @if (Model.ActiveUser == user.Id)
+                                                                    {
+                                                                        <span class="fa fa-user"></span>
+                                                                    }
+                                                                    @user.FullName
+                                                                </td>
+                                                                <td>
+                                                                    @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)
+                                                                    {
+                                                                        <button type="submit"
+                                                                                class="btn btn-primary btn-xs"
+                                                                                style="margin-left: 6px;"
+                                                                                name="loginId"
+                                                                                value="@user.Id"
+                                                                                asp-action="LoginAs">
+                                                                            <span class="fa fa-sign-in"></span>
+                                                                            Switch To
+                                                                        </button>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @:&nbsp;
+                                                    }
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead)
+                                                                    {
+                                                                        <button type="submit"
+                                                                                class="btn btn-default btn-xs"
+                                                                                name="RegisterId"
+                                                                                asp-action="RegisterHouseholdMember"
+                                                                                value="@user.Id">
+                                                                            <span class="fa fa-user-plus"></span>
+                                                                            Add Username
+                                                                        </button>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @user.Username
+                                                                    }
+                                                                </td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td>@user.PointsEarned</td>
+                                                    @if (Model.AuthUserIsHead)
+                                                    {
+                                                        <td>@user.VendorCode</td>
+                                                    }
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                            @if (Model.AuthUserIsHead)
+                            {
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 row-spacing">
+                                        <table>
+                                            <tr>
+                                                <td style="padding-right:6px;">Apply</td>
+                                                <td width="80px">
+                                                    <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
+                                                </td>
+                                                <td style="padding-left:6px;">
+                                                    <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
+                                                </td>
+                                            </tr>
+                                            @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
+                                            {
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td colspan="2">@Model.MinutesReadMessage</td>
+                                                </tr>
+                                            }
+                                        </table>
+
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 row-spacing">
+                                        <table>
+                                            <tr>
+                                                <td style="padding-right:6px;">Apply</td>
+                                                <td width="200px">
+                                                    <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
+                                                </td>
+                                                <td style="padding-left:6px;">
+                                                    <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
+                                                </td>
+                                            </tr>
+                                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                            {
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                            }
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<div class="row" style="padding: 10px 0;">
-    <div class="col-xs-12">
-        @if (Model.Users.Count() == 0)
-        {
-            <div class="alert alert-warning">Click below to create a household</div>
-            <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
-            <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
-        }
-        else
-        {
-            <form id="form" asp-controller="Profile" method="post" role="form">
-                @if (Model.AuthUserIsHead)
-                {
-                    <input asp-for="UserSelection" type="hidden" />
-                    <input asp-for="MinutesRead" type="hidden" />
-                    <input asp-for="SecretCode" type="hidden" />
-
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 row-spacing">
-                            <table>
-                                <tr>
-                                    <td style="padding-right:6px;">Apply</td>
-                                    <td width="80px">
-                                        <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
-                                    </td>
-                                    <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
-                                    </td>
-                                </tr>
-                                @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
-                                {
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td colspan="2">@Model.MinutesReadMessage</td>
-                                    </tr>
-                                }
-                            </table>
-
-                        </div>
-                        <div class="col-xs-12 col-sm-6 row-spacing">
-                            <table>
-                                <tr>
-                                    <td style="padding-right:6px;">Apply</td>
-                                    <td width="200px">
-                                        <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                    </td>
-                                    <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
-                                    </td>
-                                </tr>
-                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                                {
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
-                                    </tr>
-                                }
-                            </table>
-                        </div>
-                    </div>
-                }
-                <div>
-                    <table class="table table-condensed table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                @if (Model.AuthUserIsHead)
-                                {
-                                    <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
-                                    <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
-                                }
-                                <th>User</th>
-                                <th>Points</th>
-                                @if (Model.AuthUserIsHead)
-                                {
-                                    <th>Book Code</th>
-                                }
-                            </tr>
-                            <tr class="warning @(Model.ActiveUser == Model.Head.Id ? "text-strong" : null)">
-                                @if (Model.AuthUserIsHead)
-                                {
-                                    <td style="vertical-align:middle;">
-                                        <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
-                                    </td>
-                                    <td style="vertical-align:middle;">
-                                        <div class="user-mail" data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
-                                            @if (Model.Head.HasNewMail)
-                                            {
-                                                <span class="fa fa-envelope fa-lg"></span>
-                                                <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
-                                            }
-                                        </div>
-                                    </td>
-                                }
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                @if (Model.ActiveUser == Model.Head.Id)
-                                                {
-                                                    <span class="fa fa-user"></span>
-                                                }
-                                                @Model.Head.FullName
-                                            </td>
-                                            <td>
-                                                @if (Model.ActiveUser != Model.Head.Id && Model.AuthUserIsHead)
-                                                {
-                                                    <button type="submit"
-                                                            class="btn btn-primary btn-xs"
-                                                            style="margin-left: 6px;"
-                                                            name="loginId"
-                                                            value="@Model.Head.Id"
-                                                            asp-action="LoginAs">
-                                                        <span class="fa fa-sign-in"></span>
-                                                        Switch To
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    @:&nbsp;
-                                                }
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                @Model.Head.Username
-                                            </td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td>@Model.Head.PointsEarned</td>
-                                @if (Model.AuthUserIsHead)
-                                {
-                                    <td>@Model.Head.VendorCode</td>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in Model.Users)
-                            {
-                                <tr class="@(Model.ActiveUser == user.Id ? "info text-strong" : null)">
-                                    @if (Model.AuthUserIsHead)
-                                    {
-                                        <td style="vertical-align:middle;">
-                                            @if (!user.HasPendingQuestionnaire)
-                                            {
-                                                <input class="userSelection" type="checkbox" data-id="@user.Id" />
-                                            }
-                                            else
-                                            {
-                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
-
-                                            }
-                                        </td>
-                                        <td style="vertical-align:middle;">
-                                            <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
-                                                @if (user.HasNewMail)
-                                                {
-                                                    <span class="fa fa-envelope fa-lg"></span>
-                                                    <span class="fa fa-exclamation fa-2x exclamation-alert"></span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="fa fa-envelope fa-lg" style="color:grey;"></span>
-                                                }
-                                            </div>
-                                        </td>
-                                    }
-                                    <td>
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    @if (Model.ActiveUser == user.Id)
-                                                    {
-                                                        <span class="fa fa-user"></span>
-                                                    }
-                                                    @user.FullName
-                                                </td>
-                                                <td>
-                                                    @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)
-                                                    {
-                                                        <button type="submit"
-                                                                class="btn btn-primary btn-xs"
-                                                                style="margin-left: 6px;"
-                                                                name="loginId"
-                                                                value="@user.Id"
-                                                                asp-action="LoginAs">
-                                                            <span class="fa fa-sign-in"></span>
-                                                            Switch To
-                                                        </button>
-                                                    }
-                                                    else
-                                                    {
-                                                        @:&nbsp;
-                                                    }
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead)
-                                                    {
-                                                        <button type="submit"
-                                                                class="btn btn-default btn-xs"
-                                                                name="RegisterId"
-                                                                asp-action="RegisterHouseholdMember"
-                                                                value="@user.Id">
-                                                            <span class="fa fa-user-plus"></span>
-                                                            Add Username
-                                                        </button>
-                                                    }
-                                                    else
-                                                    {
-                                                        @user.Username
-                                                    }
-                                                </td>
-                                                <td>&nbsp;</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td>@user.PointsEarned</td>
-                                    @if (Model.AuthUserIsHead)
-                                    {
-                                        <td>@user.VendorCode</td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-            @if (Model.AuthUserIsHead)
-            {
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 row-spacing">
-                        <table>
-                            <tr>
-                                <td style="padding-right:6px;">Apply</td>
-                                <td width="80px">
-                                    <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
-                                </td>
-                                <td style="padding-left:6px;">
-                                    <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
-                                </td>
-                            </tr>
-                            @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
-                            {
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td colspan="2">@Model.MinutesReadMessage</td>
-                                </tr>
-                            }
-                        </table>
-
-                    </div>
-                    <div class="col-xs-12 col-sm-6 row-spacing">
-                        <table>
-                            <tr>
-                                <td style="padding-right:6px;">Apply</td>
-                                <td width="200px">
-                                    <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                </td>
-                                <td style="padding-left:6px;">
-                                    <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
-                                </td>
-                            </tr>
-                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                            {
-                                <tr>
-                                    <td>&nbsp;</td>
-                                    <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                </div>
-                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
-                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
-            }
-        }
-    </div>
-</div>
-
 @section scripts
 {
     <script>

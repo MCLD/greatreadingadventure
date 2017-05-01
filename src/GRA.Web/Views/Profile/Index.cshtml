@@ -1,199 +1,205 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.ProfileDetailViewModel
 
+
 <div class="row">
-    <div class="col-xs-12">
-        <span class="h2">My Profile</span>
-    </div>
-</div>
-
-@Html.Partial("_ProfilePartial")
-
-<form asp-controller="Profile" asp-action="Index" method="post" role="form">
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
-            <input asp-for="HouseholdCount" type="hidden" />
-            <input asp-for="HasAccount" type="hidden" />
-            <input asp-for="HasSchoolId" type="hidden" />
-            <input asp-for="NewEnteredSchool" type="hidden" />
-            <input asp-for="User.Id" type="hidden" />
-            <input asp-for="User.AvatarId" type="hidden" />
-            <input asp-for="User.CardNumber" type="hidden" />
-            <input asp-for="User.EnteredSchoolId" type="hidden" />
-
-            @if (!string.IsNullOrWhiteSpace(Model.User.Username))
-            {
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="User.Username" class="control-label"></label>
-                        <input asp-for="User.Username" class="form-control" readonly />
-                    </div>
-                </div>
-            }
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="User.FirstName" class="control-label"></label>
-                    <input asp-for="User.FirstName" class="form-control" />
-                    <span asp-validation-for="User.FirstName" class="text-danger"></span>
-                </div>
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">My Profile</span>
             </div>
+            <div class="panel-body">
 
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="User.LastName" class="control-label"></label>
-                    <input asp-for="User.LastName" class="form-control" />
-                    <span asp-validation-for="User.LastName" class="text-danger"></span>
-                </div>
-            </div>
+                @Html.Partial("_ProfilePartial")
 
-            @if (Model.RequirePostalCode)
-            {
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="User.PostalCode" class="control-label"></label>
-                        <input asp-for="User.PostalCode" class="form-control" />
-                        <span asp-validation-for="User.PostalCode" class="text-danger"></span>
-                    </div>
-                </div>
-            }
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="User.Email" class="control-label"></label>
-                    <input asp-for="User.Email" class="form-control" type="email" />
-                    <span asp-validation-for="User.Email" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="User.PhoneNumber" class="control-label"></label>
-                    <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
-                    <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
-                </div>
-            </div>
-
-            @if (Model.SystemList.Count() > 1)
-            {
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="User.SystemId" class="control-label"></label>
-                        <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
-                        <span asp-validation-for="User.SystemId" class="text-danger"></span>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <input asp-for="User.SystemId" type="hidden" />
-            }
-
-            @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
-            {
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="User.BranchId" class="control-label"></label>
-                        <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
-                        <span asp-validation-for="User.BranchId" class="text-danger"></span>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <input asp-for="User.BranchId" type="hidden" />
-            }
-
-            @if (Model.ProgramList.Count() > 1)
-            {
-                <div class="row row-spacing">
-                    <div class="col-xs-12">
-                        <label asp-for="User.ProgramId" class="control-label"></label>
-                        <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
-                        <span asp-validation-for="User.ProgramId" class="text-danger"></span>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <input asp-for="User.ProgramId" type="hidden" />
-            }
-
-            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
-                <div class="col-xs-12">
-                    <label asp-for="User.Age" class="control-label"></label>
-                    <input asp-for="User.Age" class="form-control" type="text" />
-                    <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
-                @if (!Model.User.EnteredSchoolId.HasValue)
-                {
-                    <div class="row">
-                        <div id="schoolDistrictGroup" class="col-xs-12 @(Model.NewEnteredSchool ? "" : "col-sm-6" ) row-spacing">
-                            <label class="control-label">School District</label>
-                            <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
-                        </div>
-
-                        <div id="schoolTypeGroup" class="col-xs-12 col-sm-6 row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
-                            <label class="control-label">School Type</label>
-                            <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
-                                <option></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="schoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
+                <form asp-controller="Profile" asp-action="Index" method="post" role="form">
+                    <div class="row" style="padding: 10px 0;">
                         <div class="col-xs-12">
-                            <label asp-for="User.SchoolId" class="control-label"></label>
-                            @if (!Model.HasSchoolId)
-                            {
-                                <label style="font-size: 12px;">
-                                    <a id="schoolNotListed" style="text-decoration:none;cursor:pointer">My school isn't listed</a>
-                                </label>
+                            <input asp-for="HouseholdCount" type="hidden" />
+                            <input asp-for="HasAccount" type="hidden" />
+                            <input asp-for="HasSchoolId" type="hidden" />
+                            <input asp-for="NewEnteredSchool" type="hidden" />
+                            <input asp-for="User.Id" type="hidden" />
+                            <input asp-for="User.AvatarId" type="hidden" />
+                            <input asp-for="User.CardNumber" type="hidden" />
+                            <input asp-for="User.EnteredSchoolId" type="hidden" />
+
+                            @if (!string.IsNullOrWhiteSpace(Model.User.Username))
+            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="User.Username" class="control-label"></label>
+                                        <input asp-for="User.Username" class="form-control" readonly />
+                                    </div>
+                                </div>
                             }
-                            <select asp-for="User.SchoolId" asp-items="Model.SchoolList" class="form-control">
-                                <option></option>
-                            </select>
-                            <span asp-validation-for="User.SchoolId" class="text-danger"></span>
-                        </div>
-                    </div>
-                }
-                @if (!Model.HasSchoolId)
-                {
-                    <div id="enteredSchoolGroup" class="row row-spacing @(Model.NewEnteredSchool || Model.User.EnteredSchoolId.HasValue ? "" : "hide" )">
-                        <div class="col-xs-12">
-                            <label asp-for="User.EnteredSchoolName" class="control-label"></label>
-                            @if (!Model.User.EnteredSchoolId.HasValue)
-                            {
-                                <label style="font-size: 12px;">
-                                    <a id="viewSchoolList" style="text-decoration:none;cursor:pointer">View school list</a>
-                                </label>
-                                <input asp-for="User.EnteredSchoolName" class="form-control" />
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="User.FirstName" class="control-label"></label>
+                                    <input asp-for="User.FirstName" class="form-control" />
+                                    <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="User.LastName" class="control-label"></label>
+                                    <input asp-for="User.LastName" class="form-control" />
+                                    <span asp-validation-for="User.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            @if (Model.RequirePostalCode)
+            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="User.PostalCode" class="control-label"></label>
+                                        <input asp-for="User.PostalCode" class="form-control" />
+                                        <span asp-validation-for="User.PostalCode" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="User.Email" class="control-label"></label>
+                                    <input asp-for="User.Email" class="form-control" type="email" />
+                                    <span asp-validation-for="User.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="User.PhoneNumber" class="control-label"></label>
+                                    <input asp-for="User.PhoneNumber" class="form-control" type="tel" />
+                                    <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            @if (Model.SystemList.Count() > 1)
+            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="User.SystemId" class="control-label"></label>
+                                        <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                                        <span asp-validation-for="User.SystemId" class="text-danger"></span>
+                                    </div>
+                                </div>
                             }
                             else
                             {
-                                <input asp-for="User.EnteredSchoolName" class="form-control" readonly />
+                                <input asp-for="User.SystemId" type="hidden" />
                             }
-                            <span asp-validation-for="User.EnteredSchoolName" class="text-danger"></span>
+
+                            @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
+            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="User.BranchId" class="control-label"></label>
+                                        <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                                        <span asp-validation-for="User.BranchId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <input asp-for="User.BranchId" type="hidden" />
+                            }
+
+                            @if (Model.ProgramList.Count() > 1)
+            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="User.ProgramId" class="control-label"></label>
+                                        <select asp-for="User.ProgramId" asp-items="Model.ProgramList" class="form-control"></select>
+                                        <span asp-validation-for="User.ProgramId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <input asp-for="User.ProgramId" type="hidden" />
+                            }
+
+                            <div id="ageField" class="row row-spacing @(Model.ShowAge ? "": "hide")">
+                                <div class="col-xs-12">
+                                    <label asp-for="User.Age" class="control-label"></label>
+                                    <input asp-for="User.Age" class="form-control" type="text" />
+                                    <span id="ageMessage" asp-validation-for="User.Age" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
+                                @if (!Model.User.EnteredSchoolId.HasValue)
+                                {
+                                    <div class="row">
+                                        <div id="schoolDistrictGroup" class="col-xs-12 @(Model.NewEnteredSchool ? "" : "col-sm-6" ) row-spacing">
+                                            <label class="control-label">School District</label>
+                                            <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
+                                                <option></option>
+                                            </select>
+                                            <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
+                                        </div>
+
+                                        <div id="schoolTypeGroup" class="col-xs-12 col-sm-6 row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
+                                            <label class="control-label">School Type</label>
+                                            <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="schoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.SchoolId" class="control-label"></label>
+                                            @if (!Model.HasSchoolId)
+                                            {
+                                                <label style="font-size: 12px;">
+                                                    <a id="schoolNotListed" style="text-decoration:none;cursor:pointer">My school isn't listed</a>
+                                                </label>
+                                            }
+                                            <select asp-for="User.SchoolId" asp-items="Model.SchoolList" class="form-control">
+                                                <option></option>
+                                            </select>
+                                            <span asp-validation-for="User.SchoolId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+                                @if (!Model.HasSchoolId)
+                                {
+                                    <div id="enteredSchoolGroup" class="row row-spacing @(Model.NewEnteredSchool || Model.User.EnteredSchoolId.HasValue ? "" : "hide" )">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.EnteredSchoolName" class="control-label"></label>
+                                            @if (!Model.User.EnteredSchoolId.HasValue)
+                                            {
+                                                <label style="font-size: 12px;">
+                                                    <a id="viewSchoolList" style="text-decoration:none;cursor:pointer">View school list</a>
+                                                </label>
+                                                <input asp-for="User.EnteredSchoolName" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input asp-for="User.EnteredSchoolName" class="form-control" readonly />
+                                            }
+                                            <span asp-validation-for="User.EnteredSchoolName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                }
+
+                    <div class="form-group">
+                        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                            <span class="buttonText">Update Profile</span>
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
-            <span class="buttonText">Update Profile</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-        </button>
-    </div>
-</form>
-
+</div>
 @section scripts {
     <script>
         var programs = JSON.parse('@Html.Raw(Model.ProgramJson)');
@@ -300,7 +306,7 @@
                 typeList.empty();
                 typeList.append(new Option("", ""));
                 UpdateSchoolList(districtId, typeList.val());
-            }   
+            }
         });
 
         $("#SchoolTypeId").on("change", function() {

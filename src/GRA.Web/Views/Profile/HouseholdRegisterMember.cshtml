@@ -1,54 +1,58 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdRegisterViewModel
 
 <div class="row">
-    <div class="col-xs-12">
-        <span class="h2">Register Household Member</span>
-    </div>
-</div>
-
-<form asp-controller="Profile" asp-action="RegisterHouseholdMember" method="post" role="form">
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-12">
-
-            <input asp-for="RegisterId" type="hidden" />
-            <input asp-for="Validate" value="true" type="hidden" />
-
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Username" class="control-label"></label>
-                    <span id="Username-Icon" class="fa colored-icon hide"></span>
-                    <input asp-for="Username" class="form-control" autofocus />
-                    <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
-                </div>
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Register Household Member</span>
             </div>
+            <div class="panel-body">
+                <form asp-controller="Profile" asp-action="RegisterHouseholdMember" method="post" role="form">
+                    <div class="row" style="padding: 10px 0;">
+                        <div class="col-xs-12">
 
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-            </div>
+                            <input asp-for="RegisterId" type="hidden" />
+                            <input asp-for="Validate" value="true" type="hidden" />
 
-            <div class="row row-spacing">
-                <div class="col-xs-12">
-                    <label asp-for="ConfirmPassword" class="control-label"></label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Username" class="control-label"></label>
+                                    <span id="Username-Icon" class="fa colored-icon hide"></span>
+                                    <input asp-for="Username" class="form-control" autofocus />
+                                    <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Password" class="control-label"></label>
+                                    <input asp-for="Password" type="password" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="ConfirmPassword" class="control-label"></label>
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <a asp-action="Household" class="btn btn-default">Return to Household</a>
+                        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                            <span class="buttonText">Register Member</span>
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <a asp-action="Household" class="btn btn-default">Return to Household</a>
-        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
-            <span class="buttonText">Register Member</span>
-            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-        </button>
-    </div>
-</form>
-
+</div>
 @section scripts {
     <script>
         $("#Username").on("blur", function () {

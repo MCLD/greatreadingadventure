@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Changed dynamic avatars
+- Move profile, dashboard, and sign-up to be inside containers to make the site compatible with having a background color/image
 
 ### Fixed
 - Fix alert spacing

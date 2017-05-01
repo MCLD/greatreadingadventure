@@ -1,153 +1,195 @@
 ﻿@model GRA.Controllers.ViewModel.Home.DashboardViewModel
 
 <div class="row" style="font-size: larger;">
-    <div class="col-sm-3" style="text-align: center;">
-        <p>
-            @if (Model.DynamicAvatarElements?.Count > 0)
-            {
-                <a asp-controller="Avatar" asp-action="Index">
-                    <div class="dynamic-avatar-container-dashboard">
-                        @foreach (var layer in Model.DynamicAvatarElements)
-                        {
-                            <img src="@layer.Filename"
-                                 style="z-index: @(layer.DynamicAvatarItem.DynamicAvatarLayerPosition + 1)"
-                                 class="dynamic-avatar-layer-dashboard" />
-                        }
-                    </div>
-                </a>
-            }
-            else if (!string.IsNullOrEmpty(Model.AvatarPath))
-            {
-                <a asp-controller="Avatar" asp-action="Index">
-                    <img src="~/@Model.AvatarPath"
-                         asp-append-version="true"
-                         width="200" />
-                </a>
-            }
-            else
-            {
-                <a asp-controller="Avatar" asp-action="Index">
-                    <img src="~/images/no_avatar.png"
-                         class="img img-responsive center-block"
-                         style="width:200px;"
-                         asp-append-version="true" />
-                </a>
-            }
-        </p>
-        <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
-        <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
+    <div class="col-sm-3 text-center">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="lead">Avatar</span>
+            </div>
+            <div class="panel-body">
+                <p>
+                    @if (Model.DynamicAvatarElements?.Count > 0)
+                    {
+                        <a asp-controller="Avatar" asp-action="Index">
+                            <div class="dynamic-avatar-container-dashboard">
+                                @foreach (var layer in Model.DynamicAvatarElements)
+                                {
+                                    <img src="@layer.Filename"
+                                         style="z-index: @(layer.DynamicAvatarItem.DynamicAvatarLayerPosition + 1)"
+                                         class="dynamic-avatar-layer-dashboard" />
+                                }
+                            </div>
+                        </a>
+                    }
+                    else if (!string.IsNullOrEmpty(Model.AvatarPath))
+                    {
+                        <a asp-controller="Avatar" asp-action="Index">
+                            <img src="~/@Model.AvatarPath"
+                                 asp-append-version="true"
+                                 width="200" />
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Avatar" asp-action="Index">
+                            <img src="~/images/no_avatar.png"
+                                 class="img img-responsive center-block"
+                                 style="width:200px;"
+                                 asp-append-version="true" />
+                        </a>
+                    }
+                </p>
+                <p style="font-size: x-large;">You have <strong>@Model.CurrentPointTotal points</strong>.</p>
+                <p>See your <a asp-controller="Profile" asp-action="History">activity history</a>.</p>
+            </div>
+        </div>
+
     </div>
     <div class="col-sm-6">
-        <p style="text-align: center; font-size: x-large;">Welcome <strong>@Model.FirstName!</strong></p>
+        <div class="panel panel-default">
+            <div class="panel-body text-center">
+                <span class="lead">Welcome <strong>@Model.FirstName!</strong></span>
+                @if ((GRA.Domain.Model.SiteStage)Context.Items[GRA.Controllers.ItemKey.SiteStage] == GRA.Domain.Model.SiteStage.RegistrationOpen)
+                {
+                    <p class="lead" style="padding-top: 2rem;">Once the program starts, you will enter your activity right here!</p>
+                }
+            </div>
+        </div>
+
         @if ((GRA.Domain.Model.SiteStage)Context.Items[GRA.Controllers.ItemKey.SiteStage] == GRA.Domain.Model.SiteStage.ProgramOpen)
         {
             @if (Model.SingleEvent)
             {
-                <div class="well">
-                    <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
-                        <input asp-for="SingleEvent" type="hidden" />
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Title" class="control-label"></label>
-                                <input asp-for="Title" class="form-control" />
-                                <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class="lead">Enter Activity</span>
+                    </div>
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
+                            <input asp-for="SingleEvent" type="hidden" />
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Title" class="control-label"></label>
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Author" class="control-label"></label>
-                                <input asp-for="Author" class="form-control" />
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Author" class="control-label"></label>
+                                    <input asp-for="Author" class="form-control" />
+                                </div>
                             </div>
-                        </div>
 
-                        <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                            <span class="buttonText">I read a book!</span>
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </form>
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">I read a book!</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             }
             else
             {
-                <div class="well">
-                    <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
-                        <div class="row row-spacing">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class="lead">Enter Activity</span>
+                    </div>
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogActivity" method="post" role="form">
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label class="control-label">Enter @Model.ActivityDescriptionPlural read</label>
+                                    <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
+                                    <span asp-validation-for="ActivityAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Title" class="control-label"></label>
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-12">
+                                    <label asp-for="Author" class="control-label"></label>
+                                    <input asp-for="Author" class="form-control" />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">Log Minutes</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead">Enter Secret Code</span>
+                </div>
+                <div class="panel-body">
+                    <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form">
+                        <div class="row row-spacing" style="text-align:center;">
                             <div class="col-xs-12">
-                                <label class="control-label">Enter @Model.ActivityDescriptionPlural read</label>
-                                <input asp-for="ActivityAmount" type="text" value="@Model.ActivityAmount" class="form-control" />
-                                <span asp-validation-for="ActivityAmount" class="text-danger"></span>
+                                <small>Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!</small>
                             </div>
                         </div>
 
                         <div class="row row-spacing">
                             <div class="col-xs-12">
-                                <label asp-for="Title" class="control-label"></label>
-                                <input asp-for="Title" class="form-control" />
-                                <span asp-validation-for="Title" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <label asp-for="Author" class="control-label"></label>
-                                <input asp-for="Author" class="form-control" />
+                                <label asp-for="SecretCode" class="control-label"></label>
+                                <input asp-for="SecretCode" class="form-control" />
+                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                {
+                                    <span>@Html.Raw(Model.SecretCodeMessage)</span>
+                                }
                             </div>
                         </div>
 
                         <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                            <span class="buttonText">Log Minutes</span>
+                            <span class="buttonText">Submit Code</span>
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                         </button>
                     </form>
                 </div>
-            }
-            <div class="well">
-                <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form">
-                    <div class="row row-spacing" style="text-align:center;">
-                        <div class="col-xs-12">
-                            <strong style="font-size:x-large">Secret Code</strong>
-                            <p style="font-size:small">Secret codes can be found by attending library events and on promotional materials. If&nbsp;you&nbsp;find&nbsp;one,&nbsp;enter&nbsp;it&nbsp;below!</p>
-                        </div>
-                    </div>
-
-                    <div class="row row-spacing">
-                        <div class="col-xs-12">
-                            <label asp-for="SecretCode" class="control-label"></label>
-                            <input asp-for="SecretCode" class="form-control" />
-                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                            {
-                                <span>@Html.Raw(Model.SecretCodeMessage)</span>
-                            }
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                        <span class="buttonText">Submit Code</span>
-                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                    </button>
-                </form>
             </div>
         }
-        else
-        {
-            @: <p style="text-align:center;">You will be able to log books once the program opens</p>
-        }
     </div>
-    <div class="col-sm-3" style="text-align: center;">
-        <p style="font-size: x-large;"><a asp-controller="Profile" asp-action="History">Your badges</a></p>
-        <div class="row">
-            @if (Model.Badges.Count() > 0)
-            {
-                foreach (var badge in Model.Badges)
-                {
-                    <div class="col-sm-6 col-xs-4" style="height:110px; padding: 0 5px 10px 5px;"><img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" /></div>
-                }
-            }
-            else
-            {
-                <p>Complete <a asp-controller="Challenges" asp-action="Index">Challenges</a> to earn badges!</p>
-            }
+    <div class="col-sm-3 text-center">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a asp-controller="Profile" asp-action="History" class="lead">Your badges</a>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @if (Model.Badges.Count() > 0)
+                    {
+                        int display = 0;
+                        foreach (var badge in Model.Badges)
+                        {
+                            <div class="col-md-6 col-sm-12 col-xs-4 dashboard-badge"><img class="img-thumbnail badge-sm" src="~/@badge.Filename" asp-append-version="true" /></div>
+                            display++;
+                            if (display >= 6)
+                            {
+                                <div class="col-xs-12">
+                                    See more of your badges in your <a asp-controller="Profile" asp-action="History" class="lead">history</a>!
+                                </div>
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <p>Participate in program activities to earn badges!</p>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
