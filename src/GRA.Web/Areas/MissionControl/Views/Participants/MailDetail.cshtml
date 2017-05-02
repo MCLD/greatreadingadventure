@@ -50,7 +50,16 @@
 <div class="row row-spacing">
     <div class="col-xs-12">
         <label asp-for="Mail.Body" class="control-label"></label>
-        <textarea asp-for="Mail.Body" class="form-control" readonly></textarea>
+        @if (Model.Mail.ToUserId.HasValue)
+        {
+            <div class="form-control" style="min-height:71px;" readonly>
+                @Html.Raw(Model.Mail.Body)
+            </div>
+        }
+        else
+        {
+            <textarea asp-for="Mail.Body" class="form-control" readonly></textarea>
+        }
     </div>
 </div>
 

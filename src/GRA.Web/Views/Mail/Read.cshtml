@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <p style="font-size:large"><strong>Subject: @Model.Subject</strong></p>
-                        <p>@Model.Body</p>
+                        @Html.Raw(Model.Body)
                     </div>
                 </div>
             </div>

@@ -59,6 +59,7 @@ namespace GRA.Controllers
             try
             {
                 var mail = await _mailService.GetParticipantMailAsync(id);
+                mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
                 if (mail.IsNew)
                 {
                     await _mailService.MarkAsReadAsync(id);

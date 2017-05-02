@@ -42,7 +42,14 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-8 col-sm-9">
-                        <p>@Model.Mail.Body</p>
+                        @if (Model.Mail.ToUserId.HasValue)
+                        {
+                            @: @Html.Raw(Model.Mail.Body)
+                        }
+                        else
+                        {
+                            <p>@Model.Mail.Body</p>
+                        }
                     </div>
                 </div>
             </div>

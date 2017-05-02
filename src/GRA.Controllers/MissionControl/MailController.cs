@@ -96,9 +96,16 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 var mail = await _mailService.GetDetails(id);
-                if (mail.ToUserId == null && mail.IsNew)
+                if (mail.ToUserId == null)
                 {
-                    await _mailService.MCMarkAsReadAsync(id);
+                    if (mail.IsNew)
+                    {
+                        await _mailService.MCMarkAsReadAsync(id);
+                    }
+                }
+                else
+                {
+                    mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
                 }
 
                 string participantLink = string.Empty;

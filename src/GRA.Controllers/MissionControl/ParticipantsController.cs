@@ -1443,6 +1443,10 @@ namespace GRA.Controllers.MissionControl
             {
                 var mail = await _mailService.GetDetails(id);
                 var userId = mail.ToUserId ?? mail.FromUserId;
+                if (mail.ToUserId.HasValue)
+                {
+                    mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
+                }
 
                 var user = await _userService.GetDetails(userId);
                 SetPageTitle(user, (mail.ToUserId.HasValue ? "To" : "From"));
