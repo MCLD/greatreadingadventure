@@ -24,6 +24,7 @@ namespace GRA.Data.Repository
                 .Include(_ => _.System)
                 .Where(_ => _.System.SiteId == siteId)
                 .OrderBy(_ => _.Name)
+                .ThenBy(_ => _.System.Name)
                 .ProjectTo<Branch>()
                 .ToListAsync();
         }

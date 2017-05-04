@@ -56,9 +56,17 @@ namespace GRA.Domain.Service
             return branchList;
         }
 
-        public async Task<IEnumerable<Branch>> GetAllBranches()
+        public async Task<IEnumerable<Branch>> GetAllBranches(bool includeSystemName = false)
         {
-            return await _branchRepository.GetAllAsync(GetCurrentSiteId());
+            var branchList = await _branchRepository.GetAllAsync(GetCurrentSiteId());
+            if (includeSystemName)
+            {
+                foreach (var branch in branchList)
+                {
+                    branch.Name = $"{branch.Name} ({branch.SystemName})";
+                }
+            }
+            return branchList;
         }
 
         public async Task<Branch> GetBranchByIdAsync(int branchId)
@@ -97,7 +105,7 @@ namespace GRA.Domain.Service
         public async Task<string> GetBaseUrl(string scheme, string host)
         {
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
-            if(site.IsHttpsForced)
+            if (site.IsHttpsForced)
             {
                 scheme = "https";
             }

@@ -57,7 +57,9 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="BranchId" class="control-label"></label>
-                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                                <option></option>
+                            </select>
                             <span asp-validation-for="BranchId" class="text-danger"></span>
                         </div>
                     </div>
@@ -87,7 +89,7 @@
                 branchList.empty();
                 if (response.length > 1)
                 {
-                    branchList.append(new Option("", "-1"));
+                    branchList.append(new Option("", ""));
                 }
                 $.each(response, function(index, item) {
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))

@@ -310,6 +310,11 @@ namespace GRA.Controllers
                 viewModel.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
                 viewModel.SystemId = systemId;
             }
+            else
+            {
+                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(true), 
+                    "Id", "Name");
+            }
 
             return View(viewModel);
         }
@@ -334,7 +339,8 @@ namespace GRA.Controllers
             }
 
             PageTitle = $"{site.Name} - Join Now!";
-
+            var systemList = await _siteService.GetSystemList();
+            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
             if (model.SystemId.HasValue)
             {
                 var branchList = await _siteService.GetBranches(model.SystemId.Value);
@@ -344,8 +350,11 @@ namespace GRA.Controllers
                 }
                 model.BranchList = new SelectList(branchList.ToList(), "Id", "Name");
             }
-            var systemList = await _siteService.GetSystemList();
-            model.SystemList = new SelectList(systemList.ToList(), "Id", "Name");
+            else if (systemList.Count() > 1)
+            {
+                model.BranchList = new SelectList(await _siteService.GetAllBranches(true),
+                    "Id", "Name");
+            }
             model.RequirePostalCode = site.RequirePostalCode;
 
             return View(model);
