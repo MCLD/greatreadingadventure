@@ -7,12 +7,14 @@ using GRA.Controllers.Attributes;
 using GRA.Controllers.ViewModel.Questionnaire;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
 {
+    [Authorize]
     [PreventQuestionnaireRedirect]
     [SuppressNotifications]
     public class QuestionnaireController : Base.UserController

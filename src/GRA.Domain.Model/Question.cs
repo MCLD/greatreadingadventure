@@ -19,6 +19,7 @@ namespace GRA.Domain.Model
 
         public ICollection<Answer> Answers;
 
+        [Required(ErrorMessage ="Please select an answer to the question.")]
         public int ParticipantAnswer { get; set; }
     }
 }

@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- Add disable and spinner to questionnaire submit buttons
 - Add error message when trying to apply a role twice
 
 ### Changed
@@ -13,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Add field to site object to allow forcing https even if the Web server believes the request came in via http.
+- Fix questionnaire controller not requiring authorization
+- Fix jquery validation message not displaying on questionnaire
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added
