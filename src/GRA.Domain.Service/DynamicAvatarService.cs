@@ -74,6 +74,11 @@ namespace GRA.Domain.Service
                             layer.SelectedColor = layerSelection.DynamicAvatarColorId;
                             layer.FilePath = _pathResolver.ResolveContentPath(layerSelection.Filename);
                         }
+                        else if (layer.DynamicAvatarColors.Count > 0)
+                        {
+                            layer.SelectedColor = layer.DynamicAvatarColors
+                                .ElementAt(new Random().Next(0, layer.DynamicAvatarColors.Count)).Id;
+                        }
                     }
                     else
                     {

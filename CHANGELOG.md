@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Add field to site object to allow forcing https even if the Web server believes the request came in via http.
+- Fix missing hair colors
 - Fix questionnaire controller not requiring authorization
 - Fix jquery validation message not displaying on questionnaire
 
