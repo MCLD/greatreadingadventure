@@ -103,25 +103,33 @@ namespace GRA.Controllers.MissionControl
 
             string sanitized = _codeSanitizer.Sanitize(viewmodel.AuthorizationCode, 255);
 
-            string role
-                = await _userService.ActivateAuthorizationCode(sanitized);
+            try
+            {
+                string role
+                    = await _userService.ActivateAuthorizationCode(sanitized);
 
-            if (!string.IsNullOrEmpty(role))
-            {
-                var auth = await _authenticationService
-                    .RevalidateUserAsync(GetId(ClaimType.UserId));
-                auth.AuthenticationMessage = $"Code applied, you are now a member of the role: <strong>{role}</strong>.";
-                await LoginUserAsync(auth);
-                return RedirectToRoute(new
+                if (!string.IsNullOrEmpty(role))
                 {
-                    area = "MissionControl",
-                    controller = "Home",
-                    action = "Index"
-                });
+                    var auth = await _authenticationService
+                        .RevalidateUserAsync(GetId(ClaimType.UserId));
+                    auth.AuthenticationMessage = $"Code applied, you are now a member of the role: <strong>{role}</strong>.";
+                    await LoginUserAsync(auth);
+                    return RedirectToRoute(new
+                    {
+                        area = "MissionControl",
+                        controller = "Home",
+                        action = "Index"
+                    });
+                }
+                else
+                {
+                    ShowAlertDanger("Invalid code. This request was logged.");
+                    return View("AuthorizationCode");
+                }
             }
-            else
+            catch (GraException gex)
             {
-                ShowAlertDanger("Invalid code. This request was logged.");
+                ShowAlertDanger("Unable to activate code: ", gex);
                 return View("AuthorizationCode");
             }
         }

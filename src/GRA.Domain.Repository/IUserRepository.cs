@@ -9,6 +9,7 @@ namespace GRA.Domain.Repository
     public interface IUserRepository : IRepository<User>
     {
         Task AddRoleAsync(int currentUserId, int userId, int roleId);
+        Task<ICollection<int>> GetUserRolesAsync(int userId);
         Task<AuthenticationResult> AuthenticateUserAsync(string username, string password);
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
         Task<User> GetByUsernameAsync(string username);

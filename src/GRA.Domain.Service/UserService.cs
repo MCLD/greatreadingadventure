@@ -432,6 +432,13 @@ namespace GRA.Domain.Service
                 return null;
             }
             int userId = GetClaimId(ClaimType.UserId);
+
+            var userRoles = await _userRepository.GetUserRolesAsync(userId);
+            if (userRoles.Contains(authCode.RoleId))
+            {
+                throw new GraException($"You already belong to the role '{authCode.RoleName}'");
+            }
+
             await _userRepository.AddRoleAsync(userId, userId, authCode.RoleId);
             if (authCode.IsSingleUse)
             {

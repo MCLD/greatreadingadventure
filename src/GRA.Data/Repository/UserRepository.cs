@@ -45,6 +45,14 @@ namespace GRA.Data.Repository
             await _context.UserRoles.AddAsync(userRoleAssignment);
         }
 
+        public async Task<ICollection<int>> GetUserRolesAsync (int userId)
+        {
+            return await _context.UserRoles.AsNoTracking()
+                .Where(_ => _.UserId == userId)
+                .Select(_ => _.RoleId)
+                .ToListAsync();
+        }
+
         public async Task SetUserPasswordAsync(int currentUserId, int userId, string password)
         {
             var user = DbSet.Find(userId);

@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Add error message when trying to apply a role twice
+
 ### Fixed
 - Add field to site object to allow forcing https even if the Web server believes the request came in via http.
 
