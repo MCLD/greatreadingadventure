@@ -432,7 +432,8 @@ namespace GRA.Domain.Service
         {
             var userContext = GetUserContext();
             var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
-            await AwardTriggersAsync(userId, logPoints, userContext.SiteId);
+            await AwardTriggersAsync(userId, logPoints, userContext.SiteId,
+                !userContext.User.Identity.IsAuthenticated);
 
             if (awardHousehold)
             {
@@ -574,7 +575,8 @@ namespace GRA.Domain.Service
             return badge;
         }
 
-        private async Task AwardTriggersAsync(int userId, bool logPoints = true, int? siteId = null)
+        private async Task AwardTriggersAsync(int userId, bool logPoints = true, int? siteId = null,
+            bool userIdIsCurrentUser = false)
         {
             // load the initial list of triggers that might have been achieved
             var triggers = await _triggerRepository.GetTriggersAsync(userId);
@@ -628,20 +630,20 @@ namespace GRA.Domain.Service
                 });
 
                 // award any vendor code that is necessary
-                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
+                await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId, siteId);
 
                 // send mail if applicable
                 int? mailId = await SendMailAsync(userId, trigger, siteId);
 
                 // award prize if applicable
-                await AwardPrizeAsync(userId, trigger, mailId);
+                await AwardPrizeAsync(userId, trigger, mailId, userIdIsCurrentUser);
             }
             // this call will recursively call this method in case any additional
             // triggers are fired by this action
             await AwardTriggersAsync(userId, logPoints);
         }
 
-        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId)
+        private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
         {
             if (vendorCodeTypeId != null)
             {
@@ -657,7 +659,7 @@ namespace GRA.Domain.Service
                         Body = codeType.Mail.Contains("{Code}")
                             ? codeType.Mail.Replace("{Code}", assignedCode.Code)
                             : codeType.Mail + " " + assignedCode.Code
-                    });
+                    }, siteId);
                 }
                 catch (Exception)
                 {
@@ -669,7 +671,7 @@ namespace GRA.Domain.Service
                         Body = codeType.Mail.Contains("{Code}")
                             ? codeType.Mail.Replace("{Code}", $"{codeType.Description} not available - please contact us.")
                             : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
-                    });
+                    }, siteId);
 
                     // TODO let admin know that vendor code assignment didn't work?
                 }
@@ -898,7 +900,8 @@ namespace GRA.Domain.Service
             return null;
         }
 
-        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId)
+        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId, 
+            bool userIdIsCurrentUser = false)
         {
             if (!string.IsNullOrEmpty(trigger.AwardPrizeName))
             {
@@ -917,7 +920,7 @@ namespace GRA.Domain.Service
                     prize.MailId = mailId;
                 }
 
-                await _prizeWinnerService.AddPrizeWinnerAsync(prize);
+                await _prizeWinnerService.AddPrizeWinnerAsync(prize, userIdIsCurrentUser);
             }
         }
     }
