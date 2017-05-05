@@ -124,7 +124,7 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
-            await _activityService.AwardUserTriggersAsync(registeredUser.Id, !MCRegistration);
+            await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
 
             return registeredUser;
         }

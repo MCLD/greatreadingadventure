@@ -432,7 +432,7 @@ namespace GRA.Domain.Service
         {
             var userContext = GetUserContext();
             var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
-            await AwardTriggersAsync(userId, logPoints);
+            await AwardTriggersAsync(userId, logPoints, userContext.SiteId);
 
             if (awardHousehold)
             {
@@ -441,7 +441,7 @@ namespace GRA.Domain.Service
                 {
                     foreach (var member in householdMemebers)
                     {
-                        await AwardTriggersAsync(member.Id, logPoints);
+                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId);
                     }
                 }
             }
@@ -574,7 +574,7 @@ namespace GRA.Domain.Service
             return badge;
         }
 
-        private async Task AwardTriggersAsync(int userId, bool logPoints = true)
+        private async Task AwardTriggersAsync(int userId, bool logPoints = true, int? siteId = null)
         {
             // load the initial list of triggers that might have been achieved
             var triggers = await _triggerRepository.GetTriggersAsync(userId);
@@ -631,7 +631,7 @@ namespace GRA.Domain.Service
                 await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId);
 
                 // send mail if applicable
-                int? mailId = await SendMailAsync(userId, trigger);
+                int? mailId = await SendMailAsync(userId, trigger, siteId);
 
                 // award prize if applicable
                 await AwardPrizeAsync(userId, trigger, mailId);
@@ -880,7 +880,7 @@ namespace GRA.Domain.Service
             return codeApplied;
         }
 
-        private async Task<int?> SendMailAsync(int userId, Trigger trigger)
+        private async Task<int?> SendMailAsync(int userId, Trigger trigger, int? siteId = null)
         {
             if (!string.IsNullOrEmpty(trigger.AwardMailSubject)
                 && !string.IsNullOrEmpty(trigger.AwardMail))
@@ -891,7 +891,7 @@ namespace GRA.Domain.Service
                     Subject = trigger.AwardMailSubject,
                     ToUserId = userId,
                     TriggerId = trigger.Id,
-                });
+                }, siteId);
 
                 return mail.Id;
             }

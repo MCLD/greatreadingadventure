@@ -407,7 +407,7 @@ namespace GRA.Domain.Service
             throw new Exception("Permission denied.");
         }
 
-        public async Task<Mail> SendSystemMailAsync(Mail mail)
+        public async Task<Mail> SendSystemMailAsync(Mail mail, int? siteId = null)
         {
             var user = await _userRepository.GetByIdAsync(mail.ToUserId.Value);
             if (user != null)
@@ -416,7 +416,7 @@ namespace GRA.Domain.Service
                 mail.IsNew = true;
                 mail.IsDeleted = false;
                 mail.CreatedAt = DateTime.Now;
-                mail.SiteId = GetClaimId(ClaimType.SiteId);
+                mail.SiteId = siteId ?? GetClaimId(ClaimType.SiteId);
 
                 _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
 
