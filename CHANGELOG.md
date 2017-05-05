@@ -8,9 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Add disable and spinner to questionnaire submit buttons
 - Add error message when trying to apply a role twice
+- Add trigger checking on login and account creation
+- Add names to program badges
 
 ### Changed
 - Change join branch list to be populated with all branches
+- Change trigger requirement list styling
 
 ### Fixed
 - Add field to site object to allow forcing https even if the Web server believes the request came in via http.

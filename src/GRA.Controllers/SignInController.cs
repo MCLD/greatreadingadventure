@@ -10,17 +10,20 @@ namespace GRA.Controllers
     public class SignInController : Base.UserController
     {
         private readonly ILogger<SignInController> _logger;
+        private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
         public SignInController(ILogger<SignInController> logger,
             ServiceFacade.Controller context,
+            ActivityService activityService,
             AuthenticationService authenticationService,
             QuestionnaireService questionnaireService,
             UserService userService)
                 : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
@@ -52,6 +55,7 @@ namespace GRA.Controllers
                     if (loginAttempt.PasswordIsValid)
                     {
                         await LoginUserAsync(loginAttempt);
+                        await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
                         var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                         if (questionnaireId.HasValue)

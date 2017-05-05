@@ -11,9 +11,9 @@ else
             <thead>
                 <tr>
                     <td>Name</td>
-                    <td>Type</td>
-                    <td>Badge</td>
-                    <td width="42px">&nbsp;</td>
+                    <td width="44px">Type</td>
+                    <td width="75px">Badge</td>
+                    <td width="44px">&nbsp;</td>
                 </tr>
             </thead>
             <tbody>
@@ -23,8 +23,8 @@ else
                         <td>
                             @requirement.Name
                         </td>
-                        <td>
-                            <span class="fa fa-2x @requirement.Icon"></span>
+                        <td style="text-align:center;">
+                            <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
                         </td>
                         <td>
                             @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))

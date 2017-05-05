@@ -428,6 +428,25 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task AwardUserTriggersAsync(int userId, bool awardHousehold)
+        {
+            var userContext = GetUserContext();
+            var logPoints = userContext.SiteStage == SiteStage.ProgramOpen;
+            await AwardTriggersAsync(userId, logPoints);
+
+            if (awardHousehold)
+            {
+                var householdMemebers = await _userRepository.GetHouseholdAsync(userId);
+                if (householdMemebers.Count() > 0)
+                {
+                    foreach (var member in householdMemebers)
+                    {
+                        await AwardTriggersAsync(member.Id, logPoints);
+                    }
+                }
+            }
+        }
+
         private async Task<User> AddPointsSaveAsync(int authUserId,
             int activeUserId,
             int whoEarnedUserId,
@@ -555,7 +574,7 @@ namespace GRA.Domain.Service
             return badge;
         }
 
-        private async Task AwardTriggersAsync(int userId)
+        private async Task AwardTriggersAsync(int userId, bool logPoints = true)
         {
             // load the initial list of triggers that might have been achieved
             var triggers = await _triggerRepository.GetTriggersAsync(userId);
@@ -576,10 +595,8 @@ namespace GRA.Domain.Service
                 await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
 
                 // if there are points to be awarded, do that now
-                if (trigger.AwardPoints > 0)
+                if (trigger.AwardPoints > 0 && logPoints)
                 {
-                    // this call will recursively call this method in case any additional
-                    // point-based triggers are fired by this action
                     await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
                         GetActiveUserId(),
                         userId,
@@ -619,8 +636,9 @@ namespace GRA.Domain.Service
                 // award prize if applicable
                 await AwardPrizeAsync(userId, trigger, mailId);
             }
-
-            await AwardTriggersAsync(userId);
+            // this call will recursively call this method in case any additional
+            // triggers are fired by this action
+            await AwardTriggersAsync(userId, logPoints);
         }
 
         private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId)

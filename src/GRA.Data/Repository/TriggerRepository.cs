@@ -11,6 +11,7 @@ using GRA.Domain.Repository.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections;
 using GRA.Domain.Model.Filters;
+using System.Diagnostics;
 
 namespace GRA.Data.Repository
 {
@@ -19,6 +20,11 @@ namespace GRA.Data.Repository
         private const string ChallengeIcon = "fa-trophy";
         private const string ProgramIcon = "fa-asterisk";
         private const string TriggerIcon = "fa-gears";
+
+        private const string AchieverDescription = "Achiever Badge";
+        private const string ChallengeDescription = "Challenge";
+        private const string JoinDescription = "Join Badge";
+        private const string TriggerDescription = "Trigger";
 
         public TriggerRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<TriggerRepository> logger) : base(repositoryFacade, logger)
@@ -232,7 +238,9 @@ namespace GRA.Data.Repository
                     .Where(_ => _.Id == badgeId)
                     .SingleOrDefaultAsync();
 
-                var badgeTrigger = await _context.Triggers.AsNoTracking().Where(_ => _.AwardBadgeId == badgeId).SingleOrDefaultAsync();
+                var badgeTrigger = await _context.Triggers.AsNoTracking()
+                    .Where(_ => _.AwardBadgeId == badgeId)
+                    .SingleOrDefaultAsync();
                 if (badgeTrigger != null)
                 {
                     requirements.Add(new TriggerRequirement()
@@ -240,18 +248,46 @@ namespace GRA.Data.Repository
                         BadgeId = badgeId,
                         Name = badgeTrigger.Name,
                         Icon = TriggerIcon,
+                        IconDescription = TriggerDescription,
                         BadgePath = badge.Filename
                     });
                 }
                 else
                 {
-                    requirements.Add(new TriggerRequirement()
+                    var programBadge = await _context.Programs.AsNoTracking()
+                        .Where(_ => _.AchieverBadgeId == badgeId || _.JoinBadgeId == badgeId)
+                        .FirstOrDefaultAsync();
+
+                    if (programBadge != null)
                     {
-                        BadgeId = badgeId,
-                        Name = "Unknown",
-                        Icon = "",
-                        BadgePath = badge.Filename
-                    });
+                        var requirement = new TriggerRequirement()
+                        {
+                            BadgeId = badgeId,
+                            Icon = ProgramIcon,
+                            BadgePath = badge.Filename
+                        };
+                        if (programBadge.AchieverBadgeId == badgeId)
+                        {
+                            requirement.Name = programBadge.AchieverBadgeName;
+                            requirement.IconDescription = AchieverDescription;
+                        }
+                        else
+                        {
+                            requirement.Name = programBadge.JoinBadgeName;
+                            requirement.IconDescription = JoinDescription;
+                        }
+                        requirements.Add(requirement);
+                    }
+                    else
+                    {
+                        requirements.Add(new TriggerRequirement()
+                        {
+                            BadgeId = badgeId,
+                            Name = "Unknown",
+                            Icon = "",
+                            BadgePath = badge.Filename
+                        });
+                    }
                 }
             }
 
@@ -267,6 +303,7 @@ namespace GRA.Data.Repository
                     ChallengeId = challengeId,
                     Name = challenge.Name,
                     Icon = ChallengeIcon,
+                    IconDescription = ChallengeDescription,
                     BadgePath = await _context.Badges.AsNoTracking()
                         .Where(_ => _.Id == challenge.BadgeId)
                         .Select(_ => _.Filename)
@@ -315,6 +352,7 @@ namespace GRA.Data.Repository
                                     ChallengeId = challenges.Id,
                                     Name = challenges.Name,
                                     Icon = ChallengeIcon,
+                                    IconDescription = ChallengeDescription,
                                     BadgePath = badges.Filename
                                 }
                                 )
@@ -338,6 +376,7 @@ namespace GRA.Data.Repository
                                         BadgeId = badges.Id,
                                         Name = triggers.Name,
                                         Icon = TriggerIcon,
+                                        IconDescription = TriggerDescription,
                                         BadgePath = badges.Filename
                                     }
                                 );
@@ -349,16 +388,18 @@ namespace GRA.Data.Repository
                                     from programs in _context.Programs
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.JoinBadgeId.HasValue
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && _.JoinBadgeName.Contains(filter.Search ?? string.Empty)
                                         && (filter.BadgeIds == null
                                             || !filter.BadgeIds.Contains(_.JoinBadgeId.Value)))
+                                    .GroupBy(_ => _.JoinBadgeId).Select(_ => _.First())
                                     join badges in _context.Badges
                                     on programs.JoinBadgeId equals badges.Id
                                     select new TriggerRequirement
                                     {
                                         BadgeId = badges.Id,
-                                        Name = programs.Name + " Join Badge",
+                                        Name = programs.JoinBadgeName,
                                         Icon = ProgramIcon,
+                                        IconDescription = JoinDescription,
                                         BadgePath = badges.Filename
                                     }
                                 )
@@ -366,16 +407,18 @@ namespace GRA.Data.Repository
                                     from programs in _context.Programs
                                     .Where(_ => _.SiteId == filter.SiteId
                                         && _.AchieverBadgeId.HasValue
-                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && _.AchieverBadgeName.Contains(filter.Search ?? string.Empty)
                                         && (filter.BadgeIds == null
                                             || !filter.BadgeIds.Contains(_.AchieverBadgeId.Value)))
+                                    .GroupBy(_ => _.AchieverBadgeId).Select(_ => _.First())
                                     join badges in _context.Badges
                                     on programs.AchieverBadgeId equals badges.Id
                                     select new TriggerRequirement
                                     {
                                         BadgeId = badges.Id,
-                                        Name = programs.Name + " Achiever Badge",
+                                        Name = programs.AchieverBadgeName,
                                         Icon = ProgramIcon,
+                                        IconDescription = AchieverDescription,
                                         BadgePath = badges.Filename
                                     }
                                 );

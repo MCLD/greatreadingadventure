@@ -271,9 +271,9 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Badge</th>
-                                        <th width="42px">&nbsp;</th>
+                                        <th width="44px">Type</th>
+                                        <th width="75px">Badge</th>
+                                        <th width="44px">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requirementList">
@@ -288,8 +288,8 @@
                                                 <td>
                                                     @requirement.Name
                                                 </td>
-                                                <td>
-                                                    <span class="fa fa-2x @requirement.Icon"></span>
+                                                <td style="text-align:center;">
+                                                    <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
                                                 </td>
                                                 <td>
                                                     @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))

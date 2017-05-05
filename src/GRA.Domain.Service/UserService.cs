@@ -29,6 +29,7 @@ namespace GRA.Domain.Service
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
+        private readonly ActivityService _activityService;
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
         public UserService(ILogger<UserService> logger,
@@ -51,6 +52,7 @@ namespace GRA.Domain.Service
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
             IVendorCodeRepository vendorCodeRepository,
+            ActivityService activityService,
             SampleDataService configurationService,
             SchoolService schoolService)
             : base(logger, userContextProvider)
@@ -78,6 +80,7 @@ namespace GRA.Domain.Service
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
+            _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _configurationService = Require.IsNotNull(configurationService,
                 nameof(configurationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
@@ -121,6 +124,7 @@ namespace GRA.Domain.Service
                 .SetUserPasswordAsync(registeredUser.Id, registeredUser.Id, password);
 
             await JoinedProgramNotificationBadge(registeredUser);
+            await _activityService.AwardUserTriggersAsync(registeredUser.Id, !MCRegistration);
 
             return registeredUser;
         }
@@ -500,6 +504,7 @@ namespace GRA.Domain.Service
 
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
                 await JoinedProgramNotificationBadge(registeredUser);
+                await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
             }
             else
             {

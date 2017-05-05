@@ -11,6 +11,7 @@ namespace GRA.Domain.Model
         public int? ChallengeId { get; set; }
         public string Name { get; set; }
         public string Icon { get; set; }
+        public string IconDescription { get; set; }
         public string BadgePath { get; set; }
     }
 }

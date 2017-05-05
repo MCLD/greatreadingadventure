@@ -13,7 +13,9 @@ namespace GRA.Domain.Model
         [Required]
         public int AchieverPointAmount { get; set; }
         public int? AchieverBadgeId { get; set; }
+        public string AchieverBadgeName { get; set; }
         public int? JoinBadgeId { get; set; }
+        public string JoinBadgeName { get; set; }
         [Required]
         public bool AskAge { get; set; }
         [Required]
