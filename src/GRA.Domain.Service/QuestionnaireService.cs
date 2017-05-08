@@ -298,7 +298,7 @@ namespace GRA.Domain.Service
             var notification = new Notification
             {
                 PointsEarned = 0,
-                Text = questionnaire.BadgeNotificiationMessage,
+                Text = questionnaire.BadgeNotificationMessage,
                 UserId = userId,
                 BadgeId = badge.Id,
                 BadgeFilename = badge.Filename

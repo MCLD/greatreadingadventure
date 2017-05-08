@@ -23,6 +23,6 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string BadgeName { get; set; }
         [MaxLength(1000)]
-        public string BadgeNotificiationMessage { get; set; }
+        public string BadgeNotificationMessage { get; set; }
     }
 }
