@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix missing hair colors
 - Fix questionnaire controller not requiring authorization
 - Fix jquery validation message not displaying on questionnaire
+- Fix not being able to submit action tasks
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added

@@ -26,7 +26,7 @@
                             <h4 class="modal-title" id="addModalLabel">Add task</h4>
                         </div>
                         <div class="modal-body">
-                            <input asp-for="Task.ChallengeTaskType" type="hidden" />
+                            <input asp-for="Task.ChallengeTaskType" value="@ChallengeTaskType.Action" type="hidden" />
 
                             <ul class="nav nav-tabs gra-nav-tabs" role="tablist">
                                 <li role="presentation" class="active">
