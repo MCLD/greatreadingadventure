@@ -65,7 +65,9 @@ namespace GRA.Data.Profile
                 .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(src
                 => src.RequiredChallenges.Select(_ => _.ChallengeId).ToList()))
                 .ReverseMap();
-            CreateMap<Model.User, Domain.Model.User>().ReverseMap();
+            CreateMap<Model.User, Domain.Model.User>()
+                .ForMember(_ => _.EnteredSchoolName, opt => opt.ExplicitExpansion())
+                .ReverseMap();
             CreateMap<Model.UserLog, Domain.Model.UserLog>().ReverseMap();
             CreateMap<Model.VendorCode, Domain.Model.VendorCode>().ReverseMap();
             CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>().ReverseMap();

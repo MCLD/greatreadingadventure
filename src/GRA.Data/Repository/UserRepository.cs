@@ -315,7 +315,7 @@ namespace GRA.Data.Repository
                 .Include(_ => _.System)
                 .Include(_ => _.EnteredSchool)
                 .Where(_ => _.Id == id && _.IsDeleted == false)
-                .ProjectTo<User>()
+                .ProjectTo<User>(_ => _.EnteredSchoolName)
                 .SingleOrDefaultAsync();
         }
 
