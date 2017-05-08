@@ -1,12 +1,14 @@
-﻿using GRA.Controllers.ViewModel.SignIn;
+﻿using GRA.Controllers.Filter;
+using GRA.Controllers.ViewModel.SignIn;
 using GRA.Domain.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace GRA.Controllers
 {
+    [UnauthenticatedFilter]
     public class SignInController : Base.UserController
     {
         private readonly ILogger<SignInController> _logger;

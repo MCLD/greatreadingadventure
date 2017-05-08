@@ -1,17 +1,19 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
+﻿using GRA.Controllers.Filter;
 using GRA.Controllers.ViewModel.Join;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using GRA.Domain.Service;
-using GRA.Domain.Model;
 using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+using GRA.Domain.Model;
+using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
+    [UnauthenticatedFilter]
     public class JoinController : Base.UserController
     {
         private const string TempStep1 = "TempStep1";
