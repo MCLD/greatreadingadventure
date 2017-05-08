@@ -15,5 +15,10 @@ namespace GRA.Domain.Model
         public string Name { get; set; }
         public ICollection<Question> Questions { get; set; }
         public bool IsLocked { get; set; }
+        public int? BadgeId { get; set; }
+        [MaxLength(255)]
+        public string BadgeName { get; set; }
+        [MaxLength(1000)]
+        public string BadgeNotificiationMessage { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace GRA.Data.Repository
         private const string AchieverDescription = "Achiever Badge";
         private const string ChallengeDescription = "Challenge";
         private const string JoinDescription = "Join Badge";
+        private const string QuestionnaireDescription = "Questionnaire Badge";
         private const string TriggerDescription = "Trigger";
 
         public TriggerRepository(ServiceFacade.Repository repositoryFacade,
@@ -280,13 +281,30 @@ namespace GRA.Data.Repository
                     }
                     else
                     {
-                        requirements.Add(new TriggerRequirement()
+                        var questionnareBadge = await _context.Questionnaires.AsNoTracking()
+                            .Where(_ => _.BadgeId == badgeId)
+                            .FirstOrDefaultAsync();
+                        if (questionnareBadge != null)
                         {
-                            BadgeId = badgeId,
-                            Name = "Unknown",
-                            Icon = "",
-                            BadgePath = badge.Filename
-                        });
+                            requirements.Add(new TriggerRequirement()
+                            {
+                                BadgeId = badgeId,
+                                Name = questionnareBadge.BadgeName,
+                                Icon = ProgramIcon,
+                                IconDescription = QuestionnaireDescription,
+                                BadgePath = badge.Filename
+                            });
+                        }
+                        else
+                        {
+                            requirements.Add(new TriggerRequirement()
+                            {
+                                BadgeId = badgeId,
+                                Name = "Unknown",
+                                Icon = "",
+                                BadgePath = badge.Filename
+                            });
+                        }
                     }
                 }
             }
@@ -381,7 +399,7 @@ namespace GRA.Data.Repository
                                     }
                                 );
 
-            // Program Join and Achiever badges
+            // Program Join/Achiever and Questionnaire badges
             if (filter.SystemIds == null && filter.BranchIds == null && filter.UserIds == null)
             {
                 requirements = requirements.Concat(
@@ -419,6 +437,25 @@ namespace GRA.Data.Repository
                                         Name = programs.AchieverBadgeName,
                                         Icon = ProgramIcon,
                                         IconDescription = AchieverDescription,
+                                        BadgePath = badges.Filename
+                                    }
+                                )
+                                .Concat(
+                                    from questionnaires in _context.Questionnaires
+                                    .Where(_ => _.SiteId == filter.SiteId
+                                        && _.BadgeId.HasValue
+                                        && _.Name.Contains(filter.Search ?? string.Empty)
+                                        && (filter.BadgeIds == null
+                                            || !filter.BadgeIds.Contains(_.BadgeId.Value)))
+                                    .GroupBy(_ => _.BadgeId).Select(_ => _.First())
+                                    join badges in _context.Badges
+                                    on questionnaires.BadgeId equals badges.Id
+                                    select new TriggerRequirement
+                                    {
+                                        BadgeId = badges.Id,
+                                        Name = questionnaires.BadgeName,
+                                        Icon = ProgramIcon,
+                                        IconDescription = QuestionnaireDescription,
                                         BadgePath = badges.Filename
                                     }
                                 );

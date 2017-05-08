@@ -12,25 +12,35 @@ namespace GRA.Domain.Service
     public class QuestionnaireService : BaseUserService<QuestionnaireService>
     {
         private readonly IAnswerRepository _answerRepository;
+        private readonly IBadgeRepository _badgeRepository;
+        private readonly INotificationRepository _notificationRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IQuestionnaireRepository _questionnaireRepository;
         private readonly IRequiredQuestionnaireRepository _requiredQuestionnaireRepository;
+        private readonly IUserLogRepository _userLogRepository;
         public QuestionnaireService(ILogger<QuestionnaireService> logger,
             IUserContextProvider userContextProvider,
             IAnswerRepository answerRepository,
+            IBadgeRepository badgeRepository,
+            INotificationRepository notificationRepository,
             IQuestionRepository questionRepository,
             IQuestionnaireRepository questionnaireRepository,
-            IRequiredQuestionnaireRepository requiredQuestionnaireRepository)
+            IRequiredQuestionnaireRepository requiredQuestionnaireRepository,
+            IUserLogRepository userLogRepository)
             : base(logger, userContextProvider)
         {
             SetManagementPermission(Permission.ManageQuestionnaires);
             _answerRepository = Require.IsNotNull(answerRepository, nameof(answerRepository));
+            _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
+            _notificationRepository = Require.IsNotNull(notificationRepository,
+                nameof(notificationRepository));
             _questionRepository = Require.IsNotNull(questionRepository,
                 nameof(questionRepository));
             _questionnaireRepository = Require.IsNotNull(questionnaireRepository,
                 nameof(questionnaireRepository));
             _requiredQuestionnaireRepository = Require.IsNotNull(requiredQuestionnaireRepository,
                 nameof(requiredQuestionnaireRepository));
+            _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
         }
 
         public async Task<DataWithCount<ICollection<Questionnaire>>> GetPaginatedListAsync(
@@ -264,6 +274,37 @@ namespace GRA.Domain.Service
 
             await _requiredQuestionnaireRepository.SubmitQuestionnaire(questionnaireId, userId,
                 questions);
+
+            if (questionnaire.BadgeId.HasValue)
+            {
+                await QuestionnaireNotificationBadge(questionnaire, userId);
+                var badge = await _badgeRepository.GetByIdAsync(questionnaire.BadgeId.Value);
+                await _badgeRepository.AddUserBadge(userId, questionnaire.BadgeId.Value);
+            }
+        }
+
+        private async Task QuestionnaireNotificationBadge(Questionnaire questionnaire, int userId)
+        {
+            var badge = await _badgeRepository.GetByIdAsync(questionnaire.BadgeId.Value);
+            await _badgeRepository.AddUserBadge(userId, badge.Id);
+            await _userLogRepository.AddAsync(userId, new UserLog
+            {
+                UserId = userId,
+                PointsEarned = 0,
+                IsDeleted = false,
+                BadgeId = badge.Id,
+                Description = $"Completed Questionnaire {questionnaire.Name}!"
+            });
+            var notification = new Notification
+            {
+                PointsEarned = 0,
+                Text = questionnaire.BadgeNotificiationMessage,
+                UserId = userId,
+                BadgeId = badge.Id,
+                BadgeFilename = badge.Filename
+            };
+
+            await _notificationRepository.AddSaveAsync(userId, notification);
         }
     }
 }
