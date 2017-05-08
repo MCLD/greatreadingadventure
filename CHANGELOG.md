@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add trigger checking on login and account creation
 - Add names to program badges
 - Add badges to questionnaires
+- Add audit logging of removals
 
 ### Changed
 - Change join branch list to be populated with all branches

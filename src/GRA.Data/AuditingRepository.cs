@@ -237,6 +237,19 @@ namespace GRA.Data
                 throw new Exception($"{nameof(DomainEntity)} id {id} could not be found.");
             }
             DbSet.Remove(entity);
+            if (AuditSet != null)
+            {
+                var audit = new AuditLog
+                {
+                    EntityType = entity.GetType().ToString(),
+                    EntityId = entity.Id,
+                    UpdatedBy = userId,
+                    UpdatedAt = DateTime.Now,
+                    CurrentValue = null,
+                    PreviousValue = _entitySerializer.Serialize(entity)
+                };
+                await AuditSet.AddAsync(audit);
+            }
             await SaveAsync();
         }
 
