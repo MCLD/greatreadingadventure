@@ -442,7 +442,8 @@ namespace GRA.Domain.Service
                 {
                     foreach (var member in householdMemebers)
                     {
-                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId);
+                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId, 
+                            !userContext.User.Identity.IsAuthenticated);
                     }
                 }
             }
