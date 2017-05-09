@@ -293,7 +293,9 @@ namespace GRA.Domain.Service
                 PointsEarned = 0,
                 IsDeleted = false,
                 BadgeId = badge.Id,
-                Description = $"Completed Questionnaire {questionnaire.Name}!"
+                Description = string.IsNullOrEmpty(questionnaire.BadgeNotificationMessage)
+                    ? $"You completed the questionnaire: {questionnaire.Name}"
+                    : questionnaire.BadgeNotificationMessage
             });
             var notification = new Notification
             {
