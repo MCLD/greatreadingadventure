@@ -333,6 +333,13 @@ namespace GRA.Controllers
             {
                 ModelState.AddModelError("PostalCode", "The Zip Code field is required.");
             }
+            if (model.SystemId.HasValue && model.BranchId.HasValue)
+            {
+                if (!await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value)) 
+                {
+                    ModelState.AddModelError("BranchId", "Invalid branch selection for system.");
+                }
+            }
 
             if (ModelState.IsValid)
             {

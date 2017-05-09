@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add names to program badges
 - Add badges to questionnaires
 - Add audit logging of removals
+- Add branch validation to join step 1
 
 ### Changed
 - Change join branch list to be populated with all branches
