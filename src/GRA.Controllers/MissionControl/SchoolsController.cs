@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
-            _schoolImportService = Require.IsNotNull(schoolImportService, 
+            _schoolImportService = Require.IsNotNull(schoolImportService,
                 nameof(schoolImportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             PageTitle = "Schools";
@@ -308,20 +308,37 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddEnteredSchool(EnteredListViewModel model)
+        public async Task<IActionResult> Entered(EnteredListViewModel model)
         {
-            try
+            if (model.NewSchool)
             {
-                await _schoolService.AddEnteredSchoolToList(model.EnteredSchool.Id,
-                    model.EnteredSchool.Name,
-                    model.EnteredSchool.SchoolDistrictId,
-                    model.EnteredSchool.SchoolTypeId);
+                try
+                {
+                    await _schoolService.AddEnteredSchoolToList(model.EnteredSchool.Id,
+                        model.EnteredSchool.Name,
+                        model.EnteredSchool.SchoolDistrictId,
+                        model.EnteredSchool.SchoolTypeId);
 
-                ShowAlertSuccess($"Added Entered School '{model.EnteredSchool.Name}' to School list");
+                    ShowAlertSuccess($"Added Entered School '{model.EnteredSchool.Name}' to School list");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to add Entered School: ", gex);
+                }
             }
-            catch (GraException gex)
+            else
             {
-                ShowAlertDanger("Unable to add Entered School: ", gex);
+                try
+                {
+                    var school = await _schoolService.MergeEnteredSchoolAsync(
+                        model.EnteredSchool.Id, model.SchoolId);
+
+                    ShowAlertSuccess($"Merged Entered School into '{school.Name}'");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to merge Entered School: ", gex);
+                }
             }
             return RedirectToAction("Entered");
         }

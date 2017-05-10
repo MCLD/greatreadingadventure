@@ -100,6 +100,21 @@ namespace GRA.Domain.Service
             return newSchool;
         }
 
+        public async Task<School> MergeEnteredSchoolAsync(int enteredSchoolId, int schoolId)
+        {
+            VerifyPermission(Permission.ManageSchools);
+            var enteredSchool = await _enteredSchoolRepository.GetByIdAsync(enteredSchoolId);
+            var school = await _schoolRepository.GetByIdAsync(schoolId);
+            if (enteredSchool.SiteId != school.SiteId)
+            {
+                throw new GraException("Invalid school selection.");
+            }
+            await _enteredSchoolRepository.ConvertSchoolAsync(GetClaimId(ClaimType.UserId),
+                enteredSchoolId,
+                schoolId);
+            return school;
+        }
+
         public async Task RemoveEnteredSchoolAsync(int enteredSchoolId)
         {
             var authUserId = GetClaimId(ClaimType.UserId);
