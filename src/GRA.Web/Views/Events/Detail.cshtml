@@ -5,17 +5,27 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="lead">
-                    Event: @Model.Event.Name
+                    @Model.Event.Name
                 </span>
             </div>
             <div class="panel-body">
-                <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>@Model.Event.StartDate.ToString("d") @(!Model.Event.AllDay ? "at " + Model.Event.StartDate.ToString("t") : "")</div>
+                <div class="row-spacing" style="font-size:medium;">
+                    <strong>When: </strong>
+                    @if (Model.Event.AllDay)
+                    {
+                        @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
+                    }
+                    else
+                    {
+                        @:@Model.Event.StartDate.ToString("d") at @Model.Event.StartDate.ToString("t")
+                    }
+                </div>
 
                 <div class="row-spacing">@Model.Event.Description</div>
 
                 @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
                 {
-                    <div class="row-spacing" style="font-size:medium;"><strong>Event Link: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.ExternalLink</a></div>
+                    <div class="row-spacing" style="font-size:medium;"><strong>Link: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.ExternalLink</a></div>
                 }
                 <div class="row-spacing" style="font-size:medium;">
                     <table>
@@ -56,7 +66,7 @@
             </div>
             <div class="panel-footer clearfix hidden-print">
                 <div class="pull-left">
-                    <return asp-action="Index" class="btn btn-default btn-lg">Return to Events</return>
+                    <return asp-action="Index" class="btn btn-default btn-lg">Return to Events &amp; Community Experiences</return>
                 </div>
             </div>
         </div>

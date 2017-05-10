@@ -29,24 +29,43 @@ namespace GRA.Controllers
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             PageTitle = "Events";
         }
-
-        public async Task<IActionResult> Index(int page = 1,
+        public async Task<IActionResult> CommunityExperiences(int page = 1,
             string search = null,
+            int? system = null,
             int? branch = null,
             int? location = null,
             int? program = null,
             string StartDate = null,
             string EndDate = null)
         {
+            return await Index(page, search, system, branch, location, program, StartDate, EndDate, true);
+        }
+
+        public async Task<IActionResult> Index(int page = 1,
+            string search = null,
+            int? system = null,
+            int? branch = null,
+            int? location = null,
+            int? program = null,
+            string StartDate = null,
+            string EndDate = null,
+            bool CommunityExperiences = false)
+        {
+            ModelState.Clear();
             EventFilter filter = new EventFilter(page)
             {
                 Search = search,
+                EventType = CommunityExperiences ? 1 : 0
             };
 
             // ignore location if branch has value
             if (branch.HasValue)
             {
                 filter.BranchIds = new List<int>() { branch.Value };
+            }
+            else if(system.HasValue)
+            {
+                filter.SystemIds = new List<int>() { system.Value };
             }
             else if (location.HasValue)
             {
@@ -58,10 +77,18 @@ namespace GRA.Controllers
                 filter.ProgramIds = new List<int?>() { program.Value };
             }
 
-            if (!string.IsNullOrWhiteSpace(StartDate))
+            if (!String.Equals(StartDate, "False", StringComparison.OrdinalIgnoreCase))
             {
-                filter.StartDate = DateTime.Parse(StartDate).Date;
+                if (!string.IsNullOrWhiteSpace(StartDate))
+                {
+                    filter.StartDate = DateTime.Parse(StartDate).Date;
+                }
+                else
+                {
+                    filter.StartDate = DateTime.Now.Date;
+                }
             }
+            
             if (!string.IsNullOrWhiteSpace(EndDate))
             {
                 filter.EndDate = DateTime.Parse(EndDate).Date;
@@ -90,11 +117,15 @@ namespace GRA.Controllers
                 Events = eventList.Data,
                 PaginateModel = paginateModel,
                 Search = search,
+                StartDate = filter.StartDate,
+                EndDate = filter.EndDate,
                 ProgramId = program,
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                 LocationList = new SelectList((await _eventService.GetLocations()), "Id", "Name"),
-                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
+                ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
+                CommunityExperiences = CommunityExperiences
             };
+
             if (branch.HasValue)
             {
                 var selectedBranch = await _siteService.GetBranchByIdAsync(branch.Value);
@@ -102,6 +133,12 @@ namespace GRA.Controllers
                 viewModel.BranchList = new SelectList(
                     (await _siteService.GetBranches(selectedBranch.SystemId)),
                     "Id", "Name", branch.Value);
+            }
+            else if (system.HasValue)
+            {
+                viewModel.SystemId = system;
+                viewModel.BranchList = new SelectList(
+                    (await _siteService.GetBranches(system.Value)), "Id", "Name");
             }
             else
             {
@@ -114,22 +151,29 @@ namespace GRA.Controllers
                 viewModel.UseLocation = true;
             }
 
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
         [HttpPost]
         public IActionResult Index(EventsListViewModel model)
         {
-            string startDate = null;
+            string startDate = "False";
             string endDate = null;
+            bool? isCommunityExperience = null;
 
             if (model.UseLocation == true)
             {
+                model.SystemId = null;
                 model.BranchId = null;
             }
             else
             {
                 model.LocationId = null;
+            }
+
+            if (model.BranchId.HasValue)
+            {
+                model.SystemId = null;
             }
 
             if (model.StartDate.HasValue)
@@ -141,8 +185,12 @@ namespace GRA.Controllers
             {
                 endDate = model.EndDate.Value.ToString("MM-dd-yyyy");
             }
+            if (model.CommunityExperiences)
+            {
+                isCommunityExperience = true;
+            }
 
-            return RedirectToAction("Index", new { Search = model.Search, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate });
+            return RedirectToAction("Index", new { Search = model.Search, System = model.SystemId, Branch = model.BranchId, Location = model.LocationId, Program = model.ProgramId, StartDate = startDate, EndDate = endDate, CommunityExperiences = isCommunityExperience });
         }
 
         public async Task<IActionResult> Detail(int id)

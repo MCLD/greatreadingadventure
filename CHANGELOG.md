@@ -4,7 +4,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
-
 ### Added
 - Add disable and spinner to questionnaire submit buttons
 - Add error message when trying to apply a role twice
@@ -20,6 +19,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Change join branch list to be populated with all branches
 - Change trigger requirement list styling
+- Ability to browse community experiences from the events section
+- Change events system dropdown to filter events
 - Change recovery token log level to info
 
 ### Fixed

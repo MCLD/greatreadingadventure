@@ -169,11 +169,15 @@ namespace GRA.Data.Repository
             // filter by dates
             if (filter.StartDate != null)
             {
-                events = events.Where(_ => _.StartDate.Date >= filter.StartDate.Value.Date);
+                events = events.Where(_ => 
+                ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date >= filter.StartDate.Value.Date)
+                || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
             }
             if (filter.EndDate != null)
             {
-                events = events.Where(_ => _.StartDate.Date <= filter.EndDate.Value.Date);
+                events = events.Where(_ => 
+                ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date <= filter.EndDate.Value.Date)
+                || _.StartDate.Date <= filter.EndDate.Value.Date);
             }
 
             // apply search

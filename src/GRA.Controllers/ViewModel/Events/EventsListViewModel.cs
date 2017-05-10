@@ -29,5 +29,6 @@ namespace GRA.Controllers.ViewModel.Events
         public SelectList BranchList { get; set; }
         public SelectList LocationList { get; set; }
         public SelectList ProgramList { get; set; }
+        public bool CommunityExperiences { get; set; }
     }
 }

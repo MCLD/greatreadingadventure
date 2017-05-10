@@ -13,12 +13,23 @@
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Events</span>
+                <span class="lead">Events &amp; Community Experiences</span>
             </div>
             <div class="panel-body">
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <ul class="nav nav-pills">
+                            <li role="presentation" @if (Model.CommunityExperiences != true) { <text> class="active" </text> }><a asp-action="Index">Events</a></li>
+                            <li role="presentation" @if (Model.CommunityExperiences == true)
+                            {<text>class= "active"</text>}><a asp-action="CommunityExperiences">Community Experiences</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <form asp-controller="Events" asp-action="Index" method="post" role="form">
                     <input asp-for="UseLocation" type="hidden" />
-
+                    <input asp-for="CommunityExperiences" 
+                           type="hidden" 
+                           value="@Model.CommunityExperiences" />
                     <div class="row row-spacing">
                         <div class="col-xs-6">
                             <label asp-for="StartDate" class="control-label"></label>
@@ -82,7 +93,14 @@
                                    placeholder="Enter text to search for an event here" />
                         </div>
                         <div class="col-sm-2 col-xs-6">
-                            <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                            @if (Model.CommunityExperiences)
+                            {
+                                <a asp-action="CommunityExperiences" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                            }
                         </div>
                         <div class="col-sm-2 col-xs-6">
                             <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Search</button>
@@ -119,7 +137,14 @@
                                                         @eventItem.Name
                                                     </a>
                                                 </td>
-                                                <td>@eventItem.StartDate.ToString("d") @(!eventItem.AllDay ? "at " + eventItem.StartDate.ToString("t") : "")</td>
+                                                @if (eventItem.AllDay)
+                                                {
+                                                    <td>@eventItem.StartDate.ToString("d") @(eventItem.EndDate.HasValue ? "– " + eventItem.EndDate.Value.ToString("d") : "")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@eventItem.StartDate.ToString("d") at @eventItem.StartDate.ToString("t")</td>
+                                                }
                                                 <td>@eventItem.EventLocationName</td>
                                             </tr>
                                         }

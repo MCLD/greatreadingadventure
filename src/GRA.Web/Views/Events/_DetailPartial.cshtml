@@ -2,16 +2,25 @@
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title" id="detailModalLabel">Event: @Model.Event.Name</h4>
+    <h4 class="modal-title" id="detailModalLabel">@Model.Event.Name</h4>
 </div>
 <div class="modal-body">
-    <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>@Model.Event.StartDate.ToString("d") @(!Model.Event.AllDay ? "at " + Model.Event.StartDate.ToString("t") : "")</div>
+    <div class="row-spacing" style="font-size:medium;"><strong>When: </strong>
+    @if (Model.Event.AllDay)
+    {
+        @:@Model.Event.StartDate.ToString("d") @(Model.Event.EndDate.HasValue ? "– " + Model.Event.EndDate.Value.ToString("d") : "")
+    }
+    else
+    {
+        @:@Model.Event.StartDate.ToString("d") at @Model.Event.StartDate.ToString("t")
+    }
+    </div>
 
     <div class="row-spacing">@Model.Event.Description</div>
 
     @if (!string.IsNullOrWhiteSpace(Model.Event.ExternalLink))
     {
-        <div class="row-spacing" style="font-size:medium;"><strong>Event Link: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.ExternalLink</a></div>
+        <div class="row-spacing" style="font-size:medium;"><strong>Link: </strong><a target="_blank" href="@Model.Event.ExternalLink">@Model.Event.ExternalLink</a></div>
     }
     <div class="row-spacing" style="font-size:medium;">
         <table>
