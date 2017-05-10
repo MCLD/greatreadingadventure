@@ -134,13 +134,13 @@ namespace GRA.Domain.Service
 
             if (user == null)
             {
-                _logger.LogError($"Username '{username}' doesn't exist so can't create a recovery token.");
+                _logger.LogInformation($"Username '{username}' doesn't exist so can't create a recovery token.");
                 throw new GraException($"User '{username}' not found.");
             }
 
             if (string.IsNullOrEmpty(user.Email))
             {
-                _logger.LogError($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
+                _logger.LogInformation($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
                 throw new GraException($"User '{username}' doesn't have an email address configured.");
             }
 
