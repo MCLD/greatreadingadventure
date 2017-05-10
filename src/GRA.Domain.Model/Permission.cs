@@ -18,6 +18,7 @@ namespace GRA.Domain.Model
         EditChallenges,
         EditPages,
         EditParticipants,
+        EditParticipantUsernames,
         LogActivityForAny,
         MailParticipants,
         ManageAvatars,

@@ -13,6 +13,19 @@
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
 
+            @if (Model.CanEditUsername)
+            {
+                <input asp-for="CanEditUsername" type="hidden" />
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="User.Username" class="control-label"></label>
+                        <span id="Username-Icon" class="fa colored-icon hide"></span>
+                        <input asp-for="User.Username" class="form-control" autofocus />
+                        <span id="Username-Validation" asp-validation-for="User.Username" class="text-success"></span>
+                    </div>
+                </div>
+            }
+
             <div class="row row-spacing">
                 <div class="col-xs-12">
                     <label asp-for="User.FirstName" class="control-label"></label>
@@ -153,6 +166,7 @@
         @if (Model.CanEditDetails)
         {
             <input asp-for="CanEditDetails" type="hidden" />
+            <input asp-for="Username" type="hidden" />
             <input asp-for="User.Id" type="hidden" />
             <input asp-for="User.AvatarId" type="hidden" />
             <input asp-for="User.CardNumber" type="hidden" />
@@ -162,7 +176,6 @@
             <input asp-for="User.IsLockedOut" type="hidden" />
             <input asp-for="User.LastAccess" type="hidden" />
             <input asp-for="User.PointsEarned" type="hidden" />
-            <input asp-for="User.Username" type="hidden" />
 
             <button type="submit" asp-action="Detail" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
                 <span class="buttonText">Save Changes</span>
@@ -331,6 +344,48 @@
                 schoolList.empty();
                 schoolList.append(new Option("", ""));
             }
+        }
+        @if (Model.CanEditUsername) {
+        <text>
+        $("#User_Username").on("blur", function () {
+            var username = $(this).val();
+            if (username != "" && !$(this).hasClass("input-validation-error")) {
+                if (username != "@Html.Raw(Model.Username)") {
+                    var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
+                    var icon = $("#Username-Icon");
+                    icon.removeClass("hide fa-times fa-check");
+                    icon.addClass("fa-spinner fa-spin");
+                    $.post(usernameCheckUrl, { username: username }, function (response) {
+                        if (response) {
+                            $("#User_Username").removeClass("valid");
+                            $("#User_Username").addClass("input-validation-error");
+                            $("#Username-Validation").removeClass("field-validation-valid");
+                            $("#Username-Validation").addClass("field-validation-error");
+                            $("#Username-Validation").text("Someone has already chosen that username.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-times");
+                        }
+                        else {
+                            $("#Username-Validation").removeClass("field-validation-valid");
+                            $("#Username-Validation").text("The chosen username is available.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-check");
+                        }
+                    });
+                }
+                else {
+                    $("#Username-Icon").removeClass("hide fa-times").addClass("fa-check");
+                    $("#Username-Validation").removeClass("field-validation-valid");
+                    $("#Username-Validation").text("No change to username.");
+
+                }
+            }
+        });
+
+        $("#User_Username").on("keypress", function () {
+            $("#Username-Icon").addClass("hide");
+        });
+        </text>
         }
     </script>
 }

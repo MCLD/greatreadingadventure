@@ -399,6 +399,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     User = user,
                     Id = user.Id,
+                    Username = user.Username,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
@@ -429,6 +430,12 @@ namespace GRA.Controllers.MissionControl
                 else
                 {
                     viewModel.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                }
+
+                if (UserHasPermission(Permission.EditParticipantUsernames) 
+                    && !string.IsNullOrWhiteSpace(user.Username))
+                {
+                    viewModel.CanEditUsername = true;
                 }
 
                 return View(viewModel);
@@ -472,6 +479,10 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
             }
+            if (model.CanEditUsername && string.IsNullOrWhiteSpace(model.User.Username))
+            {
+                ModelState.AddModelError("User.Username", "The Username field is required.");
+            }
 
             if (ModelState.IsValid)
             {
@@ -505,7 +516,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertWarning("Unable to update participant: ", gex);
                 }
             }
-            SetPageTitle(model.User);
+            SetPageTitle(model.User, username: model.Username);
 
             var branchList = await _siteService.GetBranches(model.User.SystemId);
             if (model.User.BranchId < 1)
@@ -1574,10 +1585,14 @@ namespace GRA.Controllers.MissionControl
         }
         #endregion
 
-        private void SetPageTitle(User user, string title = "Participant")
+        private void SetPageTitle(User user, string title = "Participant", string username = null)
         {
             var name = user.FullName;
-            if (!string.IsNullOrEmpty(user.Username))
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                name += $"({username})";
+            }
+            else if (!string.IsNullOrEmpty(user.Username))
             {
                 name += $"({user.Username})";
             }

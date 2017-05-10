@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add audit logging of removals
 - Add branch validation to join step 1
 - Add merging entered schools
+- Add edit username to mission control
 
 ### Changed
 - Change join branch list to be populated with all branches

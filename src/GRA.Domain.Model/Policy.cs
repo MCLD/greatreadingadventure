@@ -19,6 +19,7 @@ namespace GRA.Domain.Model
         public const string EditChallenges = "EditChallenges";
         public const string EditPages = "EditPages";
         public const string EditParticipants = "EditParticipants";
+        public const string EditParticipantUsernames = "EditParticipantUsernames";
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";

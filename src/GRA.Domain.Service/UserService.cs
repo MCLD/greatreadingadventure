@@ -341,6 +341,21 @@ namespace GRA.Domain.Service
                     }
                 }
 
+                if (!HasPermission(Permission.EditParticipantUsernames) 
+                    || string.IsNullOrWhiteSpace(currentEntity.Username)
+                    || string.IsNullOrWhiteSpace(userToUpdate.Username))
+                {
+                    userToUpdate.Username = currentEntity.Username;
+                }
+                else if (!string.Equals(userToUpdate.Username, currentEntity.Username, 
+                    System.StringComparison.OrdinalIgnoreCase))
+                {
+                    if (await UsernameInUseAsync(userToUpdate.Username))
+                    {
+                        throw new GraException("Username is in use by another user.");
+                    }
+                }
+
                 await ValidateUserFields(userToUpdate);
 
                 var updatedUser = await _userRepository

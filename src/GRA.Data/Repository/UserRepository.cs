@@ -371,7 +371,7 @@ namespace GRA.Data.Repository
         public async Task<bool> UsernameInUseAsync(int siteId, string username)
         {
             return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.Username == username)
+                .Where(_ => _.SiteId == siteId && _.Username == username && _.IsDeleted == false)
                 .AnyAsync();
         }
     }
