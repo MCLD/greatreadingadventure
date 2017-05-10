@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GRA.CommandLine": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
