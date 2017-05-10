@@ -354,7 +354,7 @@ namespace GRA.Controllers.MissionControl
                         byte[] badgeBytes;
                         string filename;
                         if (!string.IsNullOrWhiteSpace(model.BadgeMakerImage) &&
-                            (model.BadgeUploadImage != null || model.UseBadgeMaker))
+                            (model.BadgeUploadImage == null || model.UseBadgeMaker))
                         {
                             var badgeString = model.BadgeMakerImage.Split(',').Last();
                             badgeBytes = Convert.FromBase64String(badgeString);

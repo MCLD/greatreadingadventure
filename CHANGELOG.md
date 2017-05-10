@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix not being able to submit action tasks
 - Fix participant sorting
 - Fix joining and logging in while logged in
+- Fix trigger badge creation exception
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added
