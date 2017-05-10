@@ -58,6 +58,12 @@ namespace GRA.Controllers
                     {
                         await LoginUserAsync(loginAttempt);
                         await _activityService.AwardUserTriggersAsync(loginAttempt.User.Id, true);
+                        var householdCount = await _userService.FamilyMemberCountAsync(
+                            loginAttempt.User.Id, true);
+                        if (householdCount > 0)
+                        {
+                            HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
+                        }
                         var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                         if (questionnaireId.HasValue)

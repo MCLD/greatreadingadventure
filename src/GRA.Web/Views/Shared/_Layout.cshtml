@@ -89,7 +89,16 @@
                     {
                         @if (!String.Equals(this.ViewContext.RouteData.Values["controller"].ToString(), "Questionnaire", StringComparison.OrdinalIgnoreCase))
                         {
-                            <li ActiveBy routeKey="Controller" value="Profile"><a asp-controller="Profile" asp-action="Index">My Profile</a></li>
+                            <li ActiveBy routeKey="Controller" value="Profile">
+                                @if (Context.Session.Keys.Contains(GRA.Controllers.SessionKey.HeadOfHousehold))
+                                {
+                                    <a asp-controller="Profile" asp-action="Household" style="display:inline-block;padding-left:8px;padding-right:8px;"><span class="fa fa-users"></span></a><a asp-controller="Profile" asp-action="Index" style="display:inline-block;padding-left:8px;">My Profile</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Profile" asp-action="Index">My Profile</a>
+                                }
+                            </li>
                         }
                         <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                     }

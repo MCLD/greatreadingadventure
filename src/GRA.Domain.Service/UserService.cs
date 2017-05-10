@@ -176,20 +176,27 @@ namespace GRA.Domain.Service
         }
 
         public async Task<int>
-            FamilyMemberCountAsync(int householdHeadUserId)
+            FamilyMemberCountAsync(int householdHeadUserId, bool skipPermissions = false)
         {
-            int authUserId = GetClaimId(ClaimType.UserId);
-            var authUser = await _userRepository.GetByIdAsync(authUserId);
-            if (authUserId == householdHeadUserId
-                || authUser.HouseholdHeadUserId == householdHeadUserId
-                || HasPermission(Permission.ViewParticipantList))
+            if (skipPermissions)
             {
                 return await _userRepository.GetHouseholdCountAsync(householdHeadUserId);
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to get a count of household participants.");
-                throw new GraException("Permission denied.");
+                int authUserId = GetClaimId(ClaimType.UserId);
+                var authUser = await _userRepository.GetByIdAsync(authUserId);
+                if (authUserId == householdHeadUserId
+                    || authUser.HouseholdHeadUserId == householdHeadUserId
+                    || HasPermission(Permission.ViewParticipantList))
+                {
+                    return await _userRepository.GetHouseholdCountAsync(householdHeadUserId);
+                }
+                else
+                {
+                    _logger.LogError($"User {authUserId} doesn't have permission to get a count of household participants.");
+                    throw new GraException("Permission denied.");
+                }
             }
         }
 

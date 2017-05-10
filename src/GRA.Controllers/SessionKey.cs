@@ -8,5 +8,6 @@ namespace GRA.Controllers
         public const string ChallengeSearch = "ChallengeSearch";
         public const string ChallengePage = "ChallengePage";
         public const string PendingQuestionnaire = "PendingQuestionnaire";
+        public const string HeadOfHousehold = "HeadOfHousehold";
     }
 }
