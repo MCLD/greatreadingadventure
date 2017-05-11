@@ -16,7 +16,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                     <form asp-controller="Drawing" asp-action="RemoveWinner" method="post" role="form" style="display:inline">
                         <input id="drawingId" name="drawingId" value="@Model.Drawing.Id" type="hidden" />
-                        <input id="winnerId" name="winnerId" type="hidden" />
+                        <input id="prizeWinnerId" name="prizeWinnerId" type="hidden" />
                         <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
                         <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                             <span class="fa fa-remove" aria-hidden="true"></span>
@@ -129,7 +129,7 @@
                                 class="btn btn-danger btn-xs"
                                 data-toggle="modal"
                                 data-target="#deleteModal"
-                                data-id="@winner.UserId"
+                                data-id="@winner.Id"
                                 data-name="@winner.UserFirstName @winner.UserLastName">
                             <span class="fa fa-remove" aria-hidden="true"></span>
                         </button>
@@ -158,7 +158,7 @@
             var name = button.data('name');
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to remove the winner "' + name + '" ?');
-            modal.find('#winnerId').val(id);
+            modal.find('#prizeWinnerId').val(id);
         });
     </script>
 }

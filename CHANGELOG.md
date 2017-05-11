@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix participant sorting
 - Fix joining and logging in while logged in
 - Fix trigger badge creation exception
+- Fix removing drawing winners
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added

@@ -27,7 +27,7 @@ namespace GRA.Domain.Service
             SetManagementPermission(Permission.ViewUserPrizes);
         }
 
-        public async Task<PrizeWinner> AddPrizeWinnerAsync(PrizeWinner prizeWinner, 
+        public async Task<PrizeWinner> AddPrizeWinnerAsync(PrizeWinner prizeWinner,
             bool userIdIsCurrentUser = false)
         {
             if (prizeWinner.DrawingId == null && prizeWinner.TriggerId == null)
@@ -91,14 +91,32 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task RemovePrize(int prizeWinnerId)
+        public async Task RemovePrizeAsync(int prizeWinnerId)
         {
             VerifyManagementPermission();
 
             int authUserId = GetClaimId(ClaimType.UserId);
             var prize = await _prizeWinnerRepository.GetByIdAsync(prizeWinnerId);
+            if (!prize.RedeemedAt.HasValue)
+            {
+                await _prizeWinnerRepository.RemoveSaveAsync(authUserId, prizeWinnerId);
 
-            await _prizeWinnerRepository.RemoveSaveAsync(authUserId, prizeWinnerId);
+                if (prize.DrawingId.HasValue)
+                {
+                    var winnerCount = await _drawingRepository.GetWinnerCountAsync(
+                        prize.DrawingId.Value);
+                    if (winnerCount == 0)
+                    {
+                        await _drawingRepository.SetArchivedAsync(authUserId, prize.DrawingId.Value,
+                            true);
+                    }
+                }
+            }
+            else
+            {
+                _logger.LogError($"User {authUserId} cannot remove claimed prize {prize.Id}.");
+                throw new GraException("Prizes that have been claimed cannot be removed.");
+            }
         }
 
         public async Task<DataWithCount<ICollection<PrizeWinner>>>

@@ -132,7 +132,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+                await _prizeWinnerService.RemovePrizeAsync(prizeWinnerId);
             }
             catch (GraException gex)
             {
