@@ -1,60 +1,63 @@
-﻿@model GRA.Domain.Model.Drawing
+﻿@model GRA.Controllers.ViewModel.MissionControl.Drawing.DrawingNewViewModel
 
 <form asp-controller="Drawing" asp-action="New" method="post" role="form">
-    <input asp-for="DrawingCriterionId" type="hidden" />
+    <input asp-for="Drawing.DrawingCriterionId" type="hidden" />
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
             <label class="control-label">Criteria</label>
-            <input asp-for="DrawingCriterion.Name" class="form-control" readonly />
+            <input asp-for="Drawing.DrawingCriterion.Name" class="form-control" readonly />
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <label asp-for="Drawing.Name" class="control-label"></label>
+            <input asp-for="Drawing.Name" class="form-control" />
+            <span asp-validation-for="Drawing.Name" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-6">
-            <label asp-for="WinnerCount" class="control-label"></label>
-            <input asp-for="WinnerCount" min="1" class="form-control" />
-            <span asp-validation-for="WinnerCount" class="text-danger"></span>
+            <label asp-for="Drawing.WinnerCount" class="control-label"></label>
+            <input asp-for="Drawing.WinnerCount" min="1" class="form-control" />
+            <span asp-validation-for="Drawing.WinnerCount" class="text-danger"></span>
         </div>
 
         <div class="col-xs-6">
             <label class="control-label">Eligible Participants</label>
-            <input asp-for="DrawingCriterion.EligibleCount" type="text" class="form-control" readonly />
+            <input asp-for="Drawing.DrawingCriterion.EligibleCount" type="text" class="form-control" readonly />
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="RedemptionInstructions" class="control-label"></label>
-            <textarea asp-for="RedemptionInstructions" class="form-control"></textarea>
-            <span asp-validation-for="RedemptionInstructions" class="text-danger"></span>
+            <label asp-for="Drawing.RedemptionInstructions" class="control-label"></label>
+            <textarea asp-for="Drawing.RedemptionInstructions" class="form-control"></textarea>
+            <span asp-validation-for="Drawing.RedemptionInstructions" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="NotificationSubject" class="control-label"></label>
-            <input asp-for="NotificationSubject" class="form-control" />
-            <span asp-validation-for="NotificationSubject" class="text-danger"></span>
+    @if (Model.CanSendMail)
+    {
+        <input asp-for="CanSendMail" type="hidden" />
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Drawing.NotificationSubject" class="control-label"></label>
+                <input asp-for="Drawing.NotificationSubject" class="form-control" />
+                <span asp-validation-for="Drawing.NotificationSubject" class="text-danger"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="row row-spacing">
-        <div class="col-xs-12">
-            <label asp-for="NotificationMessage" class="control-label"></label>
-            <textarea asp-for="NotificationMessage" class="form-control"></textarea>
-            <span asp-validation-for="NotificationMessage" class="text-danger"></span>
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label asp-for="Drawing.NotificationMessage" class="control-label"></label>
+                <textarea asp-for="Drawing.NotificationMessage" class="form-control"></textarea>
+                <span asp-validation-for="Drawing.NotificationMessage" class="text-danger"></span>
+            </div>
         </div>
-    </div>
-
+    }
     <div class="form-group">
         <a asp-action="Criteria" class="btn btn-default">Return to Criteria List</a>
         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-success">

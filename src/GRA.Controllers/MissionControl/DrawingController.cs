@@ -153,7 +153,13 @@ namespace GRA.Controllers.MissionControl
                 };
                 drawing.DrawingCriterion.EligibleCount = await _drawingService.GetEligibleCountAsync(id);
 
-                return View(drawing);
+                DrawingNewViewModel viewModel = new DrawingNewViewModel()
+                {
+                    Drawing = drawing,
+                    CanSendMail = UserHasPermission(Permission.MailParticipants)
+                };
+
+                return View(viewModel);
             }
             catch (GraException gex)
             {
@@ -163,23 +169,23 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpPost]
-        public async Task<IActionResult> New(Drawing model)
+        public async Task<IActionResult> New(DrawingNewViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.NotificationSubject)
-                && !string.IsNullOrWhiteSpace(model.NotificationMessage))
+            if (string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
+                && !string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
             {
                 ModelState.AddModelError("NotificationSubject",
                     "A subject is required to accompany the message");
             }
 
-            if (!string.IsNullOrWhiteSpace(model.NotificationSubject)
-                && string.IsNullOrWhiteSpace(model.NotificationMessage))
+            if (!string.IsNullOrWhiteSpace(model.Drawing.NotificationSubject)
+                && string.IsNullOrWhiteSpace(model.Drawing.NotificationMessage))
             {
                 ModelState.AddModelError("NotificationMessage",
                     "A message is required to accompany the subject");
             }
 
-            if (model.WinnerCount > model.DrawingCriterion.EligibleCount)
+            if (model.Drawing.WinnerCount > model.Drawing.DrawingCriterion.EligibleCount)
             {
                 ModelState.AddModelError("WinnerCount", "Cannot have more Winners than Eligible Participants");
             }
@@ -188,14 +194,14 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    var drawing = await _drawingService.PerformDrawingAsync(model);
+                    var drawing = await _drawingService.PerformDrawingAsync(model.Drawing);
                     return RedirectToAction("Detail", new { id = drawing.Id });
                 }
                 catch (GraException gex)
                 {
                     AlertInfo = gex.Message;
                     ModelState["DrawingCriterion.EligibleCount"].RawValue =
-                        await _drawingService.GetEligibleCountAsync(model.DrawingCriterionId);
+                        await _drawingService.GetEligibleCountAsync(model.Drawing.DrawingCriterionId);
 
                     return View(model);
                 }

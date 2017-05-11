@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add url hyperlink to challenge task list
 - Add trigger mail permission
 - Add showing original message when replying to mail in Mission Control
+- Add mail permission requirement to drawing mails
 
 ### Changed
 - Change join branch list to be populated with all branches

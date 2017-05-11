@@ -212,7 +212,8 @@ namespace GRA.Domain.Service
                     };
 
                     // if there's an associated notification, send it now
-                    if (!string.IsNullOrEmpty(drawing.NotificationSubject)
+                    if (HasPermission(Permission.MailParticipants)
+                        && !string.IsNullOrEmpty(drawing.NotificationSubject)
                         && !string.IsNullOrEmpty(drawing.NotificationMessage))
                     {
                         var mail = new Mail
@@ -221,7 +222,8 @@ namespace GRA.Domain.Service
                             Subject = drawing.NotificationSubject,
                             Body = drawing.NotificationMessage,
                             ToUserId = winner.UserId,
-                            DrawingId = drawing.Id
+                            DrawingId = drawing.Id,
+                            IsNew = true
                         };
                         mail = await _mailRepository.AddSaveAsync(authUserId, mail);
                         winner.MailId = mail.Id;
