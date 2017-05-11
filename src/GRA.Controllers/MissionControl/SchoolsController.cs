@@ -301,7 +301,8 @@ namespace GRA.Controllers.MissionControl
                 EnteredSchools = enteredList.Data.ToList(),
                 PaginateModel = paginateModel,
                 SchoolDistricts = new SelectList(await _schoolService.GetDistrictsAsync(), "Id", "Name"),
-                SchoolTypes = new SelectList(await _schoolService.GetTypesAsync(), "Id", "Name")
+                SchoolTypes = new SelectList(await _schoolService.GetTypesAsync(), "Id", "Name"),
+                CurrentPage = page
             };
 
             return View(viewModel);
@@ -340,7 +341,7 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to merge Entered School: ", gex);
                 }
             }
-            return RedirectToAction("Entered");
+            return RedirectToAction("Entered", new { page = model.CurrentPage });
         }
 
         [HttpGet]

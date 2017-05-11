@@ -7,6 +7,7 @@
         <div class="modal-dialog" role="document">
             <form id="schoolForm" asp-controller="Schools" asp-action="Entered" method="post" role="form" style="display:inline">
                 <input asp-for="NewSchool" type="hidden" />
+                <input asp-for="CurrentPage" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

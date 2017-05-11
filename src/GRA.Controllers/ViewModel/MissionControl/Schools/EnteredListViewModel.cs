@@ -18,5 +18,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Schools
         public int SchoolId { get; set; }
         public SelectList SchoolDistricts { get; set; }
         public SelectList SchoolTypes { get; set; }
+        public int? CurrentPage { get; set; }
     }
 }
