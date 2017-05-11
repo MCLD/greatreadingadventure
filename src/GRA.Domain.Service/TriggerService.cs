@@ -58,7 +58,7 @@ namespace GRA.Domain.Service
             {
                 trigger.AwardVendorCodeTypeId = null;
             }
-            if (!HasPermission(Permission.MailParticipants))
+            if (!HasPermission(Permission.ManageTriggerMail))
             {
                 trigger.AwardMail = null;
                 trigger.AwardMailSubject = null;
@@ -74,14 +74,14 @@ namespace GRA.Domain.Service
             trigger.SiteId = GetCurrentSiteId();
             await ValidateTriggerAsync(trigger);
             if (!HasPermission(Permission.ManageVendorCodes)
-                || !HasPermission(Permission.MailParticipants))
+                || !HasPermission(Permission.ManageTriggerMail))
             {
                 var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
                 if (!HasPermission(Permission.ManageVendorCodes))
                 {
                     trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
                 }
-                if (!HasPermission(Permission.MailParticipants))
+                if (!HasPermission(Permission.ManageTriggerMail))
                 {
                     trigger.AwardMail = currentTrigger.AwardMail;
                     trigger.AwardMailSubject = currentTrigger.AwardMailSubject;

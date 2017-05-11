@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add household shortcut to navbar
 - Add url to action tasks
 - Add url hyperlink to challenge task list
+- Add trigger mail permission
 - Add showing original message when replying to mail in Mission Control
 
 ### Changed

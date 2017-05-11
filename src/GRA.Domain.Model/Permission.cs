@@ -27,6 +27,7 @@ namespace GRA.Domain.Model
         ManageQuestionnaires,
         ManageSchools,
         ManageTriggers,
+        ManageTriggerMail,
         ManageVendorCodes,
         PerformDrawing,
         ReadAllMail,
