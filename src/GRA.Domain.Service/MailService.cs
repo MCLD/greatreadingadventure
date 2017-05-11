@@ -291,7 +291,7 @@ namespace GRA.Domain.Service
         {
             var authId = GetClaimId(ClaimType.UserId);
 
-            if (HasPermission(Permission.MailParticipants))
+            if (HasPermission(Permission.SendBroadcastMail))
             {
                 int siteId = GetClaimId(ClaimType.SiteId);
 
