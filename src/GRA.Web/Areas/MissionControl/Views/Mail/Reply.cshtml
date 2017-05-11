@@ -3,13 +3,27 @@
 <form asp-controller="Mail" asp-action="Reply" method="post" role="form">
     <input asp-for="InReplyToId" type="hidden" />
     <input asp-for="InReplyToSubject" type="hidden" />
+    <input asp-for="InReplyToBody" type="hidden" />
     <input asp-for="ParticipantLink" type="hidden" />
     <input asp-for="ParticipantName" type="hidden" />
 
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <p style="font-size:large"><strong>Reply to:</strong> @Model.InReplyToSubject</p>
-            <p style="font-size:large"><strong>From:</strong> <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a></p>
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="lead">
+                        Replying to: <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a>
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p style="font-size:large"><strong>Subject: @Model.InReplyToSubject</strong></p>
+                            @Model.InReplyToBody
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

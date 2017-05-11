@@ -10,6 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Mail
         public string Body { get; set; }
         public int? InReplyToId { get; set; }
         public string InReplyToSubject { get; set; }
+        public string InReplyToBody { get; set; }
         public string ParticipantName { get; set; }
         public string ParticipantLink { get; set; }
     }

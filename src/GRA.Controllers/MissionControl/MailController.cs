@@ -181,6 +181,7 @@ namespace GRA.Controllers.MissionControl
                         Subject = $"Re: {mail.Subject}",
                         InReplyToId = mail.Id,
                         InReplyToSubject = mail.Subject,
+                        InReplyToBody = mail.Body,
                         ParticipantLink = participantLink,
                         ParticipantName = participantName
                     };
@@ -199,7 +200,7 @@ namespace GRA.Controllers.MissionControl
             }
         }
 
-        [Authorize(Policy.DeleteAnyMail)]
+        [Authorize(Policy.MailParticipants)]
         [HttpPost]
         public async Task<IActionResult> Reply(MailReplyViewModel model)
         {
@@ -233,14 +234,14 @@ namespace GRA.Controllers.MissionControl
             return RedirectToAction("Index");
         }
 
-        [Authorize(Policy.MailParticipants)]
+        [Authorize(Policy.SendBroadcastMail)]
         [HttpGet]
         public IActionResult SendBroadcast()
         {
             return View();
         }
 
-        [Authorize(Policy.MailParticipants)]
+        [Authorize(Policy.SendBroadcastMail)]
         [HttpPost]
         public async Task<IActionResult> SendBroadcast(SendBroadcastViewModel viewModel)
         {
