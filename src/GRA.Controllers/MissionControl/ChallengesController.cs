@@ -597,7 +597,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.Task.Author = null;
                     viewModel.Task.Isbn = null;
-                    viewModel.Task.Url = null;
+                }
+                if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
+                {
+                    viewModel.Task.Url = new UriBuilder(viewModel.Task.Url).Uri.AbsoluteUri;
                 }
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
                 await _challengeService.AddTaskAsync(viewModel.Task);
@@ -637,7 +640,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.Task.Author = null;
                     viewModel.Task.Isbn = null;
-                    viewModel.Task.Url = null;
+                }
+                if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
+                {
+                    viewModel.Task.Url = new UriBuilder(viewModel.Task.Url).Uri.AbsoluteUri;
                 }
                 await _challengeService.EditTaskAsync(viewModel.Task);
             }

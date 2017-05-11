@@ -128,8 +128,12 @@ namespace GRA.Controllers
             viewModel.Details = $"Completing <strong>{challenge.TasksToComplete} "
                 + $"{(challenge.TasksToComplete > 1 ? "Tasks" : "Task")}</strong> will earn: "
                 + $"<strong>{challenge.PointsAwarded} "
-                + $"{(challenge.PointsAwarded > 1 ? "Points" : "Point")}</strong> and "
-                + "<strong>a badge</strong>.";
+                + $"{(challenge.PointsAwarded > 1 ? "Points" : "Point")}</strong>";
+
+            if (challenge.BadgeId.HasValue)
+            {
+                viewModel.Details += " and <strong>a badge</strong>.";
+            }
 
             foreach (var task in challenge.Tasks)
             {
@@ -140,9 +144,14 @@ namespace GRA.Controllers
                     TaskType = task.ChallengeTaskType.ToString(),
                     Url = task.Url
                 };
+                var title = task.Title;
+                if (!string.IsNullOrWhiteSpace(task.Url))
+                {
+                     title = $"<a href=\"{task.Url}\" target=\"_blank\">{title}</a>";
+                }
                 if (task.ChallengeTaskType.ToString() == "Book")
                 {
-                    string description = $"Read <strong><em>{task.Title}</em></strong>";
+                    string description = $"Read <strong><em>{title}</em></strong>";
                     if (!string.IsNullOrWhiteSpace(task.Author))
                     {
                         description += $" by <strong>{task.Author}</strong>";
@@ -151,7 +160,7 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    taskModel.Description = task.Title;
+                    taskModel.Description = title;
                 }
                 viewModel.Tasks.Add(taskModel);
             }

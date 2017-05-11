@@ -39,8 +39,14 @@
 
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane gra-tab-pane active" id="action">
-                                    <label asp-for="Task.Title" class="control-label">Name</label>
-                                    <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." />
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label">Name</label>
+                                        <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" id="actionUrl" class="form-control" />
+                                    </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane" id="book">
                                     <div class="form-group">
@@ -59,8 +65,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Task.Url" class="control-label"></label>
-                                        <input asp-for="Task.Url" class="form-control" />
-                                        <span asp-validation-for="Task.Url" class="text-danger"></span>
+                                        <input asp-for="Task.Url" id="bookUrl" class="form-control" disabled />
                                     </div>
                                 </div>
                             </div>
@@ -104,8 +109,14 @@
 
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? "active" : "")" id="action">
-                                    <label asp-for="Task.Title" class="control-label">Name</label>
-                                    <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")" />
+                                    <div class="form-group">
+                                        <label asp-for="Task.Title" class="control-label">Name</label>
+                                        <input asp-for="Task.Title" id="actionTitle" class="form-control" data-val-required="The Name field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Task.Url" class="control-label"></label>
+                                        <input asp-for="Task.Url" id="actionUrl" class="form-control" disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")" />
+                                    </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? "active" : "")" id="book">
                                     <div class="form-group">
@@ -124,8 +135,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Task.Url" class="control-label"></label>
-                                        <input asp-for="Task.Url" class="form-control" />
-                                        <span asp-validation-for="Task.Url" class="text-danger"></span>
+                                        <input asp-for="Task.Url" id="bookUrl" class="form-control" disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Book ? null : "disabled")" />
                                     </div>
                                 </div>
                             </div>
@@ -541,13 +551,17 @@
         $("#actionTab").on('show.bs.tab', function () {
             $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Action");
             $("#actionTitle").removeAttr("disabled");
+            $("#actionUrl").removeAttr("disabled");
             $("#bookTitle").attr("disabled", "disabled");
+            $("#bookUrl").attr("disabled", "disabled");
         });
 
         $("#bookTab").on('show.bs.tab', function () {
             $("#Task_ChallengeTaskType").val("@ChallengeTaskType.Book");
             $("#bookTitle").removeAttr("disabled");
+            $("#bookUrl").removeAttr("disabled");
             $("#actionTitle").attr("disabled", "disabled");
+            $("#actionUrl").attr("disabled", "disabled");
 
         });
     </script>
