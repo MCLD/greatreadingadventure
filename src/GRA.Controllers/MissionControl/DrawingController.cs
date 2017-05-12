@@ -116,14 +116,28 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> RedeemWinner(int prizeWinnerId, int drawingId, int page = 1)
         {
-            await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+            try
+            {
+                await _prizeWinnerService.RedeemPrizeAsync(prizeWinnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to redeem prize: ", gex);
+            }
             return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
 
         [HttpPost]
         public async Task<IActionResult> UndoRedemption(int prizeWinnerId, int drawingId, int page = 1)
         {
-            await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
+            try
+            {
+                await _prizeWinnerService.UndoRedemptionAsync(prizeWinnerId);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to undo redemption: ", gex);
+            }
             return RedirectToAction("Detail", new { id = drawingId, page = page });
         }
 
