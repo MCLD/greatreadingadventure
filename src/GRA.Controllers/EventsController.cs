@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace GRA.Controllers
 {
@@ -63,7 +64,7 @@ namespace GRA.Controllers
             {
                 filter.BranchIds = new List<int>() { branch.Value };
             }
-            else if(system.HasValue)
+            else if (system.HasValue)
             {
                 filter.SystemIds = new List<int>() { system.Value };
             }
@@ -88,7 +89,7 @@ namespace GRA.Controllers
                     filter.StartDate = DateTime.Now.Date;
                 }
             }
-            
+
             if (!string.IsNullOrWhiteSpace(EndDate))
             {
                 filter.EndDate = DateTime.Parse(EndDate).Date;
@@ -195,32 +196,48 @@ namespace GRA.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            EventsDetailViewModel viewModel = new EventsDetailViewModel()
+            try
             {
-                Event = await _eventService.GetDetails(id)
-            };
-            if (viewModel.Event.ProgramId.HasValue)
-            {
-                var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
-            }
+                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                {
+                    Event = await _eventService.GetDetails(id)
+                };
 
-            return View(viewModel);
+                if (viewModel.Event.ProgramId.HasValue)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
+                }
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view event: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> GetDetails(int eventId)
         {
-            EventsDetailViewModel viewModel = new EventsDetailViewModel()
+            try
             {
-                Event = await _eventService.GetDetails(eventId)
-            };
-            if (viewModel.Event.ProgramId.HasValue)
-            {
-                var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
-                viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
-            }
+                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                {
+                    Event = await _eventService.GetDetails(eventId)
+                };
+                if (viewModel.Event.ProgramId.HasValue)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(viewModel.Event.ProgramId.Value);
+                    viewModel.ProgramString = $"This event is limited to the {program.Name} program.";
+                }
 
-            return PartialView("_DetailPartial", viewModel);
+                return PartialView("_DetailPartial", viewModel);
+            }
+            catch (GraException gex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Content($"Unable to view event: {gex.Message}");
+            }
         }
     }
 }

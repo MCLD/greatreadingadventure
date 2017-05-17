@@ -19,16 +19,19 @@
                 <div class="row row-spacing">
                     <div class="col-xs-12">
                         <ul class="nav nav-pills">
-                            <li role="presentation" @if (Model.CommunityExperiences != true) { <text> class="active" </text> }><a asp-action="Index">Events</a></li>
-                            <li role="presentation" @if (Model.CommunityExperiences == true)
-                            {<text>class= "active"</text>}><a asp-action="CommunityExperiences">Community Experiences</a></li>
+                            <li role="presentation" class="@(Model.CommunityExperiences ? "" : "active")">
+                                <a asp-action="Index">Events</a>
+                            </li>
+                            <li role="presentation" class="@(Model.CommunityExperiences ? "active" : "")">
+                                <a asp-action="CommunityExperiences">Community Experiences</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
                 <form asp-controller="Events" asp-action="Index" method="post" role="form">
                     <input asp-for="UseLocation" type="hidden" />
-                    <input asp-for="CommunityExperiences" 
-                           type="hidden" 
+                    <input asp-for="CommunityExperiences"
+                           type="hidden"
                            value="@Model.CommunityExperiences" />
                     <div class="row row-spacing">
                         <div class="col-xs-6">
@@ -166,8 +169,6 @@
 @section scripts
 {
     <script>
-        var test;
-
         $(document).ready(function() {
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
@@ -233,8 +234,10 @@
             $("#detailModal").modal("show");
             var id = $(this).data("id");
             var url = "@Url.Action("GetDetails")";
-            $.get(url, { eventId: id }, function(response) {
+            $.get(url, { eventId: id }, function (response) {
                 $("#detailModalContent").html(response);
+            }).fail(function (response) {
+                $("#detailModalContent").html("<div class='modal-body'>" + response.responseText + "</div>");
             });
         });
 

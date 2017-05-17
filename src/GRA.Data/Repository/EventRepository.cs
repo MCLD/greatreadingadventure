@@ -37,8 +37,16 @@ namespace GRA.Data.Repository
 
         public override async Task<Event> GetByIdAsync(int id)
         {
-            var evt = await base.GetByIdAsync(id);
-            await AddLocationData(evt);
+            var evt = await DbSet
+                .AsNoTracking()
+                .Where(_ => _.Id == id)
+                .ProjectTo<Event>()
+                .SingleOrDefaultAsync();
+
+            if (evt != null)
+            {
+                await AddLocationData(evt);
+            }
             return evt;
         }
 
@@ -169,13 +177,13 @@ namespace GRA.Data.Repository
             // filter by dates
             if (filter.StartDate != null)
             {
-                events = events.Where(_ => 
+                events = events.Where(_ =>
                 ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date >= filter.StartDate.Value.Date)
                 || _.EndDate.Value.Date >= filter.StartDate.Value.Date);
             }
             if (filter.EndDate != null)
             {
-                events = events.Where(_ => 
+                events = events.Where(_ =>
                 ((_.AllDay == false || _.EndDate.HasValue == false) && _.StartDate.Date <= filter.EndDate.Value.Date)
                 || _.StartDate.Date <= filter.EndDate.Value.Date);
             }

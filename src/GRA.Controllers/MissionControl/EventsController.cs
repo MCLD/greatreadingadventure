@@ -235,19 +235,25 @@ namespace GRA.Controllers.MissionControl
 
             if (id.HasValue)
             {
+                try {
                 var graEvent = await _eventService.GetDetails(id.Value);
-                if (!graEvent.ParentEventId.HasValue)
-                {
-                    graEvent.ParentEventId = graEvent.Id;
+                    if (!graEvent.ParentEventId.HasValue)
+                    {
+                        graEvent.ParentEventId = graEvent.Id;
+                    }
+                    viewModel.Event = graEvent;
+                    viewModel.Event.RelatedTriggerId = null;
+                    if (graEvent.AtBranchId.HasValue)
+                    {
+                        var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
+                        viewModel.SystemId = branch.SystemId;
+                        viewModel.BranchList = new SelectList(await _siteService
+                        .GetBranches(viewModel.SystemId, true), "Id", "Name");
+                    }
                 }
-                viewModel.Event = graEvent;
-                viewModel.Event.RelatedTriggerId = null;
-                if (graEvent.AtBranchId.HasValue)
+                catch(GraException gex)
                 {
-                    var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
-                    viewModel.SystemId = branch.SystemId;
-                    viewModel.BranchList = new SelectList(await _siteService
-                    .GetBranches(viewModel.SystemId, true), "Id", "Name");
+                    ShowAlertWarning("Unable to copy event: ", gex);
                 }
             }
 
@@ -440,38 +446,46 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Edit Event";
 
-            var graEvent = await _eventService.GetDetails(id);
-            var systemList = await _siteService.GetSystemList(true);
-            var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
-            var locationList = await _eventService.GetLocations();
-            var programList = await _siteService.GetProgramList();
-            EventsDetailViewModel viewModel = new EventsDetailViewModel()
+            try
             {
-                Event = graEvent,
-                UseLocation = graEvent.AtLocationId.HasValue,
-                CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
-                CanManageLocations = UserHasPermission(Permission.ManageLocations),
-                SystemList = new SelectList(systemList, "Id", "Name"),
-                BranchList = new SelectList(branchList, "Id", "Name"),
-                LocationList = new SelectList(locationList, "Id", "Name"),
-                ProgramList = new SelectList(programList, "Id", "Name")
-            };
+                var graEvent = await _eventService.GetDetails(id);
+                var systemList = await _siteService.GetSystemList(true);
+                var branchList = await _siteService.GetBranches(GetId(ClaimType.SystemId));
+                var locationList = await _eventService.GetLocations();
+                var programList = await _siteService.GetProgramList();
+                EventsDetailViewModel viewModel = new EventsDetailViewModel()
+                {
+                    Event = graEvent,
+                    UseLocation = graEvent.AtLocationId.HasValue,
+                    CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
+                    CanManageLocations = UserHasPermission(Permission.ManageLocations),
+                    SystemList = new SelectList(systemList, "Id", "Name"),
+                    BranchList = new SelectList(branchList, "Id", "Name"),
+                    LocationList = new SelectList(locationList, "Id", "Name"),
+                    ProgramList = new SelectList(programList, "Id", "Name")
+                };
 
-            if (graEvent.AtBranchId.HasValue)
-            {
-                var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
-                viewModel.SystemId = branch.SystemId;
-                viewModel.BranchList = new SelectList(await _siteService
-                .GetBranches(viewModel.SystemId, true), "Id", "Name");
-            }
-            else
-            {
-                viewModel.SystemId = GetId(ClaimType.SystemId);
-                viewModel.BranchList = new SelectList(await _siteService
+                if (graEvent.AtBranchId.HasValue)
+                {
+                    var branch = await _siteService.GetBranchByIdAsync(graEvent.AtBranchId.Value);
+                    viewModel.SystemId = branch.SystemId;
+                    viewModel.BranchList = new SelectList(await _siteService
                     .GetBranches(viewModel.SystemId, true), "Id", "Name");
-            }
+                }
+                else
+                {
+                    viewModel.SystemId = GetId(ClaimType.SystemId);
+                    viewModel.BranchList = new SelectList(await _siteService
+                        .GetBranches(viewModel.SystemId, true), "Id", "Name");
+                }
 
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to view event: ", gex);
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]

@@ -74,6 +74,11 @@ namespace GRA.Domain.Service
         public async Task<Event> GetDetails(int eventId)
         {
             var graEvent = await _eventRepository.GetByIdAsync(eventId);
+            if (graEvent == null)
+            {
+                throw new GraException("The requested event could not be accessed or does not exist.");
+            }
+
             if (graEvent.AtBranchId != null)
             {
                 var branch = await _branchRepository.GetByIdAsync((int)graEvent.AtBranchId);
