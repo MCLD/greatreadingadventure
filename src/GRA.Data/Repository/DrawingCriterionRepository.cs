@@ -79,6 +79,16 @@ namespace GRA.Data.Repository
                 users = users.Where(_ => _.IsAdmin == false);
             }
 
+            if (criterion.ExcludePreviousWinners)
+            {
+                var previousWinners = _context.PrizeWinners.AsNoTracking()
+                    .Where(_ => _.DrawingId.HasValue)
+                    .Distinct()
+                    .Select(_ => _.UserId);
+
+                users = users.Where(_ => !previousWinners.Contains(_.Id));
+            }           
+
             var userIds = users.Select(_ => _.Id);
             IQueryable<int> activityUsers = null;
             IQueryable<int> pointUsers = null;

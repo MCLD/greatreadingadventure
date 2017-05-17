@@ -21,5 +21,6 @@ namespace GRA.Data.Model
         public int? ActivityAmount { get; set; }
         public int? PointTranslationId { get; set; }
         public bool IncludeAdmin { get; set; }
+        public bool ExcludePreviousWinners { get; set; }
     }
 }

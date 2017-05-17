@@ -28,6 +28,8 @@ namespace GRA.Domain.Model
         public int? PointTranslationId { get; set; }
         [DisplayName("Include Admin")]
         public bool IncludeAdmin { get; set; }
+        [DisplayName("Exclude Previous Winners")]
+        public bool ExcludePreviousWinners { get; set; }
 
         public string BranchName { get; set; }
         [DisplayName("Eligible Count")]

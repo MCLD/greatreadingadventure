@@ -90,6 +90,17 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label asp-for="Criterion.ExcludePreviousWinners" class="control-label"></label>
+            <select asp-for="Criterion.ExcludePreviousWinners" class="form-control">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+            <span asp-validation-for="Criterion.ExcludePreviousWinners" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label asp-for="Criterion.IncludeAdmin" class="control-label"></label>
             <select asp-for="Criterion.IncludeAdmin" class="form-control">
                 <option value="false">No</option>
