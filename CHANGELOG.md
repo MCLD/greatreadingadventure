@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Change events system dropdown to filter events
 - Change recovery token log level to info
 - Change MC book editing to match non-MC book editing
+- Change challenge tasks to add books without points
 - Remove reliance on content delivery networks
 
 ### Fixed

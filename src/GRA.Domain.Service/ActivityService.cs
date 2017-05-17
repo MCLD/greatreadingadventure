@@ -337,8 +337,9 @@ namespace GRA.Domain.Service
             {
                 var challengeTaskDetails = challenge.Tasks.Where(_ => _.Id == updateStatus.ChallengeTask.Id).SingleOrDefault();
                 // is there work we need to do on this item
-                if (challengeTaskDetails.ActivityCount != null
+                if ((challengeTaskDetails.ActivityCount != null
                     && challengeTaskDetails.PointTranslationId != null)
+                    || challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book)
                 {
                     // did something change?
                     _logger.LogDebug($"Challenge task {updateStatus.ChallengeTask.Id} counts as an activity");
@@ -359,17 +360,30 @@ namespace GRA.Domain.Service
                                     ChallengeId = challenge.Id
                                 };
                             }
-                            _logger.LogDebug($"Logging activity for {activeUserId} based on challenge task {updateStatus.ChallengeTask.Id}");
-                            var userLogResult = await LogActivityAsync(activeUserId,
-                                (int)challengeTaskDetails.ActivityCount,
-                                book);
 
-                            // update record with user log result
-                            _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId} and BookId {userLogResult.BookId}");
-                            await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
-                                updateStatus.ChallengeTask.Id,
-                                userLogResult.UserLogId,
-                                userLogResult.BookId);
+                            if (challengeTaskDetails.ActivityCount != null
+                                && challengeTaskDetails.PointTranslationId != null)
+                            {
+                                _logger.LogDebug($"Logging activity for {activeUserId} based on challenge task {updateStatus.ChallengeTask.Id}");
+                                var userLogResult = await LogActivityAsync(activeUserId,
+                                    (int)challengeTaskDetails.ActivityCount,
+                                    book);
+
+                                // update record with user log result
+                                _logger.LogDebug($"Update success, recording UserLogId {userLogResult.UserLogId.Value} and BookId {userLogResult.BookId}");
+                                await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
+                                    updateStatus.ChallengeTask.Id,
+                                    userLogResult.UserLogId.Value,
+                                    userLogResult.BookId);
+                            }
+                            else if (book != null)
+                            {
+                                var bookId = await AddBookAsync(activeUserId, book);
+                                await _challengeRepository.UpdateUserChallengeTaskAsync(activeUserId,
+                                    updateStatus.ChallengeTask.Id,
+                                    null,
+                                    bookId);
+                            }
                         }
                         if (updateStatus.WasComplete)
                         {
@@ -385,13 +399,17 @@ namespace GRA.Domain.Service
                             else
                             {
                                 _logger.LogDebug($"Unwinding points for {activeUserId} earned in UserLogId {challengeTaskInfo.UserLogId}");
-                                await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId);
+                                if (challengeTaskInfo.UserLogId.HasValue)
+                                {
+                                    await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId.Value);
+                                }
+                                
                                 // remove the title
                                 if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book
                                     && challengeTaskInfo.BookId != null)
                                 {
                                     _logger.LogDebug($"Removing for {activeUserId} book registration {challengeTaskInfo.BookId}");
-                                    await RemoveBookAsync(activeUserId, (int)challengeTaskInfo.BookId);
+                                    await RemoveBookAsync(challengeTaskInfo.BookId.Value, activeUserId);
                                 }
                             }
                         }

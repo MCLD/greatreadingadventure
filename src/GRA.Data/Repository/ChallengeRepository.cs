@@ -258,7 +258,7 @@ namespace GRA.Data.Repository
 
         public async Task UpdateUserChallengeTaskAsync(int userId,
             int challengeTaskId,
-            int userLogId,
+            int? userLogId,
             int? bookId)
         {
             var userChallengeTask = await _context.UserChallengeTasks
@@ -284,7 +284,8 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId && _.ChallengeTaskId == challengeTaskId)
                 .SingleOrDefaultAsync();
-            if (userChallengeTask == null || userChallengeTask.UserLogId == null)
+            if (userChallengeTask == null 
+                || (userChallengeTask.UserLogId == null && userChallengeTask.BookId == null))
             {
                 return null;
             }
@@ -293,7 +294,7 @@ namespace GRA.Data.Repository
                 return new ActivityLogResult
                 {
                     BookId = userChallengeTask.BookId,
-                    UserLogId = (int)userChallengeTask.UserLogId
+                    UserLogId = userChallengeTask.UserLogId
                 };
             }
         }

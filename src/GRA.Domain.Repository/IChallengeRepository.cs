@@ -23,7 +23,7 @@ namespace GRA.Domain.Repository
         Task UpdateUserChallengeTaskAsync(
             int userId,
             int challengeTaskId,
-            int userLogId,
+            int? userLogId,
             int? bookId);
         Task<ActivityLogResult> GetUserChallengeTaskResultAsync(int userId, int challengeTaskId);
         Task SetValidationAsync(int userId, int challengeId, bool valid);
