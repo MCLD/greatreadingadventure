@@ -2,8 +2,85 @@
 
 @Html.Partial("_ParticipantPartial")
 
-@if (Model.CanModifyBooks)
+@if (Model.CanEditBooks)
 {
+    <div class="row">
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+            <div class="modal-dialog" role="document">
+                <form asp-controller="Participants" asp-action="AddBook" method="post" role="form" style="display:inline">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="CanEditBooks" type="hidden" />
+                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="addModalLabel">Add book</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label asp-for="Book.Title" class="control-label"></label>
+                                <input asp-for="Book.Title" class="form-control" />
+                                <span asp-validation-for="Book.Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Book.Author" class="control-label"></label>
+                                <input asp-for="Book.Author" class="form-control" />
+                                <span asp-validation-for="Book.Author" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+            <div class="modal-dialog" role="document">
+                <form asp-controller="Participants" asp-action="EditBook" method="post" role="form" style="display:inline">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="CanEditBooks" type="hidden" />
+                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                    <input asp-for="Book.Id" type="hidden" />
+                    <input asp-for="Book.Isbn" type="hidden" />
+                    <input asp-for="Book.Url" type="hidden" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="editModalLabel">Edit book</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label asp-for="Book.Title" class="control-label"></label>
+                                <input asp-for="Book.Title" class="form-control" />
+                                <span asp-validation-for="Book.Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Book.Author" class="control-label"></label>
+                                <input asp-for="Book.Author" class="form-control" />
+                                <span asp-validation-for="Book.Author" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="submit" class="btn btn-primary pull-right" aria-label="Confirm">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
             <div class="modal-dialog" role="document">
@@ -18,9 +95,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                        <form asp-controller="Participants" asp-action="DeleteBook" method="post" role="form" style="display:inline">
-                            <input id="Id" name="Id" type="hidden" />
-                            <input id="userId" name="userId" value="@Model.Id" type="hidden" />
+                        <form asp-controller="Participants" asp-action="RemoveBook" method="post" role="form" style="display:inline">
+                            <input asp-for="Id" type="hidden" />
+                            <input asp-for="CanEditBooks" type="hidden" />
+                            <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                            <input asp-for="Book.Id" type="hidden" />
+                            <input asp-for="Book.Title" type="hidden" />
                             <button type="submit" class="btn btn-danger pull-right" aria-label="Confirm">
                                 <span class="fa fa-remove" aria-hidden="true"></span>
                                 Delete
@@ -50,85 +130,52 @@
         }
         else
         {
-            @if (Model.CanModifyBooks)
-            {
-                <form asp-controller="Participants" method="post" role="form">
-                    <input asp-for="Id" type="hidden" />
-                    <table class="table table-condensed table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Title</th>
-                                <th>Author</th>
-                                <th width="100">&nbsp;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @for (int i = 0; i < Model.Books.Count(); i++)
-                            {
-                                <tr>
-                                    <td>
-                                        @Model.Books[i].CreatedAt.ToString("d")
-                                        <input asp-for="Books[i].Id" type="hidden" class="form-control" />
-                                        <input asp-for="Books[i].CreatedAt" type="hidden" class="form-control" />
-                                        <input asp-for="Books[i].CreatedBy" type="hidden" class="form-control" />
-                                        <input asp-for="Books[i].Isbn" type="hidden" class="form-control" />
-                                        <input asp-for="Books[i].Url" type="hidden" class="form-control" />
-                                    </td>
-                                    <td class="title">
-                                        <input asp-for="Books[i].Title" class="form-control titleInput" />
-                                        <span asp-validation-for="Books[i].Title" class="text-danger"></span>
-                                    </td>
-                                    <td>
-                                        <input asp-for="Books[i].Author" class="form-control" />
-                                        <span asp-validation-for="Books[i].Author" class="text-danger"></span>
-                                    </td>
-                                    <td>
-                                        <button type="submit"
-                                                asp-action="EditBook"
-                                                asp-route-listId="@i"
-                                                class="btn btn-primary btn-xs editBook">
-                                            <span class="fa fa-2x fa-save" aria-hidden="true"></span>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-danger btn-xs"
-                                                style="margin-left:16px;"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                data-id="@Model.Books[i].Id"
-                                                data-name="@Model.Books[i].Title">
-                                            <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </form>
-            }
-            else
-            {
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Title</th>
-                            <th>Author</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.Books.Count(); i++)
+            <table class="table table-condensed table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        @if (Model.CanEditBooks)
                         {
-                            <tr>
-                                <td>@Model.Books[i].CreatedAt.ToString("d")</td>
-                                <td>@Model.Books[i].Title</td>
-                                <td>@Model.Books[i].Author</td>
-                            </tr>
+                            <th width="95">&nbsp;</th>
                         }
-                    </tbody>
-                </table>
-            }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var book in Model.Books)
+                    {
+                        <tr>
+                            <td style="vertical-align:middle;">@book.CreatedAt.ToString("d")</td>
+                            <td style="vertical-align:middle;">@book.Title</td>
+                            <td style="vertical-align:middle;">@book.Author</td>
+                            @if (Model.CanEditBooks)
+                            {
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-primary btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="@book.Id"
+                                            data-title="@book.Title"
+                                            data-author="@book.Author">
+                                        <span class="fa fa-2x fa-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            style="margin-left:16px;"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@book.Id"
+                                            data-title="@book.Title">
+                                        <span class="fa fa-2x fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
             @if (Model.PaginateModel.MaxPage > 1)
                 {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
@@ -141,7 +188,7 @@
     <a asp-action="Index" class="btn btn-default">Return to Participants</a>
     @if (!Model.HasPendingQuestionnaire)
             {
-        <a asp-action="AddBook" asp-route-id="@Model.Id" class="btn btn-primary">Add Book</a>
+        <button type="button" data-toggle="modal" data-target="#addModal" class="btn btn-primary">Add Book</button>
     }
 </div>
 
@@ -150,24 +197,28 @@
 @section scripts
 {
     <script>
-        @if (Model.CanModifyBooks) {
+        @if (Model.CanEditBooks) {
         <text>
-        $.validator.setDefaults({
-            ignore: ".ignore"
-        });
-
-        $('.editBook').on('click', function() {
-            $('.titleInput').addClass('ignore');
-            $(this).parent().siblings('.title').children('input').removeClass('ignore');
-        });
-
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $("#editModal").on("show.bs.modal", function (event) {
             var button = $(event.relatedTarget);
-            var id = button.data('id');
-            var name = button.data('name');
+            var id = button.data("id");
+            var title = button.data("title");
+            var author = button.data('author');
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the book "' + name + '" ?');
-            modal.find('#Id').val(id);
+            modal.find("#editModalLabel").text('Edit book - "' + title + '"');
+            modal.find("#Book_Id").val(id);
+            modal.find("#Book_Title").val(title);
+            modal.find("#Book_Author").val(author);
+        })
+
+        $("#deleteModal").on("show.bs.modal", function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data("id");
+            var title = button.data("title");
+            var modal = $(this);
+            modal.find("#modal-text").text('Are you sure you wish to delete the book "' + title + '" ?');
+            modal.find("#Book_Id").val(id);
+            modal.find("#Book_Title").val(title);
         });
         </text>
         }

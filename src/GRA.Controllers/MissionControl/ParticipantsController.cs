@@ -1156,7 +1156,7 @@ namespace GRA.Controllers.MissionControl
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    CanModifyBooks = UserHasPermission(Permission.LogActivityForAny)
+                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny)
                 };
 
                 return View(viewModel);
@@ -1170,74 +1170,82 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy = Policy.LogActivityForAny)]
         [HttpPost]
-        public async Task<IActionResult> EditBook(BookListViewModel model, int listId)
+        public async Task<IActionResult> AddBook(BookListViewModel model)
         {
-            foreach (string key in ModelState.Keys
-                .Where(m => !m.StartsWith($"Books[{listId}].")).ToList())
-            {
-                ModelState.Remove(key);
-            }
-
             if (ModelState.IsValid)
             {
-                await _activityService.UpdateBookAsync(model.Id, model.Books[listId]);
-                AlertSuccess = $"'{model.Books[listId].Title}' updated";
+                try
+                {
+                    await _activityService.AddBookAsync(model.Id, model.Book);
+                    ShowAlertSuccess($"Added book '{model.Book.Title}'");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertWarning("Unable to add book for participant: ", gex);
+                }
             }
             else
             {
-                ShowAlertDanger("Missing required fields");
+                ShowAlertDanger("Unable to add book for participant: Missing required fields");
             }
-            return RedirectToAction("Books", new { id = model.Id });
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Books", new { id = model.Id, page = page });
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
-        public async Task<IActionResult> AddBook(int id)
+        [HttpPost]
+        public async Task<IActionResult> EditBook(BookListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _activityService.UpdateBookAsync(model.Book, model.Id);
+                    ShowAlertSuccess($"'{model.Book.Title}' updated!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to edit book for participant: ", gex.Message);
+                }
+            }
+            else
+            {
+                ShowAlertDanger("Unable to edit book for participant: Missing required fields");
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Books", new { id = model.Id, page = page });
+        }
+
+        [Authorize(Policy = Policy.LogActivityForAny)]
+        [HttpPost]
+        public async Task<IActionResult> RemoveBook(BookListViewModel model)
         {
             try
             {
-                var user = await _userService.GetDetails(id);
-                SetPageTitle(user, "Add Book");
-
-                BookAddViewModel viewModel = new BookAddViewModel()
-                {
-                    Id = id
-                };
-                return View(viewModel);
+                await _activityService.RemoveBookAsync(model.Book.Id, model.Id);
+                ShowAlertSuccess($"'{model.Book.Title}' removed!");
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to add book for participant: ", gex);
-                return RedirectToAction("Index");
+                ShowAlertDanger("Unable to remove book for participant: ", gex.Message);
             }
-        }
 
-
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        [HttpPost]
-        public async Task<IActionResult> AddBook(BookAddViewModel model)
-        {
-            if (ModelState.IsValid)
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
             {
-                await _activityService.AddBookAsync(model.Id, model.Book);
-                AlertSuccess = $"Added book '{model.Book.Title}'";
-                return RedirectToAction("Books", new { id = model.Id });
+                page = model.PaginateModel.CurrentPage;
             }
-            else
-            {
-                var user = await _userService.GetDetails(model.Id);
-                SetPageTitle(user, "Add Book");
-
-                return View(model);
-            }
-        }
-
-        [Authorize(Policy = Policy.LogActivityForAny)]
-        [HttpPost]
-        public async Task<IActionResult> DeleteBook(int id, int userId)
-        {
-            await _activityService.RemoveBookAsync(userId, id);
-            AlertSuccess = "Book deleted";
-            return RedirectToAction("Books", new { id = userId });
+            return RedirectToAction("Books", new { id = model.Id, page = page });
         }
         #endregion
 

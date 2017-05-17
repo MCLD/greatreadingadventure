@@ -62,7 +62,7 @@ namespace GRA.Data.Repository
                 .Where(_ => _.UserId == userId && _.BookId == bookId)
                 .SingleOrDefaultAsync();
             _context.UserBooks.Remove(joinRecord);
-            await RemoveSaveAsync(requestedByUserId, bookId);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<DataWithCount<ICollection<Book>>> GetPaginatedListForUserAsync(int userId,
@@ -84,6 +84,20 @@ namespace GRA.Data.Repository
                     .ToListAsync(),
                 Count = await books.CountAsync()
             };
+        }
+
+        public async Task<bool> UserHasBookAsync(int userId, int bookId)
+        {
+            return await _context.UserBooks.AsNoTracking()
+                .Where(_ => _.BookId == bookId && _.UserId == userId)
+                .AnyAsync();
+        }
+
+        public async Task<int> GetUserCountForBookAsync(int bookId)
+        {
+            return await _context.UserBooks.AsNoTracking()
+                .Where(_ => _.BookId == bookId)
+                .CountAsync();
         }
     }
 }

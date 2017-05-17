@@ -13,5 +13,7 @@ namespace GRA.Domain.Repository
         Task<DataWithCount<ICollection<Book>>> GetPaginatedListForUserAsync(int userId,
             int skip,
             int take);
+        Task<bool> UserHasBookAsync(int userId, int bookId);
+        Task<int> GetUserCountForBookAsync(int bookId);
     }
 }

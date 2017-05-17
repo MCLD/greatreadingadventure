@@ -654,10 +654,60 @@ namespace GRA.Controllers
                 PaginateModel = paginateModel,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? user.Id),
-                HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                CanEditBooks = GetSiteStage() == SiteStage.ProgramOpen,
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBook(BookListViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _activityService.UpdateBookAsync(model.Book);
+                    ShowAlertSuccess($"'{model.Book.Title}' updated!");
+                }
+                catch(GraException gex)
+                {
+                    ShowAlertDanger("Could not edit book: ", gex.Message);
+                }
+            }
+            else
+            {
+                ShowAlertDanger("Could not edit book: Missing required fields.");
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Books", new { page = page });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveBook(BookListViewModel model)
+        {
+            try
+            {
+                await _activityService.RemoveBookAsync(model.Book.Id);
+                ShowAlertSuccess($"'{model.Book.Title}' removed!");
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Could not remove book: ", gex.Message);
+            }
+
+            int? page = null;
+            if (model.PaginateModel.CurrentPage != 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Books", new { page = page });
         }
 
         public async Task<IActionResult> History(int page = 1)

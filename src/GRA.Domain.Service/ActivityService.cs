@@ -246,32 +246,57 @@ namespace GRA.Domain.Service
             return await _bookRepository.AddSaveForUserAsync(activeUserId, userId, book);
         }
 
-        public async Task RemoveBookAsync(int userId, int bookId)
+        public async Task UpdateBookAsync(Book book, int? userId = null)
         {
-            int requestedByUserId = GetClaimId(ClaimType.UserId);
-            if (requestedByUserId == userId
-                || HasPermission(Permission.LogActivityForAny))
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var forUserId = userId ?? activeUserId;
+            if (HasPermission(Permission.LogActivityForAny)
+                || await _bookRepository.UserHasBookAsync(activeUserId, book.Id))
             {
-                await _bookRepository.RemoveForUserAsync(requestedByUserId, userId, bookId);
+                var bookUserCount = await _bookRepository.GetUserCountForBookAsync(book.Id);
+                if (bookUserCount > 1)
+                {
+                    Book newBook = new Book()
+                    {
+                        Title = book.Title,
+                        Author = book.Author,
+                        Isbn = book.Isbn,
+                        Url = book.Url
+                    };
+                    await _bookRepository.AddSaveForUserAsync(authUserId, forUserId, newBook);
+                    await _bookRepository.RemoveForUserAsync(authUserId, forUserId, book.Id);
+                }
+                else
+                {
+                    await _bookRepository.UpdateSaveAsync(authUserId, book);
+                }
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to remove a book for {userId}.");
+                _logger.LogError($"User {authUserId} doesn't have permission to edit book {book.Id} for user {forUserId}.");
                 throw new GraException("Permission denied.");
             }
         }
 
-        public async Task UpdateBookAsync(int userId, Book book)
+        public async Task RemoveBookAsync(int bookId, int? userId = null)
         {
-            int requestedByUserId = GetClaimId(ClaimType.UserId);
-            if (requestedByUserId == userId
-                || HasPermission(Permission.LogActivityForAny))
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var forUserId = userId ?? activeUserId;
+            if (HasPermission(Permission.LogActivityForAny)
+                || await _bookRepository.UserHasBookAsync(activeUserId, bookId))
             {
-                await _bookRepository.UpdateSaveAsync(requestedByUserId, book);
+                await _bookRepository.RemoveForUserAsync(authUserId, forUserId, bookId);
+                var bookUserCount = await _bookRepository.GetUserCountForBookAsync(bookId);
+                if (bookUserCount == 0)
+                {
+                    await _bookRepository.RemoveSaveAsync(authUserId, bookId);
+                }
             }
             else
             {
-                _logger.LogError($"User {requestedByUserId} doesn't have permission to edit a book for {userId}.");
+                _logger.LogError($"User {authUserId} doesn't have permission to remove book {bookId} for user {forUserId}.");
                 throw new GraException("Permission denied.");
             }
         }
@@ -442,7 +467,7 @@ namespace GRA.Domain.Service
                 {
                     foreach (var member in householdMemebers)
                     {
-                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId, 
+                        await AwardTriggersAsync(member.Id, logPoints, userContext.SiteId,
                             !userContext.User.Identity.IsAuthenticated);
                     }
                 }
@@ -901,7 +926,7 @@ namespace GRA.Domain.Service
             return null;
         }
 
-        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId, 
+        private async Task AwardPrizeAsync(int userId, Trigger trigger, int? mailId,
             bool userIdIsCurrentUser = false)
         {
             if (!string.IsNullOrEmpty(trigger.AwardPrizeName))

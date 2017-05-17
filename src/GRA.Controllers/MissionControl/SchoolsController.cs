@@ -34,7 +34,6 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Schools";
         }
 
-
         public async Task<IActionResult> Index(int page = 1)
         {
             int take = 15;
