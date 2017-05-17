@@ -129,7 +129,7 @@ namespace GRA.Data.Repository
             {
                 Name = name,
                 CreatedBy = userId,
-                CreatedAt = DateTime.Now,
+                CreatedAt = _dateTimeProvider.Now,
                 ActivityCount = activityCount,
                 PointTranslationId = pointTranslationId
             });

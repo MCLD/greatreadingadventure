@@ -14,8 +14,9 @@ namespace GRA.Domain.Service
     {
         private readonly SchoolService _schoolService;
         public SchoolImportService(ILogger<SchoolImportService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            SchoolService schoolService) : base(logger, userContextProvider)
+            SchoolService schoolService) : base(logger, dateTimeProvider, userContextProvider)
         {
             _schoolService = schoolService 
                 ?? throw new ArgumentNullException(nameof(schoolService));

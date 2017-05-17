@@ -19,6 +19,7 @@ namespace GRA.Domain.Service
         private readonly IRequiredQuestionnaireRepository _requiredQuestionnaireRepository;
         private readonly IUserLogRepository _userLogRepository;
         public QuestionnaireService(ILogger<QuestionnaireService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IAnswerRepository answerRepository,
             IBadgeRepository badgeRepository,
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             IQuestionnaireRepository questionnaireRepository,
             IRequiredQuestionnaireRepository requiredQuestionnaireRepository,
             IUserLogRepository userLogRepository)
-            : base(logger, userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageQuestionnaires);
             _answerRepository = Require.IsNotNull(answerRepository, nameof(answerRepository));

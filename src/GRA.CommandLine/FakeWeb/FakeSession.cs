@@ -42,14 +42,14 @@ namespace GRA.CommandLine.FakeWeb
             _values = new Dictionary<string, byte[]>();
         }
 
-        public async Task CommitAsync()
+        public Task CommitAsync()
         {
-            return;
+            return null;
         }
 
-        public async Task LoadAsync()
+        public Task LoadAsync()
         {
-            return;
+            return null;
         }
 
         public void Remove(string key)

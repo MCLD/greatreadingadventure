@@ -11,8 +11,9 @@ namespace GRA.Domain.Service
     {
         private readonly IPageRepository _pageRepository;
         public PageService(ILogger<PageService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            IPageRepository pageRepository) : base(logger, userContextProvider)
+            IPageRepository pageRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             _pageRepository = Require.IsNotNull(pageRepository, nameof(pageRepository));
         }

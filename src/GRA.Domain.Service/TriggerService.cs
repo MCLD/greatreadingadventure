@@ -15,13 +15,14 @@ namespace GRA.Domain.Service
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
-        public TriggerService(ILogger<TriggerService> logger,
+        public TriggerService(ILogger<TriggerService> logger, 
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IEventRepository eventRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
-        ITriggerRepository triggerRepository) : base(logger, userContextProvider)
+        ITriggerRepository triggerRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));

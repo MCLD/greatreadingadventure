@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
                 UserId = userLookup.Id,
                 RoleId = roleId,
                 CreatedBy = currentUserId,
-                CreatedAt = DateTime.Now
+                CreatedAt = _dateTimeProvider.Now
             };
             await _context.UserRoles.AddAsync(userRoleAssignment);
         }
@@ -96,7 +96,7 @@ namespace GRA.Data.Repository
                 if (result.PasswordIsValid)
                 {
                     result.User = _mapper.Map<Model.User, User>(lookupUser);
-                    lookupUser.LastAccess = DateTime.Now;
+                    lookupUser.LastAccess = _dateTimeProvider.Now;
                     await SaveAsync();
                 }
             }
@@ -236,12 +236,17 @@ namespace GRA.Data.Repository
             return userList;
         }
 
-        public async Task<int> GetCountAsync(StatusSummary request)
+        public async Task<int> GetCountAsync(StatusSummary request, bool isAchiever = false)
         {
             IQueryable<Model.User> userCount = null;
             userCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.SiteId == request.SiteId);
+
+            if(isAchiever)
+            {
+                userCount = userCount.Where(_ => _.IsAchiever == true);
+            }
 
             if (request.StartDate != null)
             {

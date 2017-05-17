@@ -11,8 +11,10 @@ namespace GRA.Domain.Service
     {
         private readonly IStaticAvatarRepository _staticAvatarRepository;
         public StaticAvatarService(ILogger<StaticAvatarService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IStaticAvatarRepository staticAvatarRepository,
-            IUserContextProvider userContextProvider) : base(logger, userContextProvider)
+            IUserContextProvider userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository,
                 nameof(staticAvatarRepository));

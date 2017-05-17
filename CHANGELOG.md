@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add mail permission requirement to drawing mails
 - Add ability for users to edit books
 - Add exclude previous winners drawing option
+- GRA.CommandLine utilty for inserting test data
 
 ### Changed
 - Change join branch list to be populated with all branches

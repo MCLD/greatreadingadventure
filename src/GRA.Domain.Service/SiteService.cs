@@ -18,12 +18,13 @@ namespace GRA.Domain.Service
         private readonly ISystemRepository _systemRepository;
 
         public SiteService(ILogger<SiteService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
             ISystemRepository systemRepository)
-            : base(logger, userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));

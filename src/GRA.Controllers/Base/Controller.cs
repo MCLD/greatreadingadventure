@@ -21,6 +21,7 @@ namespace GRA.Controllers.Base
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
         protected readonly IConfigurationRoot _config;
+        protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
         protected readonly IUserContextProvider _userContextProvider;
         protected readonly SiteLookupService _siteLookupService;
@@ -28,6 +29,7 @@ namespace GRA.Controllers.Base
         public Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
+            _dateTimeProvider = context.DateTimeProvider;
             _pathResolver = context.PathResolver;
             _userContextProvider = context.UserContextProvider;
             _siteLookupService = context.SiteLookupService;

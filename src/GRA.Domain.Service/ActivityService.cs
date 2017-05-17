@@ -30,6 +30,7 @@ namespace GRA.Domain.Service
         private readonly PrizeWinnerService _prizeWinnerService;
 
         public ActivityService(ILogger<UserService> logger,
+            IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContext,
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
@@ -46,7 +47,7 @@ namespace GRA.Domain.Service
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             ICodeSanitizer codeSanitizer,
             MailService mailService,
-            PrizeWinnerService prizeWinnerService) : base(logger, userContext)
+            PrizeWinnerService prizeWinnerService) : base(logger, dateTimeProvider, userContext)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
@@ -511,7 +512,7 @@ namespace GRA.Domain.Service
 
             earnedUser.PointsEarned += pointsEarned;
             earnedUser.IsActive = true;
-            earnedUser.LastActivityDate = DateTime.Now;
+            earnedUser.LastActivityDate = _dateTimeProvider.Now;
 
             // update the user's achiever status if they've crossed the threshhold
             var program = await _programRepository.GetByIdAsync(earnedUser.ProgramId);
@@ -952,7 +953,7 @@ namespace GRA.Domain.Service
                 var prize = new PrizeWinner
                 {
                     CreatedBy = userId,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = _dateTimeProvider.Now,
                     TriggerId = trigger.Id,
                     PrizeName = trigger.AwardPrizeName,
                     PrizeRedemptionInstructions = trigger.AwardPrizeRedemptionInstructions,

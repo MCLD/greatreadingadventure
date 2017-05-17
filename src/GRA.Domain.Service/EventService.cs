@@ -15,11 +15,13 @@ namespace GRA.Domain.Service
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
         public EventService(ILogger<EventService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IEventRepository eventRepository,
             ILocationRepository locationRepository,
-            IProgramRepository programRepository) : base(logger, userContextProvider)
+            IProgramRepository programRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));

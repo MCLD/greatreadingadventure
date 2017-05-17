@@ -20,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly EmailService _emailService;
 
         public AuthenticationService(ILogger<AuthenticationService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             GRA.Abstract.ITokenGenerator tokenGenerator,
             GRA.Abstract.IPasswordValidator passwordValidator,
             IUserContextProvider userContextProvider,
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             IRecoveryTokenRepository recoveryTokenRepository,
             IRoleRepository roleRepository,
             ISiteRepository siteRepository,
-            EmailService emailService) : base(logger, userContextProvider)
+            EmailService emailService) : base(logger, dateTimeProvider, userContextProvider)
         {
             _tokenGenerator = Require.IsNotNull(tokenGenerator, nameof(tokenGenerator));
             _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
@@ -110,7 +111,7 @@ namespace GRA.Domain.Service
                 .OrderByDescending(_ => _.CreatedBy);
             if (validTokens.Count() > 0)
             {
-                if ((validTokens.First().CreatedAt - DateTime.Now).TotalHours > 24)
+                if ((validTokens.First().CreatedAt - _dateTimeProvider.Now).TotalHours > 24)
                 {
                     throw new GraException($"Token {token} has expired.");
                 }

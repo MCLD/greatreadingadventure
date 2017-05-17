@@ -15,10 +15,11 @@ namespace GRA.Domain.Service
         private IUserRepository _userRepository;
         private IMemoryCache _memoryCache;
         public MailService(ILogger<MailService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IMailRepository mailRepository,
             IUserRepository userRepository,
-            IMemoryCache memoryCache) : base(logger, userContextProvider)
+            IMemoryCache memoryCache) : base(logger, dateTimeProvider, userContextProvider)
         {
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
@@ -415,7 +416,7 @@ namespace GRA.Domain.Service
                 mail.FromUserId = 0;
                 mail.IsNew = true;
                 mail.IsDeleted = false;
-                mail.CreatedAt = DateTime.Now;
+                mail.CreatedAt = _dateTimeProvider.Now;
                 mail.SiteId = siteId ?? GetClaimId(ClaimType.SiteId);
 
                 _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");

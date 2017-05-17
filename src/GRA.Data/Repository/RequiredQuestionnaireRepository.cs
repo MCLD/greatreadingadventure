@@ -20,7 +20,7 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<int>> GetForUser(int siteId, int userId, int? userAge)
         {
-            var time = DateTime.Now;
+            var time = _dateTimeProvider.Now;
             return await DbSet.AsNoTracking()
                                     .Where(_ => _.SiteId == siteId
                                         && (_.AgeMinimum.HasValue == false || _.AgeMinimum <= userAge)
@@ -37,7 +37,7 @@ namespace GRA.Data.Repository
         public async Task<bool> UserHasRequiredQuestionnaire(int siteId, int userId, int? userAge,
             int questionnaireId)
         {
-            var time = DateTime.Now;
+            var time = _dateTimeProvider.Now;
             return await DbSet.AsNoTracking()
                                     .Where(_ => _.SiteId == siteId
                                         && _.QuestionnaireId == questionnaireId
@@ -55,7 +55,7 @@ namespace GRA.Data.Repository
         public async Task SubmitQuestionnaire(int questionnaireId, int userId,
             IList<Question> questions)
         {
-            var time = DateTime.Now;
+            var time = _dateTimeProvider.Now;
             foreach (var question in questions)
             {
                 await _context.UserAnswers.AddAsync(

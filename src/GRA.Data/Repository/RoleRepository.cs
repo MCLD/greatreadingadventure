@@ -21,7 +21,7 @@ namespace GRA.Data.Repository
             {
                 Name = name,
                 CreatedBy = userId,
-                CreatedAt = DateTime.Now
+                CreatedAt = _dateTimeProvider.Now
             });
         }
 
@@ -40,7 +40,7 @@ namespace GRA.Data.Repository
                 RoleId = roleId,
                 PermissionId = permission.Id,
                 CreatedBy = userId,
-                CreatedAt = DateTime.Now
+                CreatedAt = _dateTimeProvider.Now
             });
         }
 

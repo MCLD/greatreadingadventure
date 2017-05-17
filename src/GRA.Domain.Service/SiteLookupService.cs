@@ -19,10 +19,11 @@ namespace GRA.Domain.Service
         private readonly IInitialSetupService _initialSetupService;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IConfigurationRoot config,
             IMemoryCache memoryCache,
             ISiteRepository siteRepository,
-            IInitialSetupService initialSetupService) : base(logger)
+            IInitialSetupService initialSetupService) : base(logger, dateTimeProvider)
         {
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
             _config = Require.IsNotNull(config, nameof(config));
@@ -79,19 +80,19 @@ namespace GRA.Domain.Service
                 return SiteStage.ProgramOpen;
             }
 
-            if (site.AccessClosed != null && DateTime.Now >= site.AccessClosed)
+            if (site.AccessClosed != null && _dateTimeProvider.Now >= site.AccessClosed)
             {
                 return SiteStage.AccessClosed;
             }
-            if (site.ProgramEnds != null && DateTime.Now >= site.ProgramEnds)
+            if (site.ProgramEnds != null && _dateTimeProvider.Now >= site.ProgramEnds)
             {
                 return SiteStage.ProgramEnded;
             }
-            if (site.ProgramStarts != null && DateTime.Now >= site.ProgramStarts)
+            if (site.ProgramStarts != null && _dateTimeProvider.Now >= site.ProgramStarts)
             {
                 return SiteStage.ProgramOpen;
             }
-            if (site.RegistrationOpens != null && DateTime.Now >= site.RegistrationOpens)
+            if (site.RegistrationOpens != null && _dateTimeProvider.Now >= site.RegistrationOpens)
             {
                 return SiteStage.RegistrationOpen;
             }
@@ -117,10 +118,10 @@ namespace GRA.Domain.Service
                 OutgoingMailLogin = _config[ConfigurationKey.DefaultOutgoingMailLogin],
                 OutgoingMailPassword = _config[ConfigurationKey.DefaultOutgoingMailPassword],
                 OutgoingMailPort = outgoingMailPort,
-                RegistrationOpens = DateTime.Now,
-                ProgramStarts = DateTime.Now,
-                ProgramEnds = DateTime.Now.AddDays(60),
-                AccessClosed = DateTime.Now.AddDays(90),
+                RegistrationOpens = _dateTimeProvider.Now,
+                ProgramStarts = _dateTimeProvider.Now,
+                ProgramEnds = _dateTimeProvider.Now.AddDays(60),
+                AccessClosed = _dateTimeProvider.Now.AddDays(90),
                 UseDynamicAvatars = true
             };
             site = await _siteRepository.AddSaveAsync(-1, site);

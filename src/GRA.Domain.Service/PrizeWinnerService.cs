@@ -15,10 +15,12 @@ namespace GRA.Domain.Service
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
         private readonly ITriggerRepository _triggerRepository;
         public PrizeWinnerService(ILogger<PrizeWinnerService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IDrawingRepository drawingRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
-            ITriggerRepository triggerRepository) : base(logger, userContextProvider)
+            ITriggerRepository triggerRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _prizeWinnerRepository = Require.IsNotNull(prizeWinnerRepository,
@@ -35,7 +37,7 @@ namespace GRA.Domain.Service
                 throw new Exception("Prizes must be awarded through a drawing or a trigger.");
             }
             prizeWinner.SiteId = GetCurrentSiteId();
-            prizeWinner.CreatedAt = DateTime.Now;
+            prizeWinner.CreatedAt = _dateTimeProvider.Now;
             prizeWinner.CreatedBy = prizeWinner.UserId;
             int currentUserId = userIdIsCurrentUser ? prizeWinner.UserId : GetClaimId(ClaimType.UserId);
             return await _prizeWinnerRepository.AddSaveAsync(currentUserId, prizeWinner);
@@ -58,7 +60,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    prize.RedeemedAt = DateTime.Now;
+                    prize.RedeemedAt = _dateTimeProvider.Now;
                     prize.RedeemedBy = authUserId;
                     await _prizeWinnerRepository.UpdateSaveAsync(authUserId, prize);
                 }

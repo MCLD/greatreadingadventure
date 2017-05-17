@@ -15,10 +15,12 @@ namespace GRA.Domain.Service
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
         public VendorCodeService(ILogger<VendorCodeService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             ICodeGenerator codeGenerator,
             IVendorCodeRepository vendorCodeRepository,
-            IVendorCodeTypeRepository vendorCodeTypeRepository) : base(logger, userContextProvider)
+            IVendorCodeTypeRepository vendorCodeTypeRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
             _codeGenerator = Require.IsNotNull(codeGenerator, nameof(codeGenerator));

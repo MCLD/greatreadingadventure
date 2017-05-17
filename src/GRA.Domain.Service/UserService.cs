@@ -33,6 +33,7 @@ namespace GRA.Domain.Service
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
         public UserService(ILogger<UserService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             GRA.Abstract.IPasswordValidator passwordValidator,
             IAuthorizationCodeRepository authorizationCodeRepository,
@@ -55,7 +56,7 @@ namespace GRA.Domain.Service
             ActivityService activityService,
             SampleDataService configurationService,
             SchoolService schoolService)
-            : base(logger, userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,

@@ -74,6 +74,12 @@ namespace GRA.CommandLine
             services.AddMemoryCache();
             services.AddSingleton<IHttpContextAccessor, FakeHttpContext>();
             services.AddSingleton<ServiceFacade>();
+            services.AddSingleton<IDateTimeProvider, SettableDateTimeProvider>();
+
+            // data generation
+            services.AddSingleton<DataGenerator.Activity>();
+            services.AddSingleton<DataGenerator.DateTime>();
+            services.AddSingleton<DataGenerator.User>();
 
             #region Dependency Injection brought from GRA.Web
             /**************************************************************************************/

@@ -9,9 +9,10 @@ namespace GRA.Domain.Service
     {
         private readonly ISystemInformationRepository _systemInformationRepository;
         public SystemInformationService(ILogger<SystemInformationService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             ISystemInformationRepository systemInformationRepository)
-            : base(logger, userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _systemInformationRepository = Require.IsNotNull(systemInformationRepository,
                 nameof(systemInformationRepository));

@@ -145,7 +145,7 @@ namespace GRA.Controllers.MissionControl
 
             foreach (var layer in avatarList)
             {
-                var time = DateTime.Now;
+                var time = _dateTimeProvider.Now;
                 var userId = GetId(ClaimType.UserId);
                 if (layer.DynamicAvatarColors != null)
                 {

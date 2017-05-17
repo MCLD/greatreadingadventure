@@ -17,11 +17,12 @@ namespace GRA.Domain.Service
         private SiteService _siteService;
         private TriggerService _triggerService;
         public EventImportService(ILogger<EventImportService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             BadgeService badgeService,
             EventService eventService,
             SiteService siteService,
-            TriggerService triggerService) : base(logger, userContextProvider)
+            TriggerService triggerService) : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeService = badgeService ?? throw new ArgumentException(nameof(badgeService));
             _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));

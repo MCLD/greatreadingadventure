@@ -1,6 +1,5 @@
 ﻿using System;
 using GRA.CommandLine.Base;
-using GRA.Domain.Service;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Commands
@@ -20,7 +19,6 @@ namespace GRA.CommandLine.Commands
 
                 _.OnExecute(async () =>
                 {
-                    await LoadUserAndSiteAsync();
                     int supplementalSiteId = 0;
                     if(!string.IsNullOrEmpty(siteIdOption.Value()))
                     {

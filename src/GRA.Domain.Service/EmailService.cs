@@ -17,10 +17,11 @@ namespace GRA.Domain.Service
         private readonly ISiteRepository _siteRepository;
         private readonly IUserRepository _userRepository;
         public EmailService(ILogger<EmailService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IConfigurationRoot config,
             IProgramRepository programRepository,
             ISiteRepository siteRepository,
-            IUserRepository userRepository) : base(logger)
+            IUserRepository userRepository) : base(logger, dateTimeProvider)
         {
             _config = Require.IsNotNull(config, nameof(config));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));

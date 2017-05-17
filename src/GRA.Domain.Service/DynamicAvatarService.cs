@@ -20,6 +20,7 @@ namespace GRA.Domain.Service
         private readonly IDynamicAvatarLayerRepository _dynamicAvatarLayerRepository;
         private readonly IPathResolver _pathResolver;
         public DynamicAvatarService(ILogger<DynamicAvatarService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IDynamicAvatarBundleRepository dynamicAvatarBundleRepository,
             IDynamicAvatarColorRepository dynamicAvatarColorRepository,
@@ -27,7 +28,7 @@ namespace GRA.Domain.Service
             IDynamicAvatarItemRepository dynamicAvatarItemRepository,
             IDynamicAvatarLayerRepository dynamicAvatarLayerRepository,
             IPathResolver pathResolver)
-            : base(logger, userContextProvider)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _dynamicAvatarBundleRepository = Require.IsNotNull(dynamicAvatarBundleRepository,
                 nameof(dynamicAvatarBundleRepository));

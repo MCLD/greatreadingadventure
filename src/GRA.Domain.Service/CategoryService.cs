@@ -12,8 +12,10 @@ namespace GRA.Domain.Service
     {
         private readonly ICategoryRepository _categoryRepository;
         public CategoryService(ILogger<CategoryService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
-            ICategoryRepository categoryRepository) : base(logger, userContextProvider)
+            ICategoryRepository categoryRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _categoryRepository = Require.IsNotNull(categoryRepository,
                 nameof(categoryRepository));

@@ -27,7 +27,7 @@ namespace GRA.Data.Repository
                 {
                     UserId = userId,
                     BadgeId = badgeId,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = _dateTimeProvider.Now
                 });
                 await _context.SaveChangesAsync();
             }

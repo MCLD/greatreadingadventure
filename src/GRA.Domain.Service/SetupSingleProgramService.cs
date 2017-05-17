@@ -18,13 +18,14 @@ namespace GRA.Domain.Service
         private readonly IPointTranslationRepository _pointTranslationRepository;
 
         public SetupSingleProgramService(ILogger<SetupSingleProgramService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IAuthorizationCodeRepository authorizationCodeRepository,
             IBranchRepository branchRepository,
             IChallengeTaskRepository challengeTaskRepository,
             IProgramRepository programRepository,
             IRoleRepository roleRepository,
             ISystemRepository systemRepository,
-            IPointTranslationRepository pointTranslationRepository) : base(logger)
+            IPointTranslationRepository pointTranslationRepository) : base(logger, dateTimeProvider)
         {
             _authorizationCodeRepository = Require.IsNotNull(authorizationCodeRepository,
                 nameof(authorizationCodeRepository));

@@ -23,5 +23,6 @@ namespace GRA.Domain.Model
         public int CompletedChallenges { get; set; }
         public int BadgesEarned { get; set; }
         public int? DaysUntilEnd { get; set; }
+        public int Achievers { get; set; }
     }
 }

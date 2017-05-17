@@ -18,12 +18,14 @@ namespace GRA.Domain.Service
         private readonly IUserLogRepository _userLogRepository;
         private readonly ISystemRepository _systemRepository;
         public ReportService(ILogger<ReportService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IMemoryCache memoryCache,
             IBranchRepository branchRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository,
-            ISystemRepository systemRepository) : base(logger, userContextProvider)
+            ISystemRepository systemRepository) 
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -52,6 +54,7 @@ namespace GRA.Domain.Service
                      .CompletedChallengeCountAsync(request);
                 summary.BadgesEarned = await _userLogRepository.EarnedBadgeCountAsync(request);
                 summary.DaysUntilEnd = await GetDaysUntilEnd();
+                summary.Achievers = await _userRepository.GetCountAsync(request, isAchiever: true);
                 _memoryCache.Set(cacheKey,
                     summary,
                     new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
@@ -126,11 +129,11 @@ namespace GRA.Domain.Service
             {
                 return null;
             }
-            if (site.ProgramEnds <= DateTime.Now)
+            if (site.ProgramEnds <= _dateTimeProvider.Now)
             {
                 return 0;
             }
-            return ((DateTime)site.ProgramEnds - DateTime.Now).Days;
+            return ((DateTime)site.ProgramEnds - _dateTimeProvider.Now).Days;
         }
     }
 }

@@ -20,13 +20,14 @@ namespace GRA.Domain.Service
         private readonly IUserRepository _userRepository;
 
         public ChallengeService(ILogger<ChallengeService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBadgeRepository badgeRepository,
             IBranchRepository branchRepository,
             IChallengeRepository challengeRepository,
             IChallengeTaskRepository challengeTaskRepository,
             ITriggerRepository triggerRepository,
-            IUserRepository userRepository) : base(logger, userContextProvider)
+            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));

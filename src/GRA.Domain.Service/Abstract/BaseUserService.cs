@@ -9,8 +9,10 @@ namespace GRA.Domain.Service.Abstract
     public abstract class BaseUserService<Service> : BaseService<Service>
     {
         protected readonly IUserContextProvider _userContextProvider;
-        public BaseUserService(ILogger<Service> logger, IUserContextProvider userContextProvider)
-            : base(logger)
+        public BaseUserService(ILogger<Service> logger, 
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IUserContextProvider userContextProvider)
+            : base(logger, dateTimeProvider)
         {
             _userContextProvider = Require.IsNotNull(userContextProvider, nameof(userContextProvider));
         }
@@ -119,6 +121,11 @@ namespace GRA.Domain.Service.Abstract
                 _logger.LogError($"User id {GetClaimId(ClaimType.UserId)} does not have permission {permission}.");
                 throw new GraException("Permission denied.");
             }
+        }
+
+        public void ClearCachedUserContext()
+        {
+            _userContext = null;
         }
     }
 }

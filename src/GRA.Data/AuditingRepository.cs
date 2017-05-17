@@ -24,6 +24,7 @@ namespace GRA.Data
         protected readonly ILogger _logger;
         protected readonly AutoMapper.IMapper _mapper;
         protected readonly IConfigurationRoot _config;
+        protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IEntitySerializer _entitySerializer;
 
         private DbSet<DbEntity> _dbSet;
@@ -39,6 +40,7 @@ namespace GRA.Data
             _context = repositoryFacade.context;
             _mapper = repositoryFacade.mapper;
             _config = repositoryFacade.config;
+            _dateTimeProvider = repositoryFacade.dateTimeProvider;
             _entitySerializer = repositoryFacade.entitySerializer;
             _logger = Require.IsNotNull(logger, nameof(logger));
 
@@ -78,7 +80,7 @@ namespace GRA.Data
                 EntityType = newObject.GetType().ToString(),
                 EntityId = objectId,
                 UpdatedBy = currentUserId,
-                UpdatedAt = DateTime.Now,
+                UpdatedAt = _dateTimeProvider.Now,
                 CurrentValue = _entitySerializer.Serialize(newObject)
             };
             if (priorObject != null)
@@ -162,7 +164,7 @@ namespace GRA.Data
         protected virtual async Task AddAsync(int userId, DbEntity dbEntity)
         {
             dbEntity.CreatedBy = userId;
-            dbEntity.CreatedAt = DateTime.Now;
+            dbEntity.CreatedAt = _dateTimeProvider.Now;
             EntityEntry<DbEntity> dbEntityEntry = _context.Entry(dbEntity);
             if (dbEntityEntry.State != (EntityState)EntityState.Detached)
             {
@@ -244,7 +246,7 @@ namespace GRA.Data
                     EntityType = entity.GetType().ToString(),
                     EntityId = entity.Id,
                     UpdatedBy = userId,
-                    UpdatedAt = DateTime.Now,
+                    UpdatedAt = _dateTimeProvider.Now,
                     CurrentValue = null,
                     PreviousValue = _entitySerializer.Serialize(entity)
                 };

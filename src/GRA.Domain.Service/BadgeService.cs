@@ -16,10 +16,11 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IPathResolver _pathResolver;
         public BadgeService(ILogger<BadgeService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IConfigurationRoot config,
             IBadgeRepository badgeRepository,
-            IPathResolver pathResolver) : base(logger, userContextProvider)
+            IPathResolver pathResolver) : base(logger, dateTimeProvider, userContextProvider)
         {
             _config = Require.IsNotNull(config, nameof(config));
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));

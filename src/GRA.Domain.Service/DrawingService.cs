@@ -19,6 +19,7 @@ namespace GRA.Domain.Service
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         public DrawingService(ILogger<DrawingService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
             IDrawingRepository drawingRepository,
@@ -26,7 +27,8 @@ namespace GRA.Domain.Service
             IMailRepository mailRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
             IProgramRepository programRepository,
-            ISystemRepository systemRepository) : base(logger, userContextProvider)
+            ISystemRepository systemRepository)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));

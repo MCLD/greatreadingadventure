@@ -11,7 +11,8 @@ namespace GRA.Domain.Service
     {
         private readonly IEmailReminderRepository _emailReminderRepository;
         public EmailReminderService(ILogger<EmailReminderService> logger,
-            IEmailReminderRepository emailReminderRepository) : base(logger)
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
+            IEmailReminderRepository emailReminderRepository) : base(logger, dateTimeProvider)
         {
             _emailReminderRepository = Require.IsNotNull(emailReminderRepository,
                 nameof(emailReminderRepository));
@@ -33,7 +34,7 @@ namespace GRA.Domain.Service
             {
                 await _emailReminderRepository.AddSaveNoAuditAsync(new Model.EmailReminder
                 {
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = _dateTimeProvider.Now,
                     Email = email,
                     SignUpSource = signUpSource
                 });

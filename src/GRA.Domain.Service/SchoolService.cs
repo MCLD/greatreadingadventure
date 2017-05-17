@@ -17,12 +17,13 @@ namespace GRA.Domain.Service
         private readonly ISchoolDistrictRepository _schoolDistrictRepository;
         private readonly IUserRepository _userRepository;
         public SchoolService(ILogger<SchoolService> logger,
+            GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IEnteredSchoolRepository enteredSchoolRepository,
             ISchoolDistrictRepository schoolDistrictRepository,
             ISchoolRepository schoolRepository,
             ISchoolTypeRepository schoolTypeRepository,
-            IUserRepository userRepository) : base(logger, userContextProvider)
+            IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
         {
             _enteredSchoolRepository = Require.IsNotNull(enteredSchoolRepository,
                 nameof(enteredSchoolRepository));

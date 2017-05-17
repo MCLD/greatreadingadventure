@@ -146,6 +146,7 @@ namespace GRA.Web
             //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
 
             // utilities
+            services.AddScoped<Abstract.IDateTimeProvider, CurrentDateTimeProvider>();
             services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
             services.AddScoped<Abstract.IPasswordValidator, PasswordValidator>();

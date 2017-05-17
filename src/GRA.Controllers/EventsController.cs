@@ -86,7 +86,7 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    filter.StartDate = DateTime.Now.Date;
+                    filter.StartDate = _dateTimeProvider.Now.Date;
                 }
             }
 
