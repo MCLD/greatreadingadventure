@@ -190,6 +190,7 @@
         var baseImagePath = "@Model.ImagePath";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var currentLayerImage;
+        var currentLayerRemovable;
         var currentLayerRemover;
         var currentLayerSelector;
         var currentLayer;
@@ -255,7 +256,14 @@
                     $(".dynamic-avatar-color-selector").hide();
                     $("#xsColorButton").hide();
                 }
-                if (currentLayerImage.data("removable") == "True" && selectedItem != "") {
+
+                if (currentLayerImage.data("removable") == "True") {
+                    currentLayerRemovable = true;
+                }
+                else {
+                    currentLayerRemovable = false;
+                }
+                if (currentLayerRemovable == true && selectedItem != "") {
                     $("#xsLayerDropdown").addClass("flat-border-right");
                     $("#xsRemoveLayer").show();
                 }
@@ -283,9 +291,11 @@
             selectedItem = item;
             currentLayerImage.data("item", item);
             SetLayerImage();
-            currentLayerRemover.show();
-            $("#xsLayerDropdown").addClass("flat-border-right");
-            $("#xsRemoveLayer").show();
+            if (currentLayerRemovable == true) {
+                currentLayerRemover.show();
+                $("#xsLayerDropdown").addClass("flat-border-right");
+                $("#xsRemoveLayer").show();
+            }
         }
 
         function SetSelectedColor(color) {
