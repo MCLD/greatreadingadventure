@@ -383,23 +383,25 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task Remove(int userIdToRemove)
+        public async Task RemoveAsync(int userIdToRemove)
         {
             int requestedByUserId = GetClaimId(ClaimType.UserId);
 
             if (HasPermission(Permission.DeleteParticipants))
             {
-                var userLookup = await _userRepository.GetByIdAsync(userIdToRemove);
-                if (!userLookup.CanBeDeleted)
+                var user = await _userRepository.GetByIdAsync(userIdToRemove);
+                if (!user.CanBeDeleted)
                 {
-                    throw new GraException($"{userLookup.FullName} cannot be deleted.");
+                    throw new GraException($"{user.FullName} cannot be deleted.");
                 }
                 var familyCount = await _userRepository.GetHouseholdCountAsync(userIdToRemove);
                 if (familyCount > 0)
                 {
-                    throw new GraException($"{userLookup.FullName} is the head of a household. Please remove all household members first.");
+                    throw new GraException($"{user.FullName} is the head of a household. Please remove all household members first.");
                 }
-                await _userRepository.RemoveSaveAsync(requestedByUserId, userIdToRemove);
+                user.IsDeleted = true;
+                user.Username = null;
+                await _userRepository.UpdateSaveAsync(requestedByUserId, user);
             }
             else
             {

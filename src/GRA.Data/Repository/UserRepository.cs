@@ -276,16 +276,6 @@ namespace GRA.Data.Repository
             return await userCount.CountAsync();
         }
 
-        public async override Task RemoveSaveAsync(int userId, int id)
-        {
-            var entity = await _context.Users
-                .Where(_ => _.IsDeleted == false && _.Id == id)
-                .SingleAsync();
-            entity.IsDeleted = true;
-            await base.UpdateAsync(userId, entity, null);
-            await base.SaveAsync();
-        }
-
         public async Task<IEnumerable<User>>
             PageHouseholdAsync(int householdHeadUserId, int skip, int take)
         {

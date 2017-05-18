@@ -370,7 +370,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                await _userService.Remove(id);
+                await _userService.RemoveAsync(id);
                 AlertSuccess = "Participant deleted";
             }
             catch (GraException gex)
