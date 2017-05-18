@@ -26,7 +26,7 @@ namespace GRA.Controllers
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub);
+                var page = await _pageService.GetByStubAsync(stub, true);
                 PageTitle = page.Title;
                 return View("Index", CommonMark.CommonMarkConverter.Convert(page.Content));
             }

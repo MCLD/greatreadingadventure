@@ -18,11 +18,19 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<Page> GetByStubAsync(int siteId, string pageStub)
+        public async Task<Page> GetByStubAsync(int siteId, string pageStub,
+            bool exlcudeDashboardPage)
         {
-            return await DbSet
+            var page = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.Stub == pageStub)
+                .Where(_ => _.SiteId == siteId && _.Stub == pageStub);
+
+            if (exlcudeDashboardPage)
+            {
+                page = page.Where(_ => _.IsDashboardPage == false);
+            }
+
+            return await page
                 .ProjectTo<Page>()
                 .SingleOrDefaultAsync();
         }
@@ -59,6 +67,14 @@ namespace GRA.Data.Repository
                .OrderBy(_ => _.Title)
                .ProjectTo<Page>()
                .ToListAsync();
+        }
+
+        public async Task<Page> GetDashboardPageAsync(int siteId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.IsDashboardPage == true)
+                .ProjectTo<Page>()
+                .FirstOrDefaultAsync();
         }
     }
 }

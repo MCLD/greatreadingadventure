@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Pages
 {
@@ -9,5 +6,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Pages
     {
         public GRA.Domain.Model.Page Page { get; set; }
         public bool CanEdit { get; set; }
+        [DisplayName("Display Options")]
+        public string DisplayOptions { get; set; }
     }
 }

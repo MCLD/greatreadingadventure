@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add exclude previous winners drawing option
 - GRA.CommandLine utilty for inserting test data
 - Add daily program images
+- Add page content area to dashboard
 
 ### Changed
 - Change join branch list to be populated with all branches

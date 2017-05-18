@@ -53,7 +53,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Stub</th>
-                            <th>Footer</th>
+                            <th>Shown in Footer</th>
                             <th>Published</th>
                             @if (Model.CanDeletePage)
                             {
@@ -70,7 +70,16 @@
                                         @page.Title
                                     </a>
                                 </td>
-                                <td>@page.Stub</td>
+                                <td>
+                                    @if (page.IsDashboardPage)
+                                    {
+                                        <span class="fa fa-newspaper-o "></span>
+                                    }
+                                    else
+                                    {
+                                        @: @page.Stub
+                                    }
+                                </td>
                                 <td>@(page.IsFooter ? "Yes" : "No")</td>
                                 <td>@(page.IsPublished ? "Yes" : "No")</td>
                                 @if (Model.CanDeletePage)
@@ -102,18 +111,18 @@
 @section scripts
 {
     <script>
-        $(document).ready(function() {
-            $('.td-class').each(function() {
+        $(document).ready(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
-        $(window).resize(function() {
-            $('.td-class').each(function() {
+        $(window).resize(function () {
+            $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
             });
         });
 
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');

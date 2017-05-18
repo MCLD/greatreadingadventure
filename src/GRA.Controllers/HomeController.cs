@@ -24,6 +24,7 @@ namespace GRA.Controllers
         private readonly ActivityService _activityService;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EmailReminderService _emailReminderService;
+        private readonly PageService _pageService;
         private readonly SiteService _siteService;
         private readonly StaticAvatarService _staticAvatarService;
         private readonly UserService _userService;
@@ -32,6 +33,7 @@ namespace GRA.Controllers
             ActivityService activityService,
             DynamicAvatarService dynamicAvatarService,
             EmailReminderService emailReminderService,
+            PageService pageService,
             SiteService siteService,
             StaticAvatarService staticAvatarService,
             UserService userService)
@@ -43,6 +45,7 @@ namespace GRA.Controllers
                 nameof(dynamicAvatarService));
             _emailReminderService = Require.IsNotNull(emailReminderService,
                 nameof(emailReminderService));
+            _pageService = Require.IsNotNull(pageService, nameof(pageService));
             _staticAvatarService = Require.IsNotNull(staticAvatarService,
                 nameof(staticAvatarService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
@@ -113,6 +116,13 @@ namespace GRA.Controllers
                         var avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
                         viewModel.AvatarPath = _pathResolver.ResolveContentPath(avatar.Filename);
                     }
+                }
+
+                var dashboardPage = await _pageService.GetDashboardPageAsync();
+                if (dashboardPage != null)
+                {
+                    viewModel.DashboardPageContent = CommonMark.CommonMarkConverter
+                        .Convert(dashboardPage.Content);
                 }
 
                 if (TempData.ContainsKey(ModelData))

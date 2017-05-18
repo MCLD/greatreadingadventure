@@ -14,5 +14,6 @@ namespace GRA.Data.Model
         public string Content { get; set; }
         public bool IsFooter { get; set; }
         public bool IsPublished { get; set; }
+        public bool IsDashboardPage { get; set; }
     }
 }

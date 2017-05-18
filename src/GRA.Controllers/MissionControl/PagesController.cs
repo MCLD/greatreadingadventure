@@ -69,19 +69,46 @@ namespace GRA.Controllers.MissionControl
 
         [Authorize(Policy.AddPages)]
         [HttpPost]
-        public async Task<IActionResult> Create(Page model)
+        public async Task<IActionResult> Create(PagesEditViewModel model)
         {
-            Regex checkStub = new Regex(@"^[\w\-]*$");
-            if (!checkStub.IsMatch(model.Stub))
+            if (!string.IsNullOrWhiteSpace(model.DisplayOptions))
             {
-                ModelState.AddModelError("Stub", "Invalid stub, only letters, numbers, hypens and underscores are allowed");
+                if (model.DisplayOptions == "Footer")
+                {
+                    model.Page.IsFooter = true;
+                    model.Page.IsDashboardPage = false;
+                }
+                else if (model.DisplayOptions == "Dashboard")
+                {
+                    model.Page.IsFooter = false;
+                    model.Page.IsDashboardPage = true;
+                    var currentDashboardPage = await _pageService.GetDashboardPageAsync();
+                    if (currentDashboardPage != null)
+                    {
+                        ModelState.AddModelError("DisplayOptions", $"'{currentDashboardPage.Title}' is already the dashboard page.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("DisplayOptions", $"Invalid selection.");
+                }
+            }
+            else
+            {
+                model.Page.IsFooter = false;
+                model.Page.IsDashboardPage = false;
+            }
+            Regex checkStub = new Regex(@"^[\w\-]*$");
+            if (!checkStub.IsMatch(model.Page.Stub))
+            {
+                ModelState.AddModelError("Page.Stub", "Invalid stub, only letters, numbers, hypens and underscores are allowed");
             }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _pageService.AddPageAsync(model);
-                    AlertSuccess = $"Page '{model.Title}' created";
+                    await _pageService.AddPageAsync(model.Page);
+                    AlertSuccess = $"Page '{model.Page.Title}' created";
                     return RedirectToAction("Index");
                 }
                 catch (GraException gex)
@@ -99,7 +126,7 @@ namespace GRA.Controllers.MissionControl
             {
                 PagesEditViewModel viewModel = new PagesEditViewModel()
                 {
-                    Page = await _pageService.GetByStubAsync(stub),
+                    Page = await _pageService.GetByStubAsync(stub, false),
                     CanEdit = UserHasPermission(Permission.EditPages)
                 };
                 PageTitle = "Edit Page";
@@ -116,6 +143,33 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(PagesEditViewModel model)
         {
+            if (!string.IsNullOrWhiteSpace(model.DisplayOptions))
+            {
+                if (model.DisplayOptions == "Footer")
+                {
+                    model.Page.IsFooter = true;
+                    model.Page.IsDashboardPage = false;
+                }
+                else if (model.DisplayOptions == "Dashboard")
+                {
+                    model.Page.IsFooter = false;
+                    model.Page.IsDashboardPage = true;
+                    var currentDashboardPage = await _pageService.GetDashboardPageAsync();
+                    if (currentDashboardPage != null && currentDashboardPage.Stub != model.Page.Stub)
+                    {
+                        ModelState.AddModelError("DisplayOptions", $"'{currentDashboardPage.Title}' is already the dashboard page.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("DisplayOptions", $"Invalid selection.");
+                }
+            }
+            else
+            {
+                model.Page.IsFooter = false;
+                model.Page.IsDashboardPage = false;
+            }
             if (ModelState.IsValid)
             {
                 await _pageService.EditPageAsync(model.Page);
@@ -123,7 +177,6 @@ namespace GRA.Controllers.MissionControl
                 return RedirectToAction("Index");
             }
             PageTitle = "Edit Page";
-            model.CanEdit = true;
             return View(model);
         }
 
@@ -140,7 +193,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                var page = await _pageService.GetByStubAsync(stub);
+                var page = await _pageService.GetByStubAsync(stub, false);
                 PageTitle = $"Preview - {page.Title}";
 
                 PagePreviewViewModel viewModel = new PagePreviewViewModel()

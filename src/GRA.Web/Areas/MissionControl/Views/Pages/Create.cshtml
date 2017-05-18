@@ -1,4 +1,4 @@
-﻿@model GRA.Domain.Model.Page
+﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagesEditViewModel
 
 @section styles 
 {
@@ -10,57 +10,58 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Title" class="control-label"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+            <label asp-for="Page.Title" class="control-label"></label>
+            <input asp-for="Page.Title" class="form-control" />
+            <span asp-validation-for="Page.Title" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Stub" class="control-label"></label>
-            <input asp-for="Stub" class="form-control" />
-            <span asp-validation-for="Stub" class="text-danger"></span>
+            <label asp-for="Page.Stub" class="control-label"></label>
+            <input asp-for="Page.Stub" class="form-control" />
+            <span asp-validation-for="Page.Stub" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Description" class="control-label"></label>
-            <input asp-for="Description" class="form-control" />
-            <span asp-validation-for="Description" class="text-danger"></span>
+            <label asp-for="Page.Description" class="control-label"></label>
+            <input asp-for="Page.Description" class="form-control" />
+            <span asp-validation-for="Page.Description" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Content" class="control-label"></label>
+            <label asp-for="Page.Content" class="control-label"></label>
             <div id="wmd-button-bar"></div>
-            <textarea asp-for="Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <textarea asp-for="Page.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
             <div id="preview"></div>
-            <span asp-validation-for="Content" class="text-danger"></span>
+            <span asp-validation-for="Page.Content" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="IsFooter" class="control-label"></label>
-            <select asp-for="IsFooter" class="form-control">
-                <option value="True">Yes</option>
-                <option value="False">No</option>
+            <label asp-for="DisplayOptions" class="control-label"></label>
+            <select asp-for="DisplayOptions" class="form-control">
+                <option value="">None</option>
+                <option value="Footer">Show link in Footer</option>
+                <option value="Dashboard">Show on Dashboard</option>
             </select>
-            <span asp-validation-for="IsFooter" class="text-danger"></span>
+            <span asp-validation-for="DisplayOptions" class="text-danger"></span>
         </div>
     </div>
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="IsPublished" class="control-label"></label>
-            <select asp-for="IsPublished" class="form-control">
+            <label asp-for="Page.IsPublished" class="control-label"></label>
+            <select asp-for="Page.IsPublished" class="form-control">
                 <option value="True">Yes</option>
                 <option value="False">No</option>
             </select>
-            <span asp-validation-for="IsPublished" class="text-danger"></span>
+            <span asp-validation-for="Page.IsPublished" class="text-danger"></span>
         </div>
     </div>
 
@@ -84,16 +85,16 @@
             var editor = new Markdown.Editor(allowUploads = false);
             editor.run();
 
-            $('#Title').on("keyup", function() {
+            $('#Page_Title').on("keyup", function () {
                 // From https://gist.github.com/mathewbyrne/1280286
-                var slug = $('#Title').val().toLowerCase()
+                var slug = $('#Page_Title').val().toLowerCase()
                     .replace(/\s+/g, '-')
                     .replace(/&/g, '-and-')
                     .replace(/[^\w\-]+/g, '')
                     .replace(/\-\-+/g, '-')
                     .replace(/^-+/, '')
                     .replace(/-+$/, '');
-                $('#Stub').val(slug);
+                $('#Page_Stub').val(slug);
             });
 
             $('#Submit').on("click", function(e) {

@@ -43,10 +43,19 @@ namespace GRA.Domain.Service
             if (HasPermission(Permission.AddPages))
             {
                 var siteId = GetClaimId(ClaimType.SiteId);
-                var existingPage = await _pageRepository.GetByStubAsync(siteId, page.Stub);
+                var existingPage = await _pageRepository.GetByStubAsync(siteId, page.Stub, false);
                 if (existingPage != null)
                 {
                     throw new GraException("The stub already exists, please enter a different one.");
+                }
+                if (page.IsDashboardPage)
+                {
+                    var currentDashboardPage = await _pageRepository.GetDashboardPageAsync(
+                        GetCurrentSiteId());
+                    if (currentDashboardPage != null)
+                    {
+                        throw new GraException($"'{currentDashboardPage.Title}' is already the dashboard page.");
+                    }
                 }
 
                 page.SiteId = siteId;
@@ -81,13 +90,24 @@ namespace GRA.Domain.Service
             {
                 var siteId = GetClaimId(ClaimType.SiteId);
                 var currentPage = await _pageRepository
-                    .GetByStubAsync(GetClaimId(ClaimType.SiteId), page.Stub);
+                    .GetByStubAsync(GetClaimId(ClaimType.SiteId), page.Stub, false);
+
+                if (page.IsDashboardPage && !currentPage.IsDashboardPage)
+                {
+                    var currentDashboardPage = await _pageRepository.GetDashboardPageAsync(
+                        GetCurrentSiteId());
+                    if (currentDashboardPage != null)
+                    {
+                        throw new GraException($"'{currentDashboardPage.Title}' is already the dashboard page.");
+                    }
+                }
 
                 currentPage.Title = page.Title;
                 currentPage.Description = page.Description;
                 currentPage.Content = page.Content;
                 currentPage.IsFooter = page.IsFooter;
                 currentPage.IsPublished = page.IsPublished;
+                currentPage.IsDashboardPage = page.IsDashboardPage;
 
                 return await _pageRepository
                     .UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentPage);
@@ -100,10 +120,10 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<Page> GetByStubAsync(string pageStub)
+        public async Task<Page> GetByStubAsync(string pageStub, bool excludeDashboardPage)
         {
             var siteId = GetCurrentSiteId();
-            var page = await _pageRepository.GetByStubAsync(siteId, pageStub);
+            var page = await _pageRepository.GetByStubAsync(siteId, pageStub, excludeDashboardPage);
             if (page != null && (page.IsPublished || HasPermission(Permission.ViewUnpublishedPages)))
             {
                 return page;
@@ -118,6 +138,11 @@ namespace GRA.Domain.Service
         {
             var siteId = GetCurrentSiteId();
             return await _pageRepository.GetFooterPagesAsync(siteId);
+        }
+
+        public async Task<Page> GetDashboardPageAsync()
+        {
+            return await _pageRepository.GetDashboardPageAsync(GetCurrentSiteId());
         }
     }
 }

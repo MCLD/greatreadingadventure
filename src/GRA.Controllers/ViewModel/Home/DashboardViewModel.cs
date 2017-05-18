@@ -15,12 +15,14 @@ namespace GRA.Controllers.ViewModel.Home
         public string Title { get; set; }
         public string Author { get; set; }
 
-        [DisplayName("Code")]
+        [DisplayName("Secret Code")]
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }
 
         public string DailyImageMessage { get; set; }
         public string DailyImagePath { get; set; }
+
+        public string DashboardPageContent { get; set; }
 
         public IEnumerable<GRA.Domain.Model.Badge> Badges { get; set; }
         public ICollection<GRA.Domain.Model.DynamicAvatarElement> DynamicAvatarElements { get; set; }

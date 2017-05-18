@@ -13,8 +13,10 @@ namespace GRA.Domain.Model
         public string Stub { get; set; }
         [Required]
         public string Content { get; set; }
-        [DisplayName("Show in Footer")]
+        [DisplayName("Show link in Footer")]
         public bool IsFooter { get; set; }
+        [DisplayName("Show on Dashboard")]
+        public bool IsDashboardPage { get; set; }
         [DisplayName("Publish this page")]
         public bool IsPublished { get; set; }
     }

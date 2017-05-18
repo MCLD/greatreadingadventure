@@ -47,12 +47,13 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Page.IsFooter" class="control-label"></label>
-            <select asp-for="Page.IsFooter" class="form-control">
-                <option value="True">Yes</option>
-                <option value="False">No</option>
+            <label asp-for="DisplayOptions" class="control-label"></label>
+            <select asp-for="DisplayOptions" class="form-control">
+                <option value="">None</option>
+                <option value="Footer" selected="@(Model.Page.IsFooter ? "" : null)">Show link in Footer</option>
+                <option value="Dashboard" selected="@(Model.Page.IsDashboardPage ? "" : null)">Show on Dashboard</option>
             </select>
-            <span asp-validation-for="Page.IsFooter" class="text-danger"></span>
+            <span asp-validation-for="DisplayOptions" class="text-danger"></span>
         </div>
     </div>
 
@@ -71,6 +72,7 @@
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         @if (Model.CanEdit)
         {
+            <input asp-for="CanEdit" type="hidden" />
             <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary">
                 <span class="buttonText">Edit</span>
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
