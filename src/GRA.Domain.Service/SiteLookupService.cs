@@ -103,7 +103,7 @@ namespace GRA.Domain.Service
         {
             if (site.ProgramStarts.HasValue)
             {
-                var daysElapsed = (DateTime.Now.Date - site.ProgramStarts.Value.Date).Days;
+                var daysElapsed = (_dateTimeProvider.Now.Date - site.ProgramStarts.Value.Date).Days;
                 return daysElapsed + 1;
             }
             else
