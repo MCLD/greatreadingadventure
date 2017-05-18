@@ -22,11 +22,8 @@ namespace GRA.Domain.Model.Filters
 
         public BaseFilter(int? page = null)
         {
-            this.Take = 15;
-            if (page.HasValue)
-            {
-                this.Skip = this.Take * (page - 1);
-            }
+            Take = 15;
+            Skip = page.HasValue ? Take * (page - 1) : 0;
         }
     }
 }

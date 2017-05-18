@@ -32,7 +32,7 @@ namespace GRA.Domain.Service
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
         }
 
-        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
@@ -120,7 +120,7 @@ namespace GRA.Domain.Service
             List<int> badgeIds, List<int> challengeIds)
         {
             VerifyManagementPermission();
-            Trigger trigger = new Trigger()
+            var trigger = new Trigger()
             {
                 BadgeIds = badgeIds,
                 ChallengeIds = challengeIds
@@ -128,7 +128,7 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
         }
 
-        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
+        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(TriggerFilter filter)
         {
             VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();

@@ -9,9 +9,7 @@ using AutoMapper.QueryableExtensions;
 using System;
 using GRA.Domain.Repository.Extensions;
 using System.Collections.ObjectModel;
-using System.Collections;
 using GRA.Domain.Model.Filters;
-using System.Diagnostics;
 
 namespace GRA.Data.Repository
 {
@@ -72,13 +70,13 @@ namespace GRA.Data.Repository
         }
 
         // honors site id, skip, and take
-        public async Task<int> CountAsync(BaseFilter filter)
+        public async Task<int> CountAsync(TriggerFilter filter)
         {
             return await ApplyFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<Trigger>> PageAsync(BaseFilter filter)
+        public async Task<ICollection<Trigger>> PageAsync(TriggerFilter filter)
         {
             var triggerList = await ApplyFilters(filter)
                 .ApplyPagination(filter)
@@ -93,7 +91,7 @@ namespace GRA.Data.Repository
             return triggerList;
         }
 
-        private IQueryable<Model.Trigger> ApplyFilters(BaseFilter filter)
+        private IQueryable<Model.Trigger> ApplyFilters(TriggerFilter filter)
         {
             var triggerList = DbSet
                 .AsNoTracking()
@@ -122,6 +120,11 @@ namespace GRA.Data.Repository
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 triggerList = triggerList.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            if(filter.SecretCodesOnly == true)
+            {
+                triggerList = triggerList.Where(_ => !string.IsNullOrWhiteSpace(_.SecretCode));
             }
 
             return triggerList;
@@ -229,7 +232,7 @@ namespace GRA.Data.Repository
 
         public async Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger)
         {
-            Collection<TriggerRequirement> requirements = new Collection<TriggerRequirement>();
+            var requirements = new Collection<TriggerRequirement>();
 
             foreach (var badgeId in trigger.BadgeIds)
             {
@@ -332,13 +335,13 @@ namespace GRA.Data.Repository
             return requirements.OrderBy(_ => _.Name).ToList();
         }
 
-        public async Task<int> CountRequirementsAsync(BaseFilter filter)
+        public async Task<int> CountRequirementsAsync(TriggerFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter)
+        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(TriggerFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .OrderBy(_ => _.Name)
@@ -346,7 +349,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(BaseFilter filter)
+        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(TriggerFilter filter)
         {
             // Badge and Trigger lists
             var requirements = (from challenges in _context.Challenges

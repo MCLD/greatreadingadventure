@@ -36,7 +36,11 @@ namespace GRA.CommandLine.Commands
                     CommandOptionType.SingleValue);
 
                 var displayStatusOption = _.Option("-q|--quiet",
-                    "Suppress status while creating users",
+                    "Suppress status while entering activity items",
+                    CommandOptionType.NoValue);
+
+                var challengeStatusOption = _.Option("-c|--challenge",
+                    "Include random challenge tasks when entering random activity items",
                     CommandOptionType.NoValue);
 
                 _.OnExecute(async () =>
@@ -44,13 +48,16 @@ namespace GRA.CommandLine.Commands
                     bool quiet = displayStatusOption.HasValue()
                         && displayStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
 
+                    bool challenges = challengeStatusOption.HasValue()
+                        && challengeStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
+
                     if (createRandomOption.HasValue())
                     {
                         if (!int.TryParse(createRandomOption.Value(), out int howMany))
                         {
                             throw new ArgumentException("Error: <count> must be a number random activity items to enter.");
                         }
-                        return await EnterActivity(howMany, quiet);
+                        return await EnterActivity(howMany, challenges, quiet);
                     }
                     else
                     {
@@ -60,11 +67,12 @@ namespace GRA.CommandLine.Commands
                 });
             }, throwOnUnexpectedArg: true);
 
-            async Task<int> EnterActivity(int howMany, bool quiet)
+            async Task<int> EnterActivity(int howMany, bool challenges, bool quiet)
             {
                 int inserted = 0;
+                var issues = new List<string>();
 
-                var activities = await _activityDataGenerator.Generate(Site, howMany);
+                var activities = await _activityDataGenerator.Generate(Site, howMany, challenges, quiet);
 
                 if (!quiet)
                 {
@@ -77,17 +85,45 @@ namespace GRA.CommandLine.Commands
                     foreach (var activity in activities)
                     {
                         _dateTimeDataGenerator.SetRandom(Site, activity.User);
-                        if (!string.IsNullOrEmpty(activity.SecretCode))
+                        try
                         {
-                            await _activityService
-                                .LogSecretCodeAsync(activity.User.Id, activity.SecretCode);
+
+                            switch (activity.ActivityType)
+                            {
+                                case DataGenerator.ActivityType.SecretCode:
+                                    await _activityService
+                                        .LogSecretCodeAsync(activity.User.Id, activity.SecretCode);
+                                    break;
+
+                                case DataGenerator.ActivityType.ChallengeTasks:
+                                    await _activityService
+                                        .UpdateChallengeTasksAsync(activity.ChallengeId, activity.ChallengeTasks);
+                                    break;
+
+                                default:
+                                case DataGenerator.ActivityType.Default:
+                                    await _activityService
+                                        .LogActivityAsync(activity.User.Id, activity.ActivityAmount);
+                                    break;
+                            }
+                            inserted++;
                         }
-                        else
+                        catch (GraException gex)
                         {
-                            await _activityService
-                                .LogActivityAsync(activity.User.Id, activity.ActivityAmount);
+                            switch (activity.ActivityType)
+                            {
+                                case DataGenerator.ActivityType.ChallengeTasks:
+                                    issues.Add($"Problem logging challenge tasks for {activity.User.Id}: {gex.Message}");
+                                    break;
+                                case DataGenerator.ActivityType.SecretCode:
+                                    issues.Add($"Problem logging code {activity.SecretCode} for {activity.User.Id}: {gex.Message}");
+                                    break;
+                                default:
+                                case DataGenerator.ActivityType.Default:
+                                    issues.Add($"Problem logging {activity.ActivityAmount} for {activity.User.Id}: {gex.Message}");
+                                    break;
+                            }
                         }
-                        inserted++;
                         if (progress != null)
                         {
                             progress.Report((double)inserted / howMany);
@@ -103,6 +139,15 @@ namespace GRA.CommandLine.Commands
                 }
 
                 Console.WriteLine($"Inserted {inserted} random activity items in {Site.Name}.");
+
+                if (issues.Count > 0)
+                {
+                    Console.WriteLine("Some issues were encountered:");
+                    foreach (string issue in issues)
+                    {
+                        Console.WriteLine($"- {issue}");
+                    }
+                }
 
                 return inserted == howMany ? 0 : 1;
             }

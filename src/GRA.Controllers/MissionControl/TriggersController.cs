@@ -46,7 +46,7 @@ namespace GRA.Controllers.MissionControl
         public async Task<IActionResult> Index(string search,
             int? systemId, int? branchId, bool? mine, int? programId, int page = 1)
         {
-            BaseFilter filter = new BaseFilter(page);
+            var filter = new TriggerFilter(page);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -55,32 +55,32 @@ namespace GRA.Controllers.MissionControl
 
             if (mine == true)
             {
-                filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
+                filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
             }
             else if (branchId.HasValue)
             {
-                filter.BranchIds = new List<int>() { branchId.Value };
+                filter.BranchIds = new List<int> { branchId.Value };
             }
             else if (systemId.HasValue)
             {
-                filter.SystemIds = new List<int>() { systemId.Value };
+                filter.SystemIds = new List<int> { systemId.Value };
             }
 
             if (programId.HasValue)
             {
                 if (programId.Value > 0)
                 {
-                    filter.ProgramIds = new List<int?>() { programId.Value };
+                    filter.ProgramIds = new List<int?> { programId.Value };
                 }
                 else
                 {
-                    filter.ProgramIds = new List<int?>() { null };
+                    filter.ProgramIds = new List<int?> { null };
                 }
             }
 
             var triggerList = await _triggerService.GetPaginatedListAsync(filter);
 
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = triggerList.Count,
                 CurrentPage = page,
@@ -104,7 +104,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 
-            TriggersListViewModel viewModel = new TriggersListViewModel()
+            var viewModel = new TriggersListViewModel
             {
                 Triggers = triggerList.Data,
                 PaginateModel = paginateModel,
@@ -170,7 +170,7 @@ namespace GRA.Controllers.MissionControl
         {
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            TriggersDetailViewModel viewModel = new TriggersDetailViewModel()
+            var viewModel = new TriggersDetailViewModel
             {
                 Action = "Create",
                 IsSecretCode = true,
@@ -195,15 +195,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(TriggersDetailViewModel model)
         {
-            List<int> badgeRequiredList = new List<int>();
-            List<int> challengeRequiredList = new List<int>();
+            var badgeRequiredList = new List<int>();
+            var challengeRequiredList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
                     .Replace("<", "")
                     .Split('>')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .ToList();
             }
             if (!string.IsNullOrWhiteSpace(model.ChallengeRequiredList))
@@ -212,7 +212,7 @@ namespace GRA.Controllers.MissionControl
                 .Replace("<", "")
                 .Split('>')
                 .Where(_ => !string.IsNullOrWhiteSpace(_))
-                .Select(Int32.Parse)
+                .Select(int.Parse)
                 .ToList();
             }
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
@@ -330,7 +330,7 @@ namespace GRA.Controllers.MissionControl
                             }
                             filename = Path.GetFileName(model.BadgeUploadImage.FileName);
                         }
-                        Badge newBadge = new Badge()
+                        var newBadge = new Badge
                         {
                             Filename = filename
                         };
@@ -379,7 +379,7 @@ namespace GRA.Controllers.MissionControl
             var trigger = await _triggerService.GetByIdAsync(id);
             var site = await GetCurrentSiteAsync();
             var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
-            TriggersDetailViewModel viewModel = new TriggersDetailViewModel()
+            var viewModel = new TriggersDetailViewModel
             {
                 Trigger = trigger,
                 Action = "Edit",
@@ -442,15 +442,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(TriggersDetailViewModel model)
         {
-            List<int> badgeRequiredList = new List<int>();
-            List<int> challengeRequiredList = new List<int>();
+            var badgeRequiredList = new List<int>();
+            var challengeRequiredList = new List<int>();
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
                     .Replace("<", "")
                     .Split('>')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .ToList();
             }
             if (!string.IsNullOrWhiteSpace(model.ChallengeRequiredList))
@@ -459,7 +459,7 @@ namespace GRA.Controllers.MissionControl
                 .Replace("<", "")
                 .Split('>')
                 .Where(_ => !string.IsNullOrWhiteSpace(_))
-                .Select(Int32.Parse)
+                .Select(int.Parse)
                 .ToList();
             }
             var requirementCount = badgeRequiredList.Count + challengeRequiredList.Count;
@@ -641,7 +641,7 @@ namespace GRA.Controllers.MissionControl
             int page = 1,
             int? thisBadge = null)
         {
-            BaseFilter filter = new BaseFilter(page)
+            var filter = new TriggerFilter(page)
             {
                 Search = search
             };
@@ -656,7 +656,7 @@ namespace GRA.Controllers.MissionControl
                 badgeIds = badgeIds.Replace("<", "");
                 badgeList.AddRange(badgeIds.Split('>')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .ToList());
             }
             if (badgeList.Count > 0)
@@ -669,32 +669,32 @@ namespace GRA.Controllers.MissionControl
                 challengeIds = challengeIds.Replace("<", "");
                 filter.ChallengeIds = challengeIds.Split('>')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(Int32.Parse)
+                    .Select(int.Parse)
                     .ToList();
             }
             switch (scope)
             {
                 case ("System"):
-                    filter.SystemIds = new List<int>() { GetId(ClaimType.SystemId) };
+                    filter.SystemIds = new List<int> { GetId(ClaimType.SystemId) };
                     break;
                 case ("Branch"):
-                    filter.BranchIds = new List<int>() { GetId(ClaimType.BranchId) };
+                    filter.BranchIds = new List<int> { GetId(ClaimType.BranchId) };
                     break;
                 case ("Mine"):
-                    filter.UserIds = new List<int>() { GetId(ClaimType.UserId) };
+                    filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
                     break;
                 default:
                     break;
             }
 
             var requirements = await _triggerService.PageRequirementAsync(filter);
-            PaginateViewModel paginateModel = new PaginateViewModel()
+            var paginateModel = new PaginateViewModel
             {
                 ItemCount = requirements.Count,
                 CurrentPage = page,
                 ItemsPerPage = filter.Take.Value
             };
-            RequirementListViewModel viewModel = new RequirementListViewModel()
+            var viewModel = new RequirementListViewModel
             {
                 Requirements = requirements.Data,
                 PaginateModel = paginateModel
