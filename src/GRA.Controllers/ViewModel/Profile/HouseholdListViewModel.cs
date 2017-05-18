@@ -16,5 +16,7 @@ namespace GRA.Controllers.ViewModel.Profile
         public string MinutesReadMessage { get; set; }
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }
+
+        public Dictionary<int, DailyImageViewModel> DailyImageDictionary { get; set; }
     }
 }

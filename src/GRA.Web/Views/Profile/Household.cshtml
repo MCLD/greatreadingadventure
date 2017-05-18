@@ -1,5 +1,36 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HouseholdListViewModel
 
+@if (Model.AuthUserIsHead)
+{
+    <div class="row">
+        <div class="modal fade" id="dailyImageModal" style="text-align:center;" tabindex="-1" role="dialog" aria-labelledby="dailyImageModalLabel">
+            <div class="modal-dialog" style="display: inline-block; width: unset;" role="document">
+                <div class="modal-content">
+                    <span class="frame-close fa fa-stack fa-lg" style="position:absolute;" data-dismiss="modal">
+                        <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
+                        <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
+                    </span>
+                    <div style="padding: 25px;">
+                        <img class="daily-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br />
+                Activity cannot be logged for this participant until they log in and answer a questionnaire.
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
@@ -9,18 +40,6 @@
             <div class="panel-body">
 
                 @Html.Partial("_ProfilePartial")
-
-                <div class="modal fade pendingModal" tabindex="-1" role="dialog" aria-labelledby="pendingModalLabel">
-                    <div class="modal-dialog modal-sm" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <br />
-                                Activity cannot be logged for this participant until they log in and answer a questionnaire.
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row" style="padding: 10px 0;">
                     <div class="col-xs-12">
@@ -34,7 +53,7 @@
                         {
                             <form id="form" asp-controller="Profile" method="post" role="form">
                                 @if (Model.AuthUserIsHead)
-                {
+                                {
                                     <input asp-for="UserSelection" type="hidden" />
                                     <input asp-for="MinutesRead" type="hidden" />
                                     <input asp-for="SecretCode" type="hidden" />
@@ -120,16 +139,16 @@
                                                     </td>
                                                 }
                                                 <td>
-                                                    <table>
+                                                    <table style="display: inline-block;">
                                                         <tr>
-                                                            <td>
+                                                            <td style="vertical-align: top;">
                                                                 @if (Model.ActiveUser == Model.Head.Id)
                                                                 {
                                                                     <span class="fa fa-user"></span>
                                                                 }
                                                                 @Model.Head.FullName
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align: top;">
                                                                 @if (Model.ActiveUser != Model.Head.Id && Model.AuthUserIsHead)
                                                                 {
                                                                     <button type="submit"
@@ -145,7 +164,7 @@
                                                                 else
                                                                 {
                                                                     @:&nbsp;
-                                                }
+                                                                }
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -155,6 +174,15 @@
                                                             <td>&nbsp;</td>
                                                         </tr>
                                                     </table>
+                                                    @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(Model.Head.ProgramId))
+                                                    {
+                                                        <button type="button"
+                                                                class="btn btn-primary btn-xs viewDailyImage"
+                                                                style="display: inline-block;vertical-align:top;"
+                                                                data-src="@Url.Content($"~/{Model.DailyImageDictionary[Model.Head.ProgramId].DailyImagePath}")">
+                                                            @Model.DailyImageDictionary[Model.Head.ProgramId].DailyImageMessage
+                                                        </button>
+                                                    }
                                                 </td>
                                                 <td>@Model.Head.PointsEarned</td>
                                                 @if (Model.AuthUserIsHead)
@@ -195,21 +223,21 @@
                                                         </td>
                                                     }
                                                     <td>
-                                                        <table>
+                                                        <table style="display:inline-block;">
                                                             <tr>
-                                                                <td>
+                                                                <td style="vertical-align: top;">
                                                                     @if (Model.ActiveUser == user.Id)
                                                                     {
                                                                         <span class="fa fa-user"></span>
                                                                     }
                                                                     @user.FullName
                                                                 </td>
-                                                                <td>
+                                                                <td style="vertical-align: top;">
                                                                     @if (Model.ActiveUser != user.Id && Model.AuthUserIsHead)
                                                                     {
                                                                         <button type="submit"
-                                                                                class="btn btn-primary btn-xs"
-                                                                                style="margin-left: 6px;"
+                                                                                class="btn btn-primary btn-xs top"
+                                                                                style="margin: 0 6px;"
                                                                                 name="loginId"
                                                                                 value="@user.Id"
                                                                                 asp-action="LoginAs">
@@ -244,6 +272,15 @@
                                                                 <td>&nbsp;</td>
                                                             </tr>
                                                         </table>
+                                                        @if (Model.AuthUserIsHead && Model.DailyImageDictionary.ContainsKey(user.ProgramId))
+                                                        {
+                                                            <button type="button"
+                                                                    class="btn btn-primary btn-xs viewDailyImage"
+                                                                    style="display: inline-block;vertical-align:top;"
+                                                                    data-src="@Url.Content($"~/{Model.DailyImageDictionary[user.ProgramId].DailyImagePath}")">
+                                                                @Model.DailyImageDictionary[user.ProgramId].DailyImageMessage
+                                                            </button>
+                                                        }
                                                     </td>
                                                     <td>@user.PointsEarned</td>
                                                     @if (Model.AuthUserIsHead)
@@ -383,9 +420,10 @@
             $("#UserSelection").val(selectionArray);
         };
 
-        $(".pendingQuestionnaire").on("click", function () {
-
-
+        $(".viewDailyImage").on("click", function () {
+            var src = $(this).data("src");
+            $(".daily-image").attr("src", src);
+            $("#dailyImageModal").modal().show();
         });
     </script>
 }

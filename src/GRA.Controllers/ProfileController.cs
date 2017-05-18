@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace GRA.Controllers
 {
@@ -252,6 +253,43 @@ namespace GRA.Controllers
                 AuthUserIsHead = authUserIsHead,
                 ActiveUser = activeUserId
             };
+
+            if (authUserIsHead)
+            {
+                var householdProgramIds = household.Select(_ => _.ProgramId).Distinct().ToList();
+                if (!householdProgramIds.Contains(authUser.ProgramId))
+                {
+                    householdProgramIds.Add(authUser.ProgramId);
+                }
+
+                var site = await GetCurrentSiteAsync();
+                var dailyImageDictionary = new Dictionary<int, DailyImageViewModel>();
+
+                foreach (var programId in householdProgramIds)
+                {
+                    var program = await _siteService.GetProgramByIdAsync(programId);
+                    if (!string.IsNullOrWhiteSpace(program.DailyImageMessage))
+                    {
+                        var day = _siteLookupService.GetSiteDay(site);
+                        if (day.HasValue)
+                        {
+                            var dailyImage = _pathResolver.ResolveContentPath(
+                                Path.Combine($"site{site.Id}", "dailyimages", $"program{program.Id}",
+                                $"{day}.jpg"));
+                            if (System.IO.File.Exists(dailyImage))
+                            {
+                                var dailyImageViewModel = new DailyImageViewModel()
+                                {
+                                    DailyImageMessage = program.DailyImageMessage,
+                                    DailyImagePath = dailyImage
+                                };
+                                dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                            }
+                        }
+                    }
+                }
+                viewModel.DailyImageDictionary = dailyImageDictionary;
+            }
 
             if (TempData.ContainsKey(MinutesReadMessage))
             {

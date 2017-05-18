@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.Attributes;
+using System.IO;
 
 namespace GRA.Controllers
 {
@@ -75,6 +76,22 @@ namespace GRA.Controllers
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data
                 };
+
+                var program = await _siteService.GetProgramByIdAsync(user.ProgramId);
+                if (!string.IsNullOrWhiteSpace(program.DailyImageMessage))
+                {
+                    var day = _siteLookupService.GetSiteDay(site);
+                    if (day.HasValue)
+                    {
+                        var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
+                        $"program{program.Id}", $"{day}.jpg");
+                        if (System.IO.File.Exists(_pathResolver.ResolveContentFilePath(imagePath)))
+                        {
+                            viewModel.DailyImageMessage = program.DailyImageMessage;
+                            viewModel.DailyImagePath = _pathResolver.ResolveContentPath(imagePath);
+                        }
+                    }
+                }
 
                 if (site.UseDynamicAvatars)
                 {

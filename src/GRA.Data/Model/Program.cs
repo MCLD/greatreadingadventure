@@ -35,5 +35,8 @@ namespace GRA.Data.Model
 
         public int? AgeMaximum { get; set; }
         public int? AgeMinimum { get; set; }
+
+        [MaxLength(50)]
+        public string DailyImageMessage { get; set; }
     }
 }

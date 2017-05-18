@@ -486,3 +486,33 @@ input.form-checkbox {
 .dashboard-activity {
     padding: 0 15px 15px 15px;
 }
+
+.frame-modal {
+    padding: 50px;
+}
+
+.frame-container {
+    background-color: white;
+    border: solid 20px white;
+    border-radius: 20px;
+}
+
+.frame-close {
+    position: relative;
+    float: right;
+    top: -10px;
+    right: -10px;
+    text-shadow: 0 0 4px black;
+    cursor: pointer;
+}
+
+.daily-image {
+    max-width: 400px;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    .daily-image {
+        max-width: 600px;
+    }
+}

@@ -99,6 +99,19 @@ namespace GRA.Domain.Service
             return SiteStage.BeforeRegistration;
         }
 
+        public int? GetSiteDay(Site site)
+        {
+            if (site.ProgramStarts.HasValue)
+            {
+                var daysElapsed = (DateTime.Now.Date - site.ProgramStarts.Value.Date).Days;
+                return daysElapsed + 1;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private async Task<IEnumerable<Site>> InsertInitialSiteAsync()
         {
             int? outgoingMailPort = null;

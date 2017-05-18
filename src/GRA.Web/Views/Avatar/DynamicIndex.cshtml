@@ -148,7 +148,7 @@
                             <div class="dynamic-avatar-container" style="margin-left: auto;margin-right:auto">
                                 @foreach (var layer in Model.Layers)
                                 {
-                                    <img src="@layer.FilePath"
+                                    <img src="~/@layer.FilePath"
                                          id="@($"image{layer.Id}")"
                                          class="dynamic-avatar-layer"
                                          style="z-index: @(layer.Position + 1); @(string.IsNullOrWhiteSpace(layer.FilePath) ? "visibility:hidden;" : "")"
@@ -187,7 +187,7 @@
 @section scripts
 {
     <script>
-        var baseImagePath = "@Model.ImagePath";
+        var baseImagePath = "@Url.Content($"~/{Model.ImagePath}")";
         var layers = $.parseJSON('@Html.Raw(Model.AvatarPiecesJson)').Layers;
         var currentLayerImage;
         var currentLayerRemovable;

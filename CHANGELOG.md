@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add ability for users to edit books
 - Add exclude previous winners drawing option
 - GRA.CommandLine utilty for inserting test data
+- Add daily program images
 
 ### Changed
 - Change join branch list to be populated with all branches
@@ -48,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix prize redemption exceptions not being caught
 - Add event not found handling
 - Fix dynamic avatar layer removability at extra small
+- Fix dynamic avatar image paths
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added

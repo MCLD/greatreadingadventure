@@ -19,12 +19,12 @@
 @if (Model.CanAddSecretCode)
 {
     <div class="row">
-        <div class="modal fade iframe-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
-            <span id="closeIframe" class="iframe-close fa fa-stack fa-lg">
+        <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
+            <span class="frame-close fa fa-stack fa-lg" data-dismiss="modal">
                 <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
                 <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
             </span>
-            <div class="iframe-container">
+            <div class="frame-container">
                 <iframe id="badgeMaker" class="badge-maker"></iframe>
             </div>
         </div>
@@ -474,10 +474,6 @@
             $("#openMaker").on("click", function() {
                 $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
                 $("#badgeModal").modal("show");
-            });
-
-            $("#closeIframe").on("click", function() {
-                $("#badgeModal").modal("hide");
             });
 
             $(window).on("message", function(e) {
