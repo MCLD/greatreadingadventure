@@ -101,6 +101,7 @@ namespace GRA.Domain.Service
             }
             var trigger = await _triggerRepository.GetByIdAsync(triggerId);
             trigger.IsDeleted = true;
+            trigger.SecretCode = null;
             trigger.BadgeIds = new List<int>();
             trigger.ChallengeIds = new List<int>();
 
