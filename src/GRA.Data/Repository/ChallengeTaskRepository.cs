@@ -72,13 +72,9 @@ namespace GRA.Data.Repository
             }
             var challengeId = entity.ChallengeId;
             DbSet.Remove(entity);
-            var tasks = DbSet.Where(_ => _.ChallengeId == challengeId)
-                .OrderBy(_ => _.Position);
-            int position = 1;
-            foreach (var task in tasks)
-            {
-                task.Position = position++;
-            }
+            await DbSet.Where(_ => _.ChallengeId == challengeId && _.Position > entity.Position)
+                .ForEachAsync(_ => _.Position--);
+
             await SaveAsync();
         }
 
