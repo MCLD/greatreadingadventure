@@ -104,6 +104,10 @@ namespace GRA.Domain.Service
             var fixedToken = token.Trim().ToLower();
 
             var user = await _userRepository.GetByUsernameAsync(username);
+            if (user == null)
+            {
+                throw new GraException($"User {username} does not exist.");
+            }
 
             var tokens = await _recoveryTokenRepository.GetByUserIdAsync(user.Id);
             var validTokens = tokens
