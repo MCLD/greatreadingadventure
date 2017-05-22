@@ -55,6 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix dynamic avatar layer removability at extra small
 - Fix dynamic avatar image paths
 - Fix challenge task positioning
+- Fix UriBuilder exception handling
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added

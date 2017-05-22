@@ -291,17 +291,22 @@
                 var telephone = $("#Location_Telephone");
                 var jsonUrl = "@Url.Action("AddLocationReturnList", "Events")";
                 var locationList = $("#Event_AtLocationId");
-                $.getJSON(jsonUrl, { name: name.val(), address: address.val(), url: url.val(), telephone: telephone.val() }, function(response) {
-                    locationList.empty();
-                    locationList.append(new Option("", ""));
-                    $.each(response, function(index, item) {
-                        locationList.append(new Option(item.text, item.value, item.selected, item.selected))
-                    });
-                    $("#addModal").modal("hide");
-                    name.val("");
-                    address.val("");
-                    url.val("");
-                    telephone.val("");
+                $.getJSON(jsonUrl, { name: name.val(), address: address.val(), url: url.val(), telephone: telephone.val() }, function (response) {
+                    if (response.success == true) {
+                        locationList.empty();
+                        locationList.append(new Option("", ""));
+                        $.each(response.data, function(index, item) {
+                            locationList.append(new Option(item.text, item.value, item.selected, item.selected))
+                        });
+                        $("#addModal").modal("hide");
+                        name.val("");
+                        address.val("");
+                        url.val("");
+                        telephone.val("");
+                    }
+                    else {
+                        alert(response.message)
+                    }
                 });
             }
         });

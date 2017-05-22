@@ -586,6 +586,20 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddTask(ChallengesDetailViewModel viewModel)
         {
+            if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
+            {
+                try
+                {
+                    viewModel.Task.Url = new UriBuilder(
+                        viewModel.Task.Url).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ShowAlertDanger("Invalid URL");
+                    return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+                }
+            }
+
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
             {
                 ModelState.Remove(key);
@@ -597,10 +611,6 @@ namespace GRA.Controllers.MissionControl
                 {
                     viewModel.Task.Author = null;
                     viewModel.Task.Isbn = null;
-                }
-                if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
-                {
-                    viewModel.Task.Url = new UriBuilder(viewModel.Task.Url).Uri.AbsoluteUri;
                 }
                 viewModel.Task.ChallengeId = viewModel.Challenge.Id;
                 await _challengeService.AddTaskAsync(viewModel.Task);
@@ -629,21 +639,30 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> ModifyTask(ChallengesDetailViewModel viewModel)
         {
+            if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
+            {
+                try
+                {
+                    viewModel.Task.Url = new UriBuilder(
+                        viewModel.Task.Url).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ShowAlertDanger("Invalid URL");
+                    return RedirectToAction("Edit", new { id = viewModel.Challenge.Id });
+                }
+            }
+
             foreach (string key in ModelState.Keys.Where(m => m.StartsWith("Challenge.")).ToList())
             {
                 ModelState.Remove(key);
             }
-
             if (ModelState.IsValid)
             {
                 if (viewModel.Task.ChallengeTaskType == ChallengeTaskType.Action)
                 {
                     viewModel.Task.Author = null;
                     viewModel.Task.Isbn = null;
-                }
-                if (!string.IsNullOrWhiteSpace(viewModel.Task.Url))
-                {
-                    viewModel.Task.Url = new UriBuilder(viewModel.Task.Url).Uri.AbsoluteUri;
                 }
                 await _challengeService.EditTaskAsync(viewModel.Task);
             }

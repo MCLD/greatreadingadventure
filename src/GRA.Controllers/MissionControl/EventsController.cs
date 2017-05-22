@@ -235,8 +235,9 @@ namespace GRA.Controllers.MissionControl
 
             if (id.HasValue)
             {
-                try {
-                var graEvent = await _eventService.GetDetails(id.Value);
+                try
+                {
+                    var graEvent = await _eventService.GetDetails(id.Value);
                     if (!graEvent.ParentEventId.HasValue)
                     {
                         graEvent.ParentEventId = graEvent.Id;
@@ -251,7 +252,7 @@ namespace GRA.Controllers.MissionControl
                         .GetBranches(viewModel.SystemId, true), "Id", "Name");
                     }
                 }
-                catch(GraException gex)
+                catch (GraException gex)
                 {
                     ShowAlertWarning("Unable to copy event: ", gex);
                 }
@@ -317,6 +318,19 @@ namespace GRA.Controllers.MissionControl
                 ModelState.Remove(nameof(model.SecretCode));
                 ModelState.Remove(nameof(model.AwardMessage));
                 ModelState.Remove(nameof(model.AwardPoints));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
+            {
+                try
+                {
+                    model.Event.ExternalLink = new UriBuilder(
+                        model.Event.ExternalLink).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("Event.ExternalLink", "Invalid URL");
+                }
             }
 
             if (ModelState.IsValid)
@@ -393,11 +407,7 @@ namespace GRA.Controllers.MissionControl
                         };
                         triggerId = (await _triggerService.AddAsync(trigger)).Id;
                     }
-                    if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
-                    {
-                        model.Event.ExternalLink = new UriBuilder(
-                            model.Event.ExternalLink).Uri.AbsoluteUri;
-                    }
+
                     var graEvent = model.Event;
                     if (model.UseLocation)
                     {
@@ -515,6 +525,19 @@ namespace GRA.Controllers.MissionControl
                 ModelState.AddModelError("Event.AtBranchId", "The At Branch field is required.");
             }
 
+            if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
+            {
+                try
+                {
+                    model.Event.ExternalLink = new UriBuilder(
+                        model.Event.ExternalLink).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("Event.ExternalLink", "Invalid URL");
+                }
+            }
+
             ModelState.Remove(nameof(model.SecretCode));
             ModelState.Remove(nameof(model.AwardMessage));
             ModelState.Remove(nameof(model.AwardPoints));
@@ -552,11 +575,7 @@ namespace GRA.Controllers.MissionControl
                             }
                         }
                     }
-                    if (!string.IsNullOrWhiteSpace(model.Event.ExternalLink))
-                    {
-                        model.Event.ExternalLink = new UriBuilder(
-                            model.Event.ExternalLink).Uri.AbsoluteUri;
-                    }
+
                     var graEvent = model.Event;
                     if (model.UseLocation)
                     {
@@ -645,14 +664,24 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> AddLocation(LocationsListViewModel model)
         {
+            if (!string.IsNullOrWhiteSpace(model.Location.Url))
+            {
+                try
+                {
+                    model.Location.Url = new UriBuilder(
+                        model.Location.Url).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ShowAlertDanger("Invalid URL");
+                    return RedirectToAction("Locations");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (!string.IsNullOrWhiteSpace(model.Location.Url))
-                    {
-                        model.Location.Url = new UriBuilder(model.Location.Url).Uri.AbsoluteUri;
-                    }
                     await _eventService.AddLocation(model.Location);
                     ShowAlertSuccess($"Added Location '{model.Location.Name}'");
                 }
@@ -668,14 +697,23 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> EditLocation(LocationsListViewModel model)
         {
+            if (!string.IsNullOrWhiteSpace(model.Location.Url))
+            {
+                try
+                {
+                    model.Location.Url = new UriBuilder(
+                        model.Location.Url).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    ShowAlertDanger("Invalid URL");
+                    return RedirectToAction("Locations");
+                }
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (!string.IsNullOrWhiteSpace(model.Location.Url))
-                    {
-                        model.Location.Url = new UriBuilder(model.Location.Url).Uri.AbsoluteUri;
-                    }
                     await _eventService.EditLocation(model.Location);
                     ShowAlertSuccess($"Location '{model.Location.Name}' updated");
                 }
@@ -709,7 +747,14 @@ namespace GRA.Controllers.MissionControl
         {
             if (!string.IsNullOrWhiteSpace(url))
             {
-                url = new UriBuilder(url).Uri.AbsoluteUri;
+                try
+                {
+                    url = new UriBuilder(url).Uri.AbsoluteUri;
+                }
+                catch (Exception)
+                {
+                    return Json(new { success = false, message = "Invalid URL" });
+                }
             }
             Location location = new Location()
             {
@@ -720,7 +765,11 @@ namespace GRA.Controllers.MissionControl
             };
             var newLocation = await _eventService.AddLocation(location);
             var locationList = await _eventService.GetLocations();
-            return Json(new SelectList(locationList, "Id", "Name", newLocation.Id));
+            return Json(new
+            {
+                success = true,
+                data = new SelectList(locationList, "Id", "Name", newLocation.Id)
+            });
         }
 
         [HttpGet]
