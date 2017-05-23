@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GRA.CommandLine.Base;
+using GRA.CommandLine.FakeWeb;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.Extensions.CommandLineUtils;
@@ -16,9 +17,10 @@ namespace GRA.CommandLine.Commands
         private const int FamilyRandomIndicator = -1;
         private const int GroupRandomIndicator = -2;
         public UserCommand(ServiceFacade facade,
+            ConfigureUserSite configureUserSite,
             DataGenerator.DateTime dateTimeDataGenerator,
             DataGenerator.User userDataGenerator,
-            ReportService reportService) : base(facade)
+            ReportService reportService) : base(facade, configureUserSite)
         {
             _dateTimeDataGenerator = dateTimeDataGenerator
                 ?? throw new ArgumentNullException(nameof(dateTimeDataGenerator));
@@ -31,6 +33,10 @@ namespace GRA.CommandLine.Commands
             {
                 _.Description = "Create, read, update, or delete users";
                 _.HelpOption("-?|-h|--help");
+
+                var repeatOption = _.Option("-r|--repeat <count>",
+                    "Repeat <count> times",
+                    CommandOptionType.SingleValue);
 
                 var createRandomOption = _.Option("-cr|--createrandom <count>",
                     "Create <count> random users",
@@ -64,13 +70,35 @@ namespace GRA.CommandLine.Commands
                     bool household = householdOption.HasValue()
                         && householdOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
 
+                    int repeat = 1;
+
+                    if(repeatOption.HasValue())
+                    {
+                        if (!int.TryParse(repeatOption.Value(), out repeat))
+                        {
+                            throw new ArgumentException("Error: <count> must be a number of times to repeat.");
+                        }
+                    }
+
                     if (createRandomOption.HasValue())
                     {
                         if (!int.TryParse(createRandomOption.Value(), out int howMany))
                         {
                             throw new ArgumentException("Error: <count> must be a number of users to create.");
                         }
-                        return await CreateUsers(howMany, household, quiet);
+                        int result = 0;
+                        while(repeat >= 1)
+                        {
+                            var thisResult = await CreateUsers(howMany, household, quiet);
+                            result = Math.Max(result, thisResult);
+                            repeat--;
+                            Console.WriteLine();
+                            if (repeat > 0)
+                            {
+                                Console.WriteLine($"Repeating {repeat} more time(s).");
+                            }
+                        }
+                        return result;
                     }
                     else
                     {
@@ -189,9 +217,9 @@ namespace GRA.CommandLine.Commands
                             }
                             created++;
                         }
-                        catch (GraException gex)
+                        catch (Exception ex)
                         {
-                            issues.Add($"Username: {user.User.Username} - {gex.Message}");
+                            issues.Add($"Username: {user.User.Username} - {ex.Message}");
                         }
                     }
 

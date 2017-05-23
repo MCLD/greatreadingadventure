@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Bogus;
 using GRA.Abstract;
 using GRA.Domain.Model;
@@ -50,13 +48,12 @@ namespace GRA.CommandLine.DataGenerator
             System.DateTime generated;
             if (site.ProgramStarts != null && site.ProgramEnds != null)
             {
-                System.DateTime startDate = site.ProgramStarts < user.CreatedAt
+                System.DateTime startDate = site.ProgramStarts > user.CreatedAt
                     ? (System.DateTime)site.ProgramStarts
                     : user.CreatedAt;
                 generated = _faker
                     .Date
                     .Between(startDate, (System.DateTime)site.ProgramEnds);
-
             }
             else
             {

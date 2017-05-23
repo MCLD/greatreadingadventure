@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using GRA.Domain.Model;
+using Microsoft.Extensions.Logging;
+using GRA.CommandLine.FakeWeb;
 
 namespace GRA.CommandLine.DataGenerator
 {
     internal class Activity
     {
+        private readonly ILogger<Activity> _logger;
+        private readonly ConfigureUserSite _configureUserSite;
         private readonly TriggerService _triggerService;
         private readonly ChallengeService _challengeService;
         private readonly UserService _userService;
-        public Activity(TriggerService triggerService,
+        public Activity(ILogger<Activity> logger,
+            ConfigureUserSite configureUserSite,
+            TriggerService triggerService,
             ChallengeService challengeService,
             UserService userService)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _configureUserSite = configureUserSite
+                ?? throw new ArgumentNullException(nameof(configureUserSite));
             _triggerService = triggerService
                 ?? throw new ArgumentNullException(nameof(triggerService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -26,7 +34,7 @@ namespace GRA.CommandLine.DataGenerator
         }
 
         public async Task<IEnumerable<GeneratedActivity>>
-            Generate(Site site, int count, bool challenges, bool quiet)
+            Generate(Site site, int count, int challengePercent, bool quiet)
         {
             int[] minuteCeilings = { 60, 120, 500 };
             float[] minuteCeilingDistribution = { 0.85F, 0.1F, 0.05F };
@@ -52,6 +60,7 @@ namespace GRA.CommandLine.DataGenerator
             {
                 for (int i = 0; i < count; i++)
                 {
+                    bool addActivity = false;
                     var randomUser = (await _userService.GetPaginatedUserListAsync(new UserFilter
                     {
                         SiteId = site.Id,
@@ -63,17 +72,44 @@ namespace GRA.CommandLine.DataGenerator
                     {
                         User = randomUser,
                     };
-                    if (challenges && rand.Int(1, 100) <= 30)
+                    if (challengePercent > 0 && rand.Int(1, 100) <= challengePercent)
                     {
-                        var randomChallenge = await _challengeService
-                            .GetPaginatedChallengeListAsync(rand.Int(0, challengeList.Count - 1), 1);
-                        var randomTasks = await _challengeService
-                            .GetChallengeTasksAsync(randomChallenge.Data.First().Id);
-                        var randomTask = randomTasks.Skip(rand.Int(0, randomTasks.Count() - 1)).First();
-                        randomTask.IsCompleted = true;
-                        act.ActivityType = ActivityType.ChallengeTasks;
-                        act.ChallengeId = randomChallenge.Data.First().Id;
-                        act.ChallengeTasks = new List<ChallengeTask> { randomTask };
+
+                        bool isValid = false;
+                        int challengeLookupCount = 0;
+                        await _configureUserSite.Lookup(randomUser.Id);
+                        _challengeService.ClearCachedUserContext();
+                        DataWithCount<IEnumerable<Challenge>> randomChallenge = null;
+                        while (!isValid)
+                        {
+                            challengeLookupCount++;
+                            randomChallenge = await _challengeService
+                                .GetPaginatedChallengeListAsync(rand.Int(0, challengeList.Count - 1), 1);
+                            if (randomChallenge.Data != null
+                                && randomChallenge.Data.FirstOrDefault() != null)
+                            {
+                                isValid = randomChallenge.Data.First().IsValid;
+                            }
+                            if (challengeLookupCount > 20)
+                            {
+                                _logger.LogError($"Unable to find an eligible challenge for user id {randomUser.Id} after 20 tries, giving up.");
+                                randomChallenge = null;
+                                addActivity = false;
+                                break;
+                            }
+                        }
+                        if (randomChallenge != null)
+                        {
+                            var randomTasks = await _challengeService
+                                .GetChallengeTasksAsync(randomChallenge.Data.First().Id);
+                            var randomTask = randomTasks
+                                .Skip(rand.Int(0, randomTasks.Count() - 1)).First();
+                            randomTask.IsCompleted = true;
+                            act.ActivityType = ActivityType.ChallengeTasks;
+                            act.ChallengeId = randomChallenge.Data.First().Id;
+                            act.ChallengeTasks = new List<ChallengeTask> { randomTask };
+                            addActivity = true;
+                        }
                     }
                     else
                     {
@@ -89,15 +125,20 @@ namespace GRA.CommandLine.DataGenerator
 
                             act.ActivityType = ActivityType.SecretCode;
                             act.SecretCode = randomCode.SecretCode;
+                            addActivity = true;
                         }
                         else
                         {
                             act.ActivityAmount = rand.Int(1, rand
                                 .WeightedRandom<int>(minuteCeilings, minuteCeilingDistribution));
                             act.ActivityType = ActivityType.Default;
+                            addActivity = true;
                         }
                     }
-                    activities.Add(act);
+                    if (addActivity)
+                    {
+                        activities.Add(act);
+                    }
 
                     if (progress != null)
                     {

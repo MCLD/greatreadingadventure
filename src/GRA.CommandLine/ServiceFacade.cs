@@ -1,5 +1,4 @@
 ﻿using System;
-using GRA.Abstract;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using Microsoft.AspNetCore.Http;
@@ -10,15 +9,17 @@ namespace GRA.CommandLine
 {
     public class ServiceFacade
     {
-        public CommandLineApplication App { get; set; }
-        public IConfigurationRoot Config { get; set; }
-        public IHttpContextAccessor HttpContextAccessor { get; set; }
-        public SiteLookupService SiteLookupService { get; set; }
-        public UserService UserService { get; set; }
+        public CommandLineApplication App { get; private set; }
+        public IConfigurationRoot Config { get; private set; }
+        public IHttpContextAccessor HttpContextAccessor { get; private set; }
+        public AuthenticationService AuthenticationService { get; private set; }
+        public SiteLookupService SiteLookupService { get; private set; }
+        public UserService UserService { get; private set; }
         public ServiceFacade(CommandLineApplication app,
             IConfigurationRoot config,
             IHttpContextAccessor httpContextAccessor,
             IUserContextProvider userContextProvider,
+            AuthenticationService authenticationService,
             SiteLookupService siteLookupService,
             UserService userService)
         {
@@ -26,6 +27,8 @@ namespace GRA.CommandLine
             Config = config ?? throw new ArgumentNullException(nameof(config));
             HttpContextAccessor = httpContextAccessor
                 ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            AuthenticationService = authenticationService 
+                ?? throw new ArgumentNullException(nameof(authenticationService));
             SiteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
             UserService = userService ?? throw new ArgumentNullException(nameof(userService));

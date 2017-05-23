@@ -72,6 +72,7 @@ namespace GRA.CommandLine
             services.AddSingleton(_ => config);
             services.AddLogging();
             services.AddMemoryCache();
+            services.AddSingleton<ConfigureUserSite>();
             services.AddSingleton<IHttpContextAccessor, FakeHttpContext>();
             services.AddSingleton<ServiceFacade>();
             services.AddSingleton<IDateTimeProvider, SettableDateTimeProvider>();

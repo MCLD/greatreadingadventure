@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using GRA.CommandLine.Base;
+using GRA.CommandLine.FakeWeb;
 using GRA.Domain.Service;
 using Microsoft.Extensions.CommandLineUtils;
 
@@ -14,10 +14,11 @@ namespace GRA.CommandLine.Commands
         private readonly DataGenerator.DateTime _dateTimeDataGenerator;
         private readonly ActivityService _activityService;
         public ActivityCommand(ServiceFacade serviceFacade,
+            ConfigureUserSite configureUserSite,
             DataGenerator.Activity activityDataGenerator,
             DataGenerator.DateTime dateTimeDataGenerator,
             ActivityService activityService)
-            : base(serviceFacade)
+            : base(serviceFacade, configureUserSite)
         {
             _activityDataGenerator = activityDataGenerator
                 ?? throw new ArgumentNullException(nameof(activityDataGenerator));
@@ -43,6 +44,10 @@ namespace GRA.CommandLine.Commands
                     "Include random challenge tasks when entering random activity items",
                     CommandOptionType.NoValue);
 
+                var challengePercentOption = _.Option("-cp|--challengepercent <percentage>",
+                    "Specify what percentage of activities should be challenges. Defaults to 30.",
+                    CommandOptionType.SingleValue);
+
                 _.OnExecute(async () =>
                 {
                     bool quiet = displayStatusOption.HasValue()
@@ -51,13 +56,24 @@ namespace GRA.CommandLine.Commands
                     bool challenges = challengeStatusOption.HasValue()
                         && challengeStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
 
+                    int challengePercent = challenges ? 30 : 0;
+                    if(challenges && challengePercentOption.HasValue())
+                    {
+                        if(!(int.TryParse(challengePercentOption.Value(), out challengePercent)
+                            && challengePercent > 0
+                            && challengePercent < 101))
+                        {
+                            throw new ArgumentException("Error: <percentage> must be a number between 1 and 100.");
+                        }
+                    }
+
                     if (createRandomOption.HasValue())
                     {
                         if (!int.TryParse(createRandomOption.Value(), out int howMany))
                         {
                             throw new ArgumentException("Error: <count> must be a number random activity items to enter.");
                         }
-                        return await EnterActivity(howMany, challenges, quiet);
+                        return await EnterActivity(howMany, challengePercent, quiet);
                     }
                     else
                     {
@@ -67,12 +83,13 @@ namespace GRA.CommandLine.Commands
                 });
             }, throwOnUnexpectedArg: true);
 
-            async Task<int> EnterActivity(int howMany, bool challenges, bool quiet)
+            async Task<int> EnterActivity(int howMany, int challengePercent, bool quiet)
             {
                 int inserted = 0;
                 var issues = new List<string>();
 
-                var activities = await _activityDataGenerator.Generate(Site, howMany, challenges, quiet);
+                var activities 
+                    = await _activityDataGenerator.Generate(Site, howMany, challengePercent, quiet);
 
                 if (!quiet)
                 {
@@ -87,7 +104,8 @@ namespace GRA.CommandLine.Commands
                         _dateTimeDataGenerator.SetRandom(Site, activity.User);
                         try
                         {
-
+                            await _configureUserSite.Lookup(activity.User.Id);
+                            _activityService.ClearCachedUserContext();
                             switch (activity.ActivityType)
                             {
                                 case DataGenerator.ActivityType.SecretCode:

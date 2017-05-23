@@ -266,3 +266,6 @@ src/GRA.Web/assets/dynamicavatars
 
 # GRA.CommandLine logs
 src/GRA.CommandLine/logs/
+
+# GRA.CommandLine publish
+src/GRA.CommandLine/Properties/PublishProfiles/

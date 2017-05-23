@@ -1,12 +1,14 @@
 ﻿using System;
 using GRA.CommandLine.Base;
+using GRA.CommandLine.FakeWeb;
 using Microsoft.Extensions.CommandLineUtils;
 
 namespace GRA.CommandLine.Commands
 {
     internal class InfoCommand : BaseCommand
     {
-        public InfoCommand(ServiceFacade facade) : base(facade)
+        public InfoCommand(ServiceFacade facade, ConfigureUserSite configureUserSite) 
+            : base(facade, configureUserSite)
         {
             _facade.App.Command("info", _ =>
             {
