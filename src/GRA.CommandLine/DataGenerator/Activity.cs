@@ -34,7 +34,7 @@ namespace GRA.CommandLine.DataGenerator
         }
 
         public async Task<IEnumerable<GeneratedActivity>>
-            Generate(Site site, int count, int challengePercent, bool quiet)
+            Generate(Site site, int count, int challengePercent, int codePercent, bool quiet)
         {
             int[] minuteCeilings = { 60, 120, 500 };
             float[] minuteCeilingDistribution = { 0.85F, 0.1F, 0.05F };
@@ -113,7 +113,7 @@ namespace GRA.CommandLine.DataGenerator
                     }
                     else
                     {
-                        if (rand.Int(1, 100) <= 20)
+                        if (codePercent > 0 && rand.Int(1, 100) <= codePercent)
                         {
                             var randomCode = (await _triggerService.GetPaginatedListAsync(new TriggerFilter
                             {

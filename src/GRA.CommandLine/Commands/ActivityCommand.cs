@@ -48,6 +48,10 @@ namespace GRA.CommandLine.Commands
                     "Specify what percentage of activities should be challenges. Defaults to 30.",
                     CommandOptionType.SingleValue);
 
+                var codePercentOption = _.Option("-scp|--secretcodepercent <percentage>",
+                    "Specify what percentage of non-challenge activities should be secret codes. Defaults to 30.",
+                    CommandOptionType.SingleValue);
+
                 _.OnExecute(async () =>
                 {
                     bool quiet = displayStatusOption.HasValue()
@@ -57,13 +61,24 @@ namespace GRA.CommandLine.Commands
                         && challengeStatusOption.Value().Equals("on", StringComparison.CurrentCultureIgnoreCase);
 
                     int challengePercent = challenges ? 30 : 0;
-                    if(challenges && challengePercentOption.HasValue())
+                    if (challenges && challengePercentOption.HasValue())
                     {
-                        if(!(int.TryParse(challengePercentOption.Value(), out challengePercent)
-                            && challengePercent > 0
+                        if (!(int.TryParse(challengePercentOption.Value(), out challengePercent)
+                            && challengePercent >= 0
                             && challengePercent < 101))
                         {
-                            throw new ArgumentException("Error: <percentage> must be a number between 1 and 100.");
+                            throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
+                        }
+                    }
+
+                    int codePercent = 30;
+                    if (codePercentOption.HasValue())
+                    {
+                        if (!(int.TryParse(codePercentOption.Value(), out codePercent)
+                            && codePercent >= 0
+                            && codePercent < 101))
+                        {
+                            throw new ArgumentException("Error: <percentage> must be a number between 0 and 100.");
                         }
                     }
 
@@ -73,7 +88,7 @@ namespace GRA.CommandLine.Commands
                         {
                             throw new ArgumentException("Error: <count> must be a number random activity items to enter.");
                         }
-                        return await EnterActivity(howMany, challengePercent, quiet);
+                        return await EnterActivity(howMany, challengePercent, codePercent, quiet);
                     }
                     else
                     {
@@ -83,13 +98,16 @@ namespace GRA.CommandLine.Commands
                 });
             }, throwOnUnexpectedArg: true);
 
-            async Task<int> EnterActivity(int howMany, int challengePercent, bool quiet)
+            async Task<int> EnterActivity(int howMany,
+                int challengePercent,
+                int codePercent,
+                bool quiet)
             {
                 int inserted = 0;
                 var issues = new List<string>();
 
-                var activities 
-                    = await _activityDataGenerator.Generate(Site, howMany, challengePercent, quiet);
+                var activities
+                    = await _activityDataGenerator.Generate(Site, howMany, challengePercent, codePercent, quiet);
 
                 if (!quiet)
                 {
