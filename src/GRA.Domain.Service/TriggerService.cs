@@ -59,6 +59,10 @@ namespace GRA.Domain.Service
             {
                 trigger.AwardVendorCodeTypeId = null;
             }
+            if (!HasPermission(Permission.ManageAvatars))
+            {
+                trigger.AwardAvatarBundleId = null;
+            }
             if (!HasPermission(Permission.ManageTriggerMail))
             {
                 trigger.AwardMail = null;
@@ -75,12 +79,17 @@ namespace GRA.Domain.Service
             trigger.SiteId = GetCurrentSiteId();
             await ValidateTriggerAsync(trigger);
             if (!HasPermission(Permission.ManageVendorCodes)
-                || !HasPermission(Permission.ManageTriggerMail))
+                || !HasPermission(Permission.ManageTriggerMail)
+                || !HasPermission(Permission.ManageAvatars))
             {
                 var currentTrigger = await _triggerRepository.GetByIdAsync(trigger.Id);
                 if (!HasPermission(Permission.ManageVendorCodes))
                 {
                     trigger.AwardVendorCodeTypeId = currentTrigger.AwardVendorCodeTypeId;
+                }
+                if (!HasPermission(Permission.ManageAvatars))
+                {
+                    trigger.AwardAvatarBundleId = currentTrigger.AwardAvatarBundleId;
                 }
                 if (!HasPermission(Permission.ManageTriggerMail))
                 {

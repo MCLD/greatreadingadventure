@@ -21,5 +21,8 @@ namespace GRA.Domain.Model
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
         public string Description { get; set; }
+
+        public int? AvatarBundleId { get; set; }
+        public int? AvatarBundleItemCount { get; set; }
     }
 }

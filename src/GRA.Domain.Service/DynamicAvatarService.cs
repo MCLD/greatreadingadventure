@@ -121,6 +121,12 @@ namespace GRA.Domain.Service
             return layers;
         }
 
+        public async Task<IEnumerable<DynamicAvatarLayer>> GetLayersAsync()
+        {
+            VerifyManagementPermission();
+            return await _dynamicAvatarLayerRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
         public async Task<DynamicAvatarLayer> AddLayerAsync(DynamicAvatarLayer layer)
         {
             VerifyManagementPermission();
@@ -135,6 +141,11 @@ namespace GRA.Domain.Service
             layer.SiteId = GetCurrentSiteId();
             return await _dynamicAvatarLayerRepository.UpdateSaveAsync(
                 GetClaimId(ClaimType.UserId), layer);
+        }
+
+        public async Task<IEnumerable<DynamicAvatarItem>> GetItemsByLayerAsync(int layerId)
+        {
+            return await _dynamicAvatarItemRepository.GetItemsByLayerAsync(layerId);
         }
 
         public async Task<DynamicAvatarItem> AddItemAsync(DynamicAvatarItem item)
@@ -230,7 +241,11 @@ namespace GRA.Domain.Service
                 {
                     var element = await _dynamicAvatarElementRepository.GetByItemAndColorAsync(
                         selection.SelectedItem.Value, selection.SelectedColor);
-                    if (element != default(DynamicAvatarElement) && element.DynamicAvatarItem.Unlockable == false)
+
+                    if (element != default(DynamicAvatarElement)
+                        && (element.DynamicAvatarItem.Unlockable == false
+                        || await _dynamicAvatarItemRepository
+                            .HasUserUnlockedItemAsync(activeUserId, element.DynamicAvatarItemId)))
                     {
                         elementList.Add(element.Id);
                     }
@@ -247,6 +262,18 @@ namespace GRA.Domain.Service
                 }
             }
             await _dynamicAvatarElementRepository.SetUserAvatarAsync(activeUserId, elementList);
+        }
+
+        public async Task<ICollection<DynamicAvatarBundle>> GetAllBundlesAsync(
+            bool? unlockable = null)
+        {
+            VerifyManagementPermission();
+            return await _dynamicAvatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
+        }
+
+        public async Task<DynamicAvatarBundle> GetBundleByIdAsync(int id)
+        {
+            return await _dynamicAvatarBundleRepository.GetByIdAsync(id);
         }
     }
 }

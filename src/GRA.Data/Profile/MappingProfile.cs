@@ -17,7 +17,9 @@ namespace GRA.Data.Profile
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>().ReverseMap();
-            CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>().ReverseMap();
+            CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>()
+                .ForMember(dest => dest.DynamicAvatarItems, opt => opt.MapFrom(src => src.DynamicAvatarBundleItems.Select(_ => _.DynamicAvatarItem)))
+                .ReverseMap();
             CreateMap<Model.DynamicAvatarColor, Domain.Model.DynamicAvatarColor>().ReverseMap();
             CreateMap<Model.DynamicAvatarElement, Domain.Model.DynamicAvatarElement>().ReverseMap();
             CreateMap<Model.DynamicAvatarItem, Domain.Model.DynamicAvatarItem>().ReverseMap();

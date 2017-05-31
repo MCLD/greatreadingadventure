@@ -8,5 +8,6 @@ namespace GRA.Domain.Repository
     {
         Task AddItemAsync(int bundleId, int itemId);
         Task<ICollection<DynamicAvatarItem>> GetRandomDefaultBundleAsync(int siteId);
+        Task<ICollection<DynamicAvatarBundle>> GetAllAsync(int siteId, bool? unlockable = null);
     }
 }

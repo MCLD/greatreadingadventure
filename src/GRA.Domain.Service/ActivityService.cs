@@ -16,6 +16,8 @@ namespace GRA.Domain.Service
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IDrawingRepository _drawingRepository;
+        private readonly IDynamicAvatarBundleRepository _dynamicAvatarBundleRepository;
+        private readonly IDynamicAvatarItemRepository _dynamicAvatarItemRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPointTranslationRepository _pointTranslationRepository;
         private readonly IProgramRepository _programRepository;
@@ -36,6 +38,8 @@ namespace GRA.Domain.Service
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
             IDrawingRepository drawingRepository,
+            IDynamicAvatarBundleRepository dynamicAvatarBundleRepository,
+            IDynamicAvatarItemRepository dynamicAvatarItemRepository,
             INotificationRepository notificationRepository,
             IPointTranslationRepository pointTranslationRepository,
             IProgramRepository programRepository,
@@ -54,6 +58,10 @@ namespace GRA.Domain.Service
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
+            _dynamicAvatarBundleRepository = Require.IsNotNull(dynamicAvatarBundleRepository,
+                nameof(dynamicAvatarBundleRepository));
+            _dynamicAvatarItemRepository = Require.IsNotNull(dynamicAvatarItemRepository,
+                nameof(dynamicAvatarItemRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
             _pointTranslationRepository = Require.IsNotNull(pointTranslationRepository,
@@ -404,7 +412,7 @@ namespace GRA.Domain.Service
                                 {
                                     await RemoveActivityAsync(activeUserId, challengeTaskInfo.UserLogId.Value);
                                 }
-                                
+
                                 // remove the title
                                 if (challengeTaskDetails.ChallengeTaskType == ChallengeTaskType.Book
                                     && challengeTaskInfo.BookId != null)
@@ -677,6 +685,11 @@ namespace GRA.Domain.Service
                 // award any vendor code that is necessary
                 await AwardVendorCodeAsync(userId, trigger.AwardVendorCodeTypeId, siteId);
 
+                if (trigger.AwardAvatarBundleId.HasValue)
+                {
+                    await AwardUserBundle(userId, trigger.AwardAvatarBundleId.Value);
+                }
+
                 // send mail if applicable
                 int? mailId = await SendMailAsync(userId, trigger, siteId);
 
@@ -815,6 +828,12 @@ namespace GRA.Domain.Service
 
             // award any vendor code that is necessary
             await AwardVendorCodeAsync(userIdToLog, trigger.AwardVendorCodeTypeId);
+
+            // award any avatar bundle that is necessary
+            if (trigger.AwardAvatarBundleId.HasValue)
+            {
+                await AwardUserBundle(userIdToLog, trigger.AwardAvatarBundleId.Value);
+            }
 
             // send mail if applicable
             int? mailId = await SendMailAsync(activeUserId, trigger);
@@ -966,6 +985,46 @@ namespace GRA.Domain.Service
                 }
 
                 await _prizeWinnerService.AddPrizeWinnerAsync(prize, userIdIsCurrentUser);
+            }
+        }
+
+        private async Task AwardUserBundle(int userId, int bundleId)
+        {
+            var bundle = await _dynamicAvatarBundleRepository.GetByIdAsync(bundleId);
+            if (bundle.DynamicAvatarItems.Count > 0)
+            {
+                var userItems = await _dynamicAvatarItemRepository.GetUserUnlockedItemsAsync(userId);
+
+                var newItems = bundle.DynamicAvatarItems.Select(_ => _.Id).Except(userItems).ToList();
+
+                if (newItems.Count > 0)
+                {
+                    await _dynamicAvatarItemRepository.AddUserItemsAsync(userId, newItems);
+                }
+
+                var notification = new Notification
+                {
+                    PointsEarned = 0,
+                    Text = $"<span class=\"fa fa-shopping-bag\"></span> You've unlocked the <strong>{bundle.Name}</strong> avatar bundle!",
+                    UserId = userId,
+                    BadgeFilename = bundle.DynamicAvatarItems.FirstOrDefault().Thumbnail
+                };
+
+                if (bundle.DynamicAvatarItems.Count > 1)
+                {
+                    notification.Text += " You can view the full list of pieces unlocked in your Profile History.";
+                }
+
+                await _notificationRepository.AddSaveAsync(userId, notification);
+
+                await _userLogRepository.AddSaveAsync(GetActiveUserId(), new UserLog
+                {
+                    UserId = userId,
+                    PointsEarned = 0,
+                    IsDeleted = false,
+                    AvatarBundleId = bundleId,
+                    Description = $"You unlocked the <strong>{bundle.Name}</strong> avatar bundle!"
+                });
             }
         }
     }

@@ -21,6 +21,7 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<TriggersController> _logger;
         private readonly BadgeService _badgeService;
+        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EventService _eventService;
         private readonly SiteService _siteService;
         private readonly TriggerService _triggerService;
@@ -28,6 +29,7 @@ namespace GRA.Controllers.MissionControl
         public TriggersController(ILogger<TriggersController> logger,
             ServiceFacade.Controller context,
             BadgeService badgeService,
+            DynamicAvatarService dynamicAvatarService,
             EventService eventService,
             SiteService siteService,
             TriggerService triggerService,
@@ -36,6 +38,8 @@ namespace GRA.Controllers.MissionControl
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
+            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService, 
+                nameof(dynamicAvatarService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
             _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
@@ -176,16 +180,23 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = true,
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                 BranchList = new SelectList((await _siteService.GetAllBranches()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
             };
+
             if (viewModel.EditVendorCode)
             {
                 viewModel.VendorCodeTypeList = new SelectList(
                     (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
+            if (viewModel.EditAvatarBundle)
+            {
+                viewModel.UnlockableAvatarBundleList = new SelectList(
+                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
             }
 
             PageTitle = "Create Trigger";
@@ -369,6 +380,11 @@ namespace GRA.Controllers.MissionControl
                 model.VendorCodeTypeList = new SelectList(
                     (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
             }
+            if (model.EditAvatarBundle)
+            {
+                model.UnlockableAvatarBundleList = new SelectList(
+                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+            }
 
             PageTitle = "Create Trigger";
             return View("Detail", model);
@@ -386,6 +402,7 @@ namespace GRA.Controllers.MissionControl
                 IsSecretCode = !string.IsNullOrWhiteSpace(trigger.SecretCode),
                 BadgeMakerUrl = GetBadgeMakerUrl(siteUrl, site.FromEmailAddress),
                 UseBadgeMaker = true,
+                EditAvatarBundle = UserHasPermission(Permission.ManageAvatars),
                 EditMail = UserHasPermission(Permission.ManageTriggerMail),
                 EditVendorCode = UserHasPermission(Permission.ManageVendorCodes),
                 AwardsMail = !string.IsNullOrWhiteSpace(trigger.AwardMailSubject),
@@ -410,6 +427,18 @@ namespace GRA.Controllers.MissionControl
                 viewModel.VendorCodeType = (await _vendorCodeService
                     .GetTypeById(viewModel.Trigger.AwardVendorCodeTypeId.Value)).Description;
             }
+
+            if (viewModel.EditAvatarBundle)
+            {
+                viewModel.UnlockableAvatarBundleList = new SelectList(
+                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+            }
+            else if (viewModel.Trigger.AwardAvatarBundleId.HasValue)
+            {
+                viewModel.UnlockableAvatarBundle = (await _dynamicAvatarService
+                    .GetBundleByIdAsync(viewModel.Trigger.AwardAvatarBundleId.Value)).Name;
+            }
+
             if (viewModel.Trigger.LimitToSystemId.HasValue)
             {
                 viewModel.BranchList = new SelectList(
@@ -605,6 +634,7 @@ namespace GRA.Controllers.MissionControl
             {
                 requirement.BadgePath = _pathResolver.ResolveContentPath(requirement.BadgePath);
             }
+
             if (model.EditVendorCode)
             {
                 model.VendorCodeTypeList = new SelectList(
@@ -615,6 +645,18 @@ namespace GRA.Controllers.MissionControl
                 model.VendorCodeType = (await _vendorCodeService
                     .GetTypeById(model.Trigger.AwardVendorCodeTypeId.Value)).Description;
             }
+
+            if (model.EditAvatarBundle)
+            {
+                model.UnlockableAvatarBundleList = new SelectList(
+                    await _dynamicAvatarService.GetAllBundlesAsync(true), "Id", "Name");
+            }
+            else if (model.Trigger.AwardAvatarBundleId.HasValue)
+            {
+                model.UnlockableAvatarBundle = (await _dynamicAvatarService
+                    .GetBundleByIdAsync(model.Trigger.AwardAvatarBundleId.Value)).Name;
+            }
+
             PageTitle = $"Edit Trigger - {model.Trigger.Name}";
             return View("Detail", model);
         }

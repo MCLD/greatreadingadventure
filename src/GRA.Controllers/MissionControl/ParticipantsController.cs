@@ -25,6 +25,7 @@ namespace GRA.Controllers.MissionControl
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
+        private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
         private readonly QuestionnaireService _questionnaireService;
@@ -36,6 +37,7 @@ namespace GRA.Controllers.MissionControl
             ServiceFacade.Controller context,
             ActivityService activityService,
             AuthenticationService authenticationService,
+            DynamicAvatarService dynamicAvatarService,
             MailService mailService,
             PrizeWinnerService prizeWinnerService,
             QuestionnaireService questionnaireService,
@@ -50,6 +52,8 @@ namespace GRA.Controllers.MissionControl
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
+                nameof(dynamicAvatarService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService, nameof(prizeWinnerService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
@@ -1320,6 +1324,20 @@ namespace GRA.Controllers.MissionControl
                     if (!string.IsNullOrWhiteSpace(item.BadgeFilename))
                     {
                         itemModel.BadgeFilename = _pathResolver.ResolveContentPath(item.BadgeFilename);
+                    }
+                    else if (item.AvatarBundleId.HasValue)
+                    {
+                        var bundle = await _dynamicAvatarService
+                            .GetBundleByIdAsync(item.AvatarBundleId.Value);
+                        if (bundle.DynamicAvatarItems.Count > 0)
+                        {
+                            itemModel.BadgeFilename = _pathResolver.ResolveContentPath(
+                                bundle.DynamicAvatarItems.FirstOrDefault().Thumbnail);
+                            if (bundle.DynamicAvatarItems.Count > 1)
+                            {
+                                itemModel.Description += $" <strong><a class=\"bundle-link\" data-id=\"{item.AvatarBundleId.Value}\">Click here</a></strong> to see all the items you unlocked.";
+                            }
+                        }
                     }
                     viewModel.Historys.Add(itemModel);
                 }

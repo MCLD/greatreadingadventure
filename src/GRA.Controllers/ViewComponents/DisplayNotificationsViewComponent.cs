@@ -39,7 +39,7 @@ namespace GRA.Controllers.ViewComponents
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
-                    if (notification.BadgeId.HasValue)
+                    if (!string.IsNullOrWhiteSpace(notification.BadgeFilename))
                     {
                         notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
@@ -54,7 +54,7 @@ namespace GRA.Controllers.ViewComponents
                 totalPointsEarned += notification.PointsEarned;
                 if (notificationDisplayList.Count < MaxNotifications)
                 {
-                    if (notification.BadgeId.HasValue)
+                    if (!string.IsNullOrWhiteSpace(notification.BadgeFilename))
                     {
                         notification.BadgeFilename = _pathResolver.ResolveContentPath(notification.BadgeFilename);
                         earnedBadge = true;
@@ -64,7 +64,8 @@ namespace GRA.Controllers.ViewComponents
                 notifications.Remove(notification);
             }
 
-            foreach (var notification in notifications.Where(m => m.BadgeId.HasValue)
+            foreach (var notification in notifications
+                .Where(m => !string.IsNullOrWhiteSpace(m.BadgeFilename))
                 .OrderByDescending(m => m.PointsEarned).ThenByDescending(m => m.CreatedAt).ToList())
             {
                 totalPointsEarned += notification.PointsEarned;

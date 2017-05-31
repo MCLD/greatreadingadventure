@@ -1,6 +1,21 @@
 ﻿@model GRA.Controllers.ViewModel.Profile.HistoryListViewModel
 
 <div class="row">
+    <div class="modal fade" id="bundleModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="editModalLabel">Bundle Items</h4>
+                </div>
+                <div id="bundleModalBody" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -71,3 +86,21 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(".bundle-link").on("click", function () {
+            var id = $(this).data("id");
+            var url = "@Url.Action("GetItemsInBundleAsync", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { id: id }, function(response) {
+                $("#bundleModalBody").html("");
+                $("#bundleModal").modal("show");
+                $.each(response, function (index, item) {
+                    $("#bundleModalBody").html($("#bundleModalBody").html() + "<img class='img-thumbnail badge-sm bundle-image' src='/" + item + "' asp-append-version='true' />");
+                });
+            });
+
+        })
+    </script>
+}

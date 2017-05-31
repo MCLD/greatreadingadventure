@@ -26,9 +26,11 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
 
+        public bool EditAvatarBundle { get; set; }
         public bool EditMail { get; set; }
         public bool EditVendorCode { get; set; }
-
+        
+        public string UnlockableAvatarBundle { get; set; }
         public string VendorCodeType { get; set; }
 
         public bool AwardsMail { get; set; }
@@ -38,5 +40,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Triggers
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
         public SelectList VendorCodeTypeList { get; set; }
+        public SelectList UnlockableAvatarBundleList { get; set; }
     }
 }

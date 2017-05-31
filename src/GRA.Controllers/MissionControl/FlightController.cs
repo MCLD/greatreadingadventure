@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    [Authorize(Policy=Policy.AccessFlightController)]
+    [Authorize(Policy = Policy.AccessFlightController)]
     public class FlightController : Base.MCController
     {
         private readonly ILogger<FlightController> _logger;
@@ -120,7 +120,7 @@ namespace GRA.Controllers.MissionControl
             int siteId = GetCurrentSiteId();
 
             string assetPath = Path.Combine(
-                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName,"assets");
+                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
 
             if (!Directory.Exists(assetPath))
             {
@@ -134,7 +134,7 @@ namespace GRA.Controllers.MissionControl
                 AlertDanger = $"Asset directory not found at: {assetPath}";
                 return View("Index");
             }
-            
+
             IEnumerable<DynamicAvatarLayer> avatarList;
             var jsonPath = Path.Combine(assetPath, "default avatars.json");
             using (StreamReader file = System.IO.File.OpenText(jsonPath))
@@ -181,7 +181,7 @@ namespace GRA.Controllers.MissionControl
                     }
                     if (addedLayer.DynamicAvatarColors.Count > 0)
                     {
-                        foreach(var color in addedLayer.DynamicAvatarColors)
+                        foreach (var color in addedLayer.DynamicAvatarColors)
                         {
                             var element = new DynamicAvatarElement()
                             {
@@ -209,7 +209,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 await _dynamicAvatarService.AddElementListAsync(elementList);
             }
-            
+
             IEnumerable<DynamicAvatarBundle> bundleList;
             var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
             using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
@@ -228,7 +228,45 @@ namespace GRA.Controllers.MissionControl
                     await _dynamicAvatarService.AddBundleItemAsync(newBundle.Id, item);
                 }
             }
-                ShowAlertSuccess("Default dynamic avatars have been successfully added.");
+            ShowAlertSuccess("Default dynamic avatars have been successfully added.");
+            return View("Index");
+        }
+
+        public async Task<IActionResult> AttachDefaultThumbnails()
+        {
+            int siteId = GetCurrentSiteId();
+
+            string assetPath = Path.Combine(
+                Directory.GetParent(_hostingEnvironment.WebRootPath).FullName, "assets");
+            assetPath = Path.Combine(assetPath, "thumbnails");
+
+            var layers = await _dynamicAvatarService.GetLayersAsync();
+            foreach (var layer in layers)
+            {
+                if (layer.Name != "Body")
+                {
+                    var layerAssetPath = Path.Combine(assetPath, layer.Name);
+                    var destinationRoot = Path.Combine($"site{siteId}", "dynamicavatars", $"layer{layer.Id}");
+                    var destinationPath = _pathResolver.ResolveContentFilePath(destinationRoot);
+
+                    var items = await _dynamicAvatarService.GetItemsByLayerAsync(layer.Id);
+
+                    foreach (var item in items)
+                    {
+                        var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
+                        var itemPath = Path.Combine(destinationPath, $"item{item.Id}");
+
+                        var thumbnailImage = Path.Combine(layerAssetPath, $"{item.Name}.jpg");
+                        System.IO.File.Copy(Path.Combine(thumbnailImage),
+                            Path.Combine(itemPath, "Thumbnail.jpg"));
+
+                        item.Thumbnail = Path.Combine(itemRoot, "Thumbnail.jpg");
+                        await _dynamicAvatarService.UpdateItemAsync(item);
+                    }
+                }
+            }
+
+            ShowAlertSuccess("Default avatar thumbnails have been successfully added.");
             return View("Index");
         }
 

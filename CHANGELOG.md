@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - GRA.CommandLine utilty for inserting test data
 - Add daily program images
 - Add page content area to dashboard
+- Add unlocking avatar bundles
 
 ### Changed
 - Change join branch list to be populated with all branches

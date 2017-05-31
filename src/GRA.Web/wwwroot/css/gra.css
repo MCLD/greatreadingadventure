@@ -522,3 +522,11 @@ input.form-checkbox {
     border-radius: 4px;
     overflow: hidden;
 }
+
+.bundle-link {
+    cursor: pointer;
+}
+
+.bundle-image {
+    margin:10px;
+}

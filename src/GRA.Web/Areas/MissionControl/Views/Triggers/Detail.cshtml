@@ -118,6 +118,7 @@
     <input asp-for="BadgeMakerImage" type="hidden" />
     <input asp-for="EditMail" type="hidden" />
     <input asp-for="EditVendorCode" type="hidden" />
+    <input asp-for="EditAvatarBundle" type="hidden" />
     <input asp-for="AwardsPrize" type="hidden" />
     <input asp-for="AwardsMail" type="hidden" />
     @if (Model.Action == "Edit")
@@ -440,7 +441,6 @@
         </div>
     </div>
 
-
     @if (Model.EditVendorCode || Model.Trigger?.AwardVendorCodeTypeId != null)
     {
         if (!string.IsNullOrWhiteSpace(Model.VendorCodeType) || Model.VendorCodeTypeList.Count() > 0)
@@ -459,6 +459,29 @@
                         <input asp-for="VendorCodeType" class="form-control" readonly />
                     }
                     <span asp-validation-for="Trigger.AwardVendorCodeTypeId" class="text-danger"></span>
+                </div>
+            </div>
+        }
+    }
+
+    @if (Model.EditAvatarBundle || Model.Trigger?.AwardAvatarBundleId != null)
+    {
+        if (!string.IsNullOrWhiteSpace(Model.UnlockableAvatarBundle) || Model.UnlockableAvatarBundleList.Count() > 0)
+        {
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label asp-for="Trigger.AwardAvatarBundleId" class="control-label"></label>
+                    @if (Model.EditAvatarBundle)
+                    {
+                        <select asp-for="Trigger.AwardAvatarBundleId" asp-items="Model.UnlockableAvatarBundleList" class="form-control">
+                            <option value="">No</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <input asp-for="UnlockableAvatarBundle" class="form-control" readonly />
+                    }
+                    <span asp-validation-for="Trigger.AwardAvatarBundleId" class="text-danger"></span>
                 </div>
             </div>
         }

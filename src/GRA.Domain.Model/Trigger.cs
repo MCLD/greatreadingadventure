@@ -61,5 +61,9 @@ namespace GRA.Domain.Model
         [MaxLength(1000)]
         [DisplayName("Redepemption instructions")]
         public string AwardPrizeRedemptionInstructions { get; set; }
+
+        [DisplayName("Award avatar bundle")]
+        public int? AwardAvatarBundleId { get; set; }
+        public DynamicAvatarBundle AwardAvatarBundle { get; set; }
     }
 }

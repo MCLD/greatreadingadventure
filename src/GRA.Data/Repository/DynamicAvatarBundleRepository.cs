@@ -7,6 +7,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -17,6 +19,39 @@ namespace GRA.Data.Repository
         public DynamicAvatarBundleRepository(ServiceFacade.Repository repositoryFacade,
             ILogger<DynamicAvatarBundleRepository> logger) : base(repositoryFacade, logger)
         {
+        }
+
+        public override async Task<DynamicAvatarBundle> GetByIdAsync(int id)
+        {
+            return await DbSet.AsNoTracking()
+                .Include(_ => _.DynamicAvatarBundleItems)
+                    .ThenInclude(_ => _.DynamicAvatarItem)
+                .Where(_ => _.Id == id)
+                .ProjectTo<DynamicAvatarBundle>()
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
+        public async Task<ICollection<DynamicAvatarBundle>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .ApplyPagination(filter)
+                .ProjectTo<DynamicAvatarBundle>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.DynamicAvatarBundle> ApplyFilters(BaseFilter filter)
+        {
+            var bundles = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+ 
+            return bundles;
         }
 
         public async Task AddItemAsync(int bundleId, int itemId)
@@ -49,6 +84,19 @@ namespace GRA.Data.Repository
             {
                 return new List<DynamicAvatarItem>();
             }
+        }
+
+        public async Task<ICollection<DynamicAvatarBundle>> GetAllAsync(int siteId, 
+            bool? unlockable = null)
+        {
+            var bundles = DbSet.AsNoTracking().Where(_ => _.SiteId == siteId);
+
+            if (unlockable.HasValue)
+            {
+                bundles = bundles.Where(_ => _.CanBeUnlocked == unlockable.Value);
+            }
+
+            return await bundles.ProjectTo<DynamicAvatarBundle>().ToListAsync();
         }
     }
 }
