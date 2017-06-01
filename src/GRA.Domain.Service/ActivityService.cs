@@ -133,6 +133,14 @@ namespace GRA.Domain.Service
             int pointsEarned
                 = (activityAmountEarned / translation.ActivityAmount) * translation.PointsEarned;
 
+            // cap points at int.MaxValue
+            long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
+                + Convert.ToInt64(pointsEarned);
+            if (totalPoints > int.MaxValue)
+            {
+                pointsEarned = int.MaxValue - userToLog.PointsEarned;
+            }
+
             // add the row to the user's point log
             var userLog = new UserLog
             {
@@ -427,6 +435,15 @@ namespace GRA.Domain.Service
             }
 
             int pointsAwarded = (int)challenge.PointsAwarded;
+
+            // cap points at int.MaxValue
+            long totalPoints = Convert.ToInt64(activeUser.PointsEarned)
+                + Convert.ToInt64(pointsAwarded);
+            if (totalPoints > int.MaxValue)
+            {
+                pointsAwarded = int.MaxValue - activeUser.PointsEarned;
+            }
+
             int completedTasks = challengeTasks.Where(_ => _.IsCompleted == true).Count();
             if (completedTasks >= challenge.TasksToComplete)
             {
@@ -516,6 +533,14 @@ namespace GRA.Domain.Service
             if (earnedUser == null)
             {
                 throw new Exception($"Could not find a user with id {whoEarnedUserId}");
+            }
+
+            // cap points at int.MaxValue
+            long totalPoints = Convert.ToInt64(earnedUser.PointsEarned) 
+                + Convert.ToInt64(pointsEarned);
+            if (totalPoints > int.MaxValue)
+            {
+                pointsEarned = int.MaxValue - earnedUser.PointsEarned;
             }
 
             earnedUser.PointsEarned += pointsEarned;
@@ -648,16 +673,27 @@ namespace GRA.Domain.Service
 
                 // add that we've processed this trigger for this user
                 await _triggerRepository.AddTriggerActivationAsync(userId, trigger.Id);
+                var user = await _userRepository.GetByIdAsync(userId);
+
+                var pointsAwarded = trigger.AwardPoints;
+
+                // cap points at int.MaxValue
+                long totalPoints = Convert.ToInt64(user.PointsEarned)
+                    + Convert.ToInt64(pointsAwarded);
+                if (totalPoints > int.MaxValue)
+                {
+                    pointsAwarded = int.MaxValue - user.PointsEarned;
+                }
 
                 // if there are points to be awarded, do that now
-                if (trigger.AwardPoints > 0 && logPoints)
+                if (pointsAwarded > 0 && logPoints)
                 {
                     if (userIdIsCurrentUser)
                     {
                         await AddPointsSaveAsync(userId,
                         userId,
                         userId,
-                        trigger.AwardPoints,
+                        pointsAwarded,
                         checkTriggers: false);
                     }
                     else
@@ -665,7 +701,7 @@ namespace GRA.Domain.Service
                         await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
                             GetActiveUserId(),
                             userId,
-                            trigger.AwardPoints,
+                            pointsAwarded,
                             checkTriggers: false);
                     }
                 }
@@ -676,7 +712,7 @@ namespace GRA.Domain.Service
                 // log the notification
                 await _notificationRepository.AddSaveAsync(userId, new Notification
                 {
-                    PointsEarned = trigger.AwardPoints,
+                    PointsEarned = pointsAwarded,
                     UserId = userId,
                     Text = trigger.AwardMessage,
                     BadgeId = trigger.AwardBadgeId,
@@ -687,7 +723,7 @@ namespace GRA.Domain.Service
                 await _userLogRepository.AddSaveAsync(userId, new UserLog
                 {
                     UserId = userId,
-                    PointsEarned = trigger.AwardPoints,
+                    PointsEarned = pointsAwarded,
                     IsDeleted = false,
                     BadgeId = trigger.AwardBadgeId,
                     Description = trigger.AwardMessage
@@ -789,6 +825,16 @@ namespace GRA.Domain.Service
                 throw new GraException($"<strong>{secretCode}</strong> is not a valid code.");
             }
 
+            var pointsAwarded = trigger.AwardPoints;
+
+            // cap points at int.MaxValue
+            long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
+                + Convert.ToInt64(pointsAwarded);
+            if (totalPoints > int.MaxValue)
+            {
+                pointsAwarded = int.MaxValue - userToLog.PointsEarned;
+            }
+
             // check if this user's gotten this code
             var alreadyDone
                 = await _triggerRepository.CheckTriggerActivationAsync(userIdToLog, trigger.Id);
@@ -813,7 +859,7 @@ namespace GRA.Domain.Service
             // log the notification
             await _notificationRepository.AddSaveAsync(authUserId, new Notification
             {
-                PointsEarned = trigger.AwardPoints,
+                PointsEarned = pointsAwarded,
                 UserId = userIdToLog,
                 Text = trigger.AwardMessage,
                 BadgeId = trigger.AwardBadgeId,
@@ -824,7 +870,7 @@ namespace GRA.Domain.Service
             var userLog = new UserLog
             {
                 UserId = userIdToLog,
-                PointsEarned = trigger.AwardPoints,
+                PointsEarned = pointsAwarded,
                 IsDeleted = false,
                 BadgeId = trigger.AwardBadgeId,
                 Description = trigger.AwardMessage
@@ -853,12 +899,12 @@ namespace GRA.Domain.Service
             await AwardPrizeAsync(activeUserId, trigger, mailId);
 
             // if there are points to be awarded, do that now, also check for other triggers
-            if (trigger.AwardPoints > 0)
+            if (pointsAwarded > 0)
             {
                 await AddPointsSaveAsync(authUserId,
                     activeUserId,
                     userIdToLog,
-                    trigger.AwardPoints);
+                    pointsAwarded);
             }
             else
             {

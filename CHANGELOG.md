@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add page content area to dashboard
 - Add unlocking avatar bundles
 - Add authorization code validation
+- Add cap to points earned
 
 ### Changed
 - Change join branch list to be populated with all branches
