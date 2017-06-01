@@ -6,6 +6,7 @@
             <div class="form-group form-group-lg">
                 <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
                 <input asp-for="AuthorizationCode" class="form-control input-lg" type="password" autofocus required>
+                <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Validate code</button>
         </div>

@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add daily program images
 - Add page content area to dashboard
 - Add unlocking avatar bundles
+- Add authorization code validation
 
 ### Changed
 - Change join branch list to be populated with all branches
