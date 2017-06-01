@@ -60,6 +60,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix password reset users doesn't exist exception
 - Fix UriBuilder exception handling
 - Fix reporting overflow exception
+- Fix login trigger points exception
 
 ## [4.0.0-alpha5] 2017-05-01
 ### Added

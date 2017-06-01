@@ -652,11 +652,22 @@ namespace GRA.Domain.Service
                 // if there are points to be awarded, do that now
                 if (trigger.AwardPoints > 0 && logPoints)
                 {
-                    await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
-                        GetActiveUserId(),
+                    if (userIdIsCurrentUser)
+                    {
+                        await AddPointsSaveAsync(userId,
+                        userId,
                         userId,
                         trigger.AwardPoints,
                         checkTriggers: false);
+                    }
+                    else
+                    {
+                        await AddPointsSaveAsync(GetClaimId(ClaimType.UserId),
+                            GetActiveUserId(),
+                            userId,
+                            trigger.AwardPoints,
+                            checkTriggers: false);
+                    }
                 }
 
                 // every trigger awards a badge
@@ -698,7 +709,7 @@ namespace GRA.Domain.Service
             }
             // this call will recursively call this method in case any additional
             // triggers are fired by this action
-            await AwardTriggersAsync(userId, logPoints);
+            await AwardTriggersAsync(userId, logPoints, siteId, userIdIsCurrentUser);
         }
 
         private async Task AwardVendorCodeAsync(int userId, int? vendorCodeTypeId, int? siteId = null)
