@@ -18,11 +18,11 @@ namespace GRA.Domain.Model
         public string BranchName { get; set; }
 
         public int RegisteredUsers { get; set; }
-        public int PointsEarned { get; set; }
-        public Dictionary<string, int> ActivityEarnings { get; set; }
-        public int CompletedChallenges { get; set; }
-        public int BadgesEarned { get; set; }
+        public long PointsEarned { get; set; }
+        public Dictionary<string, long> ActivityEarnings { get; set; }
+        public long CompletedChallenges { get; set; }
+        public long BadgesEarned { get; set; }
         public int? DaysUntilEnd { get; set; }
-        public int Achievers { get; set; }
+        public long Achievers { get; set; }
     }
 }

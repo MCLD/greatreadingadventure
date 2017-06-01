@@ -133,7 +133,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<int> CompletedChallengeCountAsync(StatusSummary request)
+        public async Task<long> CompletedChallengeCountAsync(StatusSummary request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
@@ -161,7 +161,7 @@ namespace GRA.Data.Repository
             return await challengeCount.CountAsync();
         }
 
-        public async Task<int> PointsEarnedTotalAsync(StatusSummary request)
+        public async Task<long> PointsEarnedTotalAsync(StatusSummary request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
@@ -185,10 +185,10 @@ namespace GRA.Data.Repository
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
-            return await pointCount.SumAsync(_ => _.PointsEarned);
+            return await pointCount.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
         }
 
-        public async Task<Dictionary<string, int>> ActivityEarningsTotalAsync(StatusSummary request)
+        public async Task<Dictionary<string, long>> ActivityEarningsTotalAsync(StatusSummary request)
         {
             // look up user id restrictions
             var eligibleUserIds = await GetEligibleUserIds(request);
@@ -227,14 +227,14 @@ namespace GRA.Data.Repository
                 .Select(_ => new
                 {
                     PointTranslationId = _.Key,
-                    ActivityTotal = _.Sum(ae => ae.ActivityEarned)
+                    ActivityTotal = _.Sum(ae => Convert.ToInt64(ae.ActivityEarned))
                 })
                 .ToListAsync();
 
-            Dictionary<string, int> result = new Dictionary<string, int>();
+            Dictionary<string, long> result = new Dictionary<string, long>();
             foreach (var earned in earnedTotals)
             {
-                int earnedSum = earned.ActivityTotal ?? 0;
+                long earnedSum = earned.ActivityTotal;
                 int pointTranslationId = (int)earned.PointTranslationId;
 
                 string description = translationLookup[pointTranslationId].ActivityDescription;
@@ -249,7 +249,7 @@ namespace GRA.Data.Repository
                 }
             }
 
-            Dictionary<string, int> namedResult = new Dictionary<string, int>();
+            Dictionary<string, long> namedResult = new Dictionary<string, long>();
             foreach (var item in result)
             {
                 if (item.Value > 1)
@@ -269,7 +269,7 @@ namespace GRA.Data.Repository
             return namedResult;
         }
 
-        public async Task<int> EarnedBadgeCountAsync(StatusSummary request)
+        public async Task<long> EarnedBadgeCountAsync(StatusSummary request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
