@@ -131,6 +131,13 @@ namespace GRA.Data.Repository
             });
         }
 
+        public async Task<bool> UserHasTaskAsync(int id)
+        {
+            return await _context.UserChallengeTasks.AsNoTracking()
+                .Where(_ => _.ChallengeTaskId == id)
+                .AnyAsync();
+        }
+
         private async Task LookUpChallengeTaskTypeAsync(ChallengeTask task)
         {
             string taskTypeName = task.ChallengeTaskType.ToString();

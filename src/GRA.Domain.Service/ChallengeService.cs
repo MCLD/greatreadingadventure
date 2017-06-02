@@ -305,6 +305,10 @@ namespace GRA.Domain.Service
             int authUserId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.EditChallenges))
             {
+                if (await _challengeTaskRepository.UserHasTaskAsync(taskId))
+                {
+                    throw new GraException("Challenge has been started by a participant.");
+                }
                 var task = await _challengeTaskRepository.GetByIdAsync(taskId);
                 await _challengeTaskRepository
                     .RemoveSaveAsync(GetClaimId(ClaimType.UserId), taskId);

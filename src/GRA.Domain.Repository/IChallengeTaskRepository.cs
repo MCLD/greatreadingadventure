@@ -10,5 +10,6 @@ namespace GRA.Domain.Repository
             int? pointTranslationId = default(int?));
         Task DecreasePositionAsync(int taskId);
         Task IncreasePositionAsync(int taskId);
+        Task<bool> UserHasTaskAsync(int id);
     }
 }

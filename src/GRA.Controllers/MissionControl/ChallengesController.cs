@@ -680,7 +680,15 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> DeleteTask(ChallengesDetailViewModel viewModel, int id)
         {
-            await _challengeService.RemoveTaskAsync(id);
+            try
+            {
+                await _challengeService.RemoveTaskAsync(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Unable to delete task: ", gex);
+            }
+
             TempData[TempEditChallenge] = Newtonsoft.Json.JsonConvert
                 .SerializeObject(viewModel.Challenge);
 

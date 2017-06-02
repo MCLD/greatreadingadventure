@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add authorization code validation
 - Add cap to points earned
 - Add ability to flush the sites from the cache in the flight controller
+- Add exception handling when deleting a challenge task that a user has started
 
 ### Changed
 - Change join branch list to be populated with all branches
