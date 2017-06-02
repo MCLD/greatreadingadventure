@@ -102,6 +102,8 @@ namespace GRA.Web
             });
             services.TryAddSingleton(_ => Configuration);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator, 
+                HtmlGeneratorHack>();
             services.AddResponseCompression();
             services.AddMemoryCache();
 
