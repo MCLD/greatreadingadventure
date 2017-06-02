@@ -306,5 +306,16 @@ namespace GRA.Controllers.MissionControl
 
             return View("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ReloadSiteCacheAsync()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var sites = await _siteLookupService.ReloadSiteCacheAsync();
+            sw.Stop();
+            ShowAlertSuccess($"Sites flushed from cache, reloaded in {sw.ElapsedMilliseconds} ms.");
+            return RedirectToAction("Index");
+        }
     }
 }

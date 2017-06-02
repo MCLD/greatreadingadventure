@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add unlocking avatar bundles
 - Add authorization code validation
 - Add cap to points earned
+- Add ability to flush the sites from the cache in the flight controller
 
 ### Changed
 - Change join branch list to be populated with all branches

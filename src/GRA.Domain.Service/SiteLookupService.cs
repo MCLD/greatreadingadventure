@@ -148,5 +148,11 @@ namespace GRA.Domain.Service
                 site
             };
         }
+
+        public async Task<IEnumerable<Site>> ReloadSiteCacheAsync()
+        {
+            _memoryCache.Remove(CacheKey.SitePaths);
+            return await GetSitesFromCacheAsync();
+        }
     }
 }

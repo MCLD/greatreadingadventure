@@ -1,20 +1,25 @@
 ﻿<div class="row" style="margin-top: 1rem;">
-    <div class="col-sm-3 row-spacing">
+    <div class="col-sm-3 col-md-2 row-spacing">
         <a asp-controller="Home" asp-action="LoadSampleData" class="btn btn-info btn-block">Insert sample data</a>
     </div>
-    <div class="col-sm-4 row-spacing">
+    <div class="col-sm-4 col-md-3 row-spacing">
         <a asp-action="RedeemSecretCodeAsync" class="btn btn-info btn-block">Enter code "secretcode"</a>
     </div>
-    <div class="col-sm-4 row-spacing">
+    <div class="col-sm-4 col-md-3 row-spacing">
         <a asp-action="SetupDynamicAvatars" class="btn btn-info btn-block">Default dynamic avatars</a>
     </div>
-    <div class="col-sm-4 row-spacing">
+    <div class="col-sm-4 col-md-3 row-spacing">
         <a asp-action="AttachDefaultThumbnails" class="btn btn-info btn-block">Attach default thumbnails</a>
     </div>
-    <div class="col-sm-4 row-spacing">
+    <div class="col-sm-4 col-md-3 row-spacing">
         <a asp-action="AddQuestionnaireAsync" class="btn btn-info btn-block">Create questionnaire</a>
     </div>
-    <div class="col-xs-12 col-sm-8 row-spacing">
+    <div class="col-sm-4 col-md-3 row-spacing">
+        <form asp-action="ReloadSiteCacheAsync" method="post" role="form" class="form-inline">
+            <button type="submit" class="btn btn-info btn-block">Reload sites into cache</button>
+        </form>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-md-6 row-spacing">
         <form asp-action="CreateVendorCodesAsync" method="post" role="form" class="form-inline">
             <div class="form-group">
                 <label for="numberOfCodes">Generate vendor codes:</label>
