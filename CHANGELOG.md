@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [4.0.0-alpha6] 2017-06-02
 ### Added
 - Add disable and spinner to questionnaire submit buttons
 - Add error message when trying to apply a role twice

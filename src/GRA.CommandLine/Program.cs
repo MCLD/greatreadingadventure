@@ -21,7 +21,7 @@ namespace GRA.CommandLine
 {
     class Program
     {
-        private const string VersionSuffix = "-alpha5";
+        private const string VersionSuffix = "-alpha6";
         public static int Main(string[] args)
         {
             var sw = new Stopwatch();
