@@ -40,7 +40,6 @@ namespace GRA.Domain.Service
 
                     var typeIndex = types.ToDictionary(_ => _.Name, _ => _.Id);
                     var districtIndex = types.ToDictionary(_ => _.Name, _ => _.Id);
-                    var schoolIndex = schools.ToDictionary(_ => _.Name, _ => _.Id);
 
                     foreach (var record in csv.GetRecords<SchoolImportExport>())
                     {
@@ -96,6 +95,7 @@ namespace GRA.Domain.Service
                             }
                             else
                             {
+                                _logger.LogDebug($"Adding school type: {record.Type.Trim()}");
                                 var type = await _schoolService.AddSchoolType(record.Type.Trim());
                                 typeIndex.Add(record.Type.Trim(), type.Id);
                                 typeId = type.Id;
@@ -109,6 +109,7 @@ namespace GRA.Domain.Service
                             }
                             else
                             {
+                                _logger.LogDebug($"Adding school district: {record.District.Trim()}");
                                 var district = await _schoolService
                                     .AddDistrict(record.District.Trim());
                                 districtIndex.Add(record.District.Trim(), district.Id);
@@ -116,8 +117,12 @@ namespace GRA.Domain.Service
                                 districtsAdded++;
                             }
 
-                            if(!schoolIndex.Keys.Contains(record.Name.Trim()))
+                            var schoolExists = schools.Where(_ => _.SchoolDistrictId == districtId
+                                && _.Name == record.Name.Trim()).Any();
+
+                            if(!schoolExists)
                             {
+                                _logger.LogDebug($"Adding school: {record.Name.Trim()}");
                                 await _schoolService
                                     .AddSchool(record.Name.Trim(), districtId, typeId);
                                 schoolsAdded++;
