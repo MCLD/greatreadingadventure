@@ -6,12 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Add exception handling when entering activity on the dashboard
+- Add achieved at property to Users
 
 ### Changed
 - Change submit buttons to be disabled on click for challenge and household pages
 
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name
+- Fix secret code GraException message typo
 
 ## [4.0.0-alpha6] 2017-06-02
 ### Added

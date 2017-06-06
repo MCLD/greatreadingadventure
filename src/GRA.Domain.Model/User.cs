@@ -71,6 +71,8 @@ namespace GRA.Domain.Model
         [DisplayName("School Name")]
         public string EnteredSchoolName { get; set; }
 
+        public DateTime? AchievedAt { get; set; }
+
         public bool HasNewMail { get; set; }
         public bool HasUnclaimedPrize { get; set; }
         public bool HasPendingQuestionnaire { get; set; }

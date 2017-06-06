@@ -55,5 +55,7 @@ namespace GRA.Data.Model
         public int? SchoolId { get; set; }
         public int? EnteredSchoolId { get; set; }
         public virtual EnteredSchool EnteredSchool { get; set; }
+
+        public DateTime? AchievedAt { get; set; }
     }
 }

@@ -554,6 +554,7 @@ namespace GRA.Domain.Service
                 && earnedUser.PointsEarned >= program.AchieverPointAmount)
             {
                 earnedUser.IsAchiever = true;
+                earnedUser.AchievedAt = _dateTimeProvider.Now;
 
                 var notification = new Notification
                 {
@@ -637,6 +638,7 @@ namespace GRA.Domain.Service
             else
             {
                 removeUser.IsAchiever = false;
+                removeUser.AchievedAt = null;
             }
 
             return await _userRepository.UpdateSaveAsync(currentUserId, removeUser);
@@ -813,7 +815,7 @@ namespace GRA.Domain.Service
             if ((await _requiredQuestionnaireRepository.GetForUser(GetCurrentSiteId(), userToLog.Id,
                 userToLog.Age)).Any())
             {
-                string error = $"User id {activeUserId} cannot log secret code for user {userToLog} who has a pending questionnaire.";
+                string error = $"User id {activeUserId} cannot log secret code for user {userToLog.Id} who has a pending questionnaire.";
                 _logger.LogError(error);
                 throw new GraException("Secret codes cannot be entered while there is a pending questionnaire to be taken.");
             }
