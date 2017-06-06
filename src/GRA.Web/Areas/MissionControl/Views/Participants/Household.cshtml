@@ -187,7 +187,10 @@
                                         <input data-action="@Url.Action("HouseholdApplyMinutesRead")" value="" class="form-control minutesInput" />
                                     </td>
                                     <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary minutesButton" data-action="@Url.Action("HouseholdApplyMinutesRead")">Minutes Read</button>
+                                        <button type="submit" class="btn btn-primary btn-spinner minutesButton" data-action="@Url.Action("HouseholdApplyMinutesRead")">
+                                            <span class="buttonText">Minutes Read</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
                                     </td>
                                 </tr>
                                 @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
@@ -208,7 +211,10 @@
                                         <input data-action="@Url.Action("HouseholdApplySecretCode")" class="form-control codeInput" />
                                     </td>
                                     <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">Secret Code</button>
+                                        <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">
+                                            <span class="buttonText">Secret Code</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
                                     </td>
                                 </tr>
                                 @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
@@ -444,7 +450,10 @@
                                         <input data-action="@Url.Action("HouseholdApplyMinutesRead")" value="" class="form-control minutesInput" />
                                     </td>
                                     <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary minutesButton" data-action="@Url.Action("HouseholdApplyMinutesRead")">Minutes Read</button>
+                                        <button type="submit" class="btn btn-primary btn-spinner minutesButton" data-action="@Url.Action("HouseholdApplyMinutesRead")">
+                                            <span class="buttonText">Minutes Read</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
                                     </td>
                                 </tr>
                                 @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
@@ -465,7 +474,10 @@
                                         <input data-action="@Url.Action("HouseholdApplySecretCode")" class="form-control codeInput" />
                                     </td>
                                     <td style="padding-left:6px;">
-                                        <button type="submit" class="btn btn-primary codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">Secret Code</button>
+                                        <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="@Url.Action("HouseholdApplySecretCode")">
+                                            <span class="buttonText">Secret Code</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
                                     </td>
                                 </tr>
                                 @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))

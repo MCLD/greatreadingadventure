@@ -244,8 +244,16 @@ namespace GRA.Controllers
                     Author = viewModel.Author,
                     Title = viewModel.Title
                 };
-                await _activityService
-                    .LogActivityAsync(GetActiveUserId(), viewModel.ActivityAmount ?? 1, book);
+
+                try
+                {
+                    await _activityService
+                        .LogActivityAsync(GetActiveUserId(), viewModel.ActivityAmount ?? 1, book);
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Could not log activity: ", gex);
+                }
             }
             return RedirectToAction("Index");
         }

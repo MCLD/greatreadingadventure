@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Add exception handling when entering activity on the dashboard
+
+### Changed
+- Change submit buttons to be disabled on click for challenge and household pages
+
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name
 

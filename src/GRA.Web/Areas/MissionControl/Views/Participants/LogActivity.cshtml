@@ -25,7 +25,10 @@
                             <input asp-for="MinutesRead" value="" class="form-control" />
                         </td>
                         <td style="padding-left:6px;">
-                            <button type="submit" class="btn btn-primary">Minutes Read</button>
+                            <button type="submit" class="btn btn-primary btn-spinner">
+                                <span class="buttonText">Minutes Read</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -42,7 +45,10 @@
                             <input asp-for="SecretCode" value="" class="form-control codeInput" />
                         </td>
                         <td style="padding-left:6px;">
-                            <button type="submit" class="btn btn-primary codeButton">Secret Code</button>
+                            <button type="submit" class="btn btn-primary btn-spinner codeButton">
+                                <span class="buttonText">Secret Code</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
                         </td>
                     </tr>
                     <tr>

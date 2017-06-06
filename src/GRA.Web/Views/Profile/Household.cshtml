@@ -67,7 +67,10 @@
                                                         <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
                                                     </td>
                                                     <td style="padding-left:6px;">
-                                                        <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
+                                                        <button type="submit" class="btn btn-primary btn-spinner minutesButton" data-action="HouseholdApplyMinutesRead">
+                                                            <span class="buttonText">Minutes Read</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                                 @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
@@ -88,7 +91,10 @@
                                                         <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
                                                     </td>
                                                     <td style="padding-left:6px;">
-                                                        <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
+                                                        <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
+                                                            <span class="buttonText">Secret Code</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                                 @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
@@ -292,52 +298,62 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                @if (Model.AuthUserIsHead)
+                                {
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 row-spacing">
+                                            <table>
+                                                <tr>
+                                                    <td style="padding-right:6px;">Apply</td>
+                                                    <td width="80px">
+                                                        <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
+                                                    </td>
+                                                    <td style="padding-left:6px;">
+                                                        <button type="submit" class="btn btn-primary btn-spinner minutesButton" data-action="HouseholdApplyMinutesRead">
+                                                            <span class="buttonText">Minutes Read</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
+                                                {
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td colspan="2">@Model.MinutesReadMessage</td>
+                                                    </tr>
+                                                }
+                                            </table>
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 row-spacing">
+                                            <table>
+                                                <tr>
+                                                    <td style="padding-right:6px;">Apply</td>
+                                                    <td width="200px">
+                                                        <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
+                                                    </td>
+                                                    <td style="padding-left:6px;">
+                                                        <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
+                                                            <span class="buttonText">Secret Code</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                                {
+                                                    <tr>
+                                                        <td>&nbsp;</td>
+                                                        <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                }
                             </form>
                             @if (Model.AuthUserIsHead)
                             {
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6 row-spacing">
-                                        <table>
-                                            <tr>
-                                                <td style="padding-right:6px;">Apply</td>
-                                                <td width="80px">
-                                                    <input data-action="HouseholdApplyMinutesRead" value="" class="form-control minutesInput" />
-                                                </td>
-                                                <td style="padding-left:6px;">
-                                                    <button type="submit" class="btn btn-primary minutesButton" data-action="HouseholdApplyMinutesRead">Minutes Read</button>
-                                                </td>
-                                            </tr>
-                                            @if (!string.IsNullOrWhiteSpace(Model.MinutesReadMessage))
-                                            {
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td colspan="2">@Model.MinutesReadMessage</td>
-                                                </tr>
-                                            }
-                                        </table>
-
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 row-spacing">
-                                        <table>
-                                            <tr>
-                                                <td style="padding-right:6px;">Apply</td>
-                                                <td width="200px">
-                                                    <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                                </td>
-                                                <td style="padding-left:6px;">
-                                                    <button type="submit" class="btn btn-primary codeButton" data-action="HouseholdApplySecretCode">Secret Code</button>
-                                                </td>
-                                            </tr>
-                                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                                            {
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
-                                                </tr>
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
                                 <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
                                 <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
                             }
