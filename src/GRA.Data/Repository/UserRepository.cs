@@ -236,17 +236,12 @@ namespace GRA.Data.Repository
             return userList;
         }
 
-        public async Task<int> GetCountAsync(StatusSummary request, bool isAchiever = false)
+        public async Task<(int users, int achievers)> GetCountAsync(ReportCriterion request)
         {
             IQueryable<Model.User> userCount = null;
             userCount = DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.SiteId == request.SiteId);
-
-            if(isAchiever)
-            {
-                userCount = userCount.Where(_ => _.IsAchiever == true);
-            }
 
             if (request.StartDate != null)
             {
@@ -273,7 +268,9 @@ namespace GRA.Data.Repository
                 userCount = userCount.Where(_ => _.BranchId == request.BranchId);
             }
 
-            return await userCount.CountAsync();
+            int users = await userCount.CountAsync();
+            int achievers = await userCount.CountAsync(_ => _.IsAchiever);
+            return (users, achievers);
         }
 
         public async Task<IEnumerable<User>>

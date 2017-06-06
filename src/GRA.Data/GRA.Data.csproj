@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.1" />
   </ItemGroup>
 
 </Project>

@@ -104,7 +104,7 @@ namespace GRA.Data.Repository
             await base.SaveAsync();
         }
 
-        private async Task<ICollection<int>> GetEligibleUserIds(StatusSummary request)
+        private async Task<ICollection<int>> GetEligibleUserIds(ReportCriterion request)
         {
             if (request.ProgramId != null
                || request.SystemId != null
@@ -133,7 +133,7 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<long> CompletedChallengeCountAsync(StatusSummary request)
+        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
@@ -161,7 +161,7 @@ namespace GRA.Data.Repository
             return await challengeCount.CountAsync();
         }
 
-        public async Task<long> PointsEarnedTotalAsync(StatusSummary request)
+        public async Task<long> PointsEarnedTotalAsync(ReportCriterion request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
@@ -188,7 +188,7 @@ namespace GRA.Data.Repository
             return await pointCount.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
         }
 
-        public async Task<Dictionary<string, long>> ActivityEarningsTotalAsync(StatusSummary request)
+        public async Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request)
         {
             // look up user id restrictions
             var eligibleUserIds = await GetEligibleUserIds(request);
@@ -269,7 +269,7 @@ namespace GRA.Data.Repository
             return namedResult;
         }
 
-        public async Task<long> EarnedBadgeCountAsync(StatusSummary request)
+        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 

@@ -1,0 +1,35 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportResultsViewModel
+
+<table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
+    @if (Model.FirstRow != null)
+    {
+        <thead>
+            <tr>
+                @foreach (var data in Model.FirstRow)
+                {
+                    <th>@data</th>
+                }
+            </tr>
+        </thead>
+    }
+    @foreach (var row in Model.Results)
+    {
+        <tr>
+            @foreach (string data in row)
+            {
+                <td>@data</td>
+            }
+        </tr>
+    }
+    @if (Model.LastRow != null)
+    {
+        <tfoot>
+            <tr>
+                @foreach (var data in Model.LastRow)
+                {
+                    <th><strong>@data</strong></th>
+                }
+            </tr>
+        </tfoot>
+    }
+</table>

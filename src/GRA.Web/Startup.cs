@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Net.WebSockets;
 
 namespace GRA.Web
 {
@@ -157,6 +158,7 @@ namespace GRA.Web
             services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
             services.AddScoped<Abstract.ICodeGenerator, CodeGenerator>();
             services.AddScoped<ICodeSanitizer, CodeSanitizer>();
+            services.AddScoped<WebSocketHandler>();
 
             // filters
             services.AddScoped<Controllers.Filter.MissionControlFilter>();
@@ -192,6 +194,9 @@ namespace GRA.Web
             services.AddScoped<UserService>();
             services.AddScoped<VendorCodeService>();
 
+            services.AddScoped<Domain.Report.ServiceFacade.Report>();
+            services.AddScoped<Domain.Report.CurrentStatusReport>();
+
             // service resolution
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
 
@@ -221,6 +226,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
+            services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
+            services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
             services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
             services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
@@ -366,6 +373,24 @@ namespace GRA.Web
                 routes.MapRoute(
                     name: null,
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseWebSockets(new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(30)
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    var handler = app.ApplicationServices.GetService<WebSocketHandler>();
+                    await handler.Handle(context);
+                }
+                else
+                {
+                    await next();
+                }
             });
         }
     }

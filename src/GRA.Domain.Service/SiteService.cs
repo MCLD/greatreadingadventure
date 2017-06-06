@@ -120,6 +120,24 @@ namespace GRA.Domain.Service
             }
         }
 
+        public async Task<string> GetWsUrl(string httpScheme, string host)
+        {
+            var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());
+            if (site.IsHttpsForced)
+            {
+                httpScheme = "https";
+            }
+            string wsScheme = httpScheme == "https" ? "wss" : "ws";
+            if (site.IsDefault)
+            {
+                return $"{wsScheme}://{host}";
+            }
+            else
+            {
+                return $"{wsScheme}://{host}/{site.Path}";
+            }
+        }
+
         public async Task<byte[]> GetIcsFile(string siteUrl)
         {
             var site = await _siteRepository.GetByIdAsync(GetCurrentSiteId());

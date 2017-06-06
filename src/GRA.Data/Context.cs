@@ -145,6 +145,8 @@ namespace GRA.Data
         public DbSet<Model.Questionnaire> Questionnaires { get; set; }
         public DbSet<Model.Question> Questions { get; set; }
         public DbSet<Model.RecoveryToken> RecoveryTokens { get; set; }
+        public DbSet<Model.ReportCriterion> ReportCriteria { get; set; }
+        public DbSet<Model.ReportRequest> ReportRequests { get; set; }
         public DbSet<Model.RequiredQuestionnaire> RequiredQuestionnaires { get; set; }
         public DbSet<Model.Role> Roles { get; set; }
         public DbSet<Model.RolePermission> RolePermissions { get; set; }

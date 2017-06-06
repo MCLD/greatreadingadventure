@@ -113,7 +113,7 @@ namespace GRA.CommandLine.Commands
         {
             var users = await _facade.UserService.GetPaginatedUserListAsync(new UserFilter());
             var report = await _reportService
-                .GetCurrentStatsAsync(new Domain.Model.StatusSummary());
+                .GetCurrentStatsAsync(new Domain.Model.ReportCriterion());
             Console.WriteLine($"Total users in {Site.Name}: {users.Count}; achievers: {report.Achievers}");
             return 0;
         }

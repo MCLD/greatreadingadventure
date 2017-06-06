@@ -51,7 +51,7 @@
             </div>
             <div class="navbar-collapse navbar-right collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span></a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" title="Back to the site" data-toggle="tooltip" data-placement="bottom" class="gra-homelink"><span class="fa fa-sitemap"></span><span class="visible-xs-inline"> Back to the site</span></a></li>
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ReadAllMail.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Mail">
@@ -110,7 +110,7 @@
                         <li ActiveBy routeKey="Controller" value="Reporting">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Reporting"><span class="fa fa-file-text-o"></span><span class="visible-xs-inline"> Reporting</span> <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a asp-controller="Reporting" asp-action="Index">Branch Report</a></li>
+                                <li><a asp-controller="Reporting" asp-action="Index">All reports</a></li>
                             </ul>
                         </li>
                     }
@@ -194,8 +194,7 @@
             </div>
         }
         @RenderBody()
-        <hr class="footer">
-        <footer>
+        <footer style="clear: both;">
             <grasite property="footer"></grasite>
         </footer>
     </div>

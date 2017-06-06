@@ -317,5 +317,11 @@ namespace GRA.Controllers.MissionControl
             ShowAlertSuccess($"Sites flushed from cache, reloaded in {sw.ElapsedMilliseconds} ms.");
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult Report()
+        {
+            return View();
+        }
     }
 }

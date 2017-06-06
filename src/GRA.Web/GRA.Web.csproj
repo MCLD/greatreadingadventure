@@ -39,6 +39,7 @@
     <ProjectReference Include="..\GRA.Data\GRA.Data.csproj" />
     <ProjectReference Include="..\GRA.Data.SqlServer\GRA.Data.SqlServer.csproj" />
     <ProjectReference Include="..\GRA.Data.SQLite\GRA.Data.SQLite.csproj" />
+    <ProjectReference Include="..\GRA.Domain.Report\GRA.Domain.Report.csproj" />
     <ProjectReference Include="..\GRA.Security\GRA.Security.csproj" />
   </ItemGroup>
 
@@ -51,9 +52,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />

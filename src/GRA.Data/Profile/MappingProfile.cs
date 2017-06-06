@@ -52,8 +52,10 @@ namespace GRA.Data.Profile
             CreateMap<Model.Questionnaire, Domain.Model.Questionnaire>()
                 .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions.Where(_ => _.IsDeleted == false).OrderBy(_ => _.SortOrder)))
                 .ReverseMap();
-            CreateMap<Model.RequiredQuestionnaire, Domain.Model.RequiredQuestionnaire>().ReverseMap();
             CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>().ReverseMap();
+            CreateMap<Model.ReportCriterion, Domain.Model.ReportCriterion>().ReverseMap();
+            CreateMap<Model.ReportRequest, Domain.Model.ReportRequest>().ReverseMap();
+            CreateMap<Model.RequiredQuestionnaire, Domain.Model.RequiredQuestionnaire>().ReverseMap();
             CreateMap<Model.Role, Domain.Model.Role>().ReverseMap();
             CreateMap<Model.School, Domain.Model.School>().ReverseMap();
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>().ReverseMap();

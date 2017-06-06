@@ -9,9 +9,9 @@ namespace GRA.Domain.Repository
     {
         Task<IEnumerable<Model.UserLog>> PageHistoryAsync(int userId, int skip, int take);
         Task<int> GetHistoryItemCountAsync(int userId);
-        Task<long> CompletedChallengeCountAsync(StatusSummary request);
-        Task<long> PointsEarnedTotalAsync(StatusSummary request);
-        Task<Dictionary<string, long>> ActivityEarningsTotalAsync(StatusSummary request);
-        Task<long> EarnedBadgeCountAsync(StatusSummary request);
+        Task<long> CompletedChallengeCountAsync(ReportCriterion request);
+        Task<long> PointsEarnedTotalAsync(ReportCriterion request);
+        Task<Dictionary<string, long>> ActivityEarningsTotalAsync(ReportCriterion request);
+        Task<long> EarnedBadgeCountAsync(ReportCriterion request);
     }
 }

@@ -1,0 +1,119 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.RunReportViewModel
+
+<div class="modal fade" tabindex="-1" role="dialog" id="reportModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="reportTitle">Report</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped" role="progressbar" id="reportProgress" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <p id="reportStatus"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="cancelReport">Cancel report</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section scripts {
+    <script>
+    var started = false;
+    var finished = false;
+    var cancel = false;
+    var socket;
+
+    function updateState(e) {
+        if (!socket) {
+            $('#reportStatus').text('Cannot communicate with server.');
+        } else if (!cancel) {
+            switch (socket.readyState) {
+                case WebSocket.CLOSED:
+                    if (started && finished) {
+                        window.location.href = '@Url.Action("View", new { id = Model.Id })';
+                    } else if (started && !finished) {
+                        $('#cancelReport').text('Close window');
+                        $('#cancelReport').removeClass('btn-danger');
+                        $('#cancelReport').addClass('btn-danger');
+                        $('#reportProgress').removeClass('active');
+                        $('#reportProgress').addClass('progress-bar-danger');
+                        $('#reportStatus').text('The server disconnected while running the report.');
+                    }
+                    break;
+                case WebSocket.CLOSING:
+                    if (started) {
+                        $('#reportStatus').text('Connection closing...');
+                    }
+                    break;
+                case WebSocket.CONNECTING:
+                    $('#reportStatus').text('Connecting...');
+                    break;
+                case WebSocket.OPEN:
+                    if (e && e.data) {
+                        var incoming = JSON.parse(e.data);
+                        if (incoming.Title) {
+                            $('#reportTitle').text(incoming.Title);
+                        }
+                        if (incoming.Status) {
+                            $('#reportStatus').text(incoming.Status);
+                        }
+                        if (incoming.PercentComplete) {
+                            $('#reportProgress').width(incoming.PercentComplete + '%');
+                        }
+                        if (incoming.Complete) {
+                            finished = true;
+                            socket.close();
+                            $('#cancelReport').text('Close window');
+                            $('#cancelReport').removeClass('btn-danger');
+                            $('#cancelReport').addClass('btn-default');
+                            $('#reportProgress').removeClass('active');
+                            $('#reportProgress').addClass('progress-bar-success');
+                        }
+                        if (incoming.Error) {
+                            $('#cancelReport').text('Close window');
+                            $('#reportProgress').removeClass('active');
+                            $('#reportProgress').addClass('progress-bar-danger');
+                        }
+                    }
+                    break;
+                default:
+                    $('#reportStatus').text('Unknown state: ' + socket.readyState);
+                    break;
+            }
+        }
+    }
+
+    $().ready(function () {
+        cancel = false;
+        $('#reportProgress').removeClass('active');
+        $('#reportProgress').removeClass('progress-bar-danger');
+        $('#reportProgress').removeClass('progress-bar-success');
+        $('#cancelReport').text('Cancel report');
+        $('#cancelReport').addClass('btn-danger');
+        $('#reportModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        socket = new WebSocket('@Model.RunReportUrl');
+        socket.onopen = function (e) {
+            $('#reportProgress').addClass('active');
+            started = true;
+        }
+        socket.onclose = updateState;
+        socket.onerror = updateState;
+        socket.onmessage = updateState;
+        return false;
+    });
+
+    $('#cancelReport').click(function () {
+        cancel = true;
+        if (socket && socket.readyState == WebSocket.OPEN) {
+            socket.close();
+        }
+        window.location.href = '@Url.Action("Index")';
+    });
+    </script>
+}

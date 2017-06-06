@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Add exception handling when entering activity on the dashboard
 - Add achieved at property to Users
+- Add WebSocket-based reporting interface to avoid timeouts on report execution
 
 ### Changed
 - Change submit buttons to be disabled on click for challenge and household pages
