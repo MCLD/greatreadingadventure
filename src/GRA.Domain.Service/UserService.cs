@@ -313,47 +313,56 @@ namespace GRA.Domain.Service
 
             if (HasPermission(Permission.EditParticipants))
             {
-                // admin users can update anything except siteid
                 var currentEntity = await _userRepository.GetByIdAsync(userToUpdate.Id);
-                userToUpdate.SiteId = currentEntity.SiteId;
-                userToUpdate.IsAdmin = await UserHasRoles(userToUpdate.Id);
+                currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
+                currentEntity.Age = userToUpdate.Age;
+                currentEntity.AvatarId = userToUpdate.AvatarId;
+                currentEntity.BranchId = userToUpdate.BranchId;
+                currentEntity.BranchName = null;
+                currentEntity.CardNumber = userToUpdate.CardNumber;
+                currentEntity.Email = userToUpdate.Email;
+                currentEntity.FirstName = userToUpdate.FirstName;
+                currentEntity.LastName = userToUpdate.LastName;
+                currentEntity.PhoneNumber = userToUpdate.PhoneNumber;
+                currentEntity.PostalCode = userToUpdate.PostalCode;
+                currentEntity.ProgramId = userToUpdate.ProgramId;
+                currentEntity.ProgramName = null;
+                currentEntity.SystemId = userToUpdate.SystemId;
+                currentEntity.SystemName = null;
 
                 int? removeEnteredSchoolId = null;
                 if (hasSchool == false)
                 {
-                    userToUpdate.SchoolId = null;
+                    currentEntity.SchoolId = null;
                     if (currentEntity.EnteredSchoolId.HasValue)
                     {
                         removeEnteredSchoolId = currentEntity.EnteredSchoolId;
-                        userToUpdate.EnteredSchoolId = null;
+                        currentEntity.EnteredSchoolId = null;
                     }
                 }
                 else if (hasSchool == true)
                 {
-                    if (currentEntity.EnteredSchoolId.HasValue)
+                    if (!currentEntity.EnteredSchoolId.HasValue)
                     {
-                        userToUpdate.EnteredSchoolId = currentEntity.EnteredSchoolId;
-                        userToUpdate.SchoolId = null;
-                    }
-                    else if (!currentEntity.SchoolId.HasValue
-                        && !string.IsNullOrWhiteSpace(userToUpdate.EnteredSchoolName))
-                    {
-                        var enteredSchool = await _schoolService.AddEnteredSchool(
-                            userToUpdate.EnteredSchoolName, schoolDistrictId.Value);
-                        userToUpdate.EnteredSchoolId = enteredSchool.Id;
-                        userToUpdate.SchoolId = null;
-                    }
-                    else
-                    {
-                        userToUpdate.EnteredSchoolId = null;
+                        if (!currentEntity.SchoolId.HasValue
+                            && !string.IsNullOrWhiteSpace(userToUpdate.EnteredSchoolName))
+                        {
+                            var enteredSchool = await _schoolService.AddEnteredSchool(
+                                userToUpdate.EnteredSchoolName, schoolDistrictId.Value);
+                            currentEntity.EnteredSchoolId = enteredSchool.Id;
+                        }
+                        else
+                        {
+                            currentEntity.SchoolId = userToUpdate.SchoolId;
+                        }
                     }
                 }
 
-                if (!HasPermission(Permission.EditParticipantUsernames) 
-                    || string.IsNullOrWhiteSpace(currentEntity.Username)
-                    || string.IsNullOrWhiteSpace(userToUpdate.Username))
+                if (HasPermission(Permission.EditParticipantUsernames) 
+                    && !string.IsNullOrWhiteSpace(currentEntity.Username)
+                    && !string.IsNullOrWhiteSpace(userToUpdate.Username))
                 {
-                    userToUpdate.Username = currentEntity.Username;
+                    currentEntity.Username = userToUpdate.Username;
                 }
                 else if (!string.Equals(userToUpdate.Username, currentEntity.Username, 
                     System.StringComparison.OrdinalIgnoreCase))
@@ -364,10 +373,10 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                await ValidateUserFields(userToUpdate);
+                await ValidateUserFields(currentEntity);
 
                 var updatedUser = await _userRepository
-                    .UpdateSaveAsync(requestedByUserId, userToUpdate);
+                    .UpdateSaveAsync(requestedByUserId, currentEntity);
 
                 if (removeEnteredSchoolId.HasValue)
                 {

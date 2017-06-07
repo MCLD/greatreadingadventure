@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Change submit buttons to be disabled on click for challenge and household pages
+- Change Mission Control user updating to only update certain properties
 
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name
