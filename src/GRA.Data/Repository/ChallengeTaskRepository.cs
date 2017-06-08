@@ -138,6 +138,15 @@ namespace GRA.Data.Repository
                 .AnyAsync();
         }
 
+        public async Task UnsetUserChallengeTasksAsync(int userId, int challengeId)
+        {
+            await _context.UserChallengeTasks
+                .Where(_ => _.UserId == userId && _.ChallengeTask.ChallengeId == challengeId)
+                .ForEachAsync(_ => _.IsCompleted = false);
+
+            await _context.SaveChangesAsync();
+        }
+
         private async Task LookUpChallengeTaskTypeAsync(ChallengeTask task)
         {
             string taskTypeName = task.ChallengeTaskType.ToString();

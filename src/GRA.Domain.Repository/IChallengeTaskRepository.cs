@@ -11,5 +11,6 @@ namespace GRA.Domain.Repository
         Task DecreasePositionAsync(int taskId);
         Task IncreasePositionAsync(int taskId);
         Task<bool> UserHasTaskAsync(int id);
+        Task UnsetUserChallengeTasksAsync(int userId, int challengeId);
     }
 }

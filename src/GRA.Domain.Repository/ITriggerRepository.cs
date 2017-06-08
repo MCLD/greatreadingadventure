@@ -25,5 +25,7 @@ namespace GRA.Domain.Repository
         Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId);
         Task<ICollection<Trigger>> GetChallengeDependentsAsync(int challengeId);
         Task<bool> SecretCodeInUseAsync(int siteId, string secretCode);
+        Task<Trigger> GetByBadgeIdAsync(int badgeId);
+        Task RemoveUserTriggerAsync(int userId, int triggerId);
     }
 }

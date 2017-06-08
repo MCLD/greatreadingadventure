@@ -31,6 +31,7 @@ namespace GRA.Controllers.MissionControl
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
+        private readonly TriggerService _triggerService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
         public ParticipantsController(ILogger<ParticipantsController> logger,
@@ -43,6 +44,7 @@ namespace GRA.Controllers.MissionControl
             QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
+            TriggerService triggerService,
             UserService userService,
             VendorCodeService vendorCodeService)
             : base(context)
@@ -60,6 +62,7 @@ namespace GRA.Controllers.MissionControl
                 nameof(questionnaireService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
+            _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
             _userService = Require.IsNotNull(userService, nameof(userService));
             _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
             PageTitle = "Participants";
@@ -1339,6 +1342,30 @@ namespace GRA.Controllers.MissionControl
                             }
                         }
                     }
+
+                    if (!item.AvatarBundleId.HasValue)
+                    {
+                        if (item.BadgeId.HasValue && !item.ChallengeId.HasValue)
+                        {
+                            var trigger = await _triggerService.GetByBadgeIdAsync(item.BadgeId.Value);
+                            if (trigger != null && !trigger.AwardAvatarBundleId.HasValue
+                                && !trigger.AwardVendorCodeTypeId.HasValue
+                                && string.IsNullOrWhiteSpace(trigger.AwardMail))
+                            {
+                                var prize = await _prizeWinnerService.GetUserTriggerPrizeAsync(id,
+                                    trigger.Id);
+                                if (prize == null || !prize.RedeemedAt.HasValue)
+                                {
+                                    itemModel.IsDeletable = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            itemModel.IsDeletable = true;
+                        }
+                    }
+
                     viewModel.Historys.Add(itemModel);
                 }
 
@@ -1354,7 +1381,14 @@ namespace GRA.Controllers.MissionControl
         [Authorize(Policy = Policy.LogActivityForAny)]
         public async Task<IActionResult> DeleteHistory(int id, int userId)
         {
-            await _activityService.RemoveActivityAsync(userId, id);
+            try
+            {
+                await _activityService.RemoveActivityAsync(userId, id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertDanger("Cannot delete history item: ", gex);
+            }
             return RedirectToAction("History", new { id = userId });
         }
         #endregion

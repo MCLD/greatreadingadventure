@@ -164,5 +164,10 @@ namespace GRA.Domain.Service
             return await _prizeWinnerRepository.CountByWinningUserId(GetCurrentSiteId(), userId,
                 redeemed);
         }
+
+        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
+        {
+            return await _prizeWinnerRepository.GetUserTriggerPrizeAsync(userId, triggerId);
+        }
     }
 }

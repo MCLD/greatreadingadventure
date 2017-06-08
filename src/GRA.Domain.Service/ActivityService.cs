@@ -15,6 +15,7 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IChallengeRepository _challengeRepository;
+        private readonly IChallengeTaskRepository _challengeTaskRepository;
         private readonly IDrawingRepository _drawingRepository;
         private readonly IDynamicAvatarBundleRepository _dynamicAvatarBundleRepository;
         private readonly IDynamicAvatarItemRepository _dynamicAvatarItemRepository;
@@ -37,6 +38,7 @@ namespace GRA.Domain.Service
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IChallengeRepository challengeRepository,
+            IChallengeTaskRepository challengeTaskRepository,
             IDrawingRepository drawingRepository,
             IDynamicAvatarBundleRepository dynamicAvatarBundleRepository,
             IDynamicAvatarItemRepository dynamicAvatarItemRepository,
@@ -57,6 +59,8 @@ namespace GRA.Domain.Service
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
+            _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
+                nameof(challengeTaskRepository));
             _drawingRepository = Require.IsNotNull(drawingRepository, nameof(drawingRepository));
             _dynamicAvatarBundleRepository = Require.IsNotNull(dynamicAvatarBundleRepository,
                 nameof(dynamicAvatarBundleRepository));
@@ -221,9 +225,56 @@ namespace GRA.Domain.Service
                 || HasPermission(Permission.LogActivityForAny))
             {
                 var userLog = await _userLogRepository.GetByIdAsync(userLogIdToRemove);
+                Trigger trigger = null;
+                PrizeWinner prize = null;
+
+                if (userLog.AvatarBundleId.HasValue)
+                {
+                    throw new GraException("Avatar bundles cannot be removed.");
+                }
+                else if (userLog.BadgeId.HasValue && !userLog.ChallengeId.HasValue)
+                {
+                    trigger = await _triggerRepository.GetByBadgeIdAsync(userLog.BadgeId.Value);
+                    if (trigger == null)
+                    {
+                        throw new GraException("This badge cannot be removed.");
+                    }
+                    else if (trigger.AwardAvatarBundleId.HasValue
+                        || trigger.AwardVendorCodeTypeId.HasValue
+                        || !string.IsNullOrWhiteSpace(trigger.AwardMail))
+                    {
+                        throw new GraException("Trigger has non-prize awards.");
+                    }
+                    else
+                    {
+                        prize = await _prizeWinnerService.GetUserTriggerPrizeAsync(userIdToLog,
+                            trigger.Id);
+                        if (prize != null && prize.RedeemedAt.HasValue)
+                        {
+                            throw new GraException("The prize for this trigger has already been reedeemed.");
+                        }
+                    }
+                }
 
                 int pointsToRemove = userLog.PointsEarned;
                 await _userLogRepository.RemoveSaveAsync(authUserId, userLogIdToRemove);
+                if (userLog.ChallengeId.HasValue)
+                {
+                    await _challengeTaskRepository.UnsetUserChallengeTasksAsync(userIdToLog,
+                        userLog.ChallengeId.Value);
+                }
+                if (userLog.BadgeId.HasValue)
+                {
+                    await _badgeRepository.RemoveUserBadgeAsync(userIdToLog, userLog.BadgeId.Value);
+                }
+                if (trigger != null)
+                {
+                    await _triggerRepository.RemoveUserTriggerAsync(userIdToLog, trigger.Id);
+                }
+                if (prize != null)
+                {
+                    await _prizeWinnerService.RemovePrizeAsync(prize.Id);
+                }
                 return await RemovePointsSaveAsync(authUserId, userIdToLog, pointsToRemove);
             }
             else
@@ -536,7 +587,7 @@ namespace GRA.Domain.Service
             }
 
             // cap points at int.MaxValue
-            long totalPoints = Convert.ToInt64(earnedUser.PointsEarned) 
+            long totalPoints = Convert.ToInt64(earnedUser.PointsEarned)
                 + Convert.ToInt64(pointsEarned);
             if (totalPoints > int.MaxValue)
             {

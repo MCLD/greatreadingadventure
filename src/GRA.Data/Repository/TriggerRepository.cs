@@ -595,5 +595,26 @@ namespace GRA.Data.Repository
                 .Where(_ => _.SiteId == siteId && _.SecretCode == secretCode)
                 .AnyAsync();
         }
+
+        public async Task<Trigger> GetByBadgeIdAsync(int badgeId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.AwardBadgeId == badgeId)
+                .ProjectTo<Trigger>()
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task RemoveUserTriggerAsync(int userId, int triggerId)
+        {
+            var userTrigger = await _context.UserTriggers
+                .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
+                .SingleOrDefaultAsync();
+
+            if (userTrigger != null)
+            {
+                _context.UserTriggers.Remove(userTrigger);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

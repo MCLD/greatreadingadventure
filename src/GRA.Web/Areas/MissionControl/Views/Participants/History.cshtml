@@ -66,7 +66,7 @@
                             <th>Points</th>
                             @if (Model.CanRemoveHistory)
                             {
-                                <th>&nbsp;</th>
+                                <th width="44">&nbsp;</th>
                             }
                         </tr>
                     </thead>
@@ -92,14 +92,21 @@
                                 @if (Model.CanRemoveHistory)
                                 {
                                     <td>
-                                        <button type="button"
-                                                class="btn btn-danger btn-xs"
-                                                data-toggle="modal"
-                                                data-target="#deleteModal"
-                                                data-id="@history.Id"
-                                                data-name="@history.Description">
-                                            <span class="fa fa-remove" aria-hidden="true"></span>
-                                        </button>
+                                        @if (history.IsDeletable)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-danger btn-xs"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteModal"
+                                                    data-id="@history.Id"
+                                                    data-name="@history.Description">
+                                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            @:&nbsp;
+                                        }
                                     </td>
                                 }
                             </tr>

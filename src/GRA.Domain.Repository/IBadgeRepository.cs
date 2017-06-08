@@ -10,5 +10,6 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<Badge>> PageForUserAsync(int userId, int skip, int take);
         Task<int> GetCountForUserAsync(int userId);
         Task<bool> UserHasBadge(int userId, int badgeId);
+        Task RemoveUserBadgeAsync(int userId, int badgeId);
     }
 }

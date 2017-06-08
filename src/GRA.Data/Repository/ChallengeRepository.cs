@@ -144,7 +144,7 @@ namespace GRA.Data.Repository
                     // determine if challenge is completed
                     var challengeStatus = await _context.UserLogs
                         .AsNoTracking()
-                        .Where(_ => _.UserId == userId && _.ChallengeId == id)
+                        .Where(_ => _.UserId == userId && _.ChallengeId == id && _.IsDeleted == false)
                         .SingleOrDefaultAsync();
                     if (challengeStatus != null)
                     {

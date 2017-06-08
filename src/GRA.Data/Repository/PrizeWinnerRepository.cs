@@ -46,5 +46,13 @@ namespace GRA.Data.Repository
                 .ProjectTo<PrizeWinner>()
                 .ToListAsync();
         }
+
+        public async Task<PrizeWinner> GetUserTriggerPrizeAsync(int userId, int triggerId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
+                .ProjectTo<PrizeWinner>()
+                .FirstOrDefaultAsync();
+        }
     }
 }

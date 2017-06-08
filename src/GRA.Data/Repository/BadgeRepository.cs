@@ -62,5 +62,18 @@ namespace GRA.Data.Repository
                 .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task RemoveUserBadgeAsync(int userId, int badgeId)
+        {
+            var userBadge = await _context.UserBadges
+                .Where(_ => _.UserId == userId && _.BadgeId == badgeId)
+                .SingleOrDefaultAsync();
+
+            if (userBadge != null)
+            {
+                _context.UserBadges.Remove(userBadge);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
