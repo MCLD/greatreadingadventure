@@ -95,9 +95,7 @@ namespace GRA.Domain.Service
                     SiteId = enteredSchool.SiteId,
                     SchoolTypeId = schoolTypeId
                 });
-            await _enteredSchoolRepository.ConvertSchoolAsync(GetClaimId(ClaimType.UserId),
-                enteredSchoolId,
-                newSchool.Id);
+            await _enteredSchoolRepository.ConvertSchoolAsync(enteredSchool, newSchool.Id);
             return newSchool;
         }
 
@@ -110,9 +108,7 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("Invalid school selection.");
             }
-            await _enteredSchoolRepository.ConvertSchoolAsync(GetClaimId(ClaimType.UserId),
-                enteredSchoolId,
-                schoolId);
+            await _enteredSchoolRepository.ConvertSchoolAsync(enteredSchool, schoolId);
             return school;
         }
 

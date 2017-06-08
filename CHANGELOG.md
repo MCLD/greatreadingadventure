@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Change submit buttons to be disabled on click for challenge and household pages
 - Change Mission Control user updating to only update certain properties
 - Change deleting a users history to remove all that was awarded from it
+- Change processing entered schools to perform the same action for identical entered schools
 
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name

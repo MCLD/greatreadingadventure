@@ -19,10 +19,17 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task ConvertSchoolAsync(int userId, int enteredSchoolId, int schoolId)
+        public async Task ConvertSchoolAsync(EnteredSchool enteredSchool, int schoolId)
         {
+            var identicalEnteredSchools = await  DbSet.AsNoTracking()
+                .Where(_ => _.SchoolDistrictId == enteredSchool.SchoolDistrictId
+                && _.Name.Trim() == enteredSchool.Name.Trim())
+                .ToListAsync();
+
             var users = await _context.Users
-                .Where(_ => _.EnteredSchoolId == enteredSchoolId)
+                .Where(_ => identicalEnteredSchools
+                    .Select(s => s.Id)
+                    .Contains(_.EnteredSchoolId.GetValueOrDefault()))
                 .ToListAsync();
 
             foreach (var user in users)
@@ -30,9 +37,10 @@ namespace GRA.Data.Repository
                 user.SchoolId = schoolId;
                 user.EnteredSchoolId = default(int?);
             }
-            _context.Users.UpdateRange(users);
 
-            await RemoveSaveAsync(userId, enteredSchoolId);
+            _context.Users.UpdateRange(users);
+            DbSet.RemoveRange(identicalEnteredSchools);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<DataWithCount<ICollection<EnteredSchool>>> GetPaginatedListAsync(int siteId,
