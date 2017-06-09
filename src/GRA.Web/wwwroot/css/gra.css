@@ -506,17 +506,6 @@ input.form-checkbox {
     cursor: pointer;
 }
 
-.daily-image {
-    max-width: 400px;
-}
-
-/* Small Devices, Tablets */
-@media only screen and (min-width : 768px) {
-    .daily-image {
-        max-width: 600px;
-    }
-}
-
 .dashboard-page-container {
     border: 15px solid white;
     border-radius: 4px;

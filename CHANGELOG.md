@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue where school CSV import fails if two schools have the same name
 - Fix secret code GraException message typo
 - Fix bundle award on login
+- Fix daily image in IE
 
 ## [4.0.0-alpha6] 2017-06-02
 ### Added
