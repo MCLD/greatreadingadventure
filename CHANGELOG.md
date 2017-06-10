@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Change Mission Control user updating to only update certain properties
 - Change deleting a users history to remove all that was awarded from it
 - Change processing entered schools to perform the same action for identical entered schools
+- Change events to order by start date
 
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name

@@ -195,7 +195,7 @@ namespace GRA.Data.Repository
                     || _.Description.Contains(filter.Search));
             }
 
-            return events;
+            return events.OrderBy(_ => _.StartDate);
         }
 
         public async Task<bool> LocationInUse(int siteId, int locationId)
