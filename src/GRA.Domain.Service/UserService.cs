@@ -362,14 +362,17 @@ namespace GRA.Domain.Service
                     && !string.IsNullOrWhiteSpace(currentEntity.Username)
                     && !string.IsNullOrWhiteSpace(userToUpdate.Username))
                 {
-                    currentEntity.Username = userToUpdate.Username;
-                }
-                else if (!string.Equals(userToUpdate.Username, currentEntity.Username, 
+                    if (!string.Equals(userToUpdate.Username, currentEntity.Username,
                     System.StringComparison.OrdinalIgnoreCase))
-                {
-                    if (await UsernameInUseAsync(userToUpdate.Username))
                     {
-                        throw new GraException("Username is in use by another user.");
+                        if (await UsernameInUseAsync(userToUpdate.Username))
+                        {
+                            throw new GraException("Username is in use by another user.");
+                        }
+                        else
+                        {
+                            currentEntity.Username = userToUpdate.Username;
+                        }
                     }
                 }
 
