@@ -542,7 +542,7 @@
             }
         });
 
-        $(".minutesInput").on("keyup keypress", function(e) {
+        $(".minutesInput").on("keypress", function(e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13)
             {
@@ -553,7 +553,7 @@
             }
         });
 
-        $(".codeInput").on("keyup keypress", function(e) {
+        $(".codeInput").on("keypress", function(e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13)
             {
