@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Fix bundle award on login
 - Fix daily image in IE
 - Fix pressing enter submitting twice on household pages
+- Add max length checking when logging activity with books
 
 ## [4.0.0-alpha6] 2017-06-02
 ### Added

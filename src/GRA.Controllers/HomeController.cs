@@ -15,7 +15,8 @@ namespace GRA.Controllers
     public class HomeController : Base.UserController
     {
         private const string ActivityErrorMessage = "ActivityErrorMessage";
-        private const string AuthorMissingTitle = "AuthorMissingTitle";
+        private const string TitleErrorMessage = "TitleErrorMessage";
+        private const string AuthorErrorMessage = "AuthorErrorMessage";
         private const string ModelData = "ModelData";
         private const string SecretCodeMessage = "SecretCodeMessage";
         private const int BadgesToDisplay = 6;
@@ -138,9 +139,13 @@ namespace GRA.Controllers
                     ModelState.AddModelError("ActivityAmount", (string)TempData[ActivityErrorMessage]);
                     viewModel.ActivityAmount = null;
                 }
-                if (TempData.ContainsKey(AuthorMissingTitle))
+                if (TempData.ContainsKey(TitleErrorMessage))
                 {
-                    ModelState.AddModelError("Title", (string)TempData[AuthorMissingTitle]);
+                    ModelState.AddModelError("Title", (string)TempData[TitleErrorMessage]);
+                }
+                if (TempData.ContainsKey(AuthorErrorMessage))
+                {
+                    ModelState.AddModelError("Author", (string)TempData[AuthorErrorMessage]);
                 }
                 if (TempData.ContainsKey(SecretCodeMessage))
                 {
@@ -227,11 +232,23 @@ namespace GRA.Controllers
                 valid = false;
                 TempData[ActivityErrorMessage] = "Please enter a whole number greater than 0.";
             }
+            if (!ModelState.IsValid)
+            {
+                valid = false;
+                if (ModelState["Title"].Errors.Count > 0)
+                {
+                    TempData[TitleErrorMessage] = ModelState["Title"].Errors.First().ErrorMessage;
+                }
+                if (ModelState["Author"].Errors.Count > 0)
+                {
+                    TempData[AuthorErrorMessage] = ModelState["Author"].Errors.First().ErrorMessage;
+                }
+            }
             if (string.IsNullOrWhiteSpace(viewModel.Title)
                 && !string.IsNullOrWhiteSpace(viewModel.Author))
             {
                 valid = false;
-                TempData[AuthorMissingTitle] = "Please include the Title of the book";
+                TempData[TitleErrorMessage] = "Please include the Title of the book";
             }
             if (!valid)
             {

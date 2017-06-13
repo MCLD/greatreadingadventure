@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Controllers.ViewModel.Home
 {
@@ -12,7 +13,9 @@ namespace GRA.Controllers.ViewModel.Home
         public string ActivityDescriptionPlural { get; set; }
 
         public int? ActivityAmount { get; set; }
+        [MaxLength(500)]
         public string Title { get; set; }
+        [MaxLength(255)]
         public string Author { get; set; }
 
         [DisplayName("Secret Code")]
