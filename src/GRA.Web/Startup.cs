@@ -195,7 +195,13 @@ namespace GRA.Web
             services.AddScoped<VendorCodeService>();
 
             services.AddScoped<Domain.Report.ServiceFacade.Report>();
-            services.AddScoped<Domain.Report.CurrentStatusReport>();
+            services.AddTransient<Domain.Report.BadgeReport>();
+            services.AddTransient<Domain.Report.CurrentStatusByProgramReport>();
+            services.AddTransient<Domain.Report.CurrentStatusReport>();
+            services.AddTransient<Domain.Report.RegisteredBySchoolReport>();
+            services.AddTransient<Domain.Report.RegistrationsAchieversReport>();
+            services.AddTransient<Domain.Report.ParticipantProgressReport>();
+            services.AddTransient<Domain.Report.TopPointEarnersReport>();
 
             // service resolution
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();

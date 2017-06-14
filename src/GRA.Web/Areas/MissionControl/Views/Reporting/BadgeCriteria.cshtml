@@ -1,0 +1,308 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<div class="row">
+    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="lead">Add badge</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills" style="padding: 10px 0;">
+                                        <li id="All" class="active requirementScope">
+                                            <a>All</a>
+                                        </li>
+                                        <li id="System" class="requirementScope">
+                                            <a>My System</a>
+                                        </li>
+                                        <li id="Branch" class="requirementScope">
+                                            <a>My Branch</a>
+                                        </li>
+                                        <li id="Mine" class="requirementScope">
+                                            <a>Mine</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-8">
+                                    <input id="searchText" class="form-control"
+                                           placeholder="Enter text to search for an event here" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="col-xs-6">
+                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchMessage" class="row hide">
+                                <div class="col-xs-12">
+                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="modalRequirementList" class="col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <input asp-for="ReportId" type="hidden" />
+    <input asp-for="BadgeRequiredList" type="hidden" />
+    <input asp-for="ChallengeRequiredList" type="hidden" />
+
+    <div class="form-group">
+        <div class="col-xs-6">
+            <label asp-for="StartDate" class="control-label"></label>
+            <div class="input-group date" id="pickerStart">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="StartDate" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="col-xs-6">
+            <label asp-for="EndDate" class="control-label"></label>
+            <div class="input-group date" id="pickerEnd">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="EndDate" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="SystemId" class="control-label"></label>
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                <option value="">All systems</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title">Badges</h3>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="44px">Type</th>
+                                <th width="75px">Badge</th>
+                                <th width="44px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requirementList">
+                            <tr id="noRequirements" class="@(Model.ReportBadges?.Count > 0 ? "hide" : "")">
+                                <td colspan="4"><em>No badges reported</em></td>
+                            </tr>
+                            @if (Model.ReportBadges != null)
+                            {
+                                foreach (var requirement in Model.ReportBadges)
+                                {
+                                    <tr>
+                                        <td>
+                                            @requirement.Name
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span class="fa fa-2x @requirement.Icon" title="@requirement.IconDescription"></span>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
+                                            {
+                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                     src="~/@requirement.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                     asp-append-version="true" />
+                                            }
+                                            else
+                                            {
+                                                <text>&nbsp;</text>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    id="removeRequirementButton"
+                                                    class="btn btn-link btn-xs"
+                                                    data-badgeid="@requirement.BadgeId"
+                                                    data-challengeid="@requirement.ChallengeId">
+                                                <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" id="addButton" class="btn btn-warning">Add Badge</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="fa fa-file-text"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        var requirementsUrl = "@Url.Action("GetRequirementList", "Triggers")";
+        var page = 1;
+        var scope = "All";
+        var search = "";
+        var thisBadge = $("#Trigger_AwardBadgeId").val();
+
+        function UpdateRequirementsList() {
+            $.get(requirementsUrl,
+                {
+                    badgeIds: badgeIds.join(','),
+                    challengeIds: challengeIds.join(','),
+                    scope: scope,
+                    search: search,
+                    page: page,
+                    thisBadge: thisBadge
+                }, function(response) {
+                    $("#modalRequirementList").html(response);
+                });
+        }
+
+        $("#addButton").on('click', function(e) {
+            $("#listModal").modal("show");
+            UpdateRequirementsList();
+        });
+
+        $(document).on("click", "#addRequirementButton", function () {
+            var badgeId = $(this).data("badgeid");
+            var challengeId = $(this).data("challengeid");
+
+            if (challengeId != "") {
+                challengeIds.push(challengeId);
+                $("#ChallengeRequiredList").val(challengeIds.join(','));
+            }
+            else if (badgeId != "") {
+                badgeIds.push(badgeId);
+                $("#BadgeRequiredList").val(badgeIds.join(','));
+            }
+            $("#noRequirements").addClass("hide");
+            var row = $(this).parent().parent();
+            $("#requirementList").append(row);
+            $(this).children().removeClass("fa-plus-circle text-primary");
+            $(this).children().addClass("fa-minus-circle text-danger");
+            $(this).attr("id", "removeRequirementButton");
+            $("#noRequirements").addClass("hide");
+            UpdateRequirementsList();
+        });
+
+        $(document).on("click", "#removeRequirementButton", function () {
+            var badgeId = $(this).data("badgeid");
+            var challengeId = $(this).data("challengeid");
+
+            if (challengeId != "") {
+                challengeIds.splice(challengeIds.indexOf(challengeId), 1);
+                $("#ChallengeRequiredList").val(challengeIds.join(','));
+            }
+            else if (badgeId != "") {
+                badgeIds.splice(badgeIds.indexOf(badgeId), 1);
+                $("#BadgeRequiredList").val(badgeIds.join(','));
+            }
+            $(this).parent().parent().remove();
+            if (badgeIds == "" && challengeIds == "") {
+                $("#noRequirements").removeClass("hide");
+            }
+        });
+
+        $(".requirementScope").on("click", function(e) {
+            e.preventDefault();
+            $(this).siblings().removeClass("active");
+            $(this).addClass().addClass("active");
+            scope = $(this).attr("id");
+            page = 1;
+            UpdateRequirementsList();
+        });
+
+        $("#searchButton").on("click", function() {
+            search = $("#searchText").val();
+            if (search != "")
+            {
+                $("#searchMessage").removeClass("hide");
+                $("#searchTerm").html(search);
+            }
+            else
+            {
+                $("#searchMessage").addClass("hide");
+            }
+            page = 1;
+            UpdateRequirementsList();
+        })
+
+        $("#clearButton").on("click", function() {
+            $("#searchText").val("");
+            search = "";
+            $("#searchMessage").addClass("hide");
+            page = 1;
+            UpdateRequirementsList();
+        })
+
+        $(document).on("click", ".page-button", function() {
+            if (!$(this).hasClass("disabled"))
+            {
+                page = $(this).data("page");
+                UpdateRequirementsList();
+            }
+        });
+
+        $('[id^=picker]').datetimepicker({
+            format: 'MM/DD/YYYY h:mm a',
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+
+        $("form").on("submit", function (e) {
+            if (badgeIds.length == 0 && challengeIds.length == 0) {
+                e.preventDefault();
+                alert("Please select which badges to report on.");
+            }
+        });
+    </script>
+}

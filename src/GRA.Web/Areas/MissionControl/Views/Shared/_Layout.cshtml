@@ -155,11 +155,15 @@
             </div>
         </noscript>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
+        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    @RenderSection("inHeading", required: false)
+                    <span class="h2">@ViewData[GRA.Controllers.ViewDataKey.Title]</span>
+                </div>
             </div>
-        </div>
+        }
 
         @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
         {

@@ -1,9 +1,7 @@
 ﻿using GRA.Domain.Repository;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GRA.Data.ServiceFacade;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Model;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +72,70 @@ namespace GRA.Data.Repository
                 _context.UserBadges.Remove(userBadge);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<string> GetBadgeNameAsync(int badgeId)
+        {
+            var trigger = await _context.Triggers
+                .AsNoTracking()
+                .Where(_ => _.AwardBadgeId == badgeId)
+                .ToListAsync();
+
+            if (trigger.Count > 0)
+            {
+                return string.Join(", ", trigger.Select(_ => _.Name));
+            }
+
+            var programs = await _context.Programs
+                .AsNoTracking()
+                .Where(_ => _.JoinBadgeId == badgeId || _.AchieverBadgeId == badgeId)
+                .ToListAsync();
+
+            if (programs.Count > 0)
+            {
+                var joined = new List<string>();
+                var achiever = new List<string>();
+                foreach (var program in programs)
+                {
+                    if (program.JoinBadgeId == badgeId)
+                    {
+                        joined.Add(program.Name);
+                    }
+                    else
+                    {
+                        achiever.Add(program.Name);
+                    }
+                }
+                string name = null;
+                if (joined.Count > 0)
+                {
+                    name = $"Joined {string.Join(", ", joined)}";
+                    if (achiever.Count > 0)
+                    {
+                        name += $"; achiever status in {string.Join(", ", achiever)}";
+                    }
+                }
+                else
+                {
+                    name = $"Achiever status in {string.Join(", ", achiever)}";
+                }
+                return name;
+            }
+
+            var questionnaire = await _context.Questionnaires
+                .AsNoTracking()
+                .Where(_ => _.BadgeId == badgeId)
+                .ToListAsync();
+
+            if (questionnaire.Count() > 0)
+            {
+                string completed = questionnaire.Count() == 1
+                    ? "Completed questionnaire: "
+                    : "Completed questionnaire(s): ";
+                return $"{completed} {string.Join(", ", questionnaire.Select(_ => _.Name))}";
+            }
+
+            return $"Badge id {badgeId}";
         }
     }
 }

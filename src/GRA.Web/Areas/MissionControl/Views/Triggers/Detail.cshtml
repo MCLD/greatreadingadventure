@@ -572,8 +572,8 @@
 @section scripts
 {
     <script>
-        var badgeIds = $("#BadgeRequiredList").val();
-        var challengeIds = $("#ChallengeRequiredList").val();
+        var badgeIds = $("#BadgeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
+        var challengeIds = $("#ChallengeRequiredList").val().split(',').filter(function (x) { return x }).map(Number);
         var requirementsUrl = "@Url.Action("GetRequirementList")";
         var page = 1;
         var scope = "All";
@@ -583,8 +583,8 @@
         function UpdateRequirementsList() {
             $.get(requirementsUrl,
                 {
-                    badgeIds: badgeIds,
-                    challengeIds: challengeIds,
+                    badgeIds: badgeIds.join(','),
+                    challengeIds: challengeIds.join(','),
                     scope: scope,
                     search: search,
                     page: page,
@@ -605,13 +605,13 @@
 
             if (challengeId != "")
             {
-                $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val() + "<" + challengeId + ">");
-                challengeIds = $("#ChallengeRequiredList").val();
+                challengeIds.push(challengeId);
+                $("#ChallengeRequiredList").val(challengeIds.join(','));
             }
             else if (badgeId != "")
             {
-                $("#BadgeRequiredList").val($("#BadgeRequiredList").val() + "<" + badgeId + ">");
-                badgeIds = $("#BadgeRequiredList").val();
+                badgeIds.push(badgeId);
+                $("#BadgeRequiredList").val(badgeIds.join(','));
             }
             $("#noRequirements").addClass("hide");
             var row = $(this).parent().parent();
@@ -629,13 +629,13 @@
 
             if (challengeId != "")
             {
-                $("#ChallengeRequiredList").val($("#ChallengeRequiredList").val().replace("<" + challengeId + ">", ""));
-                challengeIds = $("#ChallengeRequiredList").val();
+                challengeIds.splice(challengeIds.indexOf(challengeId), 1);
+                $("#ChallengeRequiredList").val(challengeIds.join(','));
             }
             else if (badgeId != "")
             {
-                $("#BadgeRequiredList").val($("#BadgeRequiredList").val().replace("<" + badgeId + ">", ""));
-                badgeIds = $("#BadgeRequiredList").val();
+                badgeIds.splice(badgeIds.indexOf(badgeId), 1);
+                $("#BadgeRequiredList").val(badgeIds.join(','));
             }
             $(this).parent().parent().remove();
             if (badgeIds == "" && challengeIds == "")

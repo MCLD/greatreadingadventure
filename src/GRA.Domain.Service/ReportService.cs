@@ -59,11 +59,10 @@ namespace GRA.Domain.Service
             var summary = _memoryCache.Get<StatusSummary>(cacheKey);
             if (summary == null)
             {
-                var users = await _userRepository.GetCountAsync(request);
                 summary = new StatusSummary
                 {
-                    RegisteredUsers = users.users,
-                    Achievers = users.achievers,
+                    RegisteredUsers = await _userRepository.GetCountAsync(request),
+                    Achievers = await _userRepository.GetAchieverCountAsync(request),
                     PointsEarned = await _userLogRepository.PointsEarnedTotalAsync(request),
                     ActivityEarnings = await _userLogRepository.ActivityEarningsTotalAsync(request),
                     CompletedChallenges = await _userLogRepository
@@ -129,7 +128,7 @@ namespace GRA.Domain.Service
 
         public IEnumerable<ReportDetails> GetReportList()
         {
-            return new Catalog().Get();
+            return new Catalog().Get().Where(_ => _.Id >= 0);
         }
 
         public async Task RunReport(int reportRequestId,
@@ -205,7 +204,20 @@ namespace GRA.Domain.Service
                     return;
                 }
 
-                await report.ExecuteAsync(_request, token, progress);
+                try
+                {
+                    await report.ExecuteAsync(_request, token, progress);
+                }
+                catch (Exception ex)
+                {
+                    progress.Report(new OperationStatus
+                    {
+                        PercentComplete = 100,
+                        Status = $"A software error occurred: {ex.Message}.",
+                        Error = true,
+                        Complete = false
+                    });
+                }
 
                 if (!token.IsCancellationRequested)
                 {

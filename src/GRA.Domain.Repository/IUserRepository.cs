@@ -14,7 +14,7 @@ namespace GRA.Domain.Repository
         Task<IEnumerable<int>> GetAllUserIds(int siteId);
         Task<User> GetByUsernameAsync(string username);
         Task<int> GetCountAsync(UserFilter filter);
-        Task<(int users, int achievers)> GetCountAsync(ReportCriterion request);
+        Task<int> GetCountAsync(ReportCriterion request);
         Task<int> GetHouseholdCountAsync(int householdHeadUserId);
         Task<DataWithId<IEnumerable<string>>> GetUserIdAndUsernames(string email);
         Task<IEnumerable<Model.User>> PageAllAsync(UserFilter filter);
@@ -23,5 +23,7 @@ namespace GRA.Domain.Repository
         Task SetUserPasswordAsync(int currentUserId, int userId, string password);
         Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId);
         Task<bool> UsernameInUseAsync(int siteId, string username);
+        Task<List<int>> GetUserIdsByBranchProgram(ReportCriterion criterion);
+        Task<int> GetAchieverCountAsync(ReportCriterion request);
     }
 }

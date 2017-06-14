@@ -8,12 +8,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            @foreach (var report in Model)
-            {
-                <td><a href="@Url.Action("Configure", new { id = report.Id })">@report.Name</a></td>
+        @foreach (var report in Model)
+        {
+            <tr>
+                <td><a asp-action="Configure" asp-route-id="@report.Id">@report.Name</a></td>
                 <td>@report.Description</td>
-            }
-        </tr>
+            </tr>
+        }
     </tbody>
 </table>

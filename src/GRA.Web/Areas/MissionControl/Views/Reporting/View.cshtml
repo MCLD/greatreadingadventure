@@ -1,35 +1,71 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportResultsViewModel
-
-<table class="table table-condensed table-bordered table-striped" style="margin-top: 2rem;">
-    @if (Model.FirstRow != null)
-    {
-        <thead>
-            <tr>
-                @foreach (var data in Model.FirstRow)
+@section inHeading {
+    <div class="pull-right">
+        <a asp-action="Download"
+           asp-route-id="@Model.ReportResultId"
+           class="btn btn-default">
+            <span class="fa fa-file-excel-o"></span>
+            Download Excel spreadsheet
+        </a>
+    </div>
+}
+@foreach (var report in Model.ReportSet.Reports)
+{
+    <div class="row">
+        @if (report.Title != Model.Title)
+        {
+            <div class="col-xs-12">
+                <h2>@report.Title</h2>
+            </div>
+        }
+        <div class="col-xs-12">
+            <table class="table table-condensed table-bordered table-striped"
+                   style="margin-top: 2rem; margin-bottom: 0.5rem;">
+                @if (report.HeaderRow != null)
                 {
-                    <th>@data</th>
+                    <thead>
+                        <tr>
+                            @foreach (var data in report.HeaderRow)
+                            {
+                                <th>@data</th>
+                            }
+                        </tr>
+                    </thead>
                 }
-            </tr>
-        </thead>
-    }
-    @foreach (var row in Model.Results)
-    {
-        <tr>
-            @foreach (string data in row)
+                @foreach (var row in report.Data)
+                {
+                    <tr>
+                        @foreach (string data in row)
+                    {
+                            <td>@data</td>
+                        }
+                    </tr>
+                }
+                @if (report.FooterRow != null)
+                {
+                    <tfoot>
+                        <tr>
+                            @foreach (var data in report.FooterRow)
+                            {
+                                <th><strong>@data</strong></th>
+                            }
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+            @if (report.FooterText != null)
             {
-                <td>@data</td>
+                <div style="margin-bottom: 2rem;">
+                    @foreach (var data in report.FooterText)
+                    {
+                        <p>@data</p>
+                    }
+                </div>
             }
-        </tr>
-    }
-    @if (Model.LastRow != null)
-    {
-        <tfoot>
-            <tr>
-                @foreach (var data in Model.LastRow)
-                {
-                    <th><strong>@data</strong></th>
-                }
-            </tr>
-        </tfoot>
-    }
-</table>
+            else
+            {
+                <div style="margin-bottom: 2rem;">This report was run on @report.AsOf.ToString("g").</div>
+            }
+        </div>
+    </div>
+}

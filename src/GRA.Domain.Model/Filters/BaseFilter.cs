@@ -20,9 +20,9 @@ namespace GRA.Domain.Model.Filters
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public BaseFilter(int? page = null)
+        public BaseFilter(int? page = null, int take = 15)
         {
-            Take = 15;
+            Take = take;
             Skip = page.HasValue ? Take * (page - 1) : 0;
         }
     }

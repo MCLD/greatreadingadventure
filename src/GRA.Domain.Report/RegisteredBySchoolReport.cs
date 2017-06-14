@@ -11,23 +11,27 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(1,
-        "Current Status Report",
-        "Overall status by branch (filterable by system) including registered users, challenges completed, badges earned, and points earned.",
-        "Program")]
-    public class CurrentStatusReport : BaseReport
+    [ReportInformation(-1,
+        "Registered By School Report",
+        "Words words words",
+        "Word")]
+    public class RegisteredBySchoolReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
+        private readonly ISystemRepository _systemRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
-        public CurrentStatusReport(ILogger<CurrentStatusReport> logger,
+        public RegisteredBySchoolReport(ILogger<CurrentStatusReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
+            ISystemRepository systemRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
+            _systemRepository = systemRepository
+                ?? throw new ArgumentNullException(nameof(systemRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _userLogRepository = userLogRepository
@@ -50,33 +54,37 @@ namespace GRA.Domain.Report
                 = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
                 ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
 
-            if (criterion.SiteId == null)
-            {
-                throw new ArgumentNullException(nameof(criterion.SiteId));
-            }
-
-            var report = new StoredReport
-            {
-                Title = ReportAttribute?.Name,
-                AsOf = _serviceFacade.DateTimeProvider.Now
-            };
+            var report = new StoredReport();
             var reportData = new List<object[]>();
             #endregion Reporting initialization
+
+            #region Adjust report criteria as needed
+            ICollection<int> systemIds = null;
+            if (criterion.SystemId == null)
+            {
+                var systems = await _systemRepository.GetAllAsync((int)criterion.SiteId);
+                systemIds = systems.Select(_ => _.Id).ToList();
+            }
+            else
+            {
+                systemIds = new List<int>();
+                systemIds.Add((int)criterion.SystemId);
+            }
+            #endregion Adjust report criteria as needed
 
             #region Collect data
             UpdateProgress(progress, 1, "Starting report...");
 
             // header row
-            report.HeaderRow = new object[]
-            {
-                "System Name",
-                "Branch Name",
-                "Registered Users",
-                "Achievers",
-                "Challenges Completed",
-                "Badges Earned",
-                "Points Earned"
-            };
+            var row = new List<object>();
+            row.Add("System Name");
+            row.Add("Branch Name");
+            row.Add("Registered Users");
+            row.Add("Achievers");
+            row.Add("Challenges Completed");
+            row.Add("Badges Earned");
+            row.Add("Points Earned");
+            report.HeaderRow = row.ToArray();
 
             int count = 0;
 
@@ -87,27 +95,21 @@ namespace GRA.Domain.Report
             long totalBadges = 0;
             long totalPoints = 0;
 
-            var branches = criterion.SystemId != null
-                ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
-                : await _branchRepository.GetAllAsync((int)criterion.SiteId);
-
-            var systemIds = branches
-                .OrderBy(_ => _.SystemName)
-                .GroupBy(_ => _.SystemId)
-                .Select(_ => _.First().SystemId);
-
             foreach (var systemId in systemIds)
             {
                 if (token.IsCancellationRequested)
                 {
                     break;
                 }
-
-                foreach (var branch in branches.Where(_ => _.SystemId == systemId))
+                if (systemIds.Count > 0)
                 {
-                    UpdateProgress(progress,
-                        ++count * 100 / branches.Count(),
-                        $"Processing: {branch.SystemName} - {branch.Name}");
+                    UpdateProgress(progress, (++count * 100) / systemIds.Count);
+                }
+
+                var branches = await _branchRepository.GetBySystemAsync(systemId);
+                foreach (var branch in branches)
+                {
+                    UpdateProgress(progress, $"Processing: {branch.SystemName} - {branch.Name}");
 
                     criterion.SystemId = systemId;
                     criterion.BranchId = branch.Id;
@@ -126,16 +128,16 @@ namespace GRA.Domain.Report
                     totalPoints += points;
 
                     // add row
-                    reportData.Add(new object[]
-                    {
-                        branch.SystemName,
-                        branch.Name,
-                        users,
-                        achievers,
-                        challenge,
-                        badge,
-                        points
-                    });
+                    row = new List<object>();
+                    row.Add(branch.SystemName);
+                    row.Add(branch.Name);
+                    row.Add(users);
+                    row.Add(achievers);
+                    row.Add(challenge);
+                    row.Add(badge);
+                    row.Add(points);
+
+                    reportData.Add(row.ToArray());
 
                     if (token.IsCancellationRequested)
                     {
@@ -147,16 +149,16 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            report.FooterRow = new object[]
-            {
-                "Total",
-                string.Empty,
-                totalRegistered,
-                totalAchiever,
-                totalChallenges,
-                totalBadges,
-                totalPoints,
-            };
+            row = new List<object>();
+            row.Add("Total");
+            row.Add(string.Empty);
+            row.Add(totalRegistered);
+            row.Add(totalAchiever);
+            row.Add(totalChallenges);
+            row.Add(totalBadges);
+            row.Add(totalPoints);
+            report.FooterRow = row.ToArray();
+            report.AsOf = _serviceFacade.DateTimeProvider.Now;
             #endregion Collect data
 
             #region Finish up reporting

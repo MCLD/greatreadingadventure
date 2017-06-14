@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body">
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped" role="progressbar" id="reportProgress" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    <div class="progress-bar progress-bar-striped" role="progressbar" id="reportProgress" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; min-width: 2rem;"></div>
                 </div>
                 <p id="reportStatus"></p>
             </div>
@@ -62,6 +62,7 @@
                         }
                         if (incoming.PercentComplete) {
                             $('#reportProgress').width(incoming.PercentComplete + '%');
+                            $('#reportProgress').text(incoming.PercentComplete + '%');
                         }
                         if (incoming.Complete) {
                             finished = true;

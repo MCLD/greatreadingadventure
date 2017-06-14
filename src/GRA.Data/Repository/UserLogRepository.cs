@@ -133,13 +133,16 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request)
+        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request, 
+            int? challengeId = null)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
             var challengeCount = DbSet
                 .AsNoTracking()
-                .Where(_ => _.ChallengeId != null);
+                .Where(_ => _.ChallengeId != null 
+                    && _.IsDeleted == false
+                    && _.User.IsDeleted == false);
 
             if (eligibleUserIds != null)
             {
@@ -158,6 +161,12 @@ namespace GRA.Data.Repository
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
+            if(challengeId != null)
+            {
+                challengeCount = challengeCount
+                    .Where(_ => _.ChallengeId == challengeId);
+            }
+
             return await challengeCount.CountAsync();
         }
 
@@ -166,6 +175,7 @@ namespace GRA.Data.Repository
             var eligibleUserIds = await GetEligibleUserIds(request);
 
             var pointCount = DbSet
+                .Where(_ => _.IsDeleted == false && _.User.IsDeleted == false)
                 .AsNoTracking();
 
             if (eligibleUserIds != null)
@@ -201,7 +211,9 @@ namespace GRA.Data.Repository
             // start out with all line items that have a point translation id
             var earnedFilter = DbSet
                 .AsNoTracking()
-                .Where(_ => _.PointTranslationId != null);
+                .Where(_ => _.PointTranslationId != null 
+                    && _.IsDeleted == false
+                    && _.User.IsDeleted == false);
 
             // filter by users if necessary
             if (eligibleUserIds != null)
@@ -275,7 +287,9 @@ namespace GRA.Data.Repository
 
             var badgeCount = DbSet
                 .AsNoTracking()
-                .Where(_ => _.BadgeId != null);
+                .Where(_ => _.BadgeId != null 
+                    && _.IsDeleted == false
+                    && _.User.IsDeleted == false);
 
             if (eligibleUserIds != null)
             {
@@ -292,6 +306,66 @@ namespace GRA.Data.Repository
             {
                 badgeCount = badgeCount
                     .Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
+            return await badgeCount.CountAsync();
+        }
+
+        public async Task<long> GetEarningsOverPeriodAsync(int userId, ReportCriterion criterion)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId 
+                    && _.IsDeleted == false
+                    && _.PointsEarned > 0
+                    && _.CreatedAt >= criterion.StartDate
+                    && _.CreatedAt <= criterion.EndDate)
+                .SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+        }
+
+        public async Task<long> GetEarningsUpToDateAsync(int userId, DateTime endDate)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId
+                    && _.IsDeleted == false
+                    && _.PointsEarned > 0
+                    && _.CreatedAt < endDate)
+                .SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+        }
+
+        public async Task<long> EarnedBadgeCountAsync(ReportCriterion request,
+            int? badgeId = null)
+        {
+            var eligibleUserIds = await GetEligibleUserIds(request);
+
+            var badgeCount = DbSet
+                .AsNoTracking()
+                .Where(_ => _.BadgeId != null 
+                    && _.IsDeleted == false
+                    && _.User.IsDeleted == false);
+
+            if (eligibleUserIds != null)
+            {
+                badgeCount = badgeCount.Where(_ => eligibleUserIds.Contains(_.UserId));
+            }
+
+            if (request.StartDate != null)
+            {
+                badgeCount = badgeCount
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                badgeCount = badgeCount
+                    .Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
+            if (badgeId != null)
+            {
+                badgeCount = badgeCount
+                    .Where(_ => _.BadgeId == badgeId);
             }
 
             return await badgeCount.CountAsync();

@@ -20,6 +20,7 @@ namespace GRA
         public const string DefaultSitePath = "GraDefaultSitePath";
         public const string EmailOverride = "GraEmailOverride";
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
+        public const string InstanceName = "GraInstanceName";
         public const string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public const string SqlSessionTable = "GraSqlSessionTable";
     }

@@ -211,8 +211,7 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
-                    .Replace("<", "")
-                    .Split('>')
+                    .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
                     .Select(int.Parse)
                     .ToList();
@@ -220,8 +219,7 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(model.ChallengeRequiredList))
             {
                 challengeRequiredList = model.ChallengeRequiredList
-                .Replace("<", "")
-                .Split('>')
+                .Split(',')
                 .Where(_ => !string.IsNullOrWhiteSpace(_))
                 .Select(int.Parse)
                 .ToList();
@@ -409,10 +407,8 @@ namespace GRA.Controllers.MissionControl
                 AwardsPrize = !string.IsNullOrWhiteSpace(trigger.AwardPrizeName),
                 DependentTriggers = await _triggerService.GetDependentsAsync(trigger.AwardBadgeId),
                 TriggerRequirements = await _triggerService.GetTriggerRequirementsAsync(trigger),
-                BadgeRequiredList = string.Join("", trigger.BadgeIds
-                    .Select(_ => "<" + _.ToString() + ">")),
-                ChallengeRequiredList = string.Join("", trigger.ChallengeIds
-                .Select(_ => "<" + _.ToString() + ">")),
+                BadgeRequiredList = string.Join(",", trigger.BadgeIds),
+                ChallengeRequiredList = string.Join(",", trigger.ChallengeIds),
                 SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                 ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name")
             };
@@ -476,8 +472,7 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(model.BadgeRequiredList))
             {
                 badgeRequiredList = model.BadgeRequiredList
-                    .Replace("<", "")
-                    .Split('>')
+                    .Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
                     .Select(int.Parse)
                     .ToList();
@@ -485,8 +480,7 @@ namespace GRA.Controllers.MissionControl
             if (!string.IsNullOrWhiteSpace(model.ChallengeRequiredList))
             {
                 challengeRequiredList = model.ChallengeRequiredList
-                .Replace("<", "")
-                .Split('>')
+                .Split(',')
                 .Where(_ => !string.IsNullOrWhiteSpace(_))
                 .Select(int.Parse)
                 .ToList();
@@ -695,8 +689,7 @@ namespace GRA.Controllers.MissionControl
             }
             if (!string.IsNullOrWhiteSpace(badgeIds))
             {
-                badgeIds = badgeIds.Replace("<", "");
-                badgeList.AddRange(badgeIds.Split('>')
+                badgeList.AddRange(badgeIds.Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
                     .Select(int.Parse)
                     .ToList());
@@ -708,8 +701,7 @@ namespace GRA.Controllers.MissionControl
 
             if (!string.IsNullOrWhiteSpace(challengeIds))
             {
-                challengeIds = challengeIds.Replace("<", "");
-                filter.ChallengeIds = challengeIds.Split('>')
+                filter.ChallengeIds = challengeIds.Split(',')
                     .Where(_ => !string.IsNullOrWhiteSpace(_))
                     .Select(int.Parse)
                     .ToList();

@@ -11,27 +11,24 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(1,
-        "Current Status Report",
-        "Overall status by branch (filterable by system) including registered users, challenges completed, badges earned, and points earned.",
-        "Program")]
-    public class CurrentStatusReport : BaseReport
+    [ReportInformation(2,
+    "Registrations and Achievers Report",
+    "Registered participants and achievers by branch (filterable by system and date).",
+    "Program")]
+    public class RegistrationsAchieversReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IUserLogRepository _userLogRepository;
-        public CurrentStatusReport(ILogger<CurrentStatusReport> logger,
-            Domain.Report.ServiceFacade.Report serviceFacade,
+        public RegistrationsAchieversReport(ILogger<RegistrationsAchieversReport> logger,
+            ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
-            IUserRepository userRepository,
-            IUserLogRepository userLogRepository) : base(logger, serviceFacade)
+            ISystemRepository systemRepository,
+            IUserRepository userRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
-            _userLogRepository = userLogRepository
-                ?? throw new ArgumentNullException(nameof(userLogRepository));
         }
 
         public override async Task ExecuteAsync(ReportRequest request,
@@ -72,10 +69,7 @@ namespace GRA.Domain.Report
                 "System Name",
                 "Branch Name",
                 "Registered Users",
-                "Achievers",
-                "Challenges Completed",
-                "Badges Earned",
-                "Points Earned"
+                "Achievers"
             };
 
             int count = 0;
@@ -83,9 +77,6 @@ namespace GRA.Domain.Report
             // running totals
             long totalRegistered = 0;
             long totalAchiever = 0;
-            long totalChallenges = 0;
-            long totalBadges = 0;
-            long totalPoints = 0;
 
             var branches = criterion.SystemId != null
                 ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
@@ -114,27 +105,15 @@ namespace GRA.Domain.Report
 
                     int users = await _userRepository.GetCountAsync(criterion);
                     int achievers = await _userRepository.GetAchieverCountAsync(criterion);
-                    long challenge = await _userLogRepository
-                        .CompletedChallengeCountAsync(criterion);
-                    long badge = await _userLogRepository.EarnedBadgeCountAsync(criterion);
-                    long points = await _userLogRepository.PointsEarnedTotalAsync(criterion);
-
                     totalRegistered += users;
                     totalAchiever += achievers;
-                    totalChallenges += challenge;
-                    totalBadges += badge;
-                    totalPoints += points;
 
                     // add row
-                    reportData.Add(new object[]
-                    {
+                    reportData.Add(new object[] {
                         branch.SystemName,
                         branch.Name,
                         users,
-                        achievers,
-                        challenge,
-                        badge,
-                        points
+                        achievers
                     });
 
                     if (token.IsCancellationRequested)
@@ -152,10 +131,7 @@ namespace GRA.Domain.Report
                 "Total",
                 string.Empty,
                 totalRegistered,
-                totalAchiever,
-                totalChallenges,
-                totalBadges,
-                totalPoints,
+                totalAchiever
             };
             #endregion Collect data
 

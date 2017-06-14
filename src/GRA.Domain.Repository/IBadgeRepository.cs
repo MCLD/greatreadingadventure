@@ -11,5 +11,6 @@ namespace GRA.Domain.Repository
         Task<int> GetCountForUserAsync(int userId);
         Task<bool> UserHasBadge(int userId, int badgeId);
         Task RemoveUserBadgeAsync(int userId, int badgeId);
+        Task<string> GetBadgeNameAsync(int badgeId);
     }
 }
