@@ -62,8 +62,8 @@ The Great Reading Adventure uses open source components. You can find informatio
 - [Bogus](https://github.com/bchavez/Bogus): A simple and sane fake data generator for C#. Based on and ported from the famed faker.js.
 - Source on GitHub [bchavez/Bogus](https://github.com/bchavez/Bogus) - [MIT License](https://github.com/bchavez/Bogus/blob/master/LICENSE)
 
-### Bootstrap-DatetimePicker 
-- Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/) 
+### Bootstrap-DatetimePicker
+- Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/)
 - Source on GitHub: [Eonasdan/bootstrap-datetimepicker](https://github.com/Eonasdan/bootstrap-datetimepicker) - [MIT License](https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
 
 ### CommonMark.js
@@ -85,6 +85,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 ### Entity Framework Core
 - [Entity Framework Core](https://github.com/aspnet/EntityFramework) is an object-relational mapper (O/RM) that enables .NET developers to work with a database using .NET objects. It eliminates the need for most of the data-access code that developers usually need to write.
 - Source on GitHub: [aspnet/EntityFramework](https://github.com/aspnet/EntityFramework) - [Apache License, Version 2.0](https://github.com/aspnet/EntityFramework/blob/dev/LICENSE.txt)
+
+### ExcelDataReader
+- Lightweight and fast library written in C# for reading Microsoft Excel files.
+- Source on GitHub: [ExcelDataReader/ExcelDataReader](https://github.com/ExcelDataReader/ExcelDataReader) - [MIT License](https://github.com/ExcelDataReader/ExcelDataReader/blob/develop/LICENSE)
 
 ### MailKit
 - A cross-platform .NET library for IMAP, POP3, and SMTP.

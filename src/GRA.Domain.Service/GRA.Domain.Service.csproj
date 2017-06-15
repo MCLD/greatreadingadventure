@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="csvhelper" Version="2.16.3" />
+    <PackageReference Include="ExcelDataReader" Version="3.0.0-develop00019" />
     <PackageReference Include="MailKit" Version="1.16.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />

@@ -43,13 +43,22 @@ namespace GRA.Data.Repository
             return await GetByIdAsync(unusedCode.Id);
         }
 
-        public async Task<string> GetUserVendorCode(int userId)
+        public async Task<VendorCode> GetUserVendorCode(int userId)
         {
             return await DbSet.AsNoTracking()
                 .Where(_ => _.UserId == userId)
                 .OrderByDescending(_ => _.CreatedAt)
-                .Select(_ => _.Code)
+                .ProjectTo<VendorCode>()
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<VendorCode> GetByCode(string code)
+        {
+            var vendorCode = await DbSet.AsNoTracking()
+                .Where(_ => _.Code == code)
+                .OrderByDescending(_ => _.CreatedAt)
+                .FirstOrDefaultAsync();
+            return _mapper.Map<VendorCode>(vendorCode);
         }
     }
 }

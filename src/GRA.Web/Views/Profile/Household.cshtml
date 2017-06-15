@@ -193,7 +193,20 @@
                                                 <td>@Model.Head.PointsEarned</td>
                                                 @if (Model.AuthUserIsHead)
                                                 {
-                                                    <td>@Model.Head.VendorCode</td>
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    @Model.Head.VendorCode
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    @Model.Head.VendorCodeMessage
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
                                                 }
                                             </tr>
                                         </thead>
@@ -291,7 +304,20 @@
                                                     <td>@user.PointsEarned</td>
                                                     @if (Model.AuthUserIsHead)
                                                     {
-                                                        <td>@user.VendorCode</td>
+                                                        <td>
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        @user.VendorCode
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        @user.VendorCodeMessage
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
                                                     }
                                                 </tr>
                                             }

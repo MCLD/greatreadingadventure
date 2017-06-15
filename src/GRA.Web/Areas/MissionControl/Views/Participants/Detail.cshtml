@@ -9,6 +9,8 @@
     <input asp-for="HasSchoolId" type="hidden" />
     <input asp-for="NewEnteredSchool" type="hidden" />
     <input asp-for="User.EnteredSchoolId" type="hidden" />
+    <input asp-for="User.VendorCode" type="hidden" />
+    <input asp-for="User.VendorCodeMessage" type="hidden" />
 
     <div class="row" style="padding: 10px 0;">
         <div class="col-xs-12">
@@ -158,6 +160,26 @@
                     </div>
                 }
             </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode))
+            {
+                <div class="row row spacing">
+                    <div class="col-xs-12">
+                        <table style="font-size: 16px;">
+                            <tr>
+                                <td>Free Book Code: <strong>@Model.User.VendorCode</strong></td>
+                            </tr>
+                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
+                            {
+                                <tr>
+                                    <td>@Model.User.VendorCodeMessage</td>
+                                </tr>
+                            }
+                        </table>
+
+                    </div>
+                </div>
+            }
         </div>
     </div>
 

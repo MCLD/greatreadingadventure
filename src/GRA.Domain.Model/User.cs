@@ -77,5 +77,6 @@ namespace GRA.Domain.Model
         public bool HasUnclaimedPrize { get; set; }
         public bool HasPendingQuestionnaire { get; set; }
         public string VendorCode { get; set; }
+        public string VendorCodeMessage { get; set; }
     }
 }

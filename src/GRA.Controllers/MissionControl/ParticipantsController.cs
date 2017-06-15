@@ -402,6 +402,20 @@ namespace GRA.Controllers.MissionControl
                 var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
                 var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
 
+                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(id);
+                if (vendorCode != null)
+                {
+                    user.VendorCode = vendorCode.Code;
+                    if (vendorCode.ShipDate.HasValue)
+                    {
+                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                    }
+                    else if (vendorCode.OrderDate.HasValue)
+                    {
+                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                    }
+                }
+
                 ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
                 {
                     User = user,
@@ -661,7 +675,20 @@ namespace GRA.Controllers.MissionControl
                 {
                     head = user;
                 }
-                head.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
+                var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
+                if (headVendorCode != null)
+                {
+                    head.VendorCode = headVendorCode.Code;
+                    if (headVendorCode.ShipDate.HasValue)
+                    {
+                        head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
+                    }
+                    else if (headVendorCode.OrderDate.HasValue)
+                    {
+                        head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
+                    }
+                }
+
                 head.HasPendingQuestionnaire = (await _questionnaireService
                     .GetRequiredQuestionnaire(head.Id, head.Age)).HasValue;
                 bool ReadAllMail = UserHasPermission(Permission.ReadAllMail);

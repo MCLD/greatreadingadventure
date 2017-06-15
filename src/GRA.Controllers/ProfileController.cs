@@ -75,6 +75,19 @@ namespace GRA.Controllers
             var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
 
+            var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
+            if (vendorCode != null)
+            {
+                user.VendorCode = vendorCode.Code;
+                if (vendorCode.ShipDate.HasValue)
+                {
+                    user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                }
+                else if (vendorCode.OrderDate.HasValue)
+                {
+                    user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                }
+            }
 
             ProfileDetailViewModel viewModel = new ProfileDetailViewModel()
             {
@@ -241,7 +254,11 @@ namespace GRA.Controllers
             else
             {
                 authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
-                authUser.VendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+                if (vendorCode != null)
+                {
+                    authUser.VendorCode = vendorCode.Code;
+                }
             }
 
             var household = await _userService
@@ -293,6 +310,20 @@ namespace GRA.Controllers
                     }
                 }
                 viewModel.DailyImageDictionary = dailyImageDictionary;
+
+                var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+                if (headVendorCode != null)
+                {
+                    viewModel.Head.VendorCode = headVendorCode.Code;
+                    if (headVendorCode.ShipDate.HasValue)
+                    {
+                        viewModel.Head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
+                    }
+                    else if (headVendorCode.OrderDate.HasValue)
+                    {
+                        viewModel.Head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
+                    }
+                }
             }
 
             if (TempData.ContainsKey(MinutesReadMessage))

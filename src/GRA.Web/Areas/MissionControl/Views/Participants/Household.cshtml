@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <form asp-action="AddExisitingParticipant"  method="post" role="form">
+                                    <form asp-action="AddExisitingParticipant" method="post" role="form">
                                         <input name="Id" value="@Model.Id" type="hidden" />
                                         <div id="modalParticipantsList" class="col-xs-12">
                                         </div>
@@ -314,7 +314,20 @@
                                     </a>
                                 </td>
                                 <td>@Model.Head.PointsEarned</td>
-                                <td>@Model.Head.VendorCode</td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                @Model.Head.VendorCode
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                @Model.Head.VendorCodeMessage
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
                                 <td>@Model.Head.BranchName</td>
                                 <td>@Model.Head.ProgramName</td>
                                 @if (Model.CanEditDetails)
@@ -399,7 +412,20 @@
                                         </div>
                                     </td>
                                     <td>@user.PointsEarned</td>
-                                    <td>@user.VendorCode</td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    @user.VendorCode
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    @user.VendorCodeMessage
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                     <td>@user.BranchName</td>
                                     <td>@user.ProgramName</td>
                                     @if (Model.CanEditDetails)

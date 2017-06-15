@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SelectListItem>
+<form asp-controller="VendorCodes"
+      asp-action="ImportStatus"
+      method="post"
+      role="form"
+      enctype="multipart/form-data">
+
+    <div class="row">
+        <div class="form-group">
+            <label for="vendorCodeId">Vendor code:</label>
+            <select id="vendorCodeId" asp-items="@Model" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label for="selectedFile">Select Excel file:</label>
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        <span class="fa fa-file-image-o"></span>
+                        Select an Excel file<input type="file" name="excelFile" accept=".xls" />
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly id="selectedFile">
+                <span class="input-group-btn">
+                    <button type="submit"
+                            class="btn btn-default"
+                            data-toggle="modal"
+                            data-target="#importModal">
+                        <span class="fa fa-upload"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="importModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Importing vendor status updates...</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active"
+                         role="progressbar"
+                         aria-valuenow="100"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: 100%">
+                        <span class="sr-only">Importing Vendor Status Updates</span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@section scripts
+{
+    <script>
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').addClass('btn-success');
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+            }
+        });
+
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+    </script>
+}

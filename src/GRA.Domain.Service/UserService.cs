@@ -358,7 +358,7 @@ namespace GRA.Domain.Service
                     }
                 }
 
-                if (HasPermission(Permission.EditParticipantUsernames) 
+                if (HasPermission(Permission.EditParticipantUsernames)
                     && !string.IsNullOrWhiteSpace(currentEntity.Username)
                     && !string.IsNullOrWhiteSpace(userToUpdate.Username))
                 {
@@ -701,7 +701,19 @@ namespace GRA.Domain.Service
                     }
                     if (includeVendorCode)
                     {
-                        member.VendorCode = await _vendorCodeRepository.GetUserVendorCode(member.Id);
+                        var vendorCode = await _vendorCodeRepository.GetUserVendorCode(member.Id);
+                        if (vendorCode != null)
+                        {
+                            member.VendorCode = vendorCode.Code;
+                            if (vendorCode.ShipDate.HasValue)
+                            {
+                                member.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                            }
+                            else if (vendorCode.OrderDate.HasValue)
+                            {
+                                member.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                            }
+                        }
                     }
                     if (includePendingQuestionnaire)
                     {

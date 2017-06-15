@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add WebSocket-based reporting interface to avoid timeouts on report execution
 - Add Current Status, Participant Progress, and Registrations/Achievers reports
 - Add Mission Control interface for avatar bundles
+- Add vendor codes to user detail pages
+- Ability to upload vendor status .xls spreadsheets
 
 ### Changed
 - Change submit buttons to be disabled on click for challenge and household pages
