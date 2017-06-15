@@ -806,7 +806,7 @@ namespace GRA.Controllers
                 else if (item.AvatarBundleId.HasValue)
                 {
                     var bundle = await _dynamicAvatarService
-                        .GetBundleByIdAsync(item.AvatarBundleId.Value);
+                        .GetBundleByIdAsync(item.AvatarBundleId.Value, true);
                     if (bundle.DynamicAvatarItems.Count > 0)
                     {
                         itemModel.BadgeFilename = _pathResolver.ResolveContentPath(

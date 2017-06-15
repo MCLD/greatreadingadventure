@@ -93,7 +93,13 @@
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageAvatars.ToString()))
                     {
-                        <li ActiveBy routeKey="Controller" value="DynamicAvatars"><a asp-controller="DynamicAvatars" asp-action="Index" title="DynamicAvatars"><span class="fa fa-picture-o"></span><span class="visible-xs-inline">Avatars</span></a></li>
+                        <li ActiveBy routeKey="Controller" value="Avatars">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Avatars"><span class="fa fa-picture-o"></span><span class="visible-xs-inline"> Avatars</span> <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-controller="Avatars" asp-action="Index">Avatars</a></li>
+                                <li><a asp-controller="Avatars" asp-action="Bundles">Bundles</a></li>
+                            </ul>
+                        </li>
                     }
                     @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.PerformDrawing.ToString()))
                     {

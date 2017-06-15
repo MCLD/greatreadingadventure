@@ -64,6 +64,5 @@ namespace GRA.Domain.Model
 
         [DisplayName("Award avatar bundle")]
         public int? AwardAvatarBundleId { get; set; }
-        public DynamicAvatarBundle AwardAvatarBundle { get; set; }
     }
 }

@@ -1,0 +1,300 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.BundlesDetailViewModel
+
+@if (Model.Bundle?.HasBeenAwarded != true)
+{
+    <div class="row">
+        <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="lead">Add item</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="Layers" class="control-label">Layer</label>
+                                        <select id="layerId" asp-items="Model.Layers" class="form-control">
+                                            <option value="">All Layers</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row row-spacing">
+                                    <div class="col-xs-8">
+                                        <input id="searchText" class="form-control"
+                                               placeholder="Enter text to search for an event here" />
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="col-xs-6">
+                                            <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="searchMessage" class="row hide">
+                                    <div class="col-xs-12">
+                                        <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="modalItemList" class="col-xs-12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-controller="Avatars" asp-action="@($"Bundle{Model.Action}")" method="post" role="form">
+    <input asp-for="Action" type="hidden" />
+    <input asp-for="ItemsList" type="hidden" />
+    @if (Model.Action == "Edit")
+    {
+        <input asp-for="Bundle.Id" type="hidden" />
+    }
+
+    @if (Model.TriggersAwardingBundle?.Count > 0)
+    {
+        <div class="panel-group" style="padding-top:10px;" id="accordionTriggers" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTriggers">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordionTriggers" href="#collapseTriggers" aria-expanded="false" aria-controls="collapseTriggers">
+                            Triggers Awarding Bundle
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTriggers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTriggers">
+                    <div class="panel-body">
+                        The following trigger(s) award this bundle:
+                        <ul>
+                            @foreach (var trigger in Model.TriggersAwardingBundle)
+                            {
+                                <li>
+                                    <a target="_blank" href="@Url.Action("Edit", "Triggers", new { id = trigger.Id })"> @trigger.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Bundle?.HasBeenAwarded == true)
+    {
+        <div class="row" style="padding: 10px 0;">
+            <div class="col-xs-12">
+                <div style="font-size:large">This bundle has been awarded to a participant and can no longer be edited.</div>
+            </div>
+        </div>
+    }
+
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <label asp-for="Bundle.Name" class="control-label"></label>
+            <input asp-for="Bundle.Name" class="form-control" disabled="@(Model.Bundle?.HasBeenAwarded == true ? "disabled" : null)" />
+            <span asp-validation-for="Bundle.Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Bundle.CanBeUnlocked" class="control-label">Bundle Type</label>
+            <select asp-for="Bundle.CanBeUnlocked" class="form-control" disabled="@(Model.Action == "Edit" ? "disabled" : null)">
+                <option value="True">Unlockable</option>
+                <option value="False">Default</option>
+            </select>
+            <span asp-validation-for="Bundle.CanBeUnlocked" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title">Items</h3>
+            </div>
+            <div class="panel-body">
+                <span asp-validation-for="ItemsList" class="text-danger"></span>
+                <div>
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="100px">Layer</th>
+                                <th width="100px">Thumbnail</th>
+                                @if (Model.Bundle?.HasBeenAwarded != true)
+                                {
+                                    <th width="44px">&nbsp;</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody id="itemList">
+                            <tr id="noItems" class="@(Model.Bundle?.DynamicAvatarItems?.Count > 0 ? "hide" : "")">
+                                <td colspan="4"><em>No items</em></td>
+                            </tr>
+                            @if (Model.Bundle?.DynamicAvatarItems?.Count > 0)
+                            {
+                                foreach (var item in Model.Bundle.DynamicAvatarItems)
+                                {
+                                    <tr class="itemRow">
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.DynamicAvatarLayerName
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(item.Thumbnail))
+                                            {
+                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                     src="~/@item.Thumbnail?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                     asp-append-version="true" />
+                                            }
+                                            else
+                                            {
+                                                <text>&nbsp;</text>
+                                            }
+                                        </td>
+                                        @if (Model.Bundle?.HasBeenAwarded != true)
+                                        {
+                                            <td>
+                                                <button type="button"
+                                                        id="removeItemButton"
+                                                        class="btn btn-link btn-xs"
+                                                        data-itemid="@item.Id">
+                                                    <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                                </button>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (Model.Bundle?.HasBeenAwarded != true)
+                {
+                    <button type="button" id="addButton" class="btn btn-warning">Add Item</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Bundles" class="btn btn-default">Return to List</a>
+        @if (Model.Bundle?.HasBeenAwarded != true)
+        {
+            <button type="submit" class="btn btn-primary">
+                <span class="buttonText">@Model.Action Bundle</span>
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        }
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        var itemIds = $("#ItemsList").val().split(',').filter(function (x) { return x }).map(Number);
+        var itemsUrl = "@Url.Action("GetItemsList", "Avatars")";
+        var page = 1;
+        var search = "";
+        var thisBadge = $("#Trigger_AwardBadgeId").val();
+
+        $("#Bundle_CanBeUnlocked").on("change", function () {
+            itemIds = [];
+            $(".itemRow").remove();
+            $("#noItems").removeClass("hide");
+        });
+
+        function UpdateItemsList() {
+            $.get(itemsUrl,
+                {
+                    itemIds: itemIds.join(','),
+                    search: search,
+                    layerId: $("#layerId").val(),
+                    unlockable: $("#Bundle_CanBeUnlocked").val(),
+                    page: page
+                }, function(response) {
+                    $("#modalItemList").html(response);
+                });
+        }
+
+        $("#addButton").on('click', function(e) {
+            $("#listModal").modal("show");
+            UpdateItemsList();
+        });
+
+        $(document).on("click", "#addItemButton", function () {
+            itemIds.push($(this).data("itemid"));
+            $("#ItemsList").val(itemIds.join(','));
+
+            $("#noItems").addClass("hide");
+            var row = $(this).parent().parent();
+            $("#itemList").append(row);
+            $(this).children().removeClass("fa-plus-circle text-primary");
+            $(this).children().addClass("fa-minus-circle text-danger");
+            $(this).attr("id", "removeItemButton");
+            $("#noItems").addClass("hide");
+            UpdateItemsList();
+        });
+
+        $(document).on("click", "#removeItemButton", function () {
+            itemIds.splice(itemIds.indexOf($(this).data("itemid")), 1);
+            $("#ItemsList").val(itemIds.join(','));
+            $(this).parent().parent().remove();
+            if (itemIds.length == 0) {
+                $("#noItems").removeClass("hide");
+            }
+        });
+
+        $("#layerId").on("change", function () {
+            page = 1;
+            UpdateItemsList();
+
+        })
+
+        $("#searchButton").on("click", function() {
+            search = $("#searchText").val();
+            if (search != "")
+            {
+                $("#searchMessage").removeClass("hide");
+                $("#searchTerm").html(search);
+            }
+            else
+            {
+                $("#searchMessage").addClass("hide");
+            }
+            page = 1;
+            UpdateItemsList();
+        })
+
+        $("#clearButton").on("click", function() {
+            $("#searchText").val("");
+            search = "";
+            $("#searchMessage").addClass("hide");
+            page = 1;
+            UpdateItemsList();
+        })
+
+        $(document).on("click", ".page-button", function() {
+            if (!$(this).hasClass("disabled"))
+            {
+                page = $(this).data("page");
+                UpdateItemsList();
+            }
+        });
+    </script>
+}

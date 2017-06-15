@@ -1,0 +1,58 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Avatar.ItemsListViewModel
+
+@if (Model.Items.Count() == 0)
+{
+    <div class="alert alert-warning">No Items found</div>
+}
+else
+{
+    <div>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td width="100px">Layer</td>
+                    <td width="100px">Thumbnail</td>
+                    <td width="44px">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr class="itemRow">
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.DynamicAvatarLayerName
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(item.Thumbnail))
+                            {
+                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                     src="~/@item.Thumbnail?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                     asp-append-version="true" />
+                            }
+                            else
+                            {
+                                <text>&nbsp;</text>
+                            }
+                        </td>
+                        <td>
+                            <button type="button"
+                                    id="addItemButton"
+                                    class="btn btn-link btn-xs"
+                                    data-itemid="@item.Id">
+                                <span class="fa fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.PaginateModel.MaxPage > 1)
+    {
+        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
+    }
+}

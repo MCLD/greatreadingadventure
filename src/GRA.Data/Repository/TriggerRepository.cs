@@ -616,5 +616,21 @@ namespace GRA.Data.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int bundleId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
+                .ProjectTo<Trigger>()
+                .ToListAsync();
+        }
+
+        public async Task<bool> BundleIsInUseAsync(int bundleId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.AwardAvatarBundleId == bundleId)
+                .ProjectTo<Trigger>()
+                .AnyAsync();
+        }
     }
 }

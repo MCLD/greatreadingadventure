@@ -18,6 +18,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModel\MissionControl\DynamicAvatars\**" />
+    <EmbeddedResource Remove="ViewModel\MissionControl\DynamicAvatars\**" />
+    <None Remove="ViewModel\MissionControl\DynamicAvatars\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GRA\GRA.csproj" />
     <ProjectReference Include="..\GRA.Domain.Model\GRA.Domain.Model.csproj" />
     <ProjectReference Include="..\GRA.Domain.Repository\GRA.Domain.Repository.csproj" />
@@ -33,10 +39,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="SmartFormat.NET" Version="2.0.0" />
     <PackageReference Include="system.valuetuple" Version="4.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModel\MissionControl\DynamicAvatars\" />
   </ItemGroup>
 
 </Project>

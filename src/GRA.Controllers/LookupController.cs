@@ -91,11 +91,10 @@ namespace GRA.Controllers
 
         public async Task<JsonResult> GetItemsInBundleAsync(int id)
         {
-            var bundle = await _dynamicAvatarService.GetBundleByIdAsync(id);
+            var bundle = await _dynamicAvatarService.GetBundleByIdAsync(id, true);
             var thumbnailList = bundle.DynamicAvatarItems
                 .Select(_ => _pathResolver.ResolveContentPath(_.Thumbnail))
                 .ToList();
-
 
             return Json(thumbnailList);
         }

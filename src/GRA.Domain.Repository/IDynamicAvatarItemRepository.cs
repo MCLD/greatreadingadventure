@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using GRA.Domain.Model;
 
 namespace GRA.Domain.Repository
 {
@@ -12,5 +12,8 @@ namespace GRA.Domain.Repository
         Task<bool> HasUserUnlockedItemAsync(int userId, int itemId);
         Task<ICollection<int>> GetUserUnlockedItemsAsync(int userId);
         Task AddUserItemsAsync(int userId, List<int> itemId);
+        Task<int> CountAsync(AvatarFilter filter);
+        Task<ICollection<DynamicAvatarItem>> PageAsync(AvatarFilter filter);
+        Task<ICollection<DynamicAvatarItem>> GetByIdsAsync(List<int> ids);
     }
 }

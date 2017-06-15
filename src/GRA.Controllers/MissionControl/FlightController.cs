@@ -222,11 +222,7 @@ namespace GRA.Controllers.MissionControl
             {
                 List<int> items = bundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
                 bundle.DynamicAvatarItems = null;
-                var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle);
-                foreach (var item in items)
-                {
-                    await _dynamicAvatarService.AddBundleItemAsync(newBundle.Id, item);
-                }
+                var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle, items);
             }
             ShowAlertSuccess("Default dynamic avatars have been successfully added.");
             return View("Index");

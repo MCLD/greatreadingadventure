@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Service
 {
@@ -18,6 +19,7 @@ namespace GRA.Domain.Service
         private readonly IDynamicAvatarElementRepository _dynamicAvatarElementRepository;
         private readonly IDynamicAvatarItemRepository _dynamicAvatarItemRepository;
         private readonly IDynamicAvatarLayerRepository _dynamicAvatarLayerRepository;
+        private readonly ITriggerRepository _triggerRepository;
         private readonly IPathResolver _pathResolver;
         public DynamicAvatarService(ILogger<DynamicAvatarService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
@@ -27,6 +29,7 @@ namespace GRA.Domain.Service
             IDynamicAvatarElementRepository dynamicAvatarElementRepository,
             IDynamicAvatarItemRepository dynamicAvatarItemRepository,
             IDynamicAvatarLayerRepository dynamicAvatarLayerRepository,
+            ITriggerRepository triggerRepository,
             IPathResolver pathResolver)
             : base(logger, dateTimeProvider, userContextProvider)
         {
@@ -40,6 +43,7 @@ namespace GRA.Domain.Service
                 nameof(dynamicAvatarItemRepository));
             _dynamicAvatarLayerRepository = Require.IsNotNull(dynamicAvatarLayerRepository,
                 nameof(dynamicAvatarLayerRepository));
+            _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
 
             SetManagementPermission(Permission.ManageAvatars);
@@ -210,18 +214,80 @@ namespace GRA.Domain.Service
                 GetClaimId(ClaimType.UserId), element);
         }
 
-        public async Task<DynamicAvatarBundle> AddBundleAsync(DynamicAvatarBundle bundle)
+        public async Task<DynamicAvatarBundle> AddBundleAsync(DynamicAvatarBundle bundle,
+            List<int> itemIds)
         {
             VerifyManagementPermission();
+            var items = await _dynamicAvatarItemRepository.GetByIdsAsync(itemIds);
+            if (items.Where(_ => _.Unlockable != bundle.CanBeUnlocked).Any())
+            {
+                throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
+            }
+
+            if (bundle.CanBeUnlocked == false
+                && items.GroupBy(_ => _.DynamicAvatarLayerId).Where(_ => _.Skip(1).Any()).Any())
+            {
+                throw new GraException($"Default bundles cannot have multiple items per layer.");
+            }
+
             bundle.SiteId = GetCurrentSiteId();
-            return await _dynamicAvatarBundleRepository.AddSaveAsync(
+            var newBundle = await _dynamicAvatarBundleRepository.AddSaveAsync(
                 GetClaimId(ClaimType.UserId), bundle);
+
+            await _dynamicAvatarBundleRepository.AddItemsAsync(newBundle.Id, itemIds);
+
+            return newBundle;
         }
 
-        public async Task AddBundleItemAsync(int bundleId, int itemId)
+        public async Task<DynamicAvatarBundle> EditBundleAsync(DynamicAvatarBundle bundle,
+            List<int> itemIds)
         {
             VerifyManagementPermission();
-            await _dynamicAvatarBundleRepository.AddItemAsync(bundleId, itemId);
+
+            var currentBundle = await _dynamicAvatarBundleRepository.GetByIdAsync(bundle.Id, false);
+            if (currentBundle.HasBeenAwarded)
+            {
+                throw new GraException($"This bundle has been awarded to a participant and can no longer be edited. ");
+            }
+
+            var items = await _dynamicAvatarItemRepository.GetByIdsAsync(itemIds);
+            if (items.Where(_ => _.Unlockable != currentBundle.CanBeUnlocked).Any())
+            {
+                throw new GraException($"Not all items are {(bundle.CanBeUnlocked ? "Unlockable" : "Available")}.");
+            }
+
+            if (currentBundle.CanBeUnlocked == false
+                && items.GroupBy(_ => _.DynamicAvatarLayerId).Where(_ => _.Skip(1).Any()).Any())
+            {
+                throw new GraException($"Default bundles cannot have multiple items per layer.");
+            }
+
+            currentBundle.Name = bundle.Name;
+            await _dynamicAvatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                currentBundle);
+
+            var currentItemIds = currentBundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
+            var itemsToRemove = currentItemIds.Except(itemIds).ToList();
+            var itemsToAdd = itemIds.Except(currentItemIds).ToList();
+
+            await _dynamicAvatarBundleRepository.RemoveItemsAsync(currentBundle.Id, itemsToRemove);
+            await _dynamicAvatarBundleRepository.AddItemsAsync(currentBundle.Id, itemsToAdd);
+
+            return currentBundle;
+        }
+
+        public async Task RemoveBundleAsync(int id)
+        {
+            VerifyManagementPermission();
+            if (await _triggerRepository.BundleIsInUseAsync(id))
+            {
+                throw new GraException("Bundle is currently being awarded by a trigger");
+            }
+
+            var bundle = await _dynamicAvatarBundleRepository.GetByIdAsync(id, false);
+            bundle.IsDeleted = true;
+            await _dynamicAvatarBundleRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
+                bundle);
         }
 
         public async Task<ICollection<DynamicAvatarElement>> GetUserAvatarAsync()
@@ -271,9 +337,50 @@ namespace GRA.Domain.Service
             return await _dynamicAvatarBundleRepository.GetAllAsync(GetCurrentSiteId(), unlockable);
         }
 
-        public async Task<DynamicAvatarBundle> GetBundleByIdAsync(int id)
+        public async Task<DynamicAvatarBundle> GetBundleByIdAsync(int id, bool includeDeleted = false)
         {
-            return await _dynamicAvatarBundleRepository.GetByIdAsync(id);
+            var bundle = await _dynamicAvatarBundleRepository.GetByIdAsync(id, includeDeleted);
+            if (bundle == null)
+            {
+                throw new GraException("The requested bundle could not be accessed or does not exist.");
+            }
+            return bundle;
+        }
+
+        public async Task<DataWithCount<ICollection<DynamicAvatarBundle>>>
+            GetPaginatedBundleListAsync(AvatarFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<DynamicAvatarBundle>>
+            {
+                Data = await _dynamicAvatarBundleRepository.PageAsync(filter),
+                Count = await _dynamicAvatarBundleRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<DataWithCount<ICollection<DynamicAvatarItem>>> PageItemsAsync(
+            AvatarFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<DynamicAvatarItem>>
+            {
+                Data = await _dynamicAvatarItemRepository.PageAsync(filter),
+                Count = await _dynamicAvatarItemRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<ICollection<DynamicAvatarItem>> GetItemsByIdsAsync(List<int> ids)
+        {
+            VerifyManagementPermission();
+            return await _dynamicAvatarItemRepository.GetByIdsAsync(ids);
+        }
+
+        public async Task<ICollection<Trigger>> GetTriggersAwardingBundleAsync(int id)
+        {
+            VerifyManagementPermission();
+            return await _triggerRepository.GetTriggersAwardingBundleAsync(id);
         }
     }
 }

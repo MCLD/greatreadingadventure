@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -68,6 +70,56 @@ namespace GRA.Data.Repository
                 });
             }
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> CountAsync(AvatarFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
+        public async Task<ICollection<DynamicAvatarItem>> PageAsync(AvatarFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .ApplyPagination(filter)
+                .ProjectTo<DynamicAvatarItem>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.DynamicAvatarItem> ApplyFilters(AvatarFilter filter)
+        {
+            var items = DbSet.AsNoTracking()
+                .Where(_ => _.DynamicAvatarLayer.SiteId == filter.SiteId);
+
+            if (filter.Unlockable.HasValue)
+            {
+                items = items.Where(_ => _.Unlockable == filter.Unlockable.Value);
+            }
+
+            if (filter.LayerId.HasValue)
+            {
+                items = items.Where(_ => _.DynamicAvatarLayerId == filter.LayerId.Value);
+            }
+
+            if (filter.ItemIds?.Count > 0)
+            {
+                items = items.Where(_ => !filter.ItemIds.Contains(_.Id));
+            }
+
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                items = items.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            return items;
+        }
+
+        public async Task<ICollection<DynamicAvatarItem>> GetByIdsAsync(List<int> ids)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => ids.Contains(_.Id))
+                .ProjectTo<DynamicAvatarItem>()
+                .ToListAsync();
         }
     }
 }
