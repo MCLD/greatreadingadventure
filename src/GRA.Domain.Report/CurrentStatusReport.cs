@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,16 +19,24 @@ namespace GRA.Domain.Report
     public class CurrentStatusReport : BaseReport
     {
         private readonly IBranchRepository _branchRepository;
+        private readonly IPointTranslationRepository _pointTranslationRepository;
+        private readonly IProgramRepository _programRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserLogRepository _userLogRepository;
         public CurrentStatusReport(ILogger<CurrentStatusReport> logger,
             Domain.Report.ServiceFacade.Report serviceFacade,
             IBranchRepository branchRepository,
+            IPointTranslationRepository pointTranslationRepository,
+            IProgramRepository programRepository,
             IUserRepository userRepository,
             IUserLogRepository userLogRepository) : base(logger, serviceFacade)
         {
             _branchRepository = branchRepository
                 ?? throw new ArgumentNullException(nameof(branchRepository));
+            _pointTranslationRepository = pointTranslationRepository
+                ?? throw new ArgumentNullException(nameof(pointTranslationRepository));
+            _programRepository = programRepository
+                ?? throw new ArgumentNullException(nameof(programRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
             _userLogRepository = userLogRepository
@@ -67,16 +76,47 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...");
 
             // header row
-            report.HeaderRow = new object[]
-            {
+            var headerRow = new List<object>() {
                 "System Name",
                 "Branch Name",
                 "Registered Users",
                 "Achievers",
                 "Challenges Completed",
-                "Badges Earned",
-                "Points Earned"
+                "Badges Earned"
             };
+
+            var translations = new Dictionary<string, ICollection<int?>>();
+            var translationTotals = new Dictionary<string, long>();
+
+            foreach (var program in await _programRepository.GetAllAsync((int)criterion.SiteId))
+            {
+                var pointTranslation = await _pointTranslationRepository
+                    .GetByProgramIdAsync(program.Id);
+
+                string description = pointTranslation.ActivityDescriptionPlural;
+
+                if (!translations.ContainsKey(description))
+                {
+                    translations.Add(description, new List<int?> { pointTranslation.Id });
+                    translationTotals.Add(description, 0);
+                    if (description.Length > 2)
+                    {
+                        headerRow.Add(description.First().ToString().ToUpper()
+                            + description.Substring(1));
+                    }
+                    else
+                    {
+                        headerRow.Add(description);
+                    }
+                }
+                else
+                {
+                    translations[description].Add(pointTranslation.Id);
+                }
+            }
+
+            headerRow.Add("Points Earned");
+            report.HeaderRow = headerRow.ToArray();
 
             int count = 0;
 
@@ -125,17 +165,25 @@ namespace GRA.Domain.Report
                     totalBadges += badge;
                     totalPoints += points;
 
-                    // add row
-                    reportData.Add(new object[]
-                    {
+                    var row = new List<object>() {
                         branch.SystemName,
                         branch.Name,
                         users,
                         achievers,
                         challenge,
                         badge,
-                        points
-                    });
+                    };
+
+                    foreach (var translationName in translations.Keys)
+                    {
+                        long total = await _userLogRepository.TranslationEarningsAsync(criterion,
+                            translations[translationName]);
+                        row.Add(total);
+                        translationTotals[translationName] += total;
+                    }
+
+                    row.Add(points);
+                    reportData.Add(row.ToArray());
 
                     if (token.IsCancellationRequested)
                     {
@@ -147,16 +195,24 @@ namespace GRA.Domain.Report
             report.Data = reportData.ToArray();
 
             // total row
-            report.FooterRow = new object[]
+            var footerRow = new List<object>()
             {
                 "Total",
                 string.Empty,
                 totalRegistered,
                 totalAchiever,
                 totalChallenges,
-                totalBadges,
-                totalPoints,
+                totalBadges
             };
+
+            foreach (var total in translationTotals.Values)
+            {
+                footerRow.Add(total);
+            }
+
+            footerRow.Add(totalPoints);
+
+            report.FooterRow = footerRow.ToArray();
             #endregion Collect data
 
             #region Finish up reporting

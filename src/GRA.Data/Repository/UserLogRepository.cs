@@ -133,14 +133,14 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request, 
+        public async Task<long> CompletedChallengeCountAsync(ReportCriterion request,
             int? challengeId = null)
         {
             var eligibleUserIds = await GetEligibleUserIds(request);
 
             var challengeCount = DbSet
                 .AsNoTracking()
-                .Where(_ => _.ChallengeId != null 
+                .Where(_ => _.ChallengeId != null
                     && _.IsDeleted == false
                     && _.User.IsDeleted == false);
 
@@ -161,7 +161,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
-            if(challengeId != null)
+            if (challengeId != null)
             {
                 challengeCount = challengeCount
                     .Where(_ => _.ChallengeId == challengeId);
@@ -211,7 +211,7 @@ namespace GRA.Data.Repository
             // start out with all line items that have a point translation id
             var earnedFilter = DbSet
                 .AsNoTracking()
-                .Where(_ => _.PointTranslationId != null 
+                .Where(_ => _.PointTranslationId != null
                     && _.IsDeleted == false
                     && _.User.IsDeleted == false);
 
@@ -287,7 +287,7 @@ namespace GRA.Data.Repository
 
             var badgeCount = DbSet
                 .AsNoTracking()
-                .Where(_ => _.BadgeId != null 
+                .Where(_ => _.BadgeId != null
                     && _.IsDeleted == false
                     && _.User.IsDeleted == false);
 
@@ -315,7 +315,7 @@ namespace GRA.Data.Repository
         {
             return await DbSet
                 .AsNoTracking()
-                .Where(_ => _.UserId == userId 
+                .Where(_ => _.UserId == userId
                     && _.IsDeleted == false
                     && _.PointsEarned > 0
                     && _.CreatedAt >= criterion.StartDate
@@ -341,7 +341,7 @@ namespace GRA.Data.Repository
 
             var badgeCount = DbSet
                 .AsNoTracking()
-                .Where(_ => _.BadgeId != null 
+                .Where(_ => _.BadgeId != null
                     && _.IsDeleted == false
                     && _.User.IsDeleted == false);
 
@@ -370,5 +370,40 @@ namespace GRA.Data.Repository
 
             return await badgeCount.CountAsync();
         }
+
+        public async Task<long> TranslationEarningsAsync(ReportCriterion request,
+            ICollection<int?> translationIds)
+        {
+            // look up user id restrictions
+            var eligibleUserIds = await GetEligibleUserIds(request);
+
+            var earnedFilter = DbSet
+                .AsNoTracking()
+                .Where(_ => _.IsDeleted == false
+                    && _.User.IsDeleted == false
+                    && _.PointTranslationId != null
+                    && translationIds.Contains(_.PointTranslationId));
+
+            // filter by users if necessary
+            if (eligibleUserIds != null)
+            {
+                earnedFilter = earnedFilter.Where(_ => eligibleUserIds.Contains(_.UserId));
+            }
+
+            if (request.StartDate != null)
+            {
+                earnedFilter = earnedFilter
+                    .Where(_ => _.CreatedAt >= request.StartDate);
+            }
+
+            if (request.EndDate != null)
+            {
+                earnedFilter = earnedFilter
+                    .Where(_ => _.CreatedAt <= request.EndDate);
+            }
+
+            return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+        }
+
     }
 }
