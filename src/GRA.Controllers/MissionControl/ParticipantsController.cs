@@ -1303,6 +1303,7 @@ namespace GRA.Controllers.MissionControl
 
                 foreach (var item in history.Data)
                 {
+                    var itemName = item.Description;
                     if (item.ChallengeId != null)
                     {
                         string url = "";
@@ -1322,6 +1323,7 @@ namespace GRA.Controllers.MissionControl
                         Id = item.Id,
                         CreatedAt = item.CreatedAt.ToString("d"),
                         Description = item.Description,
+                        ItemName = itemName,
                         PointsEarned = item.PointsEarned,
                     };
                     if (!string.IsNullOrWhiteSpace(item.BadgeFilename))

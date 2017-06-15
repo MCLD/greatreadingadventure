@@ -211,7 +211,6 @@
         var itemsUrl = "@Url.Action("GetItemsList", "Avatars")";
         var page = 1;
         var search = "";
-        var thisBadge = $("#Trigger_AwardBadgeId").val();
 
         $("#Bundle_CanBeUnlocked").on("change", function () {
             itemIds = [];
@@ -237,18 +236,25 @@
             UpdateItemsList();
         });
 
-        $(document).on("click", "#addItemButton", function () {
-            itemIds.push($(this).data("itemid"));
-            $("#ItemsList").val(itemIds.join(','));
+        $(document).on("click", ".addItemButton", function () {
+            if (!$(this).hasClass("disabled")) {
+                itemIds.push($(this).data("itemid"));
+                $("#ItemsList").val(itemIds.join(','));
 
-            $("#noItems").addClass("hide");
-            var row = $(this).parent().parent();
-            $("#itemList").append(row);
-            $(this).children().removeClass("fa-plus-circle text-primary");
-            $(this).children().addClass("fa-minus-circle text-danger");
-            $(this).attr("id", "removeItemButton");
-            $("#noItems").addClass("hide");
-            UpdateItemsList();
+                $("#noItems").addClass("hide");
+
+                var row = $(this).parent().parent().clone();
+                var addedItem = row.find(".addItemButton");
+                addedItem.removeClass("addItemButton")
+                addedItem.children().removeClass("fa-plus-circle text-primary");
+                addedItem.children().addClass("fa-minus-circle text-danger");
+                addedItem.attr("id", "removeItemButton");
+                $("#itemList").append(row);
+
+                $(".addItemButton").addClass("disabled");
+
+                UpdateItemsList();
+            }
         });
 
         $(document).on("click", "#removeItemButton", function () {

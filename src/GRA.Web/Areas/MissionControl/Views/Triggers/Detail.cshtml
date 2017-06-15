@@ -599,28 +599,34 @@
             UpdateRequirementsList();
         });
 
-        $(document).on("click", "#addRequirementButton", function() {
-            var badgeId = $(this).data("badgeid");
-            var challengeId = $(this).data("challengeid");
+        $(document).on("click", ".addRequirementButton", function () {
+            if (!$(this).hasClass("disabled")) {
+                var badgeId = $(this).data("badgeid");
+                var challengeId = $(this).data("challengeid");
 
-            if (challengeId != "")
-            {
-                challengeIds.push(challengeId);
-                $("#ChallengeRequiredList").val(challengeIds.join(','));
+                if (challengeId != "") {
+                    challengeIds.push(challengeId);
+                    $("#ChallengeRequiredList").val(challengeIds.join(','));
+                }
+                else if (badgeId != "") {
+                    badgeIds.push(badgeId);
+                    $("#BadgeRequiredList").val(badgeIds.join(','));
+                }
+                $("#noRequirements").addClass("hide");
+
+                var row = $(this).parent().parent().clone();
+                var addedItem = row.find(".addRequirementButton");
+                addedItem.removeClass("addRequirementButton")
+                addedItem.children().removeClass("fa-plus-circle text-primary");
+                addedItem.children().addClass("fa-minus-circle text-danger");
+                addedItem.attr("id", "removeRequirementButton");
+                $("#requirementList").append(row);
+
+                $(".addRequirementButton").addClass("disabled");
+
+                UpdateRequirementsList();
+
             }
-            else if (badgeId != "")
-            {
-                badgeIds.push(badgeId);
-                $("#BadgeRequiredList").val(badgeIds.join(','));
-            }
-            $("#noRequirements").addClass("hide");
-            var row = $(this).parent().parent();
-            $("#requirementList").append(row);
-            $(this).children().removeClass("fa-plus-circle text-primary");
-            $(this).children().addClass("fa-minus-circle text-danger");
-            $(this).attr("id", "removeRequirementButton");
-            $("#noRequirements").addClass("hide");
-            UpdateRequirementsList();
         });
 
         $(document).on("click", "#removeRequirementButton", function() {

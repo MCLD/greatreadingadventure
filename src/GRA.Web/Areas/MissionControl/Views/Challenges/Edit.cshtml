@@ -72,8 +72,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right" aria-label="Confirm">
-                                Add
+                            <button type="submit" asp-action="AddTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm">
+                                <span class="buttonText">Add</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </div>
@@ -142,8 +143,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
-                            <button type="submit" formmethod="post" asp-action="modifyTask" class="btn btn-primary pull-right" aria-label="Confirm">
-                                Edit
+                            <button type="submit" asp-action="ModifyTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm">
+                                <span class="buttonText">Edit</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>
                     </div>
