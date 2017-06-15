@@ -402,7 +402,7 @@ namespace GRA.Data.Repository
                     .Where(_ => _.CreatedAt <= request.EndDate);
             }
 
-            return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.PointsEarned));
+            return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
         }
 
     }
