@@ -113,7 +113,7 @@ namespace GRA.Domain.Service
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
         {
             var authId = GetClaimId(ClaimType.UserId);
-            if (userId == authId || HasPermission(Permission.ViewParticipantDetails))
+            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
             {
                 return await _vendorCodeRepository.GetUserVendorCode(userId);
             }
