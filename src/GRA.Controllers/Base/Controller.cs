@@ -13,6 +13,7 @@ using System.Security.Principal;
 using System;
 using System.Text;
 using GRA.Abstract;
+using System.Linq;
 
 namespace GRA.Controllers.Base
 {
@@ -27,6 +28,7 @@ namespace GRA.Controllers.Base
         protected readonly IUserContextProvider _userContextProvider;
         protected readonly SiteLookupService _siteLookupService;
         protected string PageTitle { get; set; }
+        protected string PageTitleHtml { get; set; }
         public Controller(ServiceFacade.Controller context)
         {
             _config = context.Config;
@@ -49,6 +51,7 @@ namespace GRA.Controllers.Base
                 pageTitle = controller.PageTitle;
             }
             ViewData[ViewDataKey.Title] = pageTitle;
+            ViewData[ViewDataKey.TitleHtml] = PageTitleHtml;
         }
 
         protected string AlertDanger
@@ -123,7 +126,7 @@ namespace GRA.Controllers.Base
             int? siteId = HttpContext.Session.GetInt32(SessionKey.SiteId);
             HttpContext.Session.Clear();
             await HttpContext.Authentication.SignOutAsync(Authentication.SchemeGRACookie);
-            HttpContext.User = new GenericPrincipal(new GenericIdentity(string.Empty), null);
+            HttpContext.User = null;
             if (siteId != null)
             {
                 HttpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
@@ -140,17 +143,17 @@ namespace GRA.Controllers.Base
 
         protected bool UserHasPermission(Permission permission)
         {
-            return new UserClaimLookup(AuthUser).UserHasPermission(permission.ToString());
+            return _userContextProvider.UserHasPermission(AuthUser, permission.ToString());
         }
 
         protected string UserClaim(string claimType)
         {
-            return new UserClaimLookup(AuthUser).UserClaim(claimType);
+            return _userContextProvider.UserClaim(AuthUser, claimType);
         }
 
         protected int GetId(string claimType)
         {
-            return new UserClaimLookup(AuthUser).GetId(claimType);
+            return _userContextProvider.GetId(AuthUser, claimType);
         }
 
         protected int GetCurrentSiteId()

@@ -114,7 +114,8 @@ namespace GRA.Data.Repository
 
             if (filter.ProgramIds?.Any() == true)
             {
-                triggerList = triggerList.Where(_ => filter.ProgramIds.Contains(_.LimitToProgramId));
+                triggerList = triggerList
+                    .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
@@ -336,13 +337,13 @@ namespace GRA.Data.Repository
             return requirements.OrderBy(_ => _.Name).ToList();
         }
 
-        public async Task<int> CountRequirementsAsync(TriggerFilter filter)
+        public async Task<int> CountRequirementsAsync(BaseFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .CountAsync();
         }
 
-        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(TriggerFilter filter)
+        public async Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter)
         {
             return await ApplyRequirementsFilters(filter)
                 .OrderBy(_ => _.Name)
@@ -350,7 +351,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(TriggerFilter filter)
+        private IQueryable<TriggerRequirement> ApplyRequirementsFilters(BaseFilter filter)
         {
             // Badge and Trigger lists
             var requirements = (from challenges in _context.Challenges

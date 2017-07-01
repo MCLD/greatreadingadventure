@@ -856,6 +856,7 @@ namespace GRA.Domain.Service
             bool loggingAsAdminUser = HasPermission(Permission.LogActivityForAny);
 
             if (activeUserId != userIdToLog
+                && authUserId != userIdToLog
                 && authUserId != userToLog.HouseholdHeadUserId
                 && !loggingAsAdminUser)
             {

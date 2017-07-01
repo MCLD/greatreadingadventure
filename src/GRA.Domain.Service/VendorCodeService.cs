@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using ExcelDataReader;
 using System;
 using System.Text;
+using System.Threading;
+using System.Diagnostics;
+using System.IO;
 
 namespace GRA.Domain.Service
 {
@@ -129,138 +132,245 @@ namespace GRA.Domain.Service
         private const string ShipDateRowHeading = "Ship Date";
 
 
-        public async Task<(ImportStatus, string)> UpdateStatusFromExcel(System.IO.Stream stream)
+        public async Task<OperationStatus> UpdateStatusFromExcel(string filename,
+            CancellationToken token,
+            IProgress<OperationStatus> progress = null)
         {
-            int couponColumnId = 0;
-            int orderDateColumnId = 0;
-            int shipDateColumnId = 0;
-            var issues = new List<string>();
-            int row = 0;
-            int updated = 0;
-            int alreadyCurrent = 0;
-            using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
+            var requestingUser = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.ManageVendorCodes))
             {
-                while (excelReader.Read())
+                var sw = new Stopwatch();
+                sw.Start();
+                token.Register(() =>
                 {
-                    row++;
-                    if (row == 1)
+                    string duration = "";
+                    if (sw != null && sw.Elapsed != null)
                     {
-                        for (int i = 0; i < excelReader.FieldCount; i++)
-                        {
-                            switch (excelReader.GetString(i).Trim() ?? $"Column{i}")
-                            {
-                                case CouponRowHeading:
-                                    couponColumnId = i;
-                                    break;
-                                case OrderDateRowHeading:
-                                    orderDateColumnId = i;
-                                    break;
-                                case ShipDateRowHeading:
-                                    shipDateColumnId = i;
-                                    break;
-                            }
-                        }
+                        duration = $" after {((TimeSpan)sw.Elapsed).TotalSeconds.ToString("N2")} seconds";
                     }
-                    else
+                    _logger.LogWarning($"Import of {filename} for user {requestingUser} was cancelled{duration}.");
+                });
+
+                string fullPath = Path.Combine(Path.GetTempPath(), filename);
+
+                if (!File.Exists(fullPath))
+                {
+                    _logger.LogError($"Could not find {fullPath}");
+                    return new OperationStatus
                     {
-                        string coupon = null;
-                        DateTime? orderDate = null;
-                        DateTime? shipDate = null;
-                        try
+                        PercentComplete = 0,
+                        Status = "Could not find the import file.",
+                        Error = true,
+                        Complete = true
+                    };
+                }
+
+                try
+                {
+                    using (var stream = new FileStream(fullPath, FileMode.Open))
+                    {
+                        int couponColumnId = 0;
+                        int orderDateColumnId = 0;
+                        int shipDateColumnId = 0;
+                        var issues = new List<string>();
+                        int row = 0;
+                        int totalRows = 0;
+                        int updated = 0;
+                        int alreadyCurrent = 0;
+                        using (var excelReader = ExcelReaderFactory.CreateBinaryReader(stream))
                         {
-                            coupon = excelReader.GetString(couponColumnId);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
-                            issues.Add($"Issue reading code on line {row}: {ex.Message}");
-                        }
-                        try
-                        {
-                            orderDate = excelReader.GetDateTime(orderDateColumnId);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
-                            issues.Add($"Issue reading order date on row {row}: {ex.Message}");
-                        }
-                        try
-                        {
-                            shipDate = excelReader.GetDateTime(shipDateColumnId);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
-                            issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
-                        }
-                        if (!string.IsNullOrEmpty(coupon)
-                            && (orderDate != null && shipDate != null))
-                        {
-                            var code = await _vendorCodeRepository.GetByCode(coupon);
-                            if (code == null)
+                            while (excelReader.Read())
                             {
-                                _logger.LogError($"File contained code {coupon} which was not found in the database");
-                                issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                row++;
                             }
-                            else
+                            totalRows = row;
+                            row = 0;
+
+                            excelReader.Reset();
+                            while (excelReader.Read())
                             {
-                                if (orderDate == code.OrderDate && shipDate == code.ShipDate)
+                                row++;
+                                if (row % 10 == 0)
                                 {
-                                    alreadyCurrent++;
+                                    progress.Report(new OperationStatus
+                                    {
+                                        PercentComplete = row * 100 / totalRows,
+                                        Status = $"Processing row {row}/{totalRows}...",
+                                        Error = false
+                                    });
+                                }
+                                if (row == 1)
+                                {
+                                    progress.Report(new OperationStatus
+                                    {
+                                        PercentComplete = 1,
+                                        Status = $"Processing row {row}/{totalRows}...",
+                                        Error = false
+                                    });
+                                    for (int i = 0; i < excelReader.FieldCount; i++)
+                                    {
+                                        switch (excelReader.GetString(i).Trim() ?? $"Column{i}")
+                                        {
+                                            case CouponRowHeading:
+                                                couponColumnId = i;
+                                                break;
+                                            case OrderDateRowHeading:
+                                                orderDateColumnId = i;
+                                                break;
+                                            case ShipDateRowHeading:
+                                                shipDateColumnId = i;
+                                                break;
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    code.IsUsed = true;
-                                    if (orderDate != null)
+                                    string coupon = null;
+                                    DateTime? orderDate = null;
+                                    DateTime? shipDate = null;
+                                    try
                                     {
-                                        code.OrderDate = orderDate;
+                                        coupon = excelReader.GetString(couponColumnId);
                                     }
-                                    if (shipDate != null)
+                                    catch (Exception ex)
                                     {
-                                        code.ShipDate = shipDate;
+                                        _logger.LogError($"Parse error on code, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading code on line {row}: {ex.Message}");
                                     }
-                                    await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
-                                    updated++;
+                                    try
+                                    {
+                                        orderDate = excelReader.GetDateTime(orderDateColumnId);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Parse error on order date, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading order date on row {row}: {ex.Message}");
+                                    }
+                                    try
+                                    {
+                                        shipDate = excelReader.GetDateTime(shipDateColumnId);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Parse error on ship date, row {row}: {ex.Message}");
+                                        issues.Add($"Issue reading ship date on row {row}: {ex.Message}");
+                                    }
+                                    if (!string.IsNullOrEmpty(coupon)
+                                        && (orderDate != null && shipDate != null))
+                                    {
+                                        var code = await _vendorCodeRepository.GetByCode(coupon);
+                                        if (code == null)
+                                        {
+                                            _logger.LogError($"File contained code {coupon} which was not found in the database");
+                                            issues.Add($"Uploaded file contained code <code>{coupon}</code> which couldn't be found in the database.");
+                                        }
+                                        else
+                                        {
+                                            if (orderDate == code.OrderDate && shipDate == code.ShipDate)
+                                            {
+                                                alreadyCurrent++;
+                                            }
+                                            else
+                                            {
+                                                code.IsUsed = true;
+                                                if (orderDate != null)
+                                                {
+                                                    code.OrderDate = orderDate;
+                                                }
+                                                if (shipDate != null)
+                                                {
+                                                    code.ShipDate = shipDate;
+                                                }
+                                                await _vendorCodeRepository.UpdateSaveNoAuditAsync(code);
+                                                updated++;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (token.IsCancellationRequested)
+                                {
+                                    break;
                                 }
                             }
+
+                            if (!excelReader.IsClosed)
+                            {
+                                excelReader.Close();
+                            }
+                        }
+
+                        if (token.IsCancellationRequested)
+                        {
+                            return new OperationStatus
+                            {
+                                PercentComplete = 100,
+                                Status = $"Operation cancelled at row {row}."
+                            };
+                        }
+
+                        var sb = new StringBuilder("<strong>Import complete</strong>");
+                        if (updated > 0)
+                        {
+                            sb.Append($": {updated} records were updated");
+                        }
+                        if (alreadyCurrent > 0)
+                        {
+                            if (updated > 0)
+                            {
+                                sb.Append(", ");
+                            }
+                            else
+                            {
+                                sb.Append(": ");
+                            }
+                            sb.Append($"{alreadyCurrent} records were already current");
+                        }
+                        sb.Append(".");
+
+                        if (issues.Count > 0)
+                        {
+                            _logger.LogInformation($"Import complete with issues: {sb.ToString()}");
+                            sb.Append(" Issues detected:<ul>");
+                            foreach (string issue in issues)
+                            {
+                                sb.Append($"<li>{issue}</li>");
+                            }
+                            sb.Append("</ul>");
+                            return new OperationStatus
+                            {
+                                PercentComplete = 100,
+                                Status = sb.ToString(),
+                                Error = true
+                            };
+                        }
+                        else
+                        {
+                            _logger.LogInformation(sb.ToString());
+                            return new OperationStatus
+                            {
+                                PercentComplete = 100,
+                                Status = sb.ToString(),
+                            };
                         }
                     }
                 }
-
-                if (!excelReader.IsClosed)
+                finally
                 {
-                    excelReader.Close();
+                    File.Delete(fullPath);
                 }
             }
-
-            var sb = new StringBuilder("<strong>Import complete:</strong> ");
-            if (updated > 0)
+            else
             {
-                sb.Append($"{updated} records were updated");
-            }
-            if(alreadyCurrent> 0)
-            {
-                if(updated > 0)
+                _logger.LogError($"User {requestingUser} doesn't have permission to view all reporting.");
+                return new OperationStatus
                 {
-                    sb.Append(", ");
-                }
-                sb.Append($"{alreadyCurrent} records were already current");
+                    PercentComplete = 0,
+                    Status = "Permission denied.",
+                    Error = true,
+                    Complete = true
+                };
             }
-            sb.Append(".");
-
-            if (issues.Count > 0)
-            {
-                _logger.LogInformation($"Import complete with issues: {sb.ToString()}");
-                sb.Append(" Issues detected:<ul>");
-                foreach (string issue in issues)
-                {
-                    sb.Append($"<li>{issue}</li>");
-                }
-                sb.Append("</ul>");
-                return (ImportStatus.Warning, sb.ToString());
-            }
-            _logger.LogInformation($"Import complete: {sb.ToString()}");
-            return (ImportStatus.Success, sb.ToString());
         }
     }
 }

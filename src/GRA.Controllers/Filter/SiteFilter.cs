@@ -6,15 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Controllers.Filter
 {
     public class SiteFilter : Attribute, IAsyncResourceFilter
     {
+        private readonly ILogger<SiteFilter> _logger;
         private readonly SiteLookupService _siteLookupService;
-        public SiteFilter(SiteLookupService siteLookupService)
+        private readonly IUserContextProvider _userContextProvider;
+        public SiteFilter(ILogger<SiteFilter> logger,
+            SiteLookupService siteLookupService,
+            IUserContextProvider userContextProvider)
         {
-            _siteLookupService = Require.IsNotNull(siteLookupService, nameof(siteLookupService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _userContextProvider = userContextProvider 
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
         }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
@@ -27,9 +37,17 @@ namespace GRA.Controllers.Filter
             if (httpContext.User.Identity.IsAuthenticated)
             {
                 // if the user is authenticated, that is their site
-                siteId = new UserClaimLookup(httpContext.User).GetId(ClaimType.SiteId);
+                try
+                {
+                    siteId = _userContextProvider.GetId(httpContext.User, ClaimType.SiteId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Unable to get SiteId claim for user {httpContext.User.Identity.Name}: {ex.Message}");
+                }
             }
-            else
+
+            if (siteId == null)
             {
                 string sitePath = context.RouteData.Values["sitePath"]?.ToString();
                 // first check, did they use a sitePath giving them a specific site

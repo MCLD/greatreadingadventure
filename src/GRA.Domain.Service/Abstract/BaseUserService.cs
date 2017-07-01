@@ -1,8 +1,6 @@
 ﻿using GRA.Domain.Model;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service.Abstract
 {
@@ -54,13 +52,14 @@ namespace GRA.Domain.Service.Abstract
         protected bool HasPermission(Permission permission)
         {
             var currentUser = GetAuthUser();
-            return new UserClaimLookup(currentUser).UserHasPermission(permission.ToString());
+            return _userContextProvider.UserHasPermission(currentUser, permission.ToString());
+            //return new UserClaimLookup(currentUser).UserHasPermission(permission.ToString());
         }
 
         protected int GetClaimId(string claimType)
         {
             var currentUser = GetAuthUser();
-            return new UserClaimLookup(currentUser).GetId(claimType);
+            return _userContextProvider.GetId(currentUser, claimType);
         }
 
         protected int GetActiveUserId()

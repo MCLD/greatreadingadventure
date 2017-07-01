@@ -22,7 +22,7 @@
                     <div class="col-xs-12">
                         <label asp-for="User.Username" class="control-label"></label>
                         <span id="Username-Icon" class="fa colored-icon hide"></span>
-                        <input asp-for="User.Username" class="form-control" autofocus />
+                        <input asp-for="User.Username" class="form-control" />
                         <span id="Username-Validation" asp-validation-for="User.Username" class="text-success"></span>
                     </div>
                 </div>
@@ -371,6 +371,7 @@
         @if (Model.CanEditUsername) {
         <text>
         $("#User_Username").on("blur", function () {
+            $(this).val($(this).val().trim());
             var username = $(this).val();
             if (username != "" && !$(this).hasClass("input-validation-error")) {
                 if (username != "@Html.Raw(Model.Username)") {

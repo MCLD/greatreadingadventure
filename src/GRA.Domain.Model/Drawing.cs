@@ -10,6 +10,11 @@ namespace GRA.Domain.Model
         [Required]
         [DisplayName("Criteria")]
         public int DrawingCriterionId { get; set; }
+        [Required]
+        public int RelatedSystemId { get; set; }
+        [Required]
+        public int RelatedBranchId { get; set; }
+
         [DisplayName("Prize Name")]
         [MaxLength(255)]
         [Required]

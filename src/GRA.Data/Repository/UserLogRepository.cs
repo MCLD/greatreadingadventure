@@ -405,5 +405,57 @@ namespace GRA.Data.Repository
             return await earnedFilter.SumAsync(_ => Convert.ToInt64(_.ActivityEarned));
         }
 
+        private IQueryable<Model.UserLog> GetEligibleUserLogs(ReportCriterion request)
+        {
+            if (request.ProgramId != null
+               || request.SystemId != null
+               || request.BranchId != null)
+            {
+                var eligibleUserLogs = DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.User.SiteId == request.SiteId
+                        && _.IsDeleted == false
+                        && _.User.IsDeleted == false);
+
+                if (request.ProgramId != null)
+                {
+                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.ProgramId == request.ProgramId);
+                }
+                if (request.SystemId != null)
+                {
+                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.SystemId == request.SystemId);
+                }
+                if (request.BranchId != null)
+                {
+                    eligibleUserLogs = eligibleUserLogs.Where(_ => _.User.BranchId == request.BranchId);
+                }
+                return eligibleUserLogs;
+            }
+            else
+            {
+                return DbSet
+                    .AsNoTracking()
+                    .Where(_ => _.User.SiteId == request.SiteId
+                        && _.IsDeleted == false
+                        && _.User.IsDeleted == false);
+            }
+        }
+
+
+        async public Task<ICollection<int>> UserIdsEarnedBadgeAsync(int badgeId, ReportCriterion criterion)
+        {
+            return await GetEligibleUserLogs(criterion)
+                .Where(_ => _.BadgeId == badgeId)
+                .Select(_ => _.UserId)
+                .ToListAsync();
+        }
+
+        async public Task<ICollection<int>> UserIdsCompletedChallengesAsync(int challengeId, ReportCriterion criterion)
+        {
+            return await GetEligibleUserLogs(criterion)
+                .Where(_ => _.ChallengeId == challengeId)
+                .Select(_ => _.UserId)
+                .ToListAsync();
+        }
     }
 }

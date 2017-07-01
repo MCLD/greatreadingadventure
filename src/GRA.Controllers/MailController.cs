@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using System;
 
 namespace GRA.Controllers
 {
@@ -148,7 +149,15 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _mailService.RemoveAsync(id);
+            try
+            {
+                await _mailService.RemoveAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Problem with user {GetActiveUserId()} deleting mail id {id}: {ex.Message}");
+                AlertWarning = "There was an issue deleting that mail item.";
+            }
             return RedirectToAction("Index");
         }
     }

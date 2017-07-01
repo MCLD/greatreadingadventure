@@ -203,7 +203,8 @@ namespace GRA.Data.Repository
             {
                 userList = userList.Where(_ => filter.SystemIds.Contains(_.SystemId));
             }
-            else if (filter.BranchIds?.Any() == true)
+
+            if (filter.BranchIds?.Any() == true)
             {
                 userList = userList.Where(_ => filter.BranchIds.Contains(_.BranchId));
             }
@@ -236,73 +237,50 @@ namespace GRA.Data.Repository
             return userList;
         }
 
+        private IQueryable<Model.User> ApplyUserFilter(ReportCriterion criterion)
+        {
+            var userList = DbSet.AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.SiteId == criterion.SiteId);
+
+            if (criterion.SystemId != null)
+            {
+                userList = userList.Where(_ => criterion.SystemId == _.SystemId);
+            }
+
+            if (criterion.BranchId != null)
+            {
+                userList = userList.Where(_ => criterion.BranchId == _.BranchId);
+            }
+
+            if (criterion.ProgramId != null)
+            {
+                userList = userList.Where(_ => criterion.ProgramId == _.ProgramId);
+            }
+
+            if (criterion.StartDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt >= criterion.StartDate);
+            }
+
+            if (criterion.EndDate != null)
+            {
+                userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
+            }
+
+            return userList;
+        }
+
+
         public async Task<int> GetCountAsync(ReportCriterion request)
         {
-            IQueryable<Model.User> userCount = null;
-            userCount = DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsDeleted == false && _.SiteId == request.SiteId);
-
-            if (request.ProgramId != null)
-            {
-                userCount = userCount.Where(_ => _.ProgramId == request.ProgramId);
-            }
-
-            if (request.SystemId != null)
-            {
-                userCount = userCount.Where(_ => _.SystemId == request.SystemId);
-            }
-
-            if (request.BranchId != null)
-            {
-                userCount = userCount.Where(_ => _.BranchId == request.BranchId);
-            }
-            if (request.StartDate != null)
-            {
-                userCount = userCount.Where(_ => _.CreatedAt >= request.StartDate);
-            }
-
-            if (request.EndDate != null)
-            {
-                userCount = userCount.Where(_ => _.CreatedAt <= request.EndDate);
-            }
-            return await userCount.CountAsync();
+            return await ApplyUserFilter(request).CountAsync();
         }
 
         public async Task<int> GetAchieverCountAsync(ReportCriterion request)
         {
-            IQueryable<Model.User> achieverCount = null;
-            achieverCount = DbSet
-                .AsNoTracking()
-                .Where(_ => _.IsDeleted == false
-                    && _.SiteId == request.SiteId
-                    && _.IsAchiever == true);
-
-            if (request.ProgramId != null)
-            {
-                achieverCount = achieverCount.Where(_ => _.ProgramId == request.ProgramId);
-            }
-
-            if (request.SystemId != null)
-            {
-                achieverCount = achieverCount.Where(_ => _.SystemId == request.SystemId);
-            }
-
-            if (request.BranchId != null)
-            {
-                achieverCount = achieverCount.Where(_ => _.BranchId == request.BranchId);
-            }
-            if (request.StartDate != null)
-            {
-                achieverCount = achieverCount.Where(_ => _.AchievedAt >= request.StartDate);
-            }
-
-            if (request.EndDate != null)
-            {
-                achieverCount = achieverCount.Where(_ => _.AchievedAt <= request.EndDate);
-            }
-
-            return await achieverCount.CountAsync();
+            return await ApplyUserFilter(request)
+                .Where(_ => _.IsAchiever == true)
+                .CountAsync();
         }
 
         public async Task<IEnumerable<User>>
@@ -407,6 +385,15 @@ namespace GRA.Data.Repository
                     && _.BranchId == criterion.BranchId
                     && _.ProgramId == criterion.ProgramId)
                 .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn)
+        {
+            return await ApplyUserFilter(criterion)
+                .OrderByDescending(_ => _.PointsEarned)
+                .Take(scoresToReturn)
+                .ProjectTo<User>()
                 .ToListAsync();
         }
     }

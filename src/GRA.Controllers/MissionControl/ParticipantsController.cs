@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -76,7 +77,7 @@ namespace GRA.Controllers.MissionControl
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                filter.Search = search;
+                filter.Search = search.Trim();
             }
             if (branchId.HasValue)
             {
@@ -1693,13 +1694,13 @@ namespace GRA.Controllers.MissionControl
             var name = user.FullName;
             if (!string.IsNullOrWhiteSpace(username))
             {
-                name += $"({username})";
+                name += $" ({username})";
             }
             else if (!string.IsNullOrEmpty(user.Username))
             {
-                name += $"({user.Username})";
+                name += $" ({user.Username})";
             }
-            PageTitle = $"{title} - {name}";
+            PageTitleHtml = WebUtility.HtmlEncode($"{title} - {name}");
         }
     }
 }

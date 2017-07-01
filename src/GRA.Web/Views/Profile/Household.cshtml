@@ -393,6 +393,8 @@
 @section scripts
 {
     <script>
+        var submitting = false;
+
         $(".user-mail").on("click", function () {
             var action = $(this).data("action");
             if (action == "") {
@@ -424,9 +426,12 @@
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13) {
                 e.preventDefault();
-                $("#MinutesRead").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#MinutesRead").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
             }
         });
 
@@ -434,24 +439,33 @@
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13) {
                 e.preventDefault();
-                $("#SecretCode").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#SecretCode").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
             }
         });
 
         $(".minutesButton").on("click", function (e) {
             e.preventDefault();
-            $("#MinutesRead").val($(this).parent().parent().find(".minutesInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
+            if (submitting != true) {
+                submitting = true;
+                $("#MinutesRead").val($(this).parent().parent().find(".minutesInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
         });
 
         $(".codeButton").on("click", function (e) {
             e.preventDefault();
-            $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
+            if (submitting != true) {
+                submitting = true;
+                $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
         });
 
         function SetUserSelection() {

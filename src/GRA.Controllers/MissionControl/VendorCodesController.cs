@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using GRA.Controllers.ServiceFacade;
@@ -17,11 +18,14 @@ namespace GRA.Controllers.MissionControl
     [Authorize(Policy = Policy.ManageVendorCodes)]
     public class VendorCodesController : Base.MCController
     {
+        private readonly SiteService _siteService;
         private readonly VendorCodeService _vendorCodeService;
         public VendorCodesController(ServiceFacade.Controller context,
+            SiteService siteService,
             VendorCodeService vendorCodeService)
             : base(context)
         {
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
             PageTitle = "Vendor Codes";
@@ -53,29 +57,28 @@ namespace GRA.Controllers.MissionControl
 
             if (ModelState.ErrorCount == 0)
             {
-                using (var stream = excelFile.OpenReadStream())
+                var tempFile = Path.GetTempFileName();
+                using (var fileStream = new FileStream(tempFile, FileMode.Create))
                 {
-                    (ImportStatus status, string message)
-                        = await _vendorCodeService.UpdateStatusFromExcel(stream);
-
-                    switch (status)
-                    {
-                        case Domain.Model.ImportStatus.Success:
-                            AlertSuccess = message;
-                            break;
-                        case Domain.Model.ImportStatus.Info:
-                            AlertInfo = message;
-                            break;
-                        case Domain.Model.ImportStatus.Warning:
-                            AlertWarning = message;
-                            break;
-                        case Domain.Model.ImportStatus.Danger:
-                            AlertDanger = message;
-                            break;
-                    }
+                    await excelFile.CopyToAsync(fileStream);
                 }
+                string file = WebUtility.UrlEncode(Path.GetFileName(tempFile));
+                return RedirectToAction("ImportFile", new { id = file });
             }
-            return RedirectToAction("ImportStatus");
+            else
+            {
+                return RedirectToAction("ImportStatus");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImportFile(string id)
+        {
+            PageTitle = "Import Vendor Status";
+
+            var wsUrl = await _siteService.GetWsUrl(Request.Scheme, Request.Host.Value);
+
+            return View("ImportFile", $"{wsUrl}/MissionControl/processvendor/{id}");
         }
     }
 }

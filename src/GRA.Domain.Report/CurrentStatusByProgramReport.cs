@@ -60,7 +60,7 @@ namespace GRA.Domain.Report
             #endregion Reporting initialization
 
             #region Collect data
-            UpdateProgress(progress, 1, "Starting report...");
+            UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             var programTotals = new Dictionary<int, (int users, int achievers)>();
 
@@ -108,7 +108,8 @@ namespace GRA.Domain.Report
                         {
                             UpdateProgress(progress,
                                 ++count * 100 / totalItems,
-                                $"{program.Name} - {branch.SystemName}");
+                                $"{program.Name} - {branch.SystemName}",
+                                request.Name);
                         }
 
                         criterion.BranchId = branch.Id;

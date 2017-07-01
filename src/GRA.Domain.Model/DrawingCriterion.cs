@@ -7,6 +7,11 @@ namespace GRA.Domain.Model
     public class DrawingCriterion : Abstract.BaseDomainEntity
     {
         public int SiteId { get; set; }
+        [Required]
+        public int RelatedSystemId { get; set; }
+        [Required]
+        public int RelatedBranchId { get; set; }
+
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
@@ -31,6 +36,7 @@ namespace GRA.Domain.Model
         [DisplayName("Exclude Previous Winners")]
         public bool ExcludePreviousWinners { get; set; }
 
+        public string SystemName { get; set; }
         public string BranchName { get; set; }
         [DisplayName("Eligible Count")]
         public int EligibleCount { get; set; }

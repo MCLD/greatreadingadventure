@@ -336,7 +336,7 @@ namespace GRA.Domain.Service
                && HasPermission(Permission.MailParticipants))
             {
                 var inReplyToMail = await _mailRepository.GetByIdAsync(mail.InReplyToId.Value);
-                mail.ThreadId = inReplyToMail.ThreadId ?? mail.InReplyToId.Value;
+                mail.ThreadId = inReplyToMail?.ThreadId ?? mail.InReplyToId.Value;
                 mail.FromUserId = 0;
                 mail.ToUserId = inReplyToMail.FromUserId;
                 mail.CanParticipantDelete = true;
@@ -390,19 +390,27 @@ namespace GRA.Domain.Service
             var activeId = GetActiveUserId();
             bool canDeleteAll = HasPermission(Permission.DeleteAnyMail);
             var mail = await _mailRepository.GetByIdAsync(mailId);
-            if (mail.ToUserId == activeId || canDeleteAll)
+            if (mail == null)
             {
-                if (mail.ToUserId != null)
-                {
-                    _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
-                }
-                else
-                {
-                    var siteId = GetCurrentSiteId();
-                    _memoryCache.Remove($"{CacheKey.UnhandledMailCount}?s{siteId}");
-                }
-                await _mailRepository.RemoveSaveAsync(authId, mailId);
+                _logger.LogInformation($"User {activeId} tried to remove {mailId} which doesn't exist.");
                 return;
+            }
+            else
+            {
+                if (mail.ToUserId == activeId || canDeleteAll)
+                {
+                    if (mail.ToUserId != null)
+                    {
+                        _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{mail.ToUserId}");
+                    }
+                    else
+                    {
+                        var siteId = GetCurrentSiteId();
+                        _memoryCache.Remove($"{CacheKey.UnhandledMailCount}?s{siteId}");
+                    }
+                    await _mailRepository.RemoveSaveAsync(authId, mailId);
+                    return;
+                }
             }
             _logger.LogError($"User {activeId} doesn't have permission remove mail {mailId}.");
             throw new Exception("Permission denied.");

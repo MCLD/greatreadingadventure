@@ -73,7 +73,7 @@ namespace GRA.Domain.Report
             #endregion Reporting initialization
 
             #region Collect data
-            UpdateProgress(progress, 1, "Starting report...");
+            UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
             var headerRow = new List<object>() {
@@ -147,7 +147,8 @@ namespace GRA.Domain.Report
                 {
                     UpdateProgress(progress,
                         ++count * 100 / branches.Count(),
-                        $"Processing: {branch.SystemName} - {branch.Name}");
+                        $"Processing: {branch.SystemName} - {branch.Name}",
+                        request.Name);
 
                     criterion.SystemId = systemId;
                     criterion.BranchId = branch.Id;

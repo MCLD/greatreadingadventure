@@ -59,7 +59,8 @@ namespace GRA.Data.Repository
             }
             if (filter.ProgramIds?.Any() == true)
             {
-                challenges = challenges.Where(_ => filter.ProgramIds.Contains(_.LimitToProgramId));
+                challenges = challenges
+                    .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
             }
             if (filter.UserIds?.Any() == true)
             {

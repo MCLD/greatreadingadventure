@@ -1,12 +1,13 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace GRA.Data.Repository
 {
@@ -19,26 +20,59 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<DrawingCriterion>> PageAllAsync(int siteId, int skip, int take)
+        public async Task<IEnumerable<DrawingCriterion>> PageAllAsync(BaseFilter filter)
         {
-            return await DbSet
-                    .AsNoTracking()
-                    .Include(_ => _.Branch)
-                    .Where(_ => _.SiteId == siteId)
-                    .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<DrawingCriterion>()
-                    .ToListAsync();
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ThenBy(_ => _.Id)
+                .ApplyPagination(filter)
+                .ProjectTo<DrawingCriterion>()
+                .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId)
+        public async Task<int> GetCountAsync(BaseFilter filter)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId)
+            return await ApplyFilters(filter)
                 .CountAsync();
+        }
+
+        private IQueryable<Model.DrawingCriterion> ApplyFilters(BaseFilter filter)
+        {
+            var criterionList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (filter.SystemIds?.Any() == true)
+            {
+                criterionList = criterionList
+                    .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
+            }
+
+            if (filter.BranchIds?.Any() == true)
+            {
+                criterionList = criterionList
+                    .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
+            }
+
+            if (filter.UserIds?.Any() == true)
+            {
+                criterionList = criterionList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+
+            if (filter.ProgramIds?.Any() == true)
+            {
+                criterionList = criterionList
+                    .Where(_ => filter.ProgramIds.Any(p => p == _.ProgramId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                criterionList = criterionList.Where(_ => _.Name.Contains(filter.Search))
+                    .Union(criterionList.Where(_ => _.System.Name.Contains(filter.Search)))
+                    .Union(criterionList.Where(_ => _.Branch.Name.Contains(filter.Search)));
+            }
+
+            return criterionList;
         }
 
         public async Task<int> GetEligibleUserCountAsync(int criterionId)
@@ -87,7 +121,7 @@ namespace GRA.Data.Repository
                     .Select(_ => _.UserId);
 
                 users = users.Where(_ => !previousWinners.Contains(_.Id));
-            }           
+            }
 
             var userIds = users.Select(_ => _.Id);
             IQueryable<int> activityUsers = null;
@@ -141,27 +175,17 @@ namespace GRA.Data.Repository
                         UserId = sum.Key,
                         Total = sum.Sum(_ => _.PointsEarned)
                     });
-
+                
                 if (criterion.PointsMinimum != null)
                 {
-                    pointUsers = pointSum
-                        .Where(_ => _.Total >= criterion.PointsMinimum)
-                        .Select(_ => _.UserId);
+                    pointSum = pointSum.Where(_ => _.Total >= criterion.PointsMinimum);
                 }
                 if (criterion.PointsMaximum != null)
                 {
-                    var maxUsers = pointSum
-                        .Where(_ => _.Total <= criterion.PointsMaximum)
-                        .Select(_ => _.UserId);
-                    if (pointUsers == null)
-                    {
-                        pointUsers = maxUsers;
-                    }
-                    else
-                    {
-                        pointUsers = pointUsers.Where(_ => maxUsers.Contains(_));
-                    }
+                    pointSum = pointSum.Where(_ => _.Total <= criterion.PointsMaximum);
                 }
+
+                pointUsers = pointSum.Select(_ => _.UserId);
             }
 
             if (pointUsers != null)

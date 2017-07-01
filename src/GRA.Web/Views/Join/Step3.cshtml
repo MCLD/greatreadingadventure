@@ -77,7 +77,8 @@
 @section scripts {
     <script>
         $("#Username").on("blur", function () {
-            if ($(this).val() != "" && !$(this).hasClass("input-validation-error")) {
+            if ($(this).val().trim() != "" && !$(this).hasClass("input-validation-error")) {
+                $(this).val($(this).val().trim());
                 var usernameCheckUrl = "@Url.Action("UsernameInUse", "Lookup", new { Area = string.Empty })";
                 var icon = $("#Username-Icon");
                 icon.removeClass("hide fa-times fa-check");

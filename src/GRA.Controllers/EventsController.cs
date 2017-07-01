@@ -82,7 +82,11 @@ namespace GRA.Controllers
             {
                 if (!string.IsNullOrWhiteSpace(StartDate))
                 {
-                    filter.StartDate = DateTime.Parse(StartDate).Date;
+                    DateTime startDate;
+                    if (DateTime.TryParse(StartDate, out startDate))
+                    {
+                        filter.StartDate = startDate.Date;
+                    }
                 }
                 else
                 {
@@ -92,7 +96,11 @@ namespace GRA.Controllers
 
             if (!string.IsNullOrWhiteSpace(EndDate))
             {
-                filter.EndDate = DateTime.Parse(EndDate).Date;
+                DateTime endDate;
+                if (DateTime.TryParse(EndDate, out endDate))
+                {
+                    filter.EndDate = endDate.Date;
+                }
             }
 
             var eventList = await _eventService.GetPaginatedListAsync(filter);

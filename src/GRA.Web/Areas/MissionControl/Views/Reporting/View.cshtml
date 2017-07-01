@@ -36,8 +36,8 @@
                 {
                     <tr>
                         @foreach (string data in row)
-                    {
-                            <td>@data</td>
+                        {
+                            <td>@Html.Raw(data)</td>
                         }
                     </tr>
                 }

@@ -104,8 +104,17 @@ namespace GRA.Domain.Service
             user.CanBeDeleted = true;
             user.IsLockedOut = false;
 
+            user.CardNumber = user.CardNumber?.Trim();
+            user.Email = user.Email?.Trim();
+            user.FirstName = user.FirstName?.Trim();
+            user.LastName = user.LastName?.Trim();
+            user.PhoneNumber = user.PhoneNumber?.Trim();
+            user.PostalCode = user.PostalCode?.Trim();
+            //user.Username = user.Username?.Trim(); // (#416)
+
             if (!string.IsNullOrWhiteSpace(user.EnteredSchoolName))
             {
+                user.EnteredSchoolName = user.EnteredSchoolName?.Trim();
                 var enteredSchool = await _schoolService
                     .AddEnteredSchool(user.EnteredSchoolName, schoolDistrictId.Value);
                 user.EnteredSchoolId = enteredSchool.Id;
@@ -247,12 +256,12 @@ namespace GRA.Domain.Service
                 currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
-                currentEntity.CardNumber = userToUpdate.CardNumber;
-                currentEntity.Email = userToUpdate.Email;
-                currentEntity.FirstName = userToUpdate.FirstName;
-                currentEntity.LastName = userToUpdate.LastName;
-                currentEntity.PhoneNumber = userToUpdate.PhoneNumber;
-                currentEntity.PostalCode = userToUpdate.PostalCode;
+                currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
+                currentEntity.Email = userToUpdate.Email?.Trim();
+                currentEntity.FirstName = userToUpdate.FirstName?.Trim();
+                currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
+                currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
                 currentEntity.SystemId = userToUpdate.SystemId;
@@ -319,12 +328,12 @@ namespace GRA.Domain.Service
                 currentEntity.AvatarId = userToUpdate.AvatarId;
                 currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
-                currentEntity.CardNumber = userToUpdate.CardNumber;
-                currentEntity.Email = userToUpdate.Email;
-                currentEntity.FirstName = userToUpdate.FirstName;
-                currentEntity.LastName = userToUpdate.LastName;
-                currentEntity.PhoneNumber = userToUpdate.PhoneNumber;
-                currentEntity.PostalCode = userToUpdate.PostalCode;
+                currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
+                currentEntity.Email = userToUpdate.Email?.Trim();
+                currentEntity.FirstName = userToUpdate.FirstName?.Trim();
+                currentEntity.LastName = userToUpdate.LastName?.Trim();
+                currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
+                currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
                 currentEntity.SystemId = userToUpdate.SystemId;
@@ -371,6 +380,7 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
+                            //currentEntity.Username = userToUpdate.Username?.Trim(); // (#416)
                             currentEntity.Username = userToUpdate.Username;
                         }
                     }
@@ -530,8 +540,18 @@ namespace GRA.Domain.Service
                 memberToAdd.IsAdmin = false;
                 memberToAdd.EnteredSchoolId = null;
 
+                memberToAdd.CardNumber = memberToAdd.CardNumber?.Trim();
+                memberToAdd.Email = memberToAdd.Email?.Trim();
+                memberToAdd.FirstName = memberToAdd.FirstName?.Trim();
+                memberToAdd.LastName = memberToAdd.LastName?.Trim();
+                memberToAdd.PhoneNumber = memberToAdd.PhoneNumber?.Trim();
+                memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
+                //memberToAdd.Username = memberToAdd.Username?.Trim(); // (#416)
+
+
                 if (!string.IsNullOrWhiteSpace(memberToAdd.EnteredSchoolName))
                 {
+                    memberToAdd.EnteredSchoolName = memberToAdd.EnteredSchoolName?.Trim();
                     var enteredSchool = await _schoolService
                         .AddEnteredSchool(memberToAdd.EnteredSchoolName, schoolDistrictId.Value);
                     memberToAdd.EnteredSchoolId = enteredSchool.Id;
@@ -573,6 +593,7 @@ namespace GRA.Domain.Service
 
                 _passwordValidator.Validate(password);
 
+                //user.Username = memberToRegister.Username?.Trim(); // (#416)
                 user.Username = memberToRegister.Username;
                 var registeredUser = await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository

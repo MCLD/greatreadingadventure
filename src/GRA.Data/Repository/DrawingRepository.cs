@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -18,26 +20,80 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<IEnumerable<Drawing>> PageAllAsync(int siteId, int skip, int take, bool archived)
+        public async Task<IEnumerable<Drawing>> PageAllAsync(DrawingFilter filter)
         {
-            return await DbSet
-                    .AsNoTracking()
-                    .Include(_ => _.DrawingCriterion)
-                    .Where(_ => _.DrawingCriterion.SiteId == siteId && _.IsArchived == archived)
-                    .OrderByDescending(_ => _.Id)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<Drawing>()
-                    .ToListAsync();
+            return await ApplyFilters(filter)
+                .OrderByDescending(_ => _.Id)
+                .ApplyPagination(filter)
+                .ProjectTo<Drawing>()
+                .ToListAsync();
         }
 
-        public async Task<int> GetCountAsync(int siteId, bool archived)
+        public async Task<int> GetCountAsync(DrawingFilter filter)
         {
-            return await DbSet
-                .AsNoTracking()
-                .Include(_ => _.DrawingCriterion)
-                .Where(_ => _.DrawingCriterion.SiteId == siteId && _.IsArchived == archived)
+            return await ApplyFilters(filter)
                 .CountAsync();
+        }
+
+        private IQueryable<Model.Drawing> ApplyFilters(DrawingFilter filter)
+        {
+            var drawingList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.DrawingCriterion.SiteId == filter.SiteId
+                    && _.IsArchived == filter.Archived);
+
+            if (filter.SystemIds?.Any() == true)
+            {
+                drawingList = drawingList
+                    .Where(_ => filter.SystemIds.Contains(_.RelatedSystemId));
+            }
+
+            if (filter.BranchIds?.Any() == true)
+            {
+                drawingList = drawingList
+                    .Where(_ => filter.BranchIds.Contains(_.RelatedBranchId));
+            }
+
+            if (filter.UserIds?.Any() == true)
+            {
+                drawingList = drawingList.Where(_ => filter.UserIds.Contains(_.CreatedBy));
+            }
+
+            if (filter.ProgramIds?.Any() == true)
+            {
+                IQueryable<Model.Drawing> nullList = null;
+                IQueryable<Model.Drawing> valueList = null;
+                if (filter.ProgramIds.Any(_ => _.HasValue == false))
+                {
+                    nullList = drawingList.Where(_ => _.DrawingCriterion.ProgramId == null);
+                }
+                if (filter.ProgramIds.Any(_ => _.HasValue))
+                {
+                    var programValues = filter.ProgramIds.Where(_ => _.HasValue);
+                    valueList = drawingList
+                        .Where(_ => programValues.Contains(_.DrawingCriterion.ProgramId));
+                }
+                if (nullList != null && valueList != null)
+                {
+                    drawingList = nullList.Union(valueList);
+                }
+                else if (nullList != null)
+                {
+                    drawingList = nullList;
+                }
+                else if (valueList != null)
+                {
+                    drawingList = valueList;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                drawingList = drawingList.Where(_ => _.Name.Contains(filter.Search)
+                                                || _.DrawingCriterion.Name.Contains(filter.Search));
+            }
+
+            return drawingList;
         }
 
         public async Task<Drawing> GetByIdAsync(int id, int skip, int take)

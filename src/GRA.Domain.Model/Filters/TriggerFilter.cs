@@ -4,6 +4,6 @@
     {
         public bool? SecretCodesOnly { get; set; }
 
-        public TriggerFilter(int? page = null, int take = 10) : base(page, take) { }
+        public TriggerFilter(int? page = null) : base(page) { }
     }
 }

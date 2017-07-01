@@ -16,7 +16,7 @@ using GRA.Domain.Model.Filters;
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
-    [Authorize(Policy = Policy.ManageEvents)]
+    [Authorize(Policy = Policy.ManageTriggers)]
     public class TriggersController : Base.MCController
     {
         private readonly ILogger<TriggersController> _logger;
@@ -668,80 +668,6 @@ namespace GRA.Controllers.MissionControl
                 ShowAlertWarning("Unable to delete trigger: ", gex.Message);
             }
             return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> GetRequirementList(string badgeIds,
-            string challengeIds,
-            string scope,
-            string search,
-            int page = 1,
-            int? thisBadge = null)
-        {
-            var filter = new TriggerFilter(page)
-            {
-                Search = search
-            };
-
-            var badgeList = new List<int>();
-            if (thisBadge.HasValue)
-            {
-                badgeList.Add(thisBadge.Value);
-            }
-            if (!string.IsNullOrWhiteSpace(badgeIds))
-            {
-                badgeList.AddRange(badgeIds.Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .ToList());
-            }
-            if (badgeList.Count > 0)
-            {
-                filter.BadgeIds = badgeList;
-            }
-
-            if (!string.IsNullOrWhiteSpace(challengeIds))
-            {
-                filter.ChallengeIds = challengeIds.Split(',')
-                    .Where(_ => !string.IsNullOrWhiteSpace(_))
-                    .Select(int.Parse)
-                    .ToList();
-            }
-            switch (scope)
-            {
-                case ("System"):
-                    filter.SystemIds = new List<int> { GetId(ClaimType.SystemId) };
-                    break;
-                case ("Branch"):
-                    filter.BranchIds = new List<int> { GetId(ClaimType.BranchId) };
-                    break;
-                case ("Mine"):
-                    filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
-                    break;
-                default:
-                    break;
-            }
-
-            var requirements = await _triggerService.PageRequirementAsync(filter);
-            var paginateModel = new PaginateViewModel
-            {
-                ItemCount = requirements.Count,
-                CurrentPage = page,
-                ItemsPerPage = filter.Take.Value
-            };
-            var viewModel = new RequirementListViewModel
-            {
-                Requirements = requirements.Data,
-                PaginateModel = paginateModel
-            };
-            foreach (var requirement in requirements.Data)
-            {
-                if (!string.IsNullOrWhiteSpace(requirement.BadgePath))
-                {
-                    requirement.BadgePath = _pathResolver.ResolveContentPath(requirement.BadgePath);
-                }
-            }
-
-            return PartialView("_RequirementsPartial", viewModel);
         }
     }
 }

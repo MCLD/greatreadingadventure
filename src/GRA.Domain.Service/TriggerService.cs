@@ -142,9 +142,8 @@ namespace GRA.Domain.Service
             return await _triggerRepository.GetTriggerRequirmentsAsync(trigger);
         }
 
-        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(TriggerFilter filter)
+        public async Task<DataWithCount<ICollection<TriggerRequirement>>> PageRequirementAsync(BaseFilter filter)
         {
-            VerifyManagementPermission();
             filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<ICollection<TriggerRequirement>>()
             {

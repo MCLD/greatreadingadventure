@@ -7,11 +7,16 @@ namespace GRA.Data.Model
     {
         [Required]
         public int SiteId { get; set; }
+        [Required]
+        public int RelatedSystemId { get; set; }
+        [Required]
+        public int RelatedBranchId { get; set; }
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }
         public int? ProgramId { get; set; }
         public int? SystemId { get; set; }
+        public virtual System System { get; set; }
         public int? BranchId { get; set; }
         public virtual Branch Branch { get; set; }
         public int? PointsMinimum { get; set; }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Reflection;
-using System.Linq;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Controllers.Filter
 {
@@ -13,11 +13,16 @@ namespace GRA.Controllers.Filter
     {
         private readonly MailService _mailService;
         private readonly UserService _userService;
+        private readonly IUserContextProvider _userContextProvider;
 
-        public UserFilter(MailService mailService, UserService userService)
+        public UserFilter(MailService mailService,
+            UserService userService,
+            IUserContextProvider userContextProvider)
         {
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _userContextProvider = userContextProvider
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context,
@@ -30,7 +35,7 @@ namespace GRA.Controllers.Filter
                 if (httpContext.User.HasClaim(GRA.ClaimType.Permission,
                         GRA.Domain.Model.Permission.AccessMissionControl.ToString())
                     && httpContext.Session.GetInt32(SessionKey.ActiveUserId) ==
-                        new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId))
+                        _userContextProvider.GetId(httpContext.User, ClaimType.UserId))
                 {
                     httpContext.Items.Add(ItemKey.ShowMissionControl, true);
                 }

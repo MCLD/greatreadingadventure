@@ -165,7 +165,7 @@ namespace GRA.Data.Repository
             // filter by program ids
             if (filter.ProgramIds != null)
             {
-                events = events.Where(_ => filter.ProgramIds.Contains(_.ProgramId));
+                events = events.Where(_ => filter.ProgramIds.Any(p => p == _.ProgramId));
             }
 
             // filter by user ids

@@ -32,8 +32,9 @@
                                             <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
                                             <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
-                                            <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs">
+                                            <button type="submit" style="margin-left:5px;" class="btn btn-default btn-xs btn-spinner">
                                                 Undo
+                                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                                             </button>
                                         </form>
                                     }
@@ -43,9 +44,10 @@
                                             <input id="prizeWinnerId" name="prizeWinnerId" value="@prizeWinner.Id" type="hidden" />
                                             <input id="userId" name="userId" value="@prizeWinner.UserId" type="hidden" />
                                             <input id="page" name="page" value="@Model.PaginateModel.CurrentPage" type="hidden" />
-                                            <button type="submit" class="btn btn-success btn-xs">
+                                            <button type="submit" class="btn btn-success btn-xs btn-spinner">
                                                 <span class="fa fa-gift"></span>
                                                 Available, click to redeem!
+                                                <span class="fa fa-spinner fa-pulse fa-fw hidden"></span>
                                             </button>
                                         </form>
                                     }

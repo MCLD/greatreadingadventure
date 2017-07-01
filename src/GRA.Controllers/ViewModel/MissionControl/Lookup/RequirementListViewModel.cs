@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GRA.Controllers.ViewModel.MissionControl.Triggers
+namespace GRA.Controllers.ViewModel.MissionControl.Lookup
 {
     public class RequirementListViewModel
     {

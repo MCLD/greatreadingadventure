@@ -73,7 +73,7 @@ namespace GRA.Controllers
             {
                 foreach (var school in schoolList)
                 {
-                    if (string.Equals(schoolName, school.Name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(schoolName.Trim(), school.Name, StringComparison.OrdinalIgnoreCase))
                     {
                         schoolId = school.Id;
                         break;

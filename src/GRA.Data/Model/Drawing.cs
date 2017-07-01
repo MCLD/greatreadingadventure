@@ -10,6 +10,11 @@ namespace GRA.Data.Model
         public int DrawingCriterionId { get; set; }
         public DrawingCriterion DrawingCriterion { get; set; }
 
+        [Required]
+        public int RelatedSystemId { get; set; }
+        [Required]
+        public int RelatedBranchId { get; set; }
+
         [MaxLength(255)]
         [Required]
         public string Name { get; set; }

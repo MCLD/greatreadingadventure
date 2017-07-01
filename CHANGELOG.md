@@ -5,31 +5,50 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
-- Add exception handling when entering activity on the dashboard
-- Add achieved at property to Users
-- Add WebSocket-based reporting interface to avoid timeouts on report execution
-- Add Current Status, Participant Progress, and Registrations/Achievers reports
-- Add Mission Control interface for avatar bundles
-- Add vendor codes to user detail pages
-- Ability to upload vendor status .xls spreadsheets
+- Exception handling when entering activity on the dashboard
+- "Achieved at" property to Users
+- Report: Badge Report
+- Report: Badge Top Scores Report
+- Report: Current Status By Program Report
+- Report: Current Status Report
+- Report: Participant Progress Report
+- Report: Registrations and Achievers Report
+- Report: Top Scores Report
+- Mission Control interface for avatar bundles
+- Vendor codes to user detail pages
+- Ability to upload vendor status Excel (.xls) spreadsheets
+- Event DateTime parsing error handling
+- Drawing list filtering
 
 ### Changed
-- Change submit buttons to be disabled on click for challenge and household pages
-- Change Mission Control user updating to only update certain properties
-- Change deleting a users history to remove all that was awarded from it
-- Change processing entered schools to perform the same action for identical entered schools
-- Change events to order by start date
+- Disable submit buttons on click for challenge and household pages
+- Use WebSocket-based method for providing user feedback in long-running processes
+- Mission Control user updating only updates certain properties
+- Deleting a users history removes all that was awarded from it
+- Identically entered schools will be processed the same way
+- Order events by start date
+- Better handling of adding badges/triggers to lists
+- Trim user input on: card number, email, first name, last name, phone number, postal code, username
+- "Register Member" to "Add Username" in Mission Control to match the public side
+- Improve database indexes, remove unused/improper indexing
+- Remove Mission Control participant username autofocus
 
 ### Fixed
 - Issue where school CSV import fails if two schools have the same name
-- Fix secret code GraException message typo
-- Fix bundle award on login
-- Fix daily image in IE
-- Fix pressing enter submitting twice on household pages
-- Add max length checking when logging activity with books
-- Disable task add/edit buttons on click
-- Remove html from delete modal text
-- Fix handling when adding items to a list from modal
+- Secret code GraException message typo
+- Bundle award on login
+- Daily image in IE
+- Pressing enter submitting twice on household pages
+- Disable task add/edit buttons on click (#290)
+- Remove html from delete modal text (#201)
+- Handling when adding items to a list from modal (#402)
+- Household secret code entry permission errors
+- Disable prize redeem/undo buttons on click
+- Display of emoji usernames in MC profile page
+- Vendor Codes being assigned twice
+- Trigger permissions
+- Drawing criteria timing out
+- Entered Schools name trimming
 
 ## [4.0.0-alpha6] 2017-06-02
 ### Added

@@ -74,3 +74,8 @@ body#mission-control-body {
     background: white;
 }
 
+table > tbody > tr > td.gra-mc-icon {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}

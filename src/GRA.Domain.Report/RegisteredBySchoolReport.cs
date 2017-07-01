@@ -73,7 +73,7 @@ namespace GRA.Domain.Report
             #endregion Adjust report criteria as needed
 
             #region Collect data
-            UpdateProgress(progress, 1, "Starting report...");
+            UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
             var row = new List<object>();
@@ -109,7 +109,9 @@ namespace GRA.Domain.Report
                 var branches = await _branchRepository.GetBySystemAsync(systemId);
                 foreach (var branch in branches)
                 {
-                    UpdateProgress(progress, $"Processing: {branch.SystemName} - {branch.Name}");
+                    UpdateProgress(progress, 
+                        $"Processing: {branch.SystemName} - {branch.Name}",
+                        request.Name);
 
                     criterion.SystemId = systemId;
                     criterion.BranchId = branch.Id;

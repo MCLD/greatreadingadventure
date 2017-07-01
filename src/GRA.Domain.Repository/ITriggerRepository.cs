@@ -18,8 +18,8 @@ namespace GRA.Domain.Repository
         Task<Trigger> GetByCodeAsync(int siteId, string secretCode);
         Task<DateTime?> CheckTriggerActivationAsync(int userId, int triggerId);
         Task<ICollection<TriggerRequirement>> GetTriggerRequirmentsAsync(Trigger trigger);
-        Task<int> CountRequirementsAsync(TriggerFilter filter);
-        Task<ICollection<TriggerRequirement>> PageRequirementsAsync(TriggerFilter filter);
+        Task<int> CountRequirementsAsync(BaseFilter filter);
+        Task<ICollection<TriggerRequirement>> PageRequirementsAsync(BaseFilter filter);
         Task<bool> CodeExistsAsync(int siteId, string secretCode, int? triggerId = null);
         Task<bool> HasDependentsAsync(int triggerId);
         Task<ICollection<Trigger>> GetTriggerDependentsAsync(int triggerBadgeId);

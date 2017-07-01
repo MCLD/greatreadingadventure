@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GRA.Domain.Model;
@@ -11,22 +12,19 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(2,
-    "Registrations and Achievers Report",
-    "Registered participants and achievers by branch (filterable by system and date).",
-    "Program")]
-    public class RegistrationsAchieversReport : BaseReport
+    [ReportInformation(6,
+        "Top Scores Report",
+        "Top 30 scoring participants filterable by program, system, and branch",
+        "Participants")]
+    public class TopScoresReport : BaseReport
     {
-        private readonly IBranchRepository _branchRepository;
+        private const int TopToShow = 30;
         private readonly IUserRepository _userRepository;
-        public RegistrationsAchieversReport(ILogger<RegistrationsAchieversReport> logger,
-            ServiceFacade.Report serviceFacade,
-            IBranchRepository branchRepository,
-            ISystemRepository systemRepository,
+
+        public TopScoresReport(ILogger<TopScoresReport> logger,
+            Domain.Report.ServiceFacade.Report serviceFacade,
             IUserRepository userRepository) : base(logger, serviceFacade)
         {
-            _branchRepository = branchRepository
-                ?? throw new ArgumentNullException(nameof(branchRepository));
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
         }
@@ -64,76 +62,53 @@ namespace GRA.Domain.Report
             UpdateProgress(progress, 1, "Starting report...", request.Name);
 
             // header row
-            report.HeaderRow = new object[]
-            {
+            report.HeaderRow = new object[] {
+                "Rank",
                 "System Name",
                 "Branch Name",
-                "Registered Users",
-                "Achievers"
+                "Program",
+                "Participant",
+                "Points Earned"
             };
 
             int count = 0;
+            int total = TopToShow;
 
-            // running totals
-            long totalRegistered = 0;
-            long totalAchiever = 0;
+            IEnumerable<User> users = await _userRepository.GetTopScoresAsync(criterion, total);
 
-            var branches = criterion.SystemId != null
-                ? await _branchRepository.GetBySystemAsync((int)criterion.SystemId)
-                : await _branchRepository.GetAllAsync((int)criterion.SiteId);
-
-            var systemIds = branches
-                .OrderBy(_ => _.SystemName)
-                .GroupBy(_ => _.SystemId)
-                .Select(_ => _.First().SystemId);
-
-            foreach (var systemId in systemIds)
+            foreach (var user in users)
             {
+                UpdateProgress(progress,
+                    ++count * 100 / users.Count(),
+                    $"Processing: {count}/{users.Count()}",
+                    request.Name);
+
                 if (token.IsCancellationRequested)
                 {
                     break;
                 }
 
-                foreach (var branch in branches.Where(_ => _.SystemId == systemId))
+                var name = new StringBuilder(user.FirstName);
+                if(!string.IsNullOrEmpty(user.LastName))
                 {
-                    UpdateProgress(progress,
-                        ++count * 100 / branches.Count(),
-                        $"Processing: {branch.SystemName} - {branch.Name}",
-                        request.Name);
-
-                    criterion.SystemId = systemId;
-                    criterion.BranchId = branch.Id;
-
-                    int users = await _userRepository.GetCountAsync(criterion);
-                    int achievers = await _userRepository.GetAchieverCountAsync(criterion);
-                    totalRegistered += users;
-                    totalAchiever += achievers;
-
-                    // add row
-                    reportData.Add(new object[] {
-                        branch.SystemName,
-                        branch.Name,
-                        users,
-                        achievers
-                    });
-
-                    if (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
+                    name.Append($" {user.LastName}");
                 }
+                if(!string.IsNullOrEmpty(user.Username))
+                {
+                    name.Append($" ({user.Username})");
+                }
+
+                reportData.Add(new object[] {
+                        count,
+                        user.SystemName,
+                        user.BranchName,
+                        user.ProgramName,
+                        name.ToString(),
+                        user.PointsEarned
+                    });
             }
 
             report.Data = reportData.ToArray();
-
-            // total row
-            report.FooterRow = new object[]
-            {
-                "Total",
-                string.Empty,
-                totalRegistered,
-                totalAchiever
-            };
             #endregion Collect data
 
             #region Finish up reporting

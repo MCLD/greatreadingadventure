@@ -82,7 +82,7 @@ namespace GRA.Domain.Report
             #endregion Adjust report criteria as needed
 
             #region Collect data
-            UpdateProgress(progress, 1, "Getting total user count...");
+            UpdateProgress(progress, 1, "Getting total user count...", request.Name);
 
             var totalCheck = new Dictionary<long, long>();
 
@@ -126,7 +126,9 @@ namespace GRA.Domain.Report
                 reportUserCount += await _userRepository.GetCountAsync(userCriterion);
             }
 
-            UpdateProgress(progress, $"Beginning processing of {reportUserCount} users...");
+            UpdateProgress(progress, 
+                $"Beginning processing of {reportUserCount} users...", 
+                request.Name);
 
             foreach (var systemId in systemIds)
             {
@@ -164,7 +166,8 @@ namespace GRA.Domain.Report
                             {
                                 UpdateProgress(progress,
                                     Math.Max((int)((count * 100) / reportUserCount), 1),
-                                    $"{processing} {count}/{reportUserCount}");
+                                    $"{processing} {count}/{reportUserCount}",
+                                    request.Name);
                             }
                             var pointsUntilPeriod = await _userLogRepository
                                 .GetEarningsUpToDateAsync(userId,

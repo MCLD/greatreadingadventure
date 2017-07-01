@@ -1,9 +1,9 @@
-﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.RunReportViewModel
+﻿@model string
 <div class="modal fade" tabindex="-1" role="dialog" id="wsModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="wsTitle">Loading report...</h4>
+                <h4 class="modal-title" id="wsTitle">Importing vendor status updates...</h4>
             </div>
             <div class="modal-body">
                 <div class="progress">
@@ -18,7 +18,7 @@
                 <div class="form-control-static pull-left" style="width: 2rem;">
                     <span class="fa fa-circle" id="recvWs" style="color: lightcoral;"></span>
                 </div>
-                <button type="button" class="btn" id="cancelWs">Cancel report</button>
+                <button type="button" class="btn" id="cancelWs">Cancel import</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -30,12 +30,12 @@
     var wsCancel = false;
     var webSocket;
     var wsPing;
-    var wsFunction = 'report';
-    var wsUrl = '@Model.RunReportUrl';
-    var wsSuccessUrl = '';
-    var wsSuccessRedirect = '@Url.Action("View", new { id = Model.Id })';
-    var wsSuccessButton = 'View ' + wsFunction;
-    var wsCancelUrl = '@Url.Action("Index")';
+    var wsFunction = 'import';
+    var wsUrl = '@Model';
+    var wsSuccessUrl = '@Url.Action("ImportStatus")';
+    var wsSuccessRedirect = '';
+    var wsSuccessButton = 'Ok';
+    var wsCancelUrl = '@Url.Action("ImportStatus")';
 
     function updateState(e) {
         if (!webSocket) {
@@ -51,8 +51,7 @@
                         if (wsSuccessRedirect.length > 0) {
                             window.location.href = wsSuccessRedirect;
                         }
-                        else
-                        {
+                        else {
                             $('#cancelWs').text(wsSuccessButton);
                             $('#cancelWs').removeClass('btn-danger');
                             $('#cancelWs').addClass('btn-success');

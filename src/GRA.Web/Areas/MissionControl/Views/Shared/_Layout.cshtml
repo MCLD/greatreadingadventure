@@ -138,7 +138,7 @@
                                 {
                                     <li><a asp-controller="Schools" asp-action="Index">Schools</a></li>
                                 }
-                                @if(Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                                 {
                                     <li><a asp-controller="VendorCodes" asp-action="ImportStatus">Vendor code status</a></li>
 
@@ -166,7 +166,17 @@
             </div>
         </noscript>
 
-        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
+        @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
+                && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    @RenderSection("inHeading", required: false)
+                    <span class="h2">@Html.Raw(ViewData[GRA.Controllers.ViewDataKey.TitleHtml])</span>
+                </div>
+            </div>
+        }
+        else if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.Title))
         {
             <div class="row">
                 <div class="col-xs-12">

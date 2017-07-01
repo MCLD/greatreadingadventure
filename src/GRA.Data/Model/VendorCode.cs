@@ -15,6 +15,7 @@ namespace GRA.Data.Model
         [Required]
         public bool IsUsed { get; set; }
         public DateTime DateUsed { get; set; }
+        [ConcurrencyCheck]
         public int? UserId { get; set; }
         public DateTime? OrderDate { get; set; }
         public DateTime? ShipDate { get; set; }

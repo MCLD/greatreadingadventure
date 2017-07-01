@@ -402,7 +402,7 @@
                                                    asp-action="RegisterHouseholdMember"
                                                    asp-route-id="@user.Id">
                                                     <span class="fa fa-user-plus"></span>
-                                                    Register Member
+                                                    Add Username
                                                 </a>
                                             }
                                             else
@@ -547,6 +547,8 @@
 
         @if (Model.CanLogActivity) {
         <text>
+        var submitting = false;
+
         $("#checkAll").on("change", function(e) {
             if (e.originalEvent)
             {
@@ -573,9 +575,12 @@
             if (keyCode === 13)
             {
                 e.preventDefault();
-                $("#MinutesRead").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#MinutesRead").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
             }
         });
 
@@ -584,24 +589,33 @@
             if (keyCode === 13)
             {
                 e.preventDefault();
-                $("#SecretCode").val($(this).val());
-                SetUserSelection();
-                $("#form").attr("action", $(this).data("action")).submit();
+                if (submitting != true) {
+                    submitting = true;
+                    $("#SecretCode").val($(this).val());
+                    SetUserSelection();
+                    $("#form").attr("action", $(this).data("action")).submit();
+                }
             }
         });
 
         $(".minutesButton").on("click", function(e) {
             e.preventDefault();
-            $("#MinutesRead").val($(this).parent().parent().find(".minutesInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
+            if (submitting != true) {
+                submitting = true;
+                $("#MinutesRead").val($(this).parent().parent().find(".minutesInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
         });
 
         $(".codeButton").on("click", function(e) {
             e.preventDefault();
-            $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
-            SetUserSelection();
-            $("#form").attr("action", $(this).data("action")).submit();
+            if (submitting != true) {
+                submitting = true;
+                $("#SecretCode").val($(this).parent().parent().find(".codeInput").val());
+                SetUserSelection();
+                $("#form").attr("action", $(this).data("action")).submit();
+            }
         });
 
         function SetUserSelection() {

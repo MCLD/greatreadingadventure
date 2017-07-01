@@ -25,5 +25,6 @@ namespace GRA.Domain.Repository
         Task<bool> UsernameInUseAsync(int siteId, string username);
         Task<List<int>> GetUserIdsByBranchProgram(ReportCriterion criterion);
         Task<int> GetAchieverCountAsync(ReportCriterion request);
+        Task<IEnumerable<User>> GetTopScoresAsync(ReportCriterion criterion, int scoresToReturn);
     }
 }

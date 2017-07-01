@@ -4,26 +4,31 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using GRA.Domain.Service.Abstract;
 
 namespace GRA.Controllers.Filter
 {
     public class MissionControlFilter : Attribute, IAsyncResourceFilter
     {
         private readonly ILogger<MissionControlFilter> _logger;
+        private readonly IUserContextProvider _userContextProvider;
         private readonly MailService _mailService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly UserService _userService;
 
         public MissionControlFilter(ILogger<MissionControlFilter> logger,
+            IUserContextProvider userContextProvider,
             MailService mailService,
             QuestionnaireService questionnaireService,
             UserService userService)
         {
-            _logger = Require.IsNotNull(logger, nameof(logger));
-            _mailService = Require.IsNotNull(mailService, nameof(mailService));
-            _questionnaireService = Require.IsNotNull(questionnaireService,
-                nameof(questionnaireService));
-            _userService = Require.IsNotNull(userService, nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _userContextProvider = userContextProvider 
+                ?? throw new ArgumentNullException(nameof(userContextProvider));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _questionnaireService = questionnaireService 
+                ?? throw new ArgumentNullException(nameof(questionnaireService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context,
@@ -32,7 +37,7 @@ namespace GRA.Controllers.Filter
             var httpContext = context.HttpContext;
             try
             {
-                var userId = new UserClaimLookup(httpContext.User).GetId(ClaimType.UserId);
+                var userId = _userContextProvider.GetId(httpContext.User, ClaimType.UserId);
                 var activeId = httpContext.Session.GetInt32(SessionKey.ActiveUserId);
                 if (userId != activeId)
                 {

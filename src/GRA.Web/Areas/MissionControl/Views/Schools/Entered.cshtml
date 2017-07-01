@@ -137,7 +137,7 @@
             modal.find("#EnteredSchool_SchoolDistrictId").val(district);
             modal.find('#EnteredSchool_SchoolDistrictId option[value="' + district + '"]').attr("selected", "selected");
             UpdateTypeList(district, "");
-            UpdateSchoolList(district, "", name.trim());
+            UpdateSchoolList(district, "", name);
         })
 
         $("#existingTab").on("show.bs.tab", function () {
