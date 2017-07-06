@@ -22,35 +22,33 @@
                                 <a id="newTab" href="#new" aria-controls="new" role="tab" data-toggle="tab">New</a>
                             </li>
                         </ul>
-                            <div class="tab-pane gra-tab-pane">
-                                <div id="schoolList"  class="form-group">
-                                    <label asp-for="SchoolId" class="control-label"></label>
-                                    <select asp-for="SchoolId" class="form-control">
-                                    </select>
-                                    <span asp-validation-for="SchoolId" class="text-danger"></span>
-                                </div>
-
-                                <div id="schoolName" class="form-group hide">
-                                    <input id="EnteredSchool_Id" name="EnteredSchool.Id" type="hidden" />
-                                    <label asp-for="EnteredSchool.Name" class="control-label"></label>
-                                    <input asp-for="EnteredSchool.Name" class="form-control" />
-                                    <span asp-validation-for="EnteredSchool.Name" class="text-danger"></span>
-                                </div>
-
-                                <div class="form-group">
-                                    <label asp-for="EnteredSchool.SchoolDistrictId" class="control-label"></label>
-                                    <select asp-for="EnteredSchool.SchoolDistrictId" asp-items="Model.SchoolDistricts" class="form-control">
-                                    </select>
-                                    <span asp-validation-for="EnteredSchool.SchoolDistrictId" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="EnteredSchool.SchoolTypeId" class="control-label"></label>
-                                    <select asp-for="EnteredSchool.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control ignore">
-                                        <option></option>
-                                    </select>
-                                    <span asp-validation-for="EnteredSchool.SchoolTypeId" class="text-danger"></span>
-                                </div>
+                        <div class="tab-pane gra-tab-pane">
+                            <div id="schoolList" class="form-group">
+                                <label asp-for="SchoolId" class="control-label"></label>
+                                <select asp-for="SchoolId" class="form-control"></select>
+                                <span asp-validation-for="SchoolId" class="text-danger"></span>
                             </div>
+
+                            <div id="schoolName" class="form-group hide">
+                                <input id="EnteredSchool_Id" name="EnteredSchool.Id" type="hidden" />
+                                <label asp-for="EnteredSchool.Name" class="control-label"></label>
+                                <input asp-for="EnteredSchool.Name" class="form-control" />
+                                <span asp-validation-for="EnteredSchool.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="EnteredSchool.SchoolDistrictId" class="control-label"></label>
+                                <select asp-for="EnteredSchool.SchoolDistrictId" asp-items="Model.SchoolDistricts" class="form-control"></select>
+                                <span asp-validation-for="EnteredSchool.SchoolDistrictId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="EnteredSchool.SchoolTypeId" class="control-label"></label>
+                                <select asp-for="EnteredSchool.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control ignore">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="EnteredSchool.SchoolTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
@@ -136,44 +134,51 @@
             modal.find("#EnteredSchool_SchoolTypeId").val("");
             modal.find("#EnteredSchool_SchoolDistrictId").val(district);
             modal.find('#EnteredSchool_SchoolDistrictId option[value="' + district + '"]').attr("selected", "selected");
-            UpdateTypeList(district, "");
-            UpdateSchoolList(district, "", name);
+            if ($("#NewSchool").val() == "False") {
+                UpdateTypeList(district, "", name)
+            }
+            else {
+                UpdateTypeList("", "");
+            }
         })
 
         $("#existingTab").on("show.bs.tab", function () {
-            $("#NewSchool").val("false");
+            $("#NewSchool").val("False");
             $("#SchoolId").removeClass("ignore");
             $("#EnteredSchool_SchoolTypeId, #EnteredSchool_Name").addClass("ignore");
             $(".actionText").text("Merge");
             $("#schoolName").addClass("hide");
             $("#schoolList").removeClass("hide");
-            
+            UpdateTypeList($("#EnteredSchool_SchoolDistrictId").val(), $("#EnteredSchool_SchoolTypeId").val(), "");
         });
 
         $("#newTab").on("show.bs.tab", function () {
-            $("#NewSchool").val("true");
+            $("#NewSchool").val("True");
             $("#EnteredSchool_SchoolTypeId, #EnteredSchool_Name").removeClass("ignore");
             $("#SchoolId").addClass("ignore");
             $(".actionText").text("Add");
             $("#schoolList").addClass("hide");
             $("#schoolName").removeClass("hide");
+            UpdateTypeList("", $("#EnteredSchool_SchoolTypeId").val(), "");
         });
 
         $("#EnteredSchool_SchoolDistrictId").on("change", function () {
             var districtId = $(this).val();
             var typeList = $("#EnteredSchool_SchoolTypeId");
-            var typeId = typeList.val();
-            UpdateTypeList(districtId, typeList.val())
-            UpdateSchoolList(districtId, typeList.val());
+            if ($("#NewSchool").val() == "False") {
+                UpdateTypeList(districtId, typeList.val(), "")
+            }
         });
 
         $("#EnteredSchool_SchoolTypeId").on("change", function () {
             var typeId = $(this).val();
             var districtId = $("#EnteredSchool_SchoolDistrictId").val();
-            UpdateSchoolList(districtId, typeId, "");
+            if ($("#NewSchool").val() == "False") {
+                UpdateSchoolList(districtId, typeId, "");
+            }
         });
 
-        function UpdateTypeList(districtId, typeId) {
+        function UpdateTypeList(districtId, typeId, name) {
             var typeList = $("#EnteredSchool_SchoolTypeId");
             var getTypesUrl = "@Url.Action("GetSchoolTypes", "Lookup", new { Area = string.Empty })";
             $.getJSON(getTypesUrl, { districtId: districtId, typeId: typeList.val() }, function(response) {
@@ -182,13 +187,17 @@
                 {
                     typeList.append(new Option("", "", true, true));
                     $.each(response, function (index, item) {
-                        typeList.append(new Option(item.text, item.value))
+                        typeList.append(new Option(item.text, item.value, item.selected, item.selected))
                     });
                 }
                 else {
                     $.each(response, function (index, item) {
                         typeList.append(new Option(item.text, item.value, item.selected, item.selected))
                     });
+                }
+            }).done(function () {
+                if ($("#NewSchool").val() == "False") {
+                    UpdateSchoolList(districtId, $("#EnteredSchool_SchoolTypeId").val(), name);
                 }
             });
         }
