@@ -6,7 +6,6 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -306,6 +305,18 @@ namespace GRA.Controllers.MissionControl
         {
             var answerList = await _questionnaireService.GetAnswersByQuestionIdAsync(questionId);
             return Json(answerList.OrderBy(_ => _.SortOrder));
+        }
+
+        public async Task<IActionResult> Preview(int id)
+        {
+            var questionList = await _questionnaireService
+                    .GetQuestionsByQuestionnaireIdAsync(id, true);
+            foreach (var question in questionList)
+            {
+                question.Text = CommonMark.CommonMarkConverter.Convert(question.Text);
+            }
+            PageTitle = "Questionnaire Preview";
+            return View(questionList);
         }
     }
 }

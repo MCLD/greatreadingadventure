@@ -86,8 +86,9 @@
         </div>
     </div>
 
-    <h3>Questions</h3>
+    <a href="@Url.Action("Preview", new { id = Model.Questionnaire.Id })" target="_blank" class="btn btn-primary">Preview</a>
 
+    <h3>Questions</h3>
 
     <div id="questionList">
         @if (Model.Questionnaire.Questions.Count > 0)

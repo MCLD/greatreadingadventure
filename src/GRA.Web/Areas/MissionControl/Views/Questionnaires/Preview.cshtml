@@ -1,0 +1,46 @@
+﻿@model IList<GRA.Domain.Model.Question>
+
+<div class="questionnaire">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                @if (Model[i].Answers.Count == 0)
+                {
+                    <input asp-for="@Model[i].Id" type="hidden" value="-1" />
+                    <div class="story">@Html.Raw(Model[i].Text)</div>
+                }
+                else
+                {
+                    <input asp-for="@Model[i].Id" type="hidden" />
+                    <span asp-validation-for="@Model[i]" class="text-danger"></span>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="question">@Html.Raw(Model[i].Text)</div>
+                        </div>
+                        <div class="panel-body">
+                            @foreach (var answer in Model[i].Answers)
+                            {
+                                <div class="answer-selection">
+                                    <label>
+                                        <input asp-for="@Model[i].ParticipantAnswer" type="radio" value="@answer.Id" />
+                                        @answer.Text
+                                    </label>
+                                </div>
+                            }
+                            <span asp-validation-for="@Model[i].ParticipantAnswer"></span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-sm-offset-4">
+            <button type="submit" class="btn btn-lg btn-block btn-primary btn-spinner">
+                Submit
+                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+            </button>
+        </div>
+    </div>
+</div>
