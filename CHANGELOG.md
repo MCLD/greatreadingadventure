@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Questionnaire preview page
+- Activity by Program Report
+
+### Changed
+- Show report completion percent in window titlebar
 
 ### Fixed
 - Remove Entered School type restriction
+- Issue where only one WebSocket could run at a time
+- Show error message if initial WebSocket connection fails
 
 ## [4.0.0-alpha7] 2017-07-03
 ### Added

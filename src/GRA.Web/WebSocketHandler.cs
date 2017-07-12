@@ -9,6 +9,7 @@ using GRA.Controllers;
 using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -19,21 +20,9 @@ namespace GRA.Web
         private const double MinimumSecondsElapsedBetweenUpdates = 0.1;
 
         private readonly ILogger<WebSocketHandler> _logger;
-        private readonly ReportService _reportService;
-        private readonly SiteLookupService _siteLookupService;
-        private readonly VendorCodeService _vendorCodeService;
-        public WebSocketHandler(ILogger<WebSocketHandler> logger,
-            ReportService reportService,
-            SiteLookupService siteLookupService,
-            VendorCodeService vendorCodeService)
+        public WebSocketHandler(ILogger<WebSocketHandler> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _reportService = reportService
-                ?? throw new ArgumentNullException(nameof(reportService));
-            _siteLookupService = siteLookupService
-                ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _vendorCodeService = vendorCodeService
-                ?? throw new ArgumentNullException(nameof(VendorCodeService));
         }
         public async Task Handle(HttpContext context)
         {
@@ -67,11 +56,15 @@ namespace GRA.Web
 
                 if (context.Request.Path.Value.Contains("runreport"))
                 {
-                    await RunWsTaskAsync(context, _reportService.RunReport);
+                    var reportService = context.RequestServices.GetRequiredService<ReportService>();
+                    await RunWsTaskAsync(context, reportService.RunReport);
                 }
                 else if (context.Request.Path.Value.Contains("processvendor"))
                 {
-                    await RunWsTaskAsync(context, _vendorCodeService.UpdateStatusFromExcel);
+                    var vendorCodeService = context
+                        .RequestServices
+                        .GetRequiredService<VendorCodeService>();
+                    await RunWsTaskAsync(context, vendorCodeService.UpdateStatusFromExcel);
                 }
                 else
                 {
@@ -123,7 +116,9 @@ namespace GRA.Web
                                 lastUpdateSent = sw.Elapsed.TotalSeconds;
                                 try
                                 {
-                                    var status = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_));
+                                    var status = Encoding
+                                        .UTF8
+                                        .GetBytes(JsonConvert.SerializeObject(_));
                                     webSocket.SendAsync(new ArraySegment<byte>(status),
                                         WebSocketMessageType.Text,
                                         true,

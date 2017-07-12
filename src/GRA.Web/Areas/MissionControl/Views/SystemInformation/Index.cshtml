@@ -1,12 +1,20 @@
-﻿@model Tuple<string, string, string, Dictionary<string, string>>
+﻿@model GRA.Controllers.ViewModel.MissionControl.SystemInformationViewModel
 <div class="row">
     <div class="col-xs-12 col-sm-3">
         <img src="~/images/great-reading-adventure-logo@1x.png"
              class="img-responsive" />
     </div>
     <div class="col-xs-12 col-sm-9">
-        <p class="lead" style="margin-top: 3rem;"><strong>Version:</strong> @Model.Item2</p>
-        <p class="lead"><strong>Database version:</strong> @Model.Item3</p>
+        <p class="lead" style="margin-top: 3rem;"><strong>Version:</strong> @Model.Version</p>
+        <p class="lead"><strong>Database version:</strong> @Model.Migration</p>
+        @if (!string.IsNullOrEmpty(Model.Instance))
+        {
+            <p class="lead"><strong>Instance:</strong> @Model.Instance</p>
+        }
+        @if (!string.IsNullOrEmpty(Model.Deploy))
+        {
+            <p class="lead"><strong>Deployed:</strong> @Model.Deploy</p>
+        }
     </div>
 </div>
 
@@ -21,14 +29,14 @@
             </thead>
             <tbody>
                 <tr class="info">
-                    <td>@Model.Item1</td>
-                    <td>@Model.Item2</td>
+                    <td>@Model.Assembly</td>
+                    <td>@Model.Version</td>
                 </tr>
-                @foreach (var key in Model.Item4.Keys)
+                @foreach (var key in Model.Assemblies.Keys)
                 {
                     <tr>
                         <td>@key</td>
-                        <td>@Model.Item4[key]</td>
+                        <td>@Model.Assemblies[key]</td>
                     </tr>
                 }
             </tbody>

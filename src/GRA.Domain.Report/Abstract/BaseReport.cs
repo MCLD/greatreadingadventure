@@ -115,5 +115,34 @@ namespace GRA.Domain.Report.Abstract
                 return _timer.Elapsed;
             }
         }
+
+        protected async Task<ReportCriterion> GetCriterionAsync(ReportRequest request)
+        {
+            var criterion
+                = await _serviceFacade.ReportCriterionRepository.GetByIdAsync(request.ReportCriteriaId)
+                ?? throw new GraException($"Report criteria {request.ReportCriteriaId} for report request id {request.Id} could not be found.");
+
+            if (criterion.SiteId == null)
+            {
+                throw new ArgumentNullException(nameof(criterion.SiteId));
+            }
+
+            return criterion;
+        }
+
+        protected async Task FinishRequestAsync(ReportRequest request, bool success)
+        {
+            string result = success ? "ran" : "cancelled";
+            _logger.LogInformation($"Report {request.Name} with criterion {request.ReportCriteriaId} {result} in {StopTimer()}");
+
+            request.Success = success;
+            request.Finished = _serviceFacade.DateTimeProvider.Now;
+
+            if (success == true)
+            {
+                request.ResultJson = Newtonsoft.Json.JsonConvert.SerializeObject(ReportSet);
+            }
+            await _serviceFacade.ReportRequestRepository.UpdateSaveNoAuditAsync(request);
+        }
     }
 }

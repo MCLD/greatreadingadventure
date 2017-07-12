@@ -28,6 +28,8 @@
     var wsStarted = false;
     var wsFinished = false;
     var wsCancel = false;
+    var wsTryingToConnect = false;
+    var wsPageTitle = document.title;
     var webSocket;
     var wsPing;
     var wsFunction = 'report';
@@ -67,6 +69,15 @@
                         $('#wsProgress').removeClass('active');
                         $('#wsProgress').addClass('progress-bar-danger');
                         $('#wsStatus').text('The server disconnected while running the ' + wsFunction + '.');
+                    } else if (wsTryingToConnect) {
+                        $('#cancelWs').text('Close window');
+                        $('#cancelWs').addClass('btn-danger');
+                        $('#wsProgress').removeClass('active');
+                        $('#wsProgress').addClass('progress-bar-danger');
+                        $('#wsStatus').text('Unable to connect to the server to run the ' + wsFunction + '.');
+                        $('#recvWs').fadeOut(1);
+                        $('#sendWs').fadeOut(1);
+                        console.log("Failure while trying to connect to: " + wsUrl);
                     }
                     break;
                 case WebSocket.CLOSING:
@@ -78,6 +89,7 @@
                     $('#wsStatus').text('Connecting...');
                     break;
                 case WebSocket.OPEN:
+                    wsTryingToConnect = false;
                     if (e && e.data) {
                         var incoming = JSON.parse(e.data);
                         $('#recvWs').fadeIn(200, function () {
@@ -85,11 +97,13 @@
                         });
                         if (incoming.Title) {
                             $('#wsTitle').html(incoming.Title);
+                            wsPageTitle = incoming.Title;
                         }
                         if (incoming.Status) {
                             $('#wsStatus').html(incoming.Status);
                         }
                         if (incoming.PercentComplete) {
+                            document.title = wsPageTitle + ' - ' + incoming.PercentComplete + '%';
                             $('#wsProgress').width(incoming.PercentComplete + '%');
                             if (incoming.PercentComplete > 4) {
                                 $('#wsProgress').text(incoming.PercentComplete + '%');
@@ -152,13 +166,14 @@
             backdrop: 'static',
             keyboard: false
         });
+        wsTryingToConnect = true;
         webSocket = new WebSocket(wsUrl);
+        webSocket.onerror = updateState;
         webSocket.onopen = function (e) {
             $('#wsProgress').addClass('active');
             wsStarted = true;
         }
         webSocket.onclose = updateState;
-        webSocket.onerror = updateState;
         webSocket.onmessage = updateState;
         wsPing = setInterval(doPing, 1000);
         return false;

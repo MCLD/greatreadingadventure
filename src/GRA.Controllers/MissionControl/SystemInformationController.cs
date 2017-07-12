@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -78,12 +79,15 @@ namespace GRA.Controllers.MissionControl
                 versions.Add(assemblyName.Name, version);
             }
 
-            var result = new Tuple<string, string, string, Dictionary<string, string>>(
-                thisAssemblyName,
-                thisAssemblyVersion,
-                currentMigration,
-                versions);
-            return View(result);
+            return View(new SystemInformationViewModel
+            {
+                Assembly = thisAssemblyName,
+                Version = thisAssemblyVersion,
+                Migration = currentMigration,
+                Assemblies = versions,
+                Instance = _config[ConfigurationKey.InstanceName],
+                Deploy = _config[ConfigurationKey.DeployDate]
+            });
         }
     }
 }

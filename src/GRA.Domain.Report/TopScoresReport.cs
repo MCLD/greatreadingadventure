@@ -76,7 +76,8 @@ namespace GRA.Domain.Report
 
             IEnumerable<User> users = await _userRepository.GetTopScoresAsync(criterion, total);
 
-            foreach (var user in users)
+            // TODO establish why this isn't sorting properly in production
+            foreach (var user in users.OrderByDescending(_ => _.PointsEarned))
             {
                 UpdateProgress(progress,
                     ++count * 100 / users.Count(),

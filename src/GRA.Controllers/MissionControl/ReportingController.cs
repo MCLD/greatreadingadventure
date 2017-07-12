@@ -53,13 +53,14 @@ namespace GRA.Controllers.MissionControl
         [HttpGet]
         public async Task<IActionResult> Configure(int id)
         {
-            PageTitle = "Configure the Report";
             var report = _reportService.GetReportList().Where(_ => _.Id == id).SingleOrDefault();
             if (report == null)
             {
                 AlertDanger = $"Could not find report of type {id}.";
                 return RedirectToAction("Index");
             }
+            PageTitle = $"Configure {report.Name}";
+
             string viewName = report.Name.Replace(" ", string.Empty);
             if (viewName.EndsWith("Report"))
             {
@@ -77,7 +78,7 @@ namespace GRA.Controllers.MissionControl
                 SystemList = new SelectList(systemList, "Id", "Name"),
                 BranchList = new SelectList(branchList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name"),
-                SchoolDistrictList = new SelectList(schoolDistrictList, "Id", "Name")
+                SchoolDistrictList = new SelectList(schoolDistrictList, "Id", "Name"),
             });
         }
 

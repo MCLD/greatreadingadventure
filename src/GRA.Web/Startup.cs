@@ -39,6 +39,7 @@ namespace GRA.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"instance.json", optional: true)
                 .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
@@ -195,14 +196,15 @@ namespace GRA.Web
             services.AddScoped<VendorCodeService>();
 
             services.AddScoped<Domain.Report.ServiceFacade.Report>();
-            services.AddTransient<Domain.Report.BadgeReport>();
-            services.AddTransient<Domain.Report.BadgeTopScoresReport>();
-            services.AddTransient<Domain.Report.CurrentStatusByProgramReport>();
-            services.AddTransient<Domain.Report.CurrentStatusReport>();
-            services.AddTransient<Domain.Report.RegisteredBySchoolReport>();
-            services.AddTransient<Domain.Report.RegistrationsAchieversReport>();
-            services.AddTransient<Domain.Report.ParticipantProgressReport>();
-            services.AddTransient<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.ActivityByProgramReport>();
+            services.AddScoped<Domain.Report.BadgeReport>();
+            services.AddScoped<Domain.Report.BadgeTopScoresReport>();
+            services.AddScoped<Domain.Report.CurrentStatusByProgramReport>();
+            services.AddScoped<Domain.Report.CurrentStatusReport>();
+            services.AddScoped<Domain.Report.RegisteredBySchoolReport>();
+            services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
+            services.AddScoped<Domain.Report.ParticipantProgressReport>();
+            services.AddScoped<Domain.Report.TopScoresReport>();
 
             // service resolution
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();

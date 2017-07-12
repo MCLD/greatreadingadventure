@@ -18,6 +18,7 @@ namespace GRA
         public const string DefaultPageTitle = "GraDefaultPageTitle";
         public const string DefaultSiteName = "GraDefaultSiteName";
         public const string DefaultSitePath = "GraDefaultSitePath";
+        public const string DeployDate = "GraDeployDate";
         public const string EmailOverride = "GraEmailOverride";
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
         public const string InstanceName = "GraInstanceName";
