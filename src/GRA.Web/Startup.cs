@@ -215,6 +215,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBadgeRepository, Data.Repository.BadgeRepository>();
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
+            services.AddScoped<Domain.Repository.IBroadcastRepository, Data.Repository.BroadcastRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
             services.AddScoped<Domain.Repository.IDynamicAvatarBundleRepository, Data.Repository.DynamicAvatarBundleRepository>();

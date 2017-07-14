@@ -22,6 +22,7 @@ namespace GRA.Controllers
         private readonly ILogger<JoinController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         private readonly AuthenticationService _authenticationService;
+        private readonly MailService _mailService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
         private readonly QuestionnaireService _questionnaireService;
@@ -29,6 +30,7 @@ namespace GRA.Controllers
         public JoinController(ILogger<JoinController> logger,
             ServiceFacade.Controller context,
             AuthenticationService authenticationService,
+            MailService mailService,
             SchoolService schoolService,
             SiteService siteService,
             QuestionnaireService questionnaireService,
@@ -39,6 +41,7 @@ namespace GRA.Controllers
             _mapper = context.Mapper;
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
@@ -193,6 +196,8 @@ namespace GRA.Controllers
                     var loginAttempt = await _authenticationService
                         .AuthenticateUserAsync(user.Username, model.Password);
                     await LoginUserAsync(loginAttempt);
+                    await _mailService.SendUserBroadcastsAsync(loginAttempt.User.Id, false, true,
+                        true);
                     var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                     if (questionnaireId.HasValue)
@@ -314,7 +319,7 @@ namespace GRA.Controllers
             }
             else
             {
-                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(true), 
+                viewModel.BranchList = new SelectList(await _siteService.GetAllBranches(true),
                     "Id", "Name");
             }
 
@@ -335,7 +340,7 @@ namespace GRA.Controllers
             }
             if (model.SystemId.HasValue && model.BranchId.HasValue)
             {
-                if (!await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value)) 
+                if (!await _siteService.ValidateBranch(model.BranchId.Value, model.SystemId.Value))
                 {
                     ModelState.AddModelError("BranchId", "Invalid branch selection for system.");
                 }
@@ -574,6 +579,8 @@ namespace GRA.Controllers
                     var loginAttempt = await _authenticationService
                         .AuthenticateUserAsync(user.Username, model.Password);
                     await LoginUserAsync(loginAttempt);
+                    await _mailService.SendUserBroadcastsAsync(loginAttempt.User.Id, false, true,
+                        true);
                     var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                     if (questionnaireId.HasValue)

@@ -518,7 +518,7 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
             int? schoolDistrictId = null)
         {
             int authUserId = GetClaimId(ClaimType.UserId);
@@ -562,6 +562,7 @@ namespace GRA.Domain.Service
                 var registeredUser = await _userRepository.AddSaveAsync(authUserId, memberToAdd);
                 await JoinedProgramNotificationBadge(registeredUser);
                 await _activityService.AwardUserTriggersAsync(registeredUser.Id, false);
+                return registeredUser;
             }
             else
             {

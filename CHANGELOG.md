@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Show report completion percent in window titlebar
+- Broadcast scheduling and sending
 
 ### Fixed
 - Remove Entered School type restriction

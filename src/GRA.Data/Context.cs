@@ -125,6 +125,7 @@ namespace GRA.Data
         public DbSet<Model.Badge> Badges { get; set; }
         public DbSet<Model.Book> Books { get; set; }
         public DbSet<Model.Branch> Branches { get; set; }
+        public DbSet<Model.Broadcast> Broadcasts { get; set; }
         public DbSet<Model.Category> Categories { get; set; }
         public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }

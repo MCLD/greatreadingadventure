@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -72,6 +71,7 @@ namespace GRA.Domain.Model
         public string EnteredSchoolName { get; set; }
 
         public DateTime? AchievedAt { get; set; }
+        public DateTime? LastBroadcast { get; set; }
 
         public bool HasNewMail { get; set; }
         public bool HasUnclaimedPrize { get; set; }

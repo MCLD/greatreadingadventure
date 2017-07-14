@@ -5,7 +5,7 @@
             <li ActiveBy routeKey="Action" value="ViewAll"><a asp-action="ViewAll">View All Non-Broadcast</a></li>
             @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.SendBroadcastMail.ToString()))
             {
-                <li ActiveBy routeKey="Action" value="SendBroadcast"><a asp-action="SendBroadcast">Send Broadcast</a></li>
+                <li ActiveBy routeKey="Action" value="Broadcasts"><a asp-action="Broadcasts">Broadcasts</a></li>
             }
         </ul>
     </div>

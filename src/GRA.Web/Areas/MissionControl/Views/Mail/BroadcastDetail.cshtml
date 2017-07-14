@@ -1,0 +1,110 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Mail.BroadcastDetailViewModel
+
+<form asp-controller="Mail" asp-action="@($"Broadcast{Model.Action}")" method="post" role="form">
+    <input asp-for="Action" type="hidden" />
+    <input asp-for="Sent" type="hidden" />
+    @if (Model.Action == "Edit")
+    {
+    <input asp-for="Broadcast.Id" type="hidden" />
+    }
+
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <label asp-for="Broadcast.Subject" class="control-label"></label>
+            <input asp-for="Broadcast.Subject" class="form-control" disabled="@(Model.Sent == true ? "disabled" : null)" />
+            <span asp-validation-for="Broadcast.Subject" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Broadcast.Body" class="control-label"></label>
+            <textarea asp-for="Broadcast.Body" class="form-control" rows="5" disabled="@(Model.Sent == true ? "disabled" : null)"></textarea>
+            <span asp-validation-for="Broadcast.Body" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            @if (Model.Sent)
+            {
+            <label asp-for="Broadcast.SendAt " class="control-label">Sent at</label>
+            <div class="input-group date" id="pickerSend">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="Broadcast.SendAt" type="text" class="form-control" disabled="disabled" />
+            </div>
+            <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
+
+            }
+            else
+            {
+            <label class="control-label">Send at</label>
+            <table>
+                <tr>
+                    <td style="padding:8px 8px 10px 0;" valign="top">
+                        <input asp-for="SendNow" type="radio" value="false" />
+                    </td>
+                    <td style="padding-bottom:10px;width:300px;">
+                        <div class="input-group date" id="pickerSend">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                            <input asp-for="Broadcast.SendAt" type="text" class="form-control" />
+                        </div>
+                        <span asp-validation-for="Broadcast.SendAt" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input asp-for="SendNow" type="radio" value="true" />
+                    </td>
+                    <td>
+                        Now
+                    </td>
+                </tr>
+            </table>
+            }
+        </div>
+    </div>
+
+    <div class="row" style="padding-bottom:20px;">
+        <div class="col-xs-12">
+            <label asp-for="Broadcast.SendToNewUsers" class="control-label"></label>
+            <input asp-for="Broadcast.SendToNewUsers" style="display:block;" disabled="@(Model.Sent == true ? "disabled" : null)" />
+            <span asp-validation-for="Broadcast.SendToNewUsers" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Broadcasts" asp-route-Upcoming="@(Model.Sent ? "False" : null)" class="btn btn-default">Return to List</a>
+        @if (Model.Sent != true)
+        {
+        <button type="submit" class="btn btn-primary">
+            <span class="buttonText">@Model.Action Broadcast</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+        }
+    </div>
+</form>
+
+@section scripts
+{
+<script>
+    $('[id^=picker]').datetimepicker({
+        format: 'MM/DD/YYYY h:mm a',
+        allowInputToggle: true,
+        sideBySide: true,
+        minDate: moment().add("10", "m"),
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down",
+            previous: "fa fa-arrow-left",
+            next: "fa fa-arrow-right"
+        }
+    });
+</script>
+}

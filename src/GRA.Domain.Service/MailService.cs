@@ -6,21 +6,27 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GRA.Domain.Model.Filters;
+using System.Linq;
 
 namespace GRA.Domain.Service
 {
     public class MailService : Abstract.BaseUserService<MailService>
     {
+        private IBroadcastRepository _broadcastRepository;
         private IMailRepository _mailRepository;
         private IUserRepository _userRepository;
         private IMemoryCache _memoryCache;
         public MailService(ILogger<MailService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IBroadcastRepository broadcastRepository,
             IMailRepository mailRepository,
             IUserRepository userRepository,
             IMemoryCache memoryCache) : base(logger, dateTimeProvider, userContextProvider)
         {
+            _broadcastRepository = Require.IsNotNull(broadcastRepository,
+                nameof(broadcastRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
             _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
@@ -33,6 +39,8 @@ namespace GRA.Domain.Service
             int unreadCount;
             if (!_memoryCache.TryGetValue(cacheKey, out unreadCount))
             {
+                await SendUserBroadcastsAsync(activeUserId, true);
+
                 unreadCount = await _mailRepository.GetUserUnreadCountAsync(activeUserId);
                 _memoryCache.Set(cacheKey, unreadCount, new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
@@ -288,46 +296,6 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<int> MCSendBroadcastAsync(Mail mail)
-        {
-            var authId = GetClaimId(ClaimType.UserId);
-
-            if (HasPermission(Permission.SendBroadcastMail))
-            {
-                int siteId = GetClaimId(ClaimType.SiteId);
-
-                mail.FromUserId = 0;
-                mail.CanParticipantDelete = true;
-                mail.IsNew = true;
-                mail.IsDeleted = false;
-                mail.SiteId = siteId;
-                mail.IsBroadcast = true;
-
-                mail.ToUserId = null;
-                await _mailRepository.AddSaveAsync(authId, mail);
-
-                int count = 0;
-                foreach (int userId in await _userRepository.GetAllUserIds(siteId))
-                {
-                    mail.ToUserId = userId;
-                    await _mailRepository.AddAsync(authId, mail);
-                    count++;
-
-                    if (count % 1000 == 0)
-                    {
-                        await _mailRepository.SaveAsync();
-                    }
-                }
-                await _mailRepository.SaveAsync();
-                return count;
-            }
-            else
-            {
-                _logger.LogError($"User {authId} doesn't have permission to send broadcast mails.");
-                throw new Exception("Permission denied");
-            }
-        }
-
         public async Task<Mail> MCSendReplyAsync(Mail mail)
         {
             var authId = GetClaimId(ClaimType.UserId);
@@ -448,6 +416,153 @@ namespace GRA.Domain.Service
             {
                 _logger.LogError($"User {authId} doesn't have permission to view messages for {userId}.");
                 throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task<DataWithCount<ICollection<Broadcast>>> PageBroadcastsAsync(BroadcastFilter filter)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.SendBroadcastMail))
+            {
+                filter.SiteId = GetClaimId(ClaimType.SiteId);
+
+                return new DataWithCount<ICollection<Broadcast>>
+                {
+                    Data = await _broadcastRepository.PageAsync(filter),
+                    Count = await _broadcastRepository.CountAsync(filter)
+                };
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to view broadcasts.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+        public async Task<Broadcast> GetBroadcastByIdAsync(int id)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.SendBroadcastMail))
+            {
+                return await _broadcastRepository.GetByIdAsync(id);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to view broadcasts.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+        public async Task<Broadcast> AddBroadcastAsync(Broadcast broadcast)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.SendBroadcastMail))
+            {
+                broadcast.SiteId = GetClaimId(ClaimType.SiteId);
+
+                return await _broadcastRepository.AddSaveAsync(authId, broadcast);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to send broadcasts.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+        public async Task<Broadcast> EditBroadcastAsync(Broadcast broadcast)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.SendBroadcastMail))
+            {
+                var currentBroadcast = await _broadcastRepository.GetByIdAsync(broadcast.Id);
+
+                if (currentBroadcast.SendAt <= _dateTimeProvider.Now)
+                {
+                    throw new GraException($"This Broadcast has already been sent.");
+                }
+
+                broadcast.SiteId = currentBroadcast.SiteId;
+
+                return await _broadcastRepository.UpdateSaveAsync(authId, broadcast);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to edit broadcasts.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+        public async Task RemoveBroadcastAsync(int id)
+        {
+            var authId = GetClaimId(ClaimType.UserId);
+
+            if (HasPermission(Permission.SendBroadcastMail))
+            {
+                var broadcast = await _broadcastRepository.GetByIdAsync(id);
+
+                if (broadcast.SendAt <= _dateTimeProvider.Now)
+                {
+                    throw new GraException($"This Broadcast has already been sent.");
+                }
+
+                await _broadcastRepository.RemoveSaveAsync(authId, id);
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to delete broadcasts.");
+                throw new Exception("Permission denied");
+            }
+        }
+
+        public async Task SendUserBroadcastsAsync(int userId, bool includeHousehold,
+            bool newUser = false, bool userIdIsCurrentUser = false)
+        {
+            var authUserId = userIdIsCurrentUser ? userId : GetClaimId(ClaimType.UserId);
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            var newBroadcasts = await _broadcastRepository.GetNewBroadcastsAsync(user.SiteId,
+                user.LastBroadcast);
+            if (newBroadcasts.Count() > 0)
+            {
+                var lastBroadcastDate = newBroadcasts.Last().SendAt;
+                if (newUser == true)
+                {
+                    newBroadcasts = newBroadcasts.Where(_ => _.SendToNewUsers == true);
+                }
+                foreach (var broadcast in newBroadcasts)
+                {
+                    var mail = new Mail()
+                    {
+                        Subject = broadcast.Subject,
+                        Body = broadcast.Body,
+                        FromUserId = 0,
+                        CanParticipantDelete = true,
+                        IsNew = true,
+                        IsDeleted = false,
+                        SiteId = user.SiteId,
+                        IsBroadcast = true,
+                        ToUserId = userId
+                    };
+
+                    await _mailRepository.AddSaveAsync(authUserId, mail);
+                }
+                user.LastBroadcast = lastBroadcastDate.Value;
+                await _userRepository.UpdateSaveAsync(authUserId, user);
+
+                _memoryCache.Remove($"{CacheKey.UserUnreadMailCount}?u{userId}");
+            }
+
+            if (includeHousehold)
+            {
+                var householdMembers = await _userRepository.GetHouseholdAsync(userId);
+                foreach (var member in householdMembers)
+                {
+                    await SendUserBroadcastsAsync(member.Id, false);
+                }
             }
         }
     }

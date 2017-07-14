@@ -11,6 +11,7 @@ namespace GRA.Data.Profile
             CreateMap<Model.Badge, Domain.Model.Badge>().ReverseMap();
             CreateMap<Model.Book, Domain.Model.Book>().ReverseMap();
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
+            CreateMap<Model.Broadcast, Domain.Model.Broadcast>().ReverseMap();
             CreateMap<Model.Category, Domain.Model.Category>().ReverseMap();
             CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
