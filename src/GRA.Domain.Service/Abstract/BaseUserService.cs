@@ -93,6 +93,15 @@ namespace GRA.Domain.Service.Abstract
             }
         }
 
+        protected void VerifyCanHouseholdAction()
+        {
+            var userContext = GetUserContext();
+            if (userContext.SiteStage != SiteStage.ProgramOpen && userContext.SiteStage != SiteStage.RegistrationOpen)
+            {
+                throw new GraException("Household changes cannot be made at this time.");
+            }
+        }
+
         protected void VerifyPermission(Permission permission)
         {
             if (!HasPermission(permission))

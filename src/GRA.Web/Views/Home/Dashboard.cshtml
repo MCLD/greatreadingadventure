@@ -68,6 +68,10 @@
                 {
                     <p class="lead" style="padding-top: 2rem;">Once the program starts, you will enter your activity right here!</p>
                 }
+                else if ((GRA.Domain.Model.SiteStage)Context.Items[GRA.Controllers.ItemKey.SiteStage] == GRA.Domain.Model.SiteStage.ProgramEnded)
+                {
+                    <p class="lead" style="padding-top: 2rem;">This years summer reading program has ended, please join us again next year!</p>
+                }
             </div>
         </div>
 

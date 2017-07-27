@@ -45,14 +45,21 @@
                     <div class="col-xs-12">
                         @if (Model.Users.Count() == 0)
                         {
-                            <div class="alert alert-warning">Click below to create a household</div>
-                            <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
-                            <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                            if (Model.CanEditHousehold)
+                            {
+                                <div class="alert alert-warning">Click below to create a household</div>
+                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">A household cannot be created at this time.</div>
+                            }
                         }
                         else
                         {
                             <form id="form" asp-controller="Profile" method="post" role="form">
-                                @if (Model.AuthUserIsHead)
+                                @if (Model.AuthUserIsHead && Model.CanLogActivity)
                                 {
                                     <input asp-for="UserSelection" type="hidden" />
                                     <input asp-for="MinutesRead" type="hidden" />
@@ -114,7 +121,10 @@
                                             <tr>
                                                 @if (Model.AuthUserIsHead)
                                                 {
-                                                    <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
+                                                    if (Model.CanLogActivity)
+                                                    {
+                                                        <th style="vertical-align:middle;" width="24px;"><input id="checkAll" type="checkbox" data-id="@Model.Head.Id" /></th>
+                                                    }
                                                     <th width="36px"><span class="fa fa-envelope fa-lg"></span></th>
                                                 }
                                                 <th>User</th>
@@ -127,9 +137,12 @@
                                             <tr class="warning @(Model.ActiveUser == Model.Head.Id ? "text-strong" : null)">
                                                 @if (Model.AuthUserIsHead)
                                                 {
-                                                    <td style="vertical-align:middle;">
-                                                        <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
-                                                    </td>
+                                                    if (Model.CanLogActivity)
+                                                    {
+                                                        <td style="vertical-align:middle;">
+                                                            <input class="userSelection" data-id="@Model.Head.Id" type="checkbox" />
+                                                        </td>
+                                                    }
                                                     <td style="vertical-align:middle;">
                                                         <div class="user-mail" data-action="@(Model.ActiveUser == Model.Head.Id ? "" : @Url.Action("LoginAs", new { loginId = Model.Head.Id, goToMail = true }))">
                                                             @if (Model.Head.HasNewMail)
@@ -216,17 +229,20 @@
                                                 <tr class="@(Model.ActiveUser == user.Id ? "info text-strong" : null)">
                                                     @if (Model.AuthUserIsHead)
                                                     {
-                                                        <td style="vertical-align:middle;">
-                                                            @if (!user.HasPendingQuestionnaire)
-                                                            {
-                                                                <input class="userSelection" type="checkbox" data-id="@user.Id" />
-                                                            }
-                                                            else
-                                                            {
-                                                                <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
+                                                        if (Model.CanLogActivity)
+                                                        {
+                                                            <td style="vertical-align:middle;">
+                                                                @if (!user.HasPendingQuestionnaire)
+                                                                {
+                                                                    <input class="userSelection" type="checkbox" data-id="@user.Id" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="pendingQuestionnaire fa fa-exclamation-circle text-warning" style="cursor:pointer" data-toggle="modal" data-target=".pendingModal"></span>
 
-                                                            }
-                                                        </td>
+                                                                }
+                                                            </td>
+                                                        }
                                                         <td style="vertical-align:middle;">
                                                             <div class="user-mail" data-action="@(Model.ActiveUser == user.Id ? "" : @Url.Action("LoginAs", new { loginId = user.Id, goToMail = true }))">
                                                                 @if (user.HasNewMail)
@@ -272,7 +288,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead)
+                                                                    @if (string.IsNullOrWhiteSpace(user.Username) && Model.AuthUserIsHead && Model.CanEditHousehold)
                                                                     {
                                                                         <button type="submit"
                                                                                 class="btn btn-default btn-xs"
@@ -324,7 +340,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (Model.AuthUserIsHead)
+                                @if (Model.AuthUserIsHead && Model.CanLogActivity)
                                 {
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 row-spacing">
@@ -378,7 +394,7 @@
 
                                 }
                             </form>
-                            @if (Model.AuthUserIsHead)
+                            @if (Model.AuthUserIsHead && Model.CanEditHousehold)
                             {
                                 <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
                                 <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>

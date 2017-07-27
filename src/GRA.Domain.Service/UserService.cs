@@ -521,6 +521,8 @@ namespace GRA.Domain.Service
         public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
             int? schoolDistrictId = null)
         {
+            VerifyCanHouseholdAction();
+
             int authUserId = GetClaimId(ClaimType.UserId);
             var householdHead = await _userRepository.GetByIdAsync(householdHeadUserId);
 
@@ -640,6 +642,8 @@ namespace GRA.Domain.Service
 
         public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
         {
+            VerifyCanHouseholdAction();
+
             var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
@@ -749,6 +753,8 @@ namespace GRA.Domain.Service
 
         public async Task PromoteToHeadOfHouseholdAsync(int userId)
         {
+            VerifyCanHouseholdAction();
+
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
@@ -787,6 +793,8 @@ namespace GRA.Domain.Service
 
         public async Task RemoveFromHouseholdAsync(int userId)
         {
+            VerifyCanHouseholdAction();
+
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
@@ -811,6 +819,8 @@ namespace GRA.Domain.Service
 
         public async Task MCAddParticipantToHouseholdAsync(int householdId, int userToAddId)
         {
+            VerifyCanHouseholdAction();
+
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {

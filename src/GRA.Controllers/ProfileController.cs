@@ -265,6 +265,7 @@ namespace GRA.Controllers
                 .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead,
                 authUserIsHead, authUserIsHead);
 
+            var siteStage = GetSiteStage();
             HouseholdListViewModel viewModel = new HouseholdListViewModel()
             {
                 Users = household,
@@ -272,7 +273,10 @@ namespace GRA.Controllers
                 HasAccount = hasAccount,
                 Head = headUser ?? authUser,
                 AuthUserIsHead = authUserIsHead,
-                ActiveUser = activeUserId
+                ActiveUser = activeUserId,
+                CanLogActivity = siteStage == SiteStage.ProgramOpen,
+                CanEditHousehold = siteStage == SiteStage.RegistrationOpen 
+                    || siteStage == SiteStage.ProgramOpen
             };
 
             if (authUserIsHead)
