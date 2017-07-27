@@ -26,8 +26,10 @@ namespace GRA.Domain.Model
         [Range(1, Int32.MaxValue, ErrorMessage = "There must be at least 1 winner")]
         public int WinnerCount { get; set; }
         [DisplayName("Mail Subject")]
+        [MaxLength(500)]
         public string NotificationSubject { get; set; }
         [DisplayName("Mail Message")]
+        [MaxLength(2000)]
         public string NotificationMessage { get; set; }
         public bool IsArchived { get; set; }
 

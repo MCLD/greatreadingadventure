@@ -13,7 +13,7 @@ namespace GRA.Domain.Model
         [MaxLength(500)]
         public string Subject { get; set; }
         [Required]
-        [MaxLength(1000)]
+        [MaxLength(2000)]
         public string Body { get; set; }
         [Required]
         public bool IsNew { get; set; }

@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Show report completion percent in window titlebar
 - Broadcast scheduling and sending
+- Allow mails to be up to 2,000 characters long
 
 ### Fixed
 - Remove Entered School type restriction
