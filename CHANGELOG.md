@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Remove Entered School type restriction
 - Issue where only one WebSocket could run at a time
 - Show error message if initial WebSocket connection fails
+- Do not show join links if the program is over
+- Do not show Events or Challenges links if the program is over
 
 ## [4.0.0-alpha7] 2017-07-03
 ### Added

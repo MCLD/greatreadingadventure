@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using GRA.Domain.Model
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,6 +31,7 @@
     </style>
 </head>
 <body>
+    @{SiteStage siteStage = (SiteStage)(Context.Items[GRA.Controllers.ItemKey.SiteStage] ?? SiteStage.ProgramOpen); }
     <div class="navbar gra-navbar navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -67,8 +69,11 @@
                                 </a>
                             </li>
                         }
-                        <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
-                        <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
+                        @if (siteStage != SiteStage.ProgramEnded && siteStage != SiteStage.AccessClosed)
+                        {
+                            <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
+                            <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
+                        }
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -89,8 +94,14 @@
                     }
                     else
                     {
-                        <li ActiveBy routeKey="Controller" value="Join"><a asp-controller="Join" asp-action="Index">Join</a></li>
-                        <li ActiveBy routeKey="Controller" value="SignIn"><a asp-controller="Signin" asp-action="Index">Sign in</a></li>
+                        @if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
+                        {
+                            <li ActiveBy routeKey="Controller" value="Join"><a asp-controller="Join" asp-action="Index">Join</a></li>
+                        }
+                        @if (siteStage != GRA.Domain.Model.SiteStage.BeforeRegistration && siteStage != SiteStage.AccessClosed)
+                        {
+                            <li ActiveBy routeKey="Controller" value="SignIn"><a asp-controller="Signin" asp-action="Index">Sign in</a></li>
+                        }
                     }
                 </ul>
             </div>
