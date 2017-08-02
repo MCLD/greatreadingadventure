@@ -71,6 +71,7 @@ namespace GRA.Controllers.MissionControl
             var branchList = await _siteService.GetAllBranches(true);
             var programList = await _siteService.GetProgramList();
             var schoolDistrictList = await _schoolService.GetDistrictsAsync();
+            var schoolList = await _schoolService.GetSchoolsAsync(schoolDistrictList.FirstOrDefault()?.Id);
 
             return View($"{viewName}Criteria", new ReportCriteriaViewModel
             {
@@ -79,6 +80,7 @@ namespace GRA.Controllers.MissionControl
                 BranchList = new SelectList(branchList, "Id", "Name"),
                 ProgramList = new SelectList(programList, "Id", "Name"),
                 SchoolDistrictList = new SelectList(schoolDistrictList, "Id", "Name"),
+                SchoolList = new SelectList(schoolList, "Id", "Name"),
             });
         }
 
@@ -96,6 +98,7 @@ namespace GRA.Controllers.MissionControl
                 BranchId = viewModel.BranchId,
                 ProgramId = viewModel.ProgramId,
                 SchoolDistrictId = viewModel.SchoolDistrictId,
+                SchoolId = viewModel.SchoolId,
                 BadgeRequiredList = viewModel.BadgeRequiredList,
                 ChallengeRequiredList = viewModel.ChallengeRequiredList
             };

@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Questionnaire preview page
 - Activity by Program Report
 - Restrict household changes to when the site is open for registration or open
+- Registrations and Achievers by School Report
 
 ### Changed
 - Show report completion percent in window titlebar

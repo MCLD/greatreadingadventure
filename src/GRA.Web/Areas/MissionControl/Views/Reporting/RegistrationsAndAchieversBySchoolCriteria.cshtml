@@ -1,0 +1,50 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <input asp-for="ReportId" type="hidden" />
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="SchoolDistrictId" class="control-label"></label>
+            <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="SchoolId" class="control-label"></label>
+            <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
+                <option></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="fa fa-file-text"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $("#SchoolDistrictId").on("change", function() {
+            var districtId = $(this).val();
+            var schoolList = $("#SchoolId");
+            var schoolId = schoolList.val();
+            var getSchoolsUrl = "@Url.Action("GetSchools", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(getSchoolsUrl, { districtId: districtId, schoolId: schoolId }, function(response) {
+                schoolList.empty();
+                schoolList.append(new Option("", ""));
+                $.each(response, function(index, item) {
+                    schoolList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        });
+    </script>
+}

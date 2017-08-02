@@ -15,6 +15,7 @@ namespace GRA.Domain.Model
         public int? BranchId { get; set; }
         public int? ProgramId { get; set; }
         public int? SchoolDistrictId { get; set; }
+        public int? SchoolId { get; set; }
         public bool Favorite { get; set; }
         [MaxLength(255)]
         public string Name { get; set; }

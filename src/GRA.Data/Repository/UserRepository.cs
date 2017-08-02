@@ -267,6 +267,11 @@ namespace GRA.Data.Repository
                 userList = userList.Where(_ => _.CreatedAt <= criterion.EndDate);
             }
 
+            if(criterion.SchoolId != null)
+            {
+                userList = userList.Where(_ => _.SchoolId == criterion.SchoolId);
+            }
+
             return userList;
         }
 

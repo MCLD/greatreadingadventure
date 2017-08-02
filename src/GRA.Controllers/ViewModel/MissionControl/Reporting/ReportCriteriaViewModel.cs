@@ -21,10 +21,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.Reporting
         public int? ProgramId { get; set; }
         [DisplayName("Select a school district")]
         public int? SchoolDistrictId { get; set; }
+        [DisplayName("Select a school")]
+        public int? SchoolId { get; set; }
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
         public SelectList SchoolDistrictList { get; set; }
+        public SelectList SchoolList { get; set; }
 
         [DisplayName("Badges to Report")]
         public ICollection<TriggerRequirement> ReportBadges { get; set; }
