@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Restrict household changes to when the site is open for registration or open
 - Allow searching in Mission Control school lists
 - Registrations and Achievers by School Report
+- Award vendor code button
 
 ### Changed
 - Show report completion percent in window titlebar

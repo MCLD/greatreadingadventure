@@ -21,6 +21,7 @@ namespace GRA.Controllers.MissionControl
     {
         private const string MinutesReadMessage = "MinutesReadMessage";
         private const string SecretCodeMessage = "SecretCodeMessage";
+        private const string VendorCodeMessage = "VendorCodeMessage";
 
         private readonly ILogger<ParticipantsController> _logger;
         private readonly AutoMapper.IMapper _mapper;
@@ -604,6 +605,16 @@ namespace GRA.Controllers.MissionControl
                 PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username)
             };
+            if (UserHasPermission(Permission.ManageVendorCodes))
+            {
+                viewModel.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+
+                if (TempData.ContainsKey(VendorCodeMessage))
+                {
+                    ModelState.AddModelError("VendorCodeTypeId", (string)TempData[VendorCodeMessage]);
+                }
+            }
 
             return View(viewModel);
         }
@@ -653,7 +664,36 @@ namespace GRA.Controllers.MissionControl
                     }
                 }
             }
+            if (UserHasPermission(Permission.ManageVendorCodes))
+            {
+                model.VendorCodeTypeList = new SelectList(
+                    (await _vendorCodeService.GetTypeAllAsync()), "Id", "Description");
+            }
             return View(model);
+        }
+
+        [Authorize(Policy = Policy.ManageVendorCodes)]
+        [HttpPost]
+        public async Task<IActionResult> AwardVendorCode(LogActivityViewModel model)
+        {
+            if (!model.VendorCodeTypeId.HasValue)
+            {
+                TempData[VendorCodeMessage] = "Please select a code to award.";
+            }
+            else
+            {
+                try
+                {
+                    await _activityService.MCAwardVendorCodeAsync(model.Id, model.VendorCodeTypeId.Value);
+                    ShowAlertSuccess("Vendor Code awarded!");
+                }
+                catch (GraException gex)
+                {
+                    ShowAlertDanger("Unable to award vendor code: ", gex.Message);
+                }
+            }
+
+            return RedirectToAction("LogActivity", new { id = model.Id });
         }
         #endregion
 

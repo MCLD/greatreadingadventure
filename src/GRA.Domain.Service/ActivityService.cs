@@ -1058,6 +1058,19 @@ namespace GRA.Domain.Service
             return codeApplied;
         }
 
+        public async Task MCAwardVendorCodeAsync(int userId, int vendorCodeTypeId)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+
+            if (!HasPermission(Permission.ManageVendorCodes))
+            {
+                _logger.LogError($"User {authUserId} cannot award vendor codes.");
+                throw new GraException("Permission denied.");
+            }
+
+            await AwardVendorCodeAsync(userId, vendorCodeTypeId);
+        }
+
         private async Task<int?> SendMailAsync(int userId, Trigger trigger, int? siteId = null)
         {
             if (!string.IsNullOrEmpty(trigger.AwardMailSubject)

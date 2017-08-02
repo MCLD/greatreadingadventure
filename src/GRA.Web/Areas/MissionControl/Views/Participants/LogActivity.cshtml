@@ -60,6 +60,34 @@
         }
     </div>
 
+    @if (Model.VendorCodeTypeList?.Count() > 0)
+    {
+        <div class="row">
+            <div class="col-xs-12 row-spacing">
+                <table>
+                    <tr>
+                        <td style="padding-right:6px;">Award</td>
+                        <td>
+                            <select asp-for="VendorCodeTypeId" asp-items="Model.VendorCodeTypeList" class="form-control">
+                                <option></option>
+                            </select>
+                        </td>
+                        <td style="padding-left:6px;">
+                            <button type="submit" asp-action="AwardVendorCode" class="btn btn-primary btn-spinner">
+                                <span class="buttonText">Vendor Code</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2"><span asp-validation-for="VendorCodeTypeId" class="text-danger"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to Participants</a>
     </div>

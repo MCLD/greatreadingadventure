@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -19,5 +15,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         [DisplayName("Secret Code")]
         public string SecretCode { get; set; }
         public bool IsSecretCode { get; set; }
+        public int? VendorCodeTypeId { get; set; }
+        public SelectList VendorCodeTypeList { get; set; }
     }
 }
