@@ -519,3 +519,14 @@ input.form-checkbox {
 .bundle-image {
     margin:10px;
 }
+
+.multiselect .multiselect-selected-text {
+    position: absolute;
+    left: 13px;
+    top: 7px;
+}
+
+.multiselect .caret {
+    position: absolute;
+    right: 13px;
+}

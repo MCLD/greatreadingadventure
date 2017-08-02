@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -40,5 +41,7 @@ namespace GRA.Domain.Model
         public string BranchName { get; set; }
         [DisplayName("Eligible Count")]
         public int EligibleCount { get; set; }
+
+        public ICollection<int> ProgramIds { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
@@ -27,5 +28,7 @@ namespace GRA.Data.Model
         public int? PointTranslationId { get; set; }
         public bool IncludeAdmin { get; set; }
         public bool ExcludePreviousWinners { get; set; }
+
+        public ICollection<DrawingCriterionProgram> CriterionPrograms  { get; set; }
     }
 }

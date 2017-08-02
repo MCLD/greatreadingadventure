@@ -66,6 +66,10 @@ The Great Reading Adventure uses open source components. You can find informatio
 - Date/time picker widget based on twitter bootstrap [Bootstrap-DatetimePicker](http://eonasdan.github.io/bootstrap-datetimepicker/)
 - Source on GitHub: [Eonasdan/bootstrap-datetimepicker](https://github.com/Eonasdan/bootstrap-datetimepicker) - [MIT License](https://github.com/Eonasdan/bootstrap-datetimepicker/blob/master/LICENSE)
 
+### Bootstrap-Multiselect
+- JQuery multiselect plugin based on Twitter Bootstrap [Bootstrap-Multiselect](http://davidstutz.github.io/bootstrap-multiselect/)
+- Source on GitHub: [davidstutz/bootstrap-multiselect](https://github.com/davidstutz/bootstrap-multiselect) - [Apache License, Version 2.0 & BSD-3-Clause](https://github.com/davidstutz/bootstrap-multiselect/blob/master/LICENSE.md)
+
 ### CommonMark.js
 - [CommonMark](http://commonmark.org/) parser and renderer in JavaScript
 - Source on GitHub: [jgm/commonmark.js](https://github.com/jgm/commonmark.js) - [MIT License](https://github.com/jgm/commonmark.js/blob/master/LICENSE)

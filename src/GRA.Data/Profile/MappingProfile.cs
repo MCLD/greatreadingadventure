@@ -16,7 +16,10 @@ namespace GRA.Data.Profile
             CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
-            CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>().ReverseMap();
+            CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()
+                .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src
+                => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()))
+                .ReverseMap();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>().ReverseMap();
             CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>()
                 .ForMember(dest => dest.DynamicAvatarItems, opt => opt.MapFrom(src => src.DynamicAvatarBundleItems.Select(_ => _.DynamicAvatarItem)))

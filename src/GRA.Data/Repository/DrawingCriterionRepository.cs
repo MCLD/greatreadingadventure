@@ -62,8 +62,12 @@ namespace GRA.Data.Repository
             if (filter.ProgramIds?.Any() == true)
             {
                 criterionList = criterionList
-                    .Where(_ => filter.ProgramIds.Any(p => p == _.ProgramId));
+                    .Where(_ => filter.ProgramIds.Where(p => p.HasValue).Cast<int>()
+                        .Any(p => p == _.ProgramId || _.CriterionPrograms.Select(c => c.ProgramId).Contains(p))
+                    || (_.CriterionPrograms.Count == 0 && !_.ProgramId.HasValue
+                        && filter.ProgramIds.Any(p => !p.HasValue)));
             }
+
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
@@ -73,6 +77,67 @@ namespace GRA.Data.Repository
             }
 
             return criterionList;
+        }
+
+        public override async Task<DrawingCriterion> GetByIdAsync(int id)
+        {
+            return await DbSet.AsNoTracking()
+                .Include(_ => _.CriterionPrograms)
+                .Where(_ => _.Id == id)
+                .ProjectTo<DrawingCriterion>()
+                .SingleOrDefaultAsync();
+        }
+
+        public override async Task<DrawingCriterion> AddSaveAsync(int userId,
+            DrawingCriterion criterion)
+        {
+            var newCriterion = await base.AddSaveAsync(userId, criterion);
+
+            if (criterion.ProgramIds != null)
+            {
+                var criterionProgramList = new List<Model.DrawingCriterionProgram>();
+                foreach (var programId in criterion.ProgramIds)
+                {
+                    criterionProgramList.Add(new Model.DrawingCriterionProgram()
+                    {
+                        DrawingCriterionId = newCriterion.Id,
+                        ProgramId = programId
+                    });
+                }
+                await _context.DrawingCriterionPrograms.AddRangeAsync(criterionProgramList);
+                await _context.SaveChangesAsync();
+            }
+
+            return newCriterion;
+        }
+
+        public override async Task<DrawingCriterion> UpdateSaveAsync(int userId,
+            DrawingCriterion criterion)
+        {
+            var updatedCriterion = await base.UpdateSaveAsync(userId, criterion);
+
+            var thisCriterionPrograms = _context.DrawingCriterionPrograms.AsNoTracking()
+                .Where(_ => _.DrawingCriterionId == updatedCriterion.Id);
+
+            if (criterion.ProgramIds != null)
+            {
+                var programsToAdd = criterion.ProgramIds
+                    .Except(thisCriterionPrograms.Select(_ => _.ProgramId))
+                    .Select(_ => new Model.DrawingCriterionProgram()
+                    {
+                        DrawingCriterionId = updatedCriterion.Id,
+                        ProgramId = _
+                    });
+                await _context.DrawingCriterionPrograms.AddRangeAsync(programsToAdd);
+            }
+
+            var programsToRemove = thisCriterionPrograms
+                .Where(_ => !criterion.ProgramIds.Contains(_.ProgramId));
+            _context.DrawingCriterionPrograms.RemoveRange(programsToRemove);
+
+            await _context.SaveChangesAsync();
+
+            return updatedCriterion;
         }
 
         public async Task<int> GetEligibleUserCountAsync(int criterionId)
@@ -96,6 +161,10 @@ namespace GRA.Data.Repository
             if (criterion.ProgramId != null)
             {
                 users = users.Where(_ => _.ProgramId == criterion.ProgramId);
+            }
+            else if (criterion.ProgramIds?.Count() > 0)
+            {
+                users = users.Where(_ => criterion.ProgramIds.Contains(_.ProgramId));
             }
 
             if (criterion.SystemId != null)
@@ -175,7 +244,7 @@ namespace GRA.Data.Repository
                         UserId = sum.Key,
                         Total = sum.Sum(_ => _.PointsEarned)
                     });
-                
+
                 if (criterion.PointsMinimum != null)
                 {
                     pointSum = pointSum.Where(_ => _.Total >= criterion.PointsMinimum);

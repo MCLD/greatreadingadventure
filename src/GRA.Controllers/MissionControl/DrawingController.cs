@@ -453,6 +453,15 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
+                if (model.Criterion.ProgramIds?.Count() == 1)
+                {
+                    model.Criterion.ProgramId = model.Criterion.ProgramIds.First();
+                    model.Criterion.ProgramIds = null;
+                }
+                else
+                {
+                    model.Criterion.ProgramId = null;
+                }
                 if (model.ReadABook)
                 {
                     model.Criterion.PointTranslationId = 1;
@@ -493,15 +502,24 @@ namespace GRA.Controllers.MissionControl
             {
                 PageTitle = "Drawing Criteria";
                 var criterion = await _drawingService.GetCriterionDetailsAsync(id);
+                if (criterion.ProgramId.HasValue)
+                {
+                    criterion.ProgramIds.Add(criterion.ProgramId.Value);
+                }
                 var site = await GetCurrentSiteAsync();
+                var programs = await _siteService.GetProgramList();
                 CriterionDetailViewModel viewModel = new CriterionDetailViewModel()
                 {
                     Criterion = criterion,
                     SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
-                    ProgramList = new SelectList((await _siteService.GetProgramList()), "Id", "Name"),
+                    ProgramList = new SelectList(programs, "Id", "Name"),
                     ReadABook = criterion.ActivityAmount.HasValue,
-                    EligibleCount = await _drawingService.GetEligibleCountAsync(id)
+                    EligibleCount = await _drawingService.GetEligibleCountAsync(id),
+                    ProgramPlaceholder = string.Join(", ", programs
+                        .Where(_ => criterion.ProgramIds.Contains(_.Id))
+                        .Select(_ => _.Name)) 
                 };
+
                 if (viewModel.Criterion.SystemId.HasValue)
                 {
                     viewModel.BranchList = new SelectList(
@@ -526,6 +544,15 @@ namespace GRA.Controllers.MissionControl
         {
             if (ModelState.IsValid)
             {
+                if (model.Criterion.ProgramIds?.Count() == 1)
+                {
+                    model.Criterion.ProgramId = model.Criterion.ProgramIds.First();
+                    model.Criterion.ProgramIds = null;
+                }
+                else
+                {
+                    model.Criterion.ProgramId = null;
+                }
                 if (model.ReadABook)
                 {
                     model.Criterion.PointTranslationId = 1;

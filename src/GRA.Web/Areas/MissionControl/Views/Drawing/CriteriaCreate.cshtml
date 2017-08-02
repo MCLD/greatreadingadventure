@@ -32,9 +32,8 @@
     <div class="row row-spacing">
         <div class="col-xs-12">
             <label asp-for="Criterion.ProgramId" class="control-label"></label>
-            <select asp-for="Criterion.ProgramId" asp-items="Model.ProgramList" class="form-control">
-                <option></option>
-            </select>
+            <input asp-for="ProgramPlaceholder" class="form-control" />
+            <select asp-for="Criterion.ProgramIds" asp-items="Model.ProgramList" class="form-control hidden" multiple="multiple"></select>
             <span asp-validation-for="Criterion.ProgramId" class="text-danger"></span>
         </div>
     </div>
@@ -153,6 +152,13 @@
                     branchList.append(new Option(item.text, item.value, item.selected, item.selected))
                 });
             });
+        });
+
+        $("#ProgramPlaceholder").remove();
+        $("#Criterion_ProgramIds").multiselect({
+            buttonClass: "form-control",
+            buttonWidth: "100%",
+            nonSelectedText: ""
         });
     </script>
 }

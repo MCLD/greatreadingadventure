@@ -136,6 +136,16 @@ namespace GRA.Domain.Service
                 criterion.SiteId = GetCurrentSiteId();
                 criterion.RelatedBranchId = GetClaimId(ClaimType.BranchId);
                 criterion.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+
+                if (criterion.ProgramIds != null)
+                {
+                    var programs = await _programRepository.GetAllAsync(GetCurrentSiteId());
+                    if (!programs.Select(_ => _.Id).Except(criterion.ProgramIds).Any())
+                    {
+                        criterion.ProgramIds = null;
+                    }
+                }
+
                 return await _drawingCriterionRepository.AddSaveAsync(authUserId, criterion);
             }
             else
@@ -154,6 +164,16 @@ namespace GRA.Domain.Service
                 criterion.SiteId = currentCriterion.SiteId;
                 criterion.RelatedBranchId = currentCriterion.RelatedBranchId;
                 criterion.RelatedSystemId = currentCriterion.RelatedSystemId;
+
+                if (criterion.ProgramIds != null)
+                {
+                    var programs = await _programRepository.GetAllAsync(GetCurrentSiteId());
+                    if (!programs.Select(_ => _.Id).Except(criterion.ProgramIds).Any())
+                    {
+                        criterion.ProgramIds = null;
+                    }
+                }
+
                 return await _drawingCriterionRepository.UpdateSaveAsync(authUserId, criterion);
             }
             else
