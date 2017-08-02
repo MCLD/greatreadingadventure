@@ -1,11 +1,10 @@
-﻿using GRA.Domain.Service.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
-using GRA.Domain.Model;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -201,14 +200,16 @@ namespace GRA.Domain.Service
             await _schoolRepository.RemoveSaveAsync(GetActiveUserId(), schoolId);
         }
 
-        public async Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(int skip,
-            int take,
-            int? districtId = default(int?),
-            int? typeId = default(int?))
+        public async Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(
+            BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
-            return await _schoolRepository
-                .GetPaginatedListAsync(GetCurrentSiteId(), skip, take, districtId, typeId);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<School>>
+            {
+                Data = await _schoolRepository.PageAsync(filter),
+                Count = await _schoolRepository.CountAsync(filter)
+            };
         }
 
         public async Task UpdateSchoolAsync(School school)
@@ -225,12 +226,16 @@ namespace GRA.Domain.Service
             await _schoolRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentSchool);
         }
 
-        public async Task<DataWithCount<ICollection<SchoolDistrict>>> GetPaginatedDistrictListAsync(int skip,
-            int take)
+        public async Task<DataWithCount<ICollection<SchoolDistrict>>> GetPaginatedDistrictListAsync(
+            BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
-            return await _schoolDistrictRepository
-                .GetPaginatedListAsync(GetCurrentSiteId(), skip, take);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<SchoolDistrict>>
+            {
+                Data = await _schoolDistrictRepository.PageAsync(filter),
+                Count = await _schoolDistrictRepository.CountAsync(filter)
+            };
         }
 
         public async Task UpdateDistrictAsync(SchoolDistrict district)
@@ -245,12 +250,16 @@ namespace GRA.Domain.Service
             await _schoolDistrictRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentDistrict);
         }
 
-        public async Task<DataWithCount<ICollection<SchoolType>>> GetPaginatedTypeListAsync(int skip,
-            int take)
+        public async Task<DataWithCount<ICollection<SchoolType>>> GetPaginatedTypeListAsync(
+            BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
-            return await _schoolTypeRepository
-                .GetPaginatedListAsync(GetCurrentSiteId(), skip, take);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<SchoolType>>
+            {
+                Data = await _schoolTypeRepository.PageAsync(filter),
+                Count = await _schoolTypeRepository.CountAsync(filter)
+            };
         }
 
         public async Task UpdateTypeAsync(SchoolType type)
@@ -265,12 +274,16 @@ namespace GRA.Domain.Service
             await _schoolTypeRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentType);
         }
 
-        public async Task<DataWithCount<ICollection<EnteredSchool>>> GetPaginatedEnteredListAsync(int skip,
-            int take)
+        public async Task<DataWithCount<ICollection<EnteredSchool>>> GetPaginatedEnteredListAsync(
+            BaseFilter filter)
         {
             VerifyPermission(Permission.ManageSchools);
-            return await _enteredSchoolRepository
-                .GetPaginatedListAsync(GetCurrentSiteId(), skip, take);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<EnteredSchool>>
+            {
+                Data = await _enteredSchoolRepository.PageAsync(filter),
+                Count = await _enteredSchoolRepository.CountAsync(filter)
+            };
         }
     }
 }

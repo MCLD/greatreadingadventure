@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
-using Microsoft.Extensions.Logging;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
-using AutoMapper.QueryableExtensions;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -43,24 +44,33 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<DataWithCount<ICollection<SchoolType>>> GetPaginatedListAsync(int siteId,
-            int skip,
-            int take)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
-            var typeList = DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
 
-            return new DataWithCount<ICollection<SchoolType>>()
+        public async Task<ICollection<SchoolType>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<SchoolType>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.SchoolType> ApplyFilters(BaseFilter filter)
+        {
+            var schoolTypeList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                Data = await typeList
-                    .OrderBy(_ => _.Name)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<SchoolType>()
-                    .ToListAsync(),
-                Count = await typeList.CountAsync()
-            };
+                schoolTypeList = schoolTypeList.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            return schoolTypeList;
         }
     }
 }

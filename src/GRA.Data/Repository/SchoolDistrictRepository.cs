@@ -1,12 +1,13 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace GRA.Data.Repository
 {
@@ -28,24 +29,33 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<DataWithCount<ICollection<SchoolDistrict>>> GetPaginatedListAsync(int siteId,
-            int skip,
-            int take)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
-            var districtList = DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
 
-            return new DataWithCount<ICollection<SchoolDistrict>>()
+        public async Task<ICollection<SchoolDistrict>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<SchoolDistrict>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.SchoolDistrict> ApplyFilters(BaseFilter filter)
+        {
+            var schoolDistrictList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                Data = await districtList
-                    .OrderBy(_ => _.Name)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<SchoolDistrict>()
-                    .ToListAsync(),
-                Count = await districtList.CountAsync()
-            };
+                schoolDistrictList = schoolDistrictList.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            return schoolDistrictList;
         }
     }
 }

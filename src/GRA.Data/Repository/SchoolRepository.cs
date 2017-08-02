@@ -1,12 +1,13 @@
 ﻿using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace GRA.Data.Repository
 {
@@ -49,36 +50,33 @@ namespace GRA.Data.Repository
                 .AnyAsync(_ => _.SiteId == siteId && _.SchoolId == schoolId);
         }
 
-        public async Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(int siteId,
-            int skip,
-            int take,
-            int? districtId = default(int?),
-            int? typeId = default(int?))
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
+        public async Task<ICollection<School>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<School>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.School> ApplyFilters(BaseFilter filter)
         {
             var schoolList = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
+                .Where(_ => _.SiteId == filter.SiteId);
 
-            if (districtId != null)
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                schoolList = schoolList.Where(_ => _.SchoolDistrictId == (int)districtId);
+                schoolList = schoolList.Where(_ => _.Name.Contains(filter.Search));
             }
 
-            if (typeId != null)
-            {
-                schoolList = schoolList.Where(_ => _.SchoolTypeId == (int)typeId);
-            }
-
-            return new DataWithCount<ICollection<School>>()
-            {
-                Data = await schoolList
-                    .OrderBy(_ => _.Name)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<School>()
-                    .ToListAsync(),
-                Count = await schoolList.CountAsync()
-            };
+            return schoolList;
         }
 
         public async Task<bool> ValidateAsync(int schoolId, int siteId)

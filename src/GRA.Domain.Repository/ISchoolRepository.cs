@@ -1,4 +1,5 @@
 ﻿using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,11 +13,8 @@ namespace GRA.Domain.Repository
 
         Task<bool> IsInUseAsync(int siteId, int schoolId);
 
-        Task<DataWithCount<ICollection<School>>> GetPaginatedListAsync(int siteId,
-            int skip,
-            int take,
-            int? districtId = default(int?),
-            int? typeId = default(int?));
+        Task<ICollection<School>> PageAsync(BaseFilter filter);
+        Task<int> CountAsync(BaseFilter filter);
 
         Task<bool> ValidateAsync(int schoolId, int siteId);
     }

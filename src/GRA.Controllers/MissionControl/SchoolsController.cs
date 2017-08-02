@@ -1,16 +1,15 @@
 ﻿using GRA.Controllers.ViewModel.MissionControl.Schools;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -34,18 +33,20 @@ namespace GRA.Controllers.MissionControl
             PageTitle = "Schools";
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            int take = 15;
-            int skip = take * (page - 1);
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
 
-            var schoolList = await _schoolService.GetPaginatedListAsync(skip, take);
+            var schoolList = await _schoolService.GetPaginatedListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = schoolList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -82,7 +83,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to add School: ", gex);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { search = model.Search });
         }
 
         [HttpPost]
@@ -97,11 +98,11 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to edit School: ", gex);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { search = model.Search });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteSchool(int id)
+        public async Task<IActionResult> DeleteSchool(int id, string search)
         {
             try
             {
@@ -112,23 +113,25 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to delete School: ", gex);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { search = search });
         }
 
-        public async Task<IActionResult> Districts(int page = 1)
+        public async Task<IActionResult> Districts(string search, int page = 1)
         {
             PageTitle = "School Districts";
 
-            int take = 15;
-            int skip = take * (page - 1);
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
 
-            var districtList = await _schoolService.GetPaginatedDistrictListAsync(skip, take);
+            var districtList = await _schoolService.GetPaginatedDistrictListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = districtList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -160,7 +163,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to add School District: ", gex);
             }
-            return RedirectToAction("Districts");
+            return RedirectToAction("Districts", new { search = model.Search });
         }
 
         [HttpPost]
@@ -175,11 +178,11 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to edit School District: ", gex);
             }
-            return RedirectToAction("Districts");
+            return RedirectToAction("Districts", new { search = model.Search });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteDistrict(int id)
+        public async Task<IActionResult> DeleteDistrict(int id, string search)
         {
             try
             {
@@ -190,23 +193,25 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to delete School District: ", gex);
             }
-            return RedirectToAction("Districts");
+            return RedirectToAction("Districts", new { search = search });
         }
 
-        public async Task<IActionResult> Types(int page = 1)
+        public async Task<IActionResult> Types(string search, int page = 1)
         {
             PageTitle = "School Types";
 
-            int take = 15;
-            int skip = take * (page - 1);
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
 
-            var typeList = await _schoolService.GetPaginatedTypeListAsync(skip, take);
+            var typeList = await _schoolService.GetPaginatedTypeListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = typeList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -238,7 +243,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to add School Type: ", gex);
             }
-            return RedirectToAction("Types");
+            return RedirectToAction("Types", new { search = model.Search });
         }
 
         [HttpPost]
@@ -253,11 +258,11 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to edit School Type: ", gex);
             }
-            return RedirectToAction("Types");
+            return RedirectToAction("Types", new { search = model.Search });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteType(int id)
+        public async Task<IActionResult> DeleteType(int id, string search)
         {
             try
             {
@@ -268,23 +273,25 @@ namespace GRA.Controllers.MissionControl
             {
                 ShowAlertDanger("Unable to delete School Type: ", gex);
             }
-            return RedirectToAction("Types");
+            return RedirectToAction("Types", new { search = search });
         }
 
-        public async Task<IActionResult> Entered(int page = 1)
+        public async Task<IActionResult> Entered(string search, int page = 1)
         {
             PageTitle = "Entered Schools";
 
-            int take = 15;
-            int skip = take * (page - 1);
+            var filter = new BaseFilter(page)
+            {
+                Search = search
+            };
 
-            var enteredList = await _schoolService.GetPaginatedEnteredListAsync(skip, take);
+            var enteredList = await _schoolService.GetPaginatedEnteredListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = enteredList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
             {
@@ -340,7 +347,8 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to merge Entered School: ", gex);
                 }
             }
-            return RedirectToAction("Entered", new { page = model.CurrentPage });
+            return RedirectToAction("Entered", 
+                new { page = model.CurrentPage, search = model.Search });
         }
 
         [HttpGet]

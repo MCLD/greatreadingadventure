@@ -7,6 +7,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -43,24 +45,33 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<DataWithCount<ICollection<EnteredSchool>>> GetPaginatedListAsync(int siteId,
-            int skip,
-            int take)
+        public async Task<int> CountAsync(BaseFilter filter)
         {
-            var schoolList = DbSet
-                .AsNoTracking()
-                .Where(_ => _.SiteId == siteId);
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
 
-            return new DataWithCount<ICollection<EnteredSchool>>()
+        public async Task<ICollection<EnteredSchool>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<EnteredSchool>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.EnteredSchool> ApplyFilters(BaseFilter filter)
+        {
+            var enteredSchoolList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == filter.SiteId);
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                Data = await schoolList
-                    .OrderBy(_ => _.Name)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<EnteredSchool>()
-                    .ToListAsync(),
-                Count = await schoolList.CountAsync()
-            };
+                enteredSchoolList = enteredSchoolList.Where(_ => _.Name.Contains(filter.Search));
+            }
+
+            return enteredSchoolList;
         }
     }
 }

@@ -8,12 +8,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Questionnaire preview page
 - Activity by Program Report
 - Restrict household changes to when the site is open for registration or open
+- Allow searching in Mission Control school lists
 - Registrations and Achievers by School Report
 
 ### Changed
 - Show report completion percent in window titlebar
 - Broadcast scheduling and sending
 - Allow mails to be up to 2,000 characters long
+- Anti-bounce on Mission Control school buttons
 - Allow multiple programs to be selected for drawings
 
 ### Fixed
