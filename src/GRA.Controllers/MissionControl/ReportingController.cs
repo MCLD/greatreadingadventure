@@ -67,7 +67,7 @@ namespace GRA.Controllers.MissionControl
                 viewName = viewName.Substring(0, viewName.Length - 6);
             }
 
-            var systemList = await _siteService.GetSystemList();
+            var systemList = await _siteService.GetSystemList(true);
             var branchList = await _siteService.GetAllBranches(true);
             var programList = await _siteService.GetProgramList();
             var schoolDistrictList = await _schoolService.GetDistrictsAsync();

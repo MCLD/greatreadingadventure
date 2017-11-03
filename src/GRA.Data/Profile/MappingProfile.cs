@@ -20,7 +20,9 @@ namespace GRA.Data.Profile
                 .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src
                 => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()))
                 .ReverseMap();
-            CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>().ReverseMap();
+            CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()
+                .ForMember(dest => dest.PrizeName, opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
+                .ReverseMap();
             CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>()
                 .ForMember(dest => dest.DynamicAvatarItems, opt => opt.MapFrom(src => src.DynamicAvatarBundleItems.Select(_ => _.DynamicAvatarItem)))
                 .ReverseMap();

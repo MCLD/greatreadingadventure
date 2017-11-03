@@ -4,8 +4,8 @@ using GRA.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
@@ -85,6 +85,30 @@ namespace GRA.Data.Repository
                 .OrderByDescending(_ => _.CreatedAt)
                 .FirstOrDefaultAsync();
             return _mapper.Map<VendorCode>(vendorCode);
+        }
+
+        public async Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion)
+        {
+            // Includes deleted users
+            var validUsers = _context.Users.AsNoTracking()
+                .Where(_ => _.SiteId == criterion.SiteId);
+
+            if (criterion.BranchId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.BranchId == criterion.BranchId.Value);
+            }
+            else if (criterion.SystemId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.SystemId == criterion.SystemId.Value);
+            }
+
+            return await (from vendorCodes in DbSet.AsNoTracking()
+                            .Where(_ => _.UserId.HasValue && _.SiteId == criterion.SiteId)
+                          join users in validUsers
+                          on vendorCodes.UserId equals users.Id
+                          select vendorCodes)
+                          .ProjectTo<VendorCode>()
+                          .ToListAsync();
         }
     }
 }

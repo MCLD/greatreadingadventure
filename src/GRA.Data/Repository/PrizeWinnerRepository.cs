@@ -1,12 +1,11 @@
-﻿using GRA.Domain.Model;
+﻿using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
 using GRA.Domain.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using AutoMapper.QueryableExtensions;
+using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -53,6 +52,51 @@ namespace GRA.Data.Repository
                 .Where(_ => _.UserId == userId && _.TriggerId == triggerId)
                 .ProjectTo<PrizeWinner>()
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<ICollection<PrizeWinner>> GetRedemptionsAsync(ReportCriterion criterion)
+        {
+            // Includes deleted users and users from other sites
+            var validUsers = _context.Users.AsNoTracking();
+
+            if (criterion.BranchId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.BranchId == criterion.BranchId.Value);
+            }
+            else if (criterion.SystemId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.SystemId == criterion.SystemId.Value);
+            }
+
+            return await (from prizes in DbSet.AsNoTracking().Where(_ => _.RedeemedAt.HasValue
+                            && _.SiteId == criterion.SiteId)
+                          join users in validUsers
+                          on prizes.RedeemedBy equals users.Id
+                          select prizes)
+                          .ProjectTo<PrizeWinner>()
+                          .ToListAsync();
+        }
+
+        public async Task<ICollection<PrizeWinner>> GetUserPrizesAsync(ReportCriterion criterion)
+        {
+            var validUsers = _context.Users.AsNoTracking()
+                .Where(_ => _.IsDeleted == false && _.SiteId == criterion.SiteId);
+
+            if (criterion.BranchId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.BranchId == criterion.BranchId.Value);
+            }
+            else if (criterion.SystemId.HasValue)
+            {
+                validUsers = validUsers.Where(_ => _.SystemId == criterion.SystemId.Value);
+            }
+
+            return await (from prizes in DbSet.Where(_ => _.SiteId == criterion.SiteId)
+                          join users in validUsers
+                          on prizes.UserId equals users.Id
+                          select prizes)
+                          .ProjectTo<PrizeWinner>()
+                          .ToListAsync();
         }
     }
 }

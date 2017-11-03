@@ -203,8 +203,11 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.CurrentStatusReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversBySchoolReport>();
             services.AddScoped<Domain.Report.RegistrationsAchieversReport>();
+            services.AddScoped<Domain.Report.ParticipantPrizeReport>();
             services.AddScoped<Domain.Report.ParticipantProgressReport>();
+            services.AddScoped<Domain.Report.PrizeRedemptionReport>();
             services.AddScoped<Domain.Report.TopScoresReport>();
+            services.AddScoped<Domain.Report.VendorCodeReport>();
 
             // service resolution
             services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();

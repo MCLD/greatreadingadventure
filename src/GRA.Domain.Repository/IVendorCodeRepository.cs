@@ -9,5 +9,6 @@ namespace GRA.Domain.Repository
         Task<VendorCode> AssignCodeAsync(int vendorCodeTypeId, int userId);
         Task<VendorCode> GetUserVendorCode(int userId);
         Task<VendorCode> GetByCode(string code);
+        Task<ICollection<VendorCode>> GetEarnedCodesAsync(ReportCriterion criterion);
     }
 }

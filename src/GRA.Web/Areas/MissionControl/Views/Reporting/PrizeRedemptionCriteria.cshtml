@@ -1,0 +1,59 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Reporting.ReportCriteriaViewModel
+
+<form asp-controller="Reporting" asp-action="Run" method="post" role="form" class="form-horizontal" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <input asp-for="ReportId" type="hidden" />
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="SystemId" class="control-label"></label>
+            <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <label asp-for="BranchId" class="control-label"></label>
+            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
+                <option>All Branches</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-primary">
+                <span class="fa fa-file-text"></span>
+                Run Report!
+            </button>
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            UpdateBranchList();
+        });
+
+        $("#SystemId").on("change", function () {
+            UpdateBranchList();
+        });
+
+        function UpdateBranchList() {
+            var systemId = $("#SystemId").val();
+            var branchList = $("#BranchId");
+            var branchId = branchList.val();
+            var url = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
+
+            $.getJSON(url, { systemId: systemId, branchId: branchId }, function (response) {
+                branchList.empty();
+                branchList.append(new Option("All Branches", ""));
+                $.each(response, function (index, item) {
+                    branchList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        }
+    </script>
+}
