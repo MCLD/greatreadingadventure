@@ -47,7 +47,7 @@ namespace GRA.Data.Repository
         {
             return await _context.Users
                 .AsNoTracking()
-                .AnyAsync(_ => _.SiteId == siteId && _.SchoolId == schoolId);
+                .AnyAsync(_ => _.SiteId == siteId && _.SchoolId == schoolId && _.IsDeleted == false);
         }
 
         public async Task<int> CountAsync(BaseFilter filter)

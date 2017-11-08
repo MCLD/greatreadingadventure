@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add prize redemption report
 - Add participant prize report
 - Add vendor code report
+- System and branch configuration
 
 ### Changed
 - Show report completion percent in window titlebar

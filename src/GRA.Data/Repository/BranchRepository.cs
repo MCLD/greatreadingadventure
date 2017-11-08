@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository.Extensions;
 
 namespace GRA.Data.Repository
 {
@@ -37,6 +39,43 @@ namespace GRA.Data.Repository
                 .OrderBy(_ => _.Name)
                 .ProjectTo<Branch>()
                 .ToListAsync();
+        }
+
+        public async Task<int> CountAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .CountAsync();
+        }
+
+        public async Task<ICollection<Branch>> PageAsync(BaseFilter filter)
+        {
+            return await ApplyFilters(filter)
+                .OrderBy(_ => _.Name)
+                .ApplyPagination(filter)
+                .ProjectTo<Branch>()
+                .ToListAsync();
+        }
+
+        private IQueryable<Model.Branch> ApplyFilters(BaseFilter filter)
+        {
+            var branchList = DbSet
+                .AsNoTracking()
+                .Where(_ => _.System.SiteId == filter.SiteId);
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                branchList = branchList.Where(_ => _.Name.Contains(filter.Search)
+                || _.System.Name.Contains(filter.Search));
+            }
+
+            return branchList;
+        }
+
+        public async Task<bool> IsInUseAsync(int branchId)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .AnyAsync(_ => _.IsDeleted == false && _.BranchId == branchId);
         }
 
         public async Task<bool> ValidateAsync(int branchId, int systemId)

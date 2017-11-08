@@ -191,7 +191,7 @@ namespace GRA.Domain.Service
             var school = await _schoolRepository.GetByIdAsync(schoolId);
             if (school.SiteId != GetCurrentSiteId())
             {
-                throw new GraException($"Permission denied - school belongs site id {school.SiteId}.");
+                throw new GraException($"Permission denied - school belongs to site id {school.SiteId}.");
             }
             if (await _schoolRepository.IsInUseAsync(GetCurrentSiteId(), schoolId))
             {
@@ -218,7 +218,7 @@ namespace GRA.Domain.Service
             var currentSchool = await _schoolRepository.GetByIdAsync(school.Id);
             if (currentSchool.SiteId != GetCurrentSiteId())
             {
-                throw new GraException($"Permission denied - school belongs site id {currentSchool.SiteId}.");
+                throw new GraException($"Permission denied - school belongs to site id {currentSchool.SiteId}.");
             }
             currentSchool.Name = school.Name;
             currentSchool.SchoolDistrictId = school.SchoolDistrictId;

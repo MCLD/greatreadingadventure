@@ -53,7 +53,6 @@ namespace GRA.Domain.Service
 
             var branch = new Model.Branch
             {
-                SiteId = siteId,
                 SystemId = system.Id,
                 Name = "Main Library",
             };

@@ -7,6 +7,8 @@ using GRA.Domain.Service.Abstract;
 using System.Text;
 using System.Linq;
 using System;
+using System.Collections;
+using GRA.Domain.Model.Filters;
 
 namespace GRA.Domain.Service
 {
@@ -44,6 +46,52 @@ namespace GRA.Domain.Service
             return systemList;
         }
 
+        public async Task<DataWithCount<ICollection<Model.System>>> GetPaginatedSystemListAsync(
+            BaseFilter filter)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Model.System>>
+            {
+                Data = await _systemRepository.PageAsync(filter),
+                Count = await _systemRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<Model.System> AddSystemAsync(Model.System system)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            system.SiteId = GetCurrentSiteId();
+            return await _systemRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), system);
+        }
+
+        public async Task UpdateSystemAsync(Model.System system)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            var currentSystem = await _systemRepository.GetByIdAsync(system.Id);
+            if (currentSystem.SiteId != GetCurrentSiteId())
+            {
+                throw new GraException($"Permission denied - system belongs to site id {currentSystem.SiteId}.");
+            }
+            currentSystem.Name = system.Name;
+            await _systemRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentSystem);
+        }
+
+        public async Task RemoveSystemAsync(int systemId)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            var system = await _systemRepository.GetByIdAsync(systemId);
+            if (system.SiteId != GetCurrentSiteId())
+            {
+                throw new GraException($"Permission denied - system belongs to site id {system.SiteId}.");
+            }
+            if (await _systemRepository.IsInUseAsync(systemId))
+            {
+                throw new GraException($"Branches currently belong to system {system.Name}.");
+            }
+            await _systemRepository.RemoveSaveAsync(GetActiveUserId(), systemId);
+        }
+
         public async Task<IEnumerable<Branch>> GetBranches(int systemId,
             bool prioritizeUserBranch = false)
         {
@@ -68,6 +116,55 @@ namespace GRA.Domain.Service
                 }
             }
             return branchList;
+        }
+
+        public async Task<DataWithCount<ICollection<Branch>>> GetPaginatedBranchListAsync(
+            BaseFilter filter)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Branch>>
+            {
+                Data = await _branchRepository.PageAsync(filter),
+                Count = await _branchRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<Branch> AddBranchAsync(Branch branch)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            return await _branchRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), branch);
+        }
+
+        public async Task UpdateBranchAsync(Branch branch)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            var currentBranch = await _branchRepository.GetByIdAsync(branch.Id);
+            if (await _branchRepository.ValidateBySiteAsync(currentBranch.Id, GetCurrentSiteId()) == false)
+            {
+                throw new GraException($"Permission denied - branch belongs to a different site.");
+            }
+
+            currentBranch.Address = branch.Address;
+            currentBranch.Name = branch.Name;
+            currentBranch.Telephone = branch.Telephone;
+            currentBranch.Url = branch.Url;
+            await _branchRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentBranch);
+        }
+
+        public async Task RemoveBranchAsync(int branchId)
+        {
+            VerifyPermission(Permission.ManageSystems);
+            if (await _branchRepository.ValidateBySiteAsync(branchId, GetCurrentSiteId()) == false)
+            {
+                throw new GraException($"Permission denied - branch belongs to a different site.");
+            }
+            var branch = await _branchRepository.GetByIdAsync(branchId);
+            if (await _branchRepository.IsInUseAsync(branchId))
+            {
+                throw new GraException($"Users currently have branch {branch.Name} selected.");
+            }
+            await _branchRepository.RemoveSaveAsync(GetActiveUserId(), branchId);
         }
 
         public async Task<Branch> GetBranchByIdAsync(int branchId)

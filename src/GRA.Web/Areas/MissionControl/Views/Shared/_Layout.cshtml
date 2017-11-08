@@ -139,10 +139,13 @@
                                 {
                                     <li><a asp-controller="Schools" asp-action="Index">Schools</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSystems.ToString()))
+                                {
+                                    <li><a asp-controller="Systems" asp-action="Index">Systems/Branches</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageVendorCodes.ToString()))
                                 {
                                     <li><a asp-controller="VendorCodes" asp-action="ImportStatus">Vendor code status</a></li>
-
                                 }
                                 <li>
                                     <a asp-controller="SystemInformation" asp-action="Index">

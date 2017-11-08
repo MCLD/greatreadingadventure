@@ -1,0 +1,249 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Systems.BranchesListViewModel
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-pills" style="padding: 10px 0;">
+            <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">System</a></li>
+            <li ActiveBy routeKey="Action" value="Branches"><a asp-action="Branches">Branches</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Systems" asp-action="AddBranch" method="post" role="form" style="display:inline">
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addModalLabel">Add Branch</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <input asp-for="Branch.Name" class="form-control" />
+                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.SystemId" class="control-label"></label>
+                            <select asp-for="Branch.SystemId" asp-items="Model.SystemList" class="form-control">
+                                <option></option>
+                            </select>
+                            <span asp-validation-for="Branch.SystemId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Address" class="control-label"></label>
+                            <input asp-for="Branch.Address" class="form-control" />
+                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <input asp-for="Branch.Telephone" class="form-control" />
+                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Add
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="Systems" asp-action="EditBranch" method="post" role="form" style="display:inline">
+                <input asp-for="Branch.Id" type="hidden" />
+                <input asp-for="Search" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">Edit branch</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="Branch.Name" class="control-label"></label>
+                            <input asp-for="Branch.Name" class="form-control" />
+                            <span asp-validation-for="Branch.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Url" class="control-label"></label>
+                            <input asp-for="Branch.Url" class="form-control" />
+                            <span asp-validation-for="Branch.Url" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Address" class="control-label"></label>
+                            <input asp-for="Branch.Address" class="form-control" />
+                            <span asp-validation-for="Branch.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Branch.Telephone" class="control-label"></label>
+                            <input asp-for="Branch.Telephone" class="form-control" />
+                            <span asp-validation-for="Branch.Telephone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Edit
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="deleteModalLabel">Delete Branch</h4>
+                </div>
+                <div class="modal-body">
+                    <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                    <span id="modal-text"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <form asp-controller="Systems" asp-action="DeleteBranch" method="post" role="form" style="display:inline">
+                        <input asp-for="Search" type="hidden" />
+                        <input id="Id" name="Id" type="hidden" />
+                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Systems" asp-action="Branches" method="get" role="form">
+    <div class="row row-spacing">
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Branches" class="btn btn-default">Clear</a>
+        </div>
+    </div>
+</form>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a class="btn btn-default"
+           data-toggle="modal"
+           data-target="#addModal">Add a Branch</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Branches.Count() == 0)
+        {
+            <div class="alert alert-warning">No Branches</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>System</th>
+                            <th width="100">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var branch in Model.Branches)
+                        {
+                            <tr>
+                                <td>
+                                    @branch.Name
+                                </td>
+                                <td>
+                                    @branch.SystemName
+                                </td>
+                                <td class="gra-mc-icon">
+                                    <button type="submit"
+                                            class="btn btn-primary btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="@branch.Id"
+                                            data-name="@branch.Name"
+                                            data-url="@branch.Url"
+                                            data-address="@branch.Address"
+                                            data-telephone="@branch.Telephone">
+                                        <span class="fa fa-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            style="margin-left:16px;"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@branch.Id"
+                                            data-name="@branch.Name">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var url = button.data('url');
+            var address = button.data('address');
+            var telephone = button.data('telephone')
+            var modal = $(this);
+
+            modal.find('#editModalLabel').text('Edit branch - "' + name + '"');
+            modal.find('#Branch_Id').val(id);
+            modal.find('#Branch_Name').val(name);
+            modal.find('#Branch_Url').val(url);
+            modal.find('#Branch_Address').val(address);
+            modal.find('#Branch_Telephone').val(telephone);
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var modal = $(this);
+            modal.find('#modal-text').text('Are you sure you wish to delete the branch "' + name + '" ?');
+            modal.find('#Id').val(id);
+        });
+    </script>
+}
