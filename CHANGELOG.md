@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add participant prize report
 - Add vendor code report
 - System and branch configuration
+- Dockerfile and .dockerignore to support Docker builds
 
 ### Changed
 - Show report completion percent in window titlebar
@@ -22,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Allow mails to be up to 2,000 characters long
 - Anti-bounce on Mission Control school buttons
 - Allow multiple programs to be selected for drawings
+- Moved content into top-level shared folder for better Docker support
+- Change rolling log configuration to support instances
 
 ### Fixed
 - Remove Entered School type restriction
@@ -29,6 +32,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Show error message if initial WebSocket connection fails
 - Do not show join links if the program is over
 - Do not show Events or Challenges links if the program is over
+- Configuration setting for database type (SQL Server or SQLite)
+- Configuration setting for initial program setup (single program or multi-program)
 
 ## [4.0.0-alpha7] 2017-07-03
 ### Added

@@ -43,7 +43,7 @@ namespace GRA
             }
             else
             {
-                path = Path.Combine(Directory.GetCurrentDirectory(), "content");
+                path = Path.Combine(Directory.GetCurrentDirectory(), "shared", "content");
             }
             if (!string.IsNullOrEmpty(filePath))
             {

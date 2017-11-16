@@ -7,6 +7,7 @@ namespace GRA
         public const string DefaultCSSqlServer = "ConnectionStrings:SqlServer";
 
         public const string ApplicationDescriminator = "GraApplicationDescriminator";
+        public const string ConnectionStringName = "GraConnectionStringName";
         public const string ContentDirectory = "GraContentDirectory";
         public const string ContentPath = "GraContentPath";
         public const string DataProtectionPath = "GraDataProtectionPath";
@@ -21,7 +22,9 @@ namespace GRA
         public const string DeployDate = "GraDeployDate";
         public const string EmailOverride = "GraEmailOverride";
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
+        public const string InitialProgramSetup = "GraInitialProgramSetup";
         public const string InstanceName = "GraInstanceName";
+        public const string RollingLogPath = "GraRollingLogPath";
         public const string SqlSessionSchemaName = "GraSqlSessionSchemaName";
         public const string SqlSessionTable = "GraSqlSessionTable";
     }

@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using AutoMapper;
 using GRA.Abstract;
 using GRA.Controllers.RouteConstraint;
 using GRA.Domain.Service;
@@ -13,16 +17,19 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Net.WebSockets;
 
 namespace GRA.Web
 {
     public class Startup
     {
+        private const string ConfigurationSingleProgramValue = "Single";
+        private const string ConfigurationMultipleProgramValue = "Multiple";
+
+        private const string DefaultInitialProgramSetup = ConfigurationSingleProgramValue;
+
+        private const string ConnectionStringNameSqlServer = "SqlServer";
+        private const string ConnectionStringNameSQLite = "SQLite";
+
         private readonly IDictionary<string, string> _defaultSettings = new Dictionary<string, string>
         {
             { ConfigurationKey.DefaultSiteName, "The Great Reading Adventure" },
@@ -38,8 +45,13 @@ namespace GRA.Web
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile($"instance.json", optional: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json",
+                    optional: true,
+                    reloadOnChange: true)
+                .AddJsonFile("shared/appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"shared/appsettings.{env.EnvironmentName}.json",
+                    optional: true,
+                    reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
@@ -49,10 +61,35 @@ namespace GRA.Web
 
             Configuration = builder.Build();
 
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
-                .CreateLogger();
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.RollingLogPath]))
+            {
+                string instance =
+                    !string.IsNullOrEmpty(Configuration[ConfigurationKey.InstanceName])
+                    ? Configuration[ConfigurationKey.InstanceName]
+                    : "gra";
+
+                string path = Configuration[ConfigurationKey.RollingLogPath];
+
+                if (!path.EndsWith("/"))
+                {
+                    path = path + "/";
+                }
+
+                string rollingFilename = path + instance + "-{Date}.txt";
+
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                    .WriteTo.RollingFile(rollingFilename)
+                    .CreateLogger();
+            }
+            else
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error)
+                    .CreateLogger();
+            }
 
             Log.Logger.Warning("Great Reading Adventure v{0} starting up in {1}",
                 Assembly.GetEntryAssembly()
@@ -88,14 +125,14 @@ namespace GRA.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath]))
-            {
-                string protectionPath = Configuration[ConfigurationKey.DataProtectionPath];
-                string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator]
+            string protectionPath =
+                !string.IsNullOrEmpty(Configuration[ConfigurationKey.DataProtectionPath])
+                ? Configuration[ConfigurationKey.DataProtectionPath]
+                : Path.Combine(Directory.GetCurrentDirectory(), "shared", "dataprotection");
+            string discriminator = Configuration[ConfigurationKey.ApplicationDescriminator]
                     ?? "gra";
-                services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
-                    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
-            }
+            services.AddDataProtection(_ => _.ApplicationDiscriminator = discriminator)
+                .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(protectionPath, "keys")));
 
             // Add framework services.
             services.AddSession(_ =>
@@ -104,7 +141,7 @@ namespace GRA.Web
             });
             services.TryAddSingleton(_ => Configuration);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator, 
+            services.TryAddSingleton<Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator,
                 HtmlGeneratorHack>();
             services.AddResponseCompression();
             services.AddMemoryCache();
@@ -139,25 +176,41 @@ namespace GRA.Web
             });
 
             // path validator
-            services.AddScoped<Controllers.Base.ISitePathValidator, Controllers.Validator.SitePathValidator>();
+            services.AddScoped<Controllers.Base.ISitePathValidator,
+                Controllers.Validator.SitePathValidator>();
 
             // service facades
-            services.AddScoped<Controllers.ServiceFacade.Controller, Controllers.ServiceFacade.Controller>();
+            services.AddScoped<Controllers.ServiceFacade.Controller,
+                Controllers.ServiceFacade.Controller>();
             services.AddScoped<Data.ServiceFacade.Repository, Data.ServiceFacade.Repository>();
 
             // database
-            services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
-            //services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
+            if (string.IsNullOrEmpty(Configuration[ConfigurationKey.ConnectionStringName]))
+            {
+                throw new Exception("GraConnectionStringName is not configured in appsettings.json - cannot continue");
+            }
+
+            switch (Configuration[ConfigurationKey.ConnectionStringName])
+            {
+                case ConnectionStringNameSqlServer:
+                    services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();
+                    break;
+                case ConnectionStringNameSQLite:
+                    services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();
+                    break;
+                default:
+                    throw new Exception($"Unknown GraConnectionStringName: {Configuration[ConfigurationKey.ConnectionStringName]}");
+            }
 
             // utilities
-            services.AddScoped<Abstract.IDateTimeProvider, CurrentDateTimeProvider>();
+            services.AddScoped<IDateTimeProvider, CurrentDateTimeProvider>();
             services.AddScoped<IUserContextProvider, Controllers.UserContextProvider>();
             services.AddScoped<Security.Abstract.IPasswordHasher, Security.PasswordHasher>();
-            services.AddScoped<Abstract.IPasswordValidator, PasswordValidator>();
-            services.AddScoped<Abstract.IPathResolver, PathResolver>();
-            services.AddScoped<Abstract.ITokenGenerator, TokenGenerator>();
-            services.AddScoped<Abstract.IEntitySerializer, EntitySerializer>();
-            services.AddScoped<Abstract.ICodeGenerator, CodeGenerator>();
+            services.AddScoped<IPasswordValidator, PasswordValidator>();
+            services.AddScoped<IPathResolver, PathResolver>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
+            services.AddScoped<IEntitySerializer, EntitySerializer>();
+            services.AddScoped<ICodeGenerator, CodeGenerator>();
             services.AddScoped<ICodeSanitizer, CodeSanitizer>();
             services.AddScoped<WebSocketHandler>();
 
@@ -210,7 +263,24 @@ namespace GRA.Web
             services.AddScoped<Domain.Report.VendorCodeReport>();
 
             // service resolution
-            services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
+            string initialProgramSetup = DefaultInitialProgramSetup;
+
+            if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.InitialProgramSetup]))
+            {
+                initialProgramSetup = Configuration[ConfigurationKey.InitialProgramSetup];
+            }
+
+            switch (initialProgramSetup)
+            {
+                case ConfigurationMultipleProgramValue:
+                    services.AddScoped<IInitialSetupService, SetupMultipleProgramService>();
+                    break;
+                case ConfigurationSingleProgramValue:
+                    services.AddScoped<IInitialSetupService, SetupSingleProgramService>();
+                    break;
+                default:
+                    throw new Exception($"Unable to perform initial setup - unrecognized GraDefaultProgramSetup: {initialProgramSetup}");
+            }
 
             // repositories
             services.AddScoped<Domain.Repository.IAnswerRepository, Data.Repository.AnswerRepository>();

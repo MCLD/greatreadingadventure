@@ -243,8 +243,7 @@ ModelManifest.xml
 
 
 ##### Project-specific #####
-src/GRA.Web/logs/
-src/GRA.Web/content/
+src/GRA.Web/shared/
 
 src/GRA.Web/Properties/PublishProfiles/
 
