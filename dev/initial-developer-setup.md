@@ -12,7 +12,7 @@
 
 #### *Due to the constantly changing data model the project currently does not yet ship with a database migration in place. You must run the command below to set up an initial migration.*
 
-The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (see *Database provider selection*) below.**
+The project ships with the Microsoft SQL Server data provider configured. If you are running in a Windows environment this will automatically use a [LocalDB](https://msdn.microsoft.com/en-us/library/hh510202.aspx) instance under `(localdb)\mssqllocaldb`. **In a Linux/macOS environment you should switch to the SQLite provider (in `appsettings.json` change the `GraConnectionStringName` to "SQLite").**
 
 ### Database migration
 
@@ -45,18 +45,3 @@ To ensure that no errant emails are sent out during development. There are other
 
 At this point you should be able to run the application in the debugger.
 
-## Database provider selection
-
-Currently the application supports using Microsoft SQL Server and SQLite. Default developer database connection strings are in the `GRA.DefaultConnectionString` namespace (in the `GRA` project).
-
-### SQL Server
-
-Ensure the following is the only uncommented line in the `GRA.Web/Startup.cs` under the `//database` comment.
-
-- `services.AddScoped<Data.Context, Data.SqlServer.SqlServerContext>();`
-
-### SQLite
-
-Ensure the following is the only uncommented line in the `GRA.Web/Startup.cs` under the `//database` comment.
-
-- `services.AddScoped<Data.Context, Data.SQLite.SQLiteContext>();`

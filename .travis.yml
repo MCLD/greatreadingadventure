@@ -1,13 +1,19 @@
-language: csharp
-matrix:
-  include:
-    - os: linux # Ubuntu 14.04
-      dist: trusty
-      sudo: required
-      mono: none
-      dotnet: 1.0.1
-before_script:
-  - dotnet --info
-  - dotnet restore
+# Great Reading Adventure Travis CI Docker build file
+
+os: linux
+dist: trusty
+sudo: required
+
+language: bash
+
+services:
+  - docker
+
+install:
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - docker info
+
 script:
-  - dotnet build
+  - docker build -t gra4 .
+

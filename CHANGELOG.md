@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Allow multiple programs to be selected for drawings
 - Moved content into top-level shared folder for better Docker support
 - Change rolling log configuration to support instances
+- Travis CI automated build now uses Docker
 
 ### Fixed
 - Remove Entered School type restriction
