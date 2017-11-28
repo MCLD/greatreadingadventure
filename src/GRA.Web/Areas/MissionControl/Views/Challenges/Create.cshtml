@@ -52,6 +52,15 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label asp-for="Challenge.CategoryIds" class="control-label"></label>
+            <input asp-for="CategoryPlaceholder" class="form-control" />
+            <select asp-for="Challenge.CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
+            <span asp-validation-for="Challenge.CategoryIds" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label asp-for="Challenge.LimitToSystemId" class="control-label"></label>
             <select asp-for="Challenge.LimitToSystemId" asp-items="Model.SystemList" class="form-control">
                 <option value="">No</option>
@@ -155,6 +164,14 @@
 
 @section scripts {
     <script>
+        $("#CategoryPlaceholder").remove();
+        $("#Challenge_CategoryIds").multiselect({
+            nonSelectedText: "",
+            buttonClass: "form-control",
+            buttonWidth: "100%",
+            disableIfEmpty: true
+        });
+
         $(document).ready(function() {
             $(':file').on('fileselect', function(event, numFiles, label) {
                 var input = $(this).parents('.input-group').find(':text'),

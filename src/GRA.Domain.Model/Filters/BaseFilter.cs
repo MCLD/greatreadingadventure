@@ -15,6 +15,7 @@ namespace GRA.Domain.Model.Filters
         public ICollection<int?> LocationIds { get; set; }
         public ICollection<int> BadgeIds { get; set; }
         public ICollection<int> ChallengeIds { get; set; }
+        public ICollection<int> CategoryIds { get; set; }
         public string Search { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? StartDate { get; set; }

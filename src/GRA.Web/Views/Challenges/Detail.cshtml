@@ -42,8 +42,15 @@
                                 </td>
                             }
                             <td>
-                                <div>
+                                <div class="task-description">
                                     @Html.Raw(Model.Tasks[i].Description)
+                                    @if (!string.IsNullOrWhiteSpace(Model.Tasks[i].FilePath))
+                                    {
+                                        <a href="@Model.Tasks[i].FilePath" target="_blank" class="btn btn-xs btn-default" style="margin-top:5px;">
+                                            <span class="fa fa-file-o"></span>
+                                            View Attachment
+                                        </a>
+                                    }
                                 </div>
                             </td>
                         </tr>

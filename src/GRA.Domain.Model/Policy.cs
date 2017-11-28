@@ -8,14 +8,11 @@ namespace GRA.Domain.Model
         public const string ActivateAllChallenges = "ActivateAllChallenges";
         public const string ActivateChallenges = "ActivateChallenges";
         public const string ActivateSystemChallenges = "ActivateSystemChallenges";
-        public const string AddCategories = "AddCategories";
         public const string AddChallenges = "AddChallenges";
         public const string AddPages = "AddPages";
         public const string DeleteAnyMail = "DeleteAnyMail";
-        public const string DeleteCategories = "DeleteCategories";
         public const string DeletePages = "DeletePages";
         public const string DeleteParticipants = "DeleteParticipants";
-        public const string EditCategories = "EditCategories";
         public const string EditChallenges = "EditChallenges";
         public const string EditPages = "EditPages";
         public const string EditParticipants = "EditParticipants";
@@ -23,6 +20,7 @@ namespace GRA.Domain.Model
         public const string LogActivityForAny = "LogActivityForAny";
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";
+        public const string ManageCategories = "ManageCategories";
         public const string ManageEvents = "ManageEvents";
         public const string ManageLocations = "ManageLocations";
         public const string ManageQuestionnaires = "ManageQuestionnaires";

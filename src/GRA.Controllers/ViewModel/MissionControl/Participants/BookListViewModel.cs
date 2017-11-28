@@ -1,5 +1,5 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -7,6 +7,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
     {
         public List<GRA.Domain.Model.Book> Books { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
+        public string Sort { get; set; }
+        public bool IsDescending { get; set; }
         public GRA.Domain.Model.Book Book { get; set; }
         public int Id { get; set; }
         public bool HasPendingQuestionnaire { get; set; }
@@ -15,5 +17,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? HeadOfHouseholdId { get; set; }
         public bool HasAccount { get; set; }
         public bool CanEditBooks { get; set; }
+        public System.Array SortBooks { get; set; }
     }
 }

@@ -1,4 +1,9 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Participants;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.MissionControl.Participants;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -7,11 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
 
 namespace GRA.Controllers.MissionControl
 {
@@ -1195,20 +1195,27 @@ namespace GRA.Controllers.MissionControl
 
         #region Books
         [Authorize(Policy = Policy.ViewParticipantDetails)]
-        public async Task<IActionResult> Books(int id, int page = 1)
+        public async Task<IActionResult> Books(int id, string sort, string order, int page = 1)
         {
             try
             {
-                int take = 15;
-                int skip = take * (page - 1);
+                var filter = new BookFilter(page);
 
-                var books = await _userService.GetPaginatedUserBookListAsync(id, skip, take);
+                bool isDescending = String.Equals(order, "Descending", StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrWhiteSpace(sort) && Enum.IsDefined(typeof(SortBooksBy), sort))
+                {
+                    filter.SortBy = (SortBooksBy)Enum.Parse(typeof(SortBooksBy), sort);
+                    filter.OrderDescending = isDescending;
+                }
+
+                var books = await _userService
+                    .GetPaginatedUserBookListAsync(id, filter);
 
                 PaginateViewModel paginateModel = new PaginateViewModel()
                 {
                     ItemCount = books.Count,
                     CurrentPage = page,
-                    ItemsPerPage = take
+                    ItemsPerPage = filter.Take.Value
                 };
                 if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
                 {
@@ -1226,6 +1233,8 @@ namespace GRA.Controllers.MissionControl
                 {
                     Books = books.Data.ToList(),
                     PaginateModel = paginateModel,
+                    Sort = sort,
+                    IsDescending = isDescending,
                     Id = id,
                     HasPendingQuestionnaire = (await _questionnaireService
                         .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
@@ -1234,7 +1243,8 @@ namespace GRA.Controllers.MissionControl
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny)
+                    CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
+                    SortBooks = Enum.GetValues(typeof(SortBooksBy))
                 };
 
                 return View(viewModel);

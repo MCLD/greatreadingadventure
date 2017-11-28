@@ -13,7 +13,10 @@ namespace GRA.Data.Profile
             CreateMap<Model.Branch, Domain.Model.Branch>().ReverseMap();
             CreateMap<Model.Broadcast, Domain.Model.Broadcast>().ReverseMap();
             CreateMap<Model.Category, Domain.Model.Category>().ReverseMap();
-            CreateMap<Model.Challenge, Domain.Model.Challenge>().ReverseMap();
+            CreateMap<Model.Challenge, Domain.Model.Challenge>()
+                .ForMember(dest => dest.Categories, opt => opt.MapFrom(
+                        src => src.ChallengeCategories.Select(_ => _.Category)))
+                .ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()

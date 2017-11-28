@@ -1,5 +1,13 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengesListViewModel
 
+<noscript>
+    <style>
+        #Category {
+            display: none;
+        }
+    </style>
+</noscript>
+
 <div class="row">
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
         <div class="modal-dialog" role="document">
@@ -33,7 +41,7 @@
         <ul class="nav nav-pills" style="padding: 10px 0;">
             @if (Model.ShowSystem)
             {
-                <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program">All</a></li>
+                <li class="@(Model.ActiveNav == "All" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">All</a></li>
                 <li class="@(Model.ActiveNav == "System" ? "active" : "")">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         @(Model.SystemName ?? "System") <span class="caret"></span>
@@ -41,14 +49,14 @@
                     <ul class="dropdown-menu">
                         @foreach (var system in Model.SystemList)
                         {
-                            <li><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-System="@system.Id">@system.Name</a></li>
+                            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-System="@system.Id">@system.Name</a></li>
                         }
                     </ul>
                 </li>
             }
             else
             {
-                <li class="@(Model.ActiveNav == "System" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program">@Model.SystemName</a></li>
+                <li class="@(Model.ActiveNav == "System" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program">@Model.SystemName</a></li>
             }
             <li class="@(Model.ActiveNav == "Branch" ? "active" : "")">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -57,56 +65,79 @@
                 <ul class="dropdown-menu">
                     @foreach (var branch in Model.BranchList)
                     {
-                        <li><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Branch="@branch.Id">@branch.Name</a></li>
+                        <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-Branch="@branch.Id">@branch.Name</a></li>
                     }
                 </ul>
             </li>
-            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Program="@Model.Program" asp-route-Mine="True">Mine</a></li>
+            <li class="@(Model.ActiveNav == "Mine" ? "active" : "")"><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@Model.Program" asp-route-Mine="True">Mine</a></li>
         </ul>
     </div>
 </div>
 
-<div class="row">
+<div class="row row-spacing">
     <div class="col-xs-12">
         <span style="font-size:large;padding-top:10px;">Limited to Program:</span>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             @(Model.ProgramName ?? "Show All") <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-            <li><a asp-route-Search="@Model.Search" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
-            <li><a asp-route-Search="@Model.Search" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
+            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Show All</a></li>
+            <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="0" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">Not Limited</a></li>
             @foreach (var program in Model.ProgramList)
             {
-                <li><a asp-route-Search="@Model.Search" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
+                <li><a asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Program="@program.Id" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine">@program.Name</a></li>
             }
         </ul>
     </div>
 </div>
 
-<form asp-controller="Challenges" method="get" role="form">
-    <div class="row" style="padding: 10px 0;">
-        <div class="col-xs-8">
-            <input asp-for="Search" class="form-control" />
-            @if (Model.Program.HasValue)
-            {
-                <input asp-for="Program" type="hidden" />
-            }
-            @if (Model.System.HasValue)
-            {
-                <input asp-for="System" type="hidden" />
-            }
-            @if (Model.Branch.HasValue)
-            {
-                <input asp-for="Branch" type="hidden" />
-            }
-            @if (Model.Mine == true)
-            {
-                <input asp-for="Mine" type="hidden" />
-            }
+
+
+<form id="searchForm" asp-controller="Challenges" method="get" role="form">
+    @if (Model.Program.HasValue)
+    {
+        <input asp-for="Program" type="hidden" />
+    }
+    @if (Model.System.HasValue)
+    {
+        <input asp-for="System" type="hidden" />
+    }
+    @if (Model.Branch.HasValue)
+    {
+        <input asp-for="Branch" type="hidden" />
+    }
+    @if (Model.Mine == true)
+    {
+        <input asp-for="Mine" type="hidden" />
+    }
+    <div class="row row-spacing">
+        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+            <span style="font-size:large;">Search:</span>
         </div>
-        <div class="col-xs-4">
-            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
-            <a asp-route-Program="@Model.Program" asp-route-System="@Model.System" asp-route-Branch="@Model.Branch" asp-route-Mine="@Model.Mine" class="btn btn-default">Clear</a>
+        <div class="col-xs-12 col-sm-10 gra-search-container">
+            <input asp-for="Search" class="form-control" />
+        </div>
+    </div>
+    @if (Model.CategoryList?.Count() > 0)
+    {
+        <div id="Category" class="row row-spacing">
+            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                <span style="font-size:large;">Category:</span>
+            </div>
+            <div class="col-xs-12 col-sm-10">
+                <input id="CategoryPlaceholder" class="form-control" />
+                <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" multiple="multiple"></select>
+            </div>
+        </div>
+    }
+
+    <div class="row row-spacing">
+        
+        <div class="col-xs-6 col-sm-offset-8 col-sm-2">
+            <a asp-action="Index" class="btn btn-default btn-block"> Clear</a>
+        </div>
+        <div class="col-xs-6 col-sm-2">
+            <button type="submit" class="btn btn-primary btn-block"> Search</button>
         </div>
     </div>
 </form>
@@ -124,7 +155,7 @@
 <div class="row" style="padding: 10px 0;">
     <div class="col-xs-12">
         @if (Model.Challenges.Count() == 0)
-        {
+            {
             <div class="alert alert-warning">No Challenges</div>
         }
         else
@@ -151,6 +182,14 @@
                                     {
                                         <a asp-action="Edit" asp-route-id="@challenge.Id" class="rowlink">
                                             @challenge.Name
+                                            @if (challenge.Categories?.Count > 0)
+                                            {
+                                                <br />
+                                                @foreach (var category in challenge.Categories)
+                                                {
+                                                    <span class="label" style="background-color:@category.Color">@category.Name</span>
+                                                }
+                                            }
                                         </a>
                                     }
                                     else
@@ -198,16 +237,37 @@
                 </table>
             </div>
             @if (Model.PaginateModel.MaxPage > 1)
-            {
+                {
                 <paginate paginateModel="@Model.PaginateModel"></paginate>
             }
         }
     </div>
 </div>
 
-@section scripts
-{
+@section scripts{
     <script>
+        $("#CategoryPlaceholder").remove();
+        $("#CategoryIds").multiselect({
+            nonSelectedText: "",
+            buttonClass: "form-control",
+            buttonWidth: "100%",
+            disableIfEmpty: true
+        });
+
+        $("#searchForm").on("submit", function () {
+            var categoryIds = $("#CategoryIds option:selected")
+                .map(function (a, item) { return item.value; })
+                .get();
+
+            if (categoryIds.length > 0) {
+                $("<input />")
+                    .attr("type", "hidden")
+                    .attr("name", "Categories")
+                    .attr("value", categoryIds.join(","))
+                    .appendTo($(this));
+            }
+        });
+
         @if (Model.CanEditChallenges) {
         <text>
         $(window).on("load", function() {

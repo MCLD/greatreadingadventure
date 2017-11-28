@@ -121,12 +121,16 @@
                             </ul>
                         </li>
                     }
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()))
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageSchools.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()) || Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()))
                     {
                         <li ActiveBy routeKey="Controller" value="Pages, Schools">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Setup"><span class="fa fa-wrench"></span><span class="visible-xs-inline"> Setup</span> <span class="caret"></span></a>
 
                             <ul class="dropdown-menu">
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageCategories.ToString()))
+                                {
+                                    <li><a asp-controller="Categories" asp-action="Index">Categories</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ViewUnpublishedPages.ToString()))
                                 {
                                     <li><a asp-controller="Pages" asp-action="Index">Pages</a></li>

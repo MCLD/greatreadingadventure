@@ -1,10 +1,10 @@
-﻿using GRA.Domain.Model;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -17,59 +17,51 @@ namespace GRA.Domain.Service
             ICategoryRepository categoryRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
+            SetManagementPermission(Permission.ManageCategories);
             _categoryRepository = Require.IsNotNull(categoryRepository,
                 nameof(categoryRepository));
         }
 
-        public async Task<DataWithCount<IEnumerable<Category>>>
-            GetPaginatedListAsync(int skip,
-            int take)
+        public async Task<IEnumerable<Category>> GetListAsync(bool hideEmpty = false)
         {
-            int siteId = GetCurrentSiteId();
+            return await _categoryRepository.GetAllAsync(GetCurrentSiteId(), hideEmpty);
+        }
+
+        public async Task<DataWithCount<IEnumerable<Category>>> GetPaginatedListAsync(
+            BaseFilter filter)
+        {
+            VerifyManagementPermission();
+            filter.SiteId = GetCurrentSiteId();
             return new DataWithCount<IEnumerable<Category>>
             {
-                Data = await _categoryRepository.PageAllAsync(siteId, skip, take),
-                Count = await _categoryRepository.GetCountAsync(siteId)
+                Data = await _categoryRepository.PageAsync(filter),
+                Count = await _categoryRepository.CountAsync(filter)
             };
         }
 
         public async Task<Category> AddAsync(Category category)
         {
-            int userId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.AddCategories))
+            VerifyManagementPermission();
+            category.SiteId = GetCurrentSiteId();
+            if (string.IsNullOrWhiteSpace(category.Color))
             {
-                category.SiteId = GetCurrentSiteId();
-                return await _categoryRepository.AddSaveAsync(userId, category);
+                category.Color = "#777";
             }
-            _logger.LogError($"User {userId} doesn't have permission to add a category.");
-            throw new Exception("Permission denied.");
+            return await _categoryRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), category);
         }
 
         public async Task<Category> EditAsync(Category category)
         {
-            int userId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.EditCategories))
-            {
-                var current = await _categoryRepository.GetByIdAsync(category.Id);
-                category.SiteId = current.SiteId;
-                return await _categoryRepository.UpdateSaveAsync(userId, category);
-            }
-            _logger.LogError($"User {userId} doesn't have permission to edit category {category.Id}.");
-            throw new Exception("Permission denied.");
+            VerifyManagementPermission();
+            var current = await _categoryRepository.GetByIdAsync(category.Id);
+            category.SiteId = current.SiteId;
+            return await _categoryRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), category);
         }
 
         public async Task RemoveAsync(int categoryId)
         {
-            int userId = GetClaimId(ClaimType.UserId);
-            if (HasPermission(Permission.DeleteCategories))
-            {
-                await _categoryRepository.RemoveSaveAsync(userId, categoryId);
-            }
-            else
-            {
-                _logger.LogError($"User {userId} doesn't have permission to remove category {categoryId}.");
-                throw new Exception("Permission denied.");
-            }
+            VerifyManagementPermission();
+            await _categoryRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), categoryId);
         }
     }
 }

@@ -62,6 +62,8 @@ namespace GRA.Data
                 .HasKey(_ => new { _.UserId, _.ChallengeTaskId });
             modelBuilder.Entity<Model.UserDynamicAvatar>()
                 .HasKey(_ => new { _.UserId, _.DynamicAvatarElementId });
+            modelBuilder.Entity<Model.UserFavoriteChallenge>()
+                .HasKey(_ => new { _.UserId, _.ChallengeId });
             modelBuilder.Entity<Model.UserQuestionnaire>()
                 .HasKey(_ => new { _.UserId, _.QuestionnaireId });
             modelBuilder.Entity<Model.UserRole>()
@@ -178,6 +180,7 @@ namespace GRA.Data
         public DbSet<Model.UserBadge> UserBadges { get; set; }
         public DbSet<Model.UserBook> UserBooks { get; set; }
         public DbSet<Model.UserDynamicAvatar> UserDynamicAvatars { get; set; }
+        public DbSet<Model.UserFavoriteChallenge> UserFavoriteChallenges { get; set; }
         public DbSet<Model.UserQuestionnaire> UserQuestionnaires { get; set; }
         public DbSet<Model.UserRole> UserRoles { get; set; }
         public DbSet<Model.UserTrigger> UserTriggers { get; set; }

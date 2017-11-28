@@ -8,11 +8,11 @@ namespace GRA.Domain.Model
     {
         [Required]
         public int ChallengeId { get; set; }
+        public Challenge Challenge { get; set; }
         [Required]
         public int Position { get; set; }
 
         [Required]
-        [MaxLength(500)]
         public string Title { get; set; }
 
         [MaxLength(255)]
@@ -25,6 +25,9 @@ namespace GRA.Domain.Model
         [MaxLength(500)]
         public string Url { get; set; }
 
+        [MaxLength(255)]
+        public string Filename { get; set; }
+
         public int ChallengeTaskTypeId { get; set; }
 
         [Required]
@@ -34,5 +37,6 @@ namespace GRA.Domain.Model
         public DateTime? CompletedAt { get; set; }
         public int? ActivityCount { get; set; }
         public int? PointTranslationId { get; set; }
+        public string Description { get; set; }
     }
 }

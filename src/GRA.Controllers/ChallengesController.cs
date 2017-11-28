@@ -1,14 +1,17 @@
-﻿using GRA.Controllers.ViewModel.Challenges;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.ViewModel.Challenges;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
+using GRA.Domain.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Controllers
 {
@@ -17,33 +20,58 @@ namespace GRA.Controllers
         private readonly ILogger<ChallengesController> _logger;
         private readonly AutoMapper.IMapper _mapper;
         public readonly ActivityService _activityService;
+        private readonly CategoryService _categoryService;
         private readonly ChallengeService _challengeService;
+        private readonly SiteService _siteService;
         public ChallengesController(ILogger<ChallengesController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
-            ChallengeService challengeService) : base(context)
+            CategoryService categoryService,
+            ChallengeService challengeService,
+            SiteService siteService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _mapper = context.Mapper;
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _categoryService = Require.IsNotNull(categoryService, nameof(categoryService));
             _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
+            _siteService = Require.IsNotNull(siteService, nameof(siteService));
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, int page = 1)
+        public async Task<IActionResult> Index(string Search, string Categories, bool Favorites = false, int page = 1)
         {
             int siteId = GetCurrentSiteId();
-            int take = 15;
-            int skip = take * (page - 1);
 
-            var challengeList = await _challengeService
-                .GetPaginatedChallengeListAsync(skip, take, Search);
+            ChallengeFilter filter = new ChallengeFilter(page);
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                filter.Search = Search;
+            }
+            if (!string.IsNullOrWhiteSpace(Categories))
+            {
+                var categoryIds = new List<int>();
+                foreach (var category in Categories.Split(','))
+                {
+                    int result;
+                    if (int.TryParse(category, out result))
+                    {
+                        categoryIds.Add(result);
+                    }
+                }
+                filter.CategoryIds = categoryIds;
+            }
+            if (Favorites == true && AuthUser.Identity.IsAuthenticated)
+            {
+                filter.Favorites = true;
+            }
+            var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
             {
                 ItemCount = challengeList.Count,
                 CurrentPage = page,
-                ItemsPerPage = take
+                ItemsPerPage = filter.Take.Value
             };
 
             if (paginateModel.MaxPage > 0 && paginateModel.CurrentPage > paginateModel.MaxPage)
@@ -69,15 +97,22 @@ namespace GRA.Controllers
 
             var siteStage = GetSiteStage();
 
-            var isActive = AuthUser.Identity.IsAuthenticated && (siteStage == SiteStage.ProgramOpen
+            var isActive = (siteStage == SiteStage.ProgramOpen
                 || siteStage == SiteStage.ProgramEnded);
+
+            var categoryList = await _categoryService.GetListAsync(true);
 
             ChallengesListViewModel viewModel = new ChallengesListViewModel()
             {
-                Challenges = challengeList.Data,
+                Challenges = challengeList.Data.ToList(),
                 PaginateModel = paginateModel,
                 Search = Search,
-                IsActive = isActive
+                Categories = Categories,
+                Favorites = Favorites,
+                IsActive = isActive,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
+                CategoryIds = filter.CategoryIds,
+                CategoryList = new SelectList(categoryList, "Id", "Name")
             };
 
             if (!string.IsNullOrWhiteSpace(Search))
@@ -91,6 +126,51 @@ namespace GRA.Controllers
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
             return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateSingleFavorite(int challengeId, bool favorite)
+        {
+            var challengeList = new List<Challenge>()
+            {
+                new Challenge()
+                {
+                    Id = challengeId,
+                    IsFavorited = favorite
+                }
+            };
+            var serviceResult = await _activityService.UpdateFavoriteChallenges(challengeList);
+
+            return Json(new
+            {
+                success = serviceResult.Status == ServiceResultStatus.Success,
+                message = serviceResult.Message,
+                favorite = favorite
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateFavorites(ChallengesListViewModel model)
+        {
+            var serviceResult = await _activityService.UpdateFavoriteChallenges(model.Challenges);
+            if (serviceResult.Status == ServiceResultStatus.Warning
+                        && !string.IsNullOrWhiteSpace(serviceResult.Message))
+            {
+                ShowAlertWarning(serviceResult.Message);
+            }
+            int? page = null;
+            if (model.PaginateModel.CurrentPage > 1)
+            {
+                page = model.PaginateModel.CurrentPage;
+            }
+            return RedirectToAction("Index", new
+            {
+                page = page,
+                Search = model.Search,
+                Categories = model.Categories
+            });
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -135,6 +215,7 @@ namespace GRA.Controllers
                 viewModel.Details += " and <strong>a badge</strong>.";
             }
 
+            var siteUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
             foreach (var task in challenge.Tasks)
             {
                 TaskDetailViewModel taskModel = new TaskDetailViewModel()
@@ -147,7 +228,7 @@ namespace GRA.Controllers
                 var title = task.Title;
                 if (!string.IsNullOrWhiteSpace(task.Url))
                 {
-                     title = $"<a href=\"{task.Url}\" target=\"_blank\">{title}</a>";
+                    title = $"<a href=\"{task.Url}\" target=\"_blank\">{title}</a>";
                 }
                 if (task.ChallengeTaskType.ToString() == "Book")
                 {
@@ -160,7 +241,12 @@ namespace GRA.Controllers
                 }
                 else
                 {
-                    taskModel.Description = title;
+                    taskModel.Description = CommonMark.CommonMarkConverter.Convert(task.Title);
+                }
+                if (!string.IsNullOrWhiteSpace(task.Filename))
+                {
+                    var contentPath = _pathResolver.ResolveContentPath(task.Filename);
+                    taskModel.FilePath = $"{siteUrl}/{contentPath}";
                 }
                 viewModel.Tasks.Add(taskModel);
             }

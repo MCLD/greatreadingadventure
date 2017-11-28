@@ -54,5 +54,10 @@ namespace GRA.Domain.Model
         public int? BadgeId { get; set; }
         public string BadgeFilename { get; set; }
         public bool HasDependents { get; set; }
+        public bool IsFavorited { get; set; }
+
+        [DisplayName("Categories")]
+        public ICollection<int> CategoryIds { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

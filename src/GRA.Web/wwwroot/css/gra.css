@@ -530,3 +530,35 @@ input.form-checkbox {
     position: absolute;
     right: 13px;
 }
+
+.favorite-checkbox {
+    display: none;
+}
+    .favorite-checkbox + label:before {
+        color: #DDB500;
+        content: "\f006";
+        cursor: pointer;
+        display: inline-block;
+        font-family: FontAwesome;
+        font-size: 24px;
+    }
+
+    .favorite-checkbox:checked + label:before {
+        content: "\f005";
+    }
+
+.favorite-button {
+    cursor: pointer;
+    font-family: FontAwesome;
+    font-size: 24px;
+}
+    .favorite-button.fa-star {
+        color: #DDB500;
+    }
+    .favorite-button.fa-star-o {
+        color: #DDB500;
+    }
+
+.task-description p {
+    margin-bottom: 0px;
+}

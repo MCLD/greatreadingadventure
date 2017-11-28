@@ -958,8 +958,6 @@ Markdown.HookCollection = HookCollection;
         style.position = "absolute";
         style.top = "0";
 
-        style.zIndex = "1000";
-
         if (uaSniffed.isIE) {
             style.filter = "alpha(opacity=50)";
         }
@@ -1091,7 +1089,6 @@ Markdown.HookCollection = HookCollection;
             dialog.style.padding = "10px;";
             dialog.style.position = "fixed";
             dialog.style.width = "400px";
-            dialog.style.zIndex = "1001";
 
 
             // Dialog navigation tabs

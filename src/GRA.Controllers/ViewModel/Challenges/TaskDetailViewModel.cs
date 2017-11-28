@@ -9,5 +9,6 @@ namespace GRA.Controllers.ViewModel.Challenges
         public string BookCover { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
+        public string FilePath { get; set; }
     }
 }

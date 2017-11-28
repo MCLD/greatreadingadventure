@@ -1,12 +1,13 @@
-﻿using GRA.Domain.Model;
-using GRA.Domain.Repository;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
+using GRA.Domain.Model;
+using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -65,39 +66,89 @@ namespace GRA.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<DataWithCount<ICollection<Book>>> GetPaginatedListForUserAsync(int userId,
-            int skip,
-            int take)
+        public async Task<DataWithCount<ICollection<Book>>> GetPaginatedListForUserAsync(
+            BookFilter filter)
         {
-            var books = _context.UserBooks
+            var userBooks = _context.UserBooks
                 .AsNoTracking()
-                .Where(_ => _.UserId == userId)
-                .Select(_ => _.Book);
+                .Where(_ => filter.UserIds.Contains(_.UserId));
+
+            var count = await userBooks.CountAsync();
+
+            var bookList = userBooks.Select(_ => _.Book);
+
+            switch (filter.SortBy)
+            {
+                case SortBooksBy.Date:
+                    if (filter.OrderDescending)
+                    {
+                        bookList = bookList
+                            .OrderByDescending(_ => _.CreatedAt)
+                            .ThenByDescending(_ => _.Title)
+                            .ThenByDescending(_ => _.Author);
+                    }
+                    else
+                    {
+                        bookList = bookList
+                            .OrderBy(_ => _.CreatedAt)
+                            .ThenBy(_ => _.Title)
+                            .ThenBy(_ => _.Author);
+                    }
+                    break;
+                case SortBooksBy.Title:
+                    if (filter.OrderDescending)
+                    {
+                        bookList = bookList
+                            .OrderByDescending(_ => _.Title)
+                            .ThenByDescending(_ => _.Author);
+                    }
+                    else
+                    {
+                        bookList = bookList
+                            .OrderBy(_ => _.Title)
+                            .ThenBy(_ => _.Author);
+                    }
+                    break;
+                case SortBooksBy.Author:
+                    if (filter.OrderDescending)
+                    {
+                        bookList = bookList
+                            .OrderByDescending(_ => _.Author)
+                            .ThenByDescending(_ => _.Title);
+                    }
+                    else
+                    {
+                        bookList = bookList
+                            .OrderBy(_ => _.Author)
+                            .ThenBy(_ => _.Title);
+                    }
+                    break;
+            }
+
+            var data = await bookList
+                .ApplyPagination(filter)
+                .ProjectTo<Book>()
+                .ToListAsync();
 
             return new DataWithCount<ICollection<Book>>()
             {
-                Data = await books
-                    .OrderBy(_ => _.CreatedAt)
-                    .Skip(skip)
-                    .Take(take)
-                    .ProjectTo<Book>()
-                    .ToListAsync(),
-                Count = await books.CountAsync()
+                Data = data,
+                Count = count
             };
-        }
+}
 
-        public async Task<bool> UserHasBookAsync(int userId, int bookId)
-        {
-            return await _context.UserBooks.AsNoTracking()
-                .Where(_ => _.BookId == bookId && _.UserId == userId)
-                .AnyAsync();
-        }
+public async Task<bool> UserHasBookAsync(int userId, int bookId)
+{
+    return await _context.UserBooks.AsNoTracking()
+        .Where(_ => _.BookId == bookId && _.UserId == userId)
+        .AnyAsync();
+}
 
-        public async Task<int> GetUserCountForBookAsync(int bookId)
-        {
-            return await _context.UserBooks.AsNoTracking()
-                .Where(_ => _.BookId == bookId)
-                .CountAsync();
-        }
+public async Task<int> GetUserCountForBookAsync(int bookId)
+{
+    return await _context.UserBooks.AsNoTracking()
+        .Where(_ => _.BookId == bookId)
+        .CountAsync();
+}
     }
 }

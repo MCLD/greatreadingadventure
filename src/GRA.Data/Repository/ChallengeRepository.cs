@@ -1,14 +1,14 @@
-﻿using System.Linq;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Repository;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper.QueryableExtensions;
-using System.Threading.Tasks;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
-using GRA.Domain.Repository.Extensions;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Repository.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Data.Repository
 {
@@ -21,9 +21,11 @@ namespace GRA.Data.Repository
         }
 
         public async Task<ICollection<Challenge>>
-            PageAllAsync(BaseFilter filter)
+            PageAllAsync(ChallengeFilter filter)
         {
             var challengeList = await ApplyFilters(filter)
+                .Include(_ => _.ChallengeCategories)
+                    .ThenInclude(_ => _.Category)
                 .OrderBy(_ => _.Name)
                 .ThenBy(_ => _.Id)
                 .ApplyPagination(filter)
@@ -38,12 +40,12 @@ namespace GRA.Data.Repository
             return challengeList;
         }
 
-        public async Task<int> GetChallengeCountAsync(BaseFilter filter)
+        public async Task<int> GetChallengeCountAsync(ChallengeFilter filter)
         {
             return await ApplyFilters(filter).CountAsync();
         }
 
-        private IQueryable<Data.Model.Challenge> ApplyFilters(BaseFilter filter)
+        private IQueryable<Data.Model.Challenge> ApplyFilters(ChallengeFilter filter)
         {
             var challenges = _context.Challenges.AsNoTracking()
                     .Where(_ => _.IsDeleted == false
@@ -62,10 +64,32 @@ namespace GRA.Data.Repository
                 challenges = challenges
                     .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
             }
-            if (filter.UserIds?.Any() == true)
+            if (filter.UserIds?.Any() == true && filter.Favorites != true)
             {
                 challenges = challenges.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
+
+            if (filter.CategoryIds?.Any() == true)
+            {
+                challenges = challenges
+                    .Include(_ => _.ChallengeCategories)
+                    .Where(_ => _.ChallengeCategories
+                        .Select(c => c.CategoryId)
+                        .Any(c => filter.CategoryIds.Contains(c)));
+            }
+            
+            if (filter.Favorites == true && filter.UserIds?.FirstOrDefault() != null)
+            {
+                var userFavoriteChallenges = _context.UserFavoriteChallenges
+                    .AsNoTracking()
+                    .Where(_ => _.UserId == filter.UserIds.First());
+
+                challenges = from challengeList in challenges
+                             join userFavorites in userFavoriteChallenges
+                             on challengeList.Id equals userFavorites.ChallengeId
+                             select challengeList;
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 challenges = challenges.Where(_ => _.Name.Contains(filter.Search)
@@ -73,6 +97,7 @@ namespace GRA.Data.Repository
                         || _.Tasks.Any(_t => _t.Title.Contains(filter.Search))
                         || _.Tasks.Any(_t => _t.Author.Contains(filter.Search)));
             }
+
             if (filter.IsActive.HasValue)
             {
                 challenges = challenges.Where(_ => _.IsActive == filter.IsActive.Value);
@@ -83,10 +108,11 @@ namespace GRA.Data.Repository
 
         public new async Task<Challenge> GetByIdAsync(int id)
         {
-            var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
+            var challenge = await DbSet
                 .AsNoTracking()
                 .Where(_ => _.IsDeleted == false && _.Id == id)
-                .SingleOrDefaultAsync());
+                .ProjectTo<Challenge>()
+                .SingleOrDefaultAsync();
 
             if (challenge != null)
             {
@@ -108,6 +134,14 @@ namespace GRA.Data.Repository
                     task.ActivityCount = challengeTaskTypes[task.ChallengeTaskTypeId].ActivityCount;
                     task.PointTranslationId = challengeTaskTypes[task.ChallengeTaskTypeId].PointTranslationId;
                 }
+
+                challenge.Categories = await _context.ChallengeCategories
+                    .AsNoTracking()
+                    .Include(_ => _.Category)
+                    .Where(_ => _.ChallengeId == id)
+                    .Select(_ => _.Category)
+                    .ProjectTo<Category>()
+                    .ToListAsync();
             }
             return challenge;
         }
@@ -116,6 +150,8 @@ namespace GRA.Data.Repository
         {
             var challenge = _mapper.Map<Model.Challenge, Challenge>(await DbSet
                 .AsNoTracking()
+                .Include(_ => _.ChallengeCategories)
+                    .ThenInclude(_ => _.Category)
                 .Where(_ => _.IsDeleted == false && _.Id == id && _.IsActive == true)
                 .SingleOrDefaultAsync());
 
@@ -169,8 +205,72 @@ namespace GRA.Data.Repository
                             task.CompletedAt = userChallengeTask.CreatedAt;
                         }
                     }
+
+                    challenge.IsFavorited = await _context.UserFavoriteChallenges
+                        .AsNoTracking()
+                        .Where(_ => _.ChallengeId == id && _.UserId == userId)
+                        .AnyAsync();
                 }
             }
+            return challenge;
+        }
+
+        public override async Task<Challenge> AddSaveAsync(int userId, Challenge challenge)
+        {
+            var newChallenge = await base.AddSaveAsync(userId, challenge);
+
+            if (challenge.CategoryIds?.Count > 0)
+            {
+                var time = _dateTimeProvider.Now;
+                var challengeCategoryList = new List<Model.ChallengeCategory>();
+                foreach (var categoryId in challenge.CategoryIds)
+                {
+                    challengeCategoryList.Add(new Model.ChallengeCategory()
+                    {
+                        CategoryId = categoryId,
+                        ChallengeId = newChallenge.Id,
+                        CreatedAt = time,
+                        CreatedBy = userId
+                    });
+                }
+                await _context.ChallengeCategories.AddRangeAsync(challengeCategoryList);
+                await _context.SaveChangesAsync();
+            }
+
+            return newChallenge;
+        }
+
+        public async Task<Challenge> UpdateSaveAsync(int userId, Challenge challenge,
+            List<int> categoriesToAdd, List<int> categoriesToRemove)
+        {
+            await base.UpdateAsync(userId, challenge);
+
+            if (categoriesToAdd.Count > 0)
+            {
+                var time = _dateTimeProvider.Now;
+                var challengeCategoryList = new List<Model.ChallengeCategory>();
+                foreach (var categoryId in categoriesToAdd)
+                {
+                    challengeCategoryList.Add(new Model.ChallengeCategory()
+                    {
+                        CategoryId = categoryId,
+                        ChallengeId = challenge.Id,
+                        CreatedAt = time,
+                        CreatedBy = userId
+                    });
+                }
+                await _context.ChallengeCategories.AddRangeAsync(challengeCategoryList);
+            }
+            if (categoriesToRemove.Count > 0)
+            {
+                var removeList = _context.ChallengeCategories
+                    .Where(_ => _.ChallengeId == challenge.Id && categoriesToRemove
+                    .Contains(_.CategoryId));
+                _context.ChallengeCategories.RemoveRange(removeList);
+            }
+
+            await _context.SaveChangesAsync();
+
             return challenge;
         }
 
@@ -285,7 +385,7 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.UserId == userId && _.ChallengeTaskId == challengeTaskId)
                 .SingleOrDefaultAsync();
-            if (userChallengeTask == null 
+            if (userChallengeTask == null
                 || (userChallengeTask.UserLogId == null && userChallengeTask.BookId == null))
             {
                 return null;
@@ -300,60 +400,30 @@ namespace GRA.Data.Repository
             }
         }
 
-        public async Task<DataWithCount<IEnumerable<int>>>
-            PageIdsAsync(int siteId, int skip, int take, int userId, string search = null)
+        public async Task<DataWithCount<IEnumerable<int>>> PageIdsAsync(ChallengeFilter filter,
+            int userId)
         {
             var user = await _context.Users.FindAsync(userId);
 
-            if (string.IsNullOrEmpty(search))
-            {
-                var challenges = DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId
-                        && _.IsActive == true
-                        && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
+            var challengeList = ApplyFilters(filter)
+                .Where(_ => (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
                         && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
-                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId))
-                    .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id);
+                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId));
 
-                return new DataWithCount<IEnumerable<int>>()
-                {
-                    Data = await challenges
-                    .Skip(skip)
-                    .Take(take)
-                    .Select(_ => _.Id)
-                    .ToListAsync(),
-                    Count = await challenges.CountAsync()
-                };
-            }
-            else
+            var data = await challengeList
+                .Include(_ => _.ChallengeCategories)
+                    .ThenInclude(_ => _.Category)
+                .OrderBy(_ => _.Name)
+                .ThenBy(_ => _.Id)
+                .ApplyPagination(filter)
+                .Select(_ => _.Id)
+                .ToListAsync();
+
+            return new DataWithCount<IEnumerable<int>>()
             {
-                var challenges = DbSet
-                    .AsNoTracking()
-                    .Where(_ => _.IsDeleted == false
-                        && _.SiteId == siteId
-                        && _.IsActive == true
-                        && (_.LimitToSystemId == null || _.LimitToSystemId == user.SystemId)
-                        && (_.LimitToBranchId == null || _.LimitToBranchId == user.BranchId)
-                        && (_.LimitToProgramId == null || _.LimitToProgramId == user.ProgramId)
-                        && (_.Name.Contains(search)
-                        || _.Description.Contains(search)
-                        || _.Tasks.Any(_t => _t.Title.Contains(search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(search))))
-                    .OrderBy(_ => _.Name)
-                    .ThenBy(_ => _.Id);
-                return new DataWithCount<IEnumerable<int>>()
-                {
-                    Data = await challenges
-                    .Skip(skip)
-                    .Take(take)
-                    .Select(_ => _.Id)
-                    .ToListAsync(),
-                    Count = await challenges.CountAsync()
-                };
-            }
+                Data = data,
+                Count = await challengeList.CountAsync()
+            };
         }
 
         public async Task SetValidationAsync(int userId, int challengeId, bool valid)
@@ -377,6 +447,63 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.ChallengeId == challengeId)
                 .AnyAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetUserFavoriteChallenges(int userId,
+            IEnumerable<int> challengeIds = null)
+        {
+            var favoriteChallenges = _context.UserFavoriteChallenges
+                .AsNoTracking()
+                .Where(_ => _.UserId == userId);
+
+            if (challengeIds?.Count() > 0)
+            {
+                favoriteChallenges = favoriteChallenges
+                    .Where(_ => challengeIds.Contains(_.ChallengeId));
+            }
+
+            return await favoriteChallenges
+                .Select(_ => _.ChallengeId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<int>> ValidateChallengeIds(int siteId,
+            IEnumerable<int> challengeIds)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && challengeIds.Contains(_.Id))
+                .Select(_ => _.Id)
+                .ToListAsync();
+        }
+
+        public async Task UpdateUserFavoritesAsync(int authUserId, int userId,
+            IEnumerable<int> favoritesToAdd, IEnumerable<int> favoritesToRemove)
+        {
+            if (favoritesToAdd.Count() > 0)
+            {
+                var time = _dateTimeProvider.Now;
+                var userFavoriteList = new List<Model.UserFavoriteChallenge>();
+                foreach (var challengeId in favoritesToAdd)
+                {
+                    userFavoriteList.Add(new Model.UserFavoriteChallenge()
+                    {
+                        UserId = userId,
+                        ChallengeId = challengeId,
+                        CreatedAt = time,
+                        CreatedBy = authUserId
+                    });
+                }
+                await _context.UserFavoriteChallenges.AddRangeAsync(userFavoriteList);
+            }
+            if (favoritesToRemove.Count() > 0)
+            {
+                var removeList = _context.UserFavoriteChallenges
+                    .Where(_ => _.UserId == userId && favoritesToRemove
+                    .Contains(_.ChallengeId));
+                _context.UserFavoriteChallenges.RemoveRange(removeList);
+            }
+            await SaveAsync();
         }
     }
 }

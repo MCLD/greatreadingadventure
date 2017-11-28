@@ -1,5 +1,6 @@
 ﻿using GRA.Controllers.ViewModel.Shared;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Challenges
 {
@@ -8,6 +9,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public IEnumerable<GRA.Domain.Model.Challenge> Challenges { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
+        public string Categories { get; set; }
         public int? System { get; set; }
         public int? Branch { get; set; }
         public int? Program { get; set; }
@@ -24,5 +26,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
         public IEnumerable<GRA.Domain.Model.Program> ProgramList { get; set; }
+
+        public SelectList CategoryList { get; set; }
+        public IEnumerable<int> CategoryIds { get; set; }
     }
 }

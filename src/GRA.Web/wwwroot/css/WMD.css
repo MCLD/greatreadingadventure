@@ -86,12 +86,14 @@ blockquote {
 .wmd-prompt-background
 {
 	background-color: Black;
+    z-index: 1100;
 }
 
 .wmd-prompt-dialog
 {
 	border: 1px solid #999999;
 	background-color: #F5F5F5;
+    z-index: 1101;
 }
 
 .wmd-prompt-dialog > div {

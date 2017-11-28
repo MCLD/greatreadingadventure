@@ -60,14 +60,13 @@ namespace GRA.Web
             }
 
             Configuration = builder.Build();
+            string instance =
+                !string.IsNullOrEmpty(Configuration[ConfigurationKey.InstanceName])
+                ? Configuration[ConfigurationKey.InstanceName]
+                : "gra";
 
             if (!string.IsNullOrEmpty(Configuration[ConfigurationKey.RollingLogPath]))
             {
-                string instance =
-                    !string.IsNullOrEmpty(Configuration[ConfigurationKey.InstanceName])
-                    ? Configuration[ConfigurationKey.InstanceName]
-                    : "gra";
-
                 string path = Configuration[ConfigurationKey.RollingLogPath];
 
                 if (!path.EndsWith("/"))
@@ -91,11 +90,12 @@ namespace GRA.Web
                     .CreateLogger();
             }
 
-            Log.Logger.Warning("Great Reading Adventure v{0} starting up in {1}",
+            Log.Logger.Warning(string.Format("GRA{0} v{1} starting up in '{2}'",
+                instance.ToLower() != "gra" ? " " + instance : string.Empty,
                 Assembly.GetEntryAssembly()
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     .InformationalVersion,
-                env.WebRootPath);
+                env.WebRootPath));
 
             foreach (var configKey in _defaultSettings.Keys)
             {

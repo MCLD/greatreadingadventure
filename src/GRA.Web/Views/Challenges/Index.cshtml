@@ -1,5 +1,17 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengesListViewModel
 
+<noscript>
+    <style>
+        #CategoryPlaceholder {
+            display: none;
+        }
+
+        .favorite-button {
+            display: none;
+        }
+    </style>
+</noscript>
+
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
@@ -7,18 +19,57 @@
                 <span class="lead">Challenges</span>
             </div>
             <div class="panel-body">
-                <form asp-controller="Challenges" asp-action="Index" method="get" role="form">
+                <form id="searchForm" asp-controller="Challenges" asp-action="Index" method="get" role="form">
+                    @if (Model.Favorites == true)
+                    {
+                        <input asp-for="Favorites" type="hidden" />
+                    }
+                    @if (Model.IsLoggedIn)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn pull-right @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
+                                </a>
+                            </div>
+                        </div>
+                    }
+                   
+
                     <div class="row row-spacing">
-                        <div class="col-sm-8 gra-search-container">
+                        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                            <span style="font-size:large;">Search:</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-10 gra-search-container">
                             <input asp-for="Search"
                                    class="form-control"
                                    placeholder="Enter text to search for a challenge here" />
                         </div>
-                        <div class="col-xs-6 col-sm-2">
+                        
+                    </div>
+                    @if (Model.CategoryList?.Count() > 0)
+                    {
+                        <div id="Category" class="row row-spacing">
+                            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                                <span style="font-size:large;">Category:</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-10">
+                                <noscript id="noscript">
+                                    <select asp-for="Categories" asp-items="Model.CategoryList" class="form-control">
+                                        <option></option>
+                                    </select>
+                                </noscript>
+                                <input id="CategoryPlaceholder" class="form-control" />
+                                <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" disabled="disabled" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    }
+                    <div class="row row-spacing">
+                        <div class="col-xs-6 col-sm-offset-8 col-sm-2">
                             <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
                         </div>
                         <div class="col-xs-6 col-sm-2">
-                            <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Search</button>
+                            <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
                         </div>
                     </div>
                 </form>
@@ -31,56 +82,94 @@
                         }
                         else
                         {
-                            <div>
-                                <table class="table table-condensed table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            @if (Model.IsActive)
-                                            {
-                                                <th>Progress</th>
-                                            }
-                                            <th>Points you'll earn</th>
-                                            <th>Badge</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var challenge in Model.Challenges)
-                                        {
+                            <form asp-action="UpdateFavorites" method="post" role="form">
+                                <noscript>
+                                    <input asp-for="Categories" type="hidden" />
+                                    <input asp-for="Search" type="hidden" />
+                                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                                </noscript>
+                                <div>
+                                    <table class="table table-condensed table-bordered table-striped">
+                                        <thead>
                                             <tr>
-                                                <td style="vertical-align:middle;"><a asp-action="Detail" asp-route-id="@challenge.Id">@challenge.Name</a></td>
-                                                @if (Model.IsActive)
+                                                @if (Model.IsLoggedIn)
                                                 {
-                                                    <td style="text-align:center; vertical-align:middle;">
-                                                        @challenge.Status
-                                                        <div class="progress" style="margin:0px;">
-                                                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="@challenge.PercentComplete" aria-valuemin="0" aria-valuemax="100" style="width: @challenge.PercentComplete%;">
-                                                            </div>
-                                                        </div>
-                                                    </td>
+                                                    <th width="58px">&nbsp;</th>
                                                 }
-                                                <td style="font-size:large; text-align:center; vertical-align:middle;">@challenge.PointsAwarded</td>
-                                                <td>
-                                                    @if (!string.IsNullOrEmpty(challenge.BadgeFilename))
-                                                    {
-                                                        <div style="text-align:center;">
-                                                            <img class="img-thumbnail badge-sm" src="~/@challenge.BadgeFilename" asp-append-version="true" />
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        @: &nbsp;
-                                                    }
-                                                </td>
+                                                <th>Name</th>
+                                                @if (Model.IsActive && Model.IsLoggedIn)
+                                                {
+                                                    <th>Progress</th>
+                                                }
+                                                <th>Points you'll earn</th>
+                                                <th>Badge</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if (Model.PaginateModel.MaxPage > 1)
-                            {
-                                <paginate paginateModel="@Model.PaginateModel"></paginate>
-                            }
+                                        </thead>
+                                        <tbody>
+                                            @for (int i = 0; i < Model.Challenges.Count(); i++)
+                                            {
+                                                <tr>
+                                                    @if (Model.IsLoggedIn)
+                                                    {
+                                                        <td style="text-align:center;vertical-align:middle;">
+                                                            <div class="favorite-button @(Model.Challenges[i].IsFavorited ? "fa-star" : "fa-star-o")" data-challengeid="@Model.Challenges[i].Id" data-favorite="@Model.Challenges[i].IsFavorited"></div>
+                                                            <noscript>
+                                                                <input asp-for="@Model.Challenges[i].Id" type="hidden" />
+                                                                <input asp-for="@Model.Challenges[i].IsFavorited" class="favorite-checkbox" />
+                                                                <label for="@($"Challenges_{i}__IsFavorited")"></label>
+                                                            </noscript>
+                                                        </td>
+                                                    }
+                                                    <td style="vertical-align:middle;">
+                                                        <a asp-action="Detail" asp-route-id="@Model.Challenges[i].Id">@Model.Challenges[i].Name</a>
+                                                        @if (Model.Challenges[i].Categories?.Count > 0)
+                                                        {
+                                                            <br />
+                                                            @foreach (var category in Model.Challenges[i].Categories)
+                                                            {
+                                                                <span class="label" style="background-color:@category.Color">@category.Name</span>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    @if (Model.IsActive && Model.IsLoggedIn)
+                                                    {
+                                                        <td style="text-align:center; vertical-align:middle;">
+                                                            @Model.Challenges[i].Status
+                                                            <div class="progress" style="margin:0px;">
+                                                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="@Model.Challenges[i].PercentComplete" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Challenges[i].PercentComplete%;">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                    <td style="font-size:large; text-align:center; vertical-align:middle;">@Model.Challenges[i].PointsAwarded</td>
+                                                    <td>
+                                                        @if (!string.IsNullOrEmpty(Model.Challenges[i].BadgeFilename))
+                                                        {
+                                                            <div style="text-align:center;">
+                                                                <img class="img-thumbnail badge-sm" src="~/@Model.Challenges[i].BadgeFilename" asp-append-version="true" />
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <text>&nbsp;</text>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (Model.IsLoggedIn)
+                                {
+                                    <noscript>
+                                        <button type="submit" class="btn btn-primary">Save My Favorites</button>
+                                    </noscript>
+                                }
+                                @if (Model.PaginateModel.MaxPage > 1)
+                                {
+                                    <paginate paginateModel="@Model.PaginateModel"></paginate>
+                                }
+                            </form>
                         }
                     </div>
                 </div>
@@ -88,3 +177,69 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
+        var showFavorites = "@Model.Favorites" == "True";
+
+        $("#CategoryIds").removeAttr("disabled");
+        $("#CategoryPlaceholder").remove();
+        $("#CategoryIds").multiselect({
+            nonSelectedText: "",
+            buttonClass: "form-control",
+            buttonWidth: "100%",
+            disableIfEmpty: true
+        });
+
+        $("#searchForm").on("submit", function () {
+            var categoryIds = $("#CategoryIds option:selected")
+                .map(function (a, item) { return item.value; })
+                .get();
+
+            if (categoryIds.length > 0) {
+                $("#CategoryIds").attr("disabled", "disabled");
+                $("<input />")
+                    .attr("type", "hidden")
+                    .attr("name", "Categories")
+                    .attr("value", categoryIds.join(","))
+                    .appendTo($(this));
+            }
+        });
+
+        $(".favorite-button").on("click", function () {
+            var button = $(this);
+            if (button.hasClass("fa-spinner") == false) {
+                button.removeClass("fa-star fa-star-o").addClass("fa-spinner fa-pulse");
+                var favorite = button.data("favorite") == "False";
+
+                $.post(favoriteUrl, { challengeId: button.data("challengeid"), favorite: favorite }, function (response) {
+                    setTimeout(function() {
+                        if (response.success) {
+                            if (response.favorite) {
+                                button.addClass("fa-star");
+                                button.data("favorite", "True");
+                            }
+                            else {
+                                if (showFavorites) {
+                                    button.parent().parent().remove();
+
+                                }
+                                else {
+                                    button.addClass("fa-star-o");
+                                    button.data("favorite", "False");
+                                }
+                            }
+                            button.removeClass("fa-spinner fa-pulse");
+                            }
+                        else {
+                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse");
+                            alert(response.message);
+                        }
+                    }, 500);
+                });
+            }
+
+        });
+    </script>
+}

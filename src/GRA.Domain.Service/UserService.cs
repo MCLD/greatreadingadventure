@@ -455,13 +455,14 @@ namespace GRA.Domain.Service
         }
 
         public async Task<DataWithCount<ICollection<Book>>>
-            GetPaginatedUserBookListAsync(int userId, int skip, int take)
+            GetPaginatedUserBookListAsync(int userId, BookFilter filter)
         {
             int requestedByUserId = GetActiveUserId();
             if (requestedByUserId == userId
                || HasPermission(Permission.ViewParticipantDetails))
             {
-                return await _bookRepository.GetPaginatedListForUserAsync(userId, skip, take);
+                filter.UserIds = new List<int>() { userId };
+                return await _bookRepository.GetPaginatedListForUserAsync(filter);
             }
             else
             {

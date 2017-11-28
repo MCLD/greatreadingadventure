@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add vendor code report
 - System and branch configuration
 - Dockerfile and .dockerignore to support Docker builds
+- Challenge Categories
+- Favoriting Challenges
+- Markdown text entry and images to Challenge Tasks
+- Participant Book list sorting
 
 ### Changed
 - Show report completion percent in window titlebar
@@ -26,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Moved content into top-level shared folder for better Docker support
 - Change rolling log configuration to support instances
 - Travis CI automated build now uses Docker
+- Challenge task sorting to now uses Ajax
 
 ### Fixed
 - Remove Entered School type restriction

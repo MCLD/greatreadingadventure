@@ -22,9 +22,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public bool UseBadgeMaker { get; set; }
         public string BadgeMakerImage { get; set; }
         public ICollection<Trigger> DependentTriggers { get; set; }
+        public string CategoryPlaceholder { get; set; }
+        public IFormFile TaskUploadFile { get; set; }
+        public string TaskFilePath { get; set; }
 
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
+        public SelectList CategoryList { get; set; }
     }
 }

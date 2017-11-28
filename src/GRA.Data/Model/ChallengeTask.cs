@@ -9,7 +9,6 @@ namespace GRA.Data.Model
         [Required]
         public int Position { get; set; }
         [Required]
-        [MaxLength(500)]
         public string Title { get; set; }
 
         [MaxLength(255)]
@@ -20,6 +19,9 @@ namespace GRA.Data.Model
 
         [MaxLength(500)]
         public string Url { get; set; }
+
+        [MaxLength(255)]
+        public string Filename { get; set; }
 
         [Required]
         public int ChallengeTaskTypeId { get; set; }

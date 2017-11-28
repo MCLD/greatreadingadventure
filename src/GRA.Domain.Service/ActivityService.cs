@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using GRA.Domain.Repository;
-using GRA.Domain.Model;
-using GRA.Domain.Service.Abstract;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using GRA.Abstract;
-using System;
+using GRA.Domain.Model;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using GRA.Domain.Service.Models;
+using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Service
 {
@@ -1069,6 +1070,41 @@ namespace GRA.Domain.Service
             }
 
             await AwardVendorCodeAsync(userId, vendorCodeTypeId);
+        }
+
+        public async Task<ServiceResult> UpdateFavoriteChallenges(IList<Challenge> challenges)
+        {
+            var authUserId = GetClaimId(ClaimType.UserId);
+            var activeUserId = GetActiveUserId();
+            var serviceResult = new ServiceResult();
+
+            var challengeIds = challenges.Select(_ => _.Id);
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIds(
+                GetCurrentSiteId(), challengeIds);
+            if (challengeIds.Count() != validChallengeIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = "One or more of the selected challenges could not favorited.";
+            }
+
+            var userFavorites = await _challengeRepository.GetUserFavoriteChallenges(activeUserId,
+                challengeIds);
+
+            var validChallenges = challenges.Where(_ => validChallengeIds.Contains(_.Id));
+
+            var favoritesToAdd = validChallenges
+                .Where(_ => _.IsFavorited == true)
+                .Select(_ => _.Id)
+                .Except(userFavorites);
+
+            var favoritesToRemove = validChallenges
+                .Where(_ => _.IsFavorited == false && userFavorites.Contains(_.Id))
+                .Select(_ => _.Id);
+
+            await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId, 
+                favoritesToAdd, favoritesToRemove);
+
+            return serviceResult;
         }
 
         private async Task<int?> SendMailAsync(int userId, Trigger trigger, int? siteId = null)
