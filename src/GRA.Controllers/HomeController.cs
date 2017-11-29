@@ -78,7 +78,8 @@ namespace GRA.Controllers
                     CurrentPointTotal = user.PointsEarned,
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
-                    Badges = badges.Data
+                    Badges = badges.Data,
+                    ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True"
                 };
 
                 var program = await _siteService.GetProgramByIdAsync(user.ProgramId);

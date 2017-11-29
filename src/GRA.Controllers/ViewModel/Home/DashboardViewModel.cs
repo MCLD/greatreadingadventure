@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.Home
         [MaxLength(255)]
         public string Author { get; set; }
 
+        public bool ShowSecretCode { get; set; }
         [DisplayName("Secret Code")]
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }

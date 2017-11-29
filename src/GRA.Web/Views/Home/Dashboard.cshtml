@@ -144,36 +144,39 @@
                     </div>
                 </div>
             }
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form" class="form-horizontal">
-                        <div class="row row-spacing" style="text-align:center;">
-                            <div class="col-xs-12 ">
-                                <small>Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!</small>
-                            </div>
-                        </div>
-
-                        <div class="row row-spacing">
-                            <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3"></label>
-                            <div class="col-sm-7 col-md-8 col-lg-9">
-                                <input asp-for="SecretCode" class="form-control" />
-
-                            </div>
-                            @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                            {
-                                <div class="text-center">
-                                    <span class="text-danger">@Html.Raw(Model.SecretCodeMessage)</span>
+            @if (Model.ShowSecretCode)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-controller="Home" asp-action="LogSecretCode" method="post" role="form" class="form-horizontal">
+                            <div class="row row-spacing" style="text-align:center;">
+                                <div class="col-xs-12 ">
+                                    <small>Secret codes can be found by attending library events and on promotional materials. If you find one, enter it below!</small>
                                 </div>
-                            }
-                        </div>
+                            </div>
 
-                        <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
-                            <span class="buttonText">Submit Code</span>
-                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                        </button>
-                    </form>
+                            <div class="row row-spacing">
+                                <label asp-for="SecretCode" class="control-label col-sm-5 col-md-4 col-lg-3"></label>
+                                <div class="col-sm-7 col-md-8 col-lg-9">
+                                    <input asp-for="SecretCode" class="form-control" />
+
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                {
+                                    <div class="text-center">
+                                        <span class="text-danger">@Html.Raw(Model.SecretCodeMessage)</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <button type="submit" class="btn center-block btn-success btn-lg btn-spinner">
+                                <span class="buttonText">Submit Code</span>
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            }
         }
         @if (!string.IsNullOrWhiteSpace(Model.DashboardPageContent))
         {
