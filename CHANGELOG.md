@@ -40,6 +40,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Do not show Events or Challenges links if the program is over
 - Configuration setting for database type (SQL Server or SQLite)
 - Configuration setting for initial program setup (single program or multi-program)
+- Allow importing avatars without any bundles
+- Do not show avatar layer selector if only one layer
 
 ## [4.0.0-alpha7] 2017-07-03
 ### Added

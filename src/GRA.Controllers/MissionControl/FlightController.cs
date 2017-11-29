@@ -210,19 +210,22 @@ namespace GRA.Controllers.MissionControl
                 await _dynamicAvatarService.AddElementListAsync(elementList);
             }
 
-            IEnumerable<DynamicAvatarBundle> bundleList;
             var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
-            using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+            if (System.IO.File.Exists(bundleJsonPath))
             {
-                var jsonString = await file.ReadToEndAsync();
-                bundleList = JsonConvert.DeserializeObject<IEnumerable<DynamicAvatarBundle>>(jsonString);
-            }
+                IEnumerable<DynamicAvatarBundle> bundleList;
+                using (StreamReader file = System.IO.File.OpenText(bundleJsonPath))
+                {
+                    var jsonString = await file.ReadToEndAsync();
+                    bundleList = JsonConvert.DeserializeObject<IEnumerable<DynamicAvatarBundle>>(jsonString);
+                }
 
-            foreach (var bundle in bundleList)
-            {
-                List<int> items = bundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
-                bundle.DynamicAvatarItems = null;
-                var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle, items);
+                foreach (var bundle in bundleList)
+                {
+                    List<int> items = bundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
+                    bundle.DynamicAvatarItems = null;
+                    var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle, items);
+                }
             }
             ShowAlertSuccess("Default dynamic avatars have been successfully added.");
             return View("Index");

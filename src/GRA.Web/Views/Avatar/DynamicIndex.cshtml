@@ -67,69 +67,75 @@
 <div class="avatar-background panel panel-default">
     <div class="row">
         <div class="col-sm-3 visible-sm visible-md visible-lg">
-            @foreach (var groupId in Model.GroupIds)
+            @if (Model.Layers.Count > 1)
             {
-                <table style="margin-bottom:10px;">
-                    @foreach (var layer in Model.Layers.Where(_ => _.GroupId == groupId))
+                foreach (var groupId in Model.GroupIds)
                 {
-                        <tr>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button"
-                                            id="@($"selector{layer.Id}")"
-                                            class="btn btn-default dynamic-avatar-layer-button dynamic-avatar-layer-selector"
-                                            data-layer="@layer.Id">
-                                        @layer.Name
-                                    </button>
-                                    @if (layer.CanBeEmpty)
-                                    {
-                                        <button type="button" id="@($"remove{layer.Id}")" class="btn btn-default dynamic-avatar-layer-button removeLayer" style="@(!layer.SelectedItem.HasValue ? "display:none;" : "")" data-layer="@layer.Id">
-                                            <span class="text-danger fa fa-times-circle fa-lg"></span>
+                    <table style="margin-bottom:10px;">
+                        @foreach (var layer in Model.Layers.Where(_ => _.GroupId == groupId))
+                    {
+                            <tr>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button"
+                                                id="@($"selector{layer.Id}")"
+                                                class="btn btn-default dynamic-avatar-layer-button dynamic-avatar-layer-selector"
+                                                data-layer="@layer.Id">
+                                            @layer.Name
                                         </button>
-                                    }
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </table>
+                                        @if (layer.CanBeEmpty)
+                                        {
+                                            <button type="button" id="@($"remove{layer.Id}")" class="btn btn-default dynamic-avatar-layer-button removeLayer" style="@(!layer.SelectedItem.HasValue ? "display:none;" : "")" data-layer="@layer.Id">
+                                                <span class="text-danger fa fa-times-circle fa-lg"></span>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
             }
         </div>
         <div class="col-xs-12 col-sm-6">
             <div class="row">
                 <div class="visible-xs" style="display: block;height:60px;margin-bottom:10px;">
-                    <div class="dropdown">
-                        <button type="button" id="xsLayerDropdown" class="btn btn-default dropdown-toggle" style="height:60px;width:120px;float:left;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <span id="xsLayerSelection" style="font-size:x-large;"></span>
-                            <span class="fa fa-caret-down fa-lg"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="xsLayerDropdown">
-                            @{
-                                bool addSeparater = false;
-                                foreach (var groupId in Model.GroupIds)
-                                {
-                                    if (addSeparater)
+                    @if (Model.Layers.Count > 1)
+                    {
+                        <div class="dropdown">
+                            <button type="button" id="xsLayerDropdown" class="btn btn-default dropdown-toggle" style="height:60px;width:120px;float:left;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span id="xsLayerSelection" style="font-size:x-large;"></span>
+                                <span class="fa fa-caret-down fa-lg"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="xsLayerDropdown">
+                                @{
+                                    bool addSeparater = false;
+                                    foreach (var groupId in Model.GroupIds)
                                     {
-                                        <li role="separator" class="divider"></li>
+                                        if (addSeparater)
+                                        {
+                                            <li role="separator" class="divider"></li>
+                                        }
+                                        foreach (var layer in Model.Layers.Where(_ => _.GroupId == groupId))
+                                        {
+                                            <li>
+                                                <a href="#"
+                                                   class="xsLayerSelector"
+                                                   style="font-size:large;"
+                                                   data-layer="@layer.Id">
+                                                    @layer.Name
+                                                </a>
+                                            </li>
+                                        }
+                                        addSeparater = true;
                                     }
-                                    foreach (var layer in Model.Layers.Where(_ => _.GroupId == groupId))
-                                    {
-                                        <li>
-                                            <a href="#"
-                                               class="xsLayerSelector"
-                                               style="font-size:large;"
-                                               data-layer="@layer.Id">
-                                                @layer.Name
-                                            </a>
-                                        </li>
-                                    }
-                                    addSeparater = true;
                                 }
-                            }
-                        </ul>
-                    </div>
-                    <button type="button" id="xsRemoveLayer" class="btn btn-default" style="height:60px;border-top-left-radius:0;border-bottom-left-radius:0px;float:left;margin-left:-1px;">
-                        <span class="text-danger fa fa-times-circle fa-2x"></span>
-                    </button>
+                            </ul>
+                        </div>
+                        <button type="button" id="xsRemoveLayer" class="btn btn-default" style="height:60px;border-top-left-radius:0;border-bottom-left-radius:0px;float:left;margin-left:-1px;">
+                            <span class="text-danger fa fa-times-circle fa-2x"></span>
+                        </button>
+                    }
                     <button type="button" id="xsColorButton" class="btn btn-lg btn-default pull-right" style="height:60px;width:120px;display:none;">
                         <span style="font-size:x-large;">Color</span>
                         <span class="fa fa-paint-brush"></span>
