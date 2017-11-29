@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Markdown text entry and images to Challenge Tasks
 - Participant Book list sorting
 - Configuration for hiding secret code entry
+- Note about password requirements to join form
 
 ### Changed
 - Show report completion percent in window titlebar

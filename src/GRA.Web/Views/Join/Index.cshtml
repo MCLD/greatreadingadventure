@@ -23,6 +23,7 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Password" class="control-label"></label>
+                            <p class="password-note">Your password must be at least 6 characters long and include a number.</p>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
