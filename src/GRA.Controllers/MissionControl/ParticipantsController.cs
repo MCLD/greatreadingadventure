@@ -426,7 +426,6 @@ namespace GRA.Controllers.MissionControl
                     Username = user.Username,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
-                    PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
@@ -439,6 +438,10 @@ namespace GRA.Controllers.MissionControl
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name")
                 };
+
+                if (UserHasPermission(Permission.ViewUserPrizes)) {
+                    viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
+                }
 
                 var districtList = await _schoolService.GetDistrictsAsync();
                 if (user.SchoolId.HasValue)
