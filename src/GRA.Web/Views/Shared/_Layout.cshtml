@@ -73,7 +73,15 @@
                         @if (siteStage != SiteStage.ProgramEnded && siteStage != SiteStage.AccessClosed)
                         {
                             <li ActiveBy routeKey="Controller" value="Challenges"><a asp-controller="Challenges" asp-action="Index">Challenges</a></li>
-                            <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
+                            @if (Context.Items.ContainsKey(GRA.Controllers.ItemKey.ExternalEventListUrl))
+                            {
+                                <li ActiveBy routeKey="Controller" value="Events"><a href="@Context.Items[GRA.Controllers.ItemKey.ExternalEventListUrl]">Events</a></li>
+
+                            }
+                            else
+                            {
+                                <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index">Events</a></li>
+                            }
                         }
                     }
                     @if (User.Identity.IsAuthenticated)

@@ -88,7 +88,7 @@
                     {
                         <li ActiveBy routeKey="Controller" value="Triggers"><a asp-controller="Triggers" asp-action="Index" title="Triggers"><span class="fa fa-gears"></span><span class="visible-xs-inline"> Triggers</span></a></li>
                     }
-                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageEvents.ToString()))
+                    @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageEvents.ToString()) && Context.Items.ContainsKey(GRA.Controllers.ItemKey.ExternalEventListUrl) == false)
                     {
                         <li ActiveBy routeKey="Controller" value="Events"><a asp-controller="Events" asp-action="Index" title="Events"><span class="fa fa-calendar"></span><span class="visible-xs-inline"> Events</span></a></li>
                     }

@@ -7,6 +7,7 @@ namespace GRA.Controllers
 {
     public class ItemKey
     {
+        public const string ExternalEventListUrl = "ExternalEventListUrl";
         public const string GoogleAnalytics = "GoogleAnalytics";
         public const string NotificationsDisplayed = "NotificationsDisplayed";
         public const string NotificationsList = "NotificationsList";

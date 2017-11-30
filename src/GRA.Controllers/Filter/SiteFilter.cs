@@ -80,6 +80,11 @@ namespace GRA.Controllers.Filter
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[ItemKey.SiteId] = (int)siteId;
 
+            if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
+            {
+                httpContext.Items[ItemKey.ExternalEventListUrl] = site.ExternalEventListUrl;
+            }
+
             await next();
         }
     }

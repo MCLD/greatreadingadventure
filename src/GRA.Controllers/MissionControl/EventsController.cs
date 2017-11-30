@@ -1,4 +1,10 @@
-﻿using GRA.Controllers.ViewModel.MissionControl.Events;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using GRA.Controllers.Filter;
+using GRA.Controllers.ViewModel.MissionControl.Events;
 using GRA.Controllers.ViewModel.Shared;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
@@ -7,16 +13,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 
 namespace GRA.Controllers.MissionControl
 {
     [Area("MissionControl")]
     [Authorize(Policy = Policy.ManageEvents)]
+    [EventUrlFilter]
     public class EventsController : Base.MCController
     {
         private readonly ILogger<EventsController> _logger;

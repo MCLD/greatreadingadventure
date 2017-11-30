@@ -1,19 +1,19 @@
-﻿using GRA.Controllers.ViewModel.Events;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using GRA.Controllers.Filter;
+using GRA.Controllers.ViewModel.Events;
 using GRA.Controllers.ViewModel.Shared;
-using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
 
 namespace GRA.Controllers
 {
+    [EventUrlFilter]
     public class EventsController : Base.UserController
     {
         private readonly ILogger<EventsController> _logger;
