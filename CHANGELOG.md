@@ -49,6 +49,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Users without ViewUserPrizes coudln't view participant details
 - Trim usernames so they can't have leading or trailing spaces
 
+### Removed
+- Remove static avatars; same functionality can be implemented with dynamic avatars
+
 ## [4.0.0-alpha7] 2017-07-03
 ### Added
 - Exception handling when entering activity on the dashboard

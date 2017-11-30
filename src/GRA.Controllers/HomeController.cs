@@ -27,7 +27,6 @@ namespace GRA.Controllers
         private readonly EmailReminderService _emailReminderService;
         private readonly PageService _pageService;
         private readonly SiteService _siteService;
-        private readonly StaticAvatarService _staticAvatarService;
         private readonly UserService _userService;
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
@@ -36,7 +35,6 @@ namespace GRA.Controllers
             EmailReminderService emailReminderService,
             PageService pageService,
             SiteService siteService,
-            StaticAvatarService staticAvatarService,
             UserService userService)
             : base(context)
         {
@@ -47,8 +45,6 @@ namespace GRA.Controllers
             _emailReminderService = Require.IsNotNull(emailReminderService,
                 nameof(emailReminderService));
             _pageService = Require.IsNotNull(pageService, nameof(pageService));
-            _staticAvatarService = Require.IsNotNull(staticAvatarService,
-                nameof(staticAvatarService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
             _userService = Require.IsNotNull(userService, nameof(userService));
         }
@@ -98,26 +94,15 @@ namespace GRA.Controllers
                     }
                 }
 
-                if (site.UseDynamicAvatars)
+                var userDynamicAvatar = await _dynamicAvatarService.GetUserAvatarAsync();
+                if (userDynamicAvatar?.Count > 0)
                 {
-                    var userDynamicAvatar = await _dynamicAvatarService.GetUserAvatarAsync();
-                    if (userDynamicAvatar?.Count > 0)
+                    var dynamicAvatarElements = userDynamicAvatar;
+                    foreach (var element in dynamicAvatarElements)
                     {
-                        var dynamicAvatarElements = userDynamicAvatar;
-                        foreach (var element in dynamicAvatarElements)
-                        {
-                            element.Filename = _pathResolver.ResolveContentPath(element.Filename);
-                        }
-                        viewModel.DynamicAvatarElements = dynamicAvatarElements;
+                        element.Filename = _pathResolver.ResolveContentPath(element.Filename);
                     }
-                }
-                else
-                {
-                    if (user.AvatarId != null)
-                    {
-                        var avatar = await _staticAvatarService.GetByIdAsync(user.AvatarId.Value);
-                        viewModel.AvatarPath = _pathResolver.ResolveContentPath(avatar.Filename);
-                    }
+                    viewModel.DynamicAvatarElements = dynamicAvatarElements;
                 }
 
                 var dashboardPage = await _pageService.GetDashboardPageAsync();

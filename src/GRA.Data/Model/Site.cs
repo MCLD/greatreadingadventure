@@ -52,7 +52,6 @@ namespace GRA.Data.Model
         public string FromEmailName { get; set; }
         public string FromEmailAddress { get; set; }
 
-        public bool UseDynamicAvatars { get; set; }
         [MaxLength(100)]
         public string SiteLogoUrl { get; set; }
         [MaxLength(100)]

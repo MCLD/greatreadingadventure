@@ -4,7 +4,6 @@ using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -134,8 +133,7 @@ namespace GRA.Domain.Service
                 RegistrationOpens = _dateTimeProvider.Now,
                 ProgramStarts = _dateTimeProvider.Now,
                 ProgramEnds = _dateTimeProvider.Now.AddDays(60),
-                AccessClosed = _dateTimeProvider.Now.AddDays(90),
-                UseDynamicAvatars = true
+                AccessClosed = _dateTimeProvider.Now.AddDays(90)
             };
             site = await _siteRepository.AddSaveAsync(-1, site);
             _memoryCache.Remove(CacheKey.SitePaths);

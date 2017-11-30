@@ -24,7 +24,6 @@ namespace GRA.Domain.Service
         private readonly IRoleRepository _roleRepository;
         private readonly ISchoolRepository _schoolRepository;
         private readonly ISiteRepository _siteRepository;
-        private readonly IStaticAvatarRepository _staticAvatarRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUserRepository _userRepository;
@@ -48,7 +47,6 @@ namespace GRA.Domain.Service
             IRoleRepository roleRepository,
             ISchoolRepository schoolRepository,
             ISiteRepository siteRepository,
-            IStaticAvatarRepository staticAvatarRepository,
             ISystemRepository systemRepository,
             IUserLogRepository userLogRepository,
             IUserRepository userRepository,
@@ -75,8 +73,6 @@ namespace GRA.Domain.Service
             _roleRepository = Require.IsNotNull(roleRepository, nameof(roleRepository));
             _schoolRepository = Require.IsNotNull(schoolRepository, nameof(schoolRepository));
             _siteRepository = Require.IsNotNull(siteRepository, nameof(siteRepository));
-            _staticAvatarRepository = Require.IsNotNull(staticAvatarRepository,
-                nameof(staticAvatarRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _userLogRepository = Require.IsNotNull(userLogRepository, nameof(userLogRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
@@ -224,15 +220,6 @@ namespace GRA.Domain.Service
                 || authUser.HouseholdHeadUserId == userId
                 || HasPermission(Permission.ViewParticipantDetails))
             {
-                if (requestedUser.AvatarId != null)
-                {
-                    var avatar = await _staticAvatarRepository
-                        .GetByIdAsync((int)requestedUser.AvatarId);
-                    if (avatar != null)
-                    {
-                        requestedUser.StaticAvatarFilename = avatar.Filename;
-                    }
-                }
                 return requestedUser;
             }
             else

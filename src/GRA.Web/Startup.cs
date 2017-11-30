@@ -242,7 +242,6 @@ namespace GRA.Web
             services.AddScoped<SchoolService>();
             services.AddScoped<SiteLookupService>();
             services.AddScoped<SiteService>();
-            services.AddScoped<StaticAvatarService>();
             services.AddScoped<SystemInformationService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<UserService>();
@@ -320,7 +319,6 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
             services.AddScoped<Domain.Repository.ISchoolTypeRepository, Data.Repository.SchoolTypeRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
-            services.AddScoped<Domain.Repository.IStaticAvatarRepository, Data.Repository.StaticAvatarRepository>();
             services.AddScoped<Domain.Repository.ISystemInformationRepository, Data.Repository.SystemInformationRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
             services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();
