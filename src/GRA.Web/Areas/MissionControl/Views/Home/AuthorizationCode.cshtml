@@ -1,14 +1,95 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Home.AuthorizationCodeViewModel
-@{ Layout = "_LoginLayout"; }
-<form asp-action="AuthorizationCode" method="post">
-    <div class="row">
-        <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-            <div class="form-group form-group-lg">
-                <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
-                <input asp-for="AuthorizationCode" class="form-control input-lg" type="password" autofocus required>
-                <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData[GRA.Controllers.ViewDataKey.Title]</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5e3ab6">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/gra.css" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/gra.min.css" asp-append-version="true" />
+    </environment>
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container body-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <img class="center-block"
+                     src="@Model.SiteLogoUrl"
+                     width="250"
+                     height="250" />
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Validate code</button>
         </div>
+        @if (TempData[GRA.Controllers.TempDataKey.AlertDanger] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-danger">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertDanger])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertWarning] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-warning">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertWarning])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertSuccess] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-success">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertSuccess])</div>
+                </div>
+            </div>
+        }
+        @if (TempData[GRA.Controllers.TempDataKey.AlertInfo] != null)
+        {
+            <div class="row mc-alertrow">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="alert alert-info">@Html.Raw(TempData[GRA.Controllers.TempDataKey.AlertInfo])</div>
+                </div>
+            </div>
+        }
+        <form asp-action="AuthorizationCode" method="post">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="form-group form-group-lg">
+                        <label asp-for="AuthorizationCode" class="h4">Authorization Code for <grasite property="name"></grasite>:</label>
+                        <input asp-for="AuthorizationCode" class="form-control input-lg" type="password" autofocus required>
+                        <span asp-validation-for="AuthorizationCode" class="text-danger"></span>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Validate code</button>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+    <environment names="Development">
+        <script src="~/js/gra.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/gra.min.js" asp-append-version="true"></script>
+    </environment>
+</body>
+</html>

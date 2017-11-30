@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace GRA.Controllers.ViewModel.MissionControl
 {
@@ -12,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl
         public Dictionary<string, string> Assemblies { get; set; }
         public string Instance { get; set; }
         public string Deploy { get; set; }
+        public string SiteLogoUrl { get; set; }
     }
 }

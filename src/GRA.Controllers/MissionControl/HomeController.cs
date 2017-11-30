@@ -4,7 +4,6 @@ using GRA.Domain.Model;
 using GRA.Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GRA.Controllers.MissionControl
@@ -59,7 +58,13 @@ namespace GRA.Controllers.MissionControl
             if (!UserHasPermission(Permission.AccessMissionControl))
             {
                 // not authorized for Mission Control, redirect to authorization code
-                return View("AuthorizationCode");
+
+                return RedirectToRoute(new
+                {
+                    area = "MissionControl",
+                    controller = "Home",
+                    action = "AuthorizationCode"
+                });
             }
             Site site = await GetCurrentSiteAsync();
             PageTitle = $"Mission Control: {site.Name}";
@@ -83,9 +88,16 @@ namespace GRA.Controllers.MissionControl
         }
 
         [HttpGet]
-        public IActionResult AuthorizationCode()
+        public async Task<IActionResult> AuthorizationCode()
         {
-            return View();
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
         [HttpPost]
         public async Task<IActionResult> AuthorizationCode(AuthorizationCodeViewModel viewmodel)
@@ -133,7 +145,14 @@ namespace GRA.Controllers.MissionControl
                     ShowAlertDanger("Unable to activate code: ", gex);
                 }
             }
-            return View("AuthorizationCode");
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl
+                ?? Url.Content(Defaults.SiteLogoPath);
+
+            return View(new AuthorizationCodeViewModel
+            {
+                SiteLogoUrl = siteLogoUrl
+            });
         }
 
         public async Task<IActionResult> LoadSampleData()

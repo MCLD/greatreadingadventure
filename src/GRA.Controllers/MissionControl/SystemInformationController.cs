@@ -79,6 +79,10 @@ namespace GRA.Controllers.MissionControl
                 versions.Add(assemblyName.Name, version);
             }
 
+            var site = await GetCurrentSiteAsync();
+            string siteLogoUrl = site.SiteLogoUrl 
+                ?? Url.Content(Defaults.SiteLogoPath);
+
             return View(new SystemInformationViewModel
             {
                 Assembly = thisAssemblyName,
@@ -86,7 +90,8 @@ namespace GRA.Controllers.MissionControl
                 Migration = currentMigration,
                 Assemblies = versions,
                 Instance = _config[ConfigurationKey.InstanceName],
-                Deploy = _config[ConfigurationKey.DeployDate]
+                Deploy = _config[ConfigurationKey.DeployDate],
+                SiteLogoUrl = siteLogoUrl
             });
         }
     }
