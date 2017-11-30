@@ -47,6 +47,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Allow importing avatars without any bundles
 - Do not show avatar layer selector if only one layer
 - Users without ViewUserPrizes coudln't view participant details
+- Trim usernames so they can't have leading or trailing spaces
 
 ## [4.0.0-alpha7] 2017-07-03
 ### Added

@@ -165,7 +165,8 @@ namespace GRA.Domain.Service
 
         public async Task<bool> SecretCodeInUseAsync(string username)
         {
-            return await _triggerRepository.SecretCodeInUseAsync(GetCurrentSiteId(), username);
+            string trimmedUsername = username.Trim();
+            return await _triggerRepository.SecretCodeInUseAsync(GetCurrentSiteId(), trimmedUsername);
         }
 
         public async Task<Trigger> GetByBadgeIdAsync(int badgeId)

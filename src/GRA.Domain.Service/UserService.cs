@@ -110,7 +110,7 @@ namespace GRA.Domain.Service
             user.LastName = user.LastName?.Trim();
             user.PhoneNumber = user.PhoneNumber?.Trim();
             user.PostalCode = user.PostalCode?.Trim();
-            //user.Username = user.Username?.Trim(); // (#416)
+            user.Username = user.Username?.Trim();
 
             if (!string.IsNullOrWhiteSpace(user.EnteredSchoolName))
             {
@@ -380,8 +380,7 @@ namespace GRA.Domain.Service
                         }
                         else
                         {
-                            //currentEntity.Username = userToUpdate.Username?.Trim(); // (#416)
-                            currentEntity.Username = userToUpdate.Username;
+                            currentEntity.Username = userToUpdate.Username?.Trim();
                         }
                     }
                 }
@@ -549,7 +548,7 @@ namespace GRA.Domain.Service
                 memberToAdd.LastName = memberToAdd.LastName?.Trim();
                 memberToAdd.PhoneNumber = memberToAdd.PhoneNumber?.Trim();
                 memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
-                //memberToAdd.Username = memberToAdd.Username?.Trim(); // (#416)
+                memberToAdd.Username = memberToAdd.Username?.Trim();
 
 
                 if (!string.IsNullOrWhiteSpace(memberToAdd.EnteredSchoolName))
@@ -597,8 +596,7 @@ namespace GRA.Domain.Service
 
                 _passwordValidator.Validate(password);
 
-                //user.Username = memberToRegister.Username?.Trim(); // (#416)
-                user.Username = memberToRegister.Username;
+                user.Username = memberToRegister.Username?.Trim();
                 var registeredUser = await _userRepository.UpdateSaveAsync(authUserId, user);
                 await _userRepository
                     .SetUserPasswordAsync(authUserId, user.Id, password);
@@ -643,6 +641,7 @@ namespace GRA.Domain.Service
 
         public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
         {
+            string trimmedUsername = username.Trim();
             VerifyCanHouseholdAction();
 
             var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
@@ -651,7 +650,7 @@ namespace GRA.Domain.Service
                 throw new GraException("Only a household head can add members");
             }
 
-            var authenticationResult = await _userRepository.AuthenticateUserAsync(username, password);
+            var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
             if (!authenticationResult.PasswordIsValid)
             {
                 throw new GraException("The username and password entered do not match");
@@ -843,7 +842,8 @@ namespace GRA.Domain.Service
 
         public async Task<bool> UsernameInUseAsync(string username)
         {
-            return await _userRepository.UsernameInUseAsync(GetCurrentSiteId(), username);
+            string trimmedUsername = username.Trim();
+            return await _userRepository.UsernameInUseAsync(GetCurrentSiteId(), trimmedUsername);
         }
 
         private async Task<bool> UserHasRoles(int userId)

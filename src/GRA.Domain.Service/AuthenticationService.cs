@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using GRA.Domain.Model;
@@ -43,11 +42,12 @@ namespace GRA.Domain.Service
         public async Task<AuthenticationResult> AuthenticateUserAsync(string username,
             string password)
         {
-            var authResult = await _userRepository.AuthenticateUserAsync(username, password);
+            string trimmedUsername = username.Trim();
+            var authResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
 
             if (!authResult.FoundUser)
             {
-                authResult.AuthenticationMessage = $"Could not find username '{username}'";
+                authResult.AuthenticationMessage = $"Could not find username '{trimmedUsername}'";
             }
             else if (!authResult.PasswordIsValid)
             {
@@ -100,13 +100,14 @@ namespace GRA.Domain.Service
 
         public async Task ResetPassword(string username, string password, string token)
         {
+            string trimmedUsername = username.Trim();
             _passwordValidator.Validate(password);
             var fixedToken = token.Trim().ToLower();
 
-            var user = await _userRepository.GetByUsernameAsync(username);
+            var user = await _userRepository.GetByUsernameAsync(trimmedUsername);
             if (user == null)
             {
-                throw new GraException($"User {username} does not exist.");
+                throw new GraException($"User {trimmedUsername} does not exist.");
             }
 
             var tokens = await _recoveryTokenRepository.GetByUserIdAsync(user.Id);
@@ -135,18 +136,19 @@ namespace GRA.Domain.Service
 
         public async Task GenerateTokenAndEmail(string username, string recoveryUrl)
         {
-            var user = await _userRepository.GetByUsernameAsync(username);
+            string trimmedUsername = username.Trim();
+            var user = await _userRepository.GetByUsernameAsync(trimmedUsername);
 
             if (user == null)
             {
-                _logger.LogInformation($"Username '{username}' doesn't exist so can't create a recovery token.");
-                throw new GraException($"User '{username}' not found.");
+                _logger.LogInformation($"Username '{trimmedUsername}' doesn't exist so can't create a recovery token.");
+                throw new GraException($"User '{trimmedUsername}' not found.");
             }
 
             if (string.IsNullOrEmpty(user.Email))
             {
                 _logger.LogInformation($"User {user.Id} doesn't have an email address configured so cannot send a recovery token.");
-                throw new GraException($"User '{username}' doesn't have an email address configured.");
+                throw new GraException($"User '{trimmedUsername}' doesn't have an email address configured.");
             }
 
             // clear any existing tokens
@@ -172,22 +174,22 @@ namespace GRA.Domain.Service
             string subject = $"{site.Name} password recovery";
             string mailBody = $"{site.Name} has received a request for a password recovery."
                 + "\n\rAccess the password recovery page in order to set a new password:"
-                + $"\n\r  {recoveryUrl}?username={username}&token={tokenString}"
+                + $"\n\r  {recoveryUrl}?username={trimmedUsername}&token={tokenString}"
 
                 + $"\n\r\n\rIf that link does not work work, please visit:"
                 + $"\n\r  {recoveryUrl}"
                 + $"\n\rand enter the following:"
-                + $"\n\r  Username: {username}"
+                + $"\n\r  Username: {trimmedUsername}"
                 + $"\n\r  Token: {tokenString}";
 
             string htmlBody = $"<p>{site.Name} has received a request for a password recovery.</p>"
                 + "<p>Access the "
-                + $"<a href=\"{recoveryUrl}?username={username}&token={tokenString}\">"
+                + $"<a href=\"{recoveryUrl}?username={trimmedUsername}&token={tokenString}\">"
                 + "password recovery page</a> in order to set a new password.</p>"
                 + "<p>If that link does not work, please visit: "
                 + $"<a href=\"{recoveryUrl}\">{recoveryUrl}</a> "
                 + "and enter the following:<ul>"
-                + $"<li>Username:{username}</li>"
+                + $"<li>Username:{trimmedUsername}</li>"
                 + $"<li>Token: {tokenString}</li></ul></p>";
 
             await _emailService.Send(user.Id, subject, mailBody, htmlBody);
