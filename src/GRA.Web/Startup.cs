@@ -234,6 +234,7 @@ namespace GRA.Web
             services.AddScoped<EventService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
+            services.AddScoped<PointTranslationService>();
             services.AddScoped<PrizeWinnerService>();
             services.AddScoped<QuestionnaireService>();
             services.AddScoped<ReportService>();

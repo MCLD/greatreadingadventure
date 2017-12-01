@@ -10,5 +10,6 @@ namespace GRA.Domain.Repository
         Task<ICollection<VendorCodeType>> GetAllAsync(int siteId);
         Task<ICollection<VendorCodeType>> PageAsync(BaseFilter filter);
         Task<int> CountAsync(BaseFilter filter);
+        Task<bool> SiteHasCodesAsync(int siteId);
     }
 }

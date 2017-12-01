@@ -372,5 +372,10 @@ namespace GRA.Domain.Service
                 };
             }
         }
+
+        public async Task<bool> SiteHasCodesAsync()
+        {
+            return await _vendorCodeTypeRepository.SiteHasCodesAsync(GetCurrentSiteId());
+        }
     }
 }

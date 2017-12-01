@@ -50,5 +50,13 @@ namespace GRA.Data.Repository
                 .AsNoTracking()
                 .Where(_ => _.SiteId == filter.SiteId);
         }
+
+        public async Task<bool> SiteHasCodesAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId)
+                .AnyAsync();
+        }
     }
 }

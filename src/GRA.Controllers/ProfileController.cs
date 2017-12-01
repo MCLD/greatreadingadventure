@@ -19,7 +19,7 @@ namespace GRA.Controllers
     [Authorize]
     public class ProfileController : Base.UserController
     {
-        private const string MinutesReadMessage = "MinutesReadMessage";
+        private const string ActivityMessage = "ActivityMessage";
         private const string SecretCodeMessage = "SecretCodeMessage";
 
         private readonly ILogger<ProfileController> _logger;
@@ -28,6 +28,7 @@ namespace GRA.Controllers
         private readonly AuthenticationService _authenticationService;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly MailService _mailService;
+        private readonly PointTranslationService _pointTranslationService;
         private readonly QuestionnaireService _questionnaireService;
         private readonly SchoolService _schoolService;
         private readonly SiteService _siteService;
@@ -41,6 +42,7 @@ namespace GRA.Controllers
             AuthenticationService authenticationService,
             DynamicAvatarService dynamicAvatarService,
             MailService mailService,
+            PointTranslationService pointTranslationService,
             QuestionnaireService questionnaireService,
             SchoolService schoolService,
             SiteService siteService,
@@ -55,6 +57,8 @@ namespace GRA.Controllers
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
+            _pointTranslationService = Require.IsNotNull(pointTranslationService,
+                nameof(pointTranslationService));
             _questionnaireService = Require.IsNotNull(questionnaireService,
                 nameof(questionnaireService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
@@ -248,6 +252,7 @@ namespace GRA.Controllers
 
             User headUser = null;
             bool authUserIsHead = !authUser.HouseholdHeadUserId.HasValue;
+            bool showVendorCodes = authUserIsHead && await _vendorCodeService.SiteHasCodesAsync();
             if (!authUserIsHead)
             {
                 headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
@@ -255,16 +260,19 @@ namespace GRA.Controllers
             else
             {
                 authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
-                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
-                if (vendorCode != null)
+                if (showVendorCodes)
                 {
-                    authUser.VendorCode = vendorCode.Code;
+                    var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+                    if (vendorCode != null)
+                    {
+                        authUser.VendorCode = vendorCode.Code;
+                    }
                 }
             }
 
             var household = await _userService
                 .GetHouseholdAsync(authUser.HouseholdHeadUserId ?? authUser.Id, authUserIsHead,
-                authUserIsHead, authUserIsHead);
+                showVendorCodes, authUserIsHead);
 
             var siteStage = GetSiteStage();
             HouseholdListViewModel viewModel = new HouseholdListViewModel()
@@ -277,7 +285,11 @@ namespace GRA.Controllers
                 ActiveUser = activeUserId,
                 CanLogActivity = siteStage == SiteStage.ProgramOpen,
                 CanEditHousehold = siteStage == SiteStage.RegistrationOpen
-                    || siteStage == SiteStage.ProgramOpen
+                    || siteStage == SiteStage.ProgramOpen,
+                ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
+                ShowVendorCodes = showVendorCodes,
+                PointTranslation = await _pointTranslationService
+                        .GetByProgramIdAsync(authUser.ProgramId)
             };
 
             if (authUserIsHead)
@@ -316,24 +328,27 @@ namespace GRA.Controllers
                 }
                 viewModel.DailyImageDictionary = dailyImageDictionary;
 
-                var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
-                if (headVendorCode != null)
+                if (showVendorCodes)
                 {
-                    viewModel.Head.VendorCode = headVendorCode.Code;
-                    if (headVendorCode.ShipDate.HasValue)
+                    var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
+                    if (headVendorCode != null)
                     {
-                        viewModel.Head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
-                    }
-                    else if (headVendorCode.OrderDate.HasValue)
-                    {
-                        viewModel.Head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
+                        viewModel.Head.VendorCode = headVendorCode.Code;
+                        if (headVendorCode.ShipDate.HasValue)
+                        {
+                            viewModel.Head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
+                        }
+                        else if (headVendorCode.OrderDate.HasValue)
+                        {
+                            viewModel.Head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
+                        }
                     }
                 }
             }
 
-            if (TempData.ContainsKey(MinutesReadMessage))
+            if (TempData.ContainsKey(ActivityMessage))
             {
-                viewModel.MinutesReadMessage = (string)TempData[MinutesReadMessage];
+                viewModel.ActivityMessage = (string)TempData[ActivityMessage];
             }
             if (TempData.ContainsKey(SecretCodeMessage))
             {
@@ -343,11 +358,14 @@ namespace GRA.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> HouseholdApplyMinutesRead(HouseholdListViewModel model)
+        public async Task<IActionResult> HouseholdApplyActivity(HouseholdListViewModel model)
         {
-            if (model.MinutesRead < 1)
+            var user = await _userService.GetDetails(GetId(ClaimType.UserId));
+            model.PointTranslation = await _pointTranslationService
+                .GetByProgramIdAsync(user.ProgramId);
+            if (model.ActivityAmount < 1 && model.PointTranslation.IsSingleEvent == false)
             {
-                TempData[MinutesReadMessage] = "You must enter how many minutes!";
+                TempData[ActivityMessage] = "You must enter how an amount!";
             }
 
             else if (!string.IsNullOrWhiteSpace(model.UserSelection))
@@ -360,17 +378,22 @@ namespace GRA.Controllers
                     .ToList();
                 try
                 {
-                    await _activityService.LogHouseholdMinutesAsync(userSelection, model.MinutesRead);
-                    ShowAlertSuccess("Minutes applied!");
+                    var activityAmount = 1;
+                    if (model.PointTranslation.IsSingleEvent == false)
+                    {
+                        activityAmount = model.ActivityAmount;
+                    }
+                    await _activityService.LogHouseholdActivityAsync(userSelection, activityAmount);
+                    ShowAlertSuccess("Activity applied!");
                 }
                 catch (GraException gex)
                 {
-                    TempData[MinutesReadMessage] = gex.Message;
+                    TempData[ActivityMessage] = gex.Message;
                 }
             }
             else
             {
-                TempData[MinutesReadMessage] = "No household members selected.";
+                TempData[ActivityMessage] = "No household members selected.";
             }
 
             return RedirectToAction("Household");

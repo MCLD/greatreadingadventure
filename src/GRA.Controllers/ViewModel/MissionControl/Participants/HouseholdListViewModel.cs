@@ -1,5 +1,5 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -17,10 +17,13 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool CanViewPrizes { get; set; }
         public GRA.Domain.Model.User Head { get; set; }
         public string UserSelection { get; set; }
-        public int MinutesRead { get; set; }
-        public string MinutesReadMessage { get; set; }
+        public int ActivityAmount { get; set; }
+        public string ActivityMessage { get; set; }
+        public bool ShowSecretCode { get; set; }
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }
+        public bool ShowVendorCodes { get; set; }
+        public PointTranslation PointTranslation { get; set; }
 
         public int SystemId { get; set; }
 

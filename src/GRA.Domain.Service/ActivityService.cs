@@ -969,13 +969,13 @@ namespace GRA.Domain.Service
             return true;
         }
 
-        public async Task LogHouseholdMinutesAsync(List<int> userIds, int minutesRead)
+        public async Task LogHouseholdActivityAsync(List<int> userIds, int activityAmount)
         {
             VerifyCanLog();
 
-            if (minutesRead < 1)
+            if (activityAmount < 1)
             {
-                throw new GraException($"Minutes read must be at least 1.");
+                throw new GraException($"Amount must be at least 1.");
             }
             int authUserId = GetClaimId(ClaimType.UserId);
 
@@ -984,7 +984,7 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
                 if (authUser.HouseholdHeadUserId.HasValue)
                 {
-                    string error = $"User id {authUserId} cannot log minutes for a household";
+                    string error = $"User id {authUserId} cannot log activity for a household";
                     _logger.LogError(error);
                     throw new GraException("Permission denied.");
                 }
@@ -994,7 +994,7 @@ namespace GRA.Domain.Service
                 householdList.Add(authUserId);
                 if (userIds.Except(householdList).Any())
                 {
-                    string error = $"User id {authUserId} cannot log minutes for {userIds.Except(householdList).First()}";
+                    string error = $"User id {authUserId} cannot log activity for {userIds.Except(householdList).First()}";
                     _logger.LogError(error);
                     throw new GraException("Permission denied.");
                 }
@@ -1002,7 +1002,7 @@ namespace GRA.Domain.Service
 
             foreach (var userId in userIds)
             {
-                await LogActivityAsync(userId, minutesRead);
+                await LogActivityAsync(userId, activityAmount);
             }
         }
 

@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Travis CI automated build now uses Docker
 - Challenge task sorting to now uses Ajax
 - Use configured site-level SiteLogoUrl instead of the GRA logo
+- Household and Mission control activity logging to now use Point Translation values
 
 ### Fixed
 - Remove Entered School type restriction
@@ -48,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Do not show avatar layer selector if only one layer
 - Users without ViewUserPrizes coudln't view participant details
 - Trim usernames so they can't have leading or trailing spaces
+- Hide vendor code fields when site has no vendor codes created
 
 ### Removed
 - Remove static avatars; same functionality can be implemented with dynamic avatars

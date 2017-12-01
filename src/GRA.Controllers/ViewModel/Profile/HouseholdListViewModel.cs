@@ -1,5 +1,6 @@
-﻿using GRA.Controllers.ViewModel.Shared;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.Profile
 {
@@ -12,12 +13,15 @@ namespace GRA.Controllers.ViewModel.Profile
         public bool AuthUserIsHead { get; set; }
         public int ActiveUser { get; set; }
         public string UserSelection { get; set; }
-        public int MinutesRead { get; set; }
-        public string MinutesReadMessage { get; set; }
+        public int ActivityAmount{ get; set; }
+        public string ActivityMessage { get; set; }
+        public bool ShowSecretCode { get; set; }
         public string SecretCode { get; set; }
         public string SecretCodeMessage { get; set; }
         public bool CanLogActivity { get; set; }
         public bool CanEditHousehold { get; set; }
+        public bool ShowVendorCodes { get; set; }
+        public PointTranslation PointTranslation { get; set; }
 
         public Dictionary<int, DailyImageViewModel> DailyImageDictionary { get; set; }
     }
