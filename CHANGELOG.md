@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Configuration for hiding secret code entry
 - Note about password requirements to join form
 - Allow "Events" to link to an external site rather than using built-in event system
+- Garbage collection technical details to the system information page
 
 ### Changed
 - Show report completion percent in window titlebar

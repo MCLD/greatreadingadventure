@@ -83,6 +83,11 @@ namespace GRA.Controllers.MissionControl
             string siteLogoUrl = site.SiteLogoUrl 
                 ?? Url.Content(Defaults.SiteLogoPath);
 
+            var settings = new Dictionary<string, string>();
+
+            settings.Add("GC latency mode", System.Runtime.GCSettings.LatencyMode.ToString());
+            settings.Add("Server GC mode", System.Runtime.GCSettings.IsServerGC.ToString());
+
             return View(new SystemInformationViewModel
             {
                 Assembly = thisAssemblyName,
@@ -91,7 +96,8 @@ namespace GRA.Controllers.MissionControl
                 Assemblies = versions,
                 Instance = _config[ConfigurationKey.InstanceName],
                 Deploy = _config[ConfigurationKey.DeployDate],
-                SiteLogoUrl = siteLogoUrl
+                SiteLogoUrl = siteLogoUrl,
+                Settings = settings
             });
         }
     }

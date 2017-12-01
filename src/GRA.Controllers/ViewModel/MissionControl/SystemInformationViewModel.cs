@@ -11,5 +11,6 @@ namespace GRA.Controllers.ViewModel.MissionControl
         public string Instance { get; set; }
         public string Deploy { get; set; }
         public string SiteLogoUrl { get; set; }
+        public Dictionary<string, string> Settings { get; set; }
     }
 }
