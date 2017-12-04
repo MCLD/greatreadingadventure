@@ -60,7 +60,7 @@ namespace GRA.Domain.Service
             {
                 var userLookupChallenges = new List<Challenge>();
                 int userId = GetActiveUserId();
-                filter.UserIds = new List<int>() { userId };
+                filter.FavoritesUserId = userId;
                 var challengeIds = await _challengeRepository.PageIdsAsync(filter, userId);
                 foreach (var challengeId in challengeIds.Data)
                 {

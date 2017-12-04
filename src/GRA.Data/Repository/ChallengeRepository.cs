@@ -64,7 +64,7 @@ namespace GRA.Data.Repository
                 challenges = challenges
                     .Where(_ => filter.ProgramIds.Any(p => p == _.LimitToProgramId));
             }
-            if (filter.UserIds?.Any() == true && filter.Favorites != true)
+            if (filter.UserIds?.Any() == true)
             {
                 challenges = challenges.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
@@ -78,7 +78,7 @@ namespace GRA.Data.Repository
                         .Any(c => filter.CategoryIds.Contains(c)));
             }
             
-            if (filter.Favorites == true && filter.UserIds?.FirstOrDefault() != null)
+            if (filter.Favorites == true && filter.FavoritesUserId.HasValue)
             {
                 var userFavoriteChallenges = _context.UserFavoriteChallenges
                     .AsNoTracking()
