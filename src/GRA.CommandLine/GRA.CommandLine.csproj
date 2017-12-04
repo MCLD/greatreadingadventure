@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>gracl</AssemblyName>
-    <Version>4.0.0-alpha7</Version>
+    <Version>4.0.0-alpha8</Version>
     <Company />
     <Product />
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [4.0.0-alpha8] 2017-12-04
 ### Added
 - Questionnaire preview page
 - Activity by Program Report
@@ -54,6 +56,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Users without ViewUserPrizes coudln't view participant details
 - Trim usernames so they can't have leading or trailing spaces
 - Hide vendor code fields when site has no vendor codes created
+- Fix case sensitivity issue with two reports
 
 ### Removed
 - Remove static avatars; same functionality can be implemented with dynamic avatars

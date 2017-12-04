@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace GRA.Domain.Report
 {
     [ReportInformation(8,
-        "Activity by Program",
+        "Activity By Program",
         "Registration count and activity, filterable by system and date, displayed by program.",
         "Program")]
     public class ActivityByProgramReport : BaseReport
