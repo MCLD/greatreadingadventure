@@ -92,10 +92,14 @@ namespace GRA.Data.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                challenges = challenges.Where(_ => _.Name.Contains(filter.Search)
+                challenges = challenges
+                    .Include(_ => _.ChallengeCategories)
+                    .ThenInclude(_ => _.Category)
+                    .Where(_ => _.Name.Contains(filter.Search)
                         || _.Description.Contains(filter.Search)
                         || _.Tasks.Any(_t => _t.Title.Contains(filter.Search))
-                        || _.Tasks.Any(_t => _t.Author.Contains(filter.Search)));
+                        || _.Tasks.Any(_t => _t.Author.Contains(filter.Search))
+                        || _.ChallengeCategories.Any(c => c.Category.Name.Contains(filter.Search)));
             }
 
             if (filter.IsActive.HasValue)
