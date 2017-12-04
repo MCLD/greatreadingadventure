@@ -18,6 +18,7 @@ namespace GRA.Data.Profile
                         src => src.ChallengeCategories.Select(_ => _.Category)))
                 .ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
+            CreateMap<Model.DashboardContent, Domain.Model.DashboardContent>().ReverseMap();
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()
                 .ForMember(dest => dest.ProgramIds, opt => opt.MapFrom(src

@@ -7,16 +7,19 @@ namespace GRA.Domain.Model
     {
         public int SiteId { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Title { get; set; }
-        public string Description { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Stub { get; set; }
         [Required]
         public string Content { get; set; }
-        [DisplayName("Show link in Footer")]
-        public bool IsFooter { get; set; }
-        [DisplayName("Show on Dashboard")]
-        public bool IsDashboardPage { get; set; }
+        [DisplayName("Footer Text")]
+        [MaxLength(255)]
+        public string FooterText { get; set; }
+        [DisplayName("Nav Text")]
+        [MaxLength(255)]
+        public string NavText { get; set; }
         [DisplayName("Publish this page")]
         public bool IsPublished { get; set; }
     }

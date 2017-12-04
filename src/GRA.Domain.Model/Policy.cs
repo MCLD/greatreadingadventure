@@ -21,6 +21,7 @@ namespace GRA.Domain.Model
         public const string MailParticipants = "MailParticipants";
         public const string ManageAvatars = "ManageAvatars";
         public const string ManageCategories = "ManageCategories";
+        public const string ManageDashboardContent = "ManageDashboardContent";
         public const string ManageEvents = "ManageEvents";
         public const string ManageLocations = "ManageLocations";
         public const string ManageQuestionnaires = "ManageQuestionnaires";

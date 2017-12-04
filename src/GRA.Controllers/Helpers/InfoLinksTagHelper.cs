@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GRA.Controllers.Helpers
 {
-    [HtmlTargetElement("infolinks")]
+    [HtmlTargetElement("infolinks", Attributes = "navPages")]
     public class InfoLinksTagHelper : TagHelper
     {
         private readonly PageService _pageService;
@@ -19,6 +19,9 @@ namespace GRA.Controllers.Helpers
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
+
+        [HtmlAttributeName("navPages")]
+        public bool navPages { get; set; }
 
         public InfoLinksTagHelper(IUrlHelperFactory urlHelperFactory,
             PageService pageService)
@@ -29,7 +32,7 @@ namespace GRA.Controllers.Helpers
 
         public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var pages = await _pageService.GetFooterPagesAsync();
+            var pages = await _pageService.GetAreaPagesAsync(navPages);
             if (pages.Count() > 0)
             {
                 IUrlHelper url = _urlHelperFactory.GetUrlHelper(ViewContext);
@@ -38,18 +41,41 @@ namespace GRA.Controllers.Helpers
                 foreach (var page in pages)
                 {
                     var link = url.Action("Index", "Info", new { stub = page.Stub });
-                    if (page.Stub == activeStub)
+                    if (navPages)
                     {
-                        pageList.Add($"<a class=\"active\" href=\"{link}\">{page.Title}</a>");
+                        if (page.Stub == activeStub)
+                        {
+                            pageList.Add($"<li class=\"active\"><a href=\"{link}\">{page.NavText}</a></li>");
+                        }
+                        else
+                        {
+                            pageList.Add($"<li><a href=\"{link}\">{page.NavText}</a></li>");
+                        }
                     }
                     else
                     {
-                        pageList.Add($"<a href=\"{link}\">{page.Title}</a>");
+                        if (page.Stub == activeStub)
+                        {
+                            pageList.Add($"<a class=\"active\" href=\"{link}\">{page.FooterText}</a>");
+
+                        }
+                        else
+                        {
+                            pageList.Add($"<a href=\"{link}\">{page.FooterText}</a>");
+                        }
                     }
                 }
-                output.TagName = "div";
-                output.Attributes.Add("class", "infolinks");
-                output.Content.AppendHtml(string.Join(" | ", pageList));
+                if (navPages)
+                {
+                    output.TagName = "";
+                    output.Content.AppendHtml(string.Join(" ", pageList));
+                }
+                else
+                {
+                    output.TagName = "div";
+                    output.Attributes.Add("class", "infolinks");
+                    output.Content.AppendHtml(string.Join(" | ", pageList));
+                }
             }
             else
             {

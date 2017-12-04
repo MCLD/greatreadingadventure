@@ -24,17 +24,6 @@
                     {
                         <input asp-for="Favorites" type="hidden" />
                     }
-                    @if (Model.IsLoggedIn)
-                    {
-                        <div class="row row-spacing">
-                            <div class="col-xs-12">
-                                <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn pull-right @(Model.Favorites == true ? "btn-success" : "btn-default")">
-                                    <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
-                                </a>
-                            </div>
-                        </div>
-                    }
-                   
 
                     <div class="row row-spacing">
                         <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
@@ -64,11 +53,19 @@
                             </div>
                         </div>
                     }
-                    <div class="row row-spacing">
-                        <div class="col-xs-6 col-sm-offset-8 col-sm-2">
+                    <div class="row">
+                        @if (Model.IsLoggedIn)
+                        {
+                            <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
+                                <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                    <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
+                                </a>
+                            </div>
+                        }
+                        <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
                             <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
                         </div>
-                        <div class="col-xs-6 col-sm-2">
+                        <div class="col-xs-6 col-sm-2 row-spacing">
                             <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
                         </div>
                     </div>

@@ -6,7 +6,5 @@ namespace GRA.Controllers.ViewModel.MissionControl.Pages
     {
         public GRA.Domain.Model.Page Page { get; set; }
         public bool CanEdit { get; set; }
-        [DisplayName("Display Options")]
-        public string DisplayOptions { get; set; }
     }
 }

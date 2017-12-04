@@ -135,6 +135,7 @@ namespace GRA.Data
         public DbSet<Model.Challenge> Challenges { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
+        public DbSet<Model.DashboardContent> DashboardContents { get; set; }
         public DbSet<Model.Drawing> Drawings { get; set; }
         public DbSet<Model.DrawingCriterion> DrawingCriteria { get; set; }
         public DbSet<Model.DrawingCriterionProgram> DrawingCriterionPrograms { get; set; }

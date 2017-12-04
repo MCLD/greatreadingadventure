@@ -1,0 +1,72 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Dashboard.DashboardDetailViewModel
+
+@section styles {
+    <link rel="stylesheet" href="~/css/WMD.min.css" asp-append-version="true" />
+}
+
+@if (Model.Action == "Edit")
+{
+    <a asp-action="Preview" asp-route-id="@Model.DashboardContent.Id" class="btn btn-default" style="margin:10px 0;"> Full Preview</a>
+}
+
+<form asp-controller="Dashboard" asp-action="@Model.Action" method="post" role="form">
+    <input asp-for="Action" type="hidden" />
+    @if (Model.Action == "Edit")
+    {
+        <input asp-for="DashboardContent.Id" type="hidden" />
+    }
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="DashboardContent.StartTime" class="control-label"></label>
+            <div class="input-group date" id="pickerStart">
+                <span class="input-group-addon">
+                    <span class="fa fa-calendar"></span>
+                </span>
+                <input asp-for="DashboardContent.StartTime" type="text" class="form-control" />
+            </div>
+            <span asp-validation-for="DashboardContent.StartTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="DashboardContent.Content" class="control-label"></label>
+            <div id="wmd-button-bar"></div>
+            <textarea asp-for="DashboardContent.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <div id="preview"></div>
+            <span asp-validation-for="DashboardContent.Content" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <a asp-action="Index" class="btn btn-default">Return to List</a>
+        <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+            <span class="buttonText">@Model.Action</span>
+            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+        </button>
+    </div>
+</form>
+
+@section scripts {
+    <script src="~/js/commonmark.min.js" asp-append-version="true"></script>
+    <script src="~/js/WMD.min.js" asp-append-version="true"></script>
+
+    <script>
+        var editor = new Markdown.Editor(allowUploads = false);
+        editor.run();
+
+        $("#pickerStart").datetimepicker({
+            allowInputToggle: true,
+            sideBySide: true,
+            icons: {
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down",
+                previous: "fa fa-arrow-left",
+                next: "fa fa-arrow-right"
+            }
+        });
+    </script>
+}

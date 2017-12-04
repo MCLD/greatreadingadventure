@@ -289,7 +289,7 @@ namespace GRA.Controllers
                 ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
                 ShowVendorCodes = showVendorCodes,
                 PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(authUser.ProgramId)
+                        .GetByProgramIdAsync(authUser.ProgramId, true)
             };
 
             if (authUserIsHead)
@@ -362,7 +362,7 @@ namespace GRA.Controllers
         {
             var user = await _userService.GetDetails(GetId(ClaimType.UserId));
             model.PointTranslation = await _pointTranslationService
-                .GetByProgramIdAsync(user.ProgramId);
+                .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && model.PointTranslation.IsSingleEvent == false)
             {
                 TempData[ActivityMessage] = "You must enter how an amount!";

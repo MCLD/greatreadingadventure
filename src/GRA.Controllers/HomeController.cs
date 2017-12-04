@@ -23,6 +23,7 @@ namespace GRA.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly DashboardContentService _dashboardContentService;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EmailReminderService _emailReminderService;
         private readonly PageService _pageService;
@@ -31,6 +32,7 @@ namespace GRA.Controllers
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            DashboardContentService dashboardContentService,
             DynamicAvatarService dynamicAvatarService,
             EmailReminderService emailReminderService,
             PageService pageService,
@@ -40,6 +42,8 @@ namespace GRA.Controllers
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _dashboardContentService = Require.IsNotNull(dashboardContentService,
+                nameof(dashboardContentService));
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _emailReminderService = Require.IsNotNull(emailReminderService,
@@ -105,13 +109,13 @@ namespace GRA.Controllers
                     viewModel.DynamicAvatarElements = dynamicAvatarElements;
                 }
 
-                var dashboardPage = await _pageService.GetDashboardPageAsync();
-                if (dashboardPage != null)
+                var dashboardPage = await _dashboardContentService.GetCurrentContentAsync();
+                if (dashboardPage != null && !string.IsNullOrWhiteSpace(dashboardPage.Content))
                 {
                     viewModel.DashboardPageContent = CommonMark.CommonMarkConverter
                         .Convert(dashboardPage.Content);
                 }
-
+                
                 if (TempData.ContainsKey(ModelData))
                 {
                     var model = Newtonsoft.Json.JsonConvert

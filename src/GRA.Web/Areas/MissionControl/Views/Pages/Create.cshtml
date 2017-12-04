@@ -26,14 +26,6 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="Page.Description" class="control-label"></label>
-            <input asp-for="Page.Description" class="form-control" />
-            <span asp-validation-for="Page.Description" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="row row-spacing">
-        <div class="col-xs-12">
             <label asp-for="Page.Content" class="control-label"></label>
             <div id="wmd-button-bar"></div>
             <textarea asp-for="Page.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
@@ -44,13 +36,17 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
-            <label asp-for="DisplayOptions" class="control-label"></label>
-            <select asp-for="DisplayOptions" class="form-control">
-                <option value="">None</option>
-                <option value="Footer">Show link in Footer</option>
-                <option value="Dashboard">Show on Dashboard</option>
-            </select>
-            <span asp-validation-for="DisplayOptions" class="text-danger"></span>
+            <label asp-for="Page.NavText" class="control-label"></label>
+            <input asp-for="Page.NavText" class="form-control" />
+            <span asp-validation-for="Page.NavText" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
+            <label asp-for="Page.FooterText" class="control-label"></label>
+            <input asp-for="Page.FooterText" class="form-control" />
+            <span asp-validation-for="Page.FooterText" class="text-danger"></span>
         </div>
     </div>
 

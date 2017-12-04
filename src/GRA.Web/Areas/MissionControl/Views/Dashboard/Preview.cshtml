@@ -1,0 +1,15 @@
+﻿@model GRA.Domain.Model.DashboardContent
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default" style="margin-top:10px;">Return to Editor</a>
+
+<hr />
+
+<div class="row" style="font-size: larger;">
+    <div class="col-sm-6 col-sm-offset-3">
+        <div class="panel panel-default visible-sm visible-md visible-lg">
+            <div class="dashboard-page-container">
+                @Html.Raw(Model.Content)
+            </div>
+        </div>
+    </div>
+</div>

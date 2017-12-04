@@ -613,7 +613,7 @@ namespace GRA.Controllers.MissionControl
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
                 PointTranslation = await _pointTranslationService
-                    .GetByProgramIdAsync(user.ProgramId)
+                    .GetByProgramIdAsync(user.ProgramId, true)
             };
 
             if (UserHasPermission(Permission.ViewUserPrizes))
@@ -642,7 +642,7 @@ namespace GRA.Controllers.MissionControl
             var user = await _userService.GetDetails(model.Id);
             SetPageTitle(user);
             model.PointTranslation = await _pointTranslationService
-                .GetByProgramIdAsync(user.ProgramId);
+                .GetByProgramIdAsync(user.ProgramId, true);
 
             if (!model.IsSecretCode)
             {
@@ -802,7 +802,7 @@ namespace GRA.Controllers.MissionControl
                     ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
                     ShowVendorCodes = showVendorCodes,
                     PointTranslation = await _pointTranslationService
-                        .GetByProgramIdAsync(user.ProgramId)
+                        .GetByProgramIdAsync(user.ProgramId, true)
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -834,7 +834,7 @@ namespace GRA.Controllers.MissionControl
         {
             var user = await _userService.GetDetails(model.Id);
             model.PointTranslation = await _pointTranslationService
-                .GetByProgramIdAsync(user.ProgramId);
+                .GetByProgramIdAsync(user.ProgramId, true);
             if (model.ActivityAmount < 1 && model.PointTranslation.IsSingleEvent == false)
             {
                 TempData[ActivityMessage] = "You must enter an amonunt!";

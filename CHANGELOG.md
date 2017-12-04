@@ -16,14 +16,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add vendor code report
 - System and branch configuration
 - Dockerfile and .dockerignore to support Docker builds
-- Challenge Categories
-- Favoriting Challenges
+- Categories for challenges
+- Participants can now mark challenges as 'favorites'
 - Markdown text entry and images to Challenge Tasks
 - Participant Book list sorting
 - Configuration for hiding secret code entry
 - Note about password requirements to join form
 - Allow "Events" to link to an external site rather than using built-in event system
 - Garbage collection technical details to the system information page
+- Option to link pages in the top-of-the-site navigation
+- The ability to schedule free-form dashboard content
 
 ### Changed
 - Show report completion percent in window titlebar
@@ -37,6 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Challenge task sorting to now uses Ajax
 - Use configured site-level SiteLogoUrl instead of the GRA logo
 - Household and Mission control activity logging to now use Point Translation values
+- User profile page header doesn't change based on what section the participant has selected
 
 ### Fixed
 - Remove Entered School type restriction

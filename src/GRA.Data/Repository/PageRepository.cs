@@ -18,17 +18,11 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<Page> GetByStubAsync(int siteId, string pageStub,
-            bool exlcudeDashboardPage)
+        public async Task<Page> GetByStubAsync(int siteId, string pageStub)
         {
             var page = DbSet
                 .AsNoTracking()
                 .Where(_ => _.SiteId == siteId && _.Stub == pageStub);
-
-            if (exlcudeDashboardPage)
-            {
-                page = page.Where(_ => _.IsDashboardPage == false);
-            }
 
             return await page
                 .ProjectTo<Page>()
@@ -57,24 +51,26 @@ namespace GRA.Data.Repository
                 .CountAsync();
         }
 
-        public async Task<IEnumerable<Page>> GetFooterPagesAsync(int siteId)
+        public async Task<IEnumerable<Page>> GetAreaPagesAsync(int siteId, bool navPages)
         {
-            return await DbSet
+            var pages = DbSet
                .AsNoTracking()
-               .Where(_ => _.SiteId == siteId
-               && _.IsFooter == true
-               && _.IsPublished == true)
-               .OrderBy(_ => _.Title)
-               .ProjectTo<Page>()
-               .ToListAsync();
-        }
+               .Where(_ => _.SiteId == siteId && _.IsPublished == true);
 
-        public async Task<Page> GetDashboardPageAsync(int siteId)
-        {
-            return await DbSet.AsNoTracking()
-                .Where(_ => _.SiteId == siteId && _.IsDashboardPage == true)
-                .ProjectTo<Page>()
-                .FirstOrDefaultAsync();
+            if (navPages)
+            {
+                pages = pages
+                    .Where(_ => string.IsNullOrWhiteSpace(_.NavText) == false)
+                    .OrderBy(_ => _.NavText);
+            }
+            else
+            {
+                pages = pages
+                    .Where(_ => string.IsNullOrWhiteSpace(_.FooterText) == false)
+                    .OrderBy(_ => _.FooterText);
+            }
+
+            return await pages.ProjectTo<Page>().ToListAsync();
         }
     }
 }

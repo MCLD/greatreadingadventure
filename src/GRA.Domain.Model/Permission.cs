@@ -20,6 +20,7 @@ namespace GRA.Domain.Model
         MailParticipants,
         ManageAvatars,
         ManageCategories,
+        ManageDashboardContent,
         ManageEvents,
         ManageLocations,
         ManageQuestionnaires,

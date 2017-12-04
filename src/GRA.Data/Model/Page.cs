@@ -7,13 +7,16 @@ namespace GRA.Data.Model
         [Required]
         public int SiteId { get; set; }
         [Required]
+        [MaxLength(255)]
         public string Title { get; set; }
-        public string Description { get; set; }
+        [MaxLength(255)]
         public string Stub { get; set; }
         [Required]
         public string Content { get; set; }
-        public bool IsFooter { get; set; }
+        [MaxLength(255)]
+        public string FooterText { get; set; }
+        [MaxLength(255)]
+        public string NavText { get; set; }
         public bool IsPublished { get; set; }
-        public bool IsDashboardPage { get; set; }
     }
 }

@@ -71,33 +71,6 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(PagesEditViewModel model)
         {
-            if (!string.IsNullOrWhiteSpace(model.DisplayOptions))
-            {
-                if (model.DisplayOptions == "Footer")
-                {
-                    model.Page.IsFooter = true;
-                    model.Page.IsDashboardPage = false;
-                }
-                else if (model.DisplayOptions == "Dashboard")
-                {
-                    model.Page.IsFooter = false;
-                    model.Page.IsDashboardPage = true;
-                    var currentDashboardPage = await _pageService.GetDashboardPageAsync();
-                    if (currentDashboardPage != null)
-                    {
-                        ModelState.AddModelError("DisplayOptions", $"'{currentDashboardPage.Title}' is already the dashboard page.");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("DisplayOptions", $"Invalid selection.");
-                }
-            }
-            else
-            {
-                model.Page.IsFooter = false;
-                model.Page.IsDashboardPage = false;
-            }
             Regex checkStub = new Regex(@"^[\w\-]*$");
             if (!checkStub.IsMatch(model.Page.Stub))
             {
@@ -143,33 +116,6 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Edit(PagesEditViewModel model)
         {
-            if (!string.IsNullOrWhiteSpace(model.DisplayOptions))
-            {
-                if (model.DisplayOptions == "Footer")
-                {
-                    model.Page.IsFooter = true;
-                    model.Page.IsDashboardPage = false;
-                }
-                else if (model.DisplayOptions == "Dashboard")
-                {
-                    model.Page.IsFooter = false;
-                    model.Page.IsDashboardPage = true;
-                    var currentDashboardPage = await _pageService.GetDashboardPageAsync();
-                    if (currentDashboardPage != null && currentDashboardPage.Stub != model.Page.Stub)
-                    {
-                        ModelState.AddModelError("DisplayOptions", $"'{currentDashboardPage.Title}' is already the dashboard page.");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("DisplayOptions", $"Invalid selection.");
-                }
-            }
-            else
-            {
-                model.Page.IsFooter = false;
-                model.Page.IsDashboardPage = false;
-            }
             if (ModelState.IsValid)
             {
                 await _pageService.EditPageAsync(model.Page);

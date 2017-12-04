@@ -53,6 +53,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Stub</th>
+                            <th>Shown in Nav</th>
                             <th>Shown in Footer</th>
                             <th>Published</th>
                             @if (Model.CanDeletePage)
@@ -62,26 +63,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var page in Model.Pages)
+                        @foreach (var graPage in Model.Pages)
                         {
                             <tr>
                                 <td class="td-class">
-                                    <a asp-action="Edit" asp-route-stub="@page.Stub" class="rowlink">
-                                        @page.Title
+                                    <a asp-action="Edit" asp-route-stub="@graPage.Stub" class="rowlink">
+                                        @graPage.Title
                                     </a>
                                 </td>
                                 <td>
-                                    @if (page.IsDashboardPage)
-                                    {
-                                        <span class="fa fa-newspaper-o "></span>
-                                    }
-                                    else
-                                    {
-                                        @: @page.Stub
-                                    }
+                                    @graPage.Stub
                                 </td>
-                                <td>@(page.IsFooter ? "Yes" : "No")</td>
-                                <td>@(page.IsPublished ? "Yes" : "No")</td>
+                                <td>
+                                    <span class="colored-icon fa @(string.IsNullOrWhiteSpace(graPage.NavText) ? "fa-times" : "fa-check")"></span>
+                                </td>
+                                <td>
+                                    <span class="colored-icon fa @(string.IsNullOrWhiteSpace(graPage.FooterText) ? "fa-times" : "fa-check")"></span>
+                                </td>
+                                <td>@(graPage.IsPublished ? "Yes" : "No")</td>
                                 @if (Model.CanDeletePage)
                                 {
                                     <td class="on-top gra-mc-icon">
@@ -89,8 +88,8 @@
                                                 class="btn btn-danger btn-xs"
                                                 data-toggle="modal"
                                                 data-target="#deleteModal"
-                                                data-id="@page.Id"
-                                                data-name="@page.Title">
+                                                data-id="@graPage.Id"
+                                                data-name="@graPage.Title">
                                             <span class="fa fa-remove" aria-hidden="true"></span>
                                         </button>
                                     </td>

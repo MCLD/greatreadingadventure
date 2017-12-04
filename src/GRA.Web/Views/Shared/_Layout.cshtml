@@ -99,10 +99,12 @@
                                 }
                             </li>
                         }
+                        <infolinks navPages="true"></infolinks>
                         <li><a asp-controller="Home" asp-action="Signout">Sign out</a></li>
                     }
                     else
                     {
+                        <infolinks navPages="true"></infolinks>
                         @if (siteStage == SiteStage.RegistrationOpen || siteStage == SiteStage.ProgramOpen)
                         {
                             <li ActiveBy routeKey="Controller" value="Join"><a asp-controller="Join" asp-action="Index">Join</a></li>
@@ -162,7 +164,7 @@
             </div>
         }
         @RenderBody()
-        <infolinks></infolinks>
+        <infolinks navPages="false"></infolinks>
         <hr class="footer">
         <footer>
             <grasite property="footer"></grasite>
