@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - Issue with favorites list filtering
 - Issue with favorites spinner in Internet Explorer
+- Problem with EF inferring an index that it shouldn't on UserFavoriteChallenges
 
 ## [4.0.0-alpha8] 2017-12-04
 ### Added
