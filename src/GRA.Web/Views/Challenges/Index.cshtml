@@ -227,10 +227,10 @@
                                     button.data("favorite", "False");
                                 }
                             }
-                            button.removeClass("fa-spinner fa-pulse");
+                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
                             }
                         else {
-                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse");
+                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
                             alert(response.message);
                         }
                     }, 500);

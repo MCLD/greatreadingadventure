@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GRA.Controllers.ViewModel.Challenges;
@@ -132,16 +133,25 @@ namespace GRA.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateSingleFavorite(int challengeId, bool favorite)
         {
-            var challengeList = new List<Challenge>()
+            var serviceResult = new ServiceResult();
+            try
             {
-                new Challenge()
+                var challengeList = new List<Challenge>()
                 {
-                    Id = challengeId,
-                    IsFavorited = favorite
-                }
-            };
-            var serviceResult = await _activityService.UpdateFavoriteChallenges(challengeList);
-
+                    new Challenge()
+                    {
+                        Id = challengeId,
+                        IsFavorited = favorite
+                    }
+                };
+                serviceResult = await _activityService.UpdateFavoriteChallenges(challengeList);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error updaing user favorite challenges", ex);
+                serviceResult.Status = ServiceResultStatus.Error;
+                serviceResult.Message = "An error occured while trying to update the challenge.";
+            }
             return Json(new
             {
                 success = serviceResult.Status == ServiceResultStatus.Success,

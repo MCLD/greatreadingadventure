@@ -82,7 +82,7 @@ namespace GRA.Data.Repository
             {
                 var userFavoriteChallenges = _context.UserFavoriteChallenges
                     .AsNoTracking()
-                    .Where(_ => _.UserId == filter.UserIds.First());
+                    .Where(_ => _.UserId == filter.FavoritesUserId);
 
                 challenges = from challengeList in challenges
                              join userFavorites in userFavoriteChallenges

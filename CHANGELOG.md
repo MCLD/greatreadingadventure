@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Better error handling in AJAX favoriting
+
+### Fixed
+- Issue with favorites list filtering
+- Issue with favorites spinner in Internet Explorer
 
 ## [4.0.0-alpha8] 2017-12-04
 ### Added
