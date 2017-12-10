@@ -211,6 +211,7 @@ namespace GRA.Controllers
                 Challenge = challenge,
                 BadgePath = challenge.BadgeFilename,
                 IsActive = isActive,
+                IsLoggedIn = AuthUser.Identity.IsAuthenticated,
                 ShowCompleted = showCompleted,
                 Tasks = new List<TaskDetailViewModel>()
             };

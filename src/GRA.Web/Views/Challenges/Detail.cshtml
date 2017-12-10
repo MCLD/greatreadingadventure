@@ -1,13 +1,33 @@
 ﻿@model GRA.Controllers.ViewModel.Challenges.ChallengeDetailViewModel
 
+<noscript>
+    <style>
+        #favoriteCell {
+            display: none;
+        }
+    </style>
+</noscript>
+
 <form asp-controller="Challenges" asp-action="CompleteTasks" method="post" role="form">
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 ">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <span class="lead">
-                        Challenge: @Model.Challenge.Name
-                    </span>
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <span class="lead">
+                                    Challenge: @Model.Challenge.Name
+                                </span>
+                            </td>
+                            @if (Model.IsLoggedIn)
+                            {
+                                <td id="favoriteCell" style="text-align:center;vertical-align:top;width:40px">
+                                    <div class="favorite-button pull-right @(Model.Challenge.IsFavorited ? "fa-star" : "fa-star-o")" data-favorite="@Model.Challenge.IsFavorited"></div>
+                                </td>
+                            }
+                        </tr>
+                    </table>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -84,3 +104,38 @@
         </div>
     </div>
 </form>
+
+@section scripts {
+    <script>
+        var favoriteUrl = "@(Url.Action("UpdateSingleFavorite"))";
+
+        $(".favorite-button").on("click", function () {
+            var button = $(this);
+            if (button.hasClass("fa-spinner") == false) {
+                button.removeClass("fa-star fa-star-o").addClass("fa-spinner fa-pulse");
+                var favorite = button.data("favorite") == "False";
+
+                $.post(favoriteUrl, { challengeId: @Model.Challenge.Id, favorite: favorite }, function (response) {
+                    setTimeout(function() {
+                        if (response.success) {
+                            if (response.favorite) {
+                                button.addClass("fa-star");
+                                button.data("favorite", "True");
+                            }
+                            else {
+                                button.addClass("fa-star-o");
+                                button.data("favorite", "False");
+                            }
+                            button.removeClass("fa-spinner fa-pulse").css("transform", "none");
+                            }
+                        else {
+                            button.addClass("fa-exclamation-triangle").removeClass("fa-spinner fa-pulse").css("transform", "none");
+                            alert(response.message);
+                        }
+                    }, 500);
+                });
+            }
+
+        });
+    </script>
+}

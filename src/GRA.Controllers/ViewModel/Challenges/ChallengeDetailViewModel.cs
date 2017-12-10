@@ -6,6 +6,7 @@ namespace GRA.Controllers.ViewModel.Challenges
     {
         public GRA.Domain.Model.Challenge Challenge { get; set; }
         public bool IsActive { get; set; }
+        public bool IsLoggedIn { get; set; }
         public bool ShowCompleted { get; set; }
         public string Details { get; set; }
         public string BadgePath { get; set; }
