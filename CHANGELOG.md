@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Issue with favorites spinner in Internet Explorer
 - Problem with EF inferring an index that it shouldn't on UserFavoriteChallenges
 
+### Removed
+- "Is achiever" property from Users
+
 ## [4.0.0-alpha8] 2017-12-04
 ### Added
 - Questionnaire preview page

@@ -283,7 +283,7 @@ namespace GRA.Data.Repository
         public async Task<int> GetAchieverCountAsync(ReportCriterion request)
         {
             return await ApplyUserFilter(request)
-                .Where(_ => _.IsAchiever == true)
+                .Where(_ => _.AchievedAt.HasValue)
                 .CountAsync();
         }
 

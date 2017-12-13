@@ -16,7 +16,6 @@ namespace GRA.Domain.Model
         public bool IsLockedOut { get; set; }
         public DateTime LockedOutAt { get; set; }
         public string LockedOutFor { get; set; }
-        public bool IsAchiever { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsActive { get; set; }
         public DateTime? LastActivityDate { get; set; }

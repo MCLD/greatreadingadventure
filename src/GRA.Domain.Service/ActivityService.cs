@@ -602,10 +602,9 @@ namespace GRA.Domain.Service
             // update the user's achiever status if they've crossed the threshhold
             var program = await _programRepository.GetByIdAsync(earnedUser.ProgramId);
 
-            if (!earnedUser.IsAchiever
+            if (!earnedUser.AchievedAt.HasValue 
                 && earnedUser.PointsEarned >= program.AchieverPointAmount)
             {
-                earnedUser.IsAchiever = true;
                 earnedUser.AchievedAt = _dateTimeProvider.Now;
 
                 var notification = new Notification
@@ -683,13 +682,8 @@ namespace GRA.Domain.Service
             // update the user's achiever status if they've crossed the threshhold
             var program = await _programRepository.GetByIdAsync(removeUser.ProgramId);
 
-            if (removeUser.PointsEarned >= program.AchieverPointAmount)
+            if (removeUser.PointsEarned < program.AchieverPointAmount)
             {
-                removeUser.IsAchiever = true;
-            }
-            else
-            {
-                removeUser.IsAchiever = false;
                 removeUser.AchievedAt = null;
             }
 
