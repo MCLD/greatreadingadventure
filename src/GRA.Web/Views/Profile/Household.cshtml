@@ -108,7 +108,7 @@
                                                 }
                                             </table>
                                         </div>
-                                        @if (Model.ShowSecretCode)
+                                        @if (!Model.DisableSecretCode)
                                         {
                                             <div class="col-xs-12 col-sm-6 row-spacing">
                                                 <table>
@@ -407,7 +407,7 @@
                                             </table>
 
                                         </div>
-                                        @if (Model.ShowSecretCode)
+                                        @if (!Model.DisableSecretCode)
                                         {
                                         <div class="col-xs-12 col-sm-6 row-spacing">
                                             <table>

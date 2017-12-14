@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Domain.Model
@@ -60,5 +61,6 @@ namespace GRA.Domain.Model
         [MaxLength(15)]
         public string TwitterUsername { get; set; }
         public bool IsHttpsForced { get; set; }
+        public ICollection<SiteSetting> Settings { get; set; }
     }
 }

@@ -248,5 +248,17 @@ namespace GRA.Controllers.Base
                 AlertInfo = $"{Fa("check-circle")} {message}";
             }
         }
+
+        /// <summary>
+        /// Look up a site setting by key, if it is set to anything other than NULL return true
+        /// </summary>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to null.</returns>
+        protected async Task<bool> GetSiteSettingBoolAsync(string key)
+        {
+            var site = await GetCurrentSiteAsync();
+            return site.Settings.Where(_ => _.Key == key).FirstOrDefault()?.Value != null;
+        }
     }
 }

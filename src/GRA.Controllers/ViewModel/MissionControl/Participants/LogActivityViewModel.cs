@@ -13,7 +13,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool HasAccount { get; set; }
         [DisplayName("Activity Amount")]
         public int? ActivityAmount { get; set; }
-        public bool ShowSecretCode { get; set; }
+        public bool DisableSecretCode { get; set; }
         [DisplayName("Secret Code")]
         public string SecretCode { get; set; }
         public bool IsSecretCode { get; set; }

@@ -79,7 +79,7 @@ namespace GRA.Controllers
                     SingleEvent = pointTranslation.IsSingleEvent,
                     ActivityDescriptionPlural = pointTranslation.ActivityDescriptionPlural,
                     Badges = badges.Data,
-                    ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True"
+                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable)
                 };
 
                 var program = await _siteService.GetProgramByIdAsync(user.ProgramId);

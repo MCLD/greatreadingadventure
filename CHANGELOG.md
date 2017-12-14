@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Better error handling in AJAX favoriting
 - The ability to favorite a challenge from its detail page
+- System to apply site-level settings throughout the application
+- System settings for hiding Events and Challenges in nav until registration opens
 
 ### Fixed
 - Issue with favorites list filtering
@@ -15,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Removed
 - "Is achiever" property from Users
+- Application configuration value for hiding the secret code field
 
 ## [4.0.0-alpha8] 2017-12-04
 ### Added

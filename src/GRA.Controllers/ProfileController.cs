@@ -286,7 +286,7 @@ namespace GRA.Controllers
                 CanLogActivity = siteStage == SiteStage.ProgramOpen,
                 CanEditHousehold = siteStage == SiteStage.RegistrationOpen
                     || siteStage == SiteStage.ProgramOpen,
-                ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
+                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 ShowVendorCodes = showVendorCodes,
                 PointTranslation = await _pointTranslationService
                         .GetByProgramIdAsync(authUser.ProgramId, true)

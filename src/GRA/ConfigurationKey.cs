@@ -21,7 +21,6 @@ namespace GRA
         public const string DefaultSitePath = "GraDefaultSitePath";
         public const string DeployDate = "GraDeployDate";
         public const string EmailOverride = "GraEmailOverride";
-        public const string HideSecretCode = "GraHideSecretCode";
         public const string InitialAuthorizationCode = "GraInitialAuthCode";
         public const string InitialProgramSetup = "GraInitialProgramSetup";
         public const string InstanceName = "GraInstanceName";

@@ -23,7 +23,7 @@ namespace GRA.Controllers.Filter
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _userContextProvider = userContextProvider 
+            _userContextProvider = userContextProvider
                 ?? throw new ArgumentNullException(nameof(userContextProvider));
         }
 
@@ -75,10 +75,33 @@ namespace GRA.Controllers.Filter
                 site = await _siteLookupService.GetByIdAsync((int)siteId);
             }
 
+            var siteStage = _siteLookupService.GetSiteStageAsync(site);
+
+            bool showChallenges = true;
+            bool showEvents = true;
+
+            if (siteStage == SiteStage.BeforeRegistration)
+            {
+                // we might need to hide challenges and/or events since we're pre-registration
+                // hide means that if the value is set then we want showChallenges to be false
+                // hence == null rather than != null
+                showChallenges = site.Settings
+                    .Where(_ => _.Key == SiteSettingKey.Challenges.HideUntilRegistrationOpen)
+                    .FirstOrDefault()?
+                    .Value == null;
+
+                showEvents = site.Settings
+                    .Where(_ => _.Key == SiteSettingKey.Events.HideUntilRegistrationOpen)
+                    .FirstOrDefault()?
+                    .Value == null;
+            }
+
             httpContext.Items[ItemKey.GoogleAnalytics] = site.GoogleAnalyticsTrackingId;
-            httpContext.Items[ItemKey.SiteStage] = _siteLookupService.GetSiteStageAsync(site);
+            httpContext.Items[ItemKey.SiteStage] = siteStage;
             httpContext.Session.SetInt32(SessionKey.SiteId, (int)siteId);
             httpContext.Items[ItemKey.SiteId] = (int)siteId;
+            httpContext.Items[ItemKey.ShowChallenges] = showChallenges;
+            httpContext.Items[ItemKey.ShowEvents] = showEvents;
 
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {

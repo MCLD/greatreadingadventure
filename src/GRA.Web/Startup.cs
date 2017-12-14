@@ -322,6 +322,7 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();
             services.AddScoped<Domain.Repository.ISchoolTypeRepository, Data.Repository.SchoolTypeRepository>();
             services.AddScoped<Domain.Repository.ISiteRepository, Data.Repository.SiteRepository>();
+            services.AddScoped<Domain.Repository.ISiteSettingRepository, Data.Repository.SiteSettingRepository>();
             services.AddScoped<Domain.Repository.ISystemInformationRepository, Data.Repository.SystemInformationRepository>();
             services.AddScoped<Domain.Repository.ISystemRepository, Data.Repository.SystemRepository>();
             services.AddScoped<Domain.Repository.ITriggerRepository, Data.Repository.TriggerRepository>();

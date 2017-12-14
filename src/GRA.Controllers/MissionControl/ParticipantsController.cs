@@ -611,7 +611,7 @@ namespace GRA.Controllers.MissionControl
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
-                ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
+                DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 PointTranslation = await _pointTranslationService
                     .GetByProgramIdAsync(user.ProgramId, true)
             };
@@ -799,7 +799,7 @@ namespace GRA.Controllers.MissionControl
                     SystemId = systemId,
                     BranchList = branchList,
                     SystemList = systemList,
-                    ShowSecretCode = _config[ConfigurationKey.HideSecretCode] != "True",
+                    DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                     ShowVendorCodes = showVendorCodes,
                     PointTranslation = await _pointTranslationService
                         .GetByProgramIdAsync(user.ProgramId, true)

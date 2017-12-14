@@ -25,20 +25,24 @@ namespace GRA.Data.Profile
                 => src.CriterionPrograms.Select(_ => _.ProgramId).ToList()))
                 .ReverseMap();
             CreateMap<Model.PrizeWinner, Domain.Model.PrizeWinner>()
-                .ForMember(dest => dest.PrizeName, opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
+                .ForMember(dest => dest.PrizeName,
+                opt => opt.MapFrom(src => src.Drawing.Name ?? src.Trigger.AwardPrizeName))
                 .ReverseMap();
             CreateMap<Model.DynamicAvatarBundle, Domain.Model.DynamicAvatarBundle>()
-                .ForMember(dest => dest.DynamicAvatarItems, opt => opt.MapFrom(src => src.DynamicAvatarBundleItems.Select(_ => _.DynamicAvatarItem)))
+                .ForMember(dest => dest.DynamicAvatarItems,
+                opt => opt.MapFrom(src => src.DynamicAvatarBundleItems.Select(_ => _.DynamicAvatarItem)))
                 .ReverseMap();
             CreateMap<Model.DynamicAvatarColor, Domain.Model.DynamicAvatarColor>().ReverseMap();
             CreateMap<Model.DynamicAvatarElement, Domain.Model.DynamicAvatarElement>().ReverseMap();
             CreateMap<Model.DynamicAvatarItem, Domain.Model.DynamicAvatarItem>().ReverseMap();
             CreateMap<Model.DynamicAvatarLayer, Domain.Model.DynamicAvatarLayer>()
-                .ForMember(dest => dest.DynamicAvatarColors, opt => {
+                .ForMember(dest => dest.DynamicAvatarColors, opt =>
+                {
                     opt.MapFrom(src => src.DynamicAvatarColors.OrderBy(_ => _.SortOrder));
                     opt.ExplicitExpansion();
                 })
-                .ForMember(dest => dest.DynamicAvatarItems, opt => {
+                .ForMember(dest => dest.DynamicAvatarItems, opt =>
+                {
                     opt.MapFrom(src => src.DynamicAvatarItems.OrderBy(_ => _.SortOrder));
                     opt.ExplicitExpansion();
                 })
@@ -60,7 +64,10 @@ namespace GRA.Data.Profile
                 })
                 .ReverseMap();
             CreateMap<Model.Questionnaire, Domain.Model.Questionnaire>()
-                .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions.Where(_ => _.IsDeleted == false).OrderBy(_ => _.SortOrder)))
+                .ForMember(dest => dest.Questions,
+                    opt => opt.MapFrom(src => src.Questions
+                        .Where(_ => _.IsDeleted == false)
+                        .OrderBy(_ => _.SortOrder)))
                 .ReverseMap();
             CreateMap<Model.RecoveryToken, Domain.Model.RecoveryToken>().ReverseMap();
             CreateMap<Model.ReportCriterion, Domain.Model.ReportCriterion>().ReverseMap();
@@ -71,6 +78,14 @@ namespace GRA.Data.Profile
             CreateMap<Model.SchoolDistrict, Domain.Model.SchoolDistrict>().ReverseMap();
             CreateMap<Model.SchoolType, Domain.Model.SchoolType>().ReverseMap();
             CreateMap<Model.Site, Domain.Model.Site>().ReverseMap();
+            CreateMap<Model.SiteSetting, Domain.Model.SiteSetting>()
+                .ForMember(
+                    dest => dest.Format,
+                    opt => opt.MapFrom(_ => (Domain.Model.SiteSettingFormat)System.Enum.Parse(typeof(Domain.Model.SiteSettingFormat), _.Format)));
+            CreateMap<Domain.Model.SiteSetting, Model.SiteSetting>()
+                .ForMember(
+                    dest => dest.Format,
+                    opt => opt.MapFrom(_ => _.Format.ToString()));
             CreateMap<Model.System, Domain.Model.System>().ReverseMap();
             CreateMap<Model.Trigger, Domain.Model.Trigger>()
                 .ForMember(dest => dest.BadgeIds, opt => opt.MapFrom(src

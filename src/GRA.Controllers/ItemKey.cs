@@ -16,5 +16,7 @@ namespace GRA.Controllers
         public const string SiteId = "SiteId";
         public const string SiteStage = "SiteStage";
         public const string UnreadCount = "UnreadCount";
+        public const string ShowChallenges = "ShowChallenges";
+        public const string ShowEvents = "ShowEvents";
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace GRA.Domain.Service
 {
@@ -15,6 +16,7 @@ namespace GRA.Domain.Service
         private readonly IConfigurationRoot _config;
         private readonly IMemoryCache _memoryCache;
         private readonly ISiteRepository _siteRepository;
+        private readonly ISiteSettingRepository _siteSettingRepository;
         private readonly IInitialSetupService _initialSetupService;
 
         public SiteLookupService(ILogger<SiteLookupService> logger,
@@ -22,13 +24,17 @@ namespace GRA.Domain.Service
             IConfigurationRoot config,
             IMemoryCache memoryCache,
             ISiteRepository siteRepository,
+            ISiteSettingRepository siteSettingRepository,
             IInitialSetupService initialSetupService) : base(logger, dateTimeProvider)
         {
-            _memoryCache = Require.IsNotNull(memoryCache, nameof(memoryCache));
-            _config = Require.IsNotNull(config, nameof(config));
-            _siteRepository = Require.IsNotNull(siteRepository, nameof(_siteRepository));
-            _initialSetupService = Require.IsNotNull(initialSetupService,
-                nameof(initialSetupService));
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _siteRepository = siteRepository
+                ?? throw new ArgumentNullException(nameof(siteRepository));
+            _siteSettingRepository = siteSettingRepository
+                ?? throw new ArgumentNullException(nameof(siteSettingRepository));
+            _initialSetupService = initialSetupService
+                ?? throw new ArgumentNullException(nameof(initialSetupService));
         }
         private async Task<IEnumerable<Site>> GetSitesFromCacheAsync()
         {
@@ -39,6 +45,10 @@ namespace GRA.Domain.Service
                 if (sites.Count() == 0)
                 {
                     sites = await InsertInitialSiteAsync();
+                }
+                foreach(var site in sites)
+                {
+                    site.Settings = await _siteSettingRepository.GetBySiteIdAsync(site.Id);
                 }
                 _memoryCache.Set(CacheKey.SitePaths, sites);
             }
