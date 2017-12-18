@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - The ability to favorite a challenge from its detail page
 - System to apply site-level settings throughout the application
 - System settings for hiding Events and Challenges in nav until registration opens
+- Ability to add a small logo image in the page navigation
 
 ### Fixed
 - Issue with favorites list filtering
