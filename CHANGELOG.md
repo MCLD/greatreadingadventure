@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System to apply site-level settings throughout the application
 - System settings for hiding Events and Challenges in nav until registration opens
 - Ability to add a small logo image in the page navigation
+- Uploading files with markdown editor
 
 ### Fixed
 - Issue with favorites list filtering

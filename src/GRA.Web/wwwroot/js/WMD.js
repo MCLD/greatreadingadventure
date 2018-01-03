@@ -141,7 +141,7 @@ Markdown.HookCollection = HookCollection;
         nav = window.navigator,
         SETTINGS = { lineLength: 72 },
 
-    // Used to work around some browser bugs where we can't use feature testing.
+        // Used to work around some browser bugs where we can't use feature testing.
         uaSniffed = {
             isIE: /msie/.test(nav.userAgent.toLowerCase()),
             isIE_5or6: /msie 6/.test(nav.userAgent.toLowerCase()) || /msie 5/.test(nav.userAgent.toLowerCase()),
@@ -1028,12 +1028,12 @@ Markdown.HookCollection = HookCollection;
                     // Create FormData object  
                     var fileData = new FormData();
 
-                    fileData.append(files[0].name, files[0]);
+                    fileData.append("file", files[0]);
 
                     // Adding one more key to FormData object   
 
                     $.ajax({
-                        url: '/File/UploadFiles',
+                        url: '/MissionControl/Ajax/UploadFile',
                         type: "POST",
                         contentType: false, // Not to set any content header  
                         processData: false, // Not to process data  
@@ -1096,19 +1096,21 @@ Markdown.HookCollection = HookCollection;
             tabs.className = "nav nav-tabs";
             dialog.appendChild(tabs);
 
-            var inputTab = doc.createElement("li");
-            inputTab.innerHTML = '<a data-toggle="tab" href="#inputUrl"><b>Input URL</b></a>';
-            inputTab.className = "active";
-            inputTab.style.padding = "5px";
-            tabs.appendChild(inputTab);
-
             if (allowUploads == true) {
                 var uploadTab = doc.createElement("li");
                 uploadTab.innerHTML = '<a data-toggle="tab" href="#uploadFile"><b>Upload File</b></a>';
+                uploadTab.className = "active";
                 uploadTab.style.padding = "5px";
                 tabs.appendChild(uploadTab);
             }
 
+            var inputTab = doc.createElement("li");
+            inputTab.innerHTML = '<a data-toggle="tab" href="#inputUrl"><b>Input URL</b></a>';
+            inputTab.style.padding = "5px";
+            if (allowUploads == false) {
+                inputTab.className = "active";
+            }
+            tabs.appendChild(inputTab);
 
             // Container for tab content
             var tabContainer = doc.createElement("div");
@@ -1119,7 +1121,12 @@ Markdown.HookCollection = HookCollection;
             // Input URL tab
             var inputUrl = doc.createElement("div");
             inputUrl.id = "inputUrl";
-            inputUrl.className = "tab-pane active";
+            if (allowUploads == true) {
+                inputUrl.className = "tab-pane";
+            }
+            else {
+                inputUrl.className = "tab-pane active";
+            }
             tabContainer.appendChild(inputUrl)
 
             var inputText = doc.createElement("div");
@@ -1172,7 +1179,7 @@ Markdown.HookCollection = HookCollection;
 
                 var uploadFile = doc.createElement("div");
                 uploadFile.id = "uploadFile";
-                uploadFile.className = "tab-pane";
+                uploadFile.className = "tab-pane active";
                 tabContainer.appendChild(uploadFile);
 
                 var uploadText = doc.createElement("div");
@@ -1822,9 +1829,9 @@ Markdown.HookCollection = HookCollection;
                         return "?";
                         break;
 
-                        // In the query string, a plus and a space are identical -- normalize.
-                        // Not strictly necessary, but identical behavior to the previous version
-                        // of this function.
+                    // In the query string, a plus and a space are identical -- normalize.
+                    // Not strictly necessary, but identical behavior to the previous version
+                    // of this function.
                     case "+":
                         if (inQueryString)
                             return "%20";
@@ -2107,10 +2114,10 @@ Markdown.HookCollection = HookCollection;
 
         if (!/\n/.test(chunk.selection)) {
             chunk.selection = chunk.selection.replace(/^(> *)/,
-            function (wholeMatch, blanks) {
-                chunk.startTag += blanks;
-                return "";
-            });
+                function (wholeMatch, blanks) {
+                    chunk.startTag += blanks;
+                    return "";
+                });
         }
     };
 

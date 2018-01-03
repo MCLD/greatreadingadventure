@@ -542,7 +542,7 @@
             @if (Model.AddTask || Model.Task != null)
             {
                 <text>
-                var editor = new Markdown.Editor(allowUploads = false);
+                var editor = new Markdown.Editor(allowUploads = true);
                 editor.run();
 
                 var observer = new MutationObserver(function (mutations) {
@@ -789,8 +789,6 @@
                                 nextDiv.find(".decreaseTaskSort").attr("disabled", "disabled");
                             }
                             nextDiv.find(".increaseTaskSort").removeAttr("disabled");
-
-                            
                         }
                         else {
                             alert("Error changing task position.");
