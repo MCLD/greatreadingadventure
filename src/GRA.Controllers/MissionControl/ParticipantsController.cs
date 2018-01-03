@@ -1514,11 +1514,14 @@ namespace GRA.Controllers.MissionControl
         }
 
         [Authorize(Policy = Policy.LogActivityForAny)]
-        public async Task<IActionResult> DeleteHistory(int id, int userId)
+        public async Task<IActionResult> DeleteHistory(string ids, int userId)
         {
             try
             {
-                await _activityService.RemoveActivityAsync(userId, id);
+                foreach(int numericId in ids.Split(',').Select(int.Parse))
+                {
+                    await _activityService.RemoveActivityAsync(userId, numericId);
+                }
             }
             catch (GraException gex)
             {

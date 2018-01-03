@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - System settings for hiding Events and Challenges in nav until registration opens
 - Ability to add a small logo image in the page navigation
 - Uploading files with markdown editor
+- Mission Control ability to delete multiple history entries at once
 
 ### Fixed
 - Issue with favorites list filtering
