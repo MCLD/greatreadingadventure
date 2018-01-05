@@ -21,5 +21,12 @@ namespace GRA
             // If this is set (i.e. not null) hide events until the registration period is open
             public const string HideUntilRegistrationOpen = "Events.HideUntilRegistrationOpen";
         }
+
+        public struct Users
+        {
+            // If this is set (i.e. not null) do not allow users to change their system/branch after
+            // joining
+            public const string RestrictChangingSystemBranch = "Users.RestrictChangingSystemBranch";
+        }
     }
 }

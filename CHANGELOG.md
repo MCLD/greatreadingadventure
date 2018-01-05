@@ -8,10 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Better error handling in AJAX favoriting
 - The ability to favorite a challenge from its detail page
 - System to apply site-level settings throughout the application
-- System settings for hiding Events and Challenges in nav until registration opens
+- Site settings for hiding Events and Challenges in nav until registration opens
+- Site setting for disabling secret code functionality
 - Ability to add a small logo image in the page navigation
 - Uploading files with markdown editor
 - Mission Control ability to delete multiple history entries at once
+- Site setting to restrict changing system and branch after signup
 
 ### Fixed
 - Issue with favorites list filtering

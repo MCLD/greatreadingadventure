@@ -46,7 +46,7 @@ namespace GRA.Domain.Service
                 {
                     sites = await InsertInitialSiteAsync();
                 }
-                foreach(var site in sites)
+                foreach (var site in sites)
                 {
                     site.Settings = await _siteSettingRepository.GetBySiteIdAsync(site.Id);
                 }
@@ -161,6 +161,14 @@ namespace GRA.Domain.Service
         {
             _memoryCache.Remove(CacheKey.SitePaths);
             return await GetSitesFromCacheAsync();
+        }
+
+        public async Task<bool> GetSiteSettingBoolAsync(int siteId, string key)
+        {
+            var site = (await GetSitesFromCacheAsync())
+                .Where(_ => _.Id == siteId)
+                .SingleOrDefault();
+            return site.Settings.Where(_ => _.Key == key).FirstOrDefault()?.Value != null;
         }
     }
 }

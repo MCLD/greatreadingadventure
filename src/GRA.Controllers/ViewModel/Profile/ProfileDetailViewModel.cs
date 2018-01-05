@@ -22,5 +22,8 @@ namespace GRA.Controllers.ViewModel.Profile
         public SelectList SchoolList { get; set; }
         public SelectList SchoolDistrictList { get; set; }
         public SelectList SchoolTypeList { get; set; }
+        public bool RestrictChangingSystemBranch { get; set; }
+        public string SystemName { get; set; }
+        public string BranchName { get; set; }
     }
 }

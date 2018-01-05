@@ -106,8 +106,19 @@ namespace GRA.Controllers
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                ProgramList = new SelectList(programList.ToList(), "Id", "Name")
+                ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                RestrictChangingSystemBranch = (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RestrictChangingSystemBranch))
             };
+
+            if(viewModel.RestrictChangingSystemBranch)
+            {
+                viewModel.SystemName = systemList.Where(_ => _.Id == viewModel.User.SystemId)
+                    .FirstOrDefault()?
+                    .Name;
+                viewModel.BranchName = branchList.Where(_ => _.Id == viewModel.User.BranchId)
+                    .FirstOrDefault()?
+                    .Name;
+            }
 
             var districtList = await _schoolService.GetDistrictsAsync();
             if (user.SchoolId.HasValue)

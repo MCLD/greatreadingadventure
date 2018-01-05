@@ -26,10 +26,11 @@
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
                             @if (!string.IsNullOrWhiteSpace(Model.User.Username))
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.Username" class="control-label"></label>
+                                        <span class="fa fa-info-circle" data-toggle="tooltip" title="Need to change your Username? Use the mail icon at the top of the screen to contact us."></span>
                                         <input asp-for="User.Username" class="form-control" readonly />
                                     </div>
                                 </div>
@@ -52,7 +53,7 @@
                             </div>
 
                             @if (Model.RequirePostalCode)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.PostalCode" class="control-label"></label>
@@ -78,38 +79,66 @@
                                 </div>
                             </div>
 
-                            @if (Model.SystemList.Count() > 1)
-            {
-                                <div class="row row-spacing">
-                                    <div class="col-xs-12">
-                                        <label asp-for="User.SystemId" class="control-label"></label>
-                                        <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
-                                        <span asp-validation-for="User.SystemId" class="text-danger"></span>
-                                    </div>
-                                </div>
-                            }
-                            else
+                            @if (Model.RestrictChangingSystemBranch)
                             {
-                                <input asp-for="User.SystemId" type="hidden" />
-                            }
+                                @if (Model.SystemList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.SystemId" class="control-label"></label>
+                                            <span class="fa fa-info-circle" data-toggle="tooltip" title="Need to change your System? Use the mail icon at the top of the screen to contact us."></span>
+                                            <input class="form-control" readonly value="@Model.SystemName" />
+                                        </div>
+                                    </div>
+                                }
 
-                            @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
-            {
-                                <div class="row row-spacing">
-                                    <div class="col-xs-12">
-                                        <label asp-for="User.BranchId" class="control-label"></label>
-                                        <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
-                                        <span asp-validation-for="User.BranchId" class="text-danger"></span>
+                                @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.BranchId" class="control-label"></label>
+                                            <span class="fa fa-info-circle" data-toggle="tooltip" title="Need to change your Branch? Use the mail icon at the top of the screen to contact us."></span>
+                                            <input class="form-control" readonly value="@Model.BranchName" />
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             }
                             else
                             {
-                                <input asp-for="User.BranchId" type="hidden" />
+
+                                @if (Model.SystemList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.SystemId" class="control-label"></label>
+                                            <select asp-for="User.SystemId" asp-items="Model.SystemList" class="form-control"></select>
+                                            <span asp-validation-for="User.SystemId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="User.SystemId" type="hidden" />
+                                }
+
+                                @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
+                                {
+                                    <div class="row row-spacing">
+                                        <div class="col-xs-12">
+                                            <label asp-for="User.BranchId" class="control-label"></label>
+                                            <select asp-for="User.BranchId" asp-items="Model.BranchList" class="form-control"></select>
+                                            <span asp-validation-for="User.BranchId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="User.BranchId" type="hidden" />
+                                }
                             }
 
                             @if (Model.ProgramList.Count() > 1)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.ProgramId" class="control-label"></label>

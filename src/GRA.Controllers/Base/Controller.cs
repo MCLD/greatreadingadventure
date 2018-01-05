@@ -257,8 +257,7 @@ namespace GRA.Controllers.Base
         /// set to null.</returns>
         protected async Task<bool> GetSiteSettingBoolAsync(string key)
         {
-            var site = await GetCurrentSiteAsync();
-            return site.Settings.Where(_ => _.Key == key).FirstOrDefault()?.Value != null;
+            return await _siteLookupService.GetSiteSettingBoolAsync(GetCurrentSiteId(), key);
         }
     }
 }

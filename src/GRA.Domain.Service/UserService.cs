@@ -3,6 +3,7 @@ using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace GRA.Domain.Service
         private readonly ActivityService _activityService;
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
+        private readonly SiteLookupService _siteLookupService;
         public UserService(ILogger<UserService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -53,7 +55,8 @@ namespace GRA.Domain.Service
             IVendorCodeRepository vendorCodeRepository,
             ActivityService activityService,
             SampleDataService configurationService,
-            SchoolService schoolService)
+            SchoolService schoolService,
+            SiteLookupService siteLookupService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
@@ -81,6 +84,8 @@ namespace GRA.Domain.Service
             _configurationService = Require.IsNotNull(configurationService,
                 nameof(configurationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
+            _siteLookupService = siteLookupService 
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
@@ -241,7 +246,6 @@ namespace GRA.Domain.Service
                 currentEntity.IsAdmin = await UserHasRoles(userToUpdate.Id);
                 currentEntity.Age = userToUpdate.Age;
                 currentEntity.AvatarId = userToUpdate.AvatarId;
-                currentEntity.BranchId = userToUpdate.BranchId;
                 currentEntity.BranchName = null;
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.Email = userToUpdate.Email?.Trim();
@@ -251,9 +255,17 @@ namespace GRA.Domain.Service
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
-                currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
                 //currentEntity.Username = userToUpdate.Username;
+
+                bool restrictChangingSystemBranch = await _siteLookupService
+                    .GetSiteSettingBoolAsync(currentEntity.SiteId,
+                    SiteSettingKey.Users.RestrictChangingSystemBranch);
+
+                if (!restrictChangingSystemBranch) {
+                    currentEntity.SystemId = userToUpdate.SystemId;
+                    currentEntity.BranchId = userToUpdate.BranchId;
+                }
 
                 int? removeEnteredSchoolId = null;
                 if (hasSchool == false)
