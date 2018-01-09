@@ -30,7 +30,6 @@ namespace GRA.Domain.Model
 
         public int ChallengeTaskTypeId { get; set; }
 
-        [Required]
         [DisplayName("Task Type")]
         public ChallengeTaskType ChallengeTaskType { get; set; }
         public bool? IsCompleted { get; set; }

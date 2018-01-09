@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Uploading files with markdown editor
 - Mission Control ability to delete multiple history entries at once
 - Site setting to restrict changing system and branch after signup
+- Ability to create groups of challenges with unique URLs
+- Ability to relate challenges and challenge groups to events
 
 ### Fixed
 - Issue with favorites list filtering

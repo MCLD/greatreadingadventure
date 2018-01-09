@@ -31,7 +31,9 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public string BadgeMakerImage { get; set; }
 
         public bool CanAddSecretCode { get; set; }
+        public bool CanEditGroups { get; set; }
         public bool CanManageLocations { get; set; }
+        public bool CanRelateChallenge { get; set; }
         public GRA.Domain.Model.Location Location { get; set; }
 
         [DisplayName("System")]

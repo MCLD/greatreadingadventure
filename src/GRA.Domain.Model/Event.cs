@@ -54,6 +54,11 @@ namespace GRA.Domain.Model
         public int? ProgramId { get; set; }
         public int? ParentEventId { get; set; }
 
+        public int? ChallengeId { get; set; }
+        public Challenge Challenge { get; set; }
+        public int? ChallengeGroupId { get; set; }
+        public ChallengeGroup ChallengeGroup { get; set; }
+
         public string EventLocationName { get; set; }
         public string EventLocationAddress { get; set; }
         public string EventLocationLink { get; set; }

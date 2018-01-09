@@ -1,0 +1,79 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Lookup.ChallengesListViewModel
+
+@if (Model.Challenges.Count() == 0)
+{
+    <div class="alert alert-warning">No Challenges found.</div>
+}
+else
+{
+    <div>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Badge</td>
+                    @if (Model.ShowActive)
+                    {
+                        <td width="42px">Active</td>
+                    }
+                    <td width="42px">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var challenge in Model.Challenges)
+                {
+                    <tr>
+                        <td>
+                            @if (Model.CanEditChallenges)
+                            {
+                                <a asp-controller="Challenges" asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                            }
+                            else
+                            {
+                                <a asp-area="" asp-controller="Challenges" asp-action="Details" asp-route-id="@challenge.Id"  target="_blank">@challenge.Name</a>
+
+                            }
+
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
+                            {
+                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                     asp-append-version="true" />
+                            }
+                            else
+                            {
+                                <text>&nbsp;</text>
+                            }
+                        </td>
+                        @if (Model.ShowActive)
+                        {
+                            <td class="gra-mc-icon">
+                                @if (challenge.IsActive)
+                                {
+                                    <span class="fa fa-lg fa-check text-success"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-lg fa-ban text-danger"></span>
+                                }
+                            </td>
+                        }
+                        <td class="gra-mc-icon">
+                            <button type="button"
+                                    class="btn btn-link btn-xs addChallengeButton"
+                                    data-id="@challenge.Id">
+                                <span class="fa fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.PaginateModel.MaxPage > 1)
+    {
+        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
+    }
+}

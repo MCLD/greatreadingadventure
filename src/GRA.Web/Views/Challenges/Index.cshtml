@@ -16,61 +16,67 @@
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="lead">Challenges</span>
+                <span class="lead">@(Model.ChallengeGroup != null ? $"Challenge Group: {Model.ChallengeGroup.Name}" : "Challenges")</span>
             </div>
             <div class="panel-body">
-                <form id="searchForm" asp-controller="Challenges" asp-action="Index" method="get" role="form">
-                    @if (Model.Favorites == true)
-                    {
-                        <input asp-for="Favorites" type="hidden" />
-                    }
-
-                    <div class="row row-spacing">
-                        <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                            <span style="font-size:large;">Search:</span>
-                        </div>
-                        <div class="col-xs-12 col-sm-10 gra-search-container">
-                            <input asp-for="Search"
-                                   class="form-control"
-                                   placeholder="Enter text to search for a challenge here" />
-                        </div>
-                        
-                    </div>
-                    @if (Model.CategoryList?.Count() > 0)
-                    {
-                        <div id="Category" class="row row-spacing">
-                            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
-                                <span style="font-size:large;">Category:</span>
-                            </div>
-                            <div class="col-xs-12 col-sm-10">
-                                <noscript id="noscript">
-                                    <select asp-for="Categories" asp-items="Model.CategoryList" class="form-control">
-                                        <option></option>
-                                    </select>
-                                </noscript>
-                                <input id="CategoryPlaceholder" class="form-control" />
-                                <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" disabled="disabled" multiple="multiple"></select>
-                            </div>
-                        </div>
-                    }
-                    <div class="row">
-                        @if (Model.IsLoggedIn)
+                @if (Model.ChallengeGroup != null)
+                {
+                    <p class="lead">@Model.ChallengeGroup.Description</p>
+                }
+                else
+                {
+                    <form id="searchForm" asp-controller="Challenges" asp-action="Index" method="get" role="form">
+                        @if (Model.Favorites == true)
                         {
-                            <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
-                                <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
-                                    <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
-                                </a>
+                            <input asp-for="Favorites" type="hidden" />
+                        }
+
+                        <div class="row row-spacing">
+                            <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                                <span style="font-size:large;">Search:</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 gra-search-container">
+                                <input asp-for="Search"
+                                       class="form-control"
+                                       placeholder="Enter text to search for a challenge here" />
+                            </div>
+
+                        </div>
+                        @if (Model.CategoryList?.Count() > 0)
+                        {
+                            <div id="Category" class="row row-spacing">
+                                <div class="col-xs-12 col-sm-2" style="margin-bottom:5px;">
+                                    <span style="font-size:large;">Category:</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-10">
+                                    <noscript id="noscript">
+                                        <select asp-for="Categories" asp-items="Model.CategoryList" class="form-control">
+                                            <option></option>
+                                        </select>
+                                    </noscript>
+                                    <input id="CategoryPlaceholder" class="form-control" />
+                                    <select asp-for="CategoryIds" asp-items="Model.CategoryList" class="form-control hidden" disabled="disabled" multiple="multiple"></select>
+                                </div>
                             </div>
                         }
-                        <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
-                            <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                        <div class="row">
+                            @if (Model.IsLoggedIn)
+                            {
+                                <div class="col-xs-12 col-sm-4 col-md-3 row-spacing">
+                                    <a asp-action="Index" asp-route-Search="@Model.Search" asp-route-Categories="@Model.Categories" asp-route-Favorites="@(Model.Favorites == true ? null : "True")" class="btn btn-block @(Model.Favorites == true ? "btn-success" : "btn-default")">
+                                        <span class="fa @(Model.Favorites == true ? "fa-star" : "fa-star-o")"></span> My Favorites
+                                    </a>
+                                </div>
+                            }
+                            <div class="col-xs-6 col-sm-2 col-sm-offset-4 col-md-offset-5 row-spacing">
+                                <a asp-action="Index" class="btn btn-default btn-block"><span class="hidden-sm fa fa-minus-circle"></span> Clear</a>
+                            </div>
+                            <div class="col-xs-6 col-sm-2 row-spacing">
+                                <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-sm-2 row-spacing">
-                            <button type="submit" class="btn btn-primary btn-block"><span class="hidden-sm fa fa-search"></span> Find</button>
-                        </div>
-                    </div>
-                </form>
-
+                    </form>
+                }
                 <div class="row">
                     <div class="col-xs-12">
                         @if (Model.Challenges.Count() == 0)

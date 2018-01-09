@@ -249,10 +249,86 @@
     <input asp-for="Challenge.Id" type="hidden" />
     <input asp-for="Challenge.BadgeId" type="hidden" />
     <input asp-for="MaxPointsMessage" type="hidden" />
+    <input asp-for="CanEditGroups" type="hidden" />
+    <input asp-for="CanManageEvents" type="hidden" />
     <input asp-for="CanViewTriggers" type="hidden" />
     <input asp-for="UseBadgeMaker" type="hidden" />
     <input asp-for="BadgeMakerUrl" type="hidden" />
     <input asp-for="BadgeMakerImage" type="hidden" />
+
+    @if (Model.Groups.Count > 0)
+    {
+        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingGroups">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseGroups" aria-expanded="false" aria-controls="collapseGroups">
+                            Challenge Groups
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseGroups" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGroups">
+                    <div class="panel-body">
+                        The following group(s) contain this challenge:
+                        <ul>
+                            @foreach (var group in Model.Groups)
+                            {
+                                @if (Model.CanEditGroups)
+                                {
+                                    <li>
+                                        <a asp-action="EditGroup" asp-route-id="@group.Id" target="_blank">@group.Name</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Name</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.RelatedEvents.Count > 0)
+    {
+        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingEvents">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvents" aria-expanded="false" aria-controls="collapseEvents">
+                            Related Events
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseEvents" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
+                    <div class="panel-body">
+                        The following event(s) are related to this challenge:
+                        <ul>
+                            @foreach (var graEvent in Model.RelatedEvents)
+                            {
+                                @if (Model.CanManageEvents)
+                                {
+                                    <li>
+                                        <a asp-controller="Events" asp-action="Edit" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Name</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a asp-area="" asp-controller="Events" asp-action="Detail" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Id</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @if (Model.DependentTriggers.Count > 0)
     {
@@ -274,7 +350,7 @@
                                 @if (Model.CanViewTriggers)
                                 {
                                     <li>
-                                        <a target="_blank" href="@Url.Action(" Edit", new { id=trigger.Id })"> @trigger.Name</a>
+                                        <a asp-controller="Triggers" asp-action="Edit" asp-route-id="@trigger.Id" target="_blank">@trigger.Name</a>
                                     </li>
                                 }
                                 else

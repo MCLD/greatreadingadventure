@@ -10,6 +10,8 @@ namespace GRA.Domain.Repository
         Task<int> GetChallengeCountAsync(ChallengeFilter filter);
         Task<IEnumerable<ChallengeTask>> GetChallengeTasksAsync(int challengeId, int? userId);
         new Task<Challenge> GetByIdAsync(int id);
+        Task<List<Challenge>> GetByIdsAsync(int siteId, IEnumerable<int> ids,
+            bool ActiveOnly = false);
         Task<Challenge> GetActiveByIdAsync(int id, int? userId = default(int));
         Task<ICollection<Challenge>> PageAllAsync(ChallengeFilter filter);
         Task<DataWithCount<IEnumerable<int>>> PageIdsAsync(ChallengeFilter filter, int userId);
@@ -28,7 +30,7 @@ namespace GRA.Domain.Repository
 
         Task<IEnumerable<int>> GetUserFavoriteChallenges(int userId,
             IEnumerable<int> challengeIds = null);
-        Task<IEnumerable<int>> ValidateChallengeIds(int siteId, IEnumerable<int> challengeIds);
+        Task<IEnumerable<int>> ValidateChallengeIdsAsync(int siteId, IEnumerable<int> challengeIds);
         Task UpdateUserFavoritesAsync(int authUserId, int userId, IEnumerable<int> favoritesToAdd,
             IEnumerable<int> favoritesToRemove);
     }

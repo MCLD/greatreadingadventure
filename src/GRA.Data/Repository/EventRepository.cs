@@ -50,6 +50,22 @@ namespace GRA.Data.Repository
             return evt;
         }
 
+        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.ChallengeId == challengeId)
+                .ProjectTo<Event>()
+                .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
+        {
+            return await DbSet.AsNoTracking()
+                   .Where(_ => _.ChallengeGroupId == challengeGroupId)
+                   .ProjectTo<Event>()
+                   .ToListAsync();
+        }
+
         private async Task AddLocationData(ICollection<Event> events)
         {
             foreach (var evt in events)
@@ -220,6 +236,29 @@ namespace GRA.Data.Repository
                 .Where(_ => _.RelatedTriggerId == triggerId)
                 .ProjectTo<Event>()
                 .ToListAsync();
+        }
+
+        public async Task DetachRelatedChallenge(int userId, int challengeId)
+        {
+            var events = await DbSet.Where(_ => _.ChallengeId == challengeId).ToListAsync();
+
+            foreach (var graEvent in events)
+            {
+                graEvent.ChallengeId = null;
+                await base.UpdateAsync(userId, graEvent, null);
+            }
+        }
+
+        public async Task DetachRelatedChallengeGroup(int userId, int challengeGroupId)
+        {
+            var events = await DbSet.Where(_ => _.ChallengeGroupId == challengeGroupId)
+                .ToListAsync();
+
+            foreach (var graEvent in events)
+            {
+                graEvent.ChallengeGroupId = null;
+                await base.UpdateAsync(userId, graEvent, null);
+            }
         }
     }
 }

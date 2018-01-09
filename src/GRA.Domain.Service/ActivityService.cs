@@ -1073,7 +1073,7 @@ namespace GRA.Domain.Service
             var serviceResult = new ServiceResult();
 
             var challengeIds = challenges.Select(_ => _.Id);
-            var validChallengeIds = await _challengeRepository.ValidateChallengeIds(
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(
                 GetCurrentSiteId(), challengeIds);
             if (challengeIds.Count() != validChallengeIds.Count())
             {

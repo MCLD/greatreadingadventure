@@ -44,5 +44,10 @@ namespace GRA.Data.Model
 
         public int? ProgramId { get; set; }
         public int? ParentEventId { get; set; }
+
+        public int? ChallengeId { get; set; }
+        public virtual Challenge Challenge { get; set; }
+        public int? ChallengeGroupId { get; set; }
+        public virtual ChallengeGroup ChallengeGroup { get; set; }
     }
 }

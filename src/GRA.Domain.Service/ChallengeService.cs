@@ -19,7 +19,9 @@ namespace GRA.Domain.Service
         private readonly IBranchRepository _branchRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IChallengeRepository _challengeRepository;
+        private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IChallengeTaskRepository _challengeTaskRepository;
+        private readonly IEventRepository _eventRepository;
         private readonly IPathResolver _pathResolver;
         private readonly ITriggerRepository _triggerRepository;
         private readonly IUserRepository _userRepository;
@@ -31,7 +33,9 @@ namespace GRA.Domain.Service
             IBranchRepository branchRepository,
             ICategoryRepository categoryRepository,
             IChallengeRepository challengeRepository,
+            IChallengeGroupRepository challengeGroupRepository,
             IChallengeTaskRepository challengeTaskRepository,
+            IEventRepository eventRepository,
             IPathResolver pathResolver,
             ITriggerRepository triggerRepository,
             IUserRepository userRepository) : base(logger, dateTimeProvider, userContextProvider)
@@ -41,8 +45,11 @@ namespace GRA.Domain.Service
             _categoryRepository = Require.IsNotNull(categoryRepository, nameof(categoryRepository));
             _challengeRepository = Require.IsNotNull(challengeRepository,
                 nameof(challengeRepository));
+            _challengeGroupRepository = Require.IsNotNull(challengeGroupRepository,
+                nameof(challengeGroupRepository));
             _challengeTaskRepository = Require.IsNotNull(challengeTaskRepository,
                 nameof(challengeTaskRepository));
+            _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _pathResolver = Require.IsNotNull(pathResolver, nameof(pathResolver));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
             _userRepository = Require.IsNotNull(userRepository, nameof(userRepository));
@@ -300,18 +307,19 @@ namespace GRA.Domain.Service
 
         public async Task RemoveChallengeAsync(int challengeId)
         {
+            var userId = GetClaimId(ClaimType.UserId);
             if (HasPermission(Permission.RemoveChallenges))
             {
                 if (await _challengeRepository.HasDependentsAsync(challengeId))
                 {
                     throw new GraException("Challenge has dependents");
                 }
+                await _eventRepository.DetachRelatedChallenge(userId, challengeId);
                 await _challengeRepository
-                    .RemoveSaveAsync(GetClaimId(ClaimType.UserId), challengeId);
+                    .RemoveSaveAsync(userId, challengeId);
             }
             else
             {
-                int userId = GetClaimId(ClaimType.UserId);
                 _logger.LogError($"User {userId} doesn't have permission to remove challenge {challengeId}.");
                 throw new Exception("Permission denied.");
             }
@@ -509,6 +517,127 @@ namespace GRA.Domain.Service
             {
                 System.IO.File.Delete(filePath);
             }
+        }
+
+        public async Task<ChallengeGroup> GetGroupByIdAsync(int id)
+        {
+            var challengeGroup = await _challengeGroupRepository.GetByIdAsync(id);
+            if (challengeGroup == null)
+            {
+                throw new GraException("The request challenge group could not be accessed or does not exist");
+            }
+            challengeGroup.Challenges = await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(),
+                challengeGroup.ChallengeIds);
+            await AddBadgeFilenames(challengeGroup.Challenges);
+
+            return challengeGroup;
+        }
+
+        public async Task<ChallengeGroup> GetActiveGroupByStubAsync(string stub)
+        {
+            return await _challengeGroupRepository.GetActiveByStubAsync(GetCurrentSiteId(),
+                stub.ToLower());
+        }
+
+        public async Task<DataWithCount<IEnumerable<ChallengeGroup>>>
+            GetPaginatedGroupListAsync(ChallengeGroupFilter filter)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<IEnumerable<ChallengeGroup>>
+            {
+                Data = await _challengeGroupRepository.PageAsync(filter),
+                Count = await _challengeGroupRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<ServiceResult<ChallengeGroup>> AddGroupAsync(ChallengeGroup challengeGroup,
+            List<int> ChallengeIds)
+        {
+            VerifyPermission(Permission.AddChallengeGroups);
+
+            var siteId = GetCurrentSiteId();
+            var stub = challengeGroup.Stub.Trim().ToLower();
+            var existingStub = await _challengeGroupRepository.StubInUseAsync(siteId, stub);
+            if (existingStub == true)
+            {
+                throw new GraException($"A challenge group with the link {stub} already exists.");
+            }
+
+            var serviceResult = new ServiceResult<ChallengeGroup>();
+            challengeGroup.SiteId = siteId;
+            challengeGroup.Stub = stub;
+
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
+                ChallengeIds);
+
+            if (ChallengeIds.Count != validChallengeIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
+            }
+
+            serviceResult.Data = await _challengeGroupRepository.AddSaveAsync(
+                GetClaimId(ClaimType.UserId), challengeGroup, validChallengeIds);
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<ChallengeGroup>> EditGroupAsync(
+            ChallengeGroup challengeGroup, List<int> ChallengeIds)
+        {
+            VerifyPermission(Permission.EditChallengeGroups);
+
+            var siteId = GetCurrentSiteId();
+            var serviceResult = new ServiceResult<ChallengeGroup>();
+            var currentChallengeGroup = await _challengeGroupRepository.GetByIdAsync(
+                challengeGroup.Id);
+            challengeGroup.SiteId = currentChallengeGroup.SiteId;
+            challengeGroup.Stub = currentChallengeGroup.Stub;
+
+            var validChallengeIds = await _challengeRepository.ValidateChallengeIdsAsync(siteId,
+                ChallengeIds);
+            if (ChallengeIds.Count != validChallengeIds.Count())
+            {
+                serviceResult.Status = ServiceResultStatus.Warning;
+                serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
+            }
+
+            var currentChallengeIds = currentChallengeGroup.Challenges?.Select(_ => _.Id) 
+                ?? new List<int>();
+            var challengesToAdd = ChallengeIds.Except(currentChallengeIds);
+            var challengesToRemove = currentChallengeIds.Except(ChallengeIds);
+
+            serviceResult.Data = await _challengeGroupRepository.UpdateSaveAsync(
+                GetClaimId(ClaimType.UserId), challengeGroup, challengesToAdd, challengesToRemove);
+
+            return serviceResult;
+        }
+
+        public async Task RemoveGroupAsync(int groupId)
+        {
+            VerifyPermission(Permission.EditChallengeGroups);
+            var userId = GetClaimId(ClaimType.UserId);
+            await _eventRepository.DetachRelatedChallengeGroup(userId, groupId);
+            await _challengeGroupRepository.RemoveSaveAsync(userId, groupId);
+        }
+
+        public async Task<List<Challenge>> GetByIdsAsync(IEnumerable<int> challengeIds)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            return await _challengeRepository.GetByIdsAsync(GetCurrentSiteId(), challengeIds);
+        }
+
+        public async Task<List<ChallengeGroup>> GetGroupsByChallengeId(int id)
+        {
+            VerifyPermission(Permission.ViewAllChallenges);
+            return await _challengeGroupRepository.GetByChallengeId(GetCurrentSiteId(), id);
+        }
+
+        public async Task<bool> StubInUseAsync(string stub)
+        {
+            VerifyPermission(Permission.AddChallengeGroups);
+            return await _challengeGroupRepository.StubInUseAsync(GetCurrentSiteId(), stub.ToLower());
         }
     }
 }

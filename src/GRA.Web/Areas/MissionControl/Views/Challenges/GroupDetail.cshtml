@@ -1,0 +1,375 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengeGroupDetailViewModel
+
+<div class="row">
+    <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="row">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="lead">Add challenge</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills" style="padding: 10px 0;">
+                                        <li id="All" class="active challengeScope">
+                                            <a>All</a>
+                                        </li>
+                                        <li id="System" class="challengeScope">
+                                            <a>My System</a>
+                                        </li>
+                                        <li id="Branch" class="challengeScope">
+                                            <a>My Branch</a>
+                                        </li>
+                                        <li id="Mine" class="challengeScope">
+                                            <a>Mine</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row row-spacing">
+                                <div class="col-xs-8">
+                                    <input id="searchText" class="form-control"
+                                           placeholder="Enter text to search for an challenge here" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="col-xs-6">
+                                        <button type="button" id="searchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button type="button" id="clearButton" class="btn btn-default btn-block">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchMessage" class="row hide">
+                                <div class="col-xs-12">
+                                    <p class="alert-sm alert-info">Searching for '<strong id="searchTerm"></strong>'</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="modalChallengeList" class="col-xs-12">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Challenges" asp-action="@Model.Action" method="post" role="form" style="padding-top:10px;">
+    <input asp-for="Action" type="hidden" />
+    <input asp-for="ChallengeIds" type="hidden" />
+    @if (Model.Action == nameof(ChallengesController.EditGroup))
+    {
+        <input asp-for="ChallengeGroup.Id" type="hidden" />
+    }
+
+    @if (Model.RelatedEvents.Count > 0)
+    {
+        <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingEvents">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEvents" aria-expanded="false" aria-controls="collapseEvents">
+                            Related Events
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseEvents" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEvents">
+                    <div class="panel-body">
+                        The following event(s) are related to this challenge group:
+                        <ul>
+                            @foreach (var graEvent in Model.RelatedEvents)
+                            {
+                                @if (Model.CanManageEvents)
+                                {
+                                    <li>
+                                        <a asp-controller="Events" asp-action="Edit" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Name</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a asp-area="" asp-controller="Events" asp-action="Detail" asp-route-id="@graEvent.Id" target="_blank">@graEvent.Id</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="form-group">
+                <label asp-for="ChallengeGroup.Name" class="control-label"></label>
+                <input asp-for="ChallengeGroup.Name" class="form-control" />
+                <span asp-validation-for="ChallengeGroup.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ChallengeGroup.Stub" class="control-label">
+                    Stub
+                    @if (Model.Action == nameof(ChallengesController.EditGroup))
+                    {
+                        <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@Model.ChallengeGroup.Stub" target="_blank">Link</a>
+                    }
+                </label>
+                <span id="Stub-Icon" class="fa colored-icon hide"></span>
+                <input asp-for="ChallengeGroup.Stub" class="form-control" readonly="@(Model.Action == nameof(ChallengesController.EditGroup) ? "readonly" : null)" />
+                <span id="ChallengeGroup_Stub-Validation" asp-validation-for="ChallengeGroup.Stub" class="text-success"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ChallengeGroup.Description" class="control-label"></label>
+                <textarea asp-for="ChallengeGroup.Description" class="form-control"></textarea>
+                <span asp-validation-for="ChallengeGroup.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Challenges</label>
+                <div>
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Badge</th>
+                                <th width="44px">Active</th>
+                                <th width="44px">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="challengeList">
+                            <tr id="noChallenges" class="@(Model.ChallengeGroup?.Challenges?.Count > 0 ? "hide" : "")">
+                                <td colspan="4"><em>No challenges in group.</em></td>
+                            </tr>
+                            @if (Model.ChallengeGroup?.Challenges != null)
+                            {
+                                foreach (var challenge in Model.ChallengeGroup.Challenges)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
+                                            {
+                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                                     asp-append-version="true" />
+                                            }
+                                            else
+                                            {
+                                                <text>&nbsp;</text>
+                                            }
+                                        </td>
+                                        <td class="gra-mc-icon">
+                                            @if (challenge.IsActive)
+                                            {
+                                                <span class="fa fa-lg fa-check text-success"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-lg fa-ban text-danger"></span>
+                                            }
+                                        </td>
+                                        <td class="gra-mc-icon">
+                                            <button type="button" class="btn btn-link btn-xs removeChallengeButton">
+                                                <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" id="addButton" class="btn btn-default">Add Challenges</button>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="Groups" class="btn btn-default">Return to List</a>
+                <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                    <span class="buttonText">Save Group</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        var challengeIds = $("#ChallengeIds").val().split(',').filter(function (x) { return x }).map(Number);
+        var challengesUrl = "@Url.Action("GetChallengeList", "Lookup")";
+        var page = 1;
+        var scope = "All";
+        var search = "";
+
+        function UpdateChallengeList() {
+            $.get(challengesUrl,
+                {
+                    challengeIds: challengeIds.join(','),
+                    scope: scope,
+                    search: search,
+                    showActive: true,
+                    page: page
+                }, function(response) {
+                    $("#modalChallengeList").html(response);
+                });
+        }
+
+        $("#addButton").on('click', function(e) {
+            $("#listModal").modal("show");
+            UpdateChallengeList();
+        });
+
+        $(document).on("click", ".addChallengeButton", function () {
+            if (!$(this).hasClass("disabled")) {
+                var challengeId = $(this).data("id");
+                challengeIds.push(challengeId);
+                $("#ChallengeIds").val(challengeIds.join(','));
+                $("#noChallenges").addClass("hide");
+
+                var row = $(this).parent().parent().clone();
+                var addedItem = row.find(".addChallengeButton");
+                addedItem.removeClass("addChallengeButton")
+                addedItem.children().removeClass("fa-plus-circle text-primary");
+                addedItem.children().addClass("fa-minus-circle text-danger");
+                addedItem.addClass("removeChallengeButton");
+                $("#challengeList").append(row);
+
+                $(".addChallengeButton").addClass("disabled");
+
+                UpdateChallengeList();
+            }
+        });
+
+        $(document).on("click", ".removeChallengeButton", function() {
+            var challengeId = $(this).data("id");
+            challengeIds.splice(challengeIds.indexOf(challengeId), 1);
+            $("#ChallengeIds").val(challengeIds.join(','));
+
+            $(this).parent().parent().remove();
+            if (challengeIds == "")
+            {
+                $("#noChallenges").removeClass("hide");
+            }
+        });
+
+        $(".challengeScope").on("click", function(e) {
+            e.preventDefault();
+            $(this).siblings().removeClass("active");
+            $(this).addClass().addClass("active");
+            scope = $(this).attr("id");
+            page = 1;
+            UpdateChallengeList();
+        });
+
+        $("#searchButton").on("click", function() {
+            search = $("#searchText").val();
+            if (search != "")
+            {
+                $("#searchMessage").removeClass("hide");
+                $("#searchTerm").html(search);
+            }
+            else
+            {
+                $("#searchMessage").addClass("hide");
+            }
+            page = 1;
+            UpdateChallengeList();
+        })
+
+        $("#clearButton").on("click", function() {
+            $("#searchText").val("");
+            search = "";
+            $("#searchMessage").addClass("hide");
+            page = 1;
+            UpdateChallengeList();
+        })
+
+        $(document).on("click", ".page-button", function() {
+            if (!$(this).hasClass("disabled"))
+            {
+                page = $(this).data("page");
+                UpdateChallengeList();
+            }
+        });
+
+        @if (Model.Action == nameof(ChallengesController.CreateGroup))
+        {
+            <text>
+            $("#ChallengeGroup_Stub").on("blur", function () {
+                UpdateStub(this);
+                ValidateStub();
+            });
+
+            $("#ChallengeGroup_Name").on("input propertychange", function () {
+                UpdateStub(this);
+            });
+
+            $("#ChallengeGroup_Name").on("blur", function () {
+                ValidateStub();
+            })
+
+            $("form").on("submit", function () {
+                UpdateStub($("#ChallengeGroup_Stub"));
+            })
+
+            function UpdateStub(input) {
+                // From https://gist.github.com/mathewbyrne/1280286
+                var slug = $(input).val().toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/&/g, '-and-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+                $("#ChallengeGroup_Stub").val(slug);
+                $("#Stub-Icon").addClass("hide");
+                $("#ChallengeGroup_Stub").removeClass("input-validation-error");
+                $("#ChallengeGroup_Stub-Validation").removeClass("field-validation-error").addClass("field-validation-valid");
+            }
+
+            function ValidateStub() {
+                var stub = $("#ChallengeGroup_Stub");
+                if (stub.val().trim() != "" && !stub.hasClass("input-validation-error")) {
+                    stub.val(stub.val().trim());
+                    var stubCheckUrl = "@Url.Action("StubInUse", "Challenges")";
+                    var icon = $("#Stub-Icon");
+                    icon.removeClass("hide fa-times fa-check");
+                    icon.addClass("fa-spinner fa-spin");
+                    $.post(stubCheckUrl, { stub: stub.val() }, function (response) {
+                        if (response) {
+                            $("#ChallengeGroup_Stub").removeClass("valid");
+                            $("#ChallengeGroup_Stub").addClass("input-validation-error");
+                            $("#ChallengeGroup_Stub-Validation").removeClass("field-validation-valid");
+                            $("#ChallengeGroup_Stub-Validation").addClass("field-validation-error");
+                            $("#ChallengeGroup_Stub-Validation").text("That stub is already in use.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-times");
+                        }
+                        else {
+                            $("#ChallengeGroup_Stub-Validation").removeClass("field-validation-valid");
+                            $("#ChallengeGroup_Stub-Validation").text("The chosen stub is available.");
+                            icon.removeClass("fa-spinner fa-spin");
+                            icon.addClass("fa-check");
+                        }
+                    });
+                }
+            }
+            </text>
+        }
+    </script>
+}

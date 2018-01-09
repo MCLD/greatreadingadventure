@@ -1,0 +1,55 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Lookup.ChallengeGroupsListViewModel
+
+@if (Model.ChallengeGroups.Count() == 0)
+{
+    <div class="alert alert-warning">No Challenges Groups found.</div>
+}
+else
+{
+    <div>
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Link</td>
+                    <td width="42px">&nbsp;</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Model.ChallengeGroups)
+                {
+                    <tr>
+                        <td>
+                            @if (Model.CanEditGroups)
+                            {
+                                <a asp-controller="Challenges" asp-action="EditGroup" asp-route-id="@group.Id" target="_blank">@group.Name</a>
+                            }
+                            else
+                            {
+                                @group.Name
+                            }
+                        </td>
+                        <td>
+                            @group.Description
+                        </td>
+                        <td>
+                            <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Stub</a>
+                        </td>
+                        <td class="gra-mc-icon">
+                            <button type="button"
+                                    class="btn btn-link btn-xs addGroupButton"
+                                    data-id="@group.Id">
+                                <span class="fa fa-2x fa-plus-circle text-success" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.PaginateModel.MaxPage > 1)
+    {
+        <paginate paginateModel="@Model.PaginateModel" asButtons="true"></paginate>
+    }
+}

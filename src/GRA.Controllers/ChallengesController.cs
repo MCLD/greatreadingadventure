@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace GRA.Controllers
@@ -40,7 +41,8 @@ namespace GRA.Controllers
             PageTitle = "Challenges";
         }
 
-        public async Task<IActionResult> Index(string Search, string Categories, bool Favorites = false, int page = 1)
+        public async Task<IActionResult> Index(string Search, string Categories, string Group,
+            bool Favorites = false, int page = 1)
         {
             int siteId = GetCurrentSiteId();
 
@@ -66,6 +68,17 @@ namespace GRA.Controllers
             {
                 filter.Favorites = true;
             }
+
+            ChallengeGroup challengeGroup = null;
+            if (!string.IsNullOrWhiteSpace(Group))
+            {
+                challengeGroup = await _challengeService.GetActiveGroupByStubAsync(Group);
+                if (challengeGroup != null)
+                {
+                    filter.GroupId = challengeGroup.Id;
+                }
+            }
+
             var challengeList = await _challengeService.GetPaginatedChallengeListAsync(filter);
 
             PaginateViewModel paginateModel = new PaginateViewModel()
@@ -106,6 +119,7 @@ namespace GRA.Controllers
             ChallengesListViewModel viewModel = new ChallengesListViewModel()
             {
                 Challenges = challengeList.Data.ToList(),
+                ChallengeGroup = challengeGroup,
                 PaginateModel = paginateModel,
                 Search = Search,
                 Categories = Categories,
@@ -126,7 +140,30 @@ namespace GRA.Controllers
             }
             HttpContext.Session.SetInt32(SessionKey.ChallengePage, page);
 
-            return View(viewModel);
+            return View(nameof(Index), viewModel);
+        }
+
+        public async Task<IActionResult> List(string id, string Search, string Categories,
+            bool Favorites = false, int page = 1)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                var challengeGroup = await _challengeService.GetActiveGroupByStubAsync(id);
+                if (challengeGroup != null)
+                {
+                    return await Index(Search, Categories, id, Favorites, page);
+                }
+            }
+
+            var routeValues = new RouteValueDictionary();
+            routeValues.Add("Search", Search);
+            routeValues.Add("Categories", Categories);
+            if (Favorites)
+            {
+                routeValues.Add("Favorites", Favorites);
+            }
+
+            return RedirectToAction(nameof(Index), routeValues);
         }
 
         [Authorize]
@@ -146,7 +183,7 @@ namespace GRA.Controllers
                 };
                 serviceResult = await _activityService.UpdateFavoriteChallenges(challengeList);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError("Error updaing user favorite challenges", ex);
                 serviceResult.Status = ServiceResultStatus.Error;

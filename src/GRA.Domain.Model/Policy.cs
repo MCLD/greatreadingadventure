@@ -9,11 +9,13 @@ namespace GRA.Domain.Model
         public const string ActivateChallenges = "ActivateChallenges";
         public const string ActivateSystemChallenges = "ActivateSystemChallenges";
         public const string AddChallenges = "AddChallenges";
+        public const string AddChallengeGroups = "AddChallengeGroups";
         public const string AddPages = "AddPages";
         public const string DeleteAnyMail = "DeleteAnyMail";
         public const string DeletePages = "DeletePages";
         public const string DeleteParticipants = "DeleteParticipants";
         public const string EditChallenges = "EditChallenges";
+        public const string EditChallengeGroups = "EditChallengeGroups";
         public const string EditPages = "EditPages";
         public const string EditParticipants = "EditParticipants";
         public const string EditParticipantUsernames = "EditParticipantUsernames";

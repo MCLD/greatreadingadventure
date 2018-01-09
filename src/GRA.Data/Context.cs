@@ -40,6 +40,8 @@ namespace GRA.Data
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys
             modelBuilder.Entity<Model.ChallengeCategory>()
                 .HasKey(_ => new { _.ChallengeId, _.CategoryId });
+            modelBuilder.Entity<Model.ChallengeGroupChallenge>()
+                .HasKey(_ => new { _.ChallengeGroupId, _.ChallengeId });
             modelBuilder.Entity<Model.DrawingCriterionProgram>()
                 .HasKey(_ => new { _.DrawingCriterionId, _.ProgramId });
             modelBuilder.Entity<Model.DynamicAvatarBundleItem>()
@@ -133,6 +135,8 @@ namespace GRA.Data
         public DbSet<Model.Category> Categories { get; set; }
         public DbSet<Model.ChallengeCategory> ChallengeCategories { get; set; }
         public DbSet<Model.Challenge> Challenges { get; set; }
+        public DbSet<Model.ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
+        public DbSet<Model.ChallengeGroup> ChallengeGroups { get; set; }
         public DbSet<Model.ChallengeTask> ChallengeTasks { get; set; }
         public DbSet<Model.ChallengeTaskType> ChallengeTaskTypes { get; set; }
         public DbSet<Model.DashboardContent> DashboardContents { get; set; }

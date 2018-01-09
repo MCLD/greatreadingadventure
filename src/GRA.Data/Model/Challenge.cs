@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GRA.Data.Model
@@ -34,9 +33,9 @@ namespace GRA.Data.Model
         public int? LimitToBranchId { get; set; }
         public int? LimitToProgramId { get; set; }
 
-
         public virtual ICollection<ChallengeCategory> ChallengeCategories { get; set; }
         public virtual ICollection<ChallengeTask> Tasks { get; set; }
+        public virtual ICollection<ChallengeGroupChallenge> ChallengeGroupChallenges { get; set; }
         public int? BadgeId { get; set; }
     }
 }

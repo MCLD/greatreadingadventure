@@ -17,13 +17,16 @@ namespace GRA.Controllers.MissionControl
     public class LookupController : Base.MCController
     {
         private readonly ILogger<LookupController> _logger;
+        private readonly ChallengeService _challengeService;
         private readonly TriggerService _triggerService;
 
         public LookupController(ILogger<LookupController> logger,
              ServiceFacade.Controller context,
+             ChallengeService challengeService,
              TriggerService triggerService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
+            _challengeService = Require.IsNotNull(challengeService, nameof(challengeService));
             _triggerService = Require.IsNotNull(triggerService, nameof(triggerService));
         }
 
@@ -105,6 +108,105 @@ namespace GRA.Controllers.MissionControl
             }
 
             return PartialView("_RequirementsPartial", viewModel);
+        }
+
+        [Authorize(Policy = Policy.ViewAllChallenges)]
+        public async Task<IActionResult> GetChallengeList(string challengeIds,
+            string scope,
+            string search,
+            bool showActive = false,
+            int page = 1)
+        {
+            var filter = new ChallengeFilter(page, 10)
+            {
+                IsActive = true,
+                Search = search
+            };
+
+            if (!string.IsNullOrWhiteSpace(challengeIds))
+            {
+                filter.ChallengeIds = challengeIds.Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .ToList();
+            }
+
+            switch (scope.ToLower())
+            {
+                case ("system"):
+                    filter.SystemIds = new List<int> { GetId(ClaimType.SystemId) };
+                    break;
+                case ("branch"):
+                    filter.BranchIds = new List<int> { GetId(ClaimType.BranchId) };
+                    break;
+                case ("mine"):
+                    filter.UserIds = new List<int> { GetId(ClaimType.UserId) };
+                    break;
+                default:
+                    break;
+            }
+
+            var challengeList = await _challengeService.MCGetPaginatedChallengeListAsync(filter);
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = challengeList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            var viewModel = new ChallengesListViewModel
+            {
+                Challenges = challengeList.Data,
+                PaginateModel = paginateModel,
+                CanEditChallenges = UserHasPermission(Permission.EditChallenges),
+                ShowActive = showActive
+            };
+
+            foreach (var challenge in viewModel.Challenges)
+            {
+                if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
+                {
+                    challenge.BadgeFilename = _pathResolver.ResolveContentPath(
+                        challenge.BadgeFilename);
+                }
+            }
+
+            return PartialView("_ChallengeListPartial", viewModel);
+        }
+
+        [Authorize(Policy = Policy.ViewAllChallenges)]
+        public async Task<IActionResult> GetChallengeGroupList(string challengeGroupIds,
+            string search,
+            int page = 1)
+        {
+            var filter = new ChallengeGroupFilter(page, 10)
+            {
+                ActiveGroups = true,
+                Search = search
+            };
+
+            if (!string.IsNullOrWhiteSpace(challengeGroupIds))
+            {
+                filter.ChallengeGroupIds = challengeGroupIds.Split(',')
+                    .Where(_ => !string.IsNullOrWhiteSpace(_))
+                    .Select(int.Parse)
+                    .ToList();
+            }
+
+            var challengeGroupList = await _challengeService.GetPaginatedGroupListAsync(filter);
+            var paginateModel = new PaginateViewModel
+            {
+                ItemCount = challengeGroupList.Count,
+                CurrentPage = page,
+                ItemsPerPage = filter.Take.Value
+            };
+            var viewModel = new ChallengeGroupsListViewModel
+            {
+                ChallengeGroups = challengeGroupList.Data,
+                PaginateModel = paginateModel,
+                CanEditGroups = UserHasPermission(Permission.EditChallengeGroups),
+            };
+
+            return PartialView("_ChallengeGroupListPartial", viewModel);
         }
     }
 }

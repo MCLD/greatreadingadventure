@@ -63,6 +63,22 @@
                 {
                     <div class="row-spacing" style="font-size:medium;">@Model.ProgramString</div>
                 }
+                @if (Model.Event.Challenge != null)
+                {
+
+                    <div class="row-space" style="font-size:medium">
+                        <strong>Related Challenge:&nbsp;</strong>
+                        <a asp-controller="Challenges" asp-action="Detail" asp-route-id="@Model.Event.Challenge.Id" target="_blank">@Model.Event.Challenge.Name</a>
+                    </div>
+                }
+                else if (Model.Event.ChallengeGroup != null)
+                {
+                    <div class="row-space" style="font-size:medium">
+                        <strong>Related Challenges:&nbsp;</strong>
+                        <a asp-controller="Challenges" asp-action="List" asp-route-id="@Model.Event.ChallengeGroup.Stub" target="_blank">@Model.Event.ChallengeGroup.Name</a>
+                    </div>
+
+                }
             </div>
             <div class="panel-footer clearfix hidden-print">
                 <div class="pull-left">

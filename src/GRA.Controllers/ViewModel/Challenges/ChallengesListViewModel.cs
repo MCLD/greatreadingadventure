@@ -7,6 +7,7 @@ namespace GRA.Controllers.ViewModel.Challenges
     public class ChallengesListViewModel
     {
         public IList<GRA.Domain.Model.Challenge> Challenges { get; set; }
+        public GRA.Domain.Model.ChallengeGroup ChallengeGroup { get; set; }
         public PaginateViewModel PaginateModel { get; set; }
         public string Search { get; set; }
         public string Categories { get; set; }

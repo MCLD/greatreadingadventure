@@ -16,6 +16,110 @@
     </style>
 }
 
+@if (Model.CanRelateChallenge)
+{
+    <div class="row">
+        <div class="modal fade" id="listModal" tabindex="-1" role="dialog" aria-labelledby="listModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="lead"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> challenge/group</span>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active" )>
+                                        <a id="challengeTab" href="#challenge" aria-controls="challenge" role="tab" data-toggle="tab">Challenge</a>
+                                    </li>
+                                    <li role="presentation" class="">
+                                        <a id="groupTab" href="#group" aria-controls="group" role="tab" data-toggle="tab">Challenge Group</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="challenge">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <ul class="nav nav-pills" style="padding: 10px 0;">
+                                                    <li id="All" class="active challengeScope">
+                                                        <a>All</a>
+                                                    </li>
+                                                    <li id="System" class="challengeScope">
+                                                        <a>My System</a>
+                                                    </li>
+                                                    <li id="Branch" class="challengeScope">
+                                                        <a>My Branch</a>
+                                                    </li>
+                                                    <li id="Mine" class="challengeScope">
+                                                        <a>Mine</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="row row-spacing">
+                                            <div class="col-xs-8">
+                                                <input id="challengeSearchText" class="form-control"
+                                                       placeholder="Enter text to search for an challenge here" />
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="col-xs-6">
+                                                    <button type="button" id="challengeSearchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <button type="button" id="challengeClearButton" class="btn btn-default btn-block">Clear</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="challengeSearchMessage" class="row hide">
+                                            <div class="col-xs-12">
+                                                <p class="alert-sm alert-info">Searching for '<strong id="challengeSearchTerm"></strong>'</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="modalChallengeList" class="col-xs-12">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="group">
+                                        <div class="row row-spacing" style="padding-top: 10px;">
+                                            <div class="col-xs-8">
+                                                <input id="groupSearchText" class="form-control"
+                                                       placeholder="Enter text to search for an challenge group here" />
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="col-xs-6">
+                                                    <button type="button" id="groupSearchButton" class="btn btn-default btn-block" style="margin-right: 8px;">Search</button>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <button type="button" id="groupClearButton" class="btn btn-default btn-block">Clear</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="groupSearchMessage" class="row hide">
+                                            <div class="col-xs-12">
+                                                <p class="alert-sm alert-info">Searching for '<strong id="groupSearchTerm"></strong>'</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="modalGroupList" class="col-xs-12">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @if (Model.CanAddSecretCode)
 {
     <div class="row">
@@ -78,7 +182,6 @@
 }
 
 <form asp-controller="Events" asp-action="Create" method="post" role="form" enctype="multipart/form-data">
-
     <input asp-for="UseLocation" type="hidden" />
     <input asp-for="Event.ParentEventId" type="hidden" />
 
@@ -210,6 +313,41 @@
         </div>
     </div>
 
+    @if (Model.CanRelateChallenge)
+    {
+        <input asp-for="CanRelateChallenge" type="hidden" />
+        <input asp-for="Event.ChallengeId" type="hidden" />
+        <input asp-for="Event.ChallengeGroupId" type="hidden" />
+        <div class="row row-spacing">
+            <div class="col-xs-12">
+                <label class="control-label">Related Challenge/Group</label>
+                <table id="challengeTable" class="table table-condensed table-bordered table-striped hide">
+                    <thead>
+                        <tr>
+                            <th>Challenge Name</th>
+                            <th>Badge</th>
+                            <th width="44px">Active</th>
+                            <th width="44px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="challengeList"></tbody>
+                </table>
+                <table id="groupTable" class="table table-condensed table-bordered table-striped hide">
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Description</th>
+                            <th>Link</th>
+                            <th width="44px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="groupList"></tbody>
+                </table>
+                <div id="noRelated" class="alert alert-warning" style="margin-bottom: 10px;">No related challenges or challenge groups.</div>
+                <button type="button" id="addButton" class="btn btn-default" style="display: block"><span class="relatedText">@(Model.Event?.Challenge != null || Model.Event?.ChallengeGroup != null ? "Change" : "Add")</span> Related Challenge</button>
+            </div>
+        </div>
+    }
     @if (Model.CanAddSecretCode)
     {
         <input asp-for="CanAddSecretCode" type="hidden" />
@@ -314,7 +452,7 @@
 </form>
 
 @section scripts
-{
+    {
     <script>
         $("#pickerStart").datetimepicker({
             @if (Model.Event?.AllDay == true)
@@ -523,6 +661,189 @@
                 $("#SecretCode-Icon").addClass("hide");
             });
         </text>
+        }
+
+        @if (Model.CanRelateChallenge)
+        {
+            <text>
+            var challengesUrl = "@Url.Action("GetChallengeList", "Lookup")";
+            var groupsUrl = "@Url.Action("GetChallengeGroupList", "Lookup")";
+            var challengePage = 1;
+            var challengeScope = "All";
+            var challengeSearch = "";
+            var groupPage = 1;
+            var groupSearch = "";
+            var challengesLoaded = false;
+            var groupsLoaded = false;
+
+            function UpdateChallengeList() {
+                $.get(challengesUrl,
+                    {
+                        challengeIds: $("#Event_ChallengeId").val(),
+                        scope: challengeScope,
+                        search: challengeSearch,
+                        showActive: true,
+                        page: challengePage
+                    }, function(response) {
+                        $("#modalChallengeList").html(response);
+                    });
+            }
+            function UpdateGroupList() {
+                $.get(groupsUrl,
+                    {
+                        challengeGroupIds: $("#Event_ChallengeGroupId").val(),
+                        search: groupSearch,
+                        showActive: true,
+                        page: groupPage
+                    }, function (response) {
+                        $("#modalGroupList").html(response);
+                    });
+            }
+
+            $("#challengeTab").on("show.bs.tab", function () {
+                if (challengesLoaded == false) {
+                    UpdateChallengeList();
+                    challengesLoaded = true;
+                }
+            });
+
+            $("#groupTab").on("show.bs.tab", function () {
+                if (groupsLoaded == false) {
+                    UpdateGroupList();
+                    groupsLoaded = true;
+                }
+            });
+
+            $("#addButton").on('click', function(e) {
+                $("#listModal").modal("show");
+                if ($("#challenge").hasClass("active")) {
+                    if (challengesLoaded == false) {
+                        UpdateChallengeList();
+                        challengesLoaded = true;
+                    }
+                }
+                else {
+                    if (groupsLoaded == false) {
+                        UpdateGroupList();
+                        groupsLoaded = true;
+                    }
+                }
+            });
+
+            $(document).on("click", ".addChallengeButton, .addGroupButton", function () {
+                if (!$(this).hasClass("disabled")) {
+                    var row = $(this).parent().parent().clone();
+                    var addedItem = row.find(".addChallengeButton, .addGroupButton");
+                    addedItem.removeClass("addChallengeButton addGroupButton")
+                    addedItem.children().removeClass("fa-plus-circle text-primary");
+                    addedItem.children().addClass("fa-minus-circle text-danger");
+                    addedItem.addClass("removeRelatedButton");
+
+                    $("#noRelated").addClass("hide");
+
+                    if ($(this).hasClass("addChallengeButton")) {
+                        $("#Event_ChallengeId").val($(this).data("id"))
+                        $("#Event_ChallengeGroupId").val("")
+                        $("#challengeTable").removeClass("hide");
+                        $("#groupTable").addClass("hide");
+                        $("#challengeList").html(row);
+                        $("#groupList").html("");
+                    }
+                    else {
+                        $("#Event_ChallengeId").val("")
+                        $("#Event_ChallengeGroupId").val($(this).data("id"))
+                        $("#challengeTable").addClass("hide");
+                        $("#groupTable").removeClass("hide");
+                        $("#challengeList").html("");
+                        $("#groupList").html(row);
+                    }
+
+                    $("#listModal").modal("hide");
+                    $(".relatedText").text("Change");
+                    challengesLoaded = false;
+                    groupsLoaded = false;
+
+                    setTimeout(function () { $(this).parent().parent().remove() }, 500);
+
+                }
+            });
+
+            $(document).on("click", ".removeRelatedButton", function () {
+                $("#Event_ChallengeId,#Event_ChallengeGroupId").val("");
+                $(this).parent().parent().remove();
+                $("#challengeTable, #groupTable").addClass("hide");
+                $("#noRelated").removeClass("hide");
+                $(".relatedText").text("Add");
+                challengesLoaded = false;
+                groupsLoaded = false;
+            });
+
+            $(".challengeScope").on("click", function(e) {
+                e.preventDefault();
+                $(this).siblings().removeClass("active");
+                $(this).addClass().addClass("active");
+                scope = $(this).attr("id");
+                page = 1;
+                UpdateChallengeList();
+            });
+
+            $("#challengeSearchButton").on("click", function () {
+                challengeSearch = $("#challengeSearchText").val();
+                if (challengeSearch != "")
+                {
+                    $("#challengeSearchMessage").removeClass("hide");
+                    $("#challengeSearchTerm").html(challengeSearch);
+                }
+                else
+                {
+                    $("#challengeSearchMessage").addClass("hide");
+                }
+                challengePage = 1;
+                UpdateChallengeList();
+            })
+
+            $("#challengeClearButton").on("click", function() {
+                $("#challengeSearchText").val("");
+                challengeSearch = "";
+                $("#challengeSearchMessage").addClass("hide");
+                challengePage = 1;
+                UpdateChallengeList();
+            })
+
+            $("#groupSearchButton").on("click", function () {
+                groupSearch = $("#groupSearchText").val();
+                if (groupSearch != "") {
+                    $("#groupSearchMessage").removeClass("hide");
+                    $("#groupSearchTerm").html(groupSearch);
+                }
+                else {
+                    $("#groupSearchMessage").addClass("hide");
+                }
+                groupPage = 1;
+                UpdateGroupList();
+            })
+
+            $("#groupClearButton").on("click", function () {
+                $("#groupSearchText").val("");
+                groupSearch = "";
+                $("#groupSearchMessage").addClass("hide");
+                groupPage = 1;
+                UpdateGroupList();
+            })
+
+            $(document).on("click", ".page-button", function () {
+                if (!$(this).hasClass("disabled")) {
+                    if ($("#challenge").hasClass("active")) {
+                        challengePage = $(this).data("page");
+                        UpdateChallengeList();
+                    }
+                    else {
+                        groupPage = $(this).data("page");
+                        UpdateGroupList();
+                    }
+                }
+            });
+            </text>
         }
     </script>
 }

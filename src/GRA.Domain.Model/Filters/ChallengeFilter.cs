@@ -8,7 +8,8 @@ namespace GRA.Domain.Model.Filters
     {
         public bool? Favorites { get; set; }
         public int? FavoritesUserId { get; set; }
+        public int? GroupId { get; set; }
 
-        public ChallengeFilter(int? page = null) : base(page) { }
+        public ChallengeFilter(int? page = null, int? take = null) : base(page) { }
     }
 }

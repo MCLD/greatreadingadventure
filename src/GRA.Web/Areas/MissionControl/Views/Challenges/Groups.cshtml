@@ -1,0 +1,154 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Challenges.ChallengeGroupListViewModel
+
+@if (Model.CanEditGroups)
+{
+    <div class="row">
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <form asp-controller="Challenges" asp-action="DeleteGroup" method="post" role="form" style="display:inline">
+                    <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                    <input asp-for="Search" type="hidden" />
+                    <input asp-for="ChallengeGroup.Id" type="hidden" />
+                    <input asp-for="ChallengeGroup.Name" type="hidden" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="deleteModalLabel">Delete Challenge Group</h4>
+                        </div>
+                        <div class="modal-body">
+                            <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                            <span id="modal-text"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                            <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                                <span class="fa fa-remove" aria-hidden="true"></span>
+                                Delete
+                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<form asp-controller="Challenges" asp-action="Groups" method="get" role="form">
+    <div class="row row-spacing" style="padding-top: 10px;">
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Groups" class="btn btn-default">Clear</a>
+        </div>
+    </div>
+</form>
+
+@if (Model.CanAddGroups)
+{
+    <div class="row" style="padding: 10px 0;">
+        <div class="col-xs-12">
+            <a asp-action="CreateGroup" class="btn btn-default">Add a Challenge Group</a>
+        </div>
+    </div>
+}
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.ChallengeGroups.Count() == 0)
+        {
+            <div class="alert alert-warning">No Challenge Groups</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Link</th>
+                            @if (Model.CanEditGroups)
+                            {
+                                <th width="100">&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var group in Model.ChallengeGroups)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    @if (Model.CanEditGroups)
+                                    {
+                                        <a asp-action="EditGroup" asp-route-id="@group.Id" class="rowlink">
+                                            @group.Name
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @group.Name
+                                    }
+                                </td>
+                                <td>
+                                    @group.Description
+                                </td>
+                                <td class="on-top">
+                                    <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@group.Stub" target="_blank">@group.Stub</a>
+                                </td>
+                                @if (Model.CanEditGroups)
+                                {
+                                    <td class="on-top gra-mc-icon">
+                                        <button type="button"
+                                                class="btn btn-danger btn-xs"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                                data-id="@group.Id"
+                                                data-name="@group.Name">
+                                            <span class="fa fa-remove" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        @if (Model.CanEditGroups) {
+            <text>
+            $("#deleteModal").on("show.bs.modal", function (e) {
+                var button = $(e.relatedTarget);
+                var id = button.data("id");
+                var name = button.data("name");
+                var modal = $(this);
+                modal.find("#modal-text").text("Are you sure you want to delete the challenge group \"" + name + "\"?");
+                modal.find("#Challenge_Id").val(id);
+                modal.find("#Challenge_Name").val(name);
+            });
+
+            $(window).on("load", function() {
+                $('.td-class').each(function() {
+                    $(this).children('a.rowlink').height($(this).height() + 11);
+                });
+            });
+            $(window).resize(function() {
+                $('.td-class').each(function() {
+                    $(this).children('a.rowlink').height($(this).height() + 11);
+                });
+            });
+            </text>
+        }
+    </script>
+}

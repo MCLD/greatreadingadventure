@@ -290,6 +290,10 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IBookRepository, Data.Repository.BookRepository>();
             services.AddScoped<Domain.Repository.IBranchRepository, Data.Repository.BranchRepository>();
             services.AddScoped<Domain.Repository.IBroadcastRepository, Data.Repository.BroadcastRepository>();
+            services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
+            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
+            services.AddScoped<Domain.Repository.IChallengeGroupRepository, Data.Repository.ChallengeGroupRepository>();
+            services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IDashboardContentRepository, Data.Repository.DashboardContentRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
@@ -298,9 +302,6 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IDynamicAvatarElementRepository, Data.Repository.DynamicAvatarElementRepository>();
             services.AddScoped<Domain.Repository.IDynamicAvatarItemRepository, Data.Repository.DynamicAvatarItemRepository>();
             services.AddScoped<Domain.Repository.IDynamicAvatarLayerRepository, Data.Repository.DynamicAvatarLayerRepository>();
-            services.AddScoped<Domain.Repository.ICategoryRepository, Data.Repository.CategoryRepository>();
-            services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
-            services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEnteredSchoolRepository, Data.Repository.EnteredSchoolRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();

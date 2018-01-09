@@ -11,6 +11,8 @@ namespace GRA.Domain.Service
     public class EventService : BaseUserService<EventService>
     {
         private readonly IBranchRepository _branchRepository;
+        private readonly IChallengeRepository _challengeRepository;
+        private readonly IChallengeGroupRepository _challengeGroupRepository;
         private readonly IEventRepository _eventRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProgramRepository _programRepository;
@@ -18,12 +20,18 @@ namespace GRA.Domain.Service
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
             IBranchRepository branchRepository,
+            IChallengeRepository challengeRepository,
+            IChallengeGroupRepository challengeGroupRepository,
             IEventRepository eventRepository,
             ILocationRepository locationRepository,
             IProgramRepository programRepository)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            _challengeRepository = Require.IsNotNull(
+                challengeRepository, nameof(challengeRepository));
+            _challengeGroupRepository = Require.IsNotNull(
+                challengeGroupRepository, nameof(challengeGroupRepository));
             _eventRepository = Require.IsNotNull(eventRepository, nameof(eventRepository));
             _locationRepository = Require.IsNotNull(locationRepository, nameof(locationRepository));
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
@@ -73,7 +81,7 @@ namespace GRA.Domain.Service
             };
         }
 
-        public async Task<Event> GetDetails(int eventId)
+        public async Task<Event> GetDetails(int eventId, bool showInactiveChallenge = false)
         {
             var graEvent = await _eventRepository.GetByIdAsync(eventId);
             if (graEvent == null)
@@ -98,6 +106,8 @@ namespace GRA.Domain.Service
                 graEvent.EventLocationLink = location.Url;
             }
 
+            graEvent = await GetRelatedChallengeDetails(graEvent, showInactiveChallenge);
+
             return graEvent;
         }
 
@@ -107,6 +117,11 @@ namespace GRA.Domain.Service
             graEvent.SiteId = GetCurrentSiteId();
             graEvent.RelatedBranchId = GetClaimId(ClaimType.BranchId);
             graEvent.RelatedSystemId = GetClaimId(ClaimType.SystemId);
+            if (HasPermission(Permission.ViewAllChallenges) == false)
+            {
+                graEvent.ChallengeId = null;
+                graEvent.ChallengeGroupId = null;
+            }
             await ValidateEvent(graEvent);
             return await _eventRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
@@ -114,7 +129,13 @@ namespace GRA.Domain.Service
         public async Task<Event> Edit(Event graEvent)
         {
             VerifyPermission(Permission.ManageEvents);
-            graEvent.SiteId = GetCurrentSiteId();
+            var currentEvent = await _eventRepository.GetByIdAsync(graEvent.Id);
+            graEvent.SiteId = currentEvent.SiteId;
+            if (HasPermission(Permission.ViewAllChallenges) == false)
+            {
+                graEvent.ChallengeId = currentEvent.ChallengeId;
+                graEvent.ChallengeGroupId = currentEvent.ChallengeGroupId;
+            }
             await ValidateEvent(graEvent);
             return await _eventRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), graEvent);
         }
@@ -172,6 +193,38 @@ namespace GRA.Domain.Service
             return await _eventRepository.GetRelatedEventsForTriggerAsync(triggerId);
         }
 
+        public async Task<Event> GetRelatedChallengeDetails(Event graEvent,
+            bool showInactiveChallenge)
+        {
+            if (graEvent.ChallengeId.HasValue)
+            {
+                if (showInactiveChallenge)
+                {
+                    graEvent.Challenge = await _challengeRepository
+                        .GetByIdAsync(graEvent.ChallengeId.Value);
+                }
+                else
+                {
+                    graEvent.Challenge = await _challengeRepository
+                        .GetActiveByIdAsync(graEvent.ChallengeId.Value);
+                }
+            }
+            else if (graEvent.ChallengeGroupId.HasValue)
+            {
+                if (showInactiveChallenge)
+                {
+                    graEvent.ChallengeGroup = await _challengeGroupRepository
+                        .GetByIdAsync(graEvent.ChallengeGroupId.Value);
+                }
+                else
+                {
+                    graEvent.ChallengeGroup = await _challengeGroupRepository
+                        .GetActiveByIdAsync(graEvent.ChallengeGroupId.Value);
+                }
+            }
+            return graEvent;
+        }
+
         private async Task ValidateEvent(Event graEvent)
         {
             if (graEvent.AtBranchId.HasValue)
@@ -198,6 +251,16 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid Program selection.");
                 }
             }
+        }
+
+        public async Task<List<Event>> GetByChallengeIdAsync(int challengeId)
+        {
+            return await _eventRepository.GetByChallengeIdAsync(challengeId);
+        }
+
+        public async Task<List<Event>> GetByChallengeGroupIdAsync(int challengeGroupId)
+        {
+            return await _eventRepository.GetByChallengeGroupIdAsync(challengeGroupId);
         }
     }
 }

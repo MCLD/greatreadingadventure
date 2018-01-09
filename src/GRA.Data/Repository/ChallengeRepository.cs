@@ -69,6 +69,11 @@ namespace GRA.Data.Repository
                 challenges = challenges.Where(_ => filter.UserIds.Contains(_.CreatedBy));
             }
 
+            if (filter.ChallengeIds?.Any() == true)
+            {
+                challenges = challenges.Where(_ => filter.ChallengeIds.Contains(_.Id) == false);
+            }
+
             if (filter.CategoryIds?.Any() == true)
             {
                 challenges = challenges
@@ -77,7 +82,7 @@ namespace GRA.Data.Repository
                         .Select(c => c.CategoryId)
                         .Any(c => filter.CategoryIds.Contains(c)));
             }
-            
+
             if (filter.Favorites == true && filter.FavoritesUserId.HasValue)
             {
                 var userFavoriteChallenges = _context.UserFavoriteChallenges
@@ -88,6 +93,18 @@ namespace GRA.Data.Repository
                              join userFavorites in userFavoriteChallenges
                              on challengeList.Id equals userFavorites.ChallengeId
                              select challengeList;
+            }
+
+            if (filter.GroupId.HasValue)
+            {
+                var challengeGroup = _context.ChallengeGroups
+                    .AsNoTracking()
+                    .Include(_ => _.ChallengeGroupChallenges)
+                    .Where(_ => _.Id == filter.GroupId)
+                    .SelectMany(_ => _.ChallengeGroupChallenges)
+                    .Select(_ => _.ChallengeId);
+
+                challenges = challenges.Where(_ => challengeGroup.Contains(_.Id));
             }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
@@ -148,6 +165,26 @@ namespace GRA.Data.Repository
                     .ToListAsync();
             }
             return challenge;
+        }
+
+        public async Task<List<Challenge>> GetByIdsAsync(int siteId, IEnumerable<int> ids,
+            bool ActiveOnly = false)
+        {
+            var challenges = DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.IsDeleted == false && ids.Contains(_.Id));
+
+            if (ActiveOnly)
+            {
+                challenges = challenges.Where(_ => _.IsActive);
+            }
+
+            return await challenges
+                .OrderBy(_ => _.Name)
+                .Distinct()
+                .ProjectTo<Challenge>()
+                .ToListAsync();
+
         }
 
         public async Task<Challenge> GetActiveByIdAsync(int id, int? userId = null)
@@ -281,10 +318,12 @@ namespace GRA.Data.Repository
         public override async Task RemoveSaveAsync(int userId, int id)
         {
             var entity = await _context.Challenges
+                .Include(_ => _.ChallengeGroupChallenges)
                 .Where(_ => _.IsDeleted == false && _.Id == id)
                 .SingleAsync();
             entity.IsDeleted = true;
             await base.UpdateAsync(userId, entity, null);
+            _context.ChallengeGroupChallenges.RemoveRange(entity.ChallengeGroupChallenges);
             await base.SaveAsync();
         }
 
@@ -471,7 +510,7 @@ namespace GRA.Data.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<int>> ValidateChallengeIds(int siteId,
+        public async Task<IEnumerable<int>> ValidateChallengeIdsAsync(int siteId,
             IEnumerable<int> challengeIds)
         {
             return await DbSet
