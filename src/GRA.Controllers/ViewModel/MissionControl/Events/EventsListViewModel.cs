@@ -18,6 +18,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public string ProgramName { get; set; }
         public bool CanManageLocations { get; set; }
         public bool CommunityExperience { get; set; }
+        public bool RequireSecretCode { get; set; }
 
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }

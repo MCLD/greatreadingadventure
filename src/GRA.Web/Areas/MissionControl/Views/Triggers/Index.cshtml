@@ -151,7 +151,9 @@
                                             data-target="#deleteModal"
                                             data-id="@trigger.Id"
                                             data-name="@trigger.Name"
-                                            data-hasDependents="@trigger.HasDependents">
+                                            data-hasDependents="@trigger.HasDependents"
+                                            data-relatedEventId="@trigger.RelatedEventId"
+                                            data-relatedEventName="@trigger.RelatedEventName">
                                         <span class="fa fa-remove" aria-hidden="true"></span>
                                     </button>
                                 </td>
@@ -171,6 +173,7 @@
 @section scripts
 {
     <script>
+        var eventUrl = "@Url.Action("Edit", "Events")";
         $(window).on("load", function() {
             $('.td-class').each(function() {
                 $(this).children('a.rowlink').height($(this).height() + 11);
@@ -187,11 +190,18 @@
             var id = button.data('id');
             var name = button.data('name');
             var hasDependents = button.data('hasdependents');
+            var relatedEventId = button.data("relatedeventid");
+            var relatedEventName = button.data("relatedeventname");
             var modal = $(this);
             modal.find('#Id').val(id);
             if (hasDependents == "True")
             {
                 modal.find('#modal-text').text(name + " has triggers depending on it and cannot be deleted.");
+                modal.find("#modal-deleteButton").hide();
+            }
+            else if (relatedEventId != "") {
+
+                modal.find("#modal-text").html(name + " is related to the event <a href=\"" + eventUrl + "/" + relatedEventId + "\" target=\"_blank\">" + relatedEventName +"</a> and can only be removed by deleting the event.");
                 modal.find("#modal-deleteButton").hide();
             }
             else

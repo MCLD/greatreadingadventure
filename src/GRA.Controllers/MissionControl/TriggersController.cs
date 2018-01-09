@@ -38,7 +38,7 @@ namespace GRA.Controllers.MissionControl
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _badgeService = Require.IsNotNull(badgeService, nameof(badgeService));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService, 
+            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _eventService = Require.IsNotNull(eventService, nameof(eventService));
             _siteService = Require.IsNotNull(siteService, nameof(SiteService));
@@ -99,10 +99,19 @@ namespace GRA.Controllers.MissionControl
                     });
             }
 
+            var requireSecretCode = await GetSiteSettingBoolAsync(
+                    SiteSettingKey.Events.RequireBadge);
             foreach (var trigger in triggerList.Data)
             {
                 trigger.AwardBadgeFilename =
                     _pathResolver.ResolveContentPath(trigger.AwardBadgeFilename);
+                var graEvent = (await _eventService.GetRelatedEventsForTriggerAsync(trigger.Id))
+                    .FirstOrDefault();
+                if (graEvent != null)
+                {
+                    trigger.RelatedEventId = graEvent.Id;
+                    trigger.RelatedEventName = graEvent.Name;
+                }
             }
 
             var systemList = (await _siteService.GetSystemList())
@@ -660,8 +669,21 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                var requireSecretCode = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Events.RequireBadge);
+                if (requireSecretCode)
+                {
+                    var relatedEvents = await _eventService.GetRelatedEventsForTriggerAsync(id);
+                    if (relatedEvents.Any())
+                    {
+                        ShowAlertWarning("Unable to delete trigger: Trigger has related events");
+                        return RedirectToAction("Index");
+                    }
+                }
+
                 await _triggerService.RemoveAsync(id);
                 ShowAlertSuccess("Trigger deleted.");
+
             }
             catch (GraException gex)
             {

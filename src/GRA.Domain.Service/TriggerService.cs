@@ -1,10 +1,11 @@
-﻿using GRA.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Service.Abstract;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -16,6 +17,7 @@ namespace GRA.Domain.Service
         private readonly IProgramRepository _programRepository;
         private readonly ISystemRepository _systemRepository;
         private readonly ITriggerRepository _triggerRepository;
+        private readonly SiteLookupService _siteLookupService;
         public TriggerService(ILogger<TriggerService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -24,7 +26,9 @@ namespace GRA.Domain.Service
             IEventRepository eventRepository,
             IProgramRepository programRepository,
             ISystemRepository systemRepository,
-        ITriggerRepository triggerRepository) : base(logger, dateTimeProvider, userContextProvider)
+            ITriggerRepository triggerRepository,
+            SiteLookupService siteLookupService)
+            : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageTriggers);
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
@@ -34,6 +38,8 @@ namespace GRA.Domain.Service
             _programRepository = Require.IsNotNull(programRepository, nameof(programRepository));
             _systemRepository = Require.IsNotNull(systemRepository, nameof(systemRepository));
             _triggerRepository = Require.IsNotNull(triggerRepository, nameof(triggerRepository));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
         }
 
         public async Task<DataWithCount<ICollection<Trigger>>> GetPaginatedListAsync(TriggerFilter filter)
@@ -121,7 +127,13 @@ namespace GRA.Domain.Service
             await _triggerRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId),
                 trigger);
 
-            await _eventRepository.DetachRelatedTrigger(triggerId);
+            var requireSecretCode = await _siteLookupService.GetSiteSettingBoolAsync(
+                GetCurrentSiteId(), SiteSettingKey.Events.RequireBadge);
+
+            if (requireSecretCode == false)
+            {
+                await _eventRepository.DetachRelatedTrigger(triggerId);
+            }
         }
 
         public async Task<ICollection<TriggerRequirement>> GetTriggerRequirementsAsync(Trigger trigger)

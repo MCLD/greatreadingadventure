@@ -20,6 +20,10 @@ namespace GRA
         {
             // If this is set (i.e. not null) hide events until the registration period is open
             public const string HideUntilRegistrationOpen = "Events.HideUntilRegistrationOpen";
+            // If this is set (i.e. not null) require all events to be created with a badge.
+            // With this set anyone who has the ManageEvents permission will need the ManageTriggers
+            // permission as well.
+            public const string RequireBadge = "Events.RequireBadge";
         }
 
         public struct Users

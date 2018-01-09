@@ -159,7 +159,9 @@ namespace GRA.Controllers.MissionControl
                 Mine = mine,
                 SystemList = systemList,
                 ProgramList = await _siteService.GetProgramList(),
-                CanManageLocations = UserHasPermission(Permission.ManageLocations)
+                CanManageLocations = UserHasPermission(Permission.ManageLocations),
+                RequireSecretCode = await GetSiteSettingBoolAsync(
+                    SiteSettingKey.Events.RequireBadge)
             };
 
             if (mine == true)
@@ -216,17 +218,22 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Create Event";
 
+            var requireSecretCode = await GetSiteSettingBoolAsync(
+                    SiteSettingKey.Events.RequireBadge);
             var systemList = await _siteService.GetSystemList(true);
             var locationList = await _eventService.GetLocations();
             var programList = await _siteService.GetProgramList();
             EventsDetailViewModel viewModel = new EventsDetailViewModel()
             {
-                CanAddSecretCode = UserHasPermission(Permission.ManageTriggers),
+                CanAddSecretCode = requireSecretCode ||
+                    UserHasPermission(Permission.ManageTriggers),
                 CanManageLocations = UserHasPermission(Permission.ManageLocations),
                 CanRelateChallenge = UserHasPermission(Permission.ViewAllChallenges),
                 SystemList = new SelectList(systemList, "Id", "Name"),
                 LocationList = new SelectList(locationList, "Id", "Name"),
-                ProgramList = new SelectList(programList, "Id", "Name")
+                ProgramList = new SelectList(programList, "Id", "Name"),
+                IncludeSecretCode = requireSecretCode,
+                RequireSecretCode = requireSecretCode
             };
             if (viewModel.CanAddSecretCode)
             {
@@ -279,6 +286,9 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Create(EventsDetailViewModel model)
         {
+            var requireSecretCode = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Events.RequireBadge);
+
             if (model.Event.AllDay)
             {
                 if (model.Event.EndDate.HasValue && model.Event.StartDate > model.Event.EndDate)
@@ -302,7 +312,7 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("Event.AtBranchId", "The At Branch field is required.");
             }
-            if (model.IncludeSecretCode)
+            if (model.IncludeSecretCode || requireSecretCode)
             {
                 if (string.IsNullOrWhiteSpace(model.BadgeMakerImage) && model.BadgeUploadImage == null)
                 {
@@ -457,6 +467,7 @@ namespace GRA.Controllers.MissionControl
             model.BranchList = new SelectList(branchList, "Id", "Name");
             model.LocationList = new SelectList(locationList, "Id", "Name");
             model.ProgramList = new SelectList(programList, "Id", "Name");
+            model.RequireSecretCode = requireSecretCode;
             return View(model);
         }
 
@@ -639,7 +650,25 @@ namespace GRA.Controllers.MissionControl
         [HttpPost]
         public async Task<IActionResult> Delete(int id, bool communityExperience = false)
         {
-            await _eventService.Remove(id);
+            try
+            {
+                var deletedText = "Event";
+                var requireSecretCode = await GetSiteSettingBoolAsync(
+                SiteSettingKey.Events.RequireBadge);
+                if (requireSecretCode)
+                {
+                    var graEvent = await _eventService.GetDetails(id);
+                    await _triggerService.RemoveAsync(graEvent.RelatedTriggerId.Value);
+                    deletedText += " and its related trigger";
+                }
+                deletedText += " were successfully deleted!";
+                ShowAlertSuccess(deletedText);
+                await _eventService.Remove(id);
+            }
+            catch (GraException gex)
+            {
+                ShowAlertWarning("Unable to delete event: ", gex.Message);
+            }
 
             if (communityExperience)
             {

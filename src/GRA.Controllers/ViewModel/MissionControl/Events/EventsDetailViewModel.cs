@@ -11,6 +11,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Events
         public bool UseLocation { get; set; }
         public bool NewCommunityExperience { get; set; }
 
+        public bool RequireSecretCode { get; set; }
         public bool IncludeSecretCode { get; set; }
         [MaxLength(50)]
         [DisplayName("Secret code")]

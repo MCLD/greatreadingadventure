@@ -64,5 +64,8 @@ namespace GRA.Domain.Model
 
         [DisplayName("Award avatar bundle")]
         public int? AwardAvatarBundleId { get; set; }
+
+        public int? RelatedEventId { get; set; }
+        public string RelatedEventName { get; set; }
     }
 }

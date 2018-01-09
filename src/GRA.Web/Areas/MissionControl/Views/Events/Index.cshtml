@@ -167,7 +167,8 @@
                                             data-toggle="modal"
                                             data-target="#deleteModal"
                                             data-id="@eventItem.Id"
-                                            data-name="@eventItem.Name">
+                                            data-name="@eventItem.Name"
+                                            data-relatedtriggerid="@eventItem.RelatedTriggerId">
                                         <span class="fa fa-remove" aria-hidden="true"></span>
                                     </button>
                                 </td>
@@ -184,9 +185,9 @@
     </div>
 </div>
 
-@section scripts
-{
+@section scripts {
     <script>
+        var triggerUrl = "@Url.Action("Edit", "Triggers")";
         $(document).ready(function () {
             $('.td-class').each(function () {
                 $(this).children('a.rowlink').height($(this).height() + 11);
@@ -202,9 +203,18 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
+            var relatedTriggerId = button.data("relatedtriggerid");
             var modal = $(this);
-            modal.find('#modal-text').text('Are you sure you wish to delete the @(Model.CommunityExperience ? "community experience" : "event") "' + name + '" ?');
+            var deleteText = "Are you sure you want to delete the @(Model.CommunityExperience ? "community experience" : "event") \"" + name + "\"";
+            @if (Model.RequireSecretCode)
+            {
+                <text>
+                deleteText += " and its <a href=\"" + triggerUrl + "/" + relatedTriggerId + "\" target=\"_blank\">related trigger</a>";
+                </text>
+            }
+            deleteText += "?";
+            modal.find('#modal-text').html(deleteText);
             modal.find('#Id').val(id);
-        })
+        });
     </script>
 }

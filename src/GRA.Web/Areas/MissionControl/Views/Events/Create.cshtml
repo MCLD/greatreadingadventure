@@ -357,13 +357,19 @@
         <input asp-for="BadgeMakerImage" type="hidden" />
 
         <div class="panel-group" id="accordionSecretCode" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-info">
+            <div class="panel @(Model.RequireSecretCode ? "panel-warning" : "panel-info")">
                 <div class="panel-heading" role="tab" id="headingSecretCode">
                     <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
-                            <span id="secretCodeIcon" class="fa fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
-                            Add a Secret Code with this Event
-                        </a>
+                        @if (Model.RequireSecretCode)
+                        {
+                            <text>Add a Secret Code with this Event</text>
+                        }
+                        else
+                        {
+                            <a role="button" data-toggle="collapse" data-parent="#accordionSecretCode" href="#collapseSecretCode" aria-expanded="true" aria-controls="collapseSecretCode">
+                                <span id="secretCodeIcon" class="fa fa-lg @(Model.IncludeSecretCode ? "fa-caret-down" : "fa-caret-right")"></span>
+                            </a>
+                        }
                     </h4>
                 </div>
                 <div id="collapseSecretCode" class="panel-collapse collapse @(Model.IncludeSecretCode ? "in" : "")" role="tabpanel" aria-labelledby="headingSecretCode">
@@ -451,8 +457,7 @@
     </div>
 </form>
 
-@section scripts
-    {
+@section scripts {
     <script>
         $("#pickerStart").datetimepicker({
             @if (Model.Event?.AllDay == true)
