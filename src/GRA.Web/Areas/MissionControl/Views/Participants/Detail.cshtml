@@ -1,5 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.ParticipantsDetailViewModel
-
+@using GRA
+@using GRA.Domain.Model
 @Html.Partial("_ParticipantPartial")
 
 <form asp-controller="Participants" method="post" role="form">
@@ -161,13 +162,51 @@
                 }
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode))
+            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
             {
                 <div class="row row spacing">
                     <div class="col-xs-12">
                         <table style="font-size: 16px;">
                             <tr>
-                                <td>Free Book Code: <strong>@Model.User.VendorCode</strong></td>
+                                <td>
+                                    Free Book Code:
+                                    @if (Model.User.NeedsToAnswerDonationQuestion)
+                                    {
+                                        <button class="btn btn-info btn-spinner"
+                                                asp-action="RedeemCode"
+                                                asp-is-disabled="@(!Model.CanEditDetails)">
+                                            <span class="buttonText">Redeem code</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
+                                        @:or
+                                        <button class="btn btn-success btn-spinner"
+                                                asp-action="DonateCode"
+                                                asp-is-disabled="@(!Model.CanEditDetails)">
+                                            <span class="buttonText">Donate book</span>
+                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                                        {
+                                            <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
+                                        }
+                                        else
+                                        {
+                                            <strong>@Model.User.VendorCode</strong>
+                                        }
+                                        if (Model.User.Donated == true && User.HasClaim(ClaimType.Permission, Permission.PerformDrawing.ToString()))
+                                        {
+                                            <button class="btn btn-info btn-spinner"
+                                                    asp-action="UndonateCode"
+                                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                                <span class="buttonText">Un-donate</span>
+                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                            </button>
+                                        }
+                                    }
+                                </td>
                             </tr>
                             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                             {

@@ -36,6 +36,7 @@ namespace GRA.Domain.Model
         public const string ReadAllMail = "ReadAllMail";
         public const string RemoveChallenges = "RemoveChallenges";
         public const string SendBroadcastMail = "SendBroadcastMail";
+        public const string UnDonateVendorCode = "UnDonateVendorCode";
         public const string ViewAllChallenges = "ViewAllChallenges";
         public const string ViewAllReporting = "ViewAllReporting";
         public const string ViewParticipantList = "ViewParticipantList";

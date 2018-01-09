@@ -12,6 +12,7 @@
                 @Html.Partial("_ProfilePartial")
 
                 <form asp-controller="Profile" asp-action="Index" method="post" role="form">
+                    <button type="submit" id="DefaultSubmitOnEnter" name="DefaultSubmitOnEnter" value="DefaultSubmitOnEnter" style="display: none;"></button>
                     <div class="row" style="padding: 10px 0;">
                         <div class="col-xs-12">
                             <input asp-for="HouseholdCount" type="hidden" />
@@ -217,13 +218,38 @@
                                     </div>
                                 }
                             </div>
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode))
+                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
                             {
                                 <div class="row row spacing">
                                     <div class="col-xs-12">
                                         <table style="font-size: 16px;">
                                             <tr>
-                                                <td>Free Book Code: <strong>@Model.User.VendorCode</strong></td>
+                                                <td>
+                                                    Free Book Code:
+                                                    @if (Model.User.NeedsToAnswerDonationQuestion)
+                                                    {
+                                                        <button class="btn btn-info btn-spinner" asp-action="RedeemCode">
+                                                            <span class="buttonText">Redeem your code</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
+                                                        @:or
+                                                        <button class="btn btn-success btn-spinner" asp-action="DonateCode">
+                                                            <span class="buttonText">Donate your book</span>
+                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                                                        {
+                                                            <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong>@Model.User.VendorCode</strong>
+                                                        }
+                                                    }
+                                                </td>
                                             </tr>
                                             @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
                                             {

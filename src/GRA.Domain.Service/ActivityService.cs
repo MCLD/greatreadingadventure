@@ -32,6 +32,7 @@ namespace GRA.Domain.Service
         private readonly ICodeSanitizer _codeSanitizer;
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
+        private readonly VendorCodeService _vendorCodeService;
 
         public ActivityService(ILogger<UserService> logger,
             IDateTimeProvider dateTimeProvider,
@@ -54,7 +55,8 @@ namespace GRA.Domain.Service
             IVendorCodeTypeRepository vendorCodeTypeRepository,
             ICodeSanitizer codeSanitizer,
             MailService mailService,
-            PrizeWinnerService prizeWinnerService) : base(logger, dateTimeProvider, userContext)
+            PrizeWinnerService prizeWinnerService,
+            VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
@@ -86,6 +88,8 @@ namespace GRA.Domain.Service
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
                 nameof(prizeWinnerService));
+            _vendorCodeService = vendorCodeService 
+                ?? throw new ArgumentNullException(nameof(VendorCodeService));
         }
 
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
@@ -602,7 +606,7 @@ namespace GRA.Domain.Service
             // update the user's achiever status if they've crossed the threshhold
             var program = await _programRepository.GetByIdAsync(earnedUser.ProgramId);
 
-            if (!earnedUser.AchievedAt.HasValue 
+            if (!earnedUser.AchievedAt.HasValue
                 && earnedUser.PointsEarned >= program.AchieverPointAmount)
             {
                 earnedUser.AchievedAt = _dateTimeProvider.Now;
@@ -802,32 +806,42 @@ namespace GRA.Domain.Service
             if (vendorCodeTypeId != null)
             {
                 var codeType = await _vendorCodeTypeRepository.GetByIdAsync((int)vendorCodeTypeId);
+
                 try
                 {
                     var assignedCode = await _vendorCodeRepository.AssignCodeAsync((int)vendorCodeTypeId, userId);
-                    await _mailService.SendSystemMailAsync(new Mail
+
+                    // if donation is not an option then send the email with the code
+                    if (string.IsNullOrEmpty(codeType.DonationMessage))
                     {
-                        ToUserId = userId,
-                        CanParticipantDelete = false,
-                        Subject = codeType.MailSubject,
-                        Body = codeType.Mail.Contains("{Code}")
-                            ? codeType.Mail.Replace("{Code}", assignedCode.Code)
-                            : codeType.Mail + " " + assignedCode.Code
-                    }, siteId);
+                        await _vendorCodeService.ResolveDonationStatusAsync(userId, null);
+                    }
+                    else if (!string.IsNullOrEmpty(codeType.DonationOptionMail))
+                    {
+                        // donation is an option, let the user know
+                        await _mailService.SendSystemMailAsync(new Mail
+                        {
+                            ToUserId = userId,
+                            CanParticipantDelete = false,
+                            Subject = codeType.DonationOptionSubject,
+                            Body = codeType.DonationOptionMail
+                        }, siteId);
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     await _mailService.SendSystemMailAsync(new Mail
                     {
                         ToUserId = userId,
                         CanParticipantDelete = true,
                         Subject = codeType.MailSubject,
-                        Body = codeType.Mail.Contains("{Code}")
-                            ? codeType.Mail.Replace("{Code}", $"{codeType.Description} not available - please contact us.")
+                        Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
+                            ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, $"{codeType.Description} not available - please contact us.")
                             : codeType.Mail + " " + $"{codeType.Description} not available - please contact us."
                     }, siteId);
 
                     // TODO let admin know that vendor code assignment didn't work?
+                    _logger.LogError($"Vendor code assignment failed, probably out of codes: {ex.Message}");
                 }
             }
         }
@@ -1095,7 +1109,7 @@ namespace GRA.Domain.Service
                 .Where(_ => _.IsFavorited == false && userFavorites.Contains(_.Id))
                 .Select(_ => _.Id);
 
-            await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId, 
+            await _challengeRepository.UpdateUserFavoritesAsync(authUserId, activeUserId,
                 favoritesToAdd, favoritesToRemove);
 
             return serviceResult;

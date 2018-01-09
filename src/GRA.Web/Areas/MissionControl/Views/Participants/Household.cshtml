@@ -1,5 +1,6 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.HouseholdListViewModel
-
+@using GRA
+@using GRA.Domain.Model
 @section styles {
     <style>
         .system-selector {
@@ -342,18 +343,53 @@
                                 @if (Model.ShowVendorCodes)
                                 {
                                     <td>
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    @Model.Head.VendorCode
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    @Model.Head.VendorCodeMessage
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        @if (Model.Head.NeedsToAnswerDonationQuestion)
+                                        {
+                                            <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                    name="redeemButton"
+                                                    value="@Model.Head.Id"
+                                                    asp-action="HandleHouseholdDonation"
+                                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                                <span class="buttonText">Redeem code</span>
+                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                            </button>
+                                            @:or
+                                            <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                    name="donateButton"
+                                                    value="@Model.Head.Id"
+                                                    asp-action="HandleHouseholdDonation"
+                                                    asp-is-disabled="@(!Model.CanEditDetails)">
+                                                <span class="buttonText">Donate book</span>
+                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
+                                            {
+                                                <strong><a href="@Model.Head.VendorCodeUrl" target="_blank">@Model.Head.VendorCode</a></strong>
+                                            }
+                                            else
+                                            {
+                                                <strong>@Model.Head.VendorCode</strong>
+                                            }
+                                            if (@Model.Head.Donated == true
+                                                && User.HasClaim(ClaimType.Permission, Permission.PerformDrawing.ToString()))
+                                            {
+                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                        name="undonateButton"
+                                                        value="@Model.Head.Id"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                    <span class="buttonText">Un-donate</span>
+                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                </button>
+                                            }
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
+                                        {
+                                            <br />@Model.Head.VendorCodeMessage
+                                        }
                                     </td>
                                 }
                                 <td>@Model.Head.BranchName</td>
@@ -443,18 +479,52 @@
                                     @if (Model.ShowVendorCodes)
                                     {
                                         <td>
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        @user.VendorCode
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        @user.VendorCodeMessage
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                            @if (user.NeedsToAnswerDonationQuestion)
+                                            {
+                                                <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                        name="redeemButton"
+                                                        value="@user.Id"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                    <span class="buttonText">Redeem code</span>
+                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                </button>
+                                                @:or
+                                                <button class="btn btn-success btn-xs btn-spinner btn-on-top"
+                                                        name="donateButton"
+                                                        value="@user.Id"
+                                                        asp-action="HandleHouseholdDonation"
+                                                        asp-is-disabled="@(!Model.CanEditDetails)">
+                                                    <span class="buttonText">Donate book</span>
+                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(user.VendorCodeUrl))
+                                                {
+                                                    <strong><a href="@user.VendorCodeUrl" target="_blank">@user.VendorCode</a></strong>
+                                                }
+                                                else
+                                                {
+                                                    <strong>@user.VendorCode</strong>
+                                                }
+                                                if (user.Donated == true && User.HasClaim(ClaimType.Permission, Permission.PerformDrawing.ToString()))
+                                                {
+                                                    <button class="btn btn-info btn-xs btn-spinner btn-on-top"
+                                                            name="undonateButton"
+                                                            value="@user.Id"
+                                                            asp-action="HandleHouseholdDonation"
+                                                            asp-is-disabled="@(!Model.CanEditDetails)">
+                                                        <span class="buttonText">Un-donate</span>
+                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                    </button>
+                                                }
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
+                                            {
+                                                <br />@Model.Head.VendorCodeMessage
+                                            }
                                         </td>
                                     }
                                     <td>@user.BranchName</td>
@@ -585,7 +655,7 @@
 </div>
 
 @section scripts
-{
+    {
     <script>
         $(document).ready(function() {
             $('.td-class').each(function() {

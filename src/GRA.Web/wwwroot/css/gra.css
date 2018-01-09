@@ -31,6 +31,11 @@ a.rowlink {
     background-clip: padding-box;
 }
 
+.btn-on-top {
+    z-index: 100;
+    position: relative;
+}
+
 .row-spacing {
     margin-bottom: 1rem;
 }

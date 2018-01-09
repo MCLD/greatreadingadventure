@@ -33,6 +33,7 @@ namespace GRA.Domain.Service
         private readonly SampleDataService _configurationService;
         private readonly SchoolService _schoolService;
         private readonly SiteLookupService _siteLookupService;
+        private readonly VendorCodeService _vendorCodeService;
         public UserService(ILogger<UserService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
@@ -56,7 +57,8 @@ namespace GRA.Domain.Service
             ActivityService activityService,
             SampleDataService configurationService,
             SchoolService schoolService,
-            SiteLookupService siteLookupService)
+            SiteLookupService siteLookupService,
+            VendorCodeService vendorCodeService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             _passwordValidator = Require.IsNotNull(passwordValidator, nameof(passwordValidator));
@@ -86,6 +88,8 @@ namespace GRA.Domain.Service
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteLookupService = siteLookupService 
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _vendorCodeService = vendorCodeService 
+                ?? throw new ArgumentNullException(nameof(VendorCodeService));
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
@@ -726,19 +730,7 @@ namespace GRA.Domain.Service
                     }
                     if (includeVendorCode)
                     {
-                        var vendorCode = await _vendorCodeRepository.GetUserVendorCode(member.Id);
-                        if (vendorCode != null)
-                        {
-                            member.VendorCode = vendorCode.Code;
-                            if (vendorCode.ShipDate.HasValue)
-                            {
-                                member.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
-                            }
-                            else if (vendorCode.OrderDate.HasValue)
-                            {
-                                member.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
-                            }
-                        }
+                        await _vendorCodeService.PopulateVendorCodeStatusAsync(member);
                     }
                     if (includePendingQuestionnaire)
                     {

@@ -18,20 +18,26 @@ namespace GRA.Domain.Service
     public class VendorCodeService : BaseUserService<VendorCodeService>
     {
         private readonly ICodeGenerator _codeGenerator;
+        private readonly IUserRepository _userRepository;
         private readonly IVendorCodeRepository _vendorCodeRepository;
         private readonly IVendorCodeTypeRepository _vendorCodeTypeRepository;
+        private readonly MailService _mailService;
         public VendorCodeService(ILogger<VendorCodeService> logger,
             GRA.Abstract.IDateTimeProvider dateTimeProvider,
             IUserContextProvider userContextProvider,
+            IUserRepository userRepository,
             ICodeGenerator codeGenerator,
             IVendorCodeRepository vendorCodeRepository,
-            IVendorCodeTypeRepository vendorCodeTypeRepository)
+            IVendorCodeTypeRepository vendorCodeTypeRepository,
+            MailService mailService)
             : base(logger, dateTimeProvider, userContextProvider)
         {
             SetManagementPermission(Permission.ManageVendorCodes);
             _codeGenerator = Require.IsNotNull(codeGenerator, nameof(codeGenerator));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _vendorCodeRepository = Require.IsNotNull(vendorCodeRepository, nameof(vendorCodeRepository));
             _vendorCodeTypeRepository = Require.IsNotNull(vendorCodeTypeRepository, nameof(vendorCodeTypeRepository));
+            _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
         }
 
         public async Task<VendorCodeType> GetTypeById(int id)
@@ -115,10 +121,39 @@ namespace GRA.Domain.Service
 
         public async Task<VendorCode> GetUserVendorCodeAsync(int userId)
         {
+            var authorized = false;
             var authId = GetClaimId(ClaimType.UserId);
             if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
             {
-                return await _vendorCodeRepository.GetUserVendorCode(userId);
+                authorized = true;
+            }
+
+            if(!authorized)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                authorized = user.HouseholdHeadUserId == authId;
+            }
+
+            if (authorized)
+            {
+                var vendorCode = await _vendorCodeRepository.GetUserVendorCode(userId);
+                if (vendorCode != null)
+                {
+                    var codeType = await _vendorCodeTypeRepository
+                        .GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    vendorCode.CanBeDonated = !string.IsNullOrEmpty(codeType.DonationMessage);
+                    if (!string.IsNullOrEmpty(codeType.Url))
+                    {
+                        vendorCode.Url = codeType.Url.Contains(TemplateToken.VendorCodeToken)
+                            ? codeType.Url.Replace(TemplateToken.VendorCodeToken, vendorCode.Code)
+                            : codeType.Url;
+                    }
+                    return vendorCode;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -376,6 +411,112 @@ namespace GRA.Domain.Service
         public async Task<bool> SiteHasCodesAsync()
         {
             return await _vendorCodeTypeRepository.SiteHasCodesAsync(GetCurrentSiteId());
+        }
+
+        public async Task<VendorCode> ResolveDonationStatusAsync(int userId, bool? donate)
+        {
+            var authorized = false;
+            var authId = GetClaimId(ClaimType.UserId);
+            if (userId == authId || userId == GetActiveUserId() || HasPermission(Permission.ViewParticipantDetails))
+            {
+                authorized = true;
+            }
+
+            if (!authorized)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                authorized = user.HouseholdHeadUserId == authId;
+            }
+
+            if (authorized)
+            {
+                var siteId = GetClaimId(ClaimType.SiteId);
+
+                var vendorCode = await _vendorCodeRepository.GetUserVendorCode(userId);
+                vendorCode.IsDonated = donate;
+                await _vendorCodeRepository.UpdateSaveAsync(userId, vendorCode);
+
+                var vendorCodeType = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+
+                if (donate == null || donate == false)
+                {
+                    await SendVendorCodeMailAsync(userId, siteId, vendorCodeType, vendorCode.Code);
+                }
+                else if (donate == true
+                  && !string.IsNullOrEmpty(vendorCodeType.DonationSubject)
+                  && !string.IsNullOrEmpty(vendorCodeType.DonationMail))
+                {
+                    await SendVendorDonationMailAsync(userId, siteId, vendorCodeType);
+                }
+
+                return vendorCode;
+            }
+            else
+            {
+                _logger.LogError($"User {authId} doesn't have permission to update code donation status for {userId}.");
+                throw new GraException("Permission denied.");
+            }
+        }
+
+        public async Task PopulateVendorCodeStatusAsync(User user)
+        {
+            var vendorCode = await GetUserVendorCodeAsync(user.Id);
+            if (vendorCode != null)
+            {
+                user.Donated = vendorCode.IsDonated;
+                if (vendorCode.CanBeDonated && vendorCode.IsDonated == null)
+                {
+                    user.NeedsToAnswerDonationQuestion = true;
+                }
+                else if (vendorCode.CanBeDonated && vendorCode.IsDonated == true)
+                {
+                    var vendorCodeType
+                        = await _vendorCodeTypeRepository.GetByIdAsync(vendorCode.VendorCodeTypeId);
+                    user.VendorCode = vendorCodeType.DonationMessage;
+                }
+                else
+                {
+                    user.VendorCode = vendorCode.Code;
+                    user.VendorCodeUrl = vendorCode.Url;
+                    if (vendorCode.ShipDate.HasValue)
+                    {
+                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
+                    }
+                    else if (vendorCode.OrderDate.HasValue)
+                    {
+                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
+                    }
+                }
+            }
+        }
+
+        private async Task SendVendorCodeMailAsync(int userId,
+            int? siteId,
+            VendorCodeType codeType,
+            string assignedCode)
+        {
+            await _mailService.SendSystemMailAsync(new Mail
+            {
+                ToUserId = userId,
+                CanParticipantDelete = false,
+                Subject = codeType.MailSubject,
+                Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
+                                ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, assignedCode)
+                                : codeType.Mail + " " + assignedCode
+            }, siteId);
+        }
+
+        private async Task SendVendorDonationMailAsync(int userId,
+            int? siteId,
+            VendorCodeType codeType)
+        {
+            await _mailService.SendSystemMailAsync(new Mail
+            {
+                ToUserId = userId,
+                CanParticipantDelete = false,
+                Subject = codeType.DonationSubject,
+                Body = codeType.DonationMail
+            }, siteId);
         }
     }
 }

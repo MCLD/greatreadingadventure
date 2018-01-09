@@ -14,5 +14,8 @@ namespace GRA.Domain.Model
         public DateTime? ShipDate { get; set; }
 
         public string VendorCodeTypeDescription { get; set; }
+        public bool? IsDonated { get; set; }
+        public bool CanBeDonated { get; set; }
+        public string Url { get; set; }
     }
 }

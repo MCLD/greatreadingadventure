@@ -228,18 +228,39 @@
                                                 @if (Model.ShowVendorCodes)
                                                 {
                                                     <td>
-                                                        <table>
-                                                            <tr>
-                                                                <td>
-                                                                    @Model.Head.VendorCode
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    @Model.Head.VendorCodeMessage
-                                                                </td>
-                                                            </tr>
-                                                        </table>
+                                                        @if (Model.Head.NeedsToAnswerDonationQuestion)
+                                                        {
+                                                            <button class="btn btn-info btn-sm btn-spinner"
+                                                                    name="redeemButton"
+                                                                    value="@Model.Head.Id"
+                                                                    asp-action="HandleHouseholdDonation">
+                                                                <span class="buttonText">Redeem code</span>
+                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                            </button>
+                                                            @:or
+                                                            <button class="btn btn-success btn-sm btn-spinner"
+                                                                    name="donateButton"
+                                                                    value="@Model.Head.Id"
+                                                                    asp-action="HandleHouseholdDonation">
+                                                                <span class="buttonText">Donate book</span>
+                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (!string.IsNullOrEmpty(Model.Head.VendorCodeUrl))
+                                                            {
+                                                                <strong><a href="@Model.Head.VendorCodeUrl" target="_blank">@Model.Head.VendorCode</a></strong>
+                                                            }
+                                                            else
+                                                            {
+                                                                <strong>@Model.Head.VendorCode</strong>
+                                                            }
+                                                            if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
+                                                            {
+                                                                <br />@Model.Head.VendorCodeMessage
+                                                            }
+                                                        }
                                                     </td>
                                                 }
                                             </tr>
@@ -304,7 +325,7 @@
                                                                     else
                                                                     {
                                                                         @:&nbsp;
-                                                    }
+                                                                    }
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -342,18 +363,39 @@
                                                     @if (Model.ShowVendorCodes)
                                                     {
                                                         <td>
-                                                            <table>
-                                                                <tr>
-                                                                    <td>
-                                                                        @user.VendorCode
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        @user.VendorCodeMessage
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
+                                                            @if (user.NeedsToAnswerDonationQuestion)
+                                                            {
+                                                                <button class="btn btn-info btn-sm btn-spinner"
+                                                                        name="redeemButton"
+                                                                        value="@user.Id"
+                                                                        asp-action="HandleHouseholdDonation">
+                                                                    <span class="buttonText">Redeem code</span>
+                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                                </button>
+                                                                @:or
+                                                                <button class="btn btn-success btn-sm btn-spinner"
+                                                                        name="donateButton"
+                                                                        value="@user.Id"
+                                                                        asp-action="HandleHouseholdDonation">
+                                                                    <span class="buttonText">Donate book</span>
+                                                                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                                </button>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (!string.IsNullOrEmpty(user.VendorCodeUrl))
+                                                                {
+                                                                    <strong><a href="@user.VendorCodeUrl" target="_blank">@user.VendorCode</a></strong>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <strong>@user.VendorCode</strong>
+                                                                }
+                                                                if (!string.IsNullOrEmpty(Model.Head.VendorCodeMessage))
+                                                                {
+                                                                    <br />@Model.Head.VendorCodeMessage
+                                                                }
+                                                            }
                                                         </td>
                                                     }
                                                 </tr>
@@ -409,29 +451,29 @@
                                         </div>
                                         @if (!Model.DisableSecretCode)
                                         {
-                                        <div class="col-xs-12 col-sm-6 row-spacing">
-                                            <table>
-                                                <tr>
-                                                    <td style="padding-right:6px;">Apply</td>
-                                                    <td width="200px">
-                                                        <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
-                                                    </td>
-                                                    <td style="padding-left:6px;">
-                                                        <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
-                                                            <span class="buttonText">Secret Code</span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
-                                                {
+                                            <div class="col-xs-12 col-sm-6 row-spacing">
+                                                <table>
                                                     <tr>
-                                                        <td>&nbsp;</td>
-                                                        <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
+                                                        <td style="padding-right:6px;">Apply</td>
+                                                        <td width="200px">
+                                                            <input data-action="HouseholdApplySecretCode" class="form-control codeInput" />
+                                                        </td>
+                                                        <td style="padding-left:6px;">
+                                                            <button type="submit" class="btn btn-primary btn-spinner codeButton" data-action="HouseholdApplySecretCode">
+                                                                <span class="buttonText">Secret Code</span>
+                                                                <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                            </button>
+                                                        </td>
                                                     </tr>
-                                                }
-                                            </table>
-                                        </div>
+                                                    @if (!string.IsNullOrWhiteSpace(Model.SecretCodeMessage))
+                                                    {
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td colspan="2">@Html.Raw(Model.SecretCodeMessage)</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
                                         }
                                     </div>
 
@@ -450,7 +492,7 @@
     </div>
 </div>
 @section scripts
-{
+    {
     <script>
         var submitting = false;
 

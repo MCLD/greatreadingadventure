@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to create groups of challenges with unique URLs
 - Ability to relate challenges and challenge groups to events
 - Site setting to require events to be created with badges
+- Allow configuration of donation for received vendor codes
 
 ### Fixed
 - Issue with favorites list filtering

@@ -35,6 +35,7 @@ namespace GRA.Domain.Model
         ReadAllMail,
         RemoveChallenges,
         SendBroadcastMail,
+        UnDonateVendorCode,
         ViewAllChallenges,
         ViewAllReporting,
         ViewParticipantList,

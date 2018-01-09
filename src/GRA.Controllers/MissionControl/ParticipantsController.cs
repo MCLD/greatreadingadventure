@@ -409,19 +409,7 @@ namespace GRA.Controllers.MissionControl
                 var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
                 var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
 
-                var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(id);
-                if (vendorCode != null)
-                {
-                    user.VendorCode = vendorCode.Code;
-                    if (vendorCode.ShipDate.HasValue)
-                    {
-                        user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
-                    }
-                    else if (vendorCode.OrderDate.HasValue)
-                    {
-                        user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
-                    }
-                }
+                await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
                 ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
                 {
@@ -646,7 +634,7 @@ namespace GRA.Controllers.MissionControl
 
             if (!model.IsSecretCode)
             {
-                if ((!model.ActivityAmount.HasValue || model.ActivityAmount.Value < 1) 
+                if ((!model.ActivityAmount.HasValue || model.ActivityAmount.Value < 1)
                     && model.PointTranslation.IsSingleEvent == false)
                 {
                     ModelState.AddModelError("ActivityAmount", "Enter a number greater than 0.");
@@ -687,7 +675,7 @@ namespace GRA.Controllers.MissionControl
                         ShowAlertDanger("Unable to apply secret code: ", gex.Message);
                     }
                 }
-                
+
             }
             if (UserHasPermission(Permission.ManageVendorCodes))
             {
@@ -745,19 +733,7 @@ namespace GRA.Controllers.MissionControl
                 }
                 if (showVendorCodes)
                 {
-                    var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(head.Id);
-                    if (headVendorCode != null)
-                    {
-                        head.VendorCode = headVendorCode.Code;
-                        if (headVendorCode.ShipDate.HasValue)
-                        {
-                            head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
-                        }
-                        else if (headVendorCode.OrderDate.HasValue)
-                        {
-                            head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
-                        }
-                    }
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(head);
                 }
 
                 head.HasPendingQuestionnaire = (await _questionnaireService
@@ -1518,7 +1494,7 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
-                foreach(int numericId in ids.Split(',').Select(int.Parse))
+                foreach (int numericId in ids.Split(',').Select(int.Parse))
                 {
                     await _activityService.RemoveActivityAsync(userId, numericId);
                 }
@@ -1807,6 +1783,68 @@ namespace GRA.Controllers.MissionControl
             return View(model);
         }
         #endregion
+
+        #region Handle code/dontation selection
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> DonateCode(ParticipantsDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
+            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> RedeemCode(ParticipantsDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
+            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.UnDonateVendorCode)]
+        public async Task<IActionResult> UndonateCode(ParticipantsDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, null);
+            return RedirectToAction("Detail", "Participants", new { id = viewModel.User.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> HandleHouseholdDonation(HouseholdListViewModel viewModel,
+            string donateButton,
+            string redeemButton,
+            string undonateButton)
+        {
+            int userId = 0;
+            bool? donationStatus = null;
+            if (!string.IsNullOrEmpty(donateButton))
+            {
+                donationStatus = true;
+                userId = int.Parse(donateButton);
+            }
+            if (!string.IsNullOrEmpty(redeemButton))
+            {
+                donationStatus = false;
+                userId = int.Parse(redeemButton);
+            }
+            if (!string.IsNullOrEmpty(undonateButton) && UserHasPermission(Permission.UnDonateVendorCode))
+            {
+                donationStatus = null;
+                userId = int.Parse(undonateButton);
+            }
+            if (userId == 0)
+            {
+                _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
+                AlertDanger = "Could not make requested change.";
+            }
+            else
+            {
+                await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
+            }
+            return RedirectToAction("Household", "Participants", new { id = viewModel.Id });
+        }
+        #endregion Handle code/dontation selection
 
         private void SetPageTitle(User user, string title = "Participant", string username = null)
         {

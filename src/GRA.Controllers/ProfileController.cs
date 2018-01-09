@@ -80,19 +80,7 @@ namespace GRA.Controllers
             var userProgram = programList.Where(_ => _.Id == user.ProgramId).SingleOrDefault();
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
 
-            var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(user.Id);
-            if (vendorCode != null)
-            {
-                user.VendorCode = vendorCode.Code;
-                if (vendorCode.ShipDate.HasValue)
-                {
-                    user.VendorCodeMessage = $"Shipped: {vendorCode.ShipDate.Value.ToString("d")}";
-                }
-                else if (vendorCode.OrderDate.HasValue)
-                {
-                    user.VendorCodeMessage = $"Ordered: {vendorCode.OrderDate.Value.ToString("d")}";
-                }
-            }
+            await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
             ProfileDetailViewModel viewModel = new ProfileDetailViewModel()
             {
@@ -110,7 +98,7 @@ namespace GRA.Controllers
                 RestrictChangingSystemBranch = (await GetSiteSettingBoolAsync(SiteSettingKey.Users.RestrictChangingSystemBranch))
             };
 
-            if(viewModel.RestrictChangingSystemBranch)
+            if (viewModel.RestrictChangingSystemBranch)
             {
                 viewModel.SystemName = systemList.Where(_ => _.Id == viewModel.User.SystemId)
                     .FirstOrDefault()?
@@ -273,11 +261,7 @@ namespace GRA.Controllers
                 authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
                 if (showVendorCodes)
                 {
-                    var vendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
-                    if (vendorCode != null)
-                    {
-                        authUser.VendorCode = vendorCode.Code;
-                    }
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(authUser);
                 }
             }
 
@@ -341,19 +325,7 @@ namespace GRA.Controllers
 
                 if (showVendorCodes)
                 {
-                    var headVendorCode = await _vendorCodeService.GetUserVendorCodeAsync(authUser.Id);
-                    if (headVendorCode != null)
-                    {
-                        viewModel.Head.VendorCode = headVendorCode.Code;
-                        if (headVendorCode.ShipDate.HasValue)
-                        {
-                            viewModel.Head.VendorCodeMessage = $"Shipped: {headVendorCode.ShipDate.Value.ToString("d")}";
-                        }
-                        else if (headVendorCode.OrderDate.HasValue)
-                        {
-                            viewModel.Head.VendorCodeMessage = $"Ordered: {headVendorCode.OrderDate.Value.ToString("d")}";
-                        }
-                    }
+                    await _vendorCodeService.PopulateVendorCodeStatusAsync(viewModel.Head);
                 }
             }
 
@@ -948,6 +920,57 @@ namespace GRA.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DonateCode(ProfileDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, true);
+            return RedirectToAction("Index", "Profile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RedeemCode(ProfileDetailViewModel viewModel)
+        {
+            await _vendorCodeService.ResolveDonationStatusAsync(viewModel.User.Id, false);
+            return RedirectToAction("Index", "Profile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HandleHouseholdDonation(HouseholdListViewModel viewModel,
+            string donateButton,
+            string redeemButton)
+        {
+            int userId = 0;
+            bool? donationStatus = null;
+            if (!string.IsNullOrEmpty(donateButton))
+            {
+                donationStatus = true;
+                userId = int.Parse(donateButton);
+            }
+            if (!string.IsNullOrEmpty(redeemButton))
+            {
+                donationStatus = false;
+                userId = int.Parse(redeemButton);
+            }
+            if (userId == 0)
+            {
+                _logger.LogError($"User {GetActiveUserId()} unsuccessfully attempted to change donation for user {userId} to {donationStatus}");
+                AlertDanger = "Could not register your choice, please mail the administrators.";
+            }
+            else
+            {
+                await _vendorCodeService.ResolveDonationStatusAsync(userId, donationStatus);
+            }
+            return RedirectToAction("Household", "Profile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HouseholdRedeemCode(HouseholdListViewModel viewModel, string redeemButton)
+        {
+            int userId = int.Parse(redeemButton);
+            await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
+            return RedirectToAction("Household", "Profile");
         }
     }
 }

@@ -14,5 +14,17 @@ namespace GRA.Domain.Model
         [Required]
         [MaxLength(255)]
         public string MailSubject { get; set; }
+        [MaxLength(255)]
+        public string DonationOptionSubject { get; set; }
+        [MaxLength(1250)]
+        public string DonationOptionMail { get; set; }
+        [MaxLength(255)]
+        public string DonationSubject { get; set; }
+        [MaxLength(1250)]
+        public string DonationMail { get; set; }
+        [MaxLength(255)]
+        public string DonationMessage { get; set; }
+        [MaxLength(255)]
+        public string Url { get; set; }
     }
 }
