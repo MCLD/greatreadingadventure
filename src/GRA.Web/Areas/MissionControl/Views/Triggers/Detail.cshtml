@@ -563,7 +563,7 @@
     <div class="form-group">
         <a asp-action="Index" class="btn btn-default">Return to List</a>
         <button type="submit" class="btn btn-primary">
-            <span class="buttonText">@Model.Action Trigger</span>
+            <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Trigger</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
     </div>

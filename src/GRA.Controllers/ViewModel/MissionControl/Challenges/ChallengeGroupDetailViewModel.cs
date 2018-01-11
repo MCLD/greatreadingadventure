@@ -10,5 +10,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Challenges
         public string Action { get; set; }
         public List<Event> RelatedEvents { get; set; }
         public bool CanManageEvents { get; set; }
+        public string GroupUrl { get; set; }
     }
 }

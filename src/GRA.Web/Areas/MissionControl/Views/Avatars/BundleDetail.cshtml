@@ -197,7 +197,7 @@
         @if (Model.Bundle?.HasBeenAwarded != true)
         {
             <button type="submit" class="btn btn-primary">
-                <span class="buttonText">@Model.Action Bundle</span>
+                <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Bundle</span>
                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
             </button>
         }

@@ -5,6 +5,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -17,13 +18,16 @@ namespace GRA.Controllers.MissionControl
     {
         private readonly ILogger<PagesController> _logger;
         private readonly PageService _pageService;
+        private readonly SiteService _siteService;
         public PagesController(ILogger<PagesController> logger,
             ServiceFacade.Controller context,
-            PageService pageService)
+            PageService pageService,
+            SiteService siteService)
             : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _pageService = Require.IsNotNull(pageService, nameof(pageService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             PageTitle = "Pages";
         }
 
@@ -97,10 +101,14 @@ namespace GRA.Controllers.MissionControl
         {
             try
             {
+                var page = await _pageService.GetByStubAsync(stub, false);
+                var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+
                 PagesEditViewModel viewModel = new PagesEditViewModel()
                 {
-                    Page = await _pageService.GetByStubAsync(stub, false),
-                    CanEdit = UserHasPermission(Permission.EditPages)
+                    Page = page,
+                    CanEdit = UserHasPermission(Permission.EditPages),
+                    PageUrl = $"{baseUrl}{Url.Action("Index", "Info", new { area = "", stub = page.Stub })}"
                 };
                 PageTitle = "Edit Page";
                 return View(viewModel);

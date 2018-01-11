@@ -949,13 +949,16 @@ namespace GRA.Controllers.MissionControl
         {
             PageTitle = "Edit Challenge Group";
             var challengeGroup = await _challengeService.GetGroupByIdAsync(id);
+            var baseUrl = await _siteService.GetBaseUrl(Request.Scheme, Request.Host.Value);
+
             var viewModel = new ChallengeGroupDetailViewModel()
             {
                 ChallengeGroup = challengeGroup,
                 ChallengeIds = string.Join(",", challengeGroup.Challenges.Select(_ => _.Id)),
                 Action = nameof(EditGroup),
                 RelatedEvents = await _eventService.GetByChallengeGroupIdAsync(challengeGroup.Id),
-                CanManageEvents = UserHasPermission(Permission.ManageEvents)
+                CanManageEvents = UserHasPermission(Permission.ManageEvents),
+                GroupUrl = $"{baseUrl}{Url.Action("List", "Challenges", new { area = "", id = challengeGroup.Stub })}"
             };
 
             foreach (var challenge in viewModel.ChallengeGroup.Challenges)

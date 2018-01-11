@@ -3,6 +3,11 @@
 
 @section styles {
     <link rel="stylesheet" href="~/css/WMD.min.css" asp-append-version="true" />
+    <style>
+        textarea#wmd-input {
+            height: 200px !important;
+        }
+    </style>
 }
 
 <div class="row">
@@ -47,6 +52,7 @@
                                         <label asp-for="Task.Title" class="control-label">Description</label>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required."></textarea>
+                                        <br /><label class="control-label">Preview</label>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
@@ -144,6 +150,7 @@
                                         <label asp-for="Task.Title" class="control-label">Description</label>
                                         <div id="wmd-button-bar"></div>
                                         <textarea asp-for="Task.Title" id="wmd-input" class="form-control wmd-input actionTitle" data-val-required="The Description field is required." disabled="@(Model.Task.ChallengeTaskType == ChallengeTaskType.Action ? null : "disabled")"></textarea>
+                                        <br /><label class="control-label">Preview</label>
                                         <div id="preview"></div>
                                     </div>
                                     <div class="form-group">
@@ -212,7 +219,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
                             <button type="submit" asp-action="ModifyTask" class="btn btn-primary pull-right btn-spinner" aria-label="Confirm">
-                                <span class="buttonText">Edit</span>
+                                <span class="buttonText">Save</span>
                                 <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
                             </button>
                         </div>

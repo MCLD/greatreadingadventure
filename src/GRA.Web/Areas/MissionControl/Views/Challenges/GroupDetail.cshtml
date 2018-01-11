@@ -71,7 +71,7 @@
         <input asp-for="ChallengeGroup.Id" type="hidden" />
     }
 
-    @if (Model.RelatedEvents.Count > 0)
+    @if (Model.RelatedEvents?.Count > 0)
     {
         <div class="panel-group row-spacing" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
@@ -118,16 +118,21 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ChallengeGroup.Stub" class="control-label">
-                    Stub
-                    @if (Model.Action == nameof(ChallengesController.EditGroup))
-                    {
-                        <a asp-area="" asp-controller="Challenges" asp-action="List" asp-route-id="@Model.ChallengeGroup.Stub" target="_blank">Link</a>
-                    }
-                </label>
+                <label asp-for="ChallengeGroup.Stub" class="control-label"></label>
                 <span id="Stub-Icon" class="fa colored-icon hide"></span>
                 <input asp-for="ChallengeGroup.Stub" class="form-control" readonly="@(Model.Action == nameof(ChallengesController.EditGroup) ? "readonly" : null)" />
                 <span id="ChallengeGroup_Stub-Validation" asp-validation-for="ChallengeGroup.Stub" class="text-success"></span>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12">
+                    <label class="control-label">Link to group</label>
+                    <br />
+                    <a href="@Model.GroupUrl"
+                       target="_blank">
+                        @Model.GroupUrl
+                    </a>
+                </div>
             </div>
 
             <div class="form-group">
@@ -153,43 +158,43 @@
                                 <td colspan="4"><em>No challenges in group.</em></td>
                             </tr>
                             @if (Model.ChallengeGroup?.Challenges != null)
+                    {
+                        foreach (var challenge in Model.ChallengeGroup.Challenges)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
                             {
-                                foreach (var challenge in Model.ChallengeGroup.Challenges)
-                                {
-                                    <tr>
-                                        <td>
-                                            <a asp-action="Edit" asp-route-id="@challenge.Id" target="_blank">@challenge.Name</a>
-                                        </td>
-                                        <td>
-                                            @if (!string.IsNullOrWhiteSpace(challenge.BadgeFilename))
-                                            {
-                                                <img class="img-thumbnail" style="height: auto; width: 64px;"
-                                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
-                                                     asp-append-version="true" />
-                                            }
-                                            else
-                                            {
-                                                <text>&nbsp;</text>
-                                            }
-                                        </td>
-                                        <td class="gra-mc-icon">
-                                            @if (challenge.IsActive)
-                                            {
-                                                <span class="fa fa-lg fa-check text-success"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="fa fa-lg fa-ban text-danger"></span>
-                                            }
-                                        </td>
-                                        <td class="gra-mc-icon">
-                                            <button type="button" class="btn btn-link btn-xs removeChallengeButton">
-                                                <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
+                                <img class="img-thumbnail" style="height: auto; width: 64px;"
+                                     src="~/@challenge.BadgeFilename?@DateTime.Now.ToString("yyMMddHHmmss")"
+                                     asp-append-version="true" />
+                    }
+                    else
+                    {
+                        <text>&nbsp;</text>
+            }
+                                </td>
+                                <td class="gra-mc-icon">
+                                    @if (challenge.IsActive)
+                            {
+                                <span class="fa fa-lg fa-check text-success"></span>
+                    }
+                    else
+                    {
+                        <span class="fa fa-lg fa-ban text-danger"></span>
+            }
+                                </td>
+                                <td class="gra-mc-icon">
+                                    <button type="button" class="btn btn-link btn-xs removeChallengeButton">
+                                        <span class="fa fa-2x fa-minus-circle text-danger" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                }
+            }
                         </tbody>
                     </table>
                 </div>

@@ -82,7 +82,7 @@
         @if (Model.Sent != true)
         {
         <button type="submit" class="btn btn-primary">
-            <span class="buttonText">@Model.Action Broadcast</span>
+            <span class="buttonText">@(Model.Action == "Edit" ? "Save" : Model.Action) Broadcast</span>
             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
         </button>
         }

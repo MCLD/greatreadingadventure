@@ -75,7 +75,7 @@ namespace GRA.Controllers.Filter
                 site = await _siteLookupService.GetByIdAsync((int)siteId);
             }
 
-            var siteStage = _siteLookupService.GetSiteStageAsync(site);
+            var siteStage = _siteLookupService.GetSiteStage(site);
 
             bool showChallenges = true;
             bool showEvents = true;

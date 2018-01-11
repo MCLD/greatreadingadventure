@@ -1,7 +1,7 @@
 ﻿@model GRA.Controllers.ViewModel.MissionControl.Pages.PagesEditViewModel
 
 @section styles
-{
+    {
     <link rel="stylesheet" href="~/css/WMD.min.css" asp-append-version="true" />
 }
 
@@ -26,12 +26,24 @@
 
     <div class="row row-spacing">
         <div class="col-xs-12">
+            <label class="control-label">Link to page</label>
+            <br />
+            <a href="@Model.PageUrl"
+               target="_blank">
+                @Model.PageUrl
+            </a>
+        </div>
+    </div>
+
+    <div class="row row-spacing">
+        <div class="col-xs-12">
             <label asp-for="Page.Content" class="control-label"></label>
             @if (Model.CanEdit)
             {
                 <div id="wmd-button-bar"></div>
             }
             <textarea asp-for="Page.Content" id="wmd-input" class="form-control wmd-input"> </textarea>
+            <label class="control-label" style="margin-top: 1rem; margin-bottom: 0;">Preview</label>
             <div id="preview"></div>
             <span asp-validation-for="Page.Content" class="text-danger"></span>
         </div>
@@ -79,7 +91,7 @@
 </form>
 
 @section scripts
-{
+    {
     <script src="~/js/commonmark.min.js" asp-append-version="true"></script>
     <script src="~/js/WMD.min.js" asp-append-version="true"></script>
 

@@ -128,7 +128,7 @@ namespace GRA.Domain.Service
                 authorized = true;
             }
 
-            if(!authorized)
+            if (!authorized)
             {
                 var user = await _userRepository.GetByIdAsync(userId);
                 authorized = user.HouseholdHeadUserId == authId;
@@ -495,14 +495,43 @@ namespace GRA.Domain.Service
             VendorCodeType codeType,
             string assignedCode)
         {
+            string body = null;
+            if (!codeType.Mail.Contains(TemplateToken.VendorCodeToken))
+            {
+                // the token isn't in the message, just append the code to the end
+                body = $"{codeType.Mail} {assignedCode}";
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(codeType.Url))
+                {
+                    // we have a token but no url, replace the token with the code
+                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                }
+                else
+                {
+                    string url = null;
+                    // see if the url has the token in it, if so swap in the code
+                    if(!codeType.Url.Contains(TemplateToken.VendorCodeToken))
+                    {
+                        url = codeType.Url;
+                    }
+                    else
+                    {
+                        url = codeType.Url.Replace(TemplateToken.VendorCodeToken, assignedCode);
+                    }
+                    // token and url - make token clickable to go to url
+                    body = codeType.Mail.Replace(TemplateToken.VendorCodeToken,
+                        $"<a href=\"{url}\" _target=\"blank\">{assignedCode}</a>");
+                }
+            }
+
             await _mailService.SendSystemMailAsync(new Mail
             {
                 ToUserId = userId,
                 CanParticipantDelete = false,
                 Subject = codeType.MailSubject,
-                Body = codeType.Mail.Contains(TemplateToken.VendorCodeToken)
-                                ? codeType.Mail.Replace(TemplateToken.VendorCodeToken, assignedCode)
-                                : codeType.Mail + " " + assignedCode
+                Body = body
             }, siteId);
         }
 

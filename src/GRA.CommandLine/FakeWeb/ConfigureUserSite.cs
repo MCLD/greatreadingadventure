@@ -67,7 +67,7 @@ namespace GRA.CommandLine.FakeWeb
             // update the context SiteId in case the user's is set differently than the config file
             ctxt.Items[ItemKey.SiteId] = user.SiteId;
             // compute the proper site stage
-            ctxt.Items[ItemKey.SiteStage] = _facade.SiteLookupService.GetSiteStageAsync(site);
+            ctxt.Items[ItemKey.SiteStage] = _facade.SiteLookupService.GetSiteStage(site);
 
             // clear the cached user context provider
             _facade.UserService.ClearCachedUserContext();

@@ -18,11 +18,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Ability to relate challenges and challenge groups to events
 - Site setting to require events to be created with badges
 - Allow configuration of donation for received vendor codes
+- Show full link on pages with linkable stubs
+
+### Changed
+- Add label and border around rich text previews
 
 ### Fixed
 - Issue with favorites list filtering
 - Issue with favorites spinner in Internet Explorer
 - Problem with EF inferring an index that it shouldn't on UserFavoriteChallenges
+- Hidden field was showing in Mission Control system editing
+- Library/location switch wasn't working right on event create and edit
+- Change "Edit" buttons to "Save"
+- Rename GetSiteStageAsync to GetSiteStage since it wasn't async
 
 ### Removed
 - "Is achiever" property from Users

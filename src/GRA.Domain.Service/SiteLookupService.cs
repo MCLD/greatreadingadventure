@@ -79,7 +79,7 @@ namespace GRA.Domain.Service
             return sites.Select(_ => _.Path);
         }
 
-        public SiteStage GetSiteStageAsync(Site site)
+        public SiteStage GetSiteStage(Site site)
         {
             if (site.AccessClosed == null
                 && site.ProgramEnds == null

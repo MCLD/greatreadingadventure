@@ -12,10 +12,11 @@
 
 
 div#preview {
-    width: 100%; 
-    border: none; 
-    padding: 0; 
-    margin: 20px 0 0 0;
+    width: 100%;
+    border: 1px solid #a9a9a9;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0;
 }
 
 .selected 

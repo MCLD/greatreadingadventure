@@ -31,6 +31,11 @@ a.rowlink {
     background-clip: padding-box;
 }
 
+.on-top-nobg {
+    z-index: 100;
+    position: relative;
+}
+
 .btn-on-top {
     z-index: 100;
     position: relative;
@@ -522,7 +527,7 @@ input.form-checkbox {
 }
 
 .bundle-image {
-    margin:10px;
+    margin: 10px;
 }
 
 .multiselect .multiselect-selected-text {
@@ -539,6 +544,7 @@ input.form-checkbox {
 .favorite-checkbox {
     display: none;
 }
+
     .favorite-checkbox + label:before {
         color: #DDB500;
         content: "\f006";
@@ -557,9 +563,11 @@ input.form-checkbox {
     font-family: FontAwesome;
     font-size: 24px;
 }
+
     .favorite-button.fa-star {
         color: #DDB500;
     }
+
     .favorite-button.fa-star-o {
         color: #DDB500;
     }
