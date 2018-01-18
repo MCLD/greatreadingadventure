@@ -235,9 +235,9 @@ namespace GRA.Controllers.MissionControl
         {
             var currentProgram = await _siteService.GetProgramByIdAsync(model.Program.Id);
             if (string.IsNullOrWhiteSpace(model.Program.JoinBadgeName)
-                && !string.IsNullOrWhiteSpace(model.BadgeMakerImage)
-                && model.BadgeUploadImage != null
-                && currentProgram.JoinBadgeId.HasValue)
+                && (!string.IsNullOrWhiteSpace(model.BadgeMakerImage)
+                    || model.BadgeUploadImage != null
+                    || currentProgram.JoinBadgeId.HasValue))
             {
                 ModelState.AddModelError("Program.JoinBadgeName", "Please provide a name for the badge");
             }
