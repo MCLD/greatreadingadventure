@@ -5,7 +5,7 @@ namespace GRA.Data.Model
     public class PointTranslation : Abstract.BaseDbEntity
     {
         [Required]
-        public int ProgramId { get; set; }
+        public int SiteId { get; set; }
         [Required]
         [MaxLength(255)]
         public string TranslationName { get; set; }

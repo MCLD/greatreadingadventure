@@ -14,10 +14,6 @@ namespace GRA.Data.Model
         [Required]
         public int AchieverPointAmount { get; set; }
 
-        public int? AchieverBadgeId { get; set; }
-        [MaxLength(255)]
-        public string AchieverBadgeName { get; set; }
-
         public int? JoinBadgeId { get; set; }
         [MaxLength(255)]
         public string JoinBadgeName { get; set; }
@@ -36,7 +32,10 @@ namespace GRA.Data.Model
         public int? AgeMaximum { get; set; }
         public int? AgeMinimum { get; set; }
 
-        [MaxLength(50)]
-        public string DailyImageMessage { get; set; }
+        public int? DailyLiteracyTipId { get; set; }
+        public DailyLiteracyTip DailyLiteracy { get; set; }
+
+        public int PointTranslationId { get; set; }
+        public PointTranslation PointTranslation { get; set; }
     }
 }

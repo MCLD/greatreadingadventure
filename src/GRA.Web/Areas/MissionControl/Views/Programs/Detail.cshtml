@@ -1,0 +1,227 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramDetailViewModel
+
+<div class="row">
+    <div class="modal fade frame-modal" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel">
+        <span class="frame-close fa fa-stack fa-lg" data-dismiss="modal">
+            <span class="fa fa-circle fa-stack-2x fa-inverse"></span>
+            <span class="fa fa-times-circle fa-stack-1x fa-lg" style="text-shadow:none;"></span>
+        </span>
+        <div class="frame-container">
+            <iframe id="badgeMaker" class="badge-maker"></iframe>
+        </div>
+    </div>
+</div>
+
+<form asp-action="@Model.Action" method="post" role="form" enctype="multipart/form-data" style="padding-top:10px;">
+    <input asp-for="Action" type="hidden" />
+    <input asp-for="BadgeMakerImage" type="hidden" />
+    <input asp-for="BadgeMakerUrl" type="hidden" />
+    <input asp-for="UseBadgeMaker" type="hidden" />
+    @if (Model.Action == nameof(ProgramsController.Edit))
+    {
+        <input asp-for="Program.Id" type="hidden" />
+        <input asp-for="Program.JoinBadgeId" type="hidden" />
+    }
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="form-group">
+                <label asp-for="Program.Name" class="control-label"></label>
+                <input asp-for="Program.Name" class="form-control" />
+                <span asp-validation-for="Program.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Program.AchieverPointAmount" class="control-label"></label>
+                <input asp-for="Program.AchieverPointAmount" class="form-control" />
+                <span asp-validation-for="Program.AchieverPointAmount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ask Age</label>
+                <select asp-for="AgeValues" class="form-control">
+                    <option value="0">Don't Ask</option>
+                    <option value="1">Ask</option>
+                    <option value="2">Ask (Required)</option>
+                </select>
+                <span asp-validation-for="AgeValues" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Ask School</label>
+                <select asp-for="SchoolValues" class="form-control">
+                    <option value="0">Don't Ask</option>
+                    <option value="1">Ask</option>
+                    <option value="2">Ask (Required)</option>
+                </select>
+                <span asp-validation-for="SchoolValues" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label asp-for="Program.AgeMinimum" class="control-label">Minimum Age?</label>
+                        <input asp-for="Program.AgeMinimum" class="form-control" />
+                        <span asp-validation-for="Program.AgeMinimum" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label asp-for="Program.AgeMaximum" class="control-label">Maximum Age?</label>
+                        <input asp-for="Program.AgeMaximum" class="form-control" />
+                        <span asp-validation-for="Program.AgeMaximum" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Program.PointTranslationId" class="control-label"></label>
+                <select asp-for="Program.PointTranslationId" asp-items="Model.PointTranslationList" class="form-control" disabled="@(Model.PointTranslationList.Count() == 0 ? "disabled" : null)"></select>
+                <span asp-validation-for="Program.PointTranslationId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Program.DailyLiteracyTipId" class="control-label"></label>
+                <select asp-for="Program.DailyLiteracyTipId" asp-items="Model.DailyLiteracyTipList" class="form-control" disabled="@(Model.DailyLiteracyTipList.Count() == 0 ? "disabled" : null)">
+                    <option></option>
+                </select>
+                <span asp-validation-for="Program.DailyLiteracyTipId" class="text-danger"></span>
+            </div>
+
+            <div class="row row-spacing">
+                <div class="col-xs-12 col-sm-4 col-md-3">
+                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+                    {
+                        <label class="control-label">Edit badge image</label>
+                    }
+                    else
+                    {
+                        <label class="control-label">Add a badge</label>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.BadgePath))
+                    {
+                        <input asp-for="BadgePath" type="hidden" />
+                        <img id="badgeImage" class="img-thumbnail badge-lg"
+                             src="~/@Model.BadgePath?@DateTime.Now.ToString("yyMMddHHmmss")"
+                             asp-append-version="true" />
+                    }
+                    else
+                    {
+                        <img id="badgeImage" class="img-thumbnail badge-lg" src="@Model.BadgeMakerImage" style="height:210px;" />
+                    }
+                    <span asp-validation-for="BadgePath" class="text-danger" style="display:block;"></span>
+                </div>
+
+                <div class="col-xs-12 col-sm-8 col-md-9">
+                    <div class="form-group">
+                        <label asp-for="Program.JoinBadgeName" class="control-label"></label>
+                        <input asp-for="Program.JoinBadgeName" class="form-control" />
+                        <span asp-validation-for="Program.JoinBadgeName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-8 col-md-9 pull-right">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
+                            <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
+                        </li>
+                        <li role="presentation" class=@(Model.UseBadgeMaker ? "" : "active")>
+                            <a id="uploadTab" href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload an Image</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                            <button id="openMaker" type="button" class="btn btn-default">
+                                <span class="fa fa-certificate"></span> Create a Badge
+                            </button>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                            <div class="input-group">
+                                <label class="input-group-btn">
+                                    <span class="btn btn-default btn-file">
+                                        <span class="fa fa-file-image-o"></span> Select an image<input type="file" asp-for="BadgeUploadImage" accept=".png,.jpg,.jpeg" style="display: none;" />
+                                    </span>
+                                </label>
+                                <input type="text" class="form-control" readonly id="selectedFile">
+                            </div>
+                            <div>
+                                <span asp-validation-for="BadgeUploadImage" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                <a asp-action="Index" class="btn btn-default">Return to List</a>
+                <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
+                    <span class="buttonText">Save Program</span>
+                    <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section scripts {
+    <script>
+        $(':file').on('fileselect', function (event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles = ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+                $('.btn-file').removeClass('btn-default');
+                $('.btn-file').addClass('btn-success');
+                $("#badgeImage").removeAttr("src");
+                $("#badgeImage").height(200);
+                $("#BadgeMakerImage").val("");
+            }
+            else {
+                input.val('');
+                $('.btn-file').addClass('btn-default');
+                $('.btn-file').removeClass('btn-success');
+            }
+        });
+
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        $("#badgeTab").on('show.bs.tab', function() {
+            $("#UseBadgeMaker").val("true");
+        });
+
+        $("#uploadTab").on('show.bs.tab', function() {
+            $("#UseBadgeMaker").val("false");
+        });
+
+        $("#openMaker").on("click", function() {
+            $("#badgeMaker").attr("src", "@Html.Raw(@Model.BadgeMakerUrl)");
+            $("#badgeModal").modal("show");
+        });
+
+        $(window).on("message", function(e) {
+            $("#badgeModal").modal("hide");
+            var data = e.originalEvent.data;
+            $("#badgeImage").attr("src", data);
+            $("#badgeImage").height(200);
+            $("#BadgeMakerImage").val(data);
+            $('#BadgeUploadImage').val('');
+            $('.btn-file').addClass('btn-default');
+            $('.btn-file').removeClass('btn-success');
+            $('#selectedFile').val('');
+        });
+    </script>
+}

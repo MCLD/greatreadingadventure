@@ -261,7 +261,7 @@ namespace GRA.Data.Repository
                 else
                 {
                     var programBadge = await _context.Programs.AsNoTracking()
-                        .Where(_ => _.AchieverBadgeId == badgeId || _.JoinBadgeId == badgeId)
+                        .Where(_ => _.JoinBadgeId == badgeId)
                         .FirstOrDefaultAsync();
 
                     if (programBadge != null)
@@ -270,18 +270,10 @@ namespace GRA.Data.Repository
                         {
                             BadgeId = badgeId,
                             Icon = ProgramIcon,
-                            BadgePath = badge.Filename
+                            BadgePath = badge.Filename,
+                            Name = programBadge.JoinBadgeName,
+                            IconDescription = JoinDescription
                         };
-                        if (programBadge.AchieverBadgeId == badgeId)
-                        {
-                            requirement.Name = programBadge.AchieverBadgeName;
-                            requirement.IconDescription = AchieverDescription;
-                        }
-                        else
-                        {
-                            requirement.Name = programBadge.JoinBadgeName;
-                            requirement.IconDescription = JoinDescription;
-                        }
                         requirements.Add(requirement);
                     }
                     else
@@ -423,25 +415,6 @@ namespace GRA.Data.Repository
                                         Name = programs.JoinBadgeName,
                                         Icon = ProgramIcon,
                                         IconDescription = JoinDescription,
-                                        BadgePath = badges.Filename
-                                    }
-                                )
-                                .Concat(
-                                    from programs in _context.Programs
-                                    .Where(_ => _.SiteId == filter.SiteId
-                                        && _.AchieverBadgeId.HasValue
-                                        && _.AchieverBadgeName.Contains(filter.Search ?? string.Empty)
-                                        && (filter.BadgeIds == null
-                                            || !filter.BadgeIds.Contains(_.AchieverBadgeId.Value)))
-                                    .GroupBy(_ => _.AchieverBadgeId).Select(_ => _.First())
-                                    join badges in _context.Badges
-                                    on programs.AchieverBadgeId equals badges.Id
-                                    select new TriggerRequirement
-                                    {
-                                        BadgeId = badges.Id,
-                                        Name = programs.AchieverBadgeName,
-                                        Icon = ProgramIcon,
-                                        IconDescription = AchieverDescription,
                                         BadgePath = badges.Filename
                                     }
                                 )

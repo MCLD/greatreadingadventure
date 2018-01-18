@@ -30,8 +30,8 @@ namespace GRA.Domain.Model
         public DateTime? StartOfPeriod { get; set; }
         [DisplayName("Selection End")]
         public DateTime? EndOfPeriod { get; set; }
-        public int? ActivityAmount { get; set; }
-        public int? PointTranslationId { get; set; }
+        [DisplayName("Read A Book")]
+        public bool ReadABook { get; set; }
         [DisplayName("Include Admin")]
         public bool IncludeAdmin { get; set; }
         [DisplayName("Exclude Previous Winners")]

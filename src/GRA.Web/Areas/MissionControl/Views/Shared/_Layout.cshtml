@@ -139,6 +139,10 @@
                                 {
                                     <li><a asp-controller="Pages" asp-action="Index">Pages</a></li>
                                 }
+                                @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManagePrograms.ToString()))
+                                {
+                                    <li><a asp-controller="Programs" asp-action="Index">Programs</a></li>
+                                }
                                 @if (Context.User.HasClaim(GRA.ClaimType.Permission, GRA.Domain.Model.Permission.ManageQuestionnaires.ToString()))
                                 {
                                     <li><a asp-controller="Questionnaires" asp-action="Index">Questionnaires</a></li>
@@ -179,7 +183,7 @@
         </noscript>
 
         @if (ViewData.ContainsKey(GRA.Controllers.ViewDataKey.TitleHtml)
-                && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
+               && ViewData[GRA.Controllers.ViewDataKey.TitleHtml] != null)
         {
             <div class="row">
                 <div class="col-xs-12">

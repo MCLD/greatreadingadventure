@@ -462,11 +462,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     model.Criterion.ProgramId = null;
                 }
-                if (model.ReadABook)
-                {
-                    model.Criterion.PointTranslationId = 1;
-                    model.Criterion.ActivityAmount = 1;
-                }
+
                 var criterion = await _drawingService.AddCriterionAsync(model.Criterion);
                 AlertSuccess = ($"Criteria <strong>{criterion.Name}</strong> created");
                 if (string.IsNullOrWhiteSpace(Drawing))
@@ -513,7 +509,6 @@ namespace GRA.Controllers.MissionControl
                     Criterion = criterion,
                     SystemList = new SelectList((await _siteService.GetSystemList()), "Id", "Name"),
                     ProgramList = new SelectList(programs, "Id", "Name"),
-                    ReadABook = criterion.ActivityAmount.HasValue,
                     EligibleCount = await _drawingService.GetEligibleCountAsync(id),
                     ProgramPlaceholder = string.Join(", ", programs
                         .Where(_ => criterion.ProgramIds.Contains(_.Id))
@@ -553,16 +548,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     model.Criterion.ProgramId = null;
                 }
-                if (model.ReadABook)
-                {
-                    model.Criterion.PointTranslationId = 1;
-                    model.Criterion.ActivityAmount = 1;
-                }
-                else
-                {
-                    model.Criterion.PointTranslationId = null;
-                    model.Criterion.ActivityAmount = null;
-                }
+
                 var criterion = await _drawingService.EditCriterionAsync(model.Criterion);
                 AlertSuccess = ($"Criteria <strong>{criterion.Name}</strong> saved");
                 if (string.IsNullOrWhiteSpace(Drawing))

@@ -24,8 +24,7 @@ namespace GRA.Data.Model
         public int? PointsMaximum { get; set; }
         public DateTime? StartOfPeriod { get; set; }
         public DateTime? EndOfPeriod { get; set; }
-        public int? ActivityAmount { get; set; }
-        public int? PointTranslationId { get; set; }
+        public bool ReadABook { get; set; }
         public bool IncludeAdmin { get; set; }
         public bool ExcludePreviousWinners { get; set; }
 

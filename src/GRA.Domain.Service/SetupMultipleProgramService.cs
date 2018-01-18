@@ -58,6 +58,21 @@ namespace GRA.Domain.Service
             };
             branch = await _branchRepository.AddSaveAsync(userId, branch);
 
+            var pointTranslation = new Model.PointTranslation
+            {
+                ActivityAmount = 1,
+                ActivityDescription = "minute",
+                ActivityDescriptionPlural = "minutes",
+                IsSingleEvent = false,
+                PointsEarned = 1,
+                SiteId = siteId,
+                TranslationName = "One minute, one point",
+                TranslationDescriptionPastTense = "read {0}",
+                TranslationDescriptionPresentTense = "reading {0}"
+            };
+            pointTranslation = await _pointTranslationRepository.AddSaveAsync(userId,
+                pointTranslation);
+
             int programCount = 0;
             var program = new Model.Program
             {
@@ -69,23 +84,10 @@ namespace GRA.Domain.Service
                 AskAge = true,
                 SchoolRequired = false,
                 AskSchool = false,
-                AgeMaximum = 4
+                AgeMaximum = 4,
+                PointTranslationId = pointTranslation.Id
             };
             program = await _programRepository.AddSaveAsync(userId, program);
-
-            var pointTranslation = new Model.PointTranslation
-            {
-                ActivityAmount = 1,
-                ActivityDescription = "minute",
-                ActivityDescriptionPlural = "minutes",
-                IsSingleEvent = false,
-                PointsEarned = 1,
-                ProgramId = program.Id,
-                TranslationName = "One minute, one point",
-                TranslationDescriptionPastTense = "read {0}",
-                TranslationDescriptionPresentTense = "reading {0}"
-            };
-            await _pointTranslationRepository.AddSaveAsync(userId, pointTranslation);
 
             program = new Model.Program
             {
@@ -98,12 +100,10 @@ namespace GRA.Domain.Service
                 SchoolRequired = true,
                 AskSchool = true,
                 AgeMaximum = 11,
-                AgeMinimum = 5
+                AgeMinimum = 5,
+                PointTranslationId = pointTranslation.Id
             };
             program = await _programRepository.AddSaveAsync(userId, program);
-
-            pointTranslation.ProgramId = program.Id;
-            await _pointTranslationRepository.AddSaveAsync(userId, pointTranslation);
 
             program = new Model.Program
             {
@@ -116,12 +116,10 @@ namespace GRA.Domain.Service
                 SchoolRequired = false,
                 AskSchool = true,
                 AgeMaximum = 17,
-                AgeMinimum = 12
+                AgeMinimum = 12,
+                PointTranslationId = pointTranslation.Id
             };
             program = await _programRepository.AddSaveAsync(userId, program);
-
-            pointTranslation.ProgramId = program.Id;
-            await _pointTranslationRepository.AddSaveAsync(userId, pointTranslation);
 
             program = new Model.Program
             {
@@ -133,12 +131,10 @@ namespace GRA.Domain.Service
                 AskAge = false,
                 SchoolRequired = false,
                 AskSchool = false,
-                AgeMinimum = 18
+                AgeMinimum = 18,
+                PointTranslationId = pointTranslation.Id
             };
             program = await _programRepository.AddSaveAsync(userId, program);
-
-            pointTranslation.ProgramId = program.Id;
-            await _pointTranslationRepository.AddSaveAsync(userId, pointTranslation);
 
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role

@@ -58,14 +58,6 @@ namespace GRA.Domain.Service
             };
             branch = await _branchRepository.AddSaveAsync(userId, branch);
 
-            var program = new Model.Program
-            {
-                SiteId = siteId,
-                AchieverPointAmount = 100,
-                Name = "Reading Program",
-            };
-            program = await _programRepository.AddSaveAsync(userId, program);
-
             var pointTranslation = new Model.PointTranslation
             {
                 ActivityAmount = 1,
@@ -73,13 +65,22 @@ namespace GRA.Domain.Service
                 ActivityDescriptionPlural = "books",
                 IsSingleEvent = true,
                 PointsEarned = 10,
-                ProgramId = program.Id,
+                SiteId = siteId,
                 TranslationName = "One book, ten points",
                 TranslationDescriptionPastTense = "read {0}",
                 TranslationDescriptionPresentTense = "reading {0}"
             };
             pointTranslation = await _pointTranslationRepository.AddSaveAsync(userId,
                 pointTranslation);
+
+            var program = new Model.Program
+            {
+                SiteId = siteId,
+                AchieverPointAmount = 100,
+                Name = "Reading Program",
+                PointTranslationId = pointTranslation.Id
+            };
+            program = await _programRepository.AddSaveAsync(userId, program);
 
             // required for a user to be an administrator
             var adminRole = await _roleRepository.AddSaveAsync(userId, new Model.Role

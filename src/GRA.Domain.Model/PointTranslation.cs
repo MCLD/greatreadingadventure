@@ -5,7 +5,7 @@ namespace GRA.Domain.Model
     public class PointTranslation : Abstract.BaseDomainEntity
     {
         [Required]
-        public int ProgramId { get; set; }
+        public int SiteId { get; set; }
         [Required]
         [MaxLength(255)]
         public string TranslationName { get; set; }

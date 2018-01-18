@@ -1,0 +1,193 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Programs.ProgramListViewModel
+
+<div class="row">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-action="Delete" method="post" role="form" style="display:inline">
+                <input asp-for="PaginateModel.CurrentPage" type="hidden" />
+                <input asp-for="Search" type="hidden" />
+                <input asp-for="Program.Id" type="hidden" />
+                <input asp-for="Program.Name" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="deleteModalLabel">Delete Program</h4>
+                    </div>
+                    <div class="modal-body">
+                        <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                        <span id="modal-text"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                            <span class="fa fa-remove" aria-hidden="true"></span>
+                            Delete
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<form method="get" role="form">
+    <div class="row row-spacing" style="padding-top: 10px;">
+        <div class="col-xs-8">
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" value="Search" class="btn btn-default" style="margin-right: 8px;" />
+            <a asp-action="Index" class="btn btn-default">Clear</a>
+        </div>
+    </div>
+</form>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        <a asp-action="Create" class="btn btn-default">Add a Program</a>
+    </div>
+</div>
+
+<div class="row" style="padding: 10px 0;">
+    <div class="col-xs-12">
+        @if (Model.Programs.Count() == 0)
+        {
+            <div class="alert alert-warning">No Programs</div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered link-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th width="108">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var program in Model.Programs)
+                        {
+                            <tr>
+                                <td class="td-class">
+                                    <a asp-action="Edit" asp-route-id="@program.Id" class="rowlink">
+                                        @program.Name
+                                    </a>
+                                </td>
+                                <td class="on-top gra-mc-icon">
+                                    <button type="button" data-id="@program.Id" class="btn btn-default btn-xs decreasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == 1 && program == Model.Programs.First() ? " disabled" : null)">
+                                        <span class="fa fa-arrow-up"></span>
+                                    </button>
+                                    <button type="button" data-id="@program.Id" class="btn btn-default btn-xs increasePosition" style="width:25px;" disabled="@(Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage && program == Model.Programs.Last() ? " disabled" : null)">
+                                        <span class="fa fa-arrow-down"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            style="margin-left:16px;"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            data-id="@program.Id"
+                                            data-name="@program.Name">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1 )
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+@section scripts {
+<script>
+        var decreasePositionUrl = "@Url.Action("DecreasePosition")";
+        var increasePositionUrl = "@Url.Action("IncreasePosition")";
+
+        $("#deleteModal").on("show.bs.modal", function (e) {
+            var button = $(e.relatedTarget);
+            var id = button.data("id");
+            var name = button.data("name");
+            var modal = $(this);
+            modal.find("#modal-text").text("Are you sure you want to delete the program \"" + name + "\"?");
+            modal.find("#Program_Id").val(id);
+            modal.find("#Program_Name").val(name);
+        });
+
+        $(window).on("load", function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $(".td-class").each(function () {
+                $(this).children("a.rowlink").height($(this).height() + 11);
+            });
+        });
+
+        $(".decreasePosition").on("click", function () {
+            var button = $(this);
+            var id = button.data("id");
+            var child = button.children("span");
+            if (child.hasClass("fa-spinner") == false) {
+                child.removeClass("fa-arrow-up").addClass("fa-spinner fa-pulse");
+                $.post(decreasePositionUrl, { id: id }, function (response) {
+                    setTimeout(function () {
+                        child.removeClass("fa-spinner fa-pulse").addClass("fa-arrow-up");
+                        if (response == true) {
+                            var parentDiv = button.parent().parent();
+                            var prevDiv = parentDiv.prev();
+                            parentDiv.insertBefore(prevDiv);
+                            if (parentDiv.prev().length == 0 && @((Model.PaginateModel.CurrentPage == 1).ToString().ToLower())) {
+                                parentDiv.find(".decreasePosition").attr("disabled", "disabled");
+                            }
+                            parentDiv.find(".increasePosition").removeAttr("disabled");
+                            if (prevDiv.next().length == 0 && @((Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage).ToString().ToLower())) {
+                                prevDiv.find(".increasePosition").attr("disabled", "disabled");
+                            }
+                            prevDiv.find(".decreasePosition").removeAttr("disabled");
+                        }
+                        else {
+                            alert("Error changing position.");
+                        }
+                    }, 200);
+                });
+            }
+        })
+
+        $(".increasePosition").on("click", function () {
+            var button = $(this);
+            var id = button.data("id");
+            var child = button.children("span");
+            if (child.hasClass("fa-spinner") == false) {
+                child.removeClass("fa-arrow-down").addClass("fa-spinner fa-pulse");
+                $.post(increasePositionUrl, { id: id }, function (response) {
+                    setTimeout(function () {
+                        child.removeClass("fa-spinner fa-pulse").addClass("fa-arrow-down");
+                        if (response == true) {
+                            var parentDiv = button.parent().parent();
+                            var nextDiv = parentDiv.next();
+                            parentDiv.insertAfter(nextDiv);
+                            if (parentDiv.next().length == 0 && @((Model.PaginateModel.CurrentPage == Model.PaginateModel.MaxPage).ToString().ToLower())) {
+                                parentDiv.find(".increasePosition").attr("disabled", "disabled");
+                            }
+                            parentDiv.find(".decreasePosition").removeAttr("disabled");
+                            if (nextDiv.prev().length == 0 && @((Model.PaginateModel.CurrentPage == 1).ToString().ToLower())) {
+                                nextDiv.find(".decreasePosition").attr("disabled", "disabled");
+                            }
+                            nextDiv.find(".increasePosition").removeAttr("disabled");
+                        }
+                        else {
+                            alert("Error changing position.");
+                        }
+                    }, 200);
+                });
+            }
+        })
+</script>
+}

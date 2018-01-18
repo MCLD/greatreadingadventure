@@ -196,13 +196,13 @@ namespace GRA.Data.Repository
             IQueryable<int> activityUsers = null;
             IQueryable<int> pointUsers = null;
 
-            if (criterion.ActivityAmount != null && criterion.PointTranslationId != null)
+            if (criterion.ReadABook)
             {
                 var userLog = _context.UserLogs
                     .AsNoTracking()
                     .Where(_ => _.IsDeleted == false
-                        && _.ActivityEarned >= criterion.ActivityAmount
-                        && _.PointTranslationId == criterion.PointTranslationId
+                        && _.ActivityEarned > 0
+                        && _.PointTranslationId.HasValue
                         && userIds.Contains(_.UserId));
 
                 if (criterion.StartOfPeriod != null)
@@ -214,7 +214,7 @@ namespace GRA.Data.Repository
                     userLog = userLog.Where(_ => _.CreatedAt <= criterion.EndOfPeriod);
                 }
 
-                activityUsers = userLog.Select(_ => _.UserId);
+                activityUsers = userLog.Select(_ => _.UserId).Distinct();
             }
 
             if (criterion.PointsMinimum != null || criterion.PointsMinimum != null)

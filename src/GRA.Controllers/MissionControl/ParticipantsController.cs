@@ -120,7 +120,6 @@ namespace GRA.Controllers.MissionControl
                         page = paginateModel.LastPage ?? 1
                     });
             }
-
             var systemList = (await _siteService.GetSystemList())
                 .OrderByDescending(_ => _.Id == GetId(ClaimType.SystemId)).ThenBy(_ => _.Name);
 

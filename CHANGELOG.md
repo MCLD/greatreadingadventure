@@ -19,9 +19,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Site setting to require events to be created with badges
 - Allow configuration of donation for received vendor codes
 - Show full link on pages with linkable stubs
+- Mission Control Program management
 
 ### Changed
 - Add label and border around rich text previews
+- Moved daily literacy tips into their own table instead of using convention
+- A single point translations can be used by multiple programs
 
 ### Fixed
 - Issue with favorites list filtering
@@ -31,10 +34,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Library/location switch wasn't working right on event create and edit
 - Change "Edit" buttons to "Save"
 - Rename GetSiteStageAsync to GetSiteStage since it wasn't async
+- Read a book option drawing criteria option
 
 ### Removed
 - "Is achiever" property from Users
 - Application configuration value for hiding the secret code field
+- Achiever badge from program - triggers can be used to achieve this
 
 ## [4.0.0-alpha8] 2017-12-04
 ### Added

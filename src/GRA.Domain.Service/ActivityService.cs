@@ -135,7 +135,6 @@ namespace GRA.Domain.Service
                 _logger.LogError(error);
                 throw new GraException("Activity cannot be logged while there is a pending questionnaire to be taken.");
             }
-
             var translation
                 = await _pointTranslationRepository.GetByProgramIdAsync(userToLog.ProgramId);
 
@@ -619,23 +618,6 @@ namespace GRA.Domain.Service
                     IsAchiever = true
                 };
 
-                var badge = await AwardBadgeAsync(activeUserId, program.AchieverBadgeId);
-
-                if (badge != null)
-                {
-                    await _userLogRepository.AddAsync(activeUserId, new UserLog
-                    {
-                        UserId = whoEarnedUserId,
-                        PointsEarned = 0,
-                        IsDeleted = false,
-                        BadgeId = badge.Id,
-                        Description = $"You reached the goal of {program.AchieverPointAmount} points!"
-                    });
-                    notification.Text += " You've also earned a badge!";
-                    notification.BadgeId = badge.Id;
-                    notification.BadgeFilename = badge.Filename;
-                }
-
                 await _notificationRepository.AddSaveAsync(authUserId, notification);
             }
 
@@ -661,7 +643,7 @@ namespace GRA.Domain.Service
         public async Task<PointTranslation> GetUserPointTranslationAsync()
         {
             var user = await _userRepository.GetByIdAsync(GetActiveUserId());
-            return await _pointTranslationRepository.GetByIdAsync(user.ProgramId);
+            return await _pointTranslationRepository.GetByProgramIdAsync(user.ProgramId);
         }
 
         private async Task<User>

@@ -88,37 +88,17 @@ namespace GRA.Data.Repository
 
             var programs = await _context.Programs
                 .AsNoTracking()
-                .Where(_ => _.JoinBadgeId == badgeId || _.AchieverBadgeId == badgeId)
+                .Where(_ => _.JoinBadgeId == badgeId)
                 .ToListAsync();
 
             if (programs.Count > 0)
             {
                 var joined = new List<string>();
-                var achiever = new List<string>();
                 foreach (var program in programs)
                 {
-                    if (program.JoinBadgeId == badgeId)
-                    {
-                        joined.Add(program.Name);
-                    }
-                    else
-                    {
-                        achiever.Add(program.Name);
-                    }
+                    joined.Add(program.Name);
                 }
-                string name = null;
-                if (joined.Count > 0)
-                {
-                    name = $"Joined {string.Join(", ", joined)}";
-                    if (achiever.Count > 0)
-                    {
-                        name += $"; achiever status in {string.Join(", ", achiever)}";
-                    }
-                }
-                else
-                {
-                    name = $"Achiever status in {string.Join(", ", achiever)}";
-                }
+                string name = $"Joined {string.Join(", ", joined)}";
                 return name;
             }
 

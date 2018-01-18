@@ -26,6 +26,7 @@ namespace GRA.Controllers
         private readonly AutoMapper.IMapper _mapper;
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
+        private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
@@ -40,6 +41,7 @@ namespace GRA.Controllers
             Abstract.IPasswordValidator passwordValidator,
             ActivityService activityService,
             AuthenticationService authenticationService,
+            DailyLiteracyTipService dailyLiteracyTipService,
             DynamicAvatarService dynamicAvatarService,
             MailService mailService,
             PointTranslationService pointTranslationService,
@@ -54,6 +56,8 @@ namespace GRA.Controllers
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
             _authenticationService = Require.IsNotNull(authenticationService,
                 nameof(authenticationService));
+            _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
+                nameof(dailyLiteracyTipService));
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
@@ -301,22 +305,28 @@ namespace GRA.Controllers
                 foreach (var programId in householdProgramIds)
                 {
                     var program = await _siteService.GetProgramByIdAsync(programId);
-                    if (!string.IsNullOrWhiteSpace(program.DailyImageMessage))
+                    if (program.DailyLiteracyTipId.HasValue)
                     {
                         var day = _siteLookupService.GetSiteDay(site);
                         if (day.HasValue)
                         {
-                            var dailyImage = _pathResolver.ResolveContentPath(
-                                Path.Combine($"site{site.Id}", "dailyimages", $"program{program.Id}",
-                                $"{day}.jpg"));
-                            if (System.IO.File.Exists(dailyImage))
+                            var image = await _dailyLiteracyTipService.GetImageByDayAsync(
+                                program.DailyLiteracyTipId.Value, day.Value);
+                            if (image != null)
                             {
-                                var dailyImageViewModel = new DailyImageViewModel()
+                                var imagePath = _pathResolver.ResolveContentFilePath(
+                                    Path.Combine($"site{site.Id}", "dailyimages",
+                                    $"dailyliteracytip{program.DailyLiteracyTipId}",
+                                    $"{image.Id}.{image.Extension}"));
+                                if (System.IO.File.Exists(imagePath))
                                 {
-                                    DailyImageMessage = program.DailyImageMessage,
-                                    DailyImagePath = dailyImage
-                                };
-                                dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                                    var dailyImageViewModel = new DailyImageViewModel()
+                                    {
+                                        DailyImageMessage = program.DailyLiteracyTip.Message,
+                                        DailyImagePath = imagePath
+                                    };
+                                    dailyImageDictionary.Add(program.Id, dailyImageViewModel);
+                                }
                             }
                         }
                     }

@@ -117,7 +117,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-8 col-md-9">
-            <ul class="nav nav-tabs" role="tablist" style="margin-bottom:10px;">
+            <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class=@(Model.UseBadgeMaker ? "active" : "")>
                     <a id="badgeTab" href="#badge" aria-controls="badge" role="tab" data-toggle="tab">Badge Maker</a>
                 </li>
@@ -127,13 +127,13 @@
             </ul>
 
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
+                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "active" : "")" id="badge">
                     <button id="openMaker" type="button" class="btn btn-default">
                         <span class="fa fa-certificate"></span> Create a Badge
                     </button>
                 </div>
 
-                <div role="tabpanel" class="tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
+                <div role="tabpanel" class="tab-pane gra-tab-pane @(Model.UseBadgeMaker ? "" : "active")" id="upload">
                     <div class="input-group">
                         <label class="input-group-btn">
                             <span class="btn btn-default btn-file">

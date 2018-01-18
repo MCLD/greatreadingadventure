@@ -23,6 +23,7 @@ namespace GRA.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly ActivityService _activityService;
+        private readonly DailyLiteracyTipService _dailyLiteracyTipService;
         private readonly DashboardContentService _dashboardContentService;
         private readonly DynamicAvatarService _dynamicAvatarService;
         private readonly EmailReminderService _emailReminderService;
@@ -32,6 +33,7 @@ namespace GRA.Controllers
         public HomeController(ILogger<HomeController> logger,
             ServiceFacade.Controller context,
             ActivityService activityService,
+            DailyLiteracyTipService dailyLiteracyTipService,
             DashboardContentService dashboardContentService,
             DynamicAvatarService dynamicAvatarService,
             EmailReminderService emailReminderService,
@@ -42,6 +44,8 @@ namespace GRA.Controllers
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _activityService = Require.IsNotNull(activityService, nameof(activityService));
+            _dailyLiteracyTipService = Require.IsNotNull(dailyLiteracyTipService,
+                nameof(dailyLiteracyTipService));
             _dashboardContentService = Require.IsNotNull(dashboardContentService,
                 nameof(dashboardContentService));
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
@@ -83,17 +87,24 @@ namespace GRA.Controllers
                 };
 
                 var program = await _siteService.GetProgramByIdAsync(user.ProgramId);
-                if (!string.IsNullOrWhiteSpace(program.DailyImageMessage))
+                if (program.DailyLiteracyTipId.HasValue)
                 {
                     var day = _siteLookupService.GetSiteDay(site);
                     if (day.HasValue)
                     {
-                        var imagePath = Path.Combine($"site{site.Id}", "dailyimages",
-                        $"program{program.Id}", $"{day}.jpg");
-                        if (System.IO.File.Exists(_pathResolver.ResolveContentFilePath(imagePath)))
+                        var image = await _dailyLiteracyTipService.GetImageByDayAsync(
+                            program.DailyLiteracyTipId.Value, day.Value);
+                        if (image != null)
                         {
-                            viewModel.DailyImageMessage = program.DailyImageMessage;
-                            viewModel.DailyImagePath = _pathResolver.ResolveContentPath(imagePath);
+                            var imagePath = _pathResolver.ResolveContentFilePath(
+                                Path.Combine($"site{site.Id}", "dailyimages",
+                                $"dailyliteracytip{program.DailyLiteracyTipId}",
+                                $"{image.Id}.{image.Extension}"));
+                            if (System.IO.File.Exists(imagePath))
+                            {
+                                viewModel.DailyImageMessage = program.DailyLiteracyTip.Message;
+                                viewModel.DailyImagePath = imagePath;
+                            }
                         }
                     }
                 }

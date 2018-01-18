@@ -226,6 +226,7 @@ namespace GRA.Web
             services.AddScoped<BadgeService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ChallengeService>();
+            services.AddScoped<DailyLiteracyTipService>();
             services.AddScoped<DashboardContentService>();
             services.AddScoped<DrawingService>();
             services.AddScoped<DynamicAvatarService>();
@@ -294,6 +295,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IChallengeRepository, Data.Repository.ChallengeRepository>();
             services.AddScoped<Domain.Repository.IChallengeGroupRepository, Data.Repository.ChallengeGroupRepository>();
             services.AddScoped<Domain.Repository.IChallengeTaskRepository, Data.Repository.ChallengeTaskRepository>();
+            services.AddScoped<Domain.Repository.IDailyLiteracyTipImageRepository, Data.Repository.DailyLiteracyTipImageRepository>();
+            services.AddScoped<Domain.Repository.IDailyLiteracyTipRepository, Data.Repository.DailyLiteracyTipRepository>();
             services.AddScoped<Domain.Repository.IDashboardContentRepository, Data.Repository.DashboardContentRepository>();
             services.AddScoped<Domain.Repository.IDrawingCriterionRepository, Data.Repository.DrawingCriterionRepository>();
             services.AddScoped<Domain.Repository.IDrawingRepository, Data.Repository.DrawingRepository>();
@@ -312,12 +315,12 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IPointTranslationRepository, Data.Repository.PointTranslationRepository>();
             services.AddScoped<Domain.Repository.IPrizeWinnerRepository, Data.Repository.PrizeWinnerRepository>();
             services.AddScoped<Domain.Repository.IProgramRepository, Data.Repository.ProgramRepository>();
-            services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
-            services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
-            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IQuestionRepository, Data.Repository.QuestionRepository>();
             services.AddScoped<Domain.Repository.IQuestionnaireRepository, Data.Repository.QuestionnaireRepository>();
             services.AddScoped<Domain.Repository.IRecoveryTokenRepository, Data.Repository.RecoveryTokenRepository>();
+            services.AddScoped<Domain.Repository.IRequiredQuestionnaireRepository, Data.Repository.RequiredQuestionnaireRepository>();
+            services.AddScoped<Domain.Repository.IReportCriterionRepository, Data.Repository.ReportCriterionRepository>();
+            services.AddScoped<Domain.Repository.IReportRequestRepository, Data.Repository.ReportRequestRepository>();
             services.AddScoped<Domain.Repository.IRoleRepository, Data.Repository.RoleRepository>();
             services.AddScoped<Domain.Repository.ISchoolDistrictRepository, Data.Repository.SchoolDistrictRepository>();
             services.AddScoped<Domain.Repository.ISchoolRepository, Data.Repository.SchoolRepository>();

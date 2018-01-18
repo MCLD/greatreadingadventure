@@ -1,14 +1,13 @@
-﻿using GRA.Domain.Repository;
-using GRA.Domain.Model;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using GRA.Domain.Service.Abstract;
-using System.Text;
-using System.Linq;
-using System;
-using System.Collections;
+﻿using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
+using GRA.Domain.Repository;
+using GRA.Domain.Service.Abstract;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GRA.Domain.Service
 {
@@ -193,6 +192,110 @@ namespace GRA.Domain.Service
         public async Task<IEnumerable<Program>> GetProgramList()
         {
             return await _programRepository.GetAllAsync(GetCurrentSiteId());
+        }
+
+        public async Task<DataWithCount<ICollection<Program>>> GetPaginatedProgramListAsync(
+        BaseFilter filter)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            filter.SiteId = GetCurrentSiteId();
+            return new DataWithCount<ICollection<Program>>
+            {
+                Data = await _programRepository.PageAsync(filter),
+                Count = await _programRepository.CountAsync(filter)
+            };
+        }
+
+        public async Task<Program> AddProgramAsync(Program program)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            var siteId = GetCurrentSiteId();
+            var filter = new BaseFilter()
+            {
+                SiteId = siteId
+            };
+            program.Position = await _programRepository.CountAsync(filter);
+            program.SiteId = siteId;
+
+            return await _programRepository.AddSaveAsync(GetClaimId(ClaimType.UserId), program);
+        }
+
+        public async Task UpdateProgramAsync(Program program)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var currentProgram = await _programRepository.GetByIdAsync(program.Id);
+            if (currentProgram.SiteId != siteId)
+            {
+                _logger.LogError($"User {authId} cannot remove program {currentProgram.Id} for site {currentProgram.SiteId}.");
+                throw new GraException($"Permission denied - program belongs to site id {currentProgram.SiteId}.");
+            }
+
+            currentProgram.AchieverPointAmount = program.AchieverPointAmount;
+            currentProgram.AgeMaximum = program.AgeMaximum;
+            currentProgram.AgeMinimum = program.AgeMinimum;
+            currentProgram.AgeRequired = program.AgeRequired;
+            currentProgram.AskAge = program.AskAge;
+            currentProgram.AskSchool = program.AskSchool;
+            currentProgram.DailyLiteracyTipId = program.DailyLiteracyTipId;
+            currentProgram.JoinBadgeId = currentProgram.JoinBadgeId ?? program.JoinBadgeId;
+            currentProgram.JoinBadgeName = program.JoinBadgeName;
+            currentProgram.Name = program.Name;
+            currentProgram.PointTranslationId = program.PointTranslationId;
+            currentProgram.SchoolRequired = program.SchoolRequired;
+
+            await _programRepository.UpdateSaveAsync(GetClaimId(ClaimType.UserId), currentProgram);
+        }
+
+        public async Task RemoveProgramAsync(int programId)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+            var program = await _programRepository.GetByIdAsync(programId);
+            if (program.SiteId != siteId)
+            {
+                _logger.LogError($"User {authId} cannot remove program {programId} for site {program.SiteId}.");
+                throw new GraException($"Permission denied - program belongs to site id {program.SiteId}.");
+            }
+            if (await _programRepository.IsInUseAsync(programId, siteId))
+            {
+                throw new GraException($"Users currently belong to the program \"{program.Name}\".");
+            }
+            await _programRepository.RemoveSaveAsync(GetClaimId(ClaimType.UserId), program);
+        }
+
+        public async Task UpdateProgramListOrderAsync(List<int> programOrderList)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            var authId = GetClaimId(ClaimType.UserId);
+            var siteId = GetCurrentSiteId();
+
+            var programs = await _programRepository.GetAllAsync(GetCurrentSiteId());
+            var programIdList = programs.Select(_ => _.Id);
+            if (programOrderList.All(programIdList.Contains) && programOrderList.Count == programIdList.Count())
+            {
+                _logger.LogError($"User {authId} cannot update programs {string.Join(", ", programOrderList)} belonging to another site.");
+                throw new GraException("Invalid program selection.");
+            }
+            foreach (var program in programs)
+            {
+                program.Position = programOrderList.IndexOf(program.Id);
+                await _programRepository.UpdateSaveAsync(authId, program);
+            }
+        }
+
+        public async Task DecreaseProgramPositionAsync(int programId)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            await _programRepository.DecreasePositionAsync(programId, GetCurrentSiteId());
+        }
+
+        public async Task IncreaseProgramPositionAsync(int programId)
+        {
+            VerifyPermission(Permission.ManagePrograms);
+            await _programRepository.IncreasePositionAsync(programId, GetCurrentSiteId());
         }
 
         public async Task<Program> GetProgramByIdAsync(int programId)

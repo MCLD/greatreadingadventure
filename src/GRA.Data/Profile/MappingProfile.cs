@@ -22,6 +22,8 @@ namespace GRA.Data.Profile
                     src => src.ChallengeGroupChallenges.Select(_ => _.ChallengeId)))
                 .ReverseMap();
             CreateMap<Model.ChallengeTask, Domain.Model.ChallengeTask>().ReverseMap();
+            CreateMap<Model.DailyLiteracyTip, Domain.Model.DailyLiteracyTip>().ReverseMap();
+            CreateMap<Model.DailyLiteracyTipImage, Domain.Model.DailyLiteracyTipImage>().ReverseMap();
             CreateMap<Model.DashboardContent, Domain.Model.DashboardContent>().ReverseMap();
             CreateMap<Model.Drawing, Domain.Model.Drawing>().ReverseMap();
             CreateMap<Model.DrawingCriterion, Domain.Model.DrawingCriterion>()
