@@ -81,7 +81,7 @@ namespace GRA.Controllers
                     string userId = user.Claims
                         .Where(_ => _.Type == ClaimType.UserId)
                         .FirstOrDefault()?.Value ?? "Unknown";
-                    var distinct = claim.Distinct();
+                    var distinct = claim.Select(_ => _.Value).Distinct();
                     if (distinct.Count() > 1)
                     {
                         throw new Exception(string.Format("User {0} has multiple {1} claims: {2}",
@@ -91,8 +91,8 @@ namespace GRA.Controllers
                     }
                     else
                     {
-                        _logger.LogWarning($"User {userId} has multiple {claimType} claims with the same value: {distinct.First().Value}");
-                        return distinct.First().Value;
+                        _logger.LogWarning($"User {userId} has multiple {claimType} claims with the same value, using the first: {claim.First().Value}");
+                        return claim.First().Value;
                     }
             }
         }
