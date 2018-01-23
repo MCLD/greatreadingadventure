@@ -123,6 +123,9 @@ namespace GRA.Controllers.MissionControl
 
         public async Task<IActionResult> SetupDynamicAvatars()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             int siteId = GetCurrentSiteId();
 
             string assetPath = Path.Combine(
@@ -149,9 +152,15 @@ namespace GRA.Controllers.MissionControl
                 avatarList = JsonConvert.DeserializeObject<IEnumerable<DynamicAvatarLayer>>(jsonString);
             }
 
+            _logger.LogInformation($"Found {avatarList.Count()} DynamicAvatarLayer objects in avatar file");
+
+            var time = _dateTimeProvider.Now;
+
+            int totalFilesCopied = 0;
+
             foreach (var layer in avatarList)
             {
-                var time = _dateTimeProvider.Now;
+                int layerFilesCopied = 0;
                 var userId = GetId(ClaimType.UserId);
                 if (layer.DynamicAvatarColors != null)
                 {
@@ -177,6 +186,8 @@ namespace GRA.Controllers.MissionControl
                 }
 
                 List<DynamicAvatarElement> elementList = new List<DynamicAvatarElement>();
+                _logger.LogInformation($"Processing {addedLayer.DynamicAvatarItems.Count()} items in {layer.Name}...");
+
                 foreach (var item in addedLayer.DynamicAvatarItems)
                 {
                     var itemRoot = Path.Combine(destinationRoot, $"item{item.Id}");
@@ -199,6 +210,7 @@ namespace GRA.Controllers.MissionControl
                             System.IO.File.Copy(
                                 Path.Combine(layerAssetPath, $"{item.Name} {color.Color}.png"),
                                 Path.Combine(itemPath, $"{item.Id}_{color.Id}.png"));
+                            layerFilesCopied++;
                         }
                     }
                     else
@@ -211,10 +223,14 @@ namespace GRA.Controllers.MissionControl
                         elementList.Add(element);
                         System.IO.File.Copy(Path.Combine(layerAssetPath, $"{item.Name}.png"),
                             Path.Combine(itemPath, $"{item.Id}.png"));
+                        layerFilesCopied++;
                     }
                 }
                 await _dynamicAvatarService.AddElementListAsync(elementList);
+                totalFilesCopied += layerFilesCopied;
+                _logger.LogInformation($"Copied {layerFilesCopied} items for {layer.Name}");
             }
+            _logger.LogInformation($"Copied {totalFilesCopied} items for all layers.");
 
             var bundleJsonPath = Path.Combine(assetPath, "default bundles.json");
             if (System.IO.File.Exists(bundleJsonPath))
@@ -228,12 +244,17 @@ namespace GRA.Controllers.MissionControl
 
                 foreach (var bundle in bundleList)
                 {
+                    _logger.LogInformation($"Processing bundle {bundle.Name}...");
                     List<int> items = bundle.DynamicAvatarItems.Select(_ => _.Id).ToList();
                     bundle.DynamicAvatarItems = null;
                     var newBundle = await _dynamicAvatarService.AddBundleAsync(bundle, items);
                 }
             }
-            ShowAlertSuccess("Default dynamic avatars have been successfully added.");
+
+            sw.Stop();
+            string loaded = $"Default dynamic avatars added in {sw.Elapsed.TotalSeconds} seconds.";
+            _logger.LogInformation(loaded);
+            ShowAlertSuccess(loaded);
             return View("Index");
         }
 
