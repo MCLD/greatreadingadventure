@@ -36,7 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Change "Edit" buttons to "Save"
 - Rename GetSiteStageAsync to GetSiteStage since it wasn't async
 - Issue with duplicate claims throwing an exception unnecessarily
-- Read a book option drawing criteria option
+- Read a book drawing criteria option
 
 ### Removed
 - "Is achiever" property from Users
