@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [4.0.0-alpha9] 2018-01-23
 ### Added
 - Better error handling in AJAX favoriting
 - The ability to favorite a challenge from its detail page

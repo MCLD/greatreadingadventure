@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <Version>4.0.0-alpha8</Version>
+    <Version>4.0.0-alpha9</Version>
     <Company />
     <Product />
     <Copyright>Copyright 2017 Maricopa County Library District</Copyright>
