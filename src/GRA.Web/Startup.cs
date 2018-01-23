@@ -234,6 +234,7 @@ namespace GRA.Web
             services.AddScoped<EmailService>();
             services.AddScoped<EventImportService>();
             services.AddScoped<EventService>();
+            services.AddScoped<GroupTypeService>();
             services.AddScoped<MailService>();
             services.AddScoped<PageService>();
             services.AddScoped<PointTranslationService>();
@@ -308,6 +309,8 @@ namespace GRA.Web
             services.AddScoped<Domain.Repository.IEmailReminderRepository, Data.Repository.EmailReminderRepository>();
             services.AddScoped<Domain.Repository.IEnteredSchoolRepository, Data.Repository.EnteredSchoolRepository>();
             services.AddScoped<Domain.Repository.IEventRepository, Data.Repository.EventRepository>();
+            services.AddScoped<Domain.Repository.IGroupInfoRepository, Data.Repository.GroupInfoRepository>();
+            services.AddScoped<Domain.Repository.IGroupTypeRepository, Data.Repository.GroupTypeRepository>();
             services.AddScoped<Domain.Repository.ILocationRepository, Data.Repository.LocationRepository>();
             services.AddScoped<Domain.Repository.IMailRepository, Data.Repository.MailRepository>();
             services.AddScoped<Domain.Repository.INotificationRepository, Data.Repository.NotificationRepository>();

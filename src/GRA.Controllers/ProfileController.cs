@@ -11,6 +11,7 @@ using GRA.Domain.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
@@ -35,6 +36,8 @@ namespace GRA.Controllers
         private readonly SiteService _siteService;
         private readonly UserService _userService;
         private readonly VendorCodeService _vendorCodeService;
+
+        private string HouseholdTitle;
 
         public ProfileController(ILogger<ProfileController> logger,
             ServiceFacade.Controller context,
@@ -70,6 +73,12 @@ namespace GRA.Controllers
             _userService = Require.IsNotNull(userService, nameof(userService));
             _vendorCodeService = Require.IsNotNull(vendorCodeService, nameof(vendorCodeService));
             PageTitle = "My Profile";
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string ?? "Household";
         }
 
         public async Task<IActionResult> Index()
@@ -256,12 +265,17 @@ namespace GRA.Controllers
             User headUser = null;
             bool authUserIsHead = !authUser.HouseholdHeadUserId.HasValue;
             bool showVendorCodes = authUserIsHead && await _vendorCodeService.SiteHasCodesAsync();
+            GroupInfo groupInfo = null;
+
             if (!authUserIsHead)
             {
+                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(headUser?.Id
+                    ?? (int)authUser.HouseholdHeadUserId);
                 headUser = await _userService.GetDetails((int)authUser.HouseholdHeadUserId);
             }
             else
             {
+                groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
                 authUser.HasNewMail = await _mailService.UserHasUnreadAsync(authUser.Id);
                 if (showVendorCodes)
                 {
@@ -290,6 +304,12 @@ namespace GRA.Controllers
                 PointTranslation = await _pointTranslationService
                         .GetByProgramIdAsync(authUser.ProgramId, true)
             };
+
+            if (groupInfo != null)
+            {
+                viewModel.GroupName = groupInfo.Name;
+                viewModel.GroupLeader = authUserIsHead && authUser.Id == activeUserId;
+            }
 
             if (authUserIsHead)
             {
@@ -386,7 +406,7 @@ namespace GRA.Controllers
             }
             else
             {
-                TempData[ActivityMessage] = "No household members selected.";
+                TempData[ActivityMessage] = "No members selected.";
             }
 
             return RedirectToAction("Household");
@@ -427,7 +447,7 @@ namespace GRA.Controllers
             }
             else
             {
-                TempData[SecretCodeMessage] = "No household members selected.";
+                TempData[SecretCodeMessage] = "No members selected.";
             }
 
             return RedirectToAction("Household");
@@ -438,7 +458,41 @@ namespace GRA.Controllers
             var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
             if (authUser.HouseholdHeadUserId != null)
             {
+                // if the authUser has a household head then they are not the household head
                 return RedirectToAction("Household");
+            }
+
+            var (useGroups, maximumHousehold) =
+                await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+            if (useGroups)
+            {
+                var groupTypes = await _userService.GetGroupTypeListAsync();
+
+                if (groupTypes.Count() == 0)
+                {
+                    _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
+                }
+                else
+                {
+                    var household
+                        = await _userService.GetHouseholdAsync(authUser.Id, false, false, false);
+                    if (household.Count() > maximumHousehold)
+                    {
+                        var groupInfo
+                            = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+                        if (groupInfo == null)
+                        {
+                            _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}");
+                            return View("GroupUpgrade", new GroupUpgradeViewModel
+                            {
+                                MaximumHouseholdAllowed = maximumHousehold,
+                                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
+                            });
+                        }
+                    }
+                }
             }
 
             var userBase = new User()
@@ -560,7 +614,7 @@ namespace GRA.Controllers
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Unable to add household member: ", gex);
+                    ShowAlertDanger("Unable to add member: ", gex);
                 }
             }
             var branchList = await _siteService.GetBranches(model.User.SystemId);
@@ -631,22 +685,116 @@ namespace GRA.Controllers
             {
                 try
                 {
+                    // check if we're going to trip group membership requirements
+                    var (useGroups, maximumHousehold) =
+                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+                    int? addUserId = null;
+
+                    if (useGroups)
+                    {
+                        var groupTypes = await _userService.GetGroupTypeListAsync();
+
+                        if (groupTypes.Count() == 0)
+                        {
+                            _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
+                        }
+                        else
+                        {
+                            var currentHousehold = await _userService.GetHouseholdAsync(authUser.Id,
+                                false,
+                                false,
+                                false);
+
+                            int totalAddCount = 0;
+                            (totalAddCount, addUserId)
+                                = await _userService.CountParticipantsToAdd(model.Username,
+                                model.Password);
+
+                            if (currentHousehold.Count() + totalAddCount > maximumHousehold)
+                            {
+                                var groupInfo
+                                    = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+                                if (groupInfo == null)
+                                {
+                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
+                                    // add authenticated user id to session
+                                    if (addUserId != null)
+                                    {
+                                        HttpContext.Session
+                                            .SetString(SessionKey.AbsorbUserId, addUserId.ToString());
+                                    }
+                                    return View("GroupUpgrade", new GroupUpgradeViewModel
+                                    {
+                                        MaximumHouseholdAllowed = maximumHousehold,
+                                        GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name"),
+                                        AddExisting = true
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    // end checking about groups
+
                     string addedMembers = await _userService
                         .AddParticipantToHouseholdAsync(model.Username, model.Password);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                    ShowAlertSuccess(addedMembers + " has been added to your household");
+                    ShowAlertSuccess($"{addedMembers} has been added to your {HouseholdTitle.ToLower()}");
                     return RedirectToAction("Household");
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Could not add participant to household: ", gex.Message);
+                    HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                    ShowAlertDanger($"Could not add participant as {HouseholdTitle.ToLower()} Member: ", gex);
                 }
             }
             return View(model);
         }
 
+        [HttpPost]
+        private async Task<IActionResult> AddExistingPreAuth()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                return RedirectToAction("Household");
+            }
+
+            if (!int.TryParse(HttpContext.Session.GetString(SessionKey.AbsorbUserId),
+                out int userId))
+            {
+                return RedirectToAction("Household");
+            }
+
+            try
+            {
+                string addedMembers = await _userService
+                    .AddParticipantToHouseholdAlreadyAuthorizedAsync(userId);
+                HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                ShowAlertSuccess($"{addedMembers} has been added to your {HouseholdTitle.ToLower()}");
+            }
+            catch (GraException gex)
+            {
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+                ShowAlertDanger($"Could not add participant as {HouseholdTitle.ToLower()} Member: ", gex);
+            }
+            return RedirectToAction("Household");
+        }
+
         public IActionResult RegisterHouseholdMember()
         {
+            return RedirectToAction("Household");
+        }
+
+        [HttpPost]
+        public IActionResult CancelGroupUpgrade(GroupUpgradeViewModel viewModel)
+        {
+            if(viewModel.AddExisting == true)
+            {
+                HttpContext.Session.Remove(SessionKey.AbsorbUserId);
+            }
             return RedirectToAction("Household");
         }
 
@@ -668,12 +816,12 @@ namespace GRA.Controllers
                     try
                     {
                         await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                        AlertSuccess = "Household member registered!";
+                        AlertSuccess = $"{HouseholdTitle} member registered!";
                         return RedirectToAction("Household");
                     }
                     catch (GraException gex)
                     {
-                        ShowAlertDanger("Unable to register household member: ", gex);
+                        ShowAlertDanger($"Unable to register {HouseholdTitle.ToLower()} member: ", gex);
                     }
                 }
                 return View("HouseholdRegisterMember", model);
@@ -981,6 +1129,66 @@ namespace GRA.Controllers
             int userId = int.Parse(redeemButton);
             await _vendorCodeService.ResolveDonationStatusAsync(userId, false);
             return RedirectToAction("Household", "Profile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
+            {
+                AlertDanger = "You must specify a group name.";
+                return View("GroupUpgrade", viewModel);
+            }
+
+            try
+            {
+                viewModel.GroupInfo.UserId = GetActiveUserId();
+                await _userService.CreateGroup(viewModel.GroupInfo.UserId, viewModel.GroupInfo);
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Couldn't create group: {ex.Message}";
+                return View("GroupUpgrade", viewModel);
+            }
+            HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
+
+            if (viewModel.AddExisting == true)
+            {
+                return await AddExistingPreAuth();
+            }
+            else
+            {
+                return await AddHouseholdMember();
+            }
+        }
+
+        public async Task<IActionResult> GroupDetails()
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+            if (groupInfo == null)
+            {
+                return RedirectToAction("Household");
+            }
+            else
+            {
+                return View("GroupDetails", new GroupInfo
+                {
+                    Id = groupInfo.Id,
+                    Name = groupInfo.Name,
+                    GroupTypeName = groupInfo.GroupTypeName
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GroupDetails(GroupInfo groupInfo)
+        {
+            var authUser = await _userService.GetDetails(GetId(ClaimType.UserId));
+            groupInfo.UserId = authUser.Id;
+            await _userService.UpdateGroupName(authUser.Id, groupInfo);
+            return RedirectToAction("Household");
         }
     }
 }

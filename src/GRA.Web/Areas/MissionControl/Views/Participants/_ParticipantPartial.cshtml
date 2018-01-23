@@ -8,7 +8,14 @@
             }
             <li ActiveBy routeKey="Action" value="Household">
                 <a asp-action="Household" asp-route-id="@Model.Id">
-                    Household
+                    @if(Model.IsGroup)
+                    {
+                        @:Group
+                    }
+                    else
+                    {
+                        @:Household
+                    }
                     @if (Model.HouseholdCount > 0)
                     {
                         <span class="label label-default label-as-badge">@(Model.HouseholdCount + 1)</span>

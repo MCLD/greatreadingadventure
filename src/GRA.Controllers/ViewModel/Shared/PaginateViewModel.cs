@@ -72,5 +72,13 @@ namespace GRA.Controllers.ViewModel.Shared
                 return last;
             }
         }
+
+        public bool PastMaxPage
+        {
+            get
+            {
+                return MaxPage > 0 && CurrentPage > MaxPage;
+            }
+        }
     }
 }

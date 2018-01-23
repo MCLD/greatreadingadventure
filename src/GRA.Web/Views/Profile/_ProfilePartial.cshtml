@@ -4,7 +4,7 @@
             <li ActiveBy routeKey="Action" value="Index"><a asp-action="Index">Details</a></li>
             <li ActiveBy routeKey="Action" value="Household">
                 <a asp-action="Household">
-                    Household
+                    @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]
                     @if (Model.HouseholdCount > 0)
                     {
                         <span class="label label-default label-as-badge">@(Model.HouseholdCount + 1)</span>

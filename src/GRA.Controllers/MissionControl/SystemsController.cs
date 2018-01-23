@@ -25,7 +25,7 @@ namespace GRA.Controllers.MissionControl
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
-            PageTitle = "System";
+            PageTitle = "System & branch management";
         }
 
         public async Task<IActionResult> Index(string search, int page = 1)

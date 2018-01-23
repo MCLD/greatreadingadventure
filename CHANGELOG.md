@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Allow configuration of donation for received vendor codes
 - Show full link on pages with linkable stubs
 - Mission Control Program management
+- Setting to require households of a certain size to convert to groups and select a configurable group type
 
 ### Changed
 - Add label and border around rich text previews

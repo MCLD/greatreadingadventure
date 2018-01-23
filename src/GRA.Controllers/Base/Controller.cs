@@ -250,14 +250,27 @@ namespace GRA.Controllers.Base
         }
 
         /// <summary>
-        /// Look up a site setting by key, if it is set to anything other than NULL return true
+        /// Look up a boolean site setting by key.
         /// </summary>
         /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
         /// <returns>True if the value is set in the database, false if the key is not present or
-        /// set to null.</returns>
+        /// set to NULL.</returns>
         protected async Task<bool> GetSiteSettingBoolAsync(string key)
         {
             return await _siteLookupService.GetSiteSettingBoolAsync(GetCurrentSiteId(), key);
         }
+
+        /// <summary>
+        /// Look up an integer site setting by key.
+        /// </summary>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>A tuple, the bool is true if the setting is present and a number with the
+        /// value being the number. The bool is false if the setting is not set or is not a parsable
+        /// integer.</returns>
+        protected async Task<(bool, int)> GetSiteSettingIntAsync(string key)
+        {
+            return await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), key);
+        }
+        
     }
 }

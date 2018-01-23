@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dashboardContentService = dashboardContentService
                 ?? throw new ArgumentNullException(nameof(dashboardContentService));
-            PageTitle = "Dashboard Content";
+            PageTitle = "Dashboard Content management";
         }
 
         public async Task<IActionResult> Index(int page = 1, bool archived = false)

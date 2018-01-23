@@ -30,7 +30,7 @@ namespace GRA.Controllers.MissionControl
             _schoolImportService = Require.IsNotNull(schoolImportService,
                 nameof(schoolImportService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            PageTitle = "Schools";
+            PageTitle = "School management";
         }
 
         public async Task<IActionResult> Index(string search, int page = 1)

@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
             _logger = Require.IsNotNull(logger, nameof(logger));
             _questionnaireService = Require.IsNotNull(questionnaireService,
                 nameof(questionnaireService));
-            PageTitle = "Questionnaires";
+            PageTitle = "Questionnaire management";
         }
 
         public async Task<IActionResult> Index(int page = 1)

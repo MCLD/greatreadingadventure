@@ -25,6 +25,7 @@ namespace GRA.Domain.Model
         ManageDailyLiteracyTips,
         ManageDashboardContent,
         ManageEvents,
+        ManageGroupTypes,
         ManageLocations,
         ManagePointTranslations,
         ManagePrograms,

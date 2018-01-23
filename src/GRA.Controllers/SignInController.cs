@@ -64,6 +64,17 @@ namespace GRA.Controllers
                         {
                             HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
                         }
+
+                        int householdHeadId = loginAttempt.User.HouseholdHeadUserId 
+                            ?? loginAttempt.User.Id;
+
+                        var group 
+                            = await _userService.GetGroupFromHouseholdHeadAsync(householdHeadId);
+                        if (group != null)
+                        {
+                            HttpContext.Session.SetString(SessionKey.CallItGroup, "True");
+                        }
+
                         var questionnaireId = await _questionnaireService
                             .GetRequiredQuestionnaire(loginAttempt.User.Id, loginAttempt.User.Age);
                         if (questionnaireId.HasValue)

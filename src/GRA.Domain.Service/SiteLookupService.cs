@@ -163,12 +163,50 @@ namespace GRA.Domain.Service
             return await GetSitesFromCacheAsync();
         }
 
+        /// <summary>
+        /// Look up a boolean site setting by site id and key.
+        /// </summary>
+        /// <param name="siteId">Site id that the setting is associated with</param>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>True if the value is set in the database, false if the key is not present or
+        /// set to NULL.</returns>
         public async Task<bool> GetSiteSettingBoolAsync(int siteId, string key)
         {
             var site = (await GetSitesFromCacheAsync())
                 .Where(_ => _.Id == siteId)
                 .SingleOrDefault();
-            return site.Settings.Where(_ => _.Key == key).FirstOrDefault()?.Value != null;
+            return site.Settings
+                .Where(_ => _.Key == key && _.Format == SiteSettingFormat.Boolean)
+                .FirstOrDefault()?
+                .Value != null;
+        }
+
+        /// <summary>
+        /// Look up an integer site setting by site id and key.
+        /// </summary>
+        /// <param name="siteId">Site id that the setting is associated with</param>
+        /// <param name="key">The site setting key value (a string, up to 255 characters)</param>
+        /// <returns>A tuple, the bool is true if the setting is present and a number with the
+        /// value being the number. The bool is false if the setting is not set or is not a parsable
+        /// integer.</returns>
+        public async Task<(bool useGroups, int maximumHousehold)> GetSiteSettingIntAsync(int siteId, string key)
+        {
+            var site = (await GetSitesFromCacheAsync())
+                .Where(_ => _.Id == siteId)
+                .SingleOrDefault();
+            var settingValueString = site.Settings
+                .Where(_ => _.Key == key && _.Format == SiteSettingFormat.Integer)
+                .FirstOrDefault()?
+                .Value;
+
+            if (!string.IsNullOrEmpty(settingValueString))
+            {
+                if (int.TryParse(settingValueString, out int value))
+                {
+                    return (useGroups: true, maximumHousehold: value);
+                }
+            }
+            return (useGroups: false, maximumHousehold: default(int));
         }
     }
 }

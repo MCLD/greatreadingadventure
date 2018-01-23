@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
             _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(vendorCodeService));
-            PageTitle = "Vendor Codes";
+            PageTitle = "Vendor code management";
         }
 
         [HttpGet]

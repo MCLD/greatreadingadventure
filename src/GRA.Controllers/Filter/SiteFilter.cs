@@ -103,6 +103,15 @@ namespace GRA.Controllers.Filter
             httpContext.Items[ItemKey.ShowChallenges] = showChallenges;
             httpContext.Items[ItemKey.ShowEvents] = showEvents;
 
+            if (string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup)))
+            {
+                httpContext.Items[ItemKey.HouseholdTitle] = "Household";
+            }
+            else
+            {
+                httpContext.Items[ItemKey.HouseholdTitle] = "Group";
+            }
+
             if (!string.IsNullOrWhiteSpace(site.ExternalEventListUrl))
             {
                 httpContext.Items[ItemKey.ExternalEventListUrl] = site.ExternalEventListUrl;

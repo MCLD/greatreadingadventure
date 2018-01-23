@@ -28,7 +28,7 @@ namespace GRA.Controllers.MissionControl
             _logger = Require.IsNotNull(logger, nameof(logger));
             _pageService = Require.IsNotNull(pageService, nameof(pageService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            PageTitle = "Pages";
+            PageTitle = "Page management";
         }
 
         public async Task<IActionResult> Index(int page = 1)

@@ -1,0 +1,49 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.GroupUpgradeViewModel
+
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <form asp-action="CreateGroup">
+            <input asp-for="Id" type="hidden" />
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Upgrade from household to group</h3>
+                </div>
+                <div class="panel-body">
+                    <p>
+                        In order to add more people this household must be converted to a group.
+                        Please enter a group name and select the appropriate group type.
+                    </p>
+                    <div class="form-group">
+                        <label asp-for="GroupInfo.Name" class="control-label"></label>
+                        <input asp-for="GroupInfo.Name" class="form-control" />
+                        <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GroupInfo.GroupTypeId" class="control-label"></label>
+                        <select asp-for="GroupInfo.GroupTypeId"
+                                asp-items="Model.GroupTypes"
+                                class="form-control"></select>
+                        <span asp-validation-for="GroupInfo.GroupTypeId"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix">
+                    <div class="pull-right">
+                        <a class="btn btn-danger"
+                           asp-action="Household" asp-route-id="@Model.Id">
+                            <span class="buttonText">Cancel</span>
+                        </a>
+                        <button type="submit"
+                                id="Submit"
+                                name="Submit"
+                                value="Submit"
+                                class="btn btn-primary btn-spinner">
+                            <span class="buttonText">Upgrade to group</span>
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

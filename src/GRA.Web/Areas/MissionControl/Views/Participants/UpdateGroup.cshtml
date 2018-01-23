@@ -1,0 +1,33 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.Participants.UpdateGroupViewModel
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <form asp-action="UpdateGroup">
+            <input asp-for="HouseholdHeadUserId" type="hidden" />
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Update group details</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label asp-for="GroupInfo.Name" class="control-label"></label>
+                        <input asp-for="GroupInfo.Name" class="form-control" />
+                        <span asp-validation-for="GroupInfo.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GroupInfo.GroupTypeId" class="control-label"></label>
+                        <select asp-for="GroupInfo.GroupTypeId"
+                                asp-items="Model.GroupTypes"
+                                class="form-control"></select>
+                        <span asp-validation-for="GroupInfo.GroupTypeId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix">
+                    <div class="pull-right">
+                        <a class="btn btn-danger" href="@Url.Action("Household")">Cancel</a>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

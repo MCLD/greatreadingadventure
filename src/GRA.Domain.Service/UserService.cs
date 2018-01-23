@@ -17,6 +17,8 @@ namespace GRA.Domain.Service
         private readonly IBadgeRepository _badgeRepository;
         private readonly IBookRepository _bookRepository;
         private readonly IBranchRepository _branchRepository;
+        private readonly IGroupInfoRepository _groupInfoRepository;
+        private readonly IGroupTypeRepository _groupTypeRepository;
         private readonly IMailRepository _mailRepository;
         private readonly INotificationRepository _notificationRepository;
         private readonly IPrizeWinnerRepository _prizeWinnerRepository;
@@ -42,6 +44,8 @@ namespace GRA.Domain.Service
             IBadgeRepository badgeRepository,
             IBookRepository bookRepository,
             IBranchRepository branchRepository,
+            IGroupInfoRepository groupInfoRepository,
+            IGroupTypeRepository groupTypeRepository,
             IMailRepository mailRepository,
             INotificationRepository notificationRepository,
             IPrizeWinnerRepository prizeWinnerRepository,
@@ -67,6 +71,10 @@ namespace GRA.Domain.Service
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
             _bookRepository = Require.IsNotNull(bookRepository, nameof(bookRepository));
             _branchRepository = Require.IsNotNull(branchRepository, nameof(branchRepository));
+            _groupInfoRepository = groupInfoRepository
+                ?? throw new ArgumentNullException(nameof(groupInfoRepository));
+            _groupTypeRepository = groupTypeRepository
+                ?? throw new ArgumentNullException(nameof(groupTypeRepository));
             _mailRepository = Require.IsNotNull(mailRepository, nameof(mailRepository));
             _notificationRepository = Require.IsNotNull(notificationRepository,
                 nameof(notificationRepository));
@@ -86,9 +94,9 @@ namespace GRA.Domain.Service
             _configurationService = Require.IsNotNull(configurationService,
                 nameof(configurationService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
-            _siteLookupService = siteLookupService 
+            _siteLookupService = siteLookupService
                 ?? throw new ArgumentNullException(nameof(siteLookupService));
-            _vendorCodeService = vendorCodeService 
+            _vendorCodeService = vendorCodeService
                 ?? throw new ArgumentNullException(nameof(VendorCodeService));
         }
 
@@ -266,7 +274,8 @@ namespace GRA.Domain.Service
                     .GetSiteSettingBoolAsync(currentEntity.SiteId,
                     SiteSettingKey.Users.RestrictChangingSystemBranch);
 
-                if (!restrictChangingSystemBranch) {
+                if (!restrictChangingSystemBranch)
+                {
                     currentEntity.SystemId = userToUpdate.SystemId;
                     currentEntity.BranchId = userToUpdate.BranchId;
                 }
@@ -642,15 +651,17 @@ namespace GRA.Domain.Service
             await _notificationRepository.RemoveByUserId(GetActiveUserId());
         }
 
-        public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
+        public async Task<(int totalAddCount, int addUserId)>
+            CountParticipantsToAdd(string username, string password)
         {
             string trimmedUsername = username.Trim();
             VerifyCanHouseholdAction();
 
             var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
+
             if (authUser.HouseholdHeadUserId != null)
             {
-                throw new GraException("Only a household head can add members");
+                throw new GraException("Only a household or group manager can add members");
             }
 
             var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
@@ -662,11 +673,36 @@ namespace GRA.Domain.Service
             {
                 throw new GraException("You cannot add yourself");
             }
-            bool hasFamily = false;
+
+            int totalAddCount = 0;
             if (authenticationResult.User.HouseholdHeadUserId == null)
             {
                 var household = await _userRepository
                     .GetHouseholdAsync(authenticationResult.User.Id);
+                totalAddCount = household.Count();
+            }
+
+            return (totalAddCount: totalAddCount, addUserId: authenticationResult.User.Id);
+        }
+
+        public async Task<string> AddParticipantToHouseholdAlreadyAuthorizedAsync(int userId)
+        {
+            VerifyCanHouseholdAction();
+
+            var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
+
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                throw new GraException("Only a household or group manager can add members");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            bool hasFamily = false;
+            if (user.HouseholdHeadUserId == null)
+            {
+                var household = await _userRepository
+                    .GetHouseholdAsync(user.Id);
                 foreach (var member in household)
                 {
                     hasFamily = true;
@@ -674,14 +710,55 @@ namespace GRA.Domain.Service
                     await _userRepository.UpdateSaveAsync(authUser.Id, member);
                 }
             }
-            authenticationResult.User.HouseholdHeadUserId = authUser.Id;
-            await _userRepository.UpdateSaveAsync(authUser.Id, authenticationResult.User);
-            string addedMembers = authenticationResult.User.FullName;
+
+            var isGroup = await _groupInfoRepository.GetByUserIdAsync(authUser.Id);
+            var callIt = isGroup != null ? "group" : "household";
+
+            if (hasFamily == true)
+            {
+                var infoGroup
+                    = await _groupInfoRepository.GetByUserIdAsync(user.Id);
+                if (infoGroup != null)
+                {
+                    _logger.LogInformation($"Existing {callIt} manager {user.Id} is is added to new head {authUser.Id}, group {infoGroup.Id}/{infoGroup.Name} is being removed.");
+                    await _groupInfoRepository.RemoveSaveAsync(authUser.Id, infoGroup.Id);
+                }
+            }
+
+            user.HouseholdHeadUserId = authUser.Id;
+            await _userRepository.UpdateSaveAsync(authUser.Id, user);
+            string addedMembers = user.FullName;
             if (hasFamily)
             {
-                addedMembers += " and their household";
+                addedMembers += $" and their {callIt}";
             }
             return addedMembers;
+        }
+
+
+        public async Task<string> AddParticipantToHouseholdAsync(string username, string password)
+        {
+            VerifyCanHouseholdAction();
+
+            var authUser = await _userRepository.GetByIdAsync(GetClaimId(ClaimType.UserId));
+
+            if (authUser.HouseholdHeadUserId != null)
+            {
+                throw new GraException("Only a household or group manager can add members");
+            }
+
+            string trimmedUsername = username.Trim();
+            var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
+            if (!authenticationResult.PasswordIsValid)
+            {
+                throw new GraException("The username and password entered do not match");
+            }
+            if (authenticationResult.User.Id == authUser.Id)
+            {
+                throw new GraException("You cannot add yourself");
+            }
+
+            return await AddParticipantToHouseholdAlreadyAuthorizedAsync(authenticationResult.User.Id);
         }
 
         public async Task<IEnumerable<User>> GetHouseholdAsync(int householdHeadUserId,
@@ -749,23 +826,25 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't have permission to promote household members to head.");
+                _logger.LogError($"User {authId} doesn't have permission to promote household/group members to head.");
                 throw new GraException("Permission denied.");
             }
 
             var user = await _userRepository.GetByIdAsync(userId); ;
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be promoted to head of household without a username.");
+                _logger.LogError($"User {userId} cannot be promoted to household/group manager without a username.");
                 throw new GraException("User does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be promoted to head of household.");
-                throw new GraException("User does not have a household or is already the head.");
+                _logger.LogError($"User {userId} cannot be promoted to household/group manager.");
+                throw new GraException("User does not have a group/household or is already the manager.");
             }
             var headUser = await _userRepository.GetByIdAsync(user.HouseholdHeadUserId.Value);
             var household = await _userRepository.GetHouseholdAsync(user.HouseholdHeadUserId.Value);
+
+            int oldHeadUserId = headUser.Id;
 
             user.HouseholdHeadUserId = null;
             await _userRepository.UpdateSaveAsync(authId, user);
@@ -779,6 +858,13 @@ namespace GRA.Domain.Service
                     await _userRepository.UpdateAsync(authId, member);
                 }
             }
+
+            var groupInfo = await _groupInfoRepository.GetByUserIdAsync(oldHeadUserId);
+            if (groupInfo != null)
+            {
+                groupInfo.UserId = user.Id;
+            }
+
             await _userRepository.SaveAsync();
         }
 
@@ -789,20 +875,20 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't have permission to remove household members.");
+                _logger.LogError($"User {authId} doesn't have permission to remove household/group members.");
                 throw new GraException("Permission denied.");
             }
 
             var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be removed from a household without a username.");
+                _logger.LogError($"User {userId} cannot be removed from a household/group without a username.");
                 throw new GraException("Participant does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be removed from a household.");
-                throw new GraException("Participant does not have a household or is the head.");
+                _logger.LogError($"User {userId} cannot be removed from a household/group.");
+                throw new GraException("Participant does not have a household/group or is the manager.");
             }
             user.HouseholdHeadUserId = null;
             await _userRepository.UpdateSaveAsync(authId, user);
@@ -815,15 +901,15 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't add existing participants to household.");
+                _logger.LogError($"User {authId} doesn't add existing participants to household/group.");
                 throw new GraException("Permission denied.");
             }
             var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
             if (userToAdd.HouseholdHeadUserId.HasValue
                 || (await _userRepository.GetHouseholdCountAsync(userToAddId)) > 0)
             {
-                _logger.LogError($"User {authId} cannot add {userToAddId} to a different household.");
-                throw new GraException("Participant already belongs to a household.");
+                _logger.LogError($"User {authId} cannot add {userToAddId} to a different household/group.");
+                throw new GraException("Participant already belongs to a household/group.");
             }
             var user = await _userRepository.GetByIdAsync(householdId);
             userToAdd.HouseholdHeadUserId = user.HouseholdHeadUserId ?? user.Id;
@@ -895,6 +981,77 @@ namespace GRA.Domain.Service
                     throw new GraException("Invalid School selection.");
                 }
             }
+        }
+
+        public async Task<GroupInfo> GetGroupFromHouseholdHeadAsync(int householdHeadUserId)
+        {
+            return await _groupInfoRepository.GetByUserIdAsync(householdHeadUserId);
+        }
+
+        public async Task<IEnumerable<GroupType>> GetGroupTypeListAsync()
+        {
+            return await _groupTypeRepository.GetAllForListAsync(GetCurrentSiteId());
+        }
+
+        public async Task<GroupInfo> CreateGroup(int currentUserId,
+            GroupInfo groupInfo)
+        {
+            if (currentUserId != groupInfo.UserId)
+            {
+                // verify user has modify users permission
+                if (!HasPermission(Permission.EditParticipants))
+                {
+                    int userId = GetClaimId(ClaimType.UserId);
+                    _logger.LogError($"User {userId} doesn't have permission to create a group.");
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            var sanitizedGroupInfo = new GroupInfo
+            {
+                Name = groupInfo.Name,
+                GroupTypeId = groupInfo.GroupTypeId,
+                UserId = groupInfo.UserId
+            };
+
+            return await _groupInfoRepository.AddSaveAsync(currentUserId, groupInfo);
+        }
+
+        public async Task<GroupInfo> UpdateGroupName(int currentUserId, GroupInfo groupInfo)
+        {
+            if (currentUserId != groupInfo.UserId)
+            {
+                // verify user has modify users permission
+                if (!HasPermission(Permission.EditParticipants))
+                {
+                    int userId = GetClaimId(ClaimType.UserId);
+                    _logger.LogError($"User {userId} doesn't have permission to update a group name.");
+                    throw new GraException("Permission denied.");
+                }
+            }
+
+            var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
+            currentGroup.Name = groupInfo.Name;
+            currentGroup.GroupType = null;
+            currentGroup.User = null;
+            return await _groupInfoRepository.UpdateSaveAsync(currentUserId, currentGroup);
+        }
+
+        public async Task<GroupInfo> UpdateGroup(int currentUserId, GroupInfo groupInfo)
+        {
+            if (!HasPermission(Permission.EditParticipants))
+            {
+                int userId = GetClaimId(ClaimType.UserId);
+                _logger.LogError($"User {userId} doesn't have permission to update a group.");
+                throw new GraException("Permission denied.");
+            }
+
+            var currentGroup = await _groupInfoRepository.GetByUserIdAsync(groupInfo.UserId);
+            currentGroup.Name = groupInfo.Name;
+            currentGroup.GroupTypeId = groupInfo.GroupTypeId;
+            currentGroup.GroupType = null;
+            currentGroup.User = null;
+            return await _groupInfoRepository.UpdateSaveAsync(currentUserId, currentGroup);
         }
     }
 }

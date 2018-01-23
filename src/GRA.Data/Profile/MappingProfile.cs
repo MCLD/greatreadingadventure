@@ -59,6 +59,8 @@ namespace GRA.Data.Profile
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore())
                 .ReverseMap();
+            CreateMap<Model.GroupInfo, Domain.Model.GroupInfo>().ReverseMap();
+            CreateMap<Model.GroupType, Domain.Model.GroupType>().ReverseMap();
             CreateMap<Model.Location, Domain.Model.Location>().ReverseMap();
             CreateMap<Model.Mail, Domain.Model.Mail>().ReverseMap();
             CreateMap<Model.Notification, Domain.Model.Notification>().ReverseMap();

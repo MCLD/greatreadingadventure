@@ -3,14 +3,10 @@ using GRA.Domain.Model;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
-    public class HouseholdListViewModel
+    public class HouseholdListViewModel : ParticipantPartialViewModel
     {
         public IEnumerable<GRA.Domain.Model.User> Users { get; set; }
-        public int Id { get; set; }
-        public int HouseholdCount { get; set; }
-        public int PrizeCount { get; set; }
         public int? HeadOfHouseholdId { get; set; }
-        public bool HasAccount { get; set; }
         public bool CanEditDetails { get; set; }
         public bool CanLogActivity { get; set; }
         public bool CanReadMail { get; set; }
@@ -29,5 +25,8 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
 
         public IEnumerable<GRA.Domain.Model.Branch> BranchList { get; set; }
         public IEnumerable<GRA.Domain.Model.System> SystemList { get; set; }
+        public bool UpgradeToGroup { get; set; }
+        public string GroupName { get; set; }
+        public string GroupType { get; set; }
     }
 }

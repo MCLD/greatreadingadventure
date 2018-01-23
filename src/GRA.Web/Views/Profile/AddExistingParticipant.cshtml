@@ -15,7 +15,14 @@
                             <div class="row row-spacing">
                                 <div class="col-xs-12">
                                     <p>
-                                        Add an existing participant into your household, if that participant is the head of a household their household members will be moved into your household as well.
+                                        Add an existing participant into your
+                                        @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower(), if
+                                        that participant is the head of a
+                                        @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower() their
+                                        @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower()
+                                        members will be moved into your
+                                        @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower() as
+                                        well.
                                     </p>
                                 </div>
                             </div>
@@ -39,7 +46,7 @@
                     </div>
 
                     <div class="form-group">
-                        <a asp-action="Household" class="btn btn-default">Return to Household</a>
+                        <a asp-action="Household" class="btn btn-default">Return to @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
                         <button type="submit" id="Submit" name="Submit" value="Submit" class="btn btn-primary btn-spinner">
                             <span class="buttonText">Add Participant</span>
                             <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>

@@ -25,7 +25,7 @@ namespace GRA.Controllers.MissionControl
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _categoryService = categoryService ?? throw new
                 ArgumentNullException(nameof(categoryService));
-            PageTitle = "Categories";
+            PageTitle = "Category management";
         }
 
         public async Task<IActionResult> Index(string search, int page = 1)

@@ -1,0 +1,234 @@
+﻿@model GRA.Controllers.ViewModel.MissionControl.GroupTypes.GroupTypesListViewModel
+
+@if (Model.MaximumHouseholdMembers == null)
+{
+    <div class="row row-spacing" style="margin-top: 1rem;">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="alert alert-danger">
+                <table>
+                    <tr>
+                        <td>
+                            <span class="fa fa-exclamation-triangle fa-2x pull-left"
+                                  style="padding-right: 1rem;"></span>
+                        </td>
+                        <td>
+                            No maximum number of household members is configured for this site so
+                            groups will not be used even if group types are configured below.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row row-spacing" style="margin-top: 1rem;">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="alert alert-info">
+                <table>
+                    <tr>
+                        <td>
+                            <span class="fa fa-info-circle fa-2x pull-left"
+                                  style="padding-right: 1rem;"></span>
+                        </td>
+                        <td>
+                            Households will be prompted to upgrade to a group when they exceed
+                            <strong>@Model.MaximumHouseholdMembers members</strong> and one or more
+                            group types are configured below.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        <a class="btn btn-default"
+           data-toggle="modal"
+           data-target="#addModal">
+            <span class="fa fa-plus-circle"></span>
+            Add a group type
+        </a>
+    </div>
+</div>
+
+<div class="row row-spacing">
+    <div class="col-xs-12">
+        @if (Model.GroupTypes.Count() == 0)
+        {
+            <div class="alert alert-warning">
+                No group types configured.
+                <a class="btn btn-default"
+                   data-toggle="modal"
+                   data-target="#addModal">
+                    <span class="fa fa-plus-circle"></span>
+                    Add a group type
+                </a>
+            </div>
+        }
+        else
+        {
+            <div>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th style="width: 9rem;">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var groupType in Model.GroupTypes)
+                        {
+                            <tr data-id="@groupType.Id" data-name="@groupType.Name">
+                                <td>
+                                    @groupType.Name
+                                </td>
+                                <td class="gra-mc-icon">
+                                    <button type="submit"
+                                            class="btn btn-primary btn-xs"
+                                            data-toggle="modal"
+                                            data-target="#editModal">
+                                        <span class="fa fa-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-danger btn-xs"
+                                            style="margin-left:16px;"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal">
+                                        <span class="fa fa-remove" aria-hidden="true"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.PaginateModel.MaxPage > 1)
+            {
+                <paginate paginateModel="@Model.PaginateModel"></paginate>
+            }
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="GroupTypes" asp-action="Add" method="post" role="form" style="display:inline">
+            <input type="hidden" asp-for="PaginateModel.CurrentPage" id="AddCurrentPage" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="addModalLabel">Add group type</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="GroupType.Name" class="control-label"></label>
+                        <input asp-for="GroupType.Name" id="addGroupTypeName" class="form-control" />
+                        <span asp-validation-for="GroupType.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                        Add
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="deleteModalLabel">Delete group type</h4>
+            </div>
+            <div class="modal-body">
+                <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                <span id="deleteModalText"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                <form asp-controller="GroupTypes" asp-action="Delete" method="post" role="form" style="display:inline">
+                    <input type="hidden" asp-for="PaginateModel.CurrentPage" id="DeleteCurrentPage" />
+                    <input asp-for="GroupType.Id" id="deleteGroupTypeId" type="hidden" />
+                    <input asp-for="GroupType.Name" id="deleteGroupTypeName" type="hidden" />
+                    <button type="submit" class="btn btn-danger btn-spinner pull-right" aria-label="Confirm">
+                        <span class="fa fa-remove" aria-hidden="true"></span>
+                        Delete
+                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+        <div class="modal-dialog" role="document">
+            <form asp-controller="GroupTypes" asp-action="Edit" method="post" role="form" style="display:inline">
+                <input type="hidden" asp-for="PaginateModel.CurrentPage" id="EditCurrentPage" />
+                <input asp-for="GroupType.Id" id="editGroupTypeId" type="hidden" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="editModalLabel">Edit group type</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label asp-for="GroupType.Name" class="control-label"></label>
+                            <input asp-for="GroupType.Name" id="editGroupTypeName" class="form-control" />
+                            <span asp-validation-for="GroupType.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-right: 1em;">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-spinner pull-right" aria-label="Confirm">
+                            Save
+                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+    {
+    <script>
+        $('#addModal').on('shown.bs.modal', function (event) {
+            $('#addGroupTypeName').focus();
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var dataElement = $(event.relatedTarget).closest('[data-id]');
+            var name = dataElement.data('name');
+            $('#deleteModalText').text('Are you sure you wish to delete the group type: ' + name + '?');
+            $('#deleteGroupTypeId').val(dataElement.data('id'));
+            $('#deleteGroupTypeName').val(name);
+        });
+
+        $('#editModal').on('show.bs.modal', function (event) {
+            console.log(event);
+            console.log($(event.relatedTarget));
+            var dataElement = $(event.relatedTarget).closest('[data-id]');
+            var name = dataElement.data('name');
+            $('#editModalLabel').text("Edit group type: " + name);
+            $('#editGroupTypeId').val(dataElement.data('id'));
+            $('#editGroupTypeName').val(name);
+        });
+
+        $('#editModal').on('shown.bs.modal', function (event) {
+            $('#editGroupTypeName').focus();
+        });
+    </script>
+}

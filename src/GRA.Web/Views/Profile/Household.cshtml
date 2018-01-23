@@ -38,8 +38,19 @@
                 <span class="lead">My Profile</span>
             </div>
             <div class="panel-body">
-
                 @Html.Partial("_ProfilePartial")
+
+                @if (!string.IsNullOrEmpty(Model.GroupName))
+                {
+                    @if (Model.GroupLeader)
+                    {
+                        @:You are leader of the group: <a href="@Url.Action("GroupDetails")"><strong>@Model.GroupName</strong></a>
+                    }
+                    else
+                    {
+                        @:You are in the group: <strong>@Model.GroupName</strong>
+                    }
+                }
 
                 <div class="row" style="padding: 10px 0;">
                     <div class="col-xs-12">
@@ -47,8 +58,8 @@
                         {
                             if (Model.CanEditHousehold)
                             {
-                                <div class="alert alert-warning">Click below to create a household</div>
-                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
+                                <div class="alert alert-warning">Click below to create a @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle].ToString().ToLower()</div>
+                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
                                 <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
                             }
                             else
@@ -481,8 +492,8 @@
                             </form>
                             @if (Model.AuthUserIsHead && Model.CanEditHousehold)
                             {
-                                <a asp-action="AddHouseholdMember" class="btn btn-default">Add Household Member</a>
-                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add Existing Participant</a>
+                                <a asp-action="AddHouseholdMember" class="btn btn-default">Register new @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle] Member</a>
+                                <a asp-action="AddExistingParticipant" class="btn btn-default">Add existing participant to your @Context.Items[GRA.Controllers.ItemKey.HouseholdTitle]</a>
                             }
                         }
                     </div>

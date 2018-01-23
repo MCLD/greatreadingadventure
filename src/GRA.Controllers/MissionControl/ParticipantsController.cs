@@ -28,6 +28,7 @@ namespace GRA.Controllers.MissionControl
         private readonly ActivityService _activityService;
         private readonly AuthenticationService _authenticationService;
         private readonly DynamicAvatarService _dynamicAvatarService;
+        private readonly GroupTypeService _groupTypeService;
         private readonly MailService _mailService;
         private readonly PointTranslationService _pointTranslationService;
         private readonly PrizeWinnerService _prizeWinnerService;
@@ -42,6 +43,7 @@ namespace GRA.Controllers.MissionControl
             ActivityService activityService,
             AuthenticationService authenticationService,
             DynamicAvatarService dynamicAvatarService,
+            GroupTypeService groupTypeService,
             MailService mailService,
             PointTranslationService pointTranslationService,
             PrizeWinnerService prizeWinnerService,
@@ -60,6 +62,8 @@ namespace GRA.Controllers.MissionControl
                 nameof(authenticationService));
             _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
+            _groupTypeService = groupTypeService
+                ?? throw new ArgumentNullException(nameof(groupTypeService));
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _pointTranslationService = Require.IsNotNull(pointTranslationService,
                 nameof(pointTranslationService));
@@ -410,6 +414,9 @@ namespace GRA.Controllers.MissionControl
 
                 await _vendorCodeService.PopulateVendorCodeStatusAsync(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 ParticipantsDetailViewModel viewModel = new ParticipantsDetailViewModel()
                 {
                     User = user,
@@ -417,6 +424,7 @@ namespace GRA.Controllers.MissionControl
                     Username = user.Username,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditDetails = UserHasPermission(Permission.EditParticipants),
@@ -590,6 +598,9 @@ namespace GRA.Controllers.MissionControl
             var user = await _userService.GetDetails(id);
             SetPageTitle(user);
 
+            var groupInfo
+                = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
             LogActivityViewModel viewModel = new LogActivityViewModel()
             {
                 Id = id,
@@ -597,6 +608,7 @@ namespace GRA.Controllers.MissionControl
                     .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
                 HouseholdCount = await _userService
                     .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                IsGroup = groupInfo != null,
                 HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                 DisableSecretCode = await GetSiteSettingBoolAsync(SiteSettingKey.SecretCode.Disable),
                 PointTranslation = await _pointTranslationService
@@ -792,6 +804,26 @@ namespace GRA.Controllers.MissionControl
                 if (TempData.ContainsKey(SecretCodeMessage))
                 {
                     viewModel.SecretCodeMessage = (string)TempData[SecretCodeMessage];
+                }
+
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId
+                    ?? user.Id);
+
+                if (groupInfo != null)
+                {
+                    viewModel.GroupName = groupInfo.Name;
+                    viewModel.GroupType = groupInfo.GroupTypeName;
+                    viewModel.IsGroup = true;
+                }
+                else
+                {
+                    var (useGroups, maximumHousehold) =
+                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+                    if (useGroups && household.Count() + 1 >= maximumHousehold)
+                    {
+                        viewModel.UpgradeToGroup = true;
+                    }
                 }
 
                 return View(viewModel);
@@ -1249,6 +1281,9 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 BookListViewModel viewModel = new BookListViewModel()
                 {
                     Books = books.Data.ToList(),
@@ -1260,6 +1295,7 @@ namespace GRA.Controllers.MissionControl
                         .GetRequiredQuestionnaire(user.Id, user.Age)).HasValue,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanEditBooks = UserHasPermission(Permission.LogActivityForAny),
@@ -1389,6 +1425,9 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 HistoryListViewModel viewModel = new HistoryListViewModel()
                 {
                     Historys = new List<HistoryItemViewModel>(),
@@ -1396,6 +1435,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    IsGroup = groupInfo != null,
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveHistory = UserHasPermission(Permission.LogActivityForAny),
@@ -1533,12 +1573,16 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 PrizeListViewModel viewModel = new PrizeListViewModel()
                 {
                     PrizeWinners = prizeList.Data,
                     PaginateModel = paginateModel,
                     Id = id,
                     HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
+                    IsGroup = groupInfo != null,
                     PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username)
@@ -1615,6 +1659,9 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 MailListViewModel viewModel = new MailListViewModel()
                 {
                     Mails = mail.Data,
@@ -1622,6 +1669,7 @@ namespace GRA.Controllers.MissionControl
                     Id = id,
                     HouseholdCount = await _userService.FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
+                    IsGroup = groupInfo != null,
                     HasAccount = !string.IsNullOrWhiteSpace(user.Username),
                     CanRemoveMail = UserHasPermission(Permission.DeleteAnyMail),
                     CanSendMail = UserHasPermission(Permission.MailParticipants)
@@ -1736,13 +1784,17 @@ namespace GRA.Controllers.MissionControl
                 var user = await _userService.GetDetails(id);
                 SetPageTitle(user);
 
+                var groupInfo
+                    = await _userService.GetGroupFromHouseholdHeadAsync(user.HouseholdHeadUserId ?? id);
+
                 PasswordResetViewModel viewModel = new PasswordResetViewModel()
                 {
                     Id = id,
                     HouseholdCount = await _userService
                         .FamilyMemberCountAsync(user.HouseholdHeadUserId ?? id),
                     HeadOfHouseholdId = user.HouseholdHeadUserId,
-                    HasAccount = !string.IsNullOrWhiteSpace(user.Username)
+                    HasAccount = !string.IsNullOrWhiteSpace(user.Username),
+                    IsGroup = groupInfo != null
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -1857,6 +1909,102 @@ namespace GRA.Controllers.MissionControl
                 name += $" ({user.Username})";
             }
             PageTitleHtml = WebUtility.HtmlEncode($"{title} - {name}");
+        }
+
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpgradeToGroup(int id)
+        {
+            var (useGroups, maximumHousehold) =
+                await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+            if (!useGroups)
+            {
+                return RedirectToAction("Household", new { id });
+            }
+
+            var groupTypes = await _userService.GetGroupTypeListAsync();
+
+            if (groupTypes.Count() == 0)
+            {
+                _logger.LogError($"MC attempt to add household member, need to make a group, no group types configured.");
+                AlertDanger = "In order to add more members to this household it must be converted to a group, however there are no group types configured.";
+                return View("Household", id);
+            }
+
+            return View("UpgradeToGroup", new GroupUpgradeViewModel
+            {
+                Id = id,
+                MaximumHouseholdAllowed = maximumHousehold,
+                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> CreateGroup(GroupUpgradeViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.GroupInfo?.Name?.Trim()))
+            {
+                AlertDanger = "You must specify a group name.";
+                return View("UpgradeToGroup", viewModel);
+            }
+
+            try
+            {
+                viewModel.GroupInfo.UserId = viewModel.Id;
+                await _userService.CreateGroup(GetActiveUserId(), viewModel.GroupInfo);
+            }
+            catch (Exception ex)
+            {
+                AlertDanger = $"Couldn't create group: {ex.Message}";
+                return View("GroupUpgrade", viewModel);
+            }
+
+            AlertSuccess = "Group successfully created, now you may add additional members.";
+            return RedirectToAction("Household", new { id = viewModel.Id });
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpdateGroup(int id)
+        {
+            var groupInfo = await _userService.GetGroupFromHouseholdHeadAsync(id);
+            if (groupInfo == null)
+            {
+                AlertDanger = "Could not find group to update.";
+                return RedirectToAction("Household", new { id });
+            }
+
+            var groupTypes = await _userService.GetGroupTypeListAsync();
+
+            return View("UpdateGroup", new UpdateGroupViewModel
+            {
+                HouseholdHeadUserId = id,
+                GroupInfo = groupInfo,
+                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name")
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Policy.EditParticipants)]
+        public async Task<IActionResult> UpdateGroup(UpdateGroupViewModel viewModel)
+        {
+            var groupInfo
+                = await _userService.GetGroupFromHouseholdHeadAsync(viewModel.HouseholdHeadUserId);
+
+            if (groupInfo == null)
+            {
+                AlertDanger = "Could not find group to update.";
+                return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
+            }
+
+            groupInfo.UserId = viewModel.HouseholdHeadUserId;
+            groupInfo.Name = viewModel.GroupInfo.Name;
+            groupInfo.GroupTypeId = viewModel.GroupInfo.GroupTypeId;
+
+            await _userService.UpdateGroup(GetActiveUserId(), groupInfo);
+
+            return RedirectToAction("Household", new { id = viewModel.HouseholdHeadUserId });
         }
     }
 }

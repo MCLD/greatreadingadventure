@@ -38,7 +38,7 @@ namespace GRA.Controllers.MissionControl
             _pointTranslationService = pointTranslationService
                 ?? throw new ArgumentNullException(nameof(pointTranslationService));
             _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
-            PageTitle = "Programs";
+            PageTitle = "Program management";
         }
 
         public async Task<IActionResult> Index(string search, int page = 1)

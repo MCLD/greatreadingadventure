@@ -9,6 +9,7 @@ namespace GRA.Controllers
     {
         public const string ExternalEventListUrl = "ExternalEventListUrl";
         public const string GoogleAnalytics = "GoogleAnalytics";
+        public const string HouseholdTitle = "HouseholdTitle";
         public const string NotificationsDisplayed = "NotificationsDisplayed";
         public const string NotificationsList = "NotificationsList";
         public const string NotificationsModal = "NotificationsModal";
