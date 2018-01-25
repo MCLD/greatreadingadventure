@@ -2,13 +2,33 @@
     ViewData[GRA.Controllers.ViewDataKey.Title] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+@section styles {
+    <style>
+        p {
+            margin-bottom: 2rem;
+            line-height: 3rem;
+            font-size: larger;
+        }
+    </style>
+}
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h3 text-danger"><strong>That didn't work right!</strong></span>
+            </div>
+            <div class="panel-body">
+                <p>
+                    Something seems to have gone wrong while loading the page you requested.
+                    Sorry about that! Please wait a little bit and try again.
+                </p>
+                <p>
+                    If you continue to have this problem, please
+                    <a asp-controller="Mail" asp-action="Send">send us a mail</a>
+                    and let us know what you were trying to do and where it went wrong!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

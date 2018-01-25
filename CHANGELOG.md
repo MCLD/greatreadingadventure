@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Logging when importing dynamic avatars
+- Nicer error message on the error page
 
 ### Fixed
 - Fix error that occurred when editing challenge groups
