@@ -603,10 +603,8 @@ namespace GRA.Domain.Service
                 serviceResult.Message = "One or more of the selected challenges could not be added to this group.";
             }
 
-            var currentChallengeIds = currentChallengeGroup.Challenges?.Select(_ => _.Id) 
-                ?? new List<int>();
-            var challengesToAdd = ChallengeIds.Except(currentChallengeIds);
-            var challengesToRemove = currentChallengeIds.Except(ChallengeIds);
+            var challengesToAdd = ChallengeIds.Except(currentChallengeGroup.ChallengeIds);
+            var challengesToRemove = currentChallengeGroup.ChallengeIds.Except(ChallengeIds);
 
             serviceResult.Data = await _challengeGroupRepository.UpdateSaveAsync(
                 GetClaimId(ClaimType.UserId), challengeGroup, challengesToAdd, challengesToRemove);

@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Logging when importing dynamic avatars
 
+### Fixed
+- Fix error that occurred when editing challenge groups
+
 ## [4.0.0-alpha9] 2018-01-23
 ### Added
 - Better error handling in AJAX favoriting
