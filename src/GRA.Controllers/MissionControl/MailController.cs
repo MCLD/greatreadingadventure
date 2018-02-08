@@ -109,31 +109,22 @@ namespace GRA.Controllers.MissionControl
                     mail.Body = CommonMark.CommonMarkConverter.Convert(mail.Body);
                 }
 
-                string participantLink = string.Empty;
-                string participantName = string.Empty;
-                int from = mail.ToUserId ?? mail.FromUserId;
-                if (from > 0)
-                {
-                    var participant = await _userService.GetDetails(from);
-
-                    participantLink = Url.Action("Detail", "Participants", new { id = participant.Id });
-                    participantName = participant.FirstName;
-
-                    if (!string.IsNullOrWhiteSpace(participant.Username))
-                    {
-                        participantName += $" ({participant.Username})";
-                    }
-                }
+                var thread = await _mailService.GetThreadAsync(mail.ThreadId ?? mail.Id);
 
                 MailDetailViewModel viewModel = new MailDetailViewModel()
                 {
                     Mail = mail,
+                    MailThread = thread,
                     SentMessage = (mail.ToUserId == null ? "from" : "to"),
-                    ParticipantLink = participantLink,
-                    ParticipantName = participantName,
                     CanDelete = UserHasPermission(Permission.DeleteAnyMail),
                     CanMail = UserHasPermission(Permission.MailParticipants)
                 };
+
+                int from = mail.ToUserId ?? mail.FromUserId;
+                if (from > 0)
+                {
+                    viewModel.User = await _userService.GetDetails(from);
+                }
                 return View(viewModel);
             }
             catch (GraException gex)

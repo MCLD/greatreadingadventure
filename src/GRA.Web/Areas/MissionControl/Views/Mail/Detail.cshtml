@@ -30,9 +30,48 @@
     </div>
 }
 
+@if (Model.MailThread.Count > 0)
+{
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-md-8 col-md-offset-2">
+            @foreach (var mail in Model.MailThread)
+            {
+                if (mail.Id == Model.Mail.Id)
+                {
+                    <div class="mail-thread-container">
+                        <div class="mail-thread-header alert-info" role="tab" id="heading@(mail.Id)">
+                            <span class="fa @(mail.ToUserId.HasValue ? "fa-mail-reply" : "fa-mail-forward")"></span> <strong>This message</strong>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="mail-thread-container">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(mail.Id)" aria-expanded="true" aria-controls="collapse@(mail.Id)">
+                            <div class="mail-thread-header" role="tab" id="heading@(mail.Id)">
+                                <span class="fa @(mail.ToUserId.HasValue ? "fa-mail-reply" : "fa-mail-forward")"></span> @(mail.ToUserId.HasValue ? "To" : "From") @Model.User.FirstName: <strong>@(mail.Subject.Count() > 40 ? $"{mail.Subject.Substring(0, 40)}..." : mail.Subject)</strong>
+                                <span class="pull-right">@mail.CreatedAt</span>
+                            </div>
+                        </a>
+                        <div id="collapse@(mail.Id)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(mail.Id)">
+                            <div class="mail-thread-body">
+                                <div style="margin-bottom:10px;">
+                                    <strong style="padding-bottom:15px;">@mail.Subject</strong>
+                                </div>
+
+                                @mail.Body
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
 <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <p style="font-size:large">Sent @Model.SentMessage <a target="_blank" href="@Model.ParticipantLink">@Model.ParticipantName</a> on @Model.Mail.CreatedAt.ToString("d")</p>
+    <div class="col-md-8 col-md-offset-2">
+        <p style="font-size:large">Sent @Model.SentMessage <a target="_blank" asp-controller="Participants" asp-action="Detail" asp-route-id="@Model.User.Id">@Model.User.FirstName@(!string.IsNullOrWhiteSpace(Model.User.Username) ? $" ({Model.User.Username})" : "")</a> at @Model.Mail.CreatedAt</p>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="lead">

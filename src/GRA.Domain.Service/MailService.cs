@@ -97,6 +97,12 @@ namespace GRA.Domain.Service
             throw new GraException("Permission denied.");
         }
 
+        public async Task<List<Mail>> GetThreadAsync(int threadId)
+        {
+            VerifyPermission(Permission.ReadAllMail);
+            return await _mailRepository.GetThreadAsync(threadId);
+        }
+
         public async Task<Mail> GetParticipantMailAsync(int mailId)
         {
             var activeUserId = GetActiveUserId();

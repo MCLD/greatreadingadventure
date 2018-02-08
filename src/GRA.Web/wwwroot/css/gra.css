@@ -579,3 +579,25 @@ input.form-checkbox {
 p.password-note {
     font-style: italic;
 }
+
+.mail-thread-container {
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    margin-bottom: 2px;
+}
+
+.mail-thread-header {
+    border-color: #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #333;
+    padding: 5px 15px;
+}
+
+.mail-thread-body {
+    padding: 10px 15px;
+}

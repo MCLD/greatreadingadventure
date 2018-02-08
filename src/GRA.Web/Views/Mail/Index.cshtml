@@ -1,4 +1,23 @@
 ﻿@model GRA.Controllers.ViewModel.Mail.MailListViewModel
+
+@section Styles {
+    <style>
+        .nojs-show {
+            display: none;
+        }
+    </style>
+    <noscript>
+        <style>
+            .nojs-hide {
+                display: none;
+            }
+            .nojs-show {
+                display: table-cell;
+            }
+        </style>
+    </noscript>
+}
+
 <div class="row">
     <div class="col-xs-12 col-sm-10 col-sm-offset-1">
         <div class="panel panel-default">
@@ -15,21 +34,28 @@
                         else
                         {
                             <div>
-                                <table class="table table-condensed table-bordered">
+                                <table class="table table-condensed table-bordered link-table">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
                                             <th>Subject</th>
-                                            <th>&nbsp;</th>
+                                            <th class="nojs-show">&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var mail in Model.Mail)
                                         {
                                             <tr class="@(mail.IsNew ? "unread-mail" : "read-mail")">
-                                                <td>@mail.CreatedAt.ToString("d")</td>
+                                                <td class="td-class">
+                                                    <noscript>
+                                                        @mail.CreatedAt.ToString("d")
+                                                    </noscript>
+                                                    <a asp-action="Read" asp-route-id="@mail.Id" class="rowlink nojs-hide">
+                                                        @mail.CreatedAt.ToString("d")
+                                                    </a>
+                                                </td>
                                                 <td>@mail.Subject</td>
-                                                <td>
+                                                <td class="nojs-show">
                                                     <a asp-action="Read" asp-route-id="@mail.Id" class="btn btn-default btn-xs">
                                                         Read
                                                     </a>
@@ -51,3 +77,18 @@
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+        $(window).resize(function () {
+            $('.td-class').each(function () {
+                $(this).children('a.rowlink').height($(this).height() + 11);
+            });
+        });
+    </script>
+}

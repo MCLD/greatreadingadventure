@@ -166,5 +166,14 @@ namespace GRA.Data.Repository
                 .Where(_ => _.ToUserId == userId && _.IsNew == true && _.IsDeleted == false)
                 .AnyAsync();
         }
+
+        public async Task<List<Mail>> GetThreadAsync(int threadId)
+        {
+            return await DbSet.AsNoTracking()
+                .Where(_ => _.Id == threadId || _.ThreadId == threadId)
+                .OrderBy(_ => _.CreatedAt)
+                .ProjectTo<Mail>()
+                .ToListAsync();
+        }
     }
 }

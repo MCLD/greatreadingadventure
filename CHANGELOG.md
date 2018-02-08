@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - Logging when importing dynamic avatars
 - Nicer error message on the error page
+- Add mail threading to mission control
+
+### Change
+- Participant mail subject to be clickable
 
 ### Fixed
 - Fix error that occurred when editing challenge groups
