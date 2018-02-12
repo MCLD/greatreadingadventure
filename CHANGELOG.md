@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Change
 - Participant mail subject to be clickable
 
+### Changed
+- Move vendor code to top of profile page
+
 ### Fixed
 - Fix error that occurred when editing challenge groups
 

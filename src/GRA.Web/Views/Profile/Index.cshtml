@@ -26,6 +26,56 @@
                             <input asp-for="User.VendorCode" type="hidden" />
                             <input asp-for="User.VendorCodeMessage" type="hidden" />
 
+                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
+                            {
+                                <div class="row row spacing">
+                                    <div class="col-xs-12">
+                                        <div class="alert alert-info" style="padding: 1em;">
+                                            @if (Model.User.NeedsToAnswerDonationQuestion)
+                                            {
+                                                <p><strong>Congratulations, you've earned a free book!</strong></p>
+                                                <p>
+                                                    You may:
+                                                    <button class="btn btn-info btn-spinner"
+                                                            asp-action="RedeemCode"
+                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                        <span class="buttonText">Redeem your code</span>
+                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                    </button>
+                                                    or
+                                                    <button class="btn btn-success btn-spinner"
+                                                            asp-action="DonateCode"
+                                                            style="margin-top: 0.25em; margin-bottom: 0.25em;">
+                                                        <span class="buttonText">Donate your book</span>
+                                                        <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
+                                                    </button>
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    Free book code:
+                                                    @if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
+                                                    {
+                                                        <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong>@Model.User.VendorCode</strong>
+                                                    }
+                                                </p>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
+                                            {
+                                                <p>@Model.User.VendorCodeMessage</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+
                             @if (!string.IsNullOrWhiteSpace(Model.User.Username))
                             {
                                 <div class="row row-spacing">
@@ -218,50 +268,6 @@
                                     </div>
                                 }
                             </div>
-                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCode) || Model.User.NeedsToAnswerDonationQuestion)
-                            {
-                                <div class="row row spacing">
-                                    <div class="col-xs-12">
-                                        <table style="font-size: 16px;">
-                                            <tr>
-                                                <td>
-                                                    Free Book Code:
-                                                    @if (Model.User.NeedsToAnswerDonationQuestion)
-                                                    {
-                                                        <button class="btn btn-info btn-spinner" asp-action="RedeemCode">
-                                                            <span class="buttonText">Redeem your code</span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                        </button>
-                                                        @:or
-                                                        <button class="btn btn-success btn-spinner" asp-action="DonateCode">
-                                                            <span class="buttonText">Donate your book</span>
-                                                            <span class="fa fa-spinner fa-pulse fa-lg fa-fw hidden"></span>
-                                                        </button>
-                                                    }
-                                                    else
-                                                    {
-                                                        if (!string.IsNullOrEmpty(Model.User.VendorCodeUrl))
-                                                        {
-                                                            <strong><a href="@Model.User.VendorCodeUrl" target="_blank">@Model.User.VendorCode</a></strong>
-                                                        }
-                                                        else
-                                                        {
-                                                            <strong>@Model.User.VendorCode</strong>
-                                                        }
-                                                    }
-                                                </td>
-                                            </tr>
-                                            @if (!string.IsNullOrWhiteSpace(Model.User.VendorCodeMessage))
-                                            {
-                                                <tr>
-                                                    <td>@Model.User.VendorCodeMessage</td>
-                                                </tr>
-                                            }
-                                        </table>
-
-                                    </div>
-                                </div>
-                            }
                         </div>
                     </div>
 
