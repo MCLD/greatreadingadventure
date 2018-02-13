@@ -464,6 +464,7 @@ namespace GRA.Controllers
 
             var (useGroups, maximumHousehold) =
                 await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
 
             if (useGroups)
             {
@@ -519,7 +520,7 @@ namespace GRA.Controllers
                 BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
-                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
+                SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name"),
             };
 
             if (programList.Count() == 1)
@@ -529,6 +530,11 @@ namespace GRA.Controllers
                 viewModel.User.ProgramId = programList.SingleOrDefault().Id;
                 viewModel.ShowAge = program.AskAge;
                 viewModel.ShowSchool = program.AskSchool;
+            }
+
+            if (askIfFirstTime)
+            {
+                viewModel.AskFirstTime = EmptyNoYes();
             }
 
             return View("HouseholdAdd", viewModel);
@@ -547,6 +553,12 @@ namespace GRA.Controllers
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+            }
+
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (!askIfFirstTime)
+            {
+                ModelState.Remove(nameof(model.IsFirstTime));
             }
 
             bool askAge = false;
@@ -603,6 +615,12 @@ namespace GRA.Controllers
                     {
                         model.User.SchoolId = null;
                         model.User.EnteredSchoolName = null;
+                    }
+
+                    if (askIfFirstTime)
+                    {
+                        model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
+                           StringComparison.OrdinalIgnoreCase);
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(authUser.Id,
@@ -791,7 +809,7 @@ namespace GRA.Controllers
         [HttpPost]
         public IActionResult CancelGroupUpgrade(GroupUpgradeViewModel viewModel)
         {
-            if(viewModel.AddExisting == true)
+            if (viewModel.AddExisting == true)
             {
                 HttpContext.Session.Remove(SessionKey.AbsorbUserId);
             }

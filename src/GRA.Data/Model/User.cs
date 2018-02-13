@@ -57,5 +57,7 @@ namespace GRA.Data.Model
 
         public DateTime? AchievedAt { get; set; }
         public DateTime? LastBroadcast { get; set; }
+
+        public bool IsFirstTime { get; set; }
     }
 }

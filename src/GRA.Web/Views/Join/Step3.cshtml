@@ -15,14 +15,19 @@
                             <label asp-for="Username" class="control-label"></label>
                             <span id="Username-Icon" class="fa colored-icon hide"></span>
                             <input asp-for="Username" class="form-control" autofocus />
-                            <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
+                            <span id="Username-Validation"
+                                  asp-validation-for="Username"
+                                  class="text-success"></span>
                         </div>
                     </div>
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Password" class="control-label"></label>
-                            <p class="password-note">Your password must be at least 6 characters long and include a number.</p>
+                            <p class="password-note">
+                                Your password must be at least 6 characters
+                                long and include a number.
+                            </p>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
@@ -41,7 +46,8 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <p>
-                                Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.
+                                Email and Phone Number are not required however at least one is
+                                needed in order to be eligible for prizes.
                             </p>
                         </div>
                     </div>
@@ -61,6 +67,19 @@
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
+
+                    @if (Model?.AskFirstTime?.Count() > 1)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="IsFirstTime" class="control-label"></label>
+                                <select asp-for="IsFirstTime"
+                                        asp-items="Model.AskFirstTime"
+                                        class="form-control"></select>
+                                <span asp-validation-for="IsFirstTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">

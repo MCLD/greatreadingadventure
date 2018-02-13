@@ -35,6 +35,10 @@ namespace GRA
             // If this is set to an integer, when the household count exceeds this number the
             // household head will be forced to enter a group name and select a group type.
             public const string MaximumHouseholdSizeBeforeGroup = "Users.MaximumHouseholdSizeBeforeGroup";
+
+            // If this is set (i.e. not null) do not allow users to sign up without selecting if
+            // it's their first time in the program
+            public const string AskIfFirstTime = "Users.AskIfFirstTime";
         }
     }
 }

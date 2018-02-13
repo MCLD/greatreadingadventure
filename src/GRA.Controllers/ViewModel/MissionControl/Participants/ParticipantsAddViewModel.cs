@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
@@ -76,5 +73,11 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public SelectList SchoolList { get; set; }
         public SelectList SchoolDistrictList { get; set; }
         public SelectList SchoolTypeList { get; set; }
+
+        public SelectList AskFirstTime { get; set; }
+
+        [DisplayName("Is this your first time participating?")]
+        [Required(ErrorMessage = "Please let us know if this is your first time participating in the program")]
+        public string IsFirstTime { get; set; }
     }
 }

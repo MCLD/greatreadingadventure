@@ -31,7 +31,7 @@
                             </div>
 
                             @if (Model.RequirePostalCode)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.PostalCode" class="control-label"></label>
@@ -58,7 +58,7 @@
                             </div>
 
                             @if (Model.SystemList.Count() > 1)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.SystemId" class="control-label"></label>
@@ -73,7 +73,7 @@
                             }
 
                             @if (Model.SystemList.Count() > 1 || Model.BranchList.Count() > 1)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.BranchId" class="control-label"></label>
@@ -88,7 +88,7 @@
                             }
 
                             @if (Model.ProgramList.Count() > 1)
-            {
+                            {
                                 <div class="row row-spacing">
                                     <div class="col-xs-12">
                                         <label asp-for="User.ProgramId" class="control-label"></label>
@@ -153,6 +153,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if (Model?.AskFirstTime?.Count() > 1)
+                            {
+                                <div class="row row-spacing">
+                                    <div class="col-xs-12">
+                                        <label asp-for="IsFirstTime" class="control-label"></label>
+                                        <select asp-for="IsFirstTime"
+                                                asp-items="Model.AskFirstTime"
+                                                class="form-control"></select>
+                                        <span asp-validation-for="IsFirstTime" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
 

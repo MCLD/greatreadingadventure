@@ -80,5 +80,8 @@ namespace GRA.Domain.Model
         public bool NeedsToAnswerDonationQuestion { get; set; }
         public string VendorCodeUrl { get; set; }
         public bool? Donated { get; set; }
+
+        [DisplayName("Is this your first time participating?")]
+        public bool IsFirstTime { get; set; }
     }
 }

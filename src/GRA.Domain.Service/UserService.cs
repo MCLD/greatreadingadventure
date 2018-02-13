@@ -562,7 +562,6 @@ namespace GRA.Domain.Service
                 memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
                 memberToAdd.Username = memberToAdd.Username?.Trim();
 
-
                 if (!string.IsNullOrWhiteSpace(memberToAdd.EnteredSchoolName))
                 {
                     memberToAdd.EnteredSchoolName = memberToAdd.EnteredSchoolName?.Trim();

@@ -207,7 +207,7 @@ namespace GRA.Controllers.MissionControl
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
             var districtList = await _schoolService.GetDistrictsAsync();
 
-            ParticipantsAddViewModel viewModel = new ParticipantsAddViewModel()
+            var viewModel = new ParticipantsAddViewModel()
             {
                 RequirePostalCode = site.RequirePostalCode,
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
@@ -215,6 +215,12 @@ namespace GRA.Controllers.MissionControl
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                 SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
             };
+
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (askIfFirstTime)
+            {
+                viewModel.AskFirstTime = EmptyNoYes();
+            }
 
             if (systemList.Count() == 1)
             {
@@ -251,6 +257,12 @@ namespace GRA.Controllers.MissionControl
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.PostalCode))
             {
                 ModelState.AddModelError("PostalCode", "The Zip Code field is required.");
+            }
+
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (!askIfFirstTime)
+            {
+                ModelState.Remove(nameof(model.IsFirstTime));
             }
 
             bool askAge = false;
@@ -309,6 +321,13 @@ namespace GRA.Controllers.MissionControl
 
                 User user = _mapper.Map<User>(model);
                 user.SiteId = site.Id;
+
+                if (askIfFirstTime)
+                {
+                    user.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
+                        StringComparison.OrdinalIgnoreCase);
+                }
+
                 try
                 {
                     var newUser = await _userService.RegisterUserAsync(user, model.Password,
@@ -995,6 +1014,13 @@ namespace GRA.Controllers.MissionControl
                     SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
                 };
 
+                var askIfFirstTime
+                    = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+                if (askIfFirstTime)
+                {
+                    viewModel.AskFirstTime = EmptyNoYes();
+                }
+
                 return View("HouseholdAdd", viewModel);
             }
             catch (GraException gex)
@@ -1019,6 +1045,12 @@ namespace GRA.Controllers.MissionControl
             if (site.RequirePostalCode && string.IsNullOrWhiteSpace(model.User.PostalCode))
             {
                 ModelState.AddModelError("User.PostalCode", "The Zip Code field is required.");
+            }
+
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (!askIfFirstTime)
+            {
+                ModelState.Remove(nameof(model.IsFirstTime));
             }
 
             bool askAge = false;
@@ -1075,6 +1107,12 @@ namespace GRA.Controllers.MissionControl
                     {
                         model.User.SchoolId = null;
                         model.User.EnteredSchoolName = null;
+                    }
+
+                    if (askIfFirstTime)
+                    {
+                        model.User.IsFirstTime = model.IsFirstTime.Equals(DropDownTrueValue,
+                            StringComparison.OrdinalIgnoreCase);
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,

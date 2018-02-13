@@ -125,6 +125,20 @@
                     </div>
                 </div>
             </div>
+
+            @if (Model?.AskFirstTime?.Count() > 1)
+            {
+                <div class="row row-spacing">
+                    <div class="col-xs-12">
+                        <label asp-for="IsFirstTime" class="control-label"></label>
+                        <select asp-for="IsFirstTime"
+                                asp-items="Model.AskFirstTime"
+                                class="form-control"></select>
+                        <span asp-validation-for="IsFirstTime" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+
         </div>
     </div>
 

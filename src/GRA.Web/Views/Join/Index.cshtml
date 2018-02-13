@@ -16,14 +16,19 @@
                             <label asp-for="Username" class="control-label"></label>
                             <span id="Username-Icon" class="fa colored-icon hide"></span>
                             <input asp-for="Username" class="form-control" autofocus />
-                            <span id="Username-Validation" asp-validation-for="Username" class="text-success"></span>
+                            <span id="Username-Validation"
+                                  asp-validation-for="Username"
+                                  class="text-success"></span>
                         </div>
                     </div>
 
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="Password" class="control-label"></label>
-                            <p class="password-note">Your password must be at least 6 characters long and include a number.</p>
+                            <p class="password-note">
+                                Your password must be at least 6 characters
+                                long and include a number.
+                            </p>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
@@ -71,7 +76,9 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="SystemId" class="control-label"></label>
-                                <select asp-for="SystemId" asp-items="Model.SystemList" class="form-control">
+                                <select asp-for="SystemId"
+                                        asp-items="Model.SystemList"
+                                        class="form-control">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="SystemId" class="text-danger"></span>
@@ -86,8 +93,9 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <label asp-for="BranchId" class="control-label"></label>
-                            <select asp-for="BranchId" asp-items="Model.BranchList" class="form-control">
-                            </select>
+                            <select asp-for="BranchId"
+                                    asp-items="Model.BranchList"
+                                    class="form-control"></select>
                             <span asp-validation-for="BranchId" class="text-danger"></span>
                         </div>
                     </div>
@@ -97,7 +105,9 @@
                         <div class="row row-spacing">
                             <div class="col-xs-12">
                                 <label asp-for="ProgramId" class="control-label"></label>
-                                <select asp-for="ProgramId" asp-items="Model.ProgramList" class="form-control">
+                                <select asp-for="ProgramId"
+                                        asp-items="Model.ProgramList"
+                                        class="form-control">
                                     <option></option>
                                 </select>
                                 <span asp-validation-for="ProgramId" class="text-danger"></span>
@@ -118,42 +128,42 @@
                     </div>
 
                     <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
-                            <div class="row">
-                                <div id="schoolDistrictGroup" class="col-xs-12 @(Model.NewEnteredSchool ? "" : "col-sm-6" ) row-spacing">
-                                    <label class="control-label">School District</label>
-                                    <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
-                                        <option></option>
-                                    </select>
-                                    <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
-                                </div>
-
-                                <div id="schoolTypeGroup" class="col-xs-12 col-sm-6 row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
-                                    <label class="control-label">School Type</label>
-                                    <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
-                                        <option></option>
-                                    </select>
-                                </div>
+                        <div class="row">
+                            <div id="schoolDistrictGroup" class="col-xs-12 @(Model.NewEnteredSchool ? "" : "col-sm-6" ) row-spacing">
+                                <label class="control-label">School District</label>
+                                <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
                             </div>
 
-                            <div id="schoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
-                                <div class="col-xs-12">
-                                    <label asp-for="SchoolId" class="control-label"></label>
-                                    <label style="font-size: 12px;">
-                                        <a id="schoolNotListed" style="text-decoration:none;cursor:pointer">My school isn't listed</a>
-                                    </label>
-                                    <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
-                                        <option></option>
-                                    </select>
-                                    <span asp-validation-for="SchoolId" class="text-danger"></span>
-                                </div>
+                            <div id="schoolTypeGroup" class="col-xs-12 col-sm-6 row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
+                                <label class="control-label">School Type</label>
+                                <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
+                                    <option></option>
+                                </select>
                             </div>
+                        </div>
+
+                        <div id="schoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
+                            <div class="col-xs-12">
+                                <label asp-for="SchoolId" class="control-label"></label>
+                                <label style="font-size: 12px;">
+                                    <a id="schoolNotListed" style="text-decoration:none;cursor:pointer">My school isn't listed</a>
+                                </label>
+                                <select asp-for="SchoolId" asp-items="Model.SchoolList" class="form-control">
+                                    <option></option>
+                                </select>
+                                <span asp-validation-for="SchoolId" class="text-danger"></span>
+                            </div>
+                        </div>
                         <div id="enteredSchoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "" : "hide" )">
                             <div class="col-xs-12">
                                 <label asp-for="EnteredSchoolName" class="control-label"></label>
-                                    <label style="font-size: 12px;">
-                                        <a id="viewSchoolList" style="text-decoration:none;cursor:pointer">View school list</a>
-                                    </label>
-                                    <input asp-for="EnteredSchoolName" class="form-control" />
+                                <label style="font-size: 12px;">
+                                    <a id="viewSchoolList" style="text-decoration:none;cursor:pointer">View school list</a>
+                                </label>
+                                <input asp-for="EnteredSchoolName" class="form-control" />
                                 <span asp-validation-for="EnteredSchoolName" class="text-danger"></span>
                             </div>
                         </div>
@@ -164,7 +174,8 @@
                     <div class="row row-spacing">
                         <div class="col-xs-12">
                             <p>
-                                Email and Phone Number are not required however at least one is needed in order to be eligible for prizes.
+                                Email and Phone Number are not required however at least one is
+                                needed in order to be eligible for prizes.
                             </p>
                         </div>
                     </div>
@@ -185,6 +196,18 @@
                         </div>
                     </div>
 
+                    @if (Model.AskFirstTime?.Count() > 1)
+                    {
+                        <div class="row row-spacing">
+                            <div class="col-xs-12">
+                                <label asp-for="IsFirstTime" class="control-label"></label>
+                                <select asp-for="IsFirstTime"
+                                        asp-items="Model.AskFirstTime"
+                                        class="form-control"></select>
+                                <span asp-validation-for="IsFirstTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div class="panel-footer clearfix">
                     <div class="pull-right">

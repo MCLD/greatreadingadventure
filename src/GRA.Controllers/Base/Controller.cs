@@ -9,11 +9,10 @@ using Microsoft.AspNetCore.Http;
 using GRA.Domain.Service;
 using GRA.Domain.Service.Abstract;
 using GRA.Controllers.Filter;
-using System.Security.Principal;
 using System;
 using System.Text;
 using GRA.Abstract;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.Base
 {
@@ -22,6 +21,9 @@ namespace GRA.Controllers.Base
     [SessionTimeoutFilter]
     public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
+        protected const string DropDownTrueValue = "True";
+        protected const string DropDownFalseValue = "False";
+
         protected readonly IConfigurationRoot _config;
         protected readonly IDateTimeProvider _dateTimeProvider;
         protected readonly IPathResolver _pathResolver;
@@ -271,6 +273,26 @@ namespace GRA.Controllers.Base
         {
             return await _siteLookupService.GetSiteSettingIntAsync(GetCurrentSiteId(), key);
         }
-        
+
+        /// <summary>
+        /// Construct a drop-down list with a blank (default) option along with No and Yes options.
+        /// </summary>
+        /// <returns>A SelectList with empty, No, and Yes options. Keys are 
+        /// <see cref="DropDownFalseValue"/> for no and <see cref="DropDownTrueValue"/> for yes.
+        /// </returns>
+        protected SelectList EmptyNoYes()
+        {
+            //new SelectList(EmptyNoYes(), "Key", "Value", string.Empty);
+            return new SelectList(new Dictionary<string, string>
+            {
+                {string.Empty, string.Empty},
+                {DropDownFalseValue, "No" },
+                {DropDownTrueValue, "Yes" }
+            },
+            "Key",
+            "Value",
+            string.Empty);
+        }
+
     }
 }

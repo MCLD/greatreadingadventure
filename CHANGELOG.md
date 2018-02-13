@@ -8,8 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Logging when importing dynamic avatars
 - Nicer error message on the error page
 - Add mail threading to mission control
+- Setting to ask participants if it's their first time
 
-### Change
+### Changed
 - Participant mail subject to be clickable
 
 ### Changed
