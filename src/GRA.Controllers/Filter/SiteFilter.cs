@@ -105,7 +105,7 @@ namespace GRA.Controllers.Filter
 
             if (string.IsNullOrEmpty(httpContext.Session.GetString(SessionKey.CallItGroup)))
             {
-                httpContext.Items[ItemKey.HouseholdTitle] = "Household";
+                httpContext.Items[ItemKey.HouseholdTitle] = "Family";
             }
             else
             {

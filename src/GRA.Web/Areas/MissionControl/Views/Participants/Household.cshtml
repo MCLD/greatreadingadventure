@@ -140,7 +140,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="deleteModalLabel">Remove from household/group</h4>
+                        <h4 class="modal-title" id="deleteModalLabel">Remove from family/group</h4>
                     </div>
                     <div class="modal-body">
                         <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
@@ -162,7 +162,6 @@
         </div>
     </div>
 }
-
 @if (!string.IsNullOrEmpty(Model.GroupName))
 {
     <div class="row" style="padding: 10px 0; font-size: larger;">
@@ -184,7 +183,7 @@
     <div class="col-xs-12">
         @if (Model.Users.Count() == 0)
         {
-            <div class="alert alert-warning">Participant is not a member of a household/group</div>
+            <div class="alert alert-warning">Participant is not a member of a @string.IsNullOrEmpty(Model.GroupName) ? "family." : "group."</div>
         }
         else
         {
@@ -559,7 +558,7 @@
                                                         data-target="#promoteModal"
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
-                                                        title="Promote to household/group manager">
+                                                        title="Promote to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager">
                                                     <span class="fa fa-level-up"
                                                           aria-hidden="true"></span>
                                                 </button>
@@ -570,7 +569,7 @@
                                                         data-target="#removeModal"
                                                         data-id="@user.Id"
                                                         data-name="@user.FullName"
-                                                        title="Remove from household/group">
+                                                        title="Remove from family/group">
                                                     <span class="fa fa-minus"
                                                           aria-hidden="true"></span>
                                                 </button>
@@ -676,8 +675,8 @@
         }
         else
         {
-            <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Household Member</a>
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant</button>
+            <a asp-action="AddHouseholdMember" asp-route-id="@Model.Id" class="btn btn-default">Add Family Member</a>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#listModal">Add Existing Participant to Family</button>
         }
     }
 </div>
@@ -773,28 +772,16 @@
         });
         $("#UserSelection").val(selectionArray);
     };
-    /**/
 </text>
 }
-    /**/
-
-    /**/
+/**/
 @if (Model.CanEditDetails)
     {
 <text>
-    /**/
-    /**/
     var userId = @Model.Id
-/**/
-/**/
-        var defaultSystemId = @Model.SystemId;
-        /**/
-        /**/
-        var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
-    /**/
-    /**/
+    var defaultSystemId = @Model.SystemId;
+    var participantsUrl = "@Url.Action("HouseholdGetParticipantsList")";
     var branchUrl = "@Url.Action("GetBranches", "Lookup", new { Area = string.Empty })";
-    /**/
     var systemId = null;
     var branchId = null;
     var search = "";
@@ -923,7 +910,7 @@
         var id = button.data('id');
         var name = button.data('name');
         var modal = $(this);
-        modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to head of the household?');
+        modal.find('#modal-text').text('Are you sure you wish to promote "' + name + '" to @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group") manager?');
         modal.find('#PromoteId').val(id);
     })
 
@@ -932,12 +919,10 @@
         var id = button.data('id');
         var name = button.data('name');
         var modal = $(this);
-        modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the household?');
+        modal.find('#modal-text').text('Are you sure you wish to remove "' + name + '" from the @(string.IsNullOrEmpty(Model.GroupName) ? "family" : "group")?');
         modal.find('#RemoveId').val(id);
     })
-/**/
 </text>
 }
-/**/
     </script>
 }

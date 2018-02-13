@@ -12,9 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Participant mail subject to be clickable
-
-### Changed
 - Move vendor code to top of profile page
+- Rename "household" to "family" in visible locations
 
 ### Fixed
 - Fix error that occurred when editing challenge groups

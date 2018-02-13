@@ -1014,7 +1014,7 @@ namespace GRA.Domain.Service
                 var authUser = await _userRepository.GetByIdAsync(authUserId);
                 if (authUser.HouseholdHeadUserId.HasValue)
                 {
-                    string error = $"User id {authUserId} cannot log codes for a household";
+                    string error = $"User id {authUserId} cannot log codes for a family/group";
                     _logger.LogError(error);
                     throw new GraException("Permission denied.");
                 }

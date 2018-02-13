@@ -849,7 +849,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view participant's household: ", gex);
+                ShowAlertWarning("Unable to view participant's family/group: ", gex);
                 return RedirectToAction("Index");
             }
         }
@@ -891,7 +891,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                TempData[ActivityMessage] = "No household members selected.";
+                TempData[ActivityMessage] = "No family/group members selected.";
             }
 
             return RedirectToAction("Household", new { id = model.Id });
@@ -934,7 +934,7 @@ namespace GRA.Controllers.MissionControl
             }
             else
             {
-                TempData[SecretCodeMessage] = "No household members selected.";
+                TempData[SecretCodeMessage] = "No family/group members selected.";
             }
 
             return RedirectToAction("Household", new { id = model.Id });
@@ -951,7 +951,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Could not promote to head of household: ", gex.Message);
+                ShowAlertDanger("Could not promote to family/group manager: ", gex.Message);
             }
             return RedirectToAction("Household", new { id = id });
         }
@@ -963,11 +963,11 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 await _userService.RemoveFromHouseholdAsync(removeId);
-                ShowAlertSuccess("Participant removed from household.");
+                ShowAlertSuccess("Participant removed from family/group.");
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Could not remove from household: ", gex.Message);
+                ShowAlertDanger("Could not remove from family/group: ", gex.Message);
             }
             return RedirectToAction("Household", new { id = id });
         }
@@ -984,7 +984,11 @@ namespace GRA.Controllers.MissionControl
                         .GetDetails((int)headOfHousehold.HouseholdHeadUserId);
                 }
 
-                SetPageTitle(headOfHousehold, "Add Household Member");
+                var groupInfo 
+                    = await _userService.GetGroupFromHouseholdHeadAsync(headOfHousehold.Id);
+
+                string callIt = groupInfo == null ? "Family" : "Group";
+                SetPageTitle(headOfHousehold, $"Add {callIt} Member");
 
                 var userBase = new User()
                 {
@@ -1025,7 +1029,7 @@ namespace GRA.Controllers.MissionControl
             }
             catch (GraException gex)
             {
-                ShowAlertWarning("Unable to view participant's household: ", gex);
+                ShowAlertWarning("Unable to view participant's family/group: ", gex);
                 return RedirectToAction("Index");
             }
         }
@@ -1118,15 +1122,15 @@ namespace GRA.Controllers.MissionControl
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,
                         model.User, model.SchoolDistrictId);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
-                    AlertSuccess = "Added household member";
+                    AlertSuccess = "Added family/group member";
                     return RedirectToAction("Household", new { id = model.Id });
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertWarning("Unable to add household member: ", gex);
+                    ShowAlertWarning("Unable to add family/group member: ", gex);
                 }
             }
-            SetPageTitle(headOfHousehold, "Add Household Member");
+            SetPageTitle(headOfHousehold, "Add Family/Group Member");
 
             var branchList = await _siteService.GetBranches(model.User.SystemId);
             if (model.User.BranchId < 1)
@@ -1182,7 +1186,7 @@ namespace GRA.Controllers.MissionControl
                 {
                     return RedirectToAction("Household", new { id = id });
                 }
-                SetPageTitle(user, "Register Household Memeber");
+                SetPageTitle(user, "Register Family Member");
 
                 HouseholdRegisterViewModel viewModel = new HouseholdRegisterViewModel()
                 {
@@ -1213,15 +1217,15 @@ namespace GRA.Controllers.MissionControl
                 try
                 {
                     await _userService.RegisterHouseholdMemberAsync(user, model.Password);
-                    AlertSuccess = "Household member registered!";
+                    AlertSuccess = "Family/group member registered!";
                     return RedirectToAction("Household", new { id = model.Id });
                 }
                 catch (GraException gex)
                 {
-                    ShowAlertDanger("Unable to register household member: ", gex);
+                    ShowAlertDanger("Unable to register family/group member: ", gex);
                 }
             }
-            SetPageTitle(user, "Register Household Memeber");
+            SetPageTitle(user, "Register Family/Group Member");
             return View("HouseholdRegister", model);
         }
 
@@ -1233,11 +1237,11 @@ namespace GRA.Controllers.MissionControl
             try
             {
                 await _userService.MCAddParticipantToHouseholdAsync(Id, userToAddId);
-                ShowAlertSuccess("Participant has been added to household!");
+                ShowAlertSuccess("Participant has been added to family/group!");
             }
             catch (GraException gex)
             {
-                ShowAlertDanger("Unable to add participant to household: ", gex);
+                ShowAlertDanger("Unable to add participant to family/group: ", gex);
             }
 
             return RedirectToAction("Household", new { id = Id });
@@ -1964,8 +1968,8 @@ namespace GRA.Controllers.MissionControl
 
             if (groupTypes.Count() == 0)
             {
-                _logger.LogError($"MC attempt to add household member, need to make a group, no group types configured.");
-                AlertDanger = "In order to add more members to this household it must be converted to a group, however there are no group types configured.";
+                _logger.LogError($"MC attempt to add family member, need to make a group, no group types configured.");
+                AlertDanger = "In order to add more members to this family it must be converted to a group, however there are no group types configured.";
                 return View("Household", id);
             }
 

@@ -78,7 +78,7 @@ namespace GRA.Controllers
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
-            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string ?? "Household";
+            HouseholdTitle = HttpContext.Items[ItemKey.HouseholdTitle] as string ?? "Family";
         }
 
         public async Task<IActionResult> Index()
@@ -627,7 +627,15 @@ namespace GRA.Controllers
                         model.User, model.SchoolDistrictId);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
-                    AlertSuccess = "Added household member";
+                    var group = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+                    if (group == null)
+                    {
+                        AlertSuccess = "Added family member";
+                    }
+                    else
+                    {
+                        AlertSuccess = "Added group member";
+                    }
                     return RedirectToAction("Household");
                 }
                 catch (GraException gex)
@@ -687,6 +695,55 @@ namespace GRA.Controllers
                 return RedirectToAction("Household");
             }
 
+            // check if we're going to trip group membership requirements
+            var (useGroups, maximumHousehold) =
+                await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
+
+            int? addUserId = null;
+
+            if (useGroups)
+            {
+                var groupTypes = await _userService.GetGroupTypeListAsync();
+
+                if (groupTypes.Count() == 0)
+                {
+                    _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
+                }
+                else
+                {
+                    var currentHousehold = await _userService.GetHouseholdAsync(authUser.Id,
+                        false,
+                        false,
+                        false);
+
+                    int totalAddCount = 1;
+
+                    if (currentHousehold.Count() + totalAddCount > maximumHousehold)
+                    {
+                        var groupInfo
+                            = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
+
+                        if (groupInfo == null)
+                        {
+                            _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
+                            // add authenticated user id to session
+                            if (addUserId != null)
+                            {
+                                HttpContext.Session
+                                    .SetString(SessionKey.AbsorbUserId, addUserId.ToString());
+                            }
+                            return View("GroupUpgrade", new GroupUpgradeViewModel
+                            {
+                                MaximumHouseholdAllowed = maximumHousehold,
+                                GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name"),
+                                AddExisting = true
+                            });
+                        }
+                    }
+                }
+            }
+            // end checking about groups
+
             return View();
         }
 
@@ -703,58 +760,6 @@ namespace GRA.Controllers
             {
                 try
                 {
-                    // check if we're going to trip group membership requirements
-                    var (useGroups, maximumHousehold) =
-                        await GetSiteSettingIntAsync(SiteSettingKey.Users.MaximumHouseholdSizeBeforeGroup);
-
-                    int? addUserId = null;
-
-                    if (useGroups)
-                    {
-                        var groupTypes = await _userService.GetGroupTypeListAsync();
-
-                        if (groupTypes.Count() == 0)
-                        {
-                            _logger.LogError($"User {authUser.Id} should be forced to make a group but no group types are configured");
-                        }
-                        else
-                        {
-                            var currentHousehold = await _userService.GetHouseholdAsync(authUser.Id,
-                                false,
-                                false,
-                                false);
-
-                            int totalAddCount = 0;
-                            (totalAddCount, addUserId)
-                                = await _userService.CountParticipantsToAdd(model.Username,
-                                model.Password);
-
-                            if (currentHousehold.Count() + totalAddCount > maximumHousehold)
-                            {
-                                var groupInfo
-                                    = await _userService.GetGroupFromHouseholdHeadAsync(authUser.Id);
-
-                                if (groupInfo == null)
-                                {
-                                    _logger.LogInformation($"Redirecting user {authUser.Id} to create a group when adding member {maximumHousehold + 1}, group will total {currentHousehold.Count() + totalAddCount}");
-                                    // add authenticated user id to session
-                                    if (addUserId != null)
-                                    {
-                                        HttpContext.Session
-                                            .SetString(SessionKey.AbsorbUserId, addUserId.ToString());
-                                    }
-                                    return View("GroupUpgrade", new GroupUpgradeViewModel
-                                    {
-                                        MaximumHouseholdAllowed = maximumHousehold,
-                                        GroupTypes = new SelectList(groupTypes.ToList(), "Id", "Name"),
-                                        AddExisting = true
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    // end checking about groups
-
                     string addedMembers = await _userService
                         .AddParticipantToHouseholdAsync(model.Username, model.Password);
                     HttpContext.Session.SetString(SessionKey.HeadOfHousehold, "True");
@@ -1172,11 +1177,11 @@ namespace GRA.Controllers
 
             if (viewModel.AddExisting == true)
             {
-                return await AddExistingPreAuth();
+                return RedirectToAction(nameof(AddExistingParticipant));
             }
             else
             {
-                return await AddHouseholdMember();
+                return RedirectToAction(nameof(AddHouseholdMember));
             }
         }
 

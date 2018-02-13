@@ -193,7 +193,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to view household participants.");
+                _logger.LogError($"User {authUserId} doesn't have permission to view family/group participants.");
                 throw new GraException("Permission denied.");
             }
         }
@@ -217,7 +217,7 @@ namespace GRA.Domain.Service
                 }
                 else
                 {
-                    _logger.LogError($"User {authUserId} doesn't have permission to get a count of household participants.");
+                    _logger.LogError($"User {authUserId} doesn't have permission to get a count of family/group participants.");
                     throw new GraException("Permission denied.");
                 }
             }
@@ -430,7 +430,13 @@ namespace GRA.Domain.Service
                 var familyCount = await _userRepository.GetHouseholdCountAsync(userIdToRemove);
                 if (familyCount > 0)
                 {
-                    throw new GraException($"{user.FullName} is the head of a household. Please remove all household members first.");
+                    var group = await _groupInfoRepository.GetByUserIdAsync(user.Id);
+                    string callIt = "family";
+                    if (group != null)
+                    {
+                        callIt = "group";
+                    }
+                    throw new GraException($"{user.FullName} is the head of a {callIt}. Please remove all {callIt} members first.");
                 }
                 user.IsDeleted = true;
                 user.Username = null;
@@ -540,8 +546,8 @@ namespace GRA.Domain.Service
 
             if (householdHead.HouseholdHeadUserId != null)
             {
-                _logger.LogError($"User {authUserId} cannot add a household member for {householdHeadUserId} who isn't a head of household.");
-                throw new GraException("Cannot add a household member to someone who isn't a head of household.");
+                _logger.LogError($"User {authUserId} cannot add a household member for {householdHeadUserId} who isn't a head of family/group.");
+                throw new GraException("Cannot add a household member to someone who isn't a head of family/group.");
             }
 
             if (authUserId == householdHeadUserId
@@ -579,7 +585,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to add a household member to {householdHeadUserId}.");
+                _logger.LogError($"User {authUserId} doesn't have permission to add a family/group member to {householdHeadUserId}.");
                 throw new GraException("Permission denied.");
             }
         }
@@ -595,7 +601,7 @@ namespace GRA.Domain.Service
                 var user = await _userRepository.GetByIdAsync(memberToRegister.Id);
                 if (!string.IsNullOrWhiteSpace(user.Username))
                 {
-                    _logger.LogError($"User {authUserId} cannot register household member {memberToRegister.Id} who is already registered.");
+                    _logger.LogError($"User {authUserId} cannot register family/group member {memberToRegister.Id} who is already registered.");
                     throw new GraException("Household member is already registered");
                 }
 
@@ -614,7 +620,7 @@ namespace GRA.Domain.Service
             }
             else
             {
-                _logger.LogError($"User {authUserId} doesn't have permission to register household member {memberToRegister.Id}.");
+                _logger.LogError($"User {authUserId} doesn't have permission to register family/group member {memberToRegister.Id}.");
                 throw new GraException("Permission denied.");
             }
         }
@@ -660,7 +666,7 @@ namespace GRA.Domain.Service
 
             if (authUser.HouseholdHeadUserId != null)
             {
-                throw new GraException("Only a household or group manager can add members");
+                throw new GraException("Only a family or group manager can add members");
             }
 
             var authenticationResult = await _userRepository.AuthenticateUserAsync(trimmedUsername, password);
@@ -692,7 +698,7 @@ namespace GRA.Domain.Service
 
             if (authUser.HouseholdHeadUserId != null)
             {
-                throw new GraException("Only a household or group manager can add members");
+                throw new GraException("Only a family or group manager can add members");
             }
 
             var user = await _userRepository.GetByIdAsync(userId);
@@ -711,7 +717,7 @@ namespace GRA.Domain.Service
             }
 
             var isGroup = await _groupInfoRepository.GetByUserIdAsync(authUser.Id);
-            var callIt = isGroup != null ? "group" : "household";
+            var callIt = isGroup != null ? "group" : "family";
 
             if (hasFamily == true)
             {
@@ -743,7 +749,7 @@ namespace GRA.Domain.Service
 
             if (authUser.HouseholdHeadUserId != null)
             {
-                throw new GraException("Only a household or group manager can add members");
+                throw new GraException("Only a family or group manager can add members");
             }
 
             string trimmedUsername = username.Trim();
@@ -825,20 +831,20 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't have permission to promote household/group members to head.");
+                _logger.LogError($"User {authId} doesn't have permission to promote family/group members to manager.");
                 throw new GraException("Permission denied.");
             }
 
             var user = await _userRepository.GetByIdAsync(userId); ;
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be promoted to household/group manager without a username.");
+                _logger.LogError($"User {userId} cannot be promoted to family/group manager without a username.");
                 throw new GraException("User does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be promoted to household/group manager.");
-                throw new GraException("User does not have a group/household or is already the manager.");
+                _logger.LogError($"User {userId} cannot be promoted to family/group manager.");
+                throw new GraException("User does not have a family/group or is already the manager.");
             }
             var headUser = await _userRepository.GetByIdAsync(user.HouseholdHeadUserId.Value);
             var household = await _userRepository.GetHouseholdAsync(user.HouseholdHeadUserId.Value);
@@ -874,20 +880,20 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't have permission to remove household/group members.");
+                _logger.LogError($"User {authId} doesn't have permission to remove family/group members.");
                 throw new GraException("Permission denied.");
             }
 
             var user = await _userRepository.GetByIdAsync(userId);
             if (string.IsNullOrWhiteSpace(user.Username))
             {
-                _logger.LogError($"User {userId} cannot be removed from a household/group without a username.");
+                _logger.LogError($"User {userId} cannot be removed from a family/group without a username.");
                 throw new GraException("Participant does not have a username.");
             }
             if (!user.HouseholdHeadUserId.HasValue)
             {
-                _logger.LogError($"User {userId} cannot be removed from a household/group.");
-                throw new GraException("Participant does not have a household/group or is the manager.");
+                _logger.LogError($"User {userId} cannot be removed from a family/group.");
+                throw new GraException("Participant does not have a family/group or is the manager.");
             }
             user.HouseholdHeadUserId = null;
             await _userRepository.UpdateSaveAsync(authId, user);
@@ -900,15 +906,15 @@ namespace GRA.Domain.Service
             var authId = GetClaimId(ClaimType.UserId);
             if (!HasPermission(Permission.EditParticipants))
             {
-                _logger.LogError($"User {authId} doesn't add existing participants to household/group.");
+                _logger.LogError($"User {authId} doesn't add existing participants to family/group.");
                 throw new GraException("Permission denied.");
             }
             var userToAdd = await _userRepository.GetByIdAsync(userToAddId);
             if (userToAdd.HouseholdHeadUserId.HasValue
                 || (await _userRepository.GetHouseholdCountAsync(userToAddId)) > 0)
             {
-                _logger.LogError($"User {authId} cannot add {userToAddId} to a different household/group.");
-                throw new GraException("Participant already belongs to a household/group.");
+                _logger.LogError($"User {authId} cannot add {userToAddId} to a different family/group.");
+                throw new GraException("Participant already belongs to a family/group.");
             }
             var user = await _userRepository.GetByIdAsync(householdId);
             userToAdd.HouseholdHeadUserId = user.HouseholdHeadUserId ?? user.Id;
