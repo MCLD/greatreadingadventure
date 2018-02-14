@@ -86,5 +86,51 @@ namespace GRA.Data.Repository
                 .Where(_ => _.Id == schoolId && _.SiteId == siteId)
                 .AnyAsync();
         }
+
+        public async Task<bool> AnyPrivateSchoolsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.SchoolDistrict.IsPrivate)
+                .AnyAsync();
+        }
+        
+        public async Task<List<School>> GetPrivateSchoolListAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Join(_context.SchoolDistricts,
+                    s => s.SchoolDistrictId,
+                    sd => sd.Id,
+                    (s, sd) => new { s, sd})
+                .Where(_ => _.s.SiteId == siteId && _.sd.IsPrivate == true)
+                .Select(_ => _.s)
+                .OrderBy(_ => _.Name)
+                .ProjectTo<School>()
+                .ToListAsync();
+        }
+
+        public async Task<bool> AnyCharterSchoolsAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Where(_ => _.SiteId == siteId && _.SchoolDistrict.IsCharter)
+                .AnyAsync();
+        }
+
+        public async Task<List<School>> GetCharterSchoolListAsync(int siteId)
+        {
+            return await DbSet
+                .AsNoTracking()
+                .Join(_context.SchoolDistricts,
+                    s => s.SchoolDistrictId,
+                    sd => sd.Id,
+                    (s, sd) => new { s, sd })
+                .Where(_ => _.s.SiteId == siteId && _.sd.IsCharter == true)
+                .Select(_ => _.s)
+                .OrderBy(_ => _.Name)
+                .ProjectTo<School>()
+                .ToListAsync();
+        }
     }
 }

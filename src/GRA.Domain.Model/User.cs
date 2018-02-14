@@ -65,9 +65,8 @@ namespace GRA.Domain.Model
         public int? Age { get; set; }
         [DisplayName("School")]
         public int? SchoolId { get; set; }
-        public int? EnteredSchoolId { get; set; }
-        [DisplayName("School Name")]
-        public string EnteredSchoolName { get; set; }
+        public bool SchoolNotListed { get; set; }
+        public bool IsHomeschooled { get; set; }
 
         public DateTime? AchievedAt { get; set; }
         public DateTime? LastBroadcast { get; set; }

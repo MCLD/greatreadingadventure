@@ -1,13 +1,13 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using GRA.Domain.Model;
 using GRA.Domain.Model.Filters;
 using GRA.Domain.Repository;
 using GRA.Domain.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GRA.Data.Repository
 {
@@ -19,12 +19,23 @@ namespace GRA.Data.Repository
         {
         }
 
-        public async Task<ICollection<SchoolDistrict>> GetAllAsync(int siteId)
+        public async Task<ICollection<SchoolDistrict>> GetAllAsync(int siteId,
+            bool excludeUserUnselectable)
         {
-            return await DbSet
+            var districtList = DbSet
                 .AsNoTracking()
-                .Where(_ => _.SiteId == siteId)
-                .OrderBy(_ => _.Name)
+                .Where(_ => _.SiteId == siteId);
+
+            if (excludeUserUnselectable)
+            {
+                districtList = districtList
+                    .Where(_ => _.IsPrivate == false && _.IsCharter == false);
+            }
+
+            return await districtList
+                .OrderByDescending(_ => _.IsPrivate)
+                    .ThenByDescending(_ => _.IsCharter)
+                    .ThenBy(_ => _.Name)
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();
         }
@@ -38,7 +49,9 @@ namespace GRA.Data.Repository
         public async Task<ICollection<SchoolDistrict>> PageAsync(BaseFilter filter)
         {
             return await ApplyFilters(filter)
-                .OrderBy(_ => _.Name)
+                .OrderByDescending(_ => _.IsPrivate)
+                    .ThenByDescending(_ => _.IsCharter)
+                    .ThenBy(_ => _.Name)
                 .ApplyPagination(filter)
                 .ProjectTo<SchoolDistrict>()
                 .ToListAsync();

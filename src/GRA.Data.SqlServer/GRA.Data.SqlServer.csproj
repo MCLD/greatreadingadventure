@@ -18,10 +18,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20180111222409_initial.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GRA\GRA.csproj" />
     <ProjectReference Include="..\GRA.Data\GRA.Data.csproj" />
   </ItemGroup>

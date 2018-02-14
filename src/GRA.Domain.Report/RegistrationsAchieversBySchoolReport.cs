@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GRA.Domain.Report
 {
-    [ReportInformation(-9,
+    [ReportInformation(19,
     "Registrations And Achievers by School Report",
     "Registered participants and achievers by school (filterable by district and school).",
     "Program")]
@@ -125,12 +125,19 @@ namespace GRA.Domain.Report
                 totalRegistered += users;
                 totalAchiever += achievers;
 
-                var schoolType = await _schoolTypeRepository.GetByIdAsync(school.SchoolTypeId);
+                string schoolTypeName = null;
+                if (school.SchoolTypeId.HasValue)
+                {
+                    var schoolType = await _schoolTypeRepository
+                        .GetByIdAsync(school.SchoolTypeId.Value);
+                    schoolTypeName = schoolType.Name;
+                }
+                
 
                 // add row
                 reportData.Add(new object[] {
                         school.Name,
-                        schoolType.Name,
+                        schoolTypeName,
                         users,
                         achievers
                     });

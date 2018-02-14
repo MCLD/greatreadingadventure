@@ -205,7 +205,7 @@ namespace GRA.Controllers.MissionControl
             var systemList = await _siteService.GetSystemList();
             var programList = await _siteService.GetProgramList();
             var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
-            var districtList = await _schoolService.GetDistrictsAsync();
+            var districtList = await _schoolService.GetDistrictsAsync(true);
 
             var viewModel = new ParticipantsAddViewModel()
             {
@@ -213,6 +213,9 @@ namespace GRA.Controllers.MissionControl
                 ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                 SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
                 ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
+                PublicSelected = true,
+                ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
+                ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
                 SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
             };
 
@@ -276,23 +279,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("Age", "The Age field is required.");
                 }
-                if (program.SchoolRequired)
+                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
                 {
-                    if (!model.NewEnteredSchool && !model.SchoolId.HasValue)
-                    {
-                        ModelState.AddModelError("SchoolId", "The School field is required.");
-                    }
-                    else if (model.NewEnteredSchool
-                        && string.IsNullOrWhiteSpace(model.EnteredSchoolName))
-                    {
-                        ModelState.AddModelError("EnteredSchoolName", "The School Name field is required.");
-                    }
-                }
-                if (model.NewEnteredSchool && !model.SchoolDistrictId.HasValue
-                    && ((program.AskSchool && !string.IsNullOrWhiteSpace(model.EnteredSchoolName))
-                        || program.SchoolRequired))
-                {
-                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
+                    ModelState.AddModelError("SchoolId", "The School field is required.");
                 }
             }
 
@@ -302,21 +292,20 @@ namespace GRA.Controllers.MissionControl
                 {
                     model.Age = null;
                 }
-                if (askSchool)
-                {
-                    if (model.NewEnteredSchool)
-                    {
-                        model.SchoolId = null;
-                    }
-                    else
-                    {
-                        model.EnteredSchoolName = null;
-                    }
-                }
-                else
+                if (!askSchool)
                 {
                     model.SchoolId = null;
-                    model.EnteredSchoolName = null;
+                    model.SchoolNotListed = false;
+                    model.IsHomeschooled = false;
+                }
+                else if (model.IsHomeschooled)
+                {
+                    model.SchoolId = null;
+                    model.SchoolNotListed = false;
+                }
+                else if (model.SchoolNotListed)
+                {
+                    model.SchoolId = null;
                 }
 
                 User user = _mapper.Map<User>(model);
@@ -330,8 +319,7 @@ namespace GRA.Controllers.MissionControl
 
                 try
                 {
-                    var newUser = await _userService.RegisterUserAsync(user, model.Password,
-                        model.SchoolDistrictId, true);
+                    var newUser = await _userService.RegisterUserAsync(user, model.Password, true);
                     await _mailService.SendUserBroadcastsAsync(newUser.Id, false, true);
                     if (UserHasPermission(Permission.EditParticipants))
                     {
@@ -372,28 +360,62 @@ namespace GRA.Controllers.MissionControl
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
 
-            var districtList = await _schoolService.GetDistrictsAsync();
-            if (model.SchoolId.HasValue)
+            var districtList = await _schoolService.GetDistrictsAsync(true);
+            if (model.PrivateSelected)
             {
-                var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.SchoolId.Value);
-                var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDisctrictId);
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolDisctrictId);
-                model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolTypeId);
-                model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                model.PublicSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.CharterSelected)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.IsHomeschooled)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
             }
             else
             {
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                if (model.SchoolDistrictId.HasValue)
+                model.PublicSelected = true;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+
+                if (model.SchoolId.HasValue)
                 {
-                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                    var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.SchoolId.Value);
+                    var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDistrictId);
+                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
+                        schoolDetails.SchoolDistrictId);
                     model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                        model.SchoolTypeId);
-                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
-                        model.SchoolTypeId);
-                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                        schoolDetails.SchoolTypeId);
+                    model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                    ModelState.Remove(nameof(model.SchoolTypeId));
+                }
+                else
+                {
+                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                    if (model.SchoolDistrictId.HasValue)
+                    {
+                        var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                        model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
+                            model.SchoolTypeId);
+                        var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
+                            model.SchoolTypeId);
+                        model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                    }
                 }
             }
 
@@ -450,11 +472,12 @@ namespace GRA.Controllers.MissionControl
                     RequirePostalCode = (await GetCurrentSiteAsync()).RequirePostalCode,
                     ShowAge = userProgram.AskAge,
                     ShowSchool = userProgram.AskSchool,
-                    HasSchoolId = user.SchoolId.HasValue,
                     ProgramJson = Newtonsoft.Json.JsonConvert.SerializeObject(programViewObject),
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
-                    SystemList = new SelectList(systemList.ToList(), "Id", "Name")
+                    SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
+                    ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
+                    ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync()
                 };
 
                 if (UserHasPermission(Permission.ViewUserPrizes))
@@ -462,20 +485,60 @@ namespace GRA.Controllers.MissionControl
                     viewModel.PrizeCount = await _prizeWinnerService.GetUserWinCount(id, false);
                 }
 
-                var districtList = await _schoolService.GetDistrictsAsync();
+                var districtList = await _schoolService.GetDistrictsAsync(true);
                 if (user.SchoolId.HasValue)
                 {
+                    viewModel.SchoolId = user.SchoolId;
                     var schoolDetails = await _schoolService.GetSchoolDetailsAsync(user.SchoolId.Value);
-                    var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDisctrictId);
-                    viewModel.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
-                        schoolDetails.SchoolDisctrictId);
-                    viewModel.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                        schoolDetails.SchoolTypeId);
-                    viewModel.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                    viewModel.School = schoolDetails.School;
+                    viewModel.School.SchoolDistrict = await _schoolService.GetDistrictByIdAsync(
+                        viewModel.School.SchoolDistrictId);
+                    if (viewModel.School.SchoolDistrict.IsPrivate
+                        || viewModel.School.SchoolDistrict.IsCharter)
+                    {
+                        viewModel.SchoolDistrictList = new SelectList(
+                            districtList.ToList(), "Id", "Name");
+                        viewModel.SchoolList = new SelectList(
+                            schoolDetails.Schools.ToList(), "Id", "Name");
+
+                        if (viewModel.School.SchoolDistrict.IsPrivate)
+                        {
+                            viewModel.PrivateSelected = true;
+                        }
+                        else
+                        {
+                            viewModel.CharterSelected = true;
+                        }
+                    }
+                    else
+                    {
+                        var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDistrictId);
+                        viewModel.SchoolDistrictList = new SelectList(
+                            districtList.ToList(), "Id", "Name", schoolDetails.SchoolDistrictId);
+                        viewModel.SchoolTypeList = new SelectList(
+                            typeList.ToList(), "Id", "Name", schoolDetails.SchoolTypeId);
+                        viewModel.SchoolList = new SelectList(
+                            schoolDetails.Schools.ToList(), "Id", "Name");
+
+                        viewModel.PublicSelected = true;
+                    }
                 }
                 else
                 {
-                    viewModel.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                    viewModel.SchoolDistrictList = new SelectList(
+                        districtList.ToList(), "Id", "Name");
+                    if (user.IsHomeschooled)
+                    {
+                        viewModel.IsHomeschooled = true;
+                    }
+                    else
+                    {
+                        viewModel.PublicSelected = true;
+                        if (user.SchoolNotListed)
+                        {
+                            viewModel.SchoolNotListed = true;
+                        }
+                    }
                 }
 
                 if (UserHasPermission(Permission.EditParticipantUsernames)
@@ -507,23 +570,10 @@ namespace GRA.Controllers.MissionControl
             {
                 ModelState.AddModelError("User.Age", "The Age field is required.");
             }
-            if (program.SchoolRequired && !model.User.EnteredSchoolId.HasValue)
+            if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                && !model.IsHomeschooled)
             {
-                if (!model.NewEnteredSchool && !model.User.SchoolId.HasValue)
-                {
-                    ModelState.AddModelError("User.SchoolId", "The School field is required.");
-                }
-                else if (model.NewEnteredSchool
-                    && string.IsNullOrWhiteSpace(model.User.EnteredSchoolName))
-                {
-                    ModelState.AddModelError("User.EnteredSchoolName", "The School Name field is required.");
-                }
-            }
-            if (model.NewEnteredSchool && !model.SchoolDistrictId.HasValue
-                && ((program.AskSchool && !string.IsNullOrWhiteSpace(model.User.EnteredSchoolName))
-                    || program.SchoolRequired))
-            {
-                ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
+                ModelState.AddModelError("SchoolId", "The School field is required.");
             }
             if (model.CanEditUsername && string.IsNullOrWhiteSpace(model.User.Username))
             {
@@ -534,26 +584,31 @@ namespace GRA.Controllers.MissionControl
             {
                 try
                 {
-                    bool hasSchool = false;
                     if (!program.AskAge)
                     {
                         model.User.Age = null;
                     }
+
+                    model.User.SchoolId = null;
+                    model.User.SchoolNotListed = false;
+                    model.User.IsHomeschooled = false;
                     if (program.AskSchool)
                     {
-                        hasSchool = true;
-                        if (model.NewEnteredSchool || model.User.EnteredSchoolId.HasValue)
+                        if (model.IsHomeschooled)
                         {
-                            model.User.SchoolId = null;
+                            model.User.IsHomeschooled = true;
+                        }
+                        else if (model.SchoolNotListed)
+                        {
+                            model.User.SchoolNotListed = true;
                         }
                         else
                         {
-                            model.User.EnteredSchoolId = null;
-                            model.User.EnteredSchoolName = null;
+                            model.User.SchoolId = model.SchoolId;
                         }
                     }
 
-                    await _userService.MCUpdate(model.User, hasSchool, model.SchoolDistrictId);
+                    await _userService.MCUpdate(model.User);
                     AlertSuccess = "Participant infomation updated";
                     return RedirectToAction("Detail", new { id = model.User.Id });
                 }
@@ -581,28 +636,69 @@ namespace GRA.Controllers.MissionControl
             model.ShowAge = program.AskAge;
             model.ShowSchool = program.AskSchool;
 
-            var districtList = await _schoolService.GetDistrictsAsync();
-            if (model.User.SchoolId.HasValue)
+            var districtList = await _schoolService.GetDistrictsAsync(true);
+            if (model.PrivateSelected)
             {
-                var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.User.SchoolId.Value);
-                var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDisctrictId);
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolDisctrictId);
-                model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolTypeId);
-                model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                model.PublicSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(
+                    districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.CharterSelected)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(
+                    districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.IsHomeschooled)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.SchoolDistrictList = new SelectList(
+                    districtList.ToList(), "Id", "Name");
             }
             else
             {
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                if (model.SchoolDistrictId.HasValue)
+                model.PublicSelected = true;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+
+                if (model.SchoolId.HasValue)
                 {
-                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
-                    model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                        model.SchoolTypeId);
-                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
-                        model.SchoolTypeId);
-                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                    var schoolDetails = await _schoolService.GetSchoolDetailsAsync(
+                        model.SchoolId.Value);
+                    var typeList = await _schoolService.GetTypesAsync(
+                        schoolDetails.SchoolDistrictId);
+                    model.SchoolDistrictList = new SelectList(
+                        districtList.ToList(), "Id", "Name", schoolDetails.SchoolDistrictId);
+                    model.SchoolTypeList = new SelectList(
+                        typeList.ToList(), "Id", "Name", schoolDetails.SchoolTypeId);
+                    model.SchoolList = new SelectList(
+                        schoolDetails.Schools.ToList(), "Id", "Name");
+                    ModelState.Remove(nameof(model.SchoolTypeId));
+                }
+                else
+                {
+                    model.SchoolDistrictList = new SelectList(
+                        districtList.ToList(), "Id", "Name");
+                    if (model.SchoolDistrictId.HasValue)
+                    {
+                        var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                        model.SchoolTypeList = new SelectList(
+                            typeList.ToList(), "Id", "Name", model.SchoolTypeId);
+                        var schoolList = await _schoolService.GetSchoolsAsync(
+                            model.SchoolDistrictId, model.SchoolTypeId);
+                        model.SchoolList = new SelectList( schoolList.ToList(), "Id", "Name");
+                    }
                 }
             }
 
@@ -1004,7 +1100,7 @@ namespace GRA.Controllers.MissionControl
                 var systemList = await _siteService.GetSystemList();
                 var programList = await _siteService.GetProgramList();
                 var programViewObject = _mapper.Map<List<ProgramViewModel>>(programList);
-                var districtList = await _schoolService.GetDistrictsAsync();
+                var districtList = await _schoolService.GetDistrictsAsync(true);
 
                 HouseholdAddViewModel viewModel = new HouseholdAddViewModel()
                 {
@@ -1015,6 +1111,9 @@ namespace GRA.Controllers.MissionControl
                     BranchList = new SelectList(branchList.ToList(), "Id", "Name"),
                     ProgramList = new SelectList(programList.ToList(), "Id", "Name"),
                     SystemList = new SelectList(systemList.ToList(), "Id", "Name"),
+                    PublicSelected = true,
+                    ShowPrivateOption = await _schoolService.AnyPrivateSchoolsAsync(),
+                    ShowCharterOption = await _schoolService.AnyCharterSchoolsAsync(),
                     SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name")
                 };
 
@@ -1068,23 +1167,10 @@ namespace GRA.Controllers.MissionControl
                 {
                     ModelState.AddModelError("User.Age", "The Age field is required.");
                 }
-                if (program.SchoolRequired)
+                if (program.SchoolRequired && !model.SchoolId.HasValue && !model.SchoolNotListed
+                    && !model.IsHomeschooled)
                 {
-                    if (!model.NewEnteredSchool && !model.User.SchoolId.HasValue)
-                    {
-                        ModelState.AddModelError("User.SchoolId", "The School field is required.");
-                    }
-                    else if (model.NewEnteredSchool
-                        && string.IsNullOrWhiteSpace(model.User.EnteredSchoolName))
-                    {
-                        ModelState.AddModelError("User.EnteredSchoolName", "The School Name field is required.");
-                    }
-                }
-                if (model.NewEnteredSchool && !model.SchoolDistrictId.HasValue
-                    && ((program.AskSchool && !string.IsNullOrWhiteSpace(model.User.EnteredSchoolName))
-                        || program.SchoolRequired))
-                {
-                    ModelState.AddModelError("SchoolDistrictId", "The School District field is required.");
+                    ModelState.AddModelError("SchoolId", "The School field is required.");
                 }
             }
 
@@ -1096,21 +1182,24 @@ namespace GRA.Controllers.MissionControl
                     {
                         model.User.Age = null;
                     }
+
+                    model.User.SchoolId = null;
+                    model.User.SchoolNotListed = false;
+                    model.User.IsHomeschooled = false;
                     if (askSchool)
                     {
-                        if (model.NewEnteredSchool)
+                        if (model.IsHomeschooled)
                         {
-                            model.User.SchoolId = null;
+                            model.User.IsHomeschooled = true;
+                        }
+                        else if (model.SchoolNotListed)
+                        {
+                            model.User.SchoolNotListed = true;
                         }
                         else
                         {
-                            model.User.EnteredSchoolName = null;
+                            model.User.SchoolId = model.SchoolId;
                         }
-                    }
-                    else
-                    {
-                        model.User.SchoolId = null;
-                        model.User.EnteredSchoolName = null;
                     }
 
                     if (askIfFirstTime)
@@ -1120,7 +1209,7 @@ namespace GRA.Controllers.MissionControl
                     }
 
                     var newMember = await _userService.AddHouseholdMemberAsync(headOfHousehold.Id,
-                        model.User, model.SchoolDistrictId);
+                        model.User);
                     await _mailService.SendUserBroadcastsAsync(newMember.Id, false, true);
                     AlertSuccess = "Added family/group member";
                     return RedirectToAction("Household", new { id = model.Id });
@@ -1148,28 +1237,62 @@ namespace GRA.Controllers.MissionControl
             model.ShowAge = askAge;
             model.ShowSchool = askSchool;
 
-            var districtList = await _schoolService.GetDistrictsAsync();
-            if (model.User.SchoolId.HasValue)
+            var districtList = await _schoolService.GetDistrictsAsync(true);
+            if (model.PrivateSelected)
             {
-                var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.User.SchoolId.Value);
-                var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDisctrictId);
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolDisctrictId);
-                model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                    schoolDetails.SchoolTypeId);
-                model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                model.PublicSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetPrivateSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.CharterSelected)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.IsHomeschooled = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                model.SchoolList = new SelectList(
+                    await _schoolService.GetCharterSchoolListAsync(), "Id", "Name");
+            }
+            else if (model.IsHomeschooled)
+            {
+                model.PublicSelected = false;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
             }
             else
             {
-                model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
-                if (model.SchoolDistrictId.HasValue)
+                model.PublicSelected = true;
+                model.PrivateSelected = false;
+                model.CharterSelected = false;
+                model.IsHomeschooled = false;
+
+                if (model.SchoolId.HasValue)
                 {
-                    var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                    var schoolDetails = await _schoolService.GetSchoolDetailsAsync(model.SchoolId.Value);
+                    var typeList = await _schoolService.GetTypesAsync(schoolDetails.SchoolDistrictId);
+                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name",
+                        schoolDetails.SchoolDistrictId);
                     model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
-                        model.SchoolTypeId);
-                    var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
-                        model.SchoolTypeId);
-                    model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                        schoolDetails.SchoolTypeId);
+                    model.SchoolList = new SelectList(schoolDetails.Schools.ToList(), "Id", "Name");
+                    ModelState.Remove(nameof(model.SchoolTypeId));
+                }
+                else
+                {
+                    model.SchoolDistrictList = new SelectList(districtList.ToList(), "Id", "Name");
+                    if (model.SchoolDistrictId.HasValue)
+                    {
+                        var typeList = await _schoolService.GetTypesAsync(model.SchoolDistrictId);
+                        model.SchoolTypeList = new SelectList(typeList.ToList(), "Id", "Name",
+                            model.SchoolTypeId);
+                        var schoolList = await _schoolService.GetSchoolsAsync(model.SchoolDistrictId,
+                            model.SchoolTypeId);
+                        model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
+                    }
                 }
             }
 

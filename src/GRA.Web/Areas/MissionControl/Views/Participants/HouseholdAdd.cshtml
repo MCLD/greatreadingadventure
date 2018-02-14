@@ -5,7 +5,6 @@
         <div class="col-xs-12">
 
             <input asp-for="Id" type="hidden" />
-            <input asp-for="NewEnteredSchool" type="hidden" />
 
             <div class="row row-spacing">
                 <div class="col-xs-12">
@@ -85,45 +84,7 @@
             </div>
 
             <div id="schoolFields" class="@(Model.ShowSchool ? "": "hide")">
-                <div class="row">
-                    <div id="schoolDistrictGroup" class="col-xs-12 @(Model.NewEnteredSchool ? "" : "col-sm-6" ) row-spacing">
-                        <label class="control-label">School District</label>
-                        <select asp-for="SchoolDistrictId" asp-items="Model.SchoolDistrictList" class="form-control">
-                            <option></option>
-                        </select>
-                        <span asp-validation-for="SchoolDistrictId" class="text-danger"></span>
-                    </div>
-
-                    <div id="schoolTypeGroup" class="col-xs-12 col-sm-6 row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
-                        <label class="control-label">School Type</label>
-                        <select asp-for="SchoolTypeId" asp-items="Model.SchoolTypeList" class="form-control">
-                            <option></option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="schoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "hide" : "" )">
-                    <div class="col-xs-12">
-                        <label asp-for="User.SchoolId" class="control-label"></label>
-                        <label style="font-size: 12px;">
-                            <a id="schoolNotListed" style="text-decoration:none;cursor:pointer">My school isn't listed</a>
-                        </label>
-                        <select asp-for="User.SchoolId" asp-items="Model.SchoolList" class="form-control">
-                            <option></option>
-                        </select>
-                        <span asp-validation-for="User.SchoolId" class="text-danger"></span>
-                    </div>
-                </div>
-                <div id="enteredSchoolGroup" class="row row-spacing @(Model.NewEnteredSchool ? "" : "hide" )">
-                    <div class="col-xs-12">
-                        <label asp-for="User.EnteredSchoolName" class="control-label"></label>
-                        <label style="font-size: 12px;">
-                            <a id="viewSchoolList" style="text-decoration:none;cursor:pointer">View school list</a>
-                        </label>
-                        <input asp-for="User.EnteredSchoolName" class="form-control" />
-                        <span asp-validation-for="User.EnteredSchoolName" class="text-danger"></span>
-                    </div>
-                </div>
+                @await Html.PartialAsync("_SchoolSelectionPartial", Model)
             </div>
 
             @if (Model?.AskFirstTime?.Count() > 1)
@@ -231,77 +192,7 @@
                 message.text("");
             }
         }
-
-        $("#SchoolDistrictId").on("change", function() {
-            var districtId = $(this).val();
-            var typeList = $("#SchoolTypeId");
-            var typeId = typeList.val();
-            var getTypesUrl = "@Url.Action("GetSchoolTypes", "Lookup", new { Area = string.Empty })";
-
-            if (districtId > 0)
-            {
-                $.getJSON(getTypesUrl, { districtId: districtId, typeId: typeId }, function(response) {
-                    typeList.empty();
-                    if (response.length > 1)
-                    {
-                        typeList.append(new Option("", ""));
-                    }
-                    $.each(response, function(index, item) {
-                        typeList.append(new Option(item.text, item.value, item.selected, item.selected))
-                    });
-                    UpdateSchoolList(districtId, typeList.val());
-                });
-            }
-            else
-            {
-                typeList.empty();
-                typeList.append(new Option("", ""));
-                UpdateSchoolList(districtId, typeList.val());
-            }
-        });
-
-        $("#SchoolTypeId").on("change", function() {
-            var typeId = $(this).val();
-            var districtId = $("#SchoolDistrictId").val();
-            UpdateSchoolList(districtId, typeId);
-        });
-
-        $("#schoolNotListed").on("click", function() {
-            $("#schoolDistrictGroup").removeClass("col-sm-6");
-            $("#schoolTypeGroup").addClass("hide");
-            $("#schoolGroup").addClass("hide");
-            $("#enteredSchoolGroup").removeClass("hide");
-            $("#NewEnteredSchool").val("true");
-        });
-
-        $("#viewSchoolList").on("click", function() {
-            $("#schoolDistrictGroup").addClass("col-sm-6");
-            $("#schoolTypeGroup").removeClass("hide");
-            $("#schoolGroup").removeClass("hide");
-            $("#enteredSchoolGroup").addClass("hide");
-            $("#NewEnteredSchool").val("false");
-        });
-
-        function UpdateSchoolList(districtId, typeId) {
-            var schoolList = $("#User_SchoolId");
-            if (districtId > 0)
-            {
-                var schoolId = schoolList.val();
-                var getSchoolsUrl = "@Url.Action("GetSchools", "Lookup", new { Area = string.Empty })";
-
-                $.getJSON(getSchoolsUrl, { districtId: districtId, typeId: typeId, schoolId: schoolId }, function(response) {
-                    schoolList.empty();
-                    schoolList.append(new Option("", ""));
-                    $.each(response, function(index, item) {
-                        schoolList.append(new Option(item.text, item.value, item.selected, item.selected))
-                    });
-                });
-            }
-            else
-            {
-                schoolList.empty();
-                schoolList.append(new Option("", ""));
-            }
-        }
     </script>
+
+    @await Html.PartialAsync("_SchoolSelectionScripts", Model)
 }

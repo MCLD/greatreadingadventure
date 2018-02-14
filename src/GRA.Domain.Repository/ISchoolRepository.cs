@@ -17,5 +17,10 @@ namespace GRA.Domain.Repository
         Task<int> CountAsync(BaseFilter filter);
 
         Task<bool> ValidateAsync(int schoolId, int siteId);
+
+        Task<bool> AnyPrivateSchoolsAsync(int siteId);
+        Task<List<School>> GetPrivateSchoolListAsync(int siteId);
+        Task<bool> AnyCharterSchoolsAsync(int siteId);
+        Task<List<School>> GetCharterSchoolListAsync(int siteId);
     }
 }

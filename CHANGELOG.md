@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Add mail threading to mission control
 - Setting to ask participants if it's their first time
 - Setting for maximum allowed points earned total
+- Private and chater school district types
+- Homeschool and school not listed options
 
 ### Changed
 - Participant mail subject to be clickable
@@ -18,6 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Fix error that occurred when editing challenge groups
+
+### Removed
+- Remove entered schools
 
 ## [4.0.0-alpha9] 2018-01-23
 ### Added

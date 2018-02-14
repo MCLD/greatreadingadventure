@@ -1,0 +1,132 @@
+﻿@model GRA.Controllers.ViewModel.Shared.SchoolSelectionViewModel
+
+<script>
+    $(function () {
+        $("#SchoolNotListed").trigger("change");
+    });
+
+    $("#SchoolDistrictId").on("change", function() {
+        var districtId = $(this).val();
+        var typeList = $("#SchoolTypeId");
+        var typeId = typeList.val();
+        var getTypesUrl = "@Url.Action("GetSchoolTypes", "Lookup", new { Area = string.Empty })";
+
+        if (districtId > 0)
+        {
+            $.getJSON(getTypesUrl, { districtId: districtId, typeId: typeId }, function(response) {
+                typeList.empty();
+                if (response.length > 1)
+                {
+                    typeList.append(new Option("", ""));
+                }
+                $.each(response, function(index, item) {
+                    typeList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+                UpdateSchoolList(districtId, typeList.val());
+            });
+        }
+        else
+        {
+            typeList.empty();
+            typeList.append(new Option("", ""));
+            UpdateSchoolList(districtId, typeList.val());
+        }
+    });
+
+    $("#SchoolTypeId").on("change", function() {
+        var typeId = $(this).val();
+        var districtId = $("#SchoolDistrictId").val();
+        UpdateSchoolList(districtId, typeId);
+    });
+
+    function UpdateSchoolList(districtId, typeId, privateList, charterList) {
+        var schoolList = $("#SchoolId");
+        var getSchoolsUrl = "@Url.Action("GetSchools", "Lookup", new { Area = string.Empty })";
+        if (districtId > 0 || privateList == true || charterList == true)
+        {
+            var schoolId = schoolList.val();
+
+            $.getJSON(getSchoolsUrl, { districtId: districtId, typeId: typeId, schoolId: schoolId, privateList: privateList, charterList: charterList }, function(response) {
+                schoolList.empty();
+                schoolList.append(new Option("", ""));
+                $.each(response, function(index, item) {
+                    schoolList.append(new Option(item.text, item.value, item.selected, item.selected))
+                });
+            });
+        }
+        else
+        {
+            schoolList.empty();
+            schoolList.append(new Option("", ""));
+        }
+    }
+
+    $("#setPublic").on("click", function (e) {
+        e.preventDefault();
+        if ($(this).hasClass("btn-primary") == false) {
+            $(".categorySelector").not(this).removeClass("btn-primary").addClass("btn-info");
+            $(this).removeClass("btn-info").addClass("btn-primary");
+            $(".schoolCategory").not("#PublicSelected").val(false);
+            $("#PublicSelected").val(true);
+            $("#SchoolNotListed").prop("checked", false).trigger("change");
+            $("#notListedLabel, #districtGroup, #schoolGroup").removeClass("hide");
+            $("#SchoolDistrictId").trigger("change");
+        }
+    });
+    @if (Model.ShowPrivateOption)
+    {
+        <text>
+        $("#setPrivate").on("click", function (e) {
+            e.preventDefault();
+            if ($(this).hasClass("btn-primary") == false) {
+                $(".categorySelector").not(this).removeClass("btn-primary").addClass("btn-info");
+                $(this).removeClass("btn-info").addClass("btn-primary");
+                $(".schoolCategory").not("#PrivateSelected").val(false);
+                $("#PrivateSelected").val(true);
+                $("#SchoolNotListed").prop("checked", false).trigger("change");
+                $("#notListedLabel, #schoolGroup").removeClass("hide");
+                $("#districtGroup").addClass("hide");
+                UpdateSchoolList(null, null, true, false);
+            }
+        });
+        </text>
+    }
+    @if (Model.ShowCharterOption)
+    {
+        <text>
+        $("#setCharter").on("click", function (e) {
+            e.preventDefault();
+            if ($(this).hasClass("btn-primary") == false) {
+                $(".categorySelector").not(this).removeClass("btn-primary").addClass("btn-info");
+                $(this).removeClass("btn-info").addClass("btn-primary");
+                $(".schoolCategory").not("#CharterSelected").val(false);
+                $("#CharterSelected").val(true);
+                $("#SchoolNotListed").prop("checked", false).trigger("change");
+                $("#notListedLabel, #schoolGroup").removeClass("hide");
+                $("#districtGroup").addClass("hide");
+                UpdateSchoolList(null, null, false, true);
+            }
+        });
+        </text>
+    }
+    $("#setHomeschool").on("click", function (e) {
+        e.preventDefault();
+        if ($(this).hasClass("btn-primary") == false) {
+        $(".categorySelector").not(this).removeClass("btn-primary").addClass("btn-info");
+        $(this).removeClass("btn-info").addClass("btn-primary");
+        $(".schoolCategory").not("#IsHomeschooled").val(false);
+        $("#IsHomeschooled").val(true);
+        $("#SchoolNotListed").prop("checked", false).trigger("change");
+        $("#notListedLabel, #districtGroup, #schoolGroup").addClass("hide");
+        }
+    });
+
+    $("#SchoolNotListed").on("change", function () {
+        if ($(this).prop("checked")) {
+            $("#SchoolDistrictId, #SchoolTypeId, #SchoolId").attr("disabled", "disabled");
+        }
+        else {
+            $("#SchoolDistrictId, #SchoolTypeId, #SchoolId").removeAttr("disabled");
+        }
+    });
+</script>

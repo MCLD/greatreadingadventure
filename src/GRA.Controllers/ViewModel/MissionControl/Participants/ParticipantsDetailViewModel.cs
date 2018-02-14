@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using GRA.Controllers.ViewModel.Shared;
+using GRA.Domain.Model;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
@@ -12,16 +14,10 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool RequirePostalCode { get; set; }
         public bool ShowAge { get; set; }
         public bool ShowSchool { get; set; }
-        public bool HasSchoolId { get; set; }
-        public bool NewEnteredSchool { get; set; }
-        public int? SchoolDistrictId { get; set; }
-        public int? SchoolTypeId { get; set; }
         public string ProgramJson { get; set; }
+        public School School { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
         public SelectList SystemList { get; set; }
-        public SelectList SchoolList { get; set; }
-        public SelectList SchoolDistrictList { get; set; }
-        public SelectList SchoolTypeList { get; set; }
     }
 }

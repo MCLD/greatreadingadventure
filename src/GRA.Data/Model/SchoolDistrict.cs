@@ -12,6 +12,9 @@ namespace GRA.Data.Model
         [MaxLength(255)]
         public string Name { get; set; }
 
+        public bool IsCharter { get; set; }
+        public bool IsPrivate { get; set; }
+
         public virtual ICollection<School> Schools { get; set; }
     }
 }

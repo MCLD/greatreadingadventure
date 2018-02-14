@@ -9,9 +9,10 @@ namespace GRA.Domain.Model
         [DisplayName("School District")]
         [Required]
         public int SchoolDistrictId { get; set; }
+        public SchoolDistrict SchoolDistrict { get; set; }
         [DisplayName("School Type")]
-        [Required]
-        public int SchoolTypeId { get; set; }
+        public int? SchoolTypeId { get; set; }
+        public SchoolType SchoolType { get; set; }
         [Required]
         public string Name { get; set; }
     }

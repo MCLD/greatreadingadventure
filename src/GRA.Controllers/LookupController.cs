@@ -26,7 +26,7 @@ namespace GRA.Controllers
             UserService userService) : base(context)
         {
             _logger = Require.IsNotNull(logger, nameof(logger));
-            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService, 
+            _dynamicAvatarService = Require.IsNotNull(dynamicAvatarService,
                 nameof(dynamicAvatarService));
             _schoolService = Require.IsNotNull(schoolService, nameof(schoolService));
             _siteService = Require.IsNotNull(siteService, nameof(siteService));
@@ -66,9 +66,22 @@ namespace GRA.Controllers
             return Json(new SelectList(schoolTypeList, "Id", "Name", typeId));
         }
 
-        public async Task<JsonResult> GetSchools(int? districtId, int? typeId, int? schoolId, string schoolName = null)
+        public async Task<JsonResult> GetSchools(int? districtId, int? typeId, int? schoolId,
+            string schoolName = null, bool privateList = false, bool charterList = false)
         {
-            var schoolList = await _schoolService.GetSchoolsAsync(districtId, typeId);
+            ICollection<School> schoolList;
+            if (privateList)
+            {
+                schoolList = await _schoolService.GetPrivateSchoolListAsync();
+            }
+            else if (charterList)
+            {
+                schoolList = await _schoolService.GetCharterSchoolListAsync();
+            }
+            else
+            {
+                schoolList = await _schoolService.GetSchoolsAsync(districtId, typeId);
+            }
             if (!string.IsNullOrWhiteSpace(schoolName))
             {
                 foreach (var school in schoolList)

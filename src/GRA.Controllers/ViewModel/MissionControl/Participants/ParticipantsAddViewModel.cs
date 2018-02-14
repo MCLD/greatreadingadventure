@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using GRA.Controllers.ViewModel.Shared;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
-    public class ParticipantsAddViewModel
+    public class ParticipantsAddViewModel : SchoolSelectionViewModel
     {
         [Required]
         [MaxLength(36)]
@@ -43,11 +44,6 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public int? ProgramId { get; set; }
 
         public int? Age { get; set; }
-        [DisplayName("School")]
-        public int? SchoolId { get; set; }
-        [DisplayName("School Name")]
-        [MaxLength(255)]
-        public string EnteredSchoolName { get; set; }
 
         [DisplayName("Email Address")]
         [EmailAddress]
@@ -62,17 +58,11 @@ namespace GRA.Controllers.ViewModel.MissionControl.Participants
         public bool RequirePostalCode { get; set; }
         public bool ShowAge { get; set; }
         public bool ShowSchool { get; set; }
-        public bool NewEnteredSchool { get; set; }
-        public int? SchoolDistrictId { get; set; }
-        public int? SchoolTypeId { get; set; }
         public string ProgramJson { get; set; }
 
         public SelectList SystemList { get; set; }
         public SelectList BranchList { get; set; }
         public SelectList ProgramList { get; set; }
-        public SelectList SchoolList { get; set; }
-        public SelectList SchoolDistrictList { get; set; }
-        public SelectList SchoolTypeList { get; set; }
 
         public SelectList AskFirstTime { get; set; }
 

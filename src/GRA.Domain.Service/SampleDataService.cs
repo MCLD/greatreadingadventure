@@ -152,7 +152,10 @@ namespace GRA.Domain.Service
                 Position = positionCounter++
             });
 
-            var district = await _schoolService.AddDistrict("International Confederation of Wizards");
+            var district = await _schoolService.AddDistrict(new SchoolDistrict()
+            {
+                Name = "International Confederation of Wizards"
+            });
             var typeInstitute = await _schoolService.AddSchoolType("Institute");
             var typeAcademy = await _schoolService.AddSchoolType("Academy");
             var typeSchool = await _schoolService.AddSchoolType("School of Witchcraft and Wizardry");

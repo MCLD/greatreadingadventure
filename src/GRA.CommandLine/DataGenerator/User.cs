@@ -54,14 +54,7 @@ namespace GRA.CommandLine.DataGenerator
                     if (program.AskSchool && (f.Random.Bool() || program.SchoolRequired))
                     {
                         var school = f.PickRandom(schools);
-                        if (f.Random.Int(0, 100) <= 15)
-                        {
-                            u.EnteredSchoolName = string.Join(" ", f.Lorem.Words(f.Random.Int(1, 3)));
-                        }
-                        else
-                        {
-                            u.SchoolId = school.Id;
-                        }
+                        u.SchoolId = school.Id;
                     }
 
                 });
@@ -71,18 +64,11 @@ namespace GRA.CommandLine.DataGenerator
             for (int i = 0; i < count; i++)
             {
                 var user = testUsers.Generate();
-                int? schoolDistrictId = null;
-                if (!string.IsNullOrEmpty(user.EnteredSchoolName))
-                {
-                    var school = rand.ListItem<School>(schools.ToList());
-                    schoolDistrictId = school.SchoolDistrictId;
-                }
 
                 users.Add(new GeneratedUser
                 {
                     User = user,
-                    Password = "koala123",
-                    SchoolDistrictId = schoolDistrictId
+                    Password = "koala123"
                 });
             }
             return users;

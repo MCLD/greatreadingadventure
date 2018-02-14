@@ -54,7 +54,6 @@ namespace GRA.Data.Profile
                 })
                 .ReverseMap();
             CreateMap<Model.EmailReminder, Domain.Model.EmailReminder>().ReverseMap();
-            CreateMap<Model.EnteredSchool, Domain.Model.EnteredSchool>().ReverseMap();
             CreateMap<Model.Event, Domain.Model.Event>()
                 .ForMember(dest => dest.Challenge, opt => opt.Ignore())
                 .ForMember(dest => dest.ChallengeGroup, opt => opt.Ignore())
@@ -104,9 +103,7 @@ namespace GRA.Data.Profile
                 .ForMember(dest => dest.ChallengeIds, opt => opt.MapFrom(src
                 => src.RequiredChallenges.Select(_ => _.ChallengeId).ToList()))
                 .ReverseMap();
-            CreateMap<Model.User, Domain.Model.User>()
-                .ForMember(_ => _.EnteredSchoolName, opt => opt.ExplicitExpansion())
-                .ReverseMap();
+            CreateMap<Model.User, Domain.Model.User>().ReverseMap();
             CreateMap<Model.UserLog, Domain.Model.UserLog>().ReverseMap();
             CreateMap<Model.VendorCode, Domain.Model.VendorCode>().ReverseMap();
             CreateMap<Model.VendorCodeType, Domain.Model.VendorCodeType>().ReverseMap();

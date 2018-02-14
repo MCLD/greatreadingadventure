@@ -101,7 +101,7 @@ namespace GRA.Domain.Service
         }
 
         public async Task<User> RegisterUserAsync(User user, string password,
-            int? schoolDistrictId = null, bool MCRegistration = false)
+            bool MCRegistration = false)
         {
             VerifyCanRegister();
             var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
@@ -125,13 +125,6 @@ namespace GRA.Domain.Service
             user.PostalCode = user.PostalCode?.Trim();
             user.Username = user.Username?.Trim();
 
-            if (!string.IsNullOrWhiteSpace(user.EnteredSchoolName))
-            {
-                user.EnteredSchoolName = user.EnteredSchoolName?.Trim();
-                var enteredSchool = await _schoolService
-                    .AddEnteredSchool(user.EnteredSchoolName, schoolDistrictId.Value);
-                user.EnteredSchoolId = enteredSchool.Id;
-            }
             var registeredUser = new User();
             if (MCRegistration)
             {
@@ -246,8 +239,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> Update(User userToUpdate, bool? hasSchool = null,
-            int? schoolDistrictId = null)
+        public async Task<User> Update(User userToUpdate)
         {
             int requestingUserId = GetActiveUserId();
 
@@ -262,11 +254,14 @@ namespace GRA.Domain.Service
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.Email = userToUpdate.Email?.Trim();
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
+                currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
+                currentEntity.SchoolId = userToUpdate.SchoolId;
+                currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemName = null;
                 //currentEntity.Username = userToUpdate.Username;
 
@@ -280,43 +275,10 @@ namespace GRA.Domain.Service
                     currentEntity.BranchId = userToUpdate.BranchId;
                 }
 
-                int? removeEnteredSchoolId = null;
-                if (hasSchool == false)
-                {
-                    currentEntity.SchoolId = null;
-                    if (currentEntity.EnteredSchoolId.HasValue)
-                    {
-                        removeEnteredSchoolId = currentEntity.EnteredSchoolId;
-                        currentEntity.EnteredSchoolId = null;
-                    }
-                }
-                else if (hasSchool == true)
-                {
-                    if (!currentEntity.EnteredSchoolId.HasValue)
-                    {
-                        if (!currentEntity.SchoolId.HasValue
-                            && !string.IsNullOrWhiteSpace(userToUpdate.EnteredSchoolName))
-                        {
-                            var enteredSchool = await _schoolService.AddEnteredSchool(
-                                userToUpdate.EnteredSchoolName, schoolDistrictId.Value);
-                            currentEntity.EnteredSchoolId = enteredSchool.Id;
-                        }
-                        else
-                        {
-                            currentEntity.SchoolId = userToUpdate.SchoolId;
-                        }
-                    }
-                }
-
                 await ValidateUserFields(currentEntity);
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestingUserId, currentEntity);
-
-                if (removeEnteredSchoolId.HasValue)
-                {
-                    await _schoolService.RemoveEnteredSchoolAsync(removeEnteredSchoolId.Value);
-                }
 
                 return updatedUser;
             }
@@ -327,8 +289,7 @@ namespace GRA.Domain.Service
             }
         }
 
-        public async Task<User> MCUpdate(User userToUpdate, bool? hasSchool = null,
-            int? schoolDistrictId = null)
+        public async Task<User> MCUpdate(User userToUpdate)
         {
             int requestedByUserId = GetClaimId(ClaimType.UserId);
 
@@ -343,41 +304,16 @@ namespace GRA.Domain.Service
                 currentEntity.CardNumber = userToUpdate.CardNumber?.Trim();
                 currentEntity.Email = userToUpdate.Email?.Trim();
                 currentEntity.FirstName = userToUpdate.FirstName?.Trim();
+                currentEntity.IsHomeschooled = userToUpdate.IsHomeschooled;
                 currentEntity.LastName = userToUpdate.LastName?.Trim();
                 currentEntity.PhoneNumber = userToUpdate.PhoneNumber?.Trim();
                 currentEntity.PostalCode = userToUpdate.PostalCode?.Trim();
                 currentEntity.ProgramId = userToUpdate.ProgramId;
                 currentEntity.ProgramName = null;
+                currentEntity.SchoolId = userToUpdate.SchoolId;
+                currentEntity.SchoolNotListed = userToUpdate.SchoolNotListed;
                 currentEntity.SystemId = userToUpdate.SystemId;
                 currentEntity.SystemName = null;
-
-                int? removeEnteredSchoolId = null;
-                if (hasSchool == false)
-                {
-                    currentEntity.SchoolId = null;
-                    if (currentEntity.EnteredSchoolId.HasValue)
-                    {
-                        removeEnteredSchoolId = currentEntity.EnteredSchoolId;
-                        currentEntity.EnteredSchoolId = null;
-                    }
-                }
-                else if (hasSchool == true)
-                {
-                    if (!currentEntity.EnteredSchoolId.HasValue)
-                    {
-                        if (!currentEntity.SchoolId.HasValue
-                            && !string.IsNullOrWhiteSpace(userToUpdate.EnteredSchoolName))
-                        {
-                            var enteredSchool = await _schoolService.AddEnteredSchool(
-                                userToUpdate.EnteredSchoolName, schoolDistrictId.Value);
-                            currentEntity.EnteredSchoolId = enteredSchool.Id;
-                        }
-                        else
-                        {
-                            currentEntity.SchoolId = userToUpdate.SchoolId;
-                        }
-                    }
-                }
 
                 if (HasPermission(Permission.EditParticipantUsernames)
                     && !string.IsNullOrWhiteSpace(currentEntity.Username)
@@ -401,11 +337,6 @@ namespace GRA.Domain.Service
 
                 var updatedUser = await _userRepository
                     .UpdateSaveAsync(requestedByUserId, currentEntity);
-
-                if (removeEnteredSchoolId.HasValue)
-                {
-                    await _schoolService.RemoveEnteredSchoolAsync(removeEnteredSchoolId.Value);
-                }
 
                 return updatedUser;
             }
@@ -536,8 +467,7 @@ namespace GRA.Domain.Service
             return authCode.RoleName;
         }
 
-        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd,
-            int? schoolDistrictId = null)
+        public async Task<User> AddHouseholdMemberAsync(int householdHeadUserId, User memberToAdd)
         {
             VerifyCanHouseholdAction();
 
@@ -558,7 +488,6 @@ namespace GRA.Domain.Service
                 memberToAdd.CanBeDeleted = true;
                 memberToAdd.IsLockedOut = false;
                 memberToAdd.IsAdmin = false;
-                memberToAdd.EnteredSchoolId = null;
 
                 memberToAdd.CardNumber = memberToAdd.CardNumber?.Trim();
                 memberToAdd.Email = memberToAdd.Email?.Trim();
@@ -567,14 +496,6 @@ namespace GRA.Domain.Service
                 memberToAdd.PhoneNumber = memberToAdd.PhoneNumber?.Trim();
                 memberToAdd.PostalCode = memberToAdd.PostalCode?.Trim();
                 memberToAdd.Username = memberToAdd.Username?.Trim();
-
-                if (!string.IsNullOrWhiteSpace(memberToAdd.EnteredSchoolName))
-                {
-                    memberToAdd.EnteredSchoolName = memberToAdd.EnteredSchoolName?.Trim();
-                    var enteredSchool = await _schoolService
-                        .AddEnteredSchool(memberToAdd.EnteredSchoolName, schoolDistrictId.Value);
-                    memberToAdd.EnteredSchoolId = enteredSchool.Id;
-                }
 
                 await ValidateUserFields(memberToAdd);
 

@@ -8,6 +8,5 @@ namespace GRA.CommandLine.DataGenerator
     {
         public Domain.Model.User User { get; set; }
         public string Password { get; set; }
-        public int? SchoolDistrictId { get; set; }
     }
 }

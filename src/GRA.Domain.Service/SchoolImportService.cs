@@ -18,7 +18,7 @@ namespace GRA.Domain.Service
             IUserContextProvider userContextProvider,
             SchoolService schoolService) : base(logger, dateTimeProvider, userContextProvider)
         {
-            _schoolService = schoolService 
+            _schoolService = schoolService
                 ?? throw new ArgumentNullException(nameof(schoolService));
         }
 
@@ -45,15 +45,15 @@ namespace GRA.Domain.Service
                     {
                         try
                         {
-                            if(string.IsNullOrEmpty(record.Type))
+                            if (string.IsNullOrEmpty(record.Type))
                             {
                                 throw new Exception($"School type is blank on record {recordCount + 2}");
                             }
-                            if(string.IsNullOrEmpty(record.District))
+                            if (string.IsNullOrEmpty(record.District))
                             {
                                 throw new Exception($"School district is blank on record {recordCount + 2}");
                             }
-                            if(string.IsNullOrEmpty(record.Name))
+                            if (string.IsNullOrEmpty(record.Name))
                             {
                                 throw new Exception($"School name is blank on record {recordCount + 2}");
                             }
@@ -89,7 +89,7 @@ namespace GRA.Domain.Service
                             }
 
                             int typeId;
-                            if(typeIndex.Keys.Contains(record.Type.Trim()))
+                            if (typeIndex.Keys.Contains(record.Type.Trim()))
                             {
                                 typeId = typeIndex[record.Type.Trim()];
                             }
@@ -103,15 +103,17 @@ namespace GRA.Domain.Service
                             }
 
                             int districtId;
-                            if(districtIndex.Keys.Contains(record.District.Trim()))
+                            if (districtIndex.Keys.Contains(record.District.Trim()))
                             {
                                 districtId = districtIndex[record.District.Trim()];
                             }
                             else
                             {
                                 _logger.LogDebug($"Adding school district: {record.District.Trim()}");
-                                var district = await _schoolService
-                                    .AddDistrict(record.District.Trim());
+                                var district = await _schoolService.AddDistrict(new SchoolDistrict()
+                                {
+                                    Name = record.District.Trim()
+                                });
                                 districtIndex.Add(record.District.Trim(), district.Id);
                                 districtId = district.Id;
                                 districtsAdded++;
@@ -120,7 +122,7 @@ namespace GRA.Domain.Service
                             var schoolExists = schools.Where(_ => _.SchoolDistrictId == districtId
                                 && _.Name == record.Name.Trim()).Any();
 
-                            if(!schoolExists)
+                            if (!schoolExists)
                             {
                                 _logger.LogDebug($"Adding school: {record.Name.Trim()}");
                                 await _schoolService

@@ -150,7 +150,6 @@ namespace GRA.Data
         public DbSet<Model.DynamicAvatarItem> DynamicAvatarItems { get; set; }
         public DbSet<Model.DynamicAvatarLayer> DynamicAvatarLayers { get; set; }
         public DbSet<Model.EmailReminder> EmailReminders { get; set; }
-        public DbSet<Model.EnteredSchool> EnteredSchools { get; set; }
         public DbSet<Model.Event> Events { get; set; }
         public DbSet<Model.GroupInfo> GroupInfos { get; set; }
         public DbSet<Model.GroupType> GroupTypes { get; set; }

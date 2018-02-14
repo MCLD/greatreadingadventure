@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using GRA.Controllers.ViewModel.Shared;
 
 namespace GRA.Controllers.ViewModel.MissionControl.Participants
 {
-    public abstract class ParticipantPartialViewModel
+    public abstract class ParticipantPartialViewModel : SchoolSelectionViewModel
     {
         public int Id { get; set; }
         public int HouseholdCount { get; set; }

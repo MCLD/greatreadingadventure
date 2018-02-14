@@ -10,7 +10,7 @@ namespace GRA.Controllers.ViewModel.MissionControl.Schools
         public PaginateViewModel PaginateModel { get; set; }
         public GRA.Domain.Model.School School { get; set; }
         public string Search { get; set; }
-        public SelectList SchoolDistricts { get; set; }
+        public ICollection<GRA.Domain.Model.SchoolDistrict> DistrictList { get; set; }
         public SelectList SchoolTypes { get; set; }
     }
 }

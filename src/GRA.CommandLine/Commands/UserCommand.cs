@@ -176,9 +176,7 @@ namespace GRA.CommandLine.Commands
                         {
                             await _facade
                                 .UserService
-                                .AddHouseholdMemberAsync(parent.Id,
-                                    user.User,
-                                    user.SchoolDistrictId);
+                                .AddHouseholdMemberAsync(parent.Id, user.User);
                             created++;
                         }
                         catch (GraException gex)
@@ -210,7 +208,7 @@ namespace GRA.CommandLine.Commands
                         {
                             var inserted = await _facade
                                 .UserService
-                                .RegisterUserAsync(user.User, user.Password, user.SchoolDistrictId);
+                                .RegisterUserAsync(user.User, user.Password);
                             if (currentUserParent)
                             {
                                 parent = inserted;

@@ -5,7 +5,7 @@
 <div class="row">
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
-            <form asp-controller="Schools" asp-action="AddSchool" method="post" role="form" style="display:inline">
+            <form id="addForm" asp-controller="Schools" asp-action="AddSchool" method="post" role="form" style="display:inline">
                 <input asp-for="Search" type="hidden" />
                 <div class="modal-content">
                     <div class="modal-header">
@@ -15,19 +15,23 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label asp-for="School.Name" class="control-label"></label>
-                            <input asp-for="School.Name" class="form-control" />
+                            <input id="addName" asp-for="School.Name" class="form-control" />
                             <span asp-validation-for="School.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="School.SchoolDistrictId" class="control-label"></label>
-                            <select asp-for="School.SchoolDistrictId" asp-items="Model.SchoolDistricts" class="form-control">
+                            <select id="addDistrict" asp-for="School.SchoolDistrictId" class="form-control schoolDistrict">
                                 <option></option>
+                                @foreach (var district in Model.DistrictList)
+                                {
+                                    <option value="@district.Id" data-asktype="@(!district.IsCharter && !district.IsPrivate)">@district.Name</option>
+                                }
                             </select>
                             <span asp-validation-for="School.SchoolDistrictId" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group typeSelection hide">
                             <label asp-for="School.SchoolTypeId" class="control-label"></label>
-                            <select asp-for="School.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control">
+                            <select id="addType" asp-for="School.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control" data-val="true" data-val-required="The School Type field is required.">
                                 <option></option>
                             </select>
                             <span asp-validation-for="School.SchoolTypeId" class="text-danger"></span>
@@ -60,17 +64,22 @@
                         <div class="form-group">
                             <input id="School_Id" name="School.Id" type="hidden" />
                             <label asp-for="School.Name" class="control-label"></label>
-                            <input asp-for="School.Name" class="form-control" />
+                            <input id="editName" asp-for="School.Name" class="form-control" />
                             <span asp-validation-for="School.Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="School.SchoolDistrictId" class="control-label"></label>
-                            <select asp-for="School.SchoolDistrictId" asp-items="Model.SchoolDistricts" class="form-control"></select>
+                            <select id="editDistrict" asp-for="School.SchoolDistrictId" class="form-control schoolDistrict">
+                                @foreach (var district in Model.DistrictList)
+                                {
+                                    <option value="@district.Id" data-asktype="@(!district.IsCharter && !district.IsPrivate)">@district.Name</option>
+                                }
+                            </select>
                             <span asp-validation-for="School.SchoolDistrictId" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group typeSelection hide">
                             <label asp-for="School.SchoolTypeId" class="control-label"></label>
-                            <select asp-for="School.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control"></select>
+                            <select id="editType" asp-for="School.SchoolTypeId" asp-items="Model.SchoolTypes" class="form-control" data-val="true" data-val-required="The School Type field is required."></select>
                             <span asp-validation-for="School.SchoolTypeId" class="text-danger"></span>
                         </div>
                     </div>
@@ -162,10 +171,10 @@
                                     @school.Name
                                 </td>
                                 <td>
-                                    @Model.SchoolDistricts.Where(_ => _.Value == school.SchoolDistrictId.ToString()).FirstOrDefault().Text
+                                    @school.SchoolDistrict.Name
                                 </td>
                                 <td>
-                                    @Model.SchoolTypes.Where(_ => _.Value == school.SchoolTypeId.ToString()).FirstOrDefault().Text
+                                    @school.SchoolType?.Name
                                 </td>
                                 <td class="gra-mc-icon">
                                     <button type="submit"
@@ -175,7 +184,8 @@
                                             data-id="@school.Id"
                                             data-name="@school.Name"
                                             data-district="@school.SchoolDistrictId"
-                                            data-type="@school.SchoolTypeId">
+                                            data-type="@school.SchoolTypeId"
+                                            data-asktype="@(!school.SchoolDistrict.IsCharter && !school.SchoolDistrict.IsPrivate)">
                                         <span class="fa fa-pencil" aria-hidden="true"></span>
                                     </button>
                                     <button type="button"
@@ -201,30 +211,46 @@
     </div>
 </div>
 
-@section scripts
-{
+@section scripts {
     <script>
-        $('#editModal').on('show.bs.modal', function(event) {
+        $('#editModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
             var district = button.data('district');
             var type = button.data('type');
+            var asktype = button.data("asktype");
             var modal = $(this);
             modal.find('#editModalLabel').text('Edit school - "' + name + '"');
             modal.find('#School_Id').val(id);
-            modal.find('#School_Name').val(name);
-            modal.find('#School_SchoolDistrictId option[value="' + district + '"]').attr("selected", "selected");
-            modal.find('#School_SchoolTypeId option[value="' + type + '"]').attr("selected", "selected");
-        })
+            modal.find('#editName').val(name);
+            modal.find('#editDistrict option[value="' + district + '"]').attr("selected", "selected");
+            if (asktype == "True") {
+                modal.find(".typeSelection").removeClass("hide");
+                modal.find('#editType option[value="' + type + '"]').attr("selected", "selected");
+            }
+            else {
+                modal.find(".typeSelection").addClass("hide");
+            }
+        });
 
-        $('#deleteModal').on('show.bs.modal', function(event) {
+        $(".schoolDistrict").on("change", function (event) {
+            var askType = $(this).find(":selected").data("asktype");
+            if (askType == "True") {
+                $(this).parent().parent().find(".typeSelection").removeClass("hide");
+            }
+            else {
+                $(this).parent().parent().find(".typeSelection").addClass("hide");
+            }
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
             var modal = $(this);
             modal.find('#modal-text').text('Are you sure you wish to delete the school "' + name + '" ?');
             modal.find('#Id').val(id);
-        })
+        });
     </script>
 }
