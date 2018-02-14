@@ -419,6 +419,11 @@ namespace GRA.Controllers.MissionControl
                 }
             }
 
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
+            }
+
             return View(model);
         }
 
@@ -1294,6 +1299,11 @@ namespace GRA.Controllers.MissionControl
                         model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
                     }
                 }
+            }
+
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
             }
 
             return View("HouseholdAdd", model);

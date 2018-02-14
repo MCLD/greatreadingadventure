@@ -194,6 +194,12 @@ namespace GRA.Controllers
                 model.ShowSchool = program.AskSchool;
             }
 
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
+            }
+
             return View(nameof(Index), model);
         }
 
@@ -372,6 +378,11 @@ namespace GRA.Controllers
                         model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
                     }
                 }
+            }
+
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
             }
 
             return View(model);
@@ -813,6 +824,11 @@ namespace GRA.Controllers
                         ModelState.AddModelError("Password", "Please correct the issues with your password.");
                     }
                 }
+            }
+
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
             }
 
             PageTitle = $"{site.Name} - Join Now!";

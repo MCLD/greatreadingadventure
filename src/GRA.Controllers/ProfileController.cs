@@ -737,6 +737,12 @@ namespace GRA.Controllers
                 model.ShowSchool = program.AskSchool;
             }
 
+            var askIfFirstTime = await GetSiteSettingBoolAsync(SiteSettingKey.Users.AskIfFirstTime);
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
+            }
+
             return View("HouseholdAdd", model);
         }
 
@@ -906,6 +912,11 @@ namespace GRA.Controllers
                         model.SchoolList = new SelectList(schoolList.ToList(), "Id", "Name");
                     }
                 }
+            }
+
+            if (askIfFirstTime)
+            {
+                model.AskFirstTime = EmptyNoYes();
             }
 
             return View("HouseholdAdd", model);
