@@ -20,10 +20,19 @@ namespace GRA
         {
             // If this is set (i.e. not null) hide events until the registration period is open
             public const string HideUntilRegistrationOpen = "Events.HideUntilRegistrationOpen";
+
             // If this is set (i.e. not null) require all events to be created with a badge.
             // With this set anyone who has the ManageEvents permission will need the ManageTriggers
             // permission as well.
             public const string RequireBadge = "Events.RequireBadge";
+        }
+
+        public struct Points
+        {
+            // If this is set to an integer, it represents the maximum amount of points permitted
+            // for a participant to have through regular means (it may be able to be overidden from
+            // Mission Control.
+            public const string MaximumPermitted = "Points.MaximumPermitted";
         }
 
         public struct Users

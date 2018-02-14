@@ -189,7 +189,7 @@ namespace GRA.Domain.Service
         /// <returns>A tuple, the bool is true if the setting is present and a number with the
         /// value being the number. The bool is false if the setting is not set or is not a parsable
         /// integer.</returns>
-        public async Task<(bool useGroups, int maximumHousehold)> GetSiteSettingIntAsync(int siteId, string key)
+        public async Task<(bool IsSet, int SetValue)> GetSiteSettingIntAsync(int siteId, string key)
         {
             var site = (await GetSitesFromCacheAsync())
                 .Where(_ => _.Id == siteId)
@@ -203,10 +203,10 @@ namespace GRA.Domain.Service
             {
                 if (int.TryParse(settingValueString, out int value))
                 {
-                    return (useGroups: true, maximumHousehold: value);
+                    return (IsSet: true, SetValue: value);
                 }
             }
-            return (useGroups: false, maximumHousehold: default(int));
+            return (IsSet: false, SetValue: default(int));
         }
     }
 }

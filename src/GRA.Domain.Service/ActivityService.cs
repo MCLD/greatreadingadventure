@@ -32,6 +32,7 @@ namespace GRA.Domain.Service
         private readonly ICodeSanitizer _codeSanitizer;
         private readonly MailService _mailService;
         private readonly PrizeWinnerService _prizeWinnerService;
+        private readonly SiteLookupService _siteLookupService;
         private readonly VendorCodeService _vendorCodeService;
 
         public ActivityService(ILogger<UserService> logger,
@@ -56,6 +57,7 @@ namespace GRA.Domain.Service
             ICodeSanitizer codeSanitizer,
             MailService mailService,
             PrizeWinnerService prizeWinnerService,
+            SiteLookupService siteLookupService,
             VendorCodeService vendorCodeService) : base(logger, dateTimeProvider, userContext)
         {
             _badgeRepository = Require.IsNotNull(badgeRepository, nameof(badgeRepository));
@@ -88,8 +90,10 @@ namespace GRA.Domain.Service
             _mailService = Require.IsNotNull(mailService, nameof(mailService));
             _prizeWinnerService = Require.IsNotNull(prizeWinnerService,
                 nameof(prizeWinnerService));
-            _vendorCodeService = vendorCodeService 
-                ?? throw new ArgumentNullException(nameof(VendorCodeService));
+            _siteLookupService = siteLookupService
+                ?? throw new ArgumentNullException(nameof(siteLookupService));
+            _vendorCodeService = vendorCodeService
+                ?? throw new ArgumentNullException(nameof(vendorCodeService));
         }
 
         public async Task<ActivityLogResult> LogActivityAsync(int userIdToLog,
@@ -141,12 +145,13 @@ namespace GRA.Domain.Service
             int pointsEarned
                 = (activityAmountEarned / translation.ActivityAmount) * translation.PointsEarned;
 
-            // cap points at int.MaxValue
+            // cap points at setting or int.MaxValue
             long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
                 + Convert.ToInt64(pointsEarned);
-            if (totalPoints > int.MaxValue)
+            var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
+            if (totalPoints > maximumPoints)
             {
-                pointsEarned = int.MaxValue - userToLog.PointsEarned;
+                pointsEarned = maximumPoints - userToLog.PointsEarned;
             }
 
             // add the row to the user's point log
@@ -491,12 +496,14 @@ namespace GRA.Domain.Service
 
             int pointsAwarded = (int)challenge.PointsAwarded;
 
-            // cap points at int.MaxValue
+            // cap points at setting or int.MaxValue
             long totalPoints = Convert.ToInt64(activeUser.PointsEarned)
                 + Convert.ToInt64(pointsAwarded);
-            if (totalPoints > int.MaxValue)
+            var maximumPoints = await GetMaximumAllowedPointsAsync(activeUser.SiteId);
+
+            if (totalPoints > maximumPoints)
             {
-                pointsAwarded = int.MaxValue - activeUser.PointsEarned;
+                pointsAwarded = maximumPoints - activeUser.PointsEarned;
             }
 
             int completedTasks = challengeTasks.Where(_ => _.IsCompleted == true).Count();
@@ -590,12 +597,14 @@ namespace GRA.Domain.Service
                 throw new Exception($"Could not find a user with id {whoEarnedUserId}");
             }
 
-            // cap points at int.MaxValue
+            // cap points at setting or int.MaxValue
             long totalPoints = Convert.ToInt64(earnedUser.PointsEarned)
                 + Convert.ToInt64(pointsEarned);
-            if (totalPoints > int.MaxValue)
+            var maximumPoints = await GetMaximumAllowedPointsAsync(earnedUser.SiteId);
+
+            if (totalPoints > maximumPoints)
             {
-                pointsEarned = int.MaxValue - earnedUser.PointsEarned;
+                pointsEarned = maximumPoints - earnedUser.PointsEarned;
             }
 
             earnedUser.PointsEarned += pointsEarned;
@@ -711,12 +720,14 @@ namespace GRA.Domain.Service
 
                 var pointsAwarded = trigger.AwardPoints;
 
-                // cap points at int.MaxValue
+                // cap points at setting or int.MaxValue
                 long totalPoints = Convert.ToInt64(user.PointsEarned)
                     + Convert.ToInt64(pointsAwarded);
-                if (totalPoints > int.MaxValue)
+                var maximumPoints = await GetMaximumAllowedPointsAsync(user.SiteId);
+
+                if (totalPoints > maximumPoints)
                 {
-                    pointsAwarded = int.MaxValue - user.PointsEarned;
+                    pointsAwarded = maximumPoints - user.PointsEarned;
                 }
 
                 // if there are points to be awarded, do that now
@@ -873,12 +884,14 @@ namespace GRA.Domain.Service
 
             var pointsAwarded = trigger.AwardPoints;
 
-            // cap points at int.MaxValue
+            // cap points at setting or int.MaxValue
             long totalPoints = Convert.ToInt64(userToLog.PointsEarned)
                 + Convert.ToInt64(pointsAwarded);
-            if (totalPoints > int.MaxValue)
+            var maximumPoints = await GetMaximumAllowedPointsAsync(userToLog.SiteId);
+
+            if (totalPoints > maximumPoints)
             {
-                pointsAwarded = int.MaxValue - userToLog.PointsEarned;
+                pointsAwarded = maximumPoints - userToLog.PointsEarned;
             }
 
             // check if this user's gotten this code
@@ -1185,6 +1198,14 @@ namespace GRA.Domain.Service
                     await _dynamicAvatarBundleRepository.UpdateSaveAsync(loggingUser, bundle);
                 }
             }
+        }
+
+        private async Task<int> GetMaximumAllowedPointsAsync(int siteId)
+        {
+            var maximumPermitted = await _siteLookupService.GetSiteSettingIntAsync(siteId,
+                SiteSettingKey.Points.MaximumPermitted);
+
+            return maximumPermitted.IsSet ? maximumPermitted.SetValue : int.MaxValue;
         }
     }
 }
